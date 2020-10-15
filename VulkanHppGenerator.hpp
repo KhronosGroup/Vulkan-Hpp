@@ -323,11 +323,16 @@ private:
                                           CommandData const &               commandData,
                                           std::pair<size_t, size_t> const & vectorParamIndex,
                                           bool                              definition ) const;
-  void        appendCommandGetChain( std::string &       str,
-                                     std::string const & name,
-                                     CommandData const & commandData,
-                                     size_t              nonConstPointerIndex,
-                                     bool                definition ) const;
+  void        appendCommandGetChainResult( std::string &       str,
+                                           std::string const & name,
+                                           CommandData const & commandData,
+                                           size_t              nonConstPointerIndex,
+                                           bool                definition ) const;
+  void        appendCommandGetChainVoid( std::string &       str,
+                                         std::string const & name,
+                                         CommandData const & commandData,
+                                         size_t              nonConstPointerIndex,
+                                         bool                definition ) const;
   void        appendCommandGetHandle( std::string &       str,
                                       std::string const & name,
                                       CommandData const & commandData,
@@ -414,9 +419,7 @@ private:
                                                              std::string const &              indentation,
                                                              CommandData const &              commandData,
                                                              size_t                           returnParamIndex,
-                                                             std::map<size_t, size_t> const & vectorParamIndices,
                                                              std::string const &              enhancedReturnType,
-                                                             bool                             isStructureChain,
                                                              bool                             withAllocator ) const;
   void        appendFunctionBodyEnhancedMultiVectorSizeCheck( std::string &                    str,
                                                               std::string const &              indentation,
@@ -562,6 +565,10 @@ private:
                                                                    std::map<size_t, size_t> const & vectorParamIndices,
                                                                    bool                             definition,
                                                                    bool withAllocators ) const;
+  std::string constructCommandResultGetChain( std::string const & name,
+                                              CommandData const & commandData,
+                                              size_t              nonConstPointerIndex,
+                                              bool                definition ) const;
   std::string constructCommandResultGetHandleUnique( std::string const & name,
                                                      CommandData const & commandData,
                                                      size_t              nonConstPointerIndex,
@@ -614,15 +621,15 @@ private:
                                                        bool                             definition ) const;
   std::string
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
-  std::string              constructCommandType( std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 bool                             definition,
-                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string              constructCommandVoid( std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 bool                             definition,
-                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string              constructCommandVoidEnumerate( std::string const &               name,
+  std::string      constructCommandType( std::string const &              name,
+                                         CommandData const &              commandData,
+                                         bool                             definition,
+                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string      constructCommandVoid( std::string const &              name,
+                                         CommandData const &              commandData,
+                                         bool                             definition,
+                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string      constructCommandVoidEnumerate( std::string const &               name,
                                                   CommandData const &               commandData,
                                                   std::pair<size_t, size_t> const & vectorParamIndex,
                                                   bool                              definition,

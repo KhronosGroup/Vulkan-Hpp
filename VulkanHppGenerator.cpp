@@ -6176,7 +6176,7 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
       {
         str += " = ";
         auto enumIt = m_enums.find( member.type.type );
-        if ( enumIt != m_enums.end() && member.type.postfix.empty() )
+        if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
         {
           appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values );
         }

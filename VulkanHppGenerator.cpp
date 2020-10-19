@@ -1170,16 +1170,16 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                                                          } ) == constPointerParamIndices.end() )
         {
           // no vector paramter and no non-void const-pointer
-          if ( commandData.returnType == "void" )
-          {
-            // void functions with no fancy input have just standard call
-            appendCommandStandard( str, name, commandData, definition );
-            appendedFunction = true;
-          }
-          else if ( commandData.returnType == "VkResult" )
+          if ( commandData.returnType == "VkResult" )
           {
             // function returning a result but no fancy input have either standard or enhanced call
             appendCommandStandardOrEnhanced( str, name, commandData, definition );
+            appendedFunction = true;
+          }
+          else
+          {
+            // void functions and functions returning some value with no fancy input have just standard call
+            appendCommandStandard( str, name, commandData, definition );
             appendedFunction = true;
           }
         }
@@ -1571,16 +1571,17 @@ void VulkanHppGenerator::appendCommandStandard( std::string &       str,
                                                 bool                definition ) const
 {
   const std::string functionTemplate = R"(
-${commandStandard}
-)";
+${enter}${commandStandard}
+${leave})";
 
   std::string enter, leave;
   std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-  assert( enter.empty() );
 
   str += replaceWithMap( functionTemplate,
                          std::map<std::string, std::string>( {
                            { "commandStandard", constructCommandStandard( name, commandData, definition ) },
+                           { "enter", enter },
+                           { "leave", leave }
                          } ) );
 }
 

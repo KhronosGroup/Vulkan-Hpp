@@ -2946,7 +2946,11 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard( std::string &    
 
 void VulkanHppGenerator::appendFunctionHeaderReturnType( std::string &       str,
                                                          CommandData const & commandData,
-                                                         size_t              /*returnParamIndex*/,
+                                                         size_t
+#if !defined( NDEBUG )
+                                                         returnParamIndex
+#endif
+                                                         ,
                                                          std::string const & enhancedReturnType,
                                                          bool                enhanced,
                                                          bool                twoStep,

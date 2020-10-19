@@ -1443,8 +1443,10 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
 
   // and then the same for the Unique* versions (a deleteCommand is available for the commandData's class, and the
   // function starts with 'allocate' or 'create')
+#if !defined( NDEBUG )
   auto handleIt = m_handles.find( commandData.handle );
   assert( handleIt != m_handles.end() );
+#endif
 
   std::string enter, leave;
   std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
@@ -2945,7 +2947,11 @@ bool VulkanHppGenerator::appendFunctionHeaderArgumentStandard( std::string &    
 
 void VulkanHppGenerator::appendFunctionHeaderReturnType( std::string &       str,
                                                          CommandData const & commandData,
-                                                         size_t              returnParamIndex,
+                                                         size_t
+#if !defined( NDEBUG )
+                                                         returnParamIndex
+#endif
+                                                         ,
                                                          std::string const & enhancedReturnType,
                                                          bool                enhanced,
                                                          bool                twoStep,
@@ -4393,10 +4399,13 @@ std::string
   std::string str;
 
   auto firstVectorParamIt  = vectorParamIndices.begin();
-  auto secondVectorParamIt = std::next( firstVectorParamIt );
 
   assert( commandData.params[0].type.type == commandData.handle );
+
+#if !defined( NDEBUG )
+  auto secondVectorParamIt = std::next( firstVectorParamIt );
   assert( firstVectorParamIt->second == secondVectorParamIt->second );
+#endif
 
   std::set<size_t> skippedParameters = { 0, firstVectorParamIt->second };
 
@@ -7115,12 +7124,13 @@ std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const &
                                                              bool                             isStructureChain ) const
 {
   assert( ( returnParamIndex == INVALID_INDEX ) || ( returnParamIndex < commandData.params.size() ) );
+#if !defined( NDEBUG )
   for ( auto vpi : vectorParamIndices )
   {
     assert( ( vpi.first != vpi.second ) && ( vpi.first < commandData.params.size() ) &&
             ( ( vpi.second == INVALID_INDEX ) || ( vpi.second < commandData.params.size() ) ) );
   }
-
+#endif
   std::string enhancedReturnType;
   if ( returnParamIndex != INVALID_INDEX )
   {
@@ -7164,11 +7174,13 @@ size_t VulkanHppGenerator::determineReturnParamIndex( CommandData const &       
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       bool                             twoStep ) const
 {
+#if !defined( NDEBUG )
   for ( auto vpi : vectorParamIndices )
   {
     assert( ( vpi.first != vpi.second ) && ( vpi.first < commandData.params.size() ) &&
             ( ( vpi.second == INVALID_INDEX ) || ( vpi.second < commandData.params.size() ) ) );
   }
+#endif
 
   size_t returnParamIndex = INVALID_INDEX;
   // for return types of type VkResult or void, we can determine a parameter to return
@@ -7694,12 +7706,14 @@ bool VulkanHppGenerator::isParamIndirect( std::string const & name, std::vector<
       params.begin(), params.end(), [&n = nameParts[0]]( ParamData const & pd ) { return pd.name == n; } );
     if ( paramIt != params.end() )
     {
+#if !defined( NDEBUG )
       auto structureIt = m_structures.find( paramIt->type.type );
       assert( structureIt != m_structures.end() );
       assert( std::find_if( structureIt->second.members.begin(),
                             structureIt->second.members.end(),
                             [&n = nameParts[1]]( MemberData const & md ) { return md.name == n; } ) !=
               structureIt->second.members.end() );
+#endif
       return true;
     }
   }
@@ -7717,12 +7731,14 @@ bool VulkanHppGenerator::isParamIndirect( std::string const & name, ParamData co
   }
   if ( ( nameParts.size() == 2 ) && ( nameParts[0] == param.name ) )
   {
+#if !defined( NDEBUG )
     auto structureIt = m_structures.find( param.type.type );
     assert( structureIt != m_structures.end() );
     assert( std::find_if( structureIt->second.members.begin(),
                           structureIt->second.members.end(),
                           [&n = nameParts[1]]( MemberData const & md ) { return md.name == n; } ) !=
             structureIt->second.members.end() );
+#endif
     return true;
   }
   return false;

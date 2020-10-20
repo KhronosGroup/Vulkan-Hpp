@@ -1207,6 +1207,14 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
               appendCommandUnique( str, name, commandData, nonConstPointerParamIndices[0], definition );
               appendedFunction = true;
             }
+            else if ( commandData.returnType == "void" )
+            {
+              // it's a handle type, but without construction and destruction function; it's just get
+              assert( beginsWith( name, "vkGet" ) );
+              appendCommandStandardAndEnhanced(
+                str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+              appendedFunction = true;
+            }
           }
           else if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
           {

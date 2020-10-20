@@ -91,8 +91,10 @@ namespace vk
                                                std::string const &     shaderText )
     {
       std::vector<unsigned int> shaderSPV;
-      bool                      ok = GLSLtoSPV( shaderStage, shaderText, shaderSPV );
-      assert( ok );
+      if ( !GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )
+      {
+        throw std::runtime_error( "Could not convert glsl shader to spir-v -> terminating" );
+      }
 
       return device->createShaderModuleUnique( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
     }

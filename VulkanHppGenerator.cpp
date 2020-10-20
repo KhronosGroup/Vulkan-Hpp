@@ -11456,6 +11456,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
+    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -11471,6 +11472,7 @@ namespace std
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
+    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -11508,6 +11510,7 @@ namespace std
   {
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore( message );
+    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #  else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -11544,6 +11547,7 @@ namespace std
   {
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore( message );
+    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #  else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )

@@ -57,7 +57,7 @@ std::string      createEnumValueName( std::string const & name,
 std::string      createSuccessCode( std::string const & code, std::set<std::string> const & tags );
 std::string      determineCommandName( std::string const & vulkanCommandName, std::string const & firstArgumentType );
 std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices );
-std::string extractTag( int line, std::string const & name, std::set<std::string> const & tags );
+std::string      extractTag( int line, std::string const & name, std::set<std::string> const & tags );
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
 std::pair<bool, std::string>       generateFunctionBodyStandardReturn( std::string const & returnType );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
@@ -1247,8 +1247,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
             // two returns but just one vector
             auto vectorParamIndexIt = vectorParamIndices.begin();
             if ( ( vectorParamIndexIt->second == nonConstPointerParamIndices[0] ) &&
-                 ( vectorParamIndexIt->first == nonConstPointerParamIndices[1] ) &&
-                 ( commandData.params[vectorParamIndexIt->first].type.type != "void" ) )
+                 ( vectorParamIndexIt->first == nonConstPointerParamIndices[1] ) )
             {
               // the size is a return value as well -> enumerate the values
               // and the vector data is not of type void
@@ -2863,8 +2862,8 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
   // use our ArrayProxy
   bool isConst = ( param.type.prefix.find( "const" ) != std::string::npos );
   str += optionalBegin + "ArrayProxy<" +
-          ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) +
-          "> const &" + optionalEnd + strippedParameterName;
+         ( isTemplateParam ? ( isConst ? "const T" : "T" ) : stripPostfix( param.type.compose(), "*" ) ) + "> const &" +
+         optionalEnd + strippedParameterName;
 }
 
 void VulkanHppGenerator::appendFunctionHeaderArguments( std::string &                    str,
@@ -3565,9 +3564,8 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
           else if ( params[i].optional )
           {
             argumentList +=
-              "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " +
-              name +
-                ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+              "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " + name +
+              ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
             hasDefaultAssignment = true;
           }
           else
@@ -3636,7 +3634,8 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
     {
       if ( !params[sp].len.empty() )
       {
-        std::string type = startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) );
+        std::string type =
+          ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) );
         argumentList += type + "Allocator & " + startLowerCase( type ) + "Allocator, ";
       }
     }
@@ -4045,14 +4044,20 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
   std::string commandName       = determineCommandName( name, commandData.params[0].type.type );
   std::string nodiscard         = constructNoDiscardEnhanced( commandData );
   std::string vectorElementType = stripPrefix( commandData.params[vectorParamIndices.first].type.type, "Vk" );
+  if ( commandData.params[vectorParamIndices.first].type.type == "void" )
+  {
+    // for returning vectors of type void, we use uint8_t !
+    vectorElementType = "uint8_t";
+  }
+  std::string allocatorType = startUpperCase( vectorElementType ) + "Allocator";
 
   if ( definition )
   {
     const std::string functionTemplate =
-      R"(  template <typename ${vectorElementType}Allocator, typename Dispatch${withAllocatorTypenameCheck}>
-  ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::vector<${vectorElementType}, ${vectorElementType}Allocator>>::type ${className}${commandName}( ${argumentList} )${const}
+      R"(  template <typename ${allocatorType}, typename Dispatch${withAllocatorTypenameCheck}>
+  ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::vector<${vectorElementType}, ${allocatorType}>>::type ${className}${commandName}( ${argumentList} )${const}
   {
-    std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${vectorName}${vectorAllocator};
+    std::vector<${vectorElementType}, ${allocatorType}> ${vectorName}${vectorAllocator};
     ${counterType} ${counterName};
     Result result;
     do
@@ -4079,7 +4084,8 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
     str = replaceWithMap(
       functionTemplate,
       std::map<std::string, std::string>(
-        { { "argumentList", argumentList },
+        { { "allocatorType", allocatorType },
+          { "argumentList", argumentList },
           { "className", commandData.handle.empty() ? "" : ( stripPrefix( commandData.handle, "Vk" ) + "::" ) },
           { "commandName", commandName },
           { "const", commandData.handle.empty() ? "" : " const" },
@@ -4092,7 +4098,7 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
           { "secondCallArguments",
             constructCallArgumentsEnumerateVectors(
               commandData.handle, commandData.params, { vectorParamIndices }, false ) },
-          { "vectorAllocator", withAllocator ? ( "( " + startLowerCase( vectorElementType ) + "Allocator )" ) : "" },
+          { "vectorAllocator", withAllocator ? ( "( " + startLowerCase( allocatorType ) + " )" ) : "" },
           { "vectorElementType", vectorElementType },
           { "vectorName", startLowerCase( stripPrefix( commandData.params[vectorParamIndices.first].name, "p" ) ) },
           { "vkCommand", name },
@@ -4101,17 +4107,17 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
   else
   {
     const std::string functionTemplate =
-      R"(    template <typename ${vectorElementType}Allocator = std::allocator<${vectorElementType}>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${withAllocatorTypenameCheck}>
-    ${nodiscard}typename ResultValueType<std::vector<${vectorElementType}, ${vectorElementType}Allocator>>::type ${commandName}( ${argumentList} )${const};)";
+      R"(    template <typename ${allocatorType} = std::allocator<${vectorElementType}>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${withAllocatorTypenameCheck}>
+    ${nodiscard}typename ResultValueType<std::vector<${vectorElementType}, ${allocatorType}>>::type ${commandName}( ${argumentList} )${const};)";
 
-    std::string withAllocatorsTypenameCheck =
-      ", typename B = " + vectorElementType +
-      "Allocator, typename std::enable_if<std::is_same<typename B::value_type, " + vectorElementType +
-      ">::value, int>::type = 0";
+    std::string withAllocatorsTypenameCheck = ", typename B = " + allocatorType +
+                                              ", typename std::enable_if<std::is_same<typename B::value_type, " +
+                                              vectorElementType + ">::value, int>::type = 0";
 
     str = replaceWithMap( functionTemplate,
                           std::map<std::string, std::string>(
-                            { { "argumentList", argumentList },
+                            { { "allocatorType", allocatorType },
+                              { "argumentList", argumentList },
                               { "const", commandData.handle.empty() ? "" : " const" },
                               { "commandName", commandName },
                               { "nodiscard", nodiscard },
@@ -7215,9 +7221,9 @@ size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> co
   return defaultStartIndex;
 }
 
-std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const &              commandData,
-                                                             size_t                           returnParamIndex,
-                                                             bool                             isStructureChain ) const
+std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const & commandData,
+                                                             size_t              returnParamIndex,
+                                                             bool                isStructureChain ) const
 {
   assert( ( returnParamIndex == INVALID_INDEX ) || ( returnParamIndex < commandData.params.size() ) );
 
@@ -7229,12 +7235,12 @@ std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const &
     assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
     assert( commandData.successCodes.empty() || ( commandData.successCodes[0] == "VK_SUCCESS" ) );
     enhancedReturnType = ( commandData.params[returnParamIndex].type.type == "void" )
-                            ? "std::vector<uint8_t,Allocator>"  // the return parameter is a vector-type parameter
-                          : isStructureChain
-                            ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
+                           ? "std::vector<uint8_t,Allocator>"  // the return parameter is a vector-type parameter
+                         : isStructureChain
+                           ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
                                                                       // a vector of StrutureChains
-                            : "std::vector<" + stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" ) +
-                                ",Allocator>";  // for the other parameters, we use a vector of the pure type
+                           : "std::vector<" + stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" ) +
+                               ",Allocator>";  // for the other parameters, we use a vector of the pure type
   }
   else if ( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 1 ) )
   {

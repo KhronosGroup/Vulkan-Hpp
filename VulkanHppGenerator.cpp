@@ -10750,13 +10750,13 @@ int main( int argc, char ** argv )
 
     StructureChain & operator=( StructureChain && rhs ) = delete;
 
-    template <typename T, size_t Which = 0>
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     T & get() VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...>&>( *this ) );
     }
 
-    template <typename T, size_t Which = 0>
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     T const & get() const VULKAN_HPP_NOEXCEPT
     {
       return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...>&>( *this ) );

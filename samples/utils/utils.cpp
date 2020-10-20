@@ -1016,7 +1016,7 @@ namespace vk
 
     MonochromeImageGenerator::MonochromeImageGenerator( std::array<unsigned char, 3> const & rgb ) : m_rgb( rgb ) {}
 
-    void MonochromeImageGenerator::operator()( void * data, vk::Extent2D & extent ) const
+    void MonochromeImageGenerator::operator()( void * data, vk::Extent2D const & extent ) const
     {
       // fill in with the monochrome color
       unsigned char * pImageMemory = static_cast<unsigned char *>( data );
@@ -1041,10 +1041,10 @@ namespace vk
       assert( m_channels == 4 );
     }
 
-    void PixelsImageGenerator::operator()( void * data, vk::Extent2D & extent ) const
+    void PixelsImageGenerator::operator()( void * data, vk::Extent2D const & extent ) const
     {
       assert( extent == m_extent );
-      memcpy( data, m_pixels, m_extent.width * m_extent.height * m_channels );
+      memcpy( data, m_pixels, extent.width * extent.height * m_channels );
     }
 
     TextureData::TextureData( vk::PhysicalDevice const & physicalDevice,

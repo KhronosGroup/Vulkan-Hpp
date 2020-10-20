@@ -15,6 +15,14 @@
 // VulkanHpp Samples : Hash
 //                     Compile test on using std::hash on handles
 
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4189 )   // local variable is initialized but not referenced
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>

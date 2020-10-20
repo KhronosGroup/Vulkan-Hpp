@@ -245,7 +245,7 @@ namespace vk
     public:
       MonochromeImageGenerator( std::array<unsigned char, 3> const & rgb );
 
-      void operator()( void * data, vk::Extent2D & extent ) const;
+      void operator()( void * data, vk::Extent2D const & extent ) const;
 
     private:
       std::array<unsigned char, 3> const & m_rgb;
@@ -256,7 +256,7 @@ namespace vk
     public:
       PixelsImageGenerator( vk::Extent2D const & extent, size_t channels, unsigned char const * pixels );
 
-      void operator()( void * data, vk::Extent2D & extent ) const;
+      void operator()( void * data, vk::Extent2D const & extent ) const;
 
     private:
       vk::Extent2D          m_extent;

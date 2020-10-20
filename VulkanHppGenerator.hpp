@@ -289,7 +289,6 @@ private:
                              size_t            templateParamIndex,
                              bool              twoStep,
                              bool              firstCall ) const;
-  void appendArgumentVulkanType( std::string & str, ParamData const & paramData ) const;
   void appendBitmask( std::string &                      os,
                       std::string const &                bitmaskName,
                       std::string const &                bitmaskType,
@@ -442,9 +441,7 @@ private:
                                                     std::map<size_t, size_t> const & vectorParamIndices,
                                                     bool                             skip,
                                                     bool                             argEncountered,
-                                                    bool                             isTemplateParam,
-                                                    bool                             withDefaults,
-                                                    bool                             withAllocator ) const;
+                                                    bool                             isTemplateParam ) const;
   void        appendFunctionHeaderArgumentEnhancedPointer( std::string &       str,
                                                            ParamData const &   param,
                                                            std::string const & strippedParameterName ) const;
@@ -452,9 +449,7 @@ private:
                                                           ParamData const &   param,
                                                           std::string const & strippedParameterName,
                                                           bool                hasSizeParam,
-                                                          bool                isTemplateParam,
-                                                          bool                withDefaults,
-                                                          bool                withAllocator ) const;
+                                                          bool                isTemplateParam ) const;
   void        appendFunctionHeaderArguments( std::string &                    str,
                                              CommandData const &              commandData,
                                              size_t                           returnParamIndex,
@@ -521,13 +516,15 @@ private:
                                              std::set<size_t> const &       skippedParams,
                                              bool                           definition ) const;
   std::string constructCallArgument( ParamData const & param, bool enhanced ) const;
-  std::string constructCallArgumentsEnumerateVectors( std::vector<ParamData> const &   params,
+  std::string constructCallArgumentsEnumerateVectors( std::string const &              handle,
+                                                      std::vector<ParamData> const &   params,
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       bool                             vectorAsNullptr ) const;
   std::string constructCallArgumentsGetValue( std::string const &            handle,
                                               std::vector<ParamData> const & params,
                                               size_t                         skippedParams ) const;
-  std::string constructCallArgumentsGetVector( std::vector<ParamData> const &   params,
+  std::string constructCallArgumentsGetVector( std::string const &              handle,
+                                               std::vector<ParamData> const &   params,
                                                std::vector<size_t> const &      returnParamIndex,
                                                std::map<size_t, size_t> const & vectorParamIndices,
                                                bool                             singular ) const;
@@ -538,6 +535,11 @@ private:
                                       CommandData const &              commandData,
                                       bool                             definition,
                                       std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string constructCommandResultEnumerate( std::string const &               name,
+                                               CommandData const &               commandData,
+                                               bool                              definition,
+                                               std::pair<size_t, size_t> const & vectorParamIndices,
+                                               bool                              withAllocators ) const;
   std::string constructCommandResultEnumerateTwoVectors( std::string const &              name,
                                                          CommandData const &              commandData,
                                                          bool                             definition,
@@ -679,7 +681,6 @@ private:
                                                std::set<size_t> const &       skippedParams ) const;
   std::string      determineEnhancedReturnType( CommandData const &              commandData,
                                                 size_t                           returnParamIndex,
-                                                std::map<size_t, size_t> const & vectorParamIndices,
                                                 bool                             isStructureChain ) const;
   size_t           determineReturnParamIndex( CommandData const &              commandData,
                                               std::map<size_t, size_t> const & vectorParamIndices,
@@ -687,7 +688,7 @@ private:
   std::set<size_t> determineSkippedParams( std::string const &              handleType,
                                            std::vector<ParamData> const &   params,
                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                           size_t                           returnParamIndex ) const;
+                                           std::vector<size_t> const &      returnParamIndex ) const;
   std::string      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   size_t           determineTemplateParamIndex( std::vector<ParamData> const &   params,
                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;

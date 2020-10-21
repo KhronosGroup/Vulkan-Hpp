@@ -3694,9 +3694,9 @@ std::string VulkanHppGenerator::constructCallArgument( ParamData const & param, 
     argument = startLowerCase( stripPrefix( param.name, "p" ) );
     argument = param.optional ? ( argument + " ? " + argument + "->c_str() : nullptr" ) : ( argument + ".c_str()" );
   }
-  else if ( enhanced && ( param.type.type == "Display" ) )
+  else if ( enhanced && ( ( param.type.type == "Display" ) || ( param.type.type == "IDirectFB" ) ) )
   {
-    // very special handling for type "Display", which originally gets in as a pointer, but is mapped to a reference
+    // very special handling for type "Display" and "IDirectFB", which originally gets in as a pointer, but is mapped to a reference
     argument = "&" + param.name;
   }
   else
@@ -4057,7 +4057,8 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
   std::set<size_t> skippedParams = determineSkippedParams( commandData.handle,
                                                            commandData.params,
                                                            { vectorParamIndices },
-                                                           { vectorParamIndices.second, vectorParamIndices.first }, false );
+                                                           { vectorParamIndices.second, vectorParamIndices.first },
+                                                           false );
 
   std::string argumentList =
     constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, withAllocator );
@@ -7324,7 +7325,8 @@ size_t VulkanHppGenerator::determineReturnParamIndex( CommandData const &       
 std::set<size_t> VulkanHppGenerator::determineSkippedParams( std::string const &              handleType,
                                                              std::vector<ParamData> const &   params,
                                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                                             std::vector<size_t> const &      returnParamIndices, bool singular ) const
+                                                             std::vector<size_t> const &      returnParamIndices,
+                                                             bool                             singular ) const
 {
   std::set<size_t> skippedParams = { returnParamIndices.begin(), returnParamIndices.end() };
 
@@ -7399,8 +7401,9 @@ std::vector<size_t> VulkanHppGenerator::determineConstPointerParamIndices( std::
 
   for ( size_t i = 0; i < params.size(); i++ )
   {
+    // very special handling for type Display and IDirectFB, which come in as non-const pointers, but are meant as const-pointers
     if ( params[i].type.isConstPointer() ||
-         ( params[i].type.isNonConstPointer() && ( params[i].type.type == "Display" ) ) )
+         ( params[i].type.isNonConstPointer() && ( ( params[i].type.type == "Display" ) || ( params[i].type.type == "IDirectFB" ) ) ) )
     {
       constPointerParamIndices.push_back( i );
     }
@@ -7415,10 +7418,10 @@ std::vector<size_t>
 
   for ( size_t i = 0; i < params.size(); i++ )
   {
-    // very special handling of parameters of type "Display", which is an X11 type that always comes as a non-const
+    // very special handling of parameters of type "Display" and "IDirectFB", which always comes as a non-const
     // pointer but is not meant to be a potential return value!
-    assert( ( params[i].type.type != "Display" ) || params[i].type.isNonConstPointer() );
-    if ( params[i].type.isNonConstPointer() && ( params[i].type.type != "Display" ) )
+    if ( params[i].type.isNonConstPointer() && ( params[i].type.type != "Display" ) &&
+         ( params[i].type.type != "IDirectFB" ) )
     {
       nonConstPointerParamIndices.push_back( i );
     }

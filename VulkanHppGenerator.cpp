@@ -10250,7 +10250,7 @@ int main( int argc, char ** argv )
       return std::array<T, N>::operator[](index);
     }
 
-    VULKAN_HPP_CONSTEXPR T & operator[](int index) VULKAN_HPP_NOEXCEPT
+    T & operator[](int index) VULKAN_HPP_NOEXCEPT
     {
       return std::array<T, N>::operator[](index);
     }

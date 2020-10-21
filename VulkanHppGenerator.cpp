@@ -1161,36 +1161,22 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
       break;
     case 1:
       // one return parameter
+      if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
       {
+        // get handle(s)
         auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
         if ( returnVectorParamIt == vectorParamIndices.end() )
         {
-          // the return parameter is not a vector
-          if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+          // the return parameter is not a vector -> get just one handle
+          if ( commandData.returnType == "VkResult" )
           {
-            if ( commandData.returnType == "VkResult" )
-            {
-              // provide standard, enhanced, and unique call
-              appendCommandUnique( str, name, commandData, nonConstPointerParamIndices[0], definition );
-              appendedFunction = true;
-            }
-            else if ( commandData.returnType == "void" )
-            {
-              // it's a handle type, but without construction and destruction function; it's just get
-              assert( beginsWith( name, "vkGet" ) );
-              appendCommandStandardAndEnhanced(
-                str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
-              appendedFunction = true;
-            }
-          }
-          else if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
-          {
-            // provide standard, enhanced, and chained call
-            appendCommandChained( str, name, commandData, nonConstPointerParamIndices[0], definition );
+            // provide standard, enhanced, and unique call
+            appendCommandUnique( str, name, commandData, nonConstPointerParamIndices[0], definition );
             appendedFunction = true;
           }
-          else if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
+          else if ( ( commandData.returnType == "void" ) && beginsWith( name, "vkGet" ) )
           {
+            // it's a handle type, but without construction and destruction function; it's just get
             appendCommandStandardAndEnhanced(
               str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
             appendedFunction = true;
@@ -1198,48 +1184,70 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         }
         else
         {
-          // the return parameter is a vector
-          if ( isHandleType( commandData.params[returnVectorParamIt->first].type.type ) )
+          // get a vector of handles
+          if ( ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
           {
-            if ( ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
+            if ( ( vectorParamIndices.size() == 2 ) &&
+                 ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second ) )
             {
-              assert( vectorParamIndices.size() == 2 );
-              assert( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second );
               // provide standard, enhanced, vector, singular, and unique (and the combinations!) calls
               appendCommandVectorSingularUnique(
                 str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
+              appendedFunction = true;
             }
-            else
-            {
-              assert( ( isParamIndirect( commandData.params[returnVectorParamIt->first].len,
-                                         commandData.params[returnVectorParamIt->second] ) ) );
-              assert( vectorParamIndices.size() == 1 );
-              // provide standard, enhanced, vector, and unique (and the combinations!) calls
-              appendCommandVectorUnique(
-                str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
-            }
-            appendedFunction = true;
           }
-          else if ( vectorParamIndices.size() == 1 )
+          else if ( ( ( isParamIndirect( commandData.params[returnVectorParamIt->first].len,
+                                         commandData.params[returnVectorParamIt->second] ) ) ) &&
+                    ( vectorParamIndices.size() == 1 ) )
           {
-            assert( commandData.params[returnVectorParamIt->first].type.type == "void" );
-            assert( commandData.params[returnVectorParamIt->second].type.isValue() );
-            // provide standard, enhanced, and singular calls
-            appendCommandSingular(
+            // provide standard, enhanced, vector, and unique (and the combinations!) calls
+            appendCommandVectorUnique(
               str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
             appendedFunction = true;
           }
+        }
+      }
+      else if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
+      {
+        auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
+        if ( returnVectorParamIt == vectorParamIndices.end() )
+        {
+          // provide standard, enhanced, and chained call
+          appendCommandChained( str, name, commandData, nonConstPointerParamIndices[0], definition );
+          appendedFunction = true;
+        }
+      }
+      else
+      {
+        auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
+        if ( returnVectorParamIt == vectorParamIndices.end() )
+        {
+          if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
+          {
+            appendCommandStandardAndEnhanced(
+              str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+            appendedFunction = true;
+          }
+        }
+        else if ( ( vectorParamIndices.size() == 1 ) &&
+                  ( commandData.params[returnVectorParamIt->first].type.type == "void" ) &&
+                  ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
+        {
+          // provide standard, enhanced, and singular calls
+          appendCommandSingular(
+            str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
+          appendedFunction = true;
         }
       }
       break;
     case 2:
       // two return parameters
       if ( !isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) &&
-           !isHandleType( commandData.params[nonConstPointerParamIndices[1]].type.type ) &&
            !isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) &&
            !isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[1]].type.type ) )
       {
-        // non of the return parameters is a handle or a StructureChain
+        // non of the return parameters is a StructureChain
+        // Note: if the vector returned holds handles, the function does not create them, but just gets them
         switch ( vectorParamIndices.size() )
         {
           case 1:
@@ -1264,13 +1272,15 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
           {
             // two returns and two vectors! But one input vector, one output vector of the same size, and one output
             // value
-            assert( vectorParamIndices.find( nonConstPointerParamIndices[0] ) != vectorParamIndices.end() );
-            assert( vectorParamIndices.find( nonConstPointerParamIndices[1] ) == vectorParamIndices.end() );
-            assert( commandData.returnType == "VkResult" );
-            // provide standard, enhanced deprecated, enhanced, and enhanced with allocator calls
-            appendCommandStandardEnhancedDeprecatedAllocator(
-              str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
-            appendedFunction = true;
+            if ( ( vectorParamIndices.find( nonConstPointerParamIndices[0] ) != vectorParamIndices.end() ) &&
+                 ( vectorParamIndices.find( nonConstPointerParamIndices[1] ) == vectorParamIndices.end() ) &&
+                 ( commandData.returnType == "VkResult" ) )
+            {
+              // provide standard, enhanced deprecated, enhanced, and enhanced with allocator calls
+              appendCommandStandardEnhancedDeprecatedAllocator(
+                str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+              appendedFunction = true;
+            }
           }
           break;
           default: break;
@@ -1279,10 +1289,10 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
       break;
     case 3:
       // three return parameters
-      assert( ( vectorParamIndices.size() == 2 ) &&
-              ( vectorParamIndices.begin()->second == nonConstPointerParamIndices[0] ) &&
-              ( vectorParamIndices.begin()->first == nonConstPointerParamIndices[1] ) &&
-              ( std::next( vectorParamIndices.begin() )->first == nonConstPointerParamIndices[2] ) );
+      if ( ( vectorParamIndices.size() == 2 ) &&
+           ( vectorParamIndices.begin()->second == nonConstPointerParamIndices[0] ) &&
+           ( vectorParamIndices.begin()->first == nonConstPointerParamIndices[1] ) &&
+           ( std::next( vectorParamIndices.begin() )->first == nonConstPointerParamIndices[2] ) )
       {
         // two vector parameters
         auto                           firstVectorParam  = vectorParamIndices.begin();

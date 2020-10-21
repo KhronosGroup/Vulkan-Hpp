@@ -631,7 +631,14 @@ std::string stripPluralS( std::string const & name )
   size_t      pos = strippedName.rfind( 's' );
   if ( pos != std::string::npos )
   {
-    strippedName.erase( pos, 1 );
+    if ( ( 2 <= pos ) && ( strippedName.substr( pos - 2, 3 ) == "ies" ) )
+    {
+      strippedName.replace( pos - 2, 3, "y" );
+    }
+    else
+    {
+      strippedName.erase( pos, 1 );
+    }
   }
   return strippedName;
 }
@@ -1229,13 +1236,12 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
             appendedFunction = true;
           }
         }
-        else if ( ( vectorParamIndices.size() == 1 ) &&
-                  ( commandData.params[returnVectorParamIt->first].type.type == "void" ) &&
+        else if ( ( commandData.params[returnVectorParamIt->first].type.type == "void" ) &&
                   ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
         {
           // provide standard, enhanced, and singular calls
           appendCommandSingular(
-            str, name, commandData, vectorParamIndices, nonConstPointerParamIndices[0], definition );
+            str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices[0] );
           appendedFunction = true;
         }
       }
@@ -1262,7 +1268,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
               if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
               {
                 // provide standard, enhanced, and vector calls
-                appendCommandVector( str, name, commandData, *vectorParamIndexIt, definition );
+                appendCommandVector( str, name, commandData, definition, *vectorParamIndexIt );
                 appendedFunction = true;
               }
             }
@@ -1516,9 +1522,9 @@ ${leave})";
 void VulkanHppGenerator::appendCommandSingular( std::string &                    str,
                                                 std::string const &              name,
                                                 CommandData const &              commandData,
+                                                bool                             definition,
                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                size_t                           returnParamIndex,
-                                                bool                             definition ) const
+                                                size_t                           returnParamIndex ) const
 {
   assert( commandData.returnType == "VkResult" );
 
@@ -1738,8 +1744,8 @@ ${leave})";
 void VulkanHppGenerator::appendCommandVector( std::string &                     str,
                                               std::string const &               name,
                                               CommandData const &               commandData,
-                                              std::pair<size_t, size_t> const & vectorParamIndex,
-                                              bool                              definition ) const
+                                              bool                              definition,
+                                              std::pair<size_t, size_t> const & vectorParamIndex ) const
 {
   assert( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) );
 
@@ -3878,6 +3884,10 @@ std::string VulkanHppGenerator::constructCallArgumentsGetVector( std::string con
         else if ( params[lenIt->second].type.isValue() )
         {
           arguments += startLowerCase( stripPrefix( params[lenIt->first].name, "p" ) ) + ".size()";
+          if ( params[lenIt->first].type.type == "void" )
+          {
+            arguments += " * sizeof( T )";
+          }
         }
         else
         {
@@ -4047,7 +4057,7 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
   std::set<size_t> skippedParams = determineSkippedParams( commandData.handle,
                                                            commandData.params,
                                                            { vectorParamIndices },
-                                                           { vectorParamIndices.second, vectorParamIndices.first } );
+                                                           { vectorParamIndices.second, vectorParamIndices.first }, false );
 
   std::string argumentList =
     constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, withAllocator );
@@ -4712,8 +4722,11 @@ std::string VulkanHppGenerator::constructCommandResultGetVector( std::string con
 
   std::string str;
 
+  std::set<size_t> skippedParams =
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, false );
+
   std::string argumentList =
-    constructArgumentListEnhanced( commandData.params, { 0, returnParamIndex }, INVALID_INDEX, definition, false );
+    constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, false );
   std::string commandName = determineCommandName( name, commandData.params[0].type.type );
   std::string nodiscard   = constructNoDiscardEnhanced( commandData );
   std::string returnType  = constructReturnType( commandData, "std::vector<T,Allocator>" );
@@ -4931,7 +4944,7 @@ std::string
   std::string str;
 
   std::set<size_t> skippedParams =
-    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex } );
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, false );
 
   std::string argumentList =
     constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, withAllocator );
@@ -5015,7 +5028,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesSingular
   std::string str;
 
   std::set<size_t> skippedParams =
-    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex } );
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, true );
   size_t singularParam = ( returnParamIndex == vectorParamIndices.begin()->first )
                            ? std::next( vectorParamIndices.begin() )->first
                            : vectorParamIndices.begin()->first;
@@ -5086,7 +5099,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUnique(
   std::string str;
 
   std::set<size_t> skippedParams =
-    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex } );
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, false );
 
   std::string argumentList =
     constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, withAllocator );
@@ -5210,7 +5223,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUniqueSi
   std::string str;
 
   std::set<size_t> skippedParams =
-    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex } );
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, true );
   size_t singularParam = ( returnParamIndex == vectorParamIndices.begin()->first )
                            ? std::next( vectorParamIndices.begin() )->first
                            : vectorParamIndices.begin()->first;
@@ -5282,12 +5295,11 @@ std::string
 
   std::string str;
 
-  std::string argumentList = constructArgumentListEnhanced(
-    commandData.params,
-    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex } ),
-    INVALID_INDEX,
-    definition,
-    false );
+  std::set<size_t> skippedParams =
+    determineSkippedParams( commandData.handle, commandData.params, vectorParamIndices, { returnParamIndex }, true );
+
+  std::string argumentList =
+    constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, false );
   std::string commandName = stripPluralS( determineCommandName( name, commandData.params[0].type.type ) );
   std::string nodiscard   = constructNoDiscardEnhanced( commandData );
   std::string returnType  = constructReturnType( commandData, "T" );
@@ -7312,7 +7324,7 @@ size_t VulkanHppGenerator::determineReturnParamIndex( CommandData const &       
 std::set<size_t> VulkanHppGenerator::determineSkippedParams( std::string const &              handleType,
                                                              std::vector<ParamData> const &   params,
                                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                                             std::vector<size_t> const &      returnParamIndices ) const
+                                                             std::vector<size_t> const &      returnParamIndices, bool singular ) const
 {
   std::set<size_t> skippedParams = { returnParamIndices.begin(), returnParamIndices.end() };
 
@@ -7326,7 +7338,7 @@ std::set<size_t> VulkanHppGenerator::determineSkippedParams( std::string const &
     if ( ( std::find_if( returnParamIndices.begin(),
                          returnParamIndices.end(),
                          [&vpi]( size_t rpi ) { return vpi.first == rpi; } ) == returnParamIndices.end() ) ||
-         params[vpi.second].type.isValue() )
+         ( singular && params[vpi.second].type.isValue() ) )
     {
       skippedParams.insert( vpi.second );
     }

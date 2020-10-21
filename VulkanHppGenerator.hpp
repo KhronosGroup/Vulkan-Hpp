@@ -320,9 +320,9 @@ private:
   void appendCommandSingular( std::string &                    str,
                               std::string const &              name,
                               CommandData const &              commandData,
+                              bool                             definition,
                               std::map<size_t, size_t> const & vectorParamIndices,
-                              size_t                           returnParamIndex,
-                              bool                             definition ) const;
+                              size_t                           returnParamIndex ) const;
   void appendCommandStandard( std::string &       str,
                               std::string const & name,
                               CommandData const & commandData,
@@ -352,8 +352,8 @@ private:
   void        appendCommandVector( std::string &                     str,
                                    std::string const &               name,
                                    CommandData const &               commandData,
-                                   std::pair<size_t, size_t> const & vectorParamIndex,
-                                   bool                              definition ) const;
+                                   bool                              definition,
+                                   std::pair<size_t, size_t> const & vectorParamIndex ) const;
   void        appendCommandVectorDeprecated( std::string &                    str,
                                              std::string const &              name,
                                              CommandData const &              commandData,
@@ -679,16 +679,17 @@ private:
   bool             containsUnion( std::string const & type ) const;
   size_t           determineDefaultStartIndex( std::vector<ParamData> const & params,
                                                std::set<size_t> const &       skippedParams ) const;
-  std::string      determineEnhancedReturnType( CommandData const &              commandData,
-                                                size_t                           returnParamIndex,
-                                                bool                             isStructureChain ) const;
+  std::string      determineEnhancedReturnType( CommandData const & commandData,
+                                                size_t              returnParamIndex,
+                                                bool                isStructureChain ) const;
   size_t           determineReturnParamIndex( CommandData const &              commandData,
                                               std::map<size_t, size_t> const & vectorParamIndices,
                                               bool                             twoStep ) const;
   std::set<size_t> determineSkippedParams( std::string const &              handleType,
                                            std::vector<ParamData> const &   params,
                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                           std::vector<size_t> const &      returnParamIndex ) const;
+                                           std::vector<size_t> const &      returnParamIndex,
+                                           bool                             singular ) const;
   std::string      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   size_t           determineTemplateParamIndex( std::vector<ParamData> const &   params,
                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;

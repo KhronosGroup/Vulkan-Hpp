@@ -19,6 +19,7 @@ matrix:
       env: 
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
         - ADDITIONAL_BUILD_OPTIONS="-DSAMPLES_BUILD=OFF"
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: g++-5
 
@@ -34,6 +35,7 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: g++-6
 
@@ -49,6 +51,7 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: g++-7
 
@@ -64,6 +67,7 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: g++-8
 
@@ -79,6 +83,7 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: g++-9
 
@@ -94,6 +99,23 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: g++-10
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        - BUILD_TYPE="Release"
         - CXX_STANDARD="11"
       compiler: g++-10
 
@@ -112,6 +134,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-4.0
 
@@ -130,6 +153,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-5.0
 
@@ -148,6 +172,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-6.0
 
@@ -166,6 +191,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-7
 
@@ -184,6 +210,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-8
 
@@ -202,6 +229,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-9
 
@@ -220,6 +248,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="11"
       compiler: clang++-10
 
@@ -238,6 +267,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="14"
       compiler: clang++-10
 
@@ -256,6 +286,7 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
         - CXX_STANDARD="17"
       compiler: clang++-10
 
@@ -274,6 +305,26 @@ matrix:
             - xorg-dev 
             - libglu1-mesa-dev
       env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="20"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Release"
         - CXX_STANDARD="20"
       compiler: clang++-10
 
@@ -291,6 +342,7 @@ script:
     -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+    -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
     -DCMAKE_CXX_FLAGS="-Wall -Wpedantic -Wextra"
     -DCMAKE_CXX_STANDARD=$CXX_STANDARD
     $ADDITIONAL_BUILD_OPTIONS

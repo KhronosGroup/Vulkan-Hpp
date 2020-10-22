@@ -3696,7 +3696,8 @@ std::string VulkanHppGenerator::constructCallArgument( ParamData const & param, 
   }
   else if ( enhanced && ( ( param.type.type == "Display" ) || ( param.type.type == "IDirectFB" ) ) )
   {
-    // very special handling for type "Display" and "IDirectFB", which originally gets in as a pointer, but is mapped to a reference
+    // very special handling for type "Display" and "IDirectFB", which originally gets in as a pointer, but is mapped to
+    // a reference
     argument = "&" + param.name;
   }
   else
@@ -3830,6 +3831,12 @@ std::string VulkanHppGenerator::constructCallArgumentsGetVector( std::string con
                                                                  std::map<size_t, size_t> const & vectorParamIndices,
                                                                  bool                             singular ) const
 {
+  assert( !singular ||
+          ( returnParamIndices.size() == 1 ) );  // for singular cases, we always return just one parameter!
+
+  auto singularReturnVectorParamIt = vectorParamIndices.find( returnParamIndices[0] );
+  assert( singularReturnVectorParamIt != vectorParamIndices.end() );
+
   std::string arguments;
   size_t      i = 0;
   if ( !handle.empty() )
@@ -3841,11 +3848,11 @@ std::string VulkanHppGenerator::constructCallArgumentsGetVector( std::string con
   for ( ; i < params.size(); i++ )
   {
     arguments += ", ";
-    auto vpiIt = vectorParamIndices.find( i );
-    if ( ( std::find_if( returnParamIndices.begin(),
-                         returnParamIndices.end(),
-                         [&i]( size_t rpi ) { return i == rpi; } ) != returnParamIndices.end() ) ||
-         ( vpiIt != vectorParamIndices.end() ) )
+    auto vpiIt         = vectorParamIndices.find( i );
+    bool isReturnParam = ( std::find_if( returnParamIndices.begin(), returnParamIndices.end(), [&i]( size_t rpi ) {
+                             return i == rpi;
+                           } ) != returnParamIndices.end() );
+    if ( isReturnParam || ( vpiIt != vectorParamIndices.end() ) )
     {
       if ( vpiIt == vectorParamIndices.end() )
       {
@@ -3854,7 +3861,7 @@ std::string VulkanHppGenerator::constructCallArgumentsGetVector( std::string con
       }
       else
       {
-        if ( singular )
+        if ( singular && ( vpiIt->second == singularReturnVectorParamIt->second ) )
         {
           arguments += "reinterpret_cast<" + params[i].type.compose( false ) + ">( &" +
                        stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) ) + " )";
@@ -3874,12 +3881,12 @@ std::string VulkanHppGenerator::constructCallArgumentsGetVector( std::string con
     {
       auto lenIt = std::find_if( vectorParamIndices.begin(),
                                  vectorParamIndices.end(),
-                                 [&i]( std::pair<size_t, size_t> const & vpi ) { return vpi.second == i; } );
+                                 [&i]( std::pair<size_t, size_t> const & vpi ) { return i == vpi.second; } );
       if ( lenIt != vectorParamIndices.end() )
       {
-        if ( singular )
+        if ( singular && ( i == singularReturnVectorParamIt->second ) )
         {
-          arguments += ( params[lenIt->first].type.type == "void" ) ? "sizeof( T )" : "1";
+          arguments += ( params[singularReturnVectorParamIt->first].type.type == "void" ) ? "sizeof( T )" : "1";
         }
         else if ( params[lenIt->second].type.isValue() )
         {
@@ -7401,9 +7408,11 @@ std::vector<size_t> VulkanHppGenerator::determineConstPointerParamIndices( std::
 
   for ( size_t i = 0; i < params.size(); i++ )
   {
-    // very special handling for type Display and IDirectFB, which come in as non-const pointers, but are meant as const-pointers
+    // very special handling for type Display and IDirectFB, which come in as non-const pointers, but are meant as
+    // const-pointers
     if ( params[i].type.isConstPointer() ||
-         ( params[i].type.isNonConstPointer() && ( ( params[i].type.type == "Display" ) || ( params[i].type.type == "IDirectFB" ) ) ) )
+         ( params[i].type.isNonConstPointer() &&
+           ( ( params[i].type.type == "Display" ) || ( params[i].type.type == "IDirectFB" ) ) ) )
     {
       constPointerParamIndices.push_back( i );
     }

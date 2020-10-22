@@ -3566,7 +3566,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
         argumentList += "const " + stripPrefix( params[i].type.type, "Vk" ) + " & " +
                         stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) );
       }
-      else if ( params[i].type.isConstPointer() )
+      else if ( params[i].type.isConstPointer() && !isParamIndirect( params[i].len, params ) )
       {
         std::string name = startLowerCase( stripPrefix( params[i].name, "p" ) );
         if ( params[i].len.empty() )

@@ -315,8 +315,8 @@ private:
   void appendCommandChained( std::string &       str,
                              std::string const & name,
                              CommandData const & commandData,
-                             size_t              nonConstPointerIndex,
-                             bool                definition ) const;
+                             bool                definition,
+                             size_t              nonConstPointerIndex ) const;
   void appendCommandSingular( std::string &                    str,
                               std::string const &              name,
                               CommandData const &              commandData,
@@ -354,6 +354,11 @@ private:
                                    CommandData const &               commandData,
                                    bool                              definition,
                                    std::pair<size_t, size_t> const & vectorParamIndex ) const;
+  void        appendCommandVectorChained( std::string &                    str,
+                                          std::string const &              name,
+                                          CommandData const &              commandData,
+                                          bool                             definition,
+                                          std::map<size_t, size_t> const & vectorParamIndices ) const;
   void        appendCommandVectorDeprecated( std::string &                    str,
                                              std::string const &              name,
                                              CommandData const &              commandData,
@@ -424,17 +429,6 @@ private:
                                                  size_t                           templateParamIndex,
                                                  std::map<size_t, size_t> const & vectorParamIndices,
                                                  std::string const &              returnName ) const;
-  void        appendFunctionBodyEnhancedVectorOfStructureChain( std::string &                    str,
-                                                                std::string const &              indentation,
-                                                                std::string const &              name,
-                                                                CommandData const &              commandData,
-                                                                size_t                           returnParamIndex,
-                                                                std::map<size_t, size_t> const & vectorParamIndices,
-                                                                bool                             withAllocator ) const;
-  void        appendFunctionBodyStandardArgument( std::string &                    str,
-                                                  TypeInfo const &                 typeData,
-                                                  std::string const &              name,
-                                                  std::vector<std::string> const & arraySizes ) const;
   bool        appendFunctionHeaderArgumentEnhanced( std::string &                    str,
                                                     ParamData const &                param,
                                                     size_t                           paramIndex,
@@ -464,17 +458,7 @@ private:
                                        size_t              returnParamIndex,
                                        std::string const & enhancedReturnType,
                                        bool                enhanced,
-                                       bool                twoStep,
                                        bool                isStructureChain ) const;
-  void appendFunctionHeaderTemplate( std::string &       str,
-                                     std::string const & indentation,
-                                     size_t              returnParamIndex,
-                                     size_t              templateParamIndex,
-                                     std::string const & enhancedReturnType,
-                                     bool                enhanced,
-                                     bool                withDefault,
-                                     bool                isStructureChain,
-                                     bool                withAllocatorArgument ) const;
   void appendHandle( std::string & str, std::pair<std::string, HandleData> const & handle );
   void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
   void appendStructAssignmentOperators( std::string &                                 str,
@@ -511,7 +495,8 @@ private:
                                              std::set<size_t> const &       skippedParams,
                                              size_t                         singularParam,
                                              bool                           definition,
-                                             bool                           withAllocators ) const;
+                                             bool                           withAllocators,
+                                             bool                           structureChain ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams,
                                              bool                           definition ) const;
@@ -630,6 +615,11 @@ private:
                                                   bool                              definition,
                                                   std::pair<size_t, size_t> const & vectorParamIndex,
                                                   bool                              withAllocators ) const;
+  std::string      constructCommandVoidEnumerateChained( std::string const &               name,
+                                                         CommandData const &               commandData,
+                                                         bool                              definition,
+                                                         std::pair<size_t, size_t> const & vectorParamIndex,
+                                                         bool                              withAllocators ) const;
   std::string      constructCommandVoidGetChain( std::string const & name,
                                                  CommandData const & commandData,
                                                  bool                definition,
@@ -647,7 +637,6 @@ private:
                                                   std::map<size_t, size_t> const & vectorParamIndices,
                                                   bool                             twoStep,
                                                   std::string const &              enhancedReturnType,
-                                                  bool                             isStructureChain,
                                                   bool                             withAllocator ) const;
   std::string      constructFunctionBodyEnhancedSingleStep( std::string const &              indentation,
                                                             std::string const &              name,
@@ -691,11 +680,8 @@ private:
                                            std::vector<size_t> const &      returnParamIndex,
                                            bool                             singular ) const;
   std::string      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
-  size_t           determineTemplateParamIndex( std::vector<ParamData> const &   params,
-                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::vector<size_t>      determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
-  std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
   std::string              generateLenInitializer(
                  std::vector<MemberData>::const_iterator                                        mit,
@@ -717,7 +703,6 @@ private:
   bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isParamIndirect( std::string const & name, ParamData const & param ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
-  bool isTwoStepAlgorithm( std::vector<ParamData> const & params ) const;
   bool needsComplexBody( CommandData const & commandData ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>
        needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;

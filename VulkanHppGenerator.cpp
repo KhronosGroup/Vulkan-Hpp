@@ -2196,6 +2196,16 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
 
 void VulkanHppGenerator::appendEnums( std::string & str ) const
 {
+  // start with toHexString, which is used in all the to_string functions here!
+  str += R"(
+  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
+  {
+    std::stringstream stream;
+    stream << std::hex << value;
+    return stream.str();
+  }
+)";
+
   for ( auto const & e : m_enums )
   {
     std::string enter, leave;
@@ -2271,7 +2281,7 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
       str += "      case " + enumName + "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) + "\";\n";
     }
     str +=
-      "      default: return \"invalid\";\n"
+      "      default: return \"invalid ( \" + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + \" )\";\n"
       "    }\n";
   }
 
@@ -10741,6 +10751,7 @@ int main( int argc, char ** argv )
 #include <cstring>
 #include <functional>
 #include <initializer_list>
+#include <sstream>
 #include <string>
 #include <system_error>
 #include <tuple>

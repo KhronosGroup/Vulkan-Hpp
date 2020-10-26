@@ -56,7 +56,7 @@ message("CMAKE_CXX_STANDARD = <${CMAKE_CXX_STANDARD}>")
 
 if (NOT DEFINED VulkanRegistry_DIR)
   if (DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR)
-    set(VulkanRegistry_DIR "${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR/registry"})
+    set(VulkanRegistry_DIR "${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry")
   else()
     set(VulkanRegistry_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/registry")
   endif()

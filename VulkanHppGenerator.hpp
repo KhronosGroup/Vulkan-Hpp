@@ -389,19 +389,6 @@ private:
                                      std::vector<std::string> const &   arraySizes,
                                      std::vector<EnumValueData> const & values ) const;
   void        appendEnumToString( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
-  void        appendFunction( std::string &                    str,
-                              std::string const &              indentation,
-                              std::string const &              name,
-                              CommandData const &              commandData,
-                              size_t                           returnParamIndex,
-                              size_t                           templateParamIndex,
-                              std::map<size_t, size_t> const & vectorParamIndices,
-                              bool                             twoStep,
-                              std::string const &              enhancedReturnType,
-                              bool                             definition,
-                              bool                             enhanced,
-                              bool                             isStructureChain,
-                              bool                             withAllocatorArgument ) const;
   std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &       str,
                                                              std::string const & indentation,
                                                              CommandData const & commandData,
@@ -436,29 +423,11 @@ private:
                                                     bool                             skip,
                                                     bool                             argEncountered,
                                                     bool                             isTemplateParam ) const;
-  void        appendFunctionHeaderArgumentEnhancedPointer( std::string &       str,
-                                                           ParamData const &   param,
-                                                           std::string const & strippedParameterName ) const;
   void        appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
                                                           ParamData const &   param,
                                                           std::string const & strippedParameterName,
                                                           bool                hasSizeParam,
                                                           bool                isTemplateParam ) const;
-  void        appendFunctionHeaderArguments( std::string &                    str,
-                                             CommandData const &              commandData,
-                                             size_t                           returnParamIndex,
-                                             size_t                           templateParamIndex,
-                                             std::map<size_t, size_t> const & vectorParamIndices,
-                                             bool                             enhanced,
-                                             bool                             withDefaults,
-                                             bool                             withAllocator ) const;
-  bool appendFunctionHeaderArgumentStandard( std::string & str, ParamData const & param, bool argEncountered ) const;
-  void appendFunctionHeaderReturnType( std::string &       str,
-                                       CommandData const & commandData,
-                                       size_t              returnParamIndex,
-                                       std::string const & enhancedReturnType,
-                                       bool                enhanced,
-                                       bool                isStructureChain ) const;
   void appendHandle( std::string & str, std::pair<std::string, HandleData> const & handle );
   void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
   void appendStructAssignmentOperators( std::string &                                 str,
@@ -604,8 +573,7 @@ private:
     constructCommandStandard( std::string const & name, CommandData const & commandData, bool definition ) const;
   std::string      constructCommandType( std::string const &              name,
                                          CommandData const &              commandData,
-                                         bool                             definition,
-                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
+                                         bool                             definition ) const;
   std::string      constructCommandVoid( std::string const &              name,
                                          CommandData const &              commandData,
                                          bool                             definition,
@@ -644,16 +612,12 @@ private:
                                                             size_t                           returnParamIndex,
                                                             size_t                           templateParamIndex,
                                                             std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string      constructFunctionBodyStandard( std::string const & indentation,
-                                                  std::string const & commandName,
-                                                  CommandData const & commandData ) const;
   std::string      constructFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
                                                              size_t                           returnParamIndex,
                                                              size_t                           templateParamIndex,
                                                              std::map<size_t, size_t> const & vectorParamIndices,
                                                              bool                             withDefaults,
                                                              bool                             withAllocator ) const;
-  std::string      constructFunctionHeaderArgumentsStandard( CommandData const & commandData, bool withDefaults ) const;
   std::string      constructNoDiscardEnhanced( CommandData const & commandData ) const;
   std::string      constructNoDiscardStandard( CommandData const & commandData ) const;
   std::string      constructReturnType( CommandData const & commandData, std::string const & baseType ) const;

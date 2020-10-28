@@ -312,11 +312,12 @@ private:
                       std::string const & name,
                       CommandData const & commandData,
                       bool                definition ) const;
-  void appendCommandChained( std::string &       str,
-                             std::string const & name,
-                             CommandData const & commandData,
-                             bool                definition,
-                             size_t              nonConstPointerIndex ) const;
+  void appendCommandChained( std::string &                    str,
+                             std::string const &              name,
+                             CommandData const &              commandData,
+                             bool                             definition,
+                             std::map<size_t, size_t> const & vectorParamIndices,
+                             size_t                           nonConstPointerIndex ) const;
   void appendCommandSingular( std::string &                    str,
                               std::string const &              name,
                               CommandData const &              commandData,
@@ -596,10 +597,11 @@ private:
                                             CommandData const & commandData,
                                             bool                definition,
                                             size_t              nonConstPointerIndex ) const;
-  std::string constructCommandVoidGetValue( std::string const & name,
-                                            CommandData const & commandData,
-                                            bool                definition,
-                                            size_t              nonConstPointerIndex ) const;
+  std::string constructCommandVoidGetValue( std::string const &              name,
+                                            CommandData const &              commandData,
+                                            bool                             definition,
+                                            std::map<size_t, size_t> const & vectorParamIndices,
+                                            size_t                           returnParamIndex ) const;
   std::string constructConstexprString( std::pair<std::string, StructureData> const & structData ) const;
   std::string constructFunctionBodyEnhanced( std::string const &              indentation,
                                              std::string const &              name,
@@ -666,9 +668,9 @@ private:
                                                      std::map<size_t, size_t> const & vectorParamIndices,
                                                      size_t                           returnParamIndex ) const;
   bool                                isHandleType( std::string const & type ) const;
-  bool                                isParam( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool isParamIndirect( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool isParamIndirect( std::string const & name, ParamData const & param ) const;
+  bool isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isLenByStructMember( std::string const & name, ParamData const & param ) const;
+  bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
   bool needsComplexBody( CommandData const & commandData ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>

@@ -723,7 +723,7 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
   checkElements( line, elements, { { "registry", true } } );
   check( elements.size() == 1,
          line,
-         "encountered " + std::to_string( elements.size() ) + " elments named <registry> but only one is allowed" );
+         "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
   readRegistry( elements[0] );
   checkCorrectness();
 }
@@ -8555,6 +8555,8 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "extensions", true },
                    { "feature", false },
                    { "platforms", true },
+                   { "spirvcapabilities", true },
+                   { "spirvextensions", true },
                    { "tags", true },
                    { "types", true } } );
   for ( auto child : children )
@@ -8587,6 +8589,14 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     else if ( value == "platforms" )
     {
       readPlatforms( child );
+    }
+    else if ( value == "spirvcapabilities" )
+    {
+      readSPIRVCapabilities( child );
+    }
+    else if ( value == "spirvextensions" )
+    {
+      readSPIRVExtensions( child );
     }
     else if ( value == "tags" )
     {
@@ -8744,6 +8754,270 @@ void VulkanHppGenerator::readRequires( tinyxml2::XMLElement const *             
              line,
              "type requires unknown include <" + attribute.second + ">" );
     }
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapability( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "enable" } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "enable" );
+    readSPIRVCapabilityEnable( child );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  if ( attributes.find( "extension" ) != attributes.end() )
+  {
+    readSPIRVCapabilityEnableExtension( line, attributes );
+  }
+  else if ( attributes.find( "property" ) != attributes.end() )
+  {
+    readSPIRVCapabilityEnableProperty( line, attributes );
+  }
+  else if ( attributes.find( "struct" ) != attributes.end() )
+  {
+    readSPIRVCapabilityEnableStruct( line, attributes );
+  }
+  else if ( attributes.find( "version" ) != attributes.end() )
+  {
+    readSPIRVCapabilityEnableVersion( line, attributes );
+  }
+  else
+  {
+    check( false, line, "unknown set of attributes specified for SPIR-V capability" );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilityEnableExtension( int                                        xmlLine,
+                                                             std::map<std::string, std::string> const & attributes )
+{
+  checkAttributes( xmlLine, attributes, { { "extension", {} } }, {} );
+
+  check( attributes.size() == 1,
+         xmlLine,
+         "unexpected attributes in addition to <extension> specified for SPIR-V capability" );
+  for ( auto const & attribute : attributes )
+  {
+    assert( attribute.first == "extension" );
+    check( m_extensions.find( attribute.second ) != m_extensions.end(),
+           xmlLine,
+           "unknown extension <" + attribute.second + "> specified for SPIR-V capability" );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilityEnableProperty( int                                        xmlLine,
+                                                            std::map<std::string, std::string> const & attributes )
+{
+  checkAttributes(
+    xmlLine, attributes, { { "member", {} }, { "property", {} }, { "requires", {} }, { "value", {} } }, {} );
+
+  std::string member, property, value;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "member" )
+    {
+      member = attribute.second;
+    }
+    else if ( attribute.first == "property" )
+    {
+      property = attribute.second;
+    }
+    if ( attribute.first == "requires" )
+    {
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      for ( auto const & r : requires )
+      {
+        check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
+               xmlLine,
+               "unknown requires <" + r + "> specified for SPIR-V capability" );
+      }
+    }
+    else if ( attribute.first == "value" )
+    {
+      value = attribute.second;
+    }
+  }
+  assert( !member.empty() && !property.empty() && !value.empty() );
+
+  auto propertyIt = m_structures.find( property );
+  check(
+    propertyIt != m_structures.end(), xmlLine, "unknown property <" + property + "> specified for SPIR-V capability" );
+  auto memberIt = std::find_if( propertyIt->second.members.begin(),
+                                propertyIt->second.members.end(),
+                                [&member]( MemberData const & md ) { return md.name == member; } );
+  check( memberIt != propertyIt->second.members.end(),
+         xmlLine,
+         "unknown member <" + member + "> specified for SPIR-V capability" );
+  if ( memberIt->type.type == "VkBool32" )
+  {
+    check( ( value == "VK_FALSE" ) || ( value == "VK_TRUE" ),
+           xmlLine,
+           "unknown value <" + value + "> for boolean member <" + member + "> specified for SPIR-V capability" );
+  }
+  else
+  {
+    auto bitmaskIt = m_bitmasks.find( memberIt->type.type );
+    check( bitmaskIt != m_bitmasks.end(),
+           xmlLine,
+           "attribute member = <" + member + "> specified for SPIR-V capability is not a bitmask" );
+    assert( !bitmaskIt->second.requirements.empty() );
+    auto enumIt = m_enums.find( bitmaskIt->second.requirements );
+    check( enumIt != m_enums.end(),
+           xmlLine,
+           "attribute member = <" + member + "> specified for SPIR-V capability requires an unknown enum <" +
+             bitmaskIt->second.requirements + ">" );
+    auto valueIt = std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&value]( EnumValueData const & evd ) { return evd.vulkanValue == value; } );
+    check( valueIt != enumIt->second.values.end(),
+           xmlLine,
+           "unknown attribute value = <" + value + "> specified for SPIR-V capability" );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilityEnableStruct( int                                        xmlLine,
+                                                          std::map<std::string, std::string> const & attributes )
+{
+  checkAttributes( xmlLine, attributes, { { "feature", {} }, { "struct", {} } }, { { "alias", {} }, { "requires", {} } } );
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "requires" )
+    {
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      for ( auto const & r : requires )
+      {
+        check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
+               xmlLine,
+               "unknown requires <" + r + "> specified for SPIR-V capability" );
+      }
+    }
+    else if ( attribute.first == "struct" )
+    {
+      check( m_structures.find( attribute.second ) != m_structures.end(),
+             xmlLine,
+             "unknown structure <" + attribute.second + "> specified for SPIR-V capability" );
+      check( attributes.find( "feature" ) != attributes.end(),
+             xmlLine,
+             "missing feature attribute for SPIR-V capability specified with struct <" + attribute.second + ">" );
+    }
+    else
+    {
+      assert( ( attribute.first == "alias" ) || ( attribute.first == "feature" ) );
+    }
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilityEnableVersion( int                                        xmlLine,
+                                                           std::map<std::string, std::string> const & attributes )
+{
+  checkAttributes( xmlLine, attributes, { { "version", {} } }, {} );
+
+  check(
+    attributes.size() == 1, xmlLine, "unexpected attributes in addition to <version> specified for SPIR-V capability" );
+  for ( auto const & attribute : attributes )
+  {
+    assert( attribute.first == "version" );
+    check( beginsWith( attribute.second, "VK_API_VERSION_" ),
+           xmlLine,
+           "unknown version <" + attribute.second + "> specified for SPIR-V capability" );
+    std::string feature = attribute.second;
+    feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
+    check( m_features.find( feature ) != m_features.end(),
+           xmlLine,
+           "unknown version <" + attribute.second + "> specified for SPIR-V capability" );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVCapabilities( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "comment", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "spirvcapability" } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "spirvcapability" );
+    readSPIRVCapability( child );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVExtension( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "enable" } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "enable" );
+    readSPIRVExtensionEnable( child );
+  }
+}
+
+void VulkanHppGenerator::readSPIRVExtensionEnable( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, {}, { { "extension", {} }, { "version", {} } } );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  check( !attributes.empty(), line, "no version or extension specified for SPIR-V extension" );
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extension" )
+    {
+      check( m_extensions.find( attribute.second ) != m_extensions.end(),
+             line,
+             "unknown extension <" + attribute.second + "> specified for SPIR-V extension" );
+    }
+    else
+    {
+      assert( attribute.first == "version" );
+      check( beginsWith( attribute.second, "VK_API_VERSION_" ),
+             line,
+             "unknown version <" + attribute.second + "> specified for SPIR-V extension" );
+      std::string feature = attribute.second;
+      feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
+      check( m_features.find( feature ) != m_features.end(),
+             line,
+             "unknown version <" + attribute.second + "> specified for SPIR-V extension" );
+    }
+  }
+}
+
+void VulkanHppGenerator::readSPIRVExtensions( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "comment", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "spirvextension" } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "spirvextension" );
+    readSPIRVExtension( child );
   }
 }
 

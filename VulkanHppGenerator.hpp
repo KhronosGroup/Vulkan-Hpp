@@ -733,6 +733,16 @@ private:
                                                       std::map<std::string, std::string> const & attributes,
                                                       std::string const &                        tag );
   void readRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readSPIRVCapability( tinyxml2::XMLElement const * element );
+  void readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
+  void readSPIRVCapabilityEnableExtension( int xmlLine, std::map<std::string, std::string> const & attributes );
+  void readSPIRVCapabilityEnableProperty( int xmlLine, std::map<std::string, std::string> const & attributes );
+  void readSPIRVCapabilityEnableStruct( int xmlLine, std::map<std::string, std::string> const & attributes );
+  void readSPIRVCapabilityEnableVersion( int xmlLine, std::map<std::string, std::string> const & attributes );
+  void readSPIRVCapabilities( tinyxml2::XMLElement const * element );
+  void readSPIRVExtension( tinyxml2::XMLElement const * element );
+  void readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
+  void readSPIRVExtensions( tinyxml2::XMLElement const * element );
   void readStruct( tinyxml2::XMLElement const *               element,
                    bool                                       isUnion,
                    std::map<std::string, std::string> const & attributes );

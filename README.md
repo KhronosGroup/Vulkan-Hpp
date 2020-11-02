@@ -556,6 +556,28 @@ By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the he
 
 32-bit vulkan is not typesafe for handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.
 
+## Deprecated elements
+
+There are a couple of elements in vulkan.hpp that are marked as deprecated (with C++14 and above):
+
+The implicit cast operators on ```vk::ResultValue``` are potentially wrong under certain circumstances. You should access the value explicitly as the member of the ```vk::ResultValue``` instead
+	
+The type traits ```cpp_type<ObjectType::eObjectTypeID>``` are replaced by the more general type traits ```CppType<Type, Type::eTypeID>```.
+
+Some functions (listed below) provide an interface that does not fit to the general approach in vulkan.hpp, where values you get from a function are supposed to be returned. Use the corresponding functions with the same name, that actually return those values, instead.
+The affected functions are
+```
+	Device::getAccelerationStructureHandleNV
+	Device::getCalibratedTimestampsEXT
+	Device::getQueryPoolResults
+	Device::getRayTracingCaptureReplayShaderGroupHandlesKHR
+	Device::getRayTracingShaderGroupHandlesKHR
+	Device::getRayTracingShaderGroupHandlesNV
+	Device::writeAccelerationStructuresPropertiesKHR
+	PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR
+```
+All those elements will be removed around November 2021.
+
 ## See Also
 
 Feel free to submit a PR to add to this list.

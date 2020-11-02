@@ -1048,7 +1048,6 @@ void VulkanHppGenerator::appendCall( std::string &                    str,
 }
 
 void VulkanHppGenerator::appendCommand( std::string &       str,
-                                        std::string const & indentation,
                                         std::string const & name,
                                         CommandData const & commandData,
                                         bool                definition ) const
@@ -1269,7 +1268,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         aliasCommandData.extensions = ad.second.extensions;
         aliasCommandData.feature    = ad.second.feature;
         aliasCommandData.xmlLine    = ad.second.xmlLine;
-        appendCommand( str, indentation, ad.first, aliasCommandData, definition );
+        appendCommand( str, ad.first, aliasCommandData, definition );
       }
     }
     return;
@@ -2593,7 +2592,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
         appendUniqueTypes( str, "", { "VkInstance" } );
       }
       str += "\n";
-      appendCommand( str, "  ", commandIt->first, commandIt->second, false );
+      appendCommand( str, commandIt->first, commandIt->second, false );
     }
   }
   else
@@ -2619,7 +2618,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
       std::string commandString;
       std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
       commands += "\n";
-      appendCommand( commands, "    ", commandIt->first, commandIt->second, false );
+      appendCommand( commands, commandIt->first, commandIt->second, false );
 
       // special handling for destroy functions
       if ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
@@ -2635,7 +2634,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
           commandData.extensions.clear();
           commandData.feature.clear();
         }
-        appendCommand( destroyCommandString, "    ", commandIt->first, commandData, false );
+        appendCommand( destroyCommandString, commandIt->first, commandData, false );
         std::string shortenedName;
         if ( commandIt->first.substr( 2, 7 ) == "Destroy" )
         {
@@ -2655,6 +2654,17 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
         {
           destroyCommandString.replace( pos, commandName.length(), shortenedName );
           pos = destroyCommandString.find( commandName, pos );
+        }
+        // we need to remove the default argument for the first argument, to prevent ambiguities!
+        assert( 1 < commandIt->second.params.size() );
+        pos = destroyCommandString.find( commandIt->second.params[1].name );    // skip the standard version of the function
+        assert(pos != std::string::npos);
+        pos = destroyCommandString.find( commandIt->second.params[1].name, pos + 1 ); // get the argument to destroy in the advanced version
+        assert( pos != std::string::npos );
+        pos = destroyCommandString.find( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT", pos );
+        if ( pos != std::string::npos )
+        {
+          destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
         }
         commands += "\n" + destroyCommandString;
       }
@@ -2826,7 +2836,7 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
       std::string strippedName = startLowerCase( stripPrefix( commandIt->first, "vk" ) );
 
       str += "\n";
-      appendCommand( str, "  ", commandIt->first, commandIt->second, true );
+      appendCommand( str, commandIt->first, commandIt->second, true );
 
       // special handling for destroy functions
       std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type );
@@ -2846,7 +2856,7 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
           commandData.feature.clear();
         }
 
-        appendCommand( destroyCommandString, "  ", commandIt->first, commandData, true );
+        appendCommand( destroyCommandString, commandIt->first, commandData, true );
         std::string shortenedName;
         if ( commandIt->first.substr( 2, 7 ) == "Destroy" )
         {
@@ -2866,6 +2876,19 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
         {
           destroyCommandString.replace( pos, commandName.length(), shortenedName );
           pos = destroyCommandString.find( commandName, pos );
+        }
+        // we need to remove the default argument for the first argument, to prevent ambiguities!
+        assert( 1 < commandIt->second.params.size() );
+        pos =
+          destroyCommandString.find( commandIt->second.params[1].name );  // skip the standard version of the function
+        assert( pos != std::string::npos );
+        pos = destroyCommandString.find( commandIt->second.params[1].name,
+                                         pos + 1 );  // get the argument to destroy in the advanced version
+        assert( pos != std::string::npos );
+        pos = destroyCommandString.find( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT", pos );
+        if ( pos != std::string::npos )
+        {
+          destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
         }
 
         if ( complex )
@@ -3202,21 +3225,15 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
 }
 
 std::string VulkanHppGenerator::constructArgumentListStandard( std::vector<ParamData> const & params,
-                                                               std::set<size_t> const &       skippedParams,
-                                                               bool                           definition ) const
+                                                               std::set<size_t> const &       skippedParams ) const
 {
-  size_t defaultStartIndex = determineDefaultStartIndex( params, skippedParams );
-
   std::string argumentList;
   for ( size_t i = 0; i < params.size(); ++i )
   {
     if ( skippedParams.find( i ) == skippedParams.end() )
     {
       argumentList +=
-        params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes ) +
-        ( !definition && params[i].optional && ( defaultStartIndex <= i ) ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
-                                                                          : "" ) +
-        ", ";
+        params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes ) + ", ";
     }
   }
   argumentList += "Dispatch const & d ";
@@ -4797,7 +4814,7 @@ std::string VulkanHppGenerator::constructCommandStandard( std::string const & na
 {
   std::set<size_t> skippedParams = determineSkippedParams( commandData.handle, commandData.params, {}, {}, false );
 
-  std::string argumentList = constructArgumentListStandard( commandData.params, skippedParams, definition );
+  std::string argumentList = constructArgumentListStandard( commandData.params, skippedParams );
   std::string commandName  = determineCommandName( name, commandData.params[0].type.type );
   std::string nodiscard    = constructNoDiscardStandard( commandData );
   std::string returnType   = stripPrefix( commandData.returnType, "Vk" );

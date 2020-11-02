@@ -308,7 +308,6 @@ private:
                    bool                             twoStep,
                    bool                             firstCall ) const;
   void appendCommand( std::string &       str,
-                      std::string const & indentation,
                       std::string const & name,
                       CommandData const & commandData,
                       bool                definition ) const;
@@ -471,8 +470,7 @@ private:
                                              bool                           withAllocators,
                                              bool                           structureChain ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
-                                             std::set<size_t> const &       skippedParams,
-                                             bool                           definition ) const;
+                                             std::set<size_t> const &       skippedParams ) const;
   std::string constructCallArgument( ParamData const & param, bool enhanced ) const;
   std::string constructCallArgumentsEnumerateVectors( std::string const &              handle,
                                                       std::vector<ParamData> const &   params,

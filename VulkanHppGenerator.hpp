@@ -471,22 +471,11 @@ private:
                                              bool                           structureChain ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams ) const;
-  std::string constructCallArgument( ParamData const & param, bool enhanced ) const;
-  std::string constructCallArgumentsEnumerateVectors( std::string const &              handle,
-                                                      std::vector<ParamData> const &   params,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      bool                             vectorAsNullptr ) const;
-  std::string constructCallArgumentsGetValue( std::string const &            handle,
+  std::string constructCallArgumentsEnhanced( std::string const &            handle,
                                               std::vector<ParamData> const & params,
-                                              size_t                         skippedParams ) const;
-  std::string constructCallArgumentsGetVector( std::string const &              handle,
-                                               std::vector<ParamData> const &   params,
-                                               std::vector<size_t> const &      returnParamIndex,
-                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                               bool                             singular ) const;
+                                              bool                           nonConstPointerAsNullptr,
+                                              size_t                         singularParamIndex ) const;
   std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
-  std::string constructCallArgumentsVectors( std::vector<ParamData> const &   params,
-                                             std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string constructCommandResult( std::string const &              name,
                                       CommandData const &              commandData,
                                       bool                             definition,

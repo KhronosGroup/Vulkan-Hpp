@@ -55,7 +55,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // some valid StructureChains
     vk::StructureChain<vk::PhysicalDeviceProperties2>                                                sc0;
-    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties>                sc1;
+    const vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties>                sc1;
+    auto pdp = sc1.get<vk::PhysicalDeviceProperties2>();
+    unused( pdp );
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>      sc2;
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc3;
     vk::StructureChain<vk::PhysicalDeviceProperties2,

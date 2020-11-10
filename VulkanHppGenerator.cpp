@@ -3245,7 +3245,7 @@ std::string VulkanHppGenerator::constructArgumentListStandard( std::vector<Param
 std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string const &            handle,
                                                                 std::vector<ParamData> const & params,
                                                                 bool                           nonConstPointerAsNullptr,
-                                                                size_t                         singularParamIndex ) const
+                                                                size_t singularParamIndex ) const
 {
   std::string arguments;
   bool        encounteredArgument = false;
@@ -3404,7 +3404,7 @@ std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string cons
         assert( param.arraySizes.empty() );
         if ( ( singularParamIndex != INVALID_INDEX ) && ( params[singularParamIndex].len == param.name ) )
         {
-          assert( ( param.type.type == "size_t") || ( param.type.type == "uint32_t" ) );
+          assert( ( param.type.type == "size_t" ) || ( param.type.type == "uint32_t" ) );
           if ( params[singularParamIndex].type.type == "void" )
           {
             arguments += "sizeof( T )";
@@ -3602,7 +3602,8 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
         { "const", commandData.handle.empty() ? "" : " const" },
         { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIndices.second].name, "p" ) ) },
         { "counterType", commandData.params[vectorParamIndices.second].type.type },
-        { "firstCallArguments", constructCallArgumentsEnhanced( commandData.handle, commandData.params, true, INVALID_INDEX ) },
+        { "firstCallArguments",
+          constructCallArgumentsEnhanced( commandData.handle, commandData.params, true, INVALID_INDEX ) },
         { "nodiscard", nodiscard },
         { "secondCallArguments",
           constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, INVALID_INDEX ) },
@@ -4466,7 +4467,8 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesSingular
     return replaceWithMap(
       functionTemplate,
       { { "argumentList", argumentList },
-        { "callArguments", constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
+        { "callArguments",
+          constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
         { "className", commandData.handle.empty() ? "" : stripPrefix( commandData.handle, "Vk" ) },
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
@@ -4650,7 +4652,8 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUniqueSi
     return replaceWithMap(
       functionTemplate,
       { { "argumentList", argumentList },
-        { "callArguments", constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
+        { "callArguments",
+          constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
         { "className", commandData.handle.empty() ? "" : stripPrefix( commandData.handle, "Vk" ) },
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
@@ -4710,7 +4713,8 @@ std::string
     return replaceWithMap(
       functionTemplate,
       { { "argumentList", argumentList },
-        { "callArguments", constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
+        { "callArguments",
+          constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, returnParamIndex ) },
         { "className", commandData.handle.empty() ? "" : stripPrefix( commandData.handle, "Vk" ) },
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
@@ -6438,38 +6442,36 @@ void VulkanHppGenerator::checkCorrectness()
   }
 
   // handle checks
-  auto debugReportObjectTypeIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
-  assert( debugReportObjectTypeIt != m_enums.end() );
+  auto objectTypeIt = m_enums.find( "VkObjectType" );
+  assert( objectTypeIt != m_enums.end() );
   for ( auto const & handle : m_handles )
   {
     for ( auto const & parent : handle.second.parents )
     {
       check( m_handles.find( parent ) != m_handles.end(),
              handle.second.xmlLine,
-             "handle with unknown parent <" + parent + ">" );
+             "handle <" + handle.first + "> with unknown parent <" + parent + ">" );
     }
 
     if ( !handle.first.empty() )
     {
-      std::string debugReportObjectType = "e" + stripPrefix( handle.first, "Vk" );
-      auto        valueIt               = std::find_if(
-        debugReportObjectTypeIt->second.values.begin(),
-        debugReportObjectTypeIt->second.values.end(),
-        [&debugReportObjectType]( EnumValueData const & evd ) { return evd.vkValue == debugReportObjectType; } );
-      warn( valueIt != debugReportObjectTypeIt->second.values.end(),
-            handle.second.xmlLine,
-            "Handle <" + handle.first + "> specified without a corresponding VkDebugReportObjectTypeEXT enum value" );
+      std::string objectType = "e" + stripPrefix( handle.first, "Vk" );
+      auto        valueIt    = std::find_if( objectTypeIt->second.values.begin(),
+                                   objectTypeIt->second.values.end(),
+                                   [&objectType]( EnumValueData const & evd ) { return evd.vkValue == objectType; } );
+      check( valueIt != objectTypeIt->second.values.end(),
+             handle.second.xmlLine,
+             "handle <" + handle.first + "> specified without corresponding VkObjectType enum value" );
     }
   }
-  for ( auto const & debugReportObjectTyeValue : debugReportObjectTypeIt->second.values )
+  for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
-    if ( debugReportObjectTyeValue.vkValue != "eUnknown" )
+    if ( objectTypeValue.vkValue != "eUnknown" )
     {
-      std::string handleName = "Vk" + stripPrefix( debugReportObjectTyeValue.vkValue, "e" );
+      std::string handleName = "Vk" + stripPrefix( objectTypeValue.vkValue, "e" );
       check( m_handles.find( handleName ) != m_handles.end(),
-             debugReportObjectTyeValue.xmlLine,
-             "DebugReportObjectTypeEXT value <" + debugReportObjectTyeValue.vulkanValue +
-               "> without corresponding handle" );
+             objectTypeValue.xmlLine,
+             "VkObjectType value <" + objectTypeValue.vulkanValue + "> without corresponding handle" );
     }
   }
 

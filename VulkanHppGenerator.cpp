@@ -3829,8 +3829,7 @@ std::string VulkanHppGenerator::constructCommandResultGetChain( std::string cons
                                                                 bool                definition,
                                                                 size_t              nonConstPointerIndex ) const
 {
-  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) &&
-          ( commandData.successCodes.size() == 1 ) && !commandData.errorCodes.empty() );
+  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) && !commandData.errorCodes.empty() );
 
   std::set<size_t> skippedParams =
     determineSkippedParams( commandData.handle, commandData.params, {}, { nonConstPointerIndex }, false );

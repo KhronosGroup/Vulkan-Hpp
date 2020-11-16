@@ -23,6 +23,36 @@ environment:
       GENERATOR_ARCH: x64
       PYTHON: "C:\\Python38-x64"
       CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 14
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 20
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Release
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 20
 
 install:
   - git submodule update --init --recursive

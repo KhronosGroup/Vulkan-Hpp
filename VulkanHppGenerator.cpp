@@ -7781,44 +7781,19 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 
     // get the EnumData entry in enum map
     std::map<std::string, EnumData>::iterator it = m_enums.find( name );
-    if ( it == m_enums.end() )
-    {
-      // well, some enums are not listed in the <types> section
-      warn( false, line, "enum <" + name + "> is not listed as enum in the types section" );
-      it = m_enums.insert( std::make_pair( name, EnumData() ) ).first;
-
-      // add some "dummy" type in the types map
-      assert( m_types.find( name ) == m_types.end() );
-      m_types.insert( std::make_pair( name, TypeData( TypeCategory::Enum ) ) );
-    }
+    check( it != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
     check( it->second.values.empty(), line, "enum <" + name + "> already holds values" );
 
     // mark it as a bitmask, if it is one
     bool bitmask         = ( type == "bitmask" );
+    check( !bitmask || std::find_if( m_bitmasks.begin(),
+                                     m_bitmasks.end(),
+                                     [&name]( auto const & bitmask ) {
+                                       return bitmask.second.requirements == name;
+                                     } ) != m_bitmasks.end(),
+           line,
+           "enum <" + name + "> is not listed as an requires for any bitmask in the types section" );
     it->second.isBitmask = bitmask;
-    if ( bitmask )
-    {
-      // look for the corresponding bitmask and set the requirements if needed!
-      auto bitmaskIt = std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&name]( auto const & bitmask ) {
-        return bitmask.second.requirements == name;
-      } );
-      if ( bitmaskIt == m_bitmasks.end() )
-      {
-        warn( false, line, "enum <" + name + "> is not listed as an requires for any bitmask in the types section" );
-
-        std::string bitmaskName = name;
-        size_t      pos         = bitmaskName.rfind( "FlagBits" );
-        check( pos != std::string::npos, line, "enum <" + name + "> does not contain <FlagBits> as substring" );
-        bitmaskName.replace( pos, 8, "Flags" );
-
-        bitmaskIt = m_bitmasks.find( bitmaskName );
-        check( bitmaskIt != m_bitmasks.end(),
-               line,
-               "enum <" + name + "> has not corresponding bitmask <" + bitmaskName + "> listed in the types section" );
-        assert( bitmaskIt->second.requirements.empty() );
-        bitmaskIt->second.requirements = name;
-      }
-    }
 
     std::string prefix  = getEnumPrefix( line, name, bitmask );
     std::string postfix = getEnumPostfix( name, m_tags, prefix );

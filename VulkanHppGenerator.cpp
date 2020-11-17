@@ -3729,7 +3729,7 @@ std::string
         { "nodiscard", nodiscard },
         { "secondCallArguments",
           constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, INVALID_INDEX ) },
-        { "structureChainAllocator", withAllocator ? ( ", structureChainAllocator" ) : "" },
+        { "structureChainAllocator", withAllocator ? ( "( structureChainAllocator )" ) : "" },
         { "typenameCheck", typenameCheck },
         { "vectorElementType", vectorElementType },
         { "vectorName", vectorName },

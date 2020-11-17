@@ -50,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
     vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif

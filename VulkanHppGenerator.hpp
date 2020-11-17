@@ -485,6 +485,12 @@ private:
                                                bool                              definition,
                                                std::pair<size_t, size_t> const & vectorParamIndices,
                                                bool                              withAllocators ) const;
+  std::string constructCommandResultEnumerateChained( std::string const &               name,
+                                                      CommandData const &               commandData,
+                                                      bool                              definition,
+                                                      std::pair<size_t, size_t> const & vectorParamIndex,
+                                                      std::vector<size_t> const &       returnParamIndices,
+                                                      bool                              withAllocator ) const;
   std::string constructCommandResultEnumerateTwoVectors( std::string const &              name,
                                                          CommandData const &              commandData,
                                                          bool                             definition,

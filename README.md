@@ -552,6 +552,10 @@ With C++17, all ```vk```-functions returning something are declared with the att
 
 By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the helper class ```UniqueHandle``` and all the unique handle types are not available.
 
+### VULKAN_HPP_NO_SPACESHIP_OPERATOR
+
+With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining ```VULKAN_HPP_NO_SPACESHIP_OPERATOR``` before including vulkan.hpp you can remove that operator from those structs and classes.
+
 #### VULKAN_HPP_TYPESAFE_CONVERSION
 
 32-bit vulkan is not typesafe for handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.

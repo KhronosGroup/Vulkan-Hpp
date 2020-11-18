@@ -11040,7 +11040,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 # define __has_include(x) false
 #endif
 
-#if ( 201711 <= __cpp_impl_three_way_comparison ) && __has_include( <compare> )
+#if ( 201711 <= __cpp_impl_three_way_comparison ) && __has_include( <compare> ) && !defined( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
 # define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
 #endif
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)

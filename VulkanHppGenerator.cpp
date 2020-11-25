@@ -461,7 +461,6 @@ std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNod
     }
   }
   return std::make_pair( arraySizes, bitCount );
-  ;
 }
 
 std::string readTypePostfix( tinyxml2::XMLNode const * node )
@@ -6693,9 +6692,9 @@ void VulkanHppGenerator::checkCorrectness()
     }
     for ( auto const & require : extension.second.requirements )
     {
-      warn( m_extensions.find( require.first ) != m_extensions.end(),
-            require.second,
-            "unknown extension requires <" + require.first + ">" );
+      check( m_extensions.find( require.first ) != m_extensions.end(),
+             require.second,
+             "extension <" + extension.first + "> lists an unknown require extension <" + require.first + ">" );
     }
   }
 
@@ -7504,9 +7503,6 @@ void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *             
   std::tie( nameData, typeInfo ) = readNameAndType( element );
 
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  check( nameData.bitCount.empty(),
-         line,
-         "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
   check( typeInfo.type.empty() || ( typeInfo.prefix == "typedef" ),
          line,
          "unexpected type prefix <" + typeInfo.prefix + ">" );
@@ -7538,12 +7534,16 @@ void VulkanHppGenerator::readBitmask( tinyxml2::XMLElement const *              
   }
   else
   {
-    checkAttributes( line, attributes, { { "category", { "bitmask" } } }, { { "requires", {} } } );
+    checkAttributes( line, attributes, { { "category", { "bitmask" } } }, { { "bitvalues", {} }, { "requires", {} } } );
 
-    std::string requirements;
+    std::string bitvalues, requirements;
     for ( auto const & attribute : attributes )
     {
-      if ( attribute.first == "requires" )
+      if ( attribute.first == "bitvalues" )
+      {
+        bitvalues = attribute.second;
+      }
+      else if ( attribute.first == "requires" )
       {
         requirements = attribute.second;
       }
@@ -7555,18 +7555,21 @@ void VulkanHppGenerator::readBitmask( tinyxml2::XMLElement const *              
 
     check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
     check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-    check( nameData.bitCount.empty(),
-           line,
-           "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
     warn( ( typeInfo.type == "VkFlags" ) || ( typeInfo.type == "VkFlags64" ),
           line,
           "unexpected bitmask type <" + typeInfo.type + ">" );
     check( typeInfo.prefix == "typedef", line, "unexpected type prefix <" + typeInfo.prefix + ">" );
     check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
-
     check(
-      m_commands.find( nameData.name ) == m_commands.end(), line, "command <" + nameData.name + "> already specified" );
+      bitvalues.empty() || requirements.empty(), line, "attributes <bitvalues> and <requires> are both specified" );
+    check( ( typeInfo.type != "VkFlags64" ) || !bitvalues.empty(),
+           line,
+           "bitmask of type <VkFlags64> needs attribute bitvalues to be set" );
 
+    if ( !bitvalues.empty() )
+    {
+      requirements = bitvalues;
+    }
     m_bitmasks.insert( std::make_pair( nameData.name, BitmaskData( requirements, typeInfo.type, line ) ) );
     check( m_types.insert( std::make_pair( nameData.name, TypeCategory::Bitmask ) ).second,
            line,
@@ -7756,9 +7759,6 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XM
   NameData nameData;
   std::tie( nameData, paramData.type ) = readNameAndType( element );
 
-  check( nameData.bitCount.empty(),
-         line,
-         "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
   check( m_types.find( paramData.type.type ) != m_types.end(), line, "unknown type <" + paramData.type.type + ">" );
   check( paramData.type.prefix.empty() || ( paramData.type.prefix == "const" ) ||
            ( paramData.type.prefix == "const struct" ) || ( paramData.type.prefix == "struct" ),
@@ -7790,9 +7790,6 @@ std::pair<std::string, std::string> VulkanHppGenerator::readCommandProto( tinyxm
 
   check( beginsWith( nameData.name, "vk" ), line, "name <" + nameData.name + "> does not begin with <vk>" );
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  check( nameData.bitCount.empty(),
-         line,
-         "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
   check( m_types.find( typeInfo.type ) != m_types.end(), line, "unknown type <" + typeInfo.type + ">" );
   check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
   check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
@@ -8016,21 +8013,26 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} }, { "type", { "bitmask", "enum" } } } );
+  checkAttributes( line,
+                   attributes,
+                   { { "name", {} } },
+                   { { "bitwidth", { "64" } }, { "comment", {} }, { "type", { "bitmask", "enum" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
 
-  std::string name, type;
+  std::string bitwidth, name, type;
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "name" )
+    if ( attribute.first == "bitwidth" )
+    {
+      bitwidth = attribute.second;
+    }
+    else if ( attribute.first == "name" )
     {
       name = attribute.second;
-      check( !name.empty(), line, "enum with empty name" );
     }
     else if ( attribute.first == "type" )
     {
       type = attribute.second;
-      check( !type.empty(), line, "enum with empty type" );
     }
   }
   assert( !name.empty() );
@@ -8055,13 +8057,19 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 
     // mark it as a bitmask, if it is one
     bool bitmask = ( type == "bitmask" );
-    check( !bitmask || std::find_if( m_bitmasks.begin(),
-                                     m_bitmasks.end(),
-                                     [&name]( auto const & bitmask ) {
-                                       return bitmask.second.requirements == name;
-                                     } ) != m_bitmasks.end(),
-           line,
-           "enum <" + name + "> is not listed as an requires for any bitmask in the types section" );
+    if ( bitmask )
+    {
+      auto bitmaskIt = std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&name]( auto const & bitmask ) {
+        return bitmask.second.requirements == name;
+      } );
+      check( bitmaskIt != m_bitmasks.end(),
+             line,
+             "enum <" + name + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
+      check( ( bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+             line,
+             "enum <" + name + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first +
+               "> is not of type <VkFlags64>" );
+    }
     it->second.isBitmask = bitmask;
 
     std::string prefix  = getEnumPrefix( line, name, bitmask );
@@ -8602,9 +8610,6 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
 
     check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
     check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-    check( nameData.bitCount.empty(),
-           line,
-           "name <" + nameData.name + "> with unsupported bitCount <" + nameData.bitCount + ">" );
     check( ( typeInfo.type == "VK_DEFINE_HANDLE" ) || ( typeInfo.type == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
            line,
            "handle with invalid type <" + typeInfo.type + ">" );
@@ -8640,8 +8645,10 @@ std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeInfo>
     std::string value = child->Value();
     if ( value == "name" )
     {
-      nameData.name                                      = child->GetText();
-      std::tie( nameData.arraySizes, nameData.bitCount ) = readModifiers( child->NextSibling() );
+      nameData.name = child->GetText();
+      std::string bitCount;
+      std::tie( nameData.arraySizes, bitCount ) = readModifiers( child->NextSibling() );
+      check( bitCount.empty(), line, "name <" + nameData.name + "> with unsupported bitCount <" + bitCount + ">" );
     }
     else if ( value == "type" )
     {

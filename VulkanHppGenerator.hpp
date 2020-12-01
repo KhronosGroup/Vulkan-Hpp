@@ -198,13 +198,16 @@ private:
 
   struct HandleData
   {
-    HandleData( std::vector<std::string> const & p, int line ) : parents( p ), xmlLine( line ) {}
+    HandleData( std::vector<std::string> const & p, std::string const & objType, int line )
+      : objTypeEnum( objType ), parents( p ), xmlLine( line )
+    {}
 
     std::string              alias;
     std::set<std::string>    childrenHandles;
     std::set<std::string>    commands;
     std::string              deleteCommand;
     std::string              deletePool;
+    std::string              objTypeEnum;
     std::vector<std::string> parents;
     int                      xmlLine;
   };

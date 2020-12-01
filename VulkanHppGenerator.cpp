@@ -716,7 +716,7 @@ void warn( bool condition, int line, std::string const & message )
 VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
 {
   m_handles.insert( std::make_pair(
-    "", HandleData( {}, 0 ) ) );  // insert the default "handle" without class (for createInstance, and such)
+    "", HandleData( {}, "", 0 ) ) );  // insert the default "handle" without class (for createInstance, and such)
 
   int                                       line     = document.GetLineNum();
   std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
@@ -2691,7 +2691,7 @@ ${enter}  class ${className}
   public:
     using CType = Vk${className};
 
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::e${className};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
@@ -2761,13 +2761,13 @@ ${commands}
   static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::e${className}>
+  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::${objTypeEnum}>
   {
     using type = VULKAN_HPP_NAMESPACE::${className};
   };
 
   template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::e${className}>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>
   {
     using Type = VULKAN_HPP_NAMESPACE::${className};
   };
@@ -2804,13 +2804,31 @@ ${CppTypeFromDebugReportObjectTypeEXT}
     std::string enter, leave;
     std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
 
+    std::string objTypeEnum;
+    if ( handleData.second.objTypeEnum.empty() )
+    {
+      objTypeEnum = "e" + stripPrefix( handleData.first, "Vk" );
+    }
+    else
+    {
+      enumIt = m_enums.find( "VkObjectType" );
+      assert( enumIt != m_enums.end() );
+      valueIt = std::find_if(
+        enumIt->second.values.begin(), enumIt->second.values.end(), [&handleData]( EnumValueData const & evd ) {
+          return evd.vulkanValue == handleData.second.objTypeEnum;
+        } );
+      assert( valueIt != enumIt->second.values.end() );
+      objTypeEnum = valueIt->vkValue;
+    }
+
     str += replaceWithMap( templateString,
                            { { "className", className },
                              { "commands", commands },
                              { "CppTypeFromDebugReportObjectTypeEXT", cppTypeFromDebugReportObjectTypeEXT },
                              { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
-                             { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) } } );
+                             { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
+                             { "objTypeEnum", valueIt->vkValue } } );
 
     if ( !handleData.second.alias.empty() )
     {
@@ -6573,23 +6591,39 @@ void VulkanHppGenerator::checkCorrectness()
 
     if ( !handle.first.empty() )
     {
-      std::string objectType = "e" + stripPrefix( handle.first, "Vk" );
-      auto        valueIt    = std::find_if( objectTypeIt->second.values.begin(),
-                                   objectTypeIt->second.values.end(),
-                                   [&objectType]( EnumValueData const & evd ) { return evd.vkValue == objectType; } );
-      check( valueIt != objectTypeIt->second.values.end(),
-             handle.second.xmlLine,
-             "handle <" + handle.first + "> specified without corresponding VkObjectType enum value" );
+      if ( handle.second.objTypeEnum.empty() )
+      {
+        std::string objectType = "e" + stripPrefix( handle.first, "Vk" );
+        auto        valueIt    = std::find_if( objectTypeIt->second.values.begin(),
+                                     objectTypeIt->second.values.end(),
+                                     [&objectType]( EnumValueData const & evd ) { return evd.vkValue == objectType; } );
+        check( valueIt != objectTypeIt->second.values.end(),
+               handle.second.xmlLine,
+               "handle <" + handle.first + "> specified without corresponding VkObjectType enum value" );
+      }
+      else
+      {
+        check( std::find_if( objectTypeIt->second.values.begin(),
+                             objectTypeIt->second.values.end(),
+                             [&handle]( EnumValueData const & evd ) {
+                               return evd.vulkanValue == handle.second.objTypeEnum;
+                             } ) != objectTypeIt->second.values.end(),
+               handle.second.xmlLine,
+               "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
+      }
     }
   }
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
     if ( objectTypeValue.vkValue != "eUnknown" )
     {
-      std::string handleName = "Vk" + stripPrefix( objectTypeValue.vkValue, "e" );
-      check( m_handles.find( handleName ) != m_handles.end(),
+      warn( std::find_if( m_handles.begin(),
+                           m_handles.end(),
+                           [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
+                             return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
+                           } ) != m_handles.end(),
              objectTypeValue.xmlLine,
-             "VkObjectType value <" + objectTypeValue.vulkanValue + "> without corresponding handle" );
+             "VkObjectType value <" + objectTypeValue.vulkanValue + "> not specified as \"objtypeenum\" for any handle" );
     }
   }
 
@@ -8462,15 +8496,18 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
   }
   else
   {
-    checkAttributes( line, attributes, { { "category", { "handle" } } }, { { "parent", {} } } );
+    checkAttributes( line, attributes, { { "category", { "handle" } } }, { { "objtypeenum", {} }, { "parent", {} } } );
 
-    std::string parent;
+    std::string objTypeEnum, parent;
     for ( auto const & attribute : attributes )
     {
-      if ( attribute.first == "parent" )
+      if ( attribute.first == "objtypeenum" )
+      {
+        objTypeEnum = attribute.second;
+      }
+      else if ( attribute.first == "parent" )
       {
         parent = attribute.second;
-        check( !parent.empty(), line, "handle with empty parent" );
       }
     }
 
@@ -8488,8 +8525,10 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
            "handle with invalid type <" + typeInfo.type + ">" );
     check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
     check( typeInfo.postfix == "(", line, "unexpected type postfix <" + typeInfo.postfix + ">" );
+    warn( !objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
 
-    check( m_handles.insert( std::make_pair( nameData.name, HandleData( tokenize( parent, "," ), line ) ) ).second,
+    check( m_handles.insert( std::make_pair( nameData.name, HandleData( tokenize( parent, "," ), objTypeEnum, line ) ) )
+             .second,
            line,
            "handle <" + nameData.name + "> already specified" );
     check( m_types.insert( std::make_pair( nameData.name, TypeCategory::Handle ) ).second,

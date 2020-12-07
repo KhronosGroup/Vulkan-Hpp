@@ -12,24 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+if(!MSVC)
+	cmake_minimum_required(VERSION 3.2)
 
-project(PhysicalDeviceMemoryProperties)
+	project(PhysicalDeviceMemoryProperties)
 
-set(HEADERS
-)
+	set(HEADERS
+	)
 
-set(SOURCES
-  PhysicalDeviceMemoryProperties.cpp
-)
+	set(SOURCES
+	  PhysicalDeviceMemoryProperties.cpp
+	)
 
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
+	source_group(headers FILES ${HEADERS})
+	source_group(sources FILES ${SOURCES})
 
-add_executable(PhysicalDeviceMemoryProperties
-  ${HEADERS}
-  ${SOURCES}
-)
+	add_executable(PhysicalDeviceMemoryProperties
+	  ${HEADERS}
+	  ${SOURCES}
+	)
 
-set_target_properties(PhysicalDeviceMemoryProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceMemoryProperties PRIVATE utils)
+	set_target_properties(PhysicalDeviceMemoryProperties PROPERTIES FOLDER "Samples")
+	target_link_libraries(PhysicalDeviceMemoryProperties PRIVATE utils)
+endif(!MSVC)

@@ -4047,12 +4047,14 @@ std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::stri
     std::string objectDeleter, allocator;
     if ( ( name.find( "Acquire" ) != std::string::npos ) || ( name.find( "Get" ) != std::string::npos ) )
     {
-      if( ( name == "vkAcquirePerformanceConfigurationINTEL" ) || ( name == "vkGetRandROutputDisplayEXT" ) ) {
+      if ( ( name == "vkAcquirePerformanceConfigurationINTEL" ) || ( name == "vkGetRandROutputDisplayEXT" ) ||
+           ( name == "vkGetWinrtDisplayNV" ) )
+      {
         objectDeleter = "ObjectRelease";
-      } else if ( (name == "vkAcquireWinrtDisplayNV") || (name == "vkGetWinrtDisplayNV") ) {
-        objectDeleter = "ObjectReleaseExt";
-      } else {
-        throw std::runtime_error( "Found " + name + " which requires special handling for the object deleter");
+      }
+      else
+      {
+        throw std::runtime_error( "Found " + name + " which requires special handling for the object deleter" );
       }
     }
     else if ( name.find( "Allocate" ) != std::string::npos )
@@ -6623,12 +6625,13 @@ void VulkanHppGenerator::checkCorrectness()
     if ( objectTypeValue.vkValue != "eUnknown" )
     {
       warn( std::find_if( m_handles.begin(),
-                           m_handles.end(),
-                           [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
-                             return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
-                           } ) != m_handles.end(),
-             objectTypeValue.xmlLine,
-             "VkObjectType value <" + objectTypeValue.vulkanValue + "> not specified as \"objtypeenum\" for any handle" );
+                          m_handles.end(),
+                          [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
+                            return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
+                          } ) != m_handles.end(),
+            objectTypeValue.xmlLine,
+            "VkObjectType value <" + objectTypeValue.vulkanValue +
+              "> not specified as \"objtypeenum\" for any handle" );
     }
   }
 
@@ -10427,36 +10430,6 @@ int main( int argc, char ** argv )
     OwnerType        m_owner    = {};
     Dispatch const * m_dispatch = nullptr;
   };
-
-  template <typename OwnerType, typename Dispatch>
-  class ObjectReleaseExt
-  {
-  public:
-    ObjectReleaseExt() = default;
-
-    ObjectReleaseExt( OwnerType owner, Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
-      : m_owner( owner )
-      , m_dispatch( &dispatch )
-    {}
-
-    OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_owner;
-    }
-
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( m_owner && m_dispatch );
-      m_owner.releaseExt( t, *m_dispatch );
-    }
-
-  private:
-    OwnerType        m_owner    = {};
-    Dispatch const * m_dispatch = nullptr;
-  };
-
 )";
 
   static const std::string classOptional = R"(

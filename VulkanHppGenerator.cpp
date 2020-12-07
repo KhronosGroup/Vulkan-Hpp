@@ -2828,7 +2828,7 @@ ${CppTypeFromDebugReportObjectTypeEXT}
                              { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", valueIt->vkValue } } );
+                             { "objTypeEnum", objTypeEnum } } );
 
     if ( !handleData.second.alias.empty() )
     {

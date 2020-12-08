@@ -2804,22 +2804,14 @@ ${CppTypeFromDebugReportObjectTypeEXT}
     std::string enter, leave;
     std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
 
-    std::string objTypeEnum;
-    if ( handleData.second.objTypeEnum.empty() )
-    {
-      objTypeEnum = "e" + stripPrefix( handleData.first, "Vk" );
-    }
-    else
-    {
-      enumIt = m_enums.find( "VkObjectType" );
-      assert( enumIt != m_enums.end() );
-      valueIt = std::find_if(
-        enumIt->second.values.begin(), enumIt->second.values.end(), [&handleData]( EnumValueData const & evd ) {
-          return evd.vulkanValue == handleData.second.objTypeEnum;
-        } );
-      assert( valueIt != enumIt->second.values.end() );
-      objTypeEnum = valueIt->vkValue;
-    }
+    assert( !handleData.second.objTypeEnum.empty() );
+    enumIt = m_enums.find( "VkObjectType" );
+    assert( enumIt != m_enums.end() );
+    valueIt = std::find_if(
+      enumIt->second.values.begin(), enumIt->second.values.end(), [&handleData]( EnumValueData const & evd ) {
+        return evd.vulkanValue == handleData.second.objTypeEnum;
+      } );
+    assert( valueIt != enumIt->second.values.end() );
 
     str += replaceWithMap( templateString,
                            { { "className", className },
@@ -2828,7 +2820,7 @@ ${CppTypeFromDebugReportObjectTypeEXT}
                              { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", objTypeEnum } } );
+                             { "objTypeEnum", valueIt->vkValue } } );
 
     if ( !handleData.second.alias.empty() )
     {
@@ -6598,33 +6590,21 @@ void VulkanHppGenerator::checkCorrectness()
 
     if ( !handle.first.empty() )
     {
-      if ( handle.second.objTypeEnum.empty() )
-      {
-        std::string objectType = "e" + stripPrefix( handle.first, "Vk" );
-        auto        valueIt    = std::find_if( objectTypeIt->second.values.begin(),
-                                     objectTypeIt->second.values.end(),
-                                     [&objectType]( EnumValueData const & evd ) { return evd.vkValue == objectType; } );
-        check( valueIt != objectTypeIt->second.values.end(),
-               handle.second.xmlLine,
-               "handle <" + handle.first + "> specified without corresponding VkObjectType enum value" );
-      }
-      else
-      {
-        check( std::find_if( objectTypeIt->second.values.begin(),
-                             objectTypeIt->second.values.end(),
-                             [&handle]( EnumValueData const & evd ) {
-                               return evd.vulkanValue == handle.second.objTypeEnum;
-                             } ) != objectTypeIt->second.values.end(),
-               handle.second.xmlLine,
-               "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
-      }
+      assert( !handle.second.objTypeEnum.empty() );
+      check( std::find_if( objectTypeIt->second.values.begin(),
+                            objectTypeIt->second.values.end(),
+                            [&handle]( EnumValueData const & evd ) {
+                              return evd.vulkanValue == handle.second.objTypeEnum;
+                            } ) != objectTypeIt->second.values.end(),
+              handle.second.xmlLine,
+              "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
     }
   }
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
     if ( objectTypeValue.vkValue != "eUnknown" )
     {
-      warn( std::find_if( m_handles.begin(),
+      check( std::find_if( m_handles.begin(),
                           m_handles.end(),
                           [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
                             return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
@@ -8533,7 +8513,7 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
            "handle with invalid type <" + typeInfo.type + ">" );
     check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
     check( typeInfo.postfix == "(", line, "unexpected type postfix <" + typeInfo.postfix + ">" );
-    warn( !objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
+    check( !objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
 
     check( m_handles.insert( std::make_pair( nameData.name, HandleData( tokenize( parent, "," ), objTypeEnum, line ) ) )
              .second,
@@ -9181,6 +9161,15 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
       {
         readStructMember( child, it->second.members, isUnion );
       }
+    }
+    if ( name == "VkDescriptorSetAllocateInfo" )
+    {
+      // some very very very special handling for this struct: the "len" attribute for pSetLayouts has gone!
+      assert( ( it->second.members.size() == 5 ) && ( it->second.members[3].name == "descriptorSetCount" ) && ( it->second.members[4].name == "pSetLayouts" ));
+      warn( !it->second.members[4].len.empty(),
+            line,
+            "Missing attribute \"len\" for member <descriptorSetCount> in structure <VkDescriptorSetAllocateInfo>" );
+      it->second.members[4].len = { it->second.members[3].name };
     }
     it->second.subStruct = determineSubStruct( *it );
 

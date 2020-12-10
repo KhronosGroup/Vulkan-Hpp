@@ -222,7 +222,7 @@ private:
     std::string              bitCount;
     std::vector<std::string> len;
     bool                     noAutoValidity = false;
-    bool                     optional       = false;
+    std::vector<bool>        optional;
     std::string              selection;
     std::string              selector;
     std::vector<std::string> values;

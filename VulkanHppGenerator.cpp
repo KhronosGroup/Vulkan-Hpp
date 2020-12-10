@@ -5682,7 +5682,6 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
         if ( litit != lenIts.end() )
         {
           // len arguments just have an initalizer, from the ArrayProxyNoTemporaries size
-          assert( ( litit->second.size() == 1 ) || !litit->second.front()->optional );
           initializers +=
             ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit ) + " )";
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), prefix );
@@ -7162,16 +7161,16 @@ std::string
           std::string secondName     = startLowerCase( stripPrefix( arrayIts[second]->name, "p" ) ) + "_";
           std::string assertionCheck = firstName + ".size() == " + secondName + ".size()";
           std::string throwCheck     = firstName + ".size() != " + secondName + ".size()";
-          if ( arrayIts[first]->optional || arrayIts[second]->optional )
+          if ( ( !arrayIts[first]->optional.empty() && arrayIts[first]->optional.front() ) || ( !arrayIts[second]->optional.empty() && arrayIts[second]->optional.front() ) )
           {
             assertionCheck = "( " + assertionCheck + " )";
             throwCheck     = "( " + throwCheck + " )";
-            if ( arrayIts[second]->optional )
+            if ( !arrayIts[second]->optional.empty() && arrayIts[second]->optional.front() )
             {
               assertionCheck = secondName + ".empty() || " + assertionCheck;
               throwCheck     = "!" + secondName + ".empty() && " + throwCheck;
             }
-            if ( arrayIts[first]->optional )
+            if ( !arrayIts[first]->optional.empty() && arrayIts[first]->optional.front() )
             {
               assertionCheck = firstName + ".empty() || " + assertionCheck;
               throwCheck     = "!" + firstName + ".empty() && " + throwCheck;
@@ -9288,7 +9287,12 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
     }
     else if ( attribute.first == "optional" )
     {
-      memberData.optional = ( attribute.second == "true" );
+      std::vector<std::string> optional = tokenize( attribute.second, "," );
+      memberData.optional.reserve( optional.size() );
+      for ( auto const & o : optional )
+      {
+        memberData.optional.push_back( o == "true" );
+      }
     }
     else if ( attribute.first == "selection" )
     {

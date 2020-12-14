@@ -9161,15 +9161,6 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
         readStructMember( child, it->second.members, isUnion );
       }
     }
-    if ( name == "VkDescriptorSetAllocateInfo" )
-    {
-      // some very very very special handling for this struct: the "len" attribute for pSetLayouts has gone!
-      assert( ( it->second.members.size() == 5 ) && ( it->second.members[3].name == "descriptorSetCount" ) && ( it->second.members[4].name == "pSetLayouts" ));
-      warn( !it->second.members[4].len.empty(),
-            line,
-            "Missing attribute \"len\" for member <descriptorSetCount> in structure <VkDescriptorSetAllocateInfo>" );
-      it->second.members[4].len = { it->second.members[3].name };
-    }
     it->second.subStruct = determineSubStruct( *it );
 
     m_extendedStructs.insert( structExtends.begin(), structExtends.end() );

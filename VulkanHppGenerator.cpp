@@ -5683,8 +5683,8 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
         {
           // len arguments just have an initalizer, from the ArrayProxyNoTemporaries size
           initializers +=
-            ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit ) + " )";
-          sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), prefix );
+            ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
+          sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), prefix, structData.second.mutualExclusiveLens );
         }
         else if ( std::find( memberIts.begin(), memberIts.end(), mit ) != memberIts.end() )
         {
@@ -7035,15 +7035,13 @@ std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
 std::string VulkanHppGenerator::generateLenInitializer(
   std::vector<MemberData>::const_iterator                                        mit,
   std::map<std::vector<MemberData>::const_iterator,
-           std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit ) const
+           std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
+  bool                                                                           mutualExclusiveLens ) const
 {
   std::string initializer;
-  if ( ( 1 < litit->second.size() ) &&
-       ( std::find_if( litit->second.begin(), litit->second.end(), []( std::vector<MemberData>::const_iterator it ) {
-           return !it->noAutoValidity;
-         } ) == litit->second.end() ) )
+  if (mutualExclusiveLens)
   {
-    // there are multiple arrays related to this len, all marked with noautovalidity
+    // there are multiple mutually exclusive arrays related to this len
     for ( size_t i = 0; i + 1 < litit->second.size(); i++ )
     {
       auto        arrayIt      = litit->second[i];
@@ -7121,17 +7119,16 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
 std::string
   VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                          std::string const &                                          structName,
-                                         std::string const &                                          prefix ) const
+                                         std::string const &                                          prefix,
+                                         bool mutualExclusiveLens ) const
 {
   std::string sizeCheck;
   if ( 1 < arrayIts.size() )
   {
     std::string assertionText, throwText;
-    if ( std::find_if( arrayIts.begin(), arrayIts.end(), []( std::vector<MemberData>::const_iterator it ) {
-           return !it->noAutoValidity;
-         } ) == arrayIts.end() )
+    if (mutualExclusiveLens)
     {
-      // all the arrays are marked with noautovalidity -> exactly one of them has to be non-empty
+      // exactly one of the arrays has to be non-empty
       std::string sum;
       for ( size_t first = 0; first + 1 < arrayIts.size(); ++first )
       {
@@ -7147,10 +7144,6 @@ std::string
     }
     else
     {
-      // none of the arrays should be marked with noautovalidity !
-      assert( std::find_if( arrayIts.begin(), arrayIts.end(), []( std::vector<MemberData>::const_iterator it ) {
-                return it->noAutoValidity;
-              } ) == arrayIts.end() );
       for ( size_t first = 0; first + 1 < arrayIts.size(); ++first )
       {
         assert( beginsWith( arrayIts[first]->name, "p" ) );
@@ -9162,6 +9155,43 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
       }
     }
     it->second.subStruct = determineSubStruct( *it );
+
+    // check if multiple structure members use the very same (not empty) len attribute
+    static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",
+                                                            "VkWriteDescriptorSet" };
+    static std::set<std::string> multipleLenStructs     = { "VkIndirectCommandsLayoutTokenNV",
+                                                        "VkPresentInfoKHR",
+                                                        "VkSemaphoreWaitInfo",
+                                                        "VkSubmitInfo",
+                                                        "VkSubpassDescription",
+                                                        "VkSubpassDescription2",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+    for ( size_t i = 0; i < it->second.members.size(); ++i )
+    {
+      if ( !it->second.members[i].len.empty() && ( it->second.members[i].len.front() != "null-terminated" ) )
+      {
+        for ( size_t j = i + 1; j < it->second.members.size(); ++j )
+        {
+          if ( !it->second.members[j].len.empty() &&
+               ( it->second.members[i].len.front() == it->second.members[j].len.front() ) )
+          {
+            if ( mutualExclusiveStructs.find( it->first ) != mutualExclusiveStructs.end() )
+            {
+              it->second.mutualExclusiveLens = true;
+            }
+            else
+            {
+              warn(
+                multipleLenStructs.find( it->first ) != multipleLenStructs.end(),
+                line,
+                "Encountered structure <" + it->first +
+                  "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
+            }
+          }
+        }
+      }
+    }
 
     m_extendedStructs.insert( structExtends.begin(), structExtends.end() );
     check(

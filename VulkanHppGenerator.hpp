@@ -241,9 +241,10 @@ private:
   {
     StructureData( std::vector<std::string> const & extends, int line ) : structExtends( extends ), xmlLine( line ) {}
 
-    bool                     allowDuplicate = false;
-    bool                     isUnion        = false;
-    bool                     returnedOnly   = false;
+    bool                     allowDuplicate      = false;
+    bool                     isUnion             = false;
+    bool                     returnedOnly        = false;
+    bool                     mutualExclusiveLens = false;
     std::vector<MemberData>  members;
     std::vector<std::string> structExtends;
     std::set<std::string>    aliases;
@@ -648,16 +649,18 @@ private:
   std::vector<size_t>      determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
-  std::string              generateLenInitializer(
-                 std::vector<MemberData>::const_iterator                                        mit,
-                 std::map<std::vector<MemberData>::const_iterator,
-             std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit ) const;
+  std::string
+                                      generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
+                                                              std::map<std::vector<MemberData>::const_iterator,
+                                     std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
+                                                              bool mutualExclusiveLens ) const;
   std::pair<std::string, std::string> generateProtection( std::string const &           feature,
                                                           std::set<std::string> const & extension ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
   std::string           generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                            std::string const &                                          structName,
-                                           std::string const &                                          prefix ) const;
+                                           std::string const &                                          prefix,
+                                           bool mutualExclusiveLens ) const;
   std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,

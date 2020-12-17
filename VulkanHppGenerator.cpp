@@ -3283,7 +3283,7 @@ std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string cons
       // if at all, this is the first argument, and it's the implicitly provided member handle
       assert( param.name == params[0].name );
       assert( param.arraySizes.empty() && param.len.empty() );
-      arguments += "m_" + param.name;
+      arguments += "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) );
     }
     else if ( param.type.isConstPointer() ||
               ( specialPointerTypes.find( param.type.type ) != specialPointerTypes.end() ) )
@@ -3475,7 +3475,7 @@ std::string VulkanHppGenerator::constructCallArgumentsStandard( std::string cons
     if ( ( param.type.type == handle ) && param.type.isValue() )
     {
       assert( param.arraySizes.empty() && param.len.empty() );
-      arguments += "m_" + param.name;
+      arguments += "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) );
     }
     else
     {

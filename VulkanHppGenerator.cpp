@@ -709,7 +709,7 @@ void warn( bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
-    std::cerr << "Spec warning on line " << std::to_string( line ) << " " << message << "!" << std::endl;
+    std::cerr << "Spec warning on line " << std::to_string( line ) << ": " << message << "!" << std::endl;
   }
 }
 
@@ -8054,13 +8054,15 @@ void VulkanHppGenerator::readExtensionDisabledCommand( tinyxml2::XMLElement cons
 
   // first unlink the command from its class
   auto commandIt = m_commands.find( name );
-  check( commandIt != m_commands.end(), line, "try to remove unknown command <" + name + ">" );
-  auto handleIt = m_handles.find( commandIt->second.handle );
-  check( handleIt != m_handles.end(), line, "cannot find handle corresponding to command <" + name + ">" );
-  handleIt->second.commands.erase( commandIt->first );
+  if ( commandIt != m_commands.end() )
+  {
+    auto handleIt = m_handles.find( commandIt->second.handle );
+    check( handleIt != m_handles.end(), line, "cannot find handle corresponding to command <" + name + ">" );
+    handleIt->second.commands.erase( commandIt->first );
 
-  // then erase the command from the command list
-  m_commands.erase( commandIt );
+    // then erase the command from the command list
+    m_commands.erase( commandIt );
+  }
 }
 
 void VulkanHppGenerator::readExtensionDisabledEnum( std::string const &          extensionName,
@@ -8144,46 +8146,47 @@ void VulkanHppGenerator::readExtensionDisabledType( tinyxml2::XMLElement const *
   std::string name = attributes.find( "name" )->second;
 
   auto typeIt = m_types.find( name );
-  check( typeIt != m_types.end(), line, "trying to remove unknown type <" + name + ">" );
-
-  switch ( typeIt->second.category )
+  if ( typeIt != m_types.end() )
   {
-    case TypeCategory::Bitmask:
+    switch ( typeIt->second.category )
     {
-      auto bitmasksIt = m_bitmasks.find( name );
-      check( bitmasksIt != m_bitmasks.end(), line, "trying to remove unknown bitmask <" + name + ">" );
-      check( bitmasksIt->second.alias.empty(),
-             line,
-             "trying to remove disabled bitmask <" + name + "> which has alias <" + bitmasksIt->second.alias + ">" );
-      m_bitmasks.erase( bitmasksIt );
-    }
-    break;
-    case TypeCategory::Enum:
-    {
-      auto enumIt = m_enums.find( name );
-      check( enumIt != m_enums.end(), line, "trying to remove unknown enum <" + name + ">" );
-      check( enumIt->second.alias.empty(),
-             line,
-             "trying to remove disabled enum <" + name + "> which has alias <" + enumIt->second.alias + ">" );
-      m_enums.erase( enumIt );
-    }
-    break;
-    case TypeCategory::Struct:
-    {
-      auto structIt = m_structures.find( name );
-      check( structIt != m_structures.end(), line, "trying to remove unknown struct <" + name + ">" );
-      check( structIt->second.aliases.empty(),
-             line,
-             "trying to remove disabled structure <" + name + "> which has " +
-               std::to_string( structIt->second.aliases.size() ) + "aliases" );
-      m_structures.erase( structIt );
-    }
-    break;
-    default:
-      check( false,
-             line,
-             "trying to remove <" + name + "> of unhandled type <" + toString( typeIt->second.category ) + ">" );
+      case TypeCategory::Bitmask:
+      {
+        auto bitmasksIt = m_bitmasks.find( name );
+        check( bitmasksIt != m_bitmasks.end(), line, "trying to remove unknown bitmask <" + name + ">" );
+        check( bitmasksIt->second.alias.empty(),
+               line,
+               "trying to remove disabled bitmask <" + name + "> which has alias <" + bitmasksIt->second.alias + ">" );
+        m_bitmasks.erase( bitmasksIt );
+      }
       break;
+      case TypeCategory::Enum:
+      {
+        auto enumIt = m_enums.find( name );
+        check( enumIt != m_enums.end(), line, "trying to remove unknown enum <" + name + ">" );
+        check( enumIt->second.alias.empty(),
+               line,
+               "trying to remove disabled enum <" + name + "> which has alias <" + enumIt->second.alias + ">" );
+        m_enums.erase( enumIt );
+      }
+      break;
+      case TypeCategory::Struct:
+      {
+        auto structIt = m_structures.find( name );
+        check( structIt != m_structures.end(), line, "trying to remove unknown struct <" + name + ">" );
+        check( structIt->second.aliases.empty(),
+               line,
+               "trying to remove disabled structure <" + name + "> which has " +
+                 std::to_string( structIt->second.aliases.size() ) + "aliases" );
+        m_structures.erase( structIt );
+      }
+      break;
+      default:
+        check( false,
+               line,
+               "trying to remove <" + name + "> of unhandled type <" + toString( typeIt->second.category ) + ">" );
+        break;
+    }
   }
 }
 

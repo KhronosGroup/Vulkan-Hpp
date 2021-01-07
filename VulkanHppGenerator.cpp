@@ -3054,20 +3054,18 @@ void VulkanHppGenerator::appendStructAssignmentOperators( std::string &         
                                                           std::string const &                           prefix ) const
 {
   static const std::string assignmentFromVulkanType = R"(
+${prefix}${constexpr_assign}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
 ${prefix}${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
 ${prefix}  *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
 ${prefix}  return *this;
 ${prefix}}
-
-${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
-${prefix}{
-${prefix}  memcpy( static_cast<void *>( this ), &rhs, sizeof( ${structName} ) );
-${prefix}  return *this;
-${prefix}}
 )";
   str += replaceWithMap( assignmentFromVulkanType,
-                         { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
+                         { { "constexpr_assign", constructConstexprString( structData, true ) },
+                           { "prefix", prefix },
+                           { "structName", stripPrefix( structData.first, "Vk" ) } } );
 }
 
 void VulkanHppGenerator::appendStructCompareOperators( std::string &                                 str,
@@ -5353,13 +5351,13 @@ std::string VulkanHppGenerator::constructCommandVoidGetValue( std::string const 
 }
 
 std::string
-  VulkanHppGenerator::constructConstexprString( std::pair<std::string, StructureData> const & structData ) const
+  VulkanHppGenerator::constructConstexprString( std::pair<std::string, StructureData> const & structData, bool assignmentOperator ) const
 {
   // structs with a union (and VkBaseInStructure and VkBaseOutStructure) can't be a constexpr!
   bool isConstExpression = !containsUnion( structData.first ) && ( structData.first != "VkBaseInStructure" ) &&
                            ( structData.first != "VkBaseOutStructure" );
   return isConstExpression
-           ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( containsArray( structData.first ) ? "_14 " : " " ) )
+           ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( (containsArray( structData.first ) || assignmentOperator) ? "_14 " : " " ) )
            : "";
 }
 
@@ -5611,9 +5609,8 @@ ${prefix}{}
 ${prefix}${constexpr}${structName}( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
 ${prefix}${structName}( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
-${prefix}{
-${prefix}  *this = rhs;
-${prefix}}
+${prefix}  : ${structName}( *reinterpret_cast<${structName} const *>( &rhs ) )
+${prefix}{}
 )";
 
   std::string arguments, initializers;
@@ -5634,7 +5631,7 @@ ${prefix}}
 
   str += replaceWithMap( constructors,
                          { { "arguments", arguments },
-                           { "constexpr", constructConstexprString( structData ) },
+                           { "constexpr", constructConstexprString( structData, false ) },
                            { "initializers", initializers },
                            { "prefix", prefix },
                            { "structName", stripPrefix( structData.first, "Vk" ) } } );
@@ -5787,11 +5784,6 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
   for ( auto const & member : structData.second.members )
   {
     str += prefix;
-    if ( member.values.size() == 1 )
-    {
-      // members with just one allowed value are set to be const
-      str += "const ";
-    }
     if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
@@ -9716,6 +9708,11 @@ int main( int argc, char ** argv )
       , m_ptr( ptr )
     {}
 
+#if __GNUC__ >= 9
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#endif
+
     ArrayProxy( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
@@ -9737,6 +9734,10 @@ int main( int argc, char ** argv )
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
     {}
+
+#if __GNUC__ >= 9
+#pragma GCC diagnostic pop
+#endif
 
     template <size_t N>
     ArrayProxy( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT

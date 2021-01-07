@@ -18,9 +18,6 @@
 #include "vulkan/vulkan.hpp"
 #include <iostream>
 
-static char const* AppName = "ArrayProxy";
-static char const* EngineName = "Vulkan.hpp";
-
 void fct(vk::ArrayProxy<int> /*ap*/)
 {}
 

@@ -15,21 +15,22 @@
 // VulkanHpp Samples : DynamicUniform
 //                     Draw 2 Cubes using dynamic uniform buffer
 
-#if defined( _MSC_VER )
-#  pragma warning( disable : 4127 )   // conditional expression is constant
-#elif defined( __GNUC__ )
-#  if ( 9 <= __GNUC__ )
-#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
-#  endif
-#else
-// unknow compiler... just ignore the warnings for yourselves ;)
-#endif
-
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
+
+#if defined( _MSC_VER )
+#  pragma warning( push )
+#  pragma warning( disable : 4100 )  // unreferenced formal parameter (glslang)
+#endif                               // endif (_MSC_VER )
+
 #include "SPIRV/GlslangToSpv.h"
+
+#if defined( _MSC_VER )
+#  pragma warning( pop )
+#endif
+
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>

@@ -21,9 +21,6 @@
 #include <iostream>
 #include <sstream>
 
-static char const * AppName    = "InstanceExtensionProperties";
-static char const * EngineName = "Vulkan.hpp";
-
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try

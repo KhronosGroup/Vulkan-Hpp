@@ -21,9 +21,6 @@
 #include <sstream>
 #include <vector>
 
-static char const * AppName    = "InstanceLayerExtensionProperties";
-static char const * EngineName = "Vulkan.hpp";
-
 struct PropertyData
 {
   PropertyData( vk::LayerProperties const &                  layerProperties_,

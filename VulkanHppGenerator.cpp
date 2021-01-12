@@ -10250,7 +10250,11 @@ int main( int argc, char ** argv )
         return m_mask;
     }
 
+#if defined(VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC)
+  public:
+#else
   private:
+#endif
     MaskType  m_mask;
   };
 

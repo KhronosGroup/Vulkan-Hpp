@@ -532,6 +532,10 @@ This either selects the dynamic (when it's 1) or the static (when it's not 1) Di
 
 By default, a little helper class ```DynamicLoader``` is used to dynamically load the vulkan library. If you set it to something different than 1 before including vulkan.hpp, this helper is not available, and you need to explicitly provide your own loader type for the function ```DispatchLoaderDynamic::init()```.
 
+#### VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC
+
+By default, the member ```m_mask``` of the ```Flags``` template class is private. This is to prevent accidentally setting a ```Flags``` with some inappropriate value. But it also prevents using a ```Flags```, or a structure holding a ```Flags```, to be used as a non-type template parameter. If you really need that functionality, and accept the reduced security, you can use this define to change the access specifier for m_mask from private to public, which allows using a ```Flags``` as a non-type template parameter.
+
 #### VULKAN_HPP_INLINE
 
 This is set to be the compiler-dependent attribute used to mark functions as inline. If your compiler happens to need some different attribute, you can set this define accordingly before including vulkan.hpp.

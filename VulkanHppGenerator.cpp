@@ -2044,14 +2044,27 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 # endif
 #endif
 
-#if defined(_WIN32) && defined(VULKAN_HPP_STORAGE_SHARED)
-#  ifdef VULKAN_HPP_STORAGE_SHARED_EXPORT
-#    define VULKAN_HPP_STORAGE_API __declspec( dllexport )
+#if !defined( VULKAN_HPP_STORAGE_API )
+#  if defined( VULKAN_HPP_STORAGE_SHARED )
+#    if defined( _MSC_VER )
+#      if defined( VULKAN_HPP_STORAGE_SHARED_EXPORT )
+#        define VULKAN_HPP_STORAGE_API __declspec( dllexport )
+#      else
+#        define VULKAN_HPP_STORAGE_API __declspec( dllimport )
+#      endif
+#    elif defined( __clang__ ) || defined( __GNUC__ )
+#      if defined( VULKAN_HPP_STORAGE_SHARED_EXPORT )
+#        define VULKAN_HPP_STORAGE_API __attribute__( ( visibility( "default" ) ) )
+#      else
+#        define VULKAN_HPP_STORAGE_API
+#      endif
+#    else
+#      define VULKAN_HPP_STORAGE_API
+#      pragma warning Unknown import / export semantics
+#    endif
 #  else
-#    define VULKAN_HPP_STORAGE_API __declspec( dllimport )
+#    define VULKAN_HPP_STORAGE_API
 #  endif
-#else
-#  define VULKAN_HPP_STORAGE_API
 #endif
 
 #if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)

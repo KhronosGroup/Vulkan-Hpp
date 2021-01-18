@@ -4121,11 +4121,10 @@ std::string
 {
   assert( commandData.returnType == "VkResult" );
 
-  auto firstVectorParamIt = vectorParamIndices.begin();
-
   assert( commandData.params[0].type.type == commandData.handle );
 
 #if !defined( NDEBUG )
+  auto firstVectorParamIt = vectorParamIndices.begin();
   auto secondVectorParamIt = std::next( firstVectorParamIt );
   assert( firstVectorParamIt->second == secondVectorParamIt->second );
 #endif

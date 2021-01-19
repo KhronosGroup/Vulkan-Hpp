@@ -15,7 +15,17 @@
 
 #pragma once
 
+#if defined( _MSC_VER )
+#  pragma warning( push )
+#  pragma warning( disable : 4127 )  // conditional expression is constant (glm)
+#endif
+
 #include <glm/glm.hpp>
+
+#if defined( _MSC_VER )
+#  pragma warning( pop )
+#endif
+
 #include <vulkan/vulkan.hpp>
 
 namespace vk

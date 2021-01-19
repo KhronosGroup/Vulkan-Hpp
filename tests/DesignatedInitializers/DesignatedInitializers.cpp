@@ -21,6 +21,10 @@
 
 #include <iostream>
 
+#if defined(__clang__) || defined(__GNUC__)
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 int main( int /*argc*/, char ** /*argv*/ )
 {
   char const * appName       = "DesignatedInitializers";

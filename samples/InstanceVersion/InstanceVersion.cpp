@@ -20,9 +20,6 @@
 #include <iostream>
 #include <sstream>
 
-static char const * AppName    = "InstanceVersion";
-static char const * EngineName = "Vulkan.hpp";
-
 std::string decodeAPIVersion( uint32_t apiVersion )
 {
   return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) +

@@ -21,9 +21,6 @@
 #include <sstream>
 #include <vector>
 
-static char const * AppName    = "InstanceLayerProperties";
-static char const * EngineName = "Vulkan.hpp";
-
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try

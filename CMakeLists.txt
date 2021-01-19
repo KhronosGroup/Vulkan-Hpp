@@ -113,7 +113,10 @@ add_executable(VulkanHppGenerator
 set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 14)
 
 if(MSVC)
-  target_compile_options(VulkanHppGenerator PRIVATE /W4 /WX /permissive-)
+  target_compile_options(VulkanHppGenerator PRIVATE /W4 /WX)
+  if (MSVC_VER GREATER_EQUAL 1910)
+   target_compile_options(VulkanHppGenerator PRIVATE /permissive-)
+  endif()
 else(MSVC)
   target_compile_options(VulkanHppGenerator PRIVATE -Wall -Wextra -pedantic -Werror)
 endif(MSVC)

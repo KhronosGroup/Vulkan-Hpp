@@ -24,9 +24,6 @@
 #    pragma clang diagnostic ignored "-Wdeprecated-volatile"  // to keep glm/detail/type_half.inl compiling
 #  endif
 #elif defined( __GNUC__ )
-#  if ( 9 <= __GNUC__ )
-#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
-#  endif
 #else
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif

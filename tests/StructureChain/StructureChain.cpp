@@ -74,6 +74,10 @@ int main( int /*argc*/, char ** /*argv*/ )
                        vk::PhysicalDevicePushDescriptorPropertiesKHR>
       sc7;
 
+    // some checks on unmodified chains
+    assert( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
+    assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
+
     // some invalid StructureChains
     // clang-format off
     //vk::StructureChain<vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties> x;
@@ -91,6 +95,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // unlink a struct from a StructureChain
     sc7.unlink<vk::PhysicalDeviceMaintenance3Properties>();
+    assert( !sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // some invalid unlink calls
     // clang-format off
@@ -102,6 +107,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // re-link a struct
     sc7.relink<vk::PhysicalDeviceMaintenance3Properties>();
+    assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );
 
     // invalid re-linking
     // clang-format off

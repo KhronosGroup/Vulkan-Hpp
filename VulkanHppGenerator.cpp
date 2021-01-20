@@ -10666,6 +10666,28 @@ int main( int argc, char ** argv )
     }
 
     template <typename ClassType, size_t Which = 0>
+    typename std::enable_if<
+      std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value &&
+        ( Which == 0 ),
+      bool>::type
+      isLinked() const VULKAN_HPP_NOEXCEPT
+    {
+      return true;
+    }
+
+    template <typename ClassType, size_t Which = 0>
+    typename std::enable_if<
+      !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value ||
+        ( Which != 0 ),
+      bool>::type
+      isLinked() const VULKAN_HPP_NOEXCEPT
+    {
+      static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
+                     "Can't unlink Structure that's not part of this StructureChain!" );
+      return isLinked( reinterpret_cast<VkBaseInStructure const *>( &get<ClassType, Which>() ) );
+    }
+
+    template <typename ClassType, size_t Which = 0>
     void relink() VULKAN_HPP_NOEXCEPT
     {
       static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
@@ -10725,9 +10747,10 @@ int main( int argc, char ** argv )
                              Types...> : std::integral_constant<int, Index>
     {};
 
-    bool isLinked( VkBaseInStructure const * pNext )
+    bool isLinked( VkBaseInStructure const * pNext ) const VULKAN_HPP_NOEXCEPT
     {
-      VkBaseInStructure const * elementPtr = reinterpret_cast<VkBaseInStructure const*>(&std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) ) );
+      VkBaseInStructure const * elementPtr = reinterpret_cast<VkBaseInStructure const *>(
+        &std::get<0>( static_cast<std::tuple<ChainElements...> const &>( *this ) ) );
       while ( elementPtr )
       {
         if ( elementPtr->pNext == pNext )

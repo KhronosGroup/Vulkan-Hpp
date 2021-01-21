@@ -711,8 +711,7 @@ private:
   void readEnums( tinyxml2::XMLElement const * element );
   void readExtension( tinyxml2::XMLElement const * element );
   void readExtensionDisabledCommand( tinyxml2::XMLElement const * element );
-  void readExtensionDisabledEnum( std::string const & extensionName, tinyxml2::XMLElement const * element );
-  void readExtensionDisabledRequire( std::string const & extensionName, tinyxml2::XMLElement const * element );
+  void readExtensionDisabledRequire( tinyxml2::XMLElement const * element );
   void readExtensionDisabledType( tinyxml2::XMLElement const * element );
   void readExtensionRequire( tinyxml2::XMLElement const * element,
                              std::string const &          extension,

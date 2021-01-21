@@ -10688,31 +10688,29 @@ int main( int argc, char ** argv )
     }
 
     template <typename ClassType, size_t Which = 0>
-    void relink() VULKAN_HPP_NOEXCEPT
+    typename std::enable_if<
+      !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value ||
+        ( Which != 0 ),
+      void>::type relink() VULKAN_HPP_NOEXCEPT
     {
       static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
                      "Can't relink Structure that's not part of this StructureChain!" );
-      static_assert(
-        !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || (Which != 0),
-        "It's not allowed to have the first element unlinked!" );
-
       auto pNext = reinterpret_cast<VkBaseInStructure *>( &get<ClassType, Which>() );
       VULKAN_HPP_ASSERT( !isLinked( pNext ) );
-      auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) );
-      pNext->pNext       = reinterpret_cast<VkBaseInStructure const*>(headElement.pNext);
+      auto & headElement = std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) );
+      pNext->pNext       = reinterpret_cast<VkBaseInStructure const *>( headElement.pNext );
       headElement.pNext  = pNext;
     }
 
     template <typename ClassType, size_t Which = 0>
-    void unlink() VULKAN_HPP_NOEXCEPT
+    typename std::enable_if<
+      !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value ||
+        ( Which != 0 ),
+      void>::type unlink() VULKAN_HPP_NOEXCEPT
     {
       static_assert( IsPartOfStructureChain<ClassType, ChainElements...>::valid,
                      "Can't unlink Structure that's not part of this StructureChain!" );
-      static_assert(
-        !std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value || (Which != 0),
-        "It's not allowed to unlink the first element!" );
-
-      unlink<sizeof...( ChainElements ) - 1>( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
+      unlink( reinterpret_cast<VkBaseOutStructure const *>( &get<ClassType, Which>() ) );
     }
 
   private:
@@ -10774,27 +10772,17 @@ int main( int argc, char ** argv )
     typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
     {}
 
-    template <size_t Index>
-    typename std::enable_if<Index != 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
+    void unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      auto & element = std::get<Index>( static_cast<std::tuple<ChainElements...>&>( *this ) );
-      if ( element.pNext == pNext )
+      VkBaseOutStructure * elementPtr = reinterpret_cast<VkBaseOutStructure *>(
+        &std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) ) );
+      while ( elementPtr && ( elementPtr->pNext != pNext ) )
       {
-        element.pNext = pNext->pNext;
+        elementPtr = elementPtr->pNext;
       }
-      else
+      if ( elementPtr )
       {
-        unlink<Index - 1>( pNext );
-      }
-    }
-
-    template <size_t Index>
-    typename std::enable_if<Index == 0, void>::type unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
-    {
-      auto & element = std::get<0>( static_cast<std::tuple<ChainElements...>&>( *this ) );
-      if ( element.pNext == pNext )
-      {
-        element.pNext = pNext->pNext;
+        elementPtr->pNext = pNext->pNext;
       }
       else
       {

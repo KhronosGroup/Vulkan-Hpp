@@ -167,6 +167,18 @@ int main( int /*argc*/, char ** /*argv*/ )
     dci2.unlink<vk::DevicePrivateDataCreateInfoEXT, 1>();
     dci2.relink<vk::DevicePrivateDataCreateInfoEXT, 1>();
 #endif
+
+    vk::StructureChain<vk::InstanceCreateInfo,
+                       vk::DebugReportCallbackCreateInfoEXT,
+                       vk::ValidationFlagsEXT,
+                       vk::ValidationFeaturesEXT,
+                       vk::DebugUtilsMessengerCreateInfoEXT>
+      chain;
+    chain.unlink<vk::DebugReportCallbackCreateInfoEXT>();
+    chain.unlink<vk::ValidationFlagsEXT>();
+    chain.unlink<vk::ValidationFeaturesEXT>();
+    chain.unlink<vk::DebugUtilsMessengerCreateInfoEXT>();
+    chain.relink<vk::DebugUtilsMessengerCreateInfoEXT>();
   }
   catch ( vk::SystemError const & err )
   {

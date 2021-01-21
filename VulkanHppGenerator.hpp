@@ -514,6 +514,10 @@ private:
                                                      CommandData const & commandData,
                                                      bool                definition,
                                                      size_t              nonConstPointerIndex ) const;
+  std::string constructCommandResultGetTwoValues( std::string const &         name,
+                                                  CommandData const &         commandData,
+                                                  bool                        definition,
+                                                  std::vector<size_t> const & nonConstPointerParamIndices ) const;
   std::string constructCommandResultGetTwoVectors( std::string const &              name,
                                                    CommandData const &              commandData,
                                                    bool                             definition,
@@ -599,7 +603,8 @@ private:
                                             bool                             definition,
                                             std::map<size_t, size_t> const & vectorParamIndices,
                                             size_t                           returnParamIndex ) const;
-  std::string constructConstexprString( std::pair<std::string, StructureData> const & structData, bool assignmentOperator ) const;
+  std::string constructConstexprString( std::pair<std::string, StructureData> const & structData,
+                                        bool                                          assignmentOperator ) const;
   std::string constructFunctionBodyEnhanced( std::string const &              indentation,
                                              std::string const &              name,
                                              CommandData const &              commandData,

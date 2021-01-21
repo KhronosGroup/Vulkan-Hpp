@@ -1191,6 +1191,16 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
           // Note: if the vector returned holds handles, the function does not create them, but just gets them
           switch ( vectorParamIndices.size() )
           {
+            case 0:
+              // two returns but no vector
+              if ( ( commandData.returnType == "VkResult" ) && ( 1 < commandData.successCodes.size() ) )
+              {
+                // two returns and a non-trivial success code -> need to return a complex ResultValue!!
+                appendCommandStandardAndEnhanced(
+                  str, name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices );
+                appendedFunction = true;
+              }
+              break;
             case 1:
             {
               // two returns but just one vector
@@ -1423,11 +1433,23 @@ ${leave})";
       }
       break;
     case 1:
-      commandEnhanced =
-        ( commandData.returnType == "void" )
-          ? constructCommandVoidGetValue(
-              name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices[0] )
-          : constructCommandResultGetValue( name, commandData, definition, nonConstPointerParamIndices[0] );
+      if ( commandData.returnType == "void" )
+      {
+        commandEnhanced = constructCommandVoidGetValue(
+          name, commandData, definition, vectorParamIndices, nonConstPointerParamIndices[0] );
+      }
+      else if ( commandData.returnType == "VkResult" )
+      {
+        commandEnhanced =
+          constructCommandResultGetValue( name, commandData, definition, nonConstPointerParamIndices[0] );
+      }
+      break;
+    case 2:
+      if ( ( commandData.returnType == "VkResult" ) && ( 1 < commandData.successCodes.size() ) )
+      {
+        commandEnhanced =
+          constructCommandResultGetTwoValues( name, commandData, definition, nonConstPointerParamIndices );
+      }
       break;
   }
 
@@ -3369,13 +3391,15 @@ std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string cons
       std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
       if ( param.len.empty() )
       {
-        assert( param.arraySizes.empty() && !param.optional );
+        assert( param.arraySizes.empty() );
         if ( beginsWith( param.type.type, "Vk" ) )
         {
+          // we can ignore param.optional here, as this is a local variable!
           arguments += "reinterpret_cast<" + param.type.type + " *>( &" + name + " )";
         }
         else
         {
+          assert( !param.optional );
           arguments += "&" + name;
         }
       }
@@ -4111,6 +4135,73 @@ std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::stri
   }
 }
 
+std::string VulkanHppGenerator::constructCommandResultGetTwoValues(
+  std::string const &         name,
+  CommandData const &         commandData,
+  bool                        definition,
+  std::vector<size_t> const & nonConstPointerParamIndices ) const
+{
+  assert( ( commandData.returnType == "VkResult" ) && ( 1 < commandData.successCodes.size() ) &&
+          ( nonConstPointerParamIndices.size() == 2 ) && !commandData.handle.empty() );
+
+  std::set<size_t> skippedParams =
+    determineSkippedParams( commandData.handle, commandData.params, {}, nonConstPointerParamIndices, false );
+
+  std::string argumentList =
+    constructArgumentListEnhanced( commandData.params, skippedParams, INVALID_INDEX, definition, false, false );
+  std::string commandName = determineCommandName( name, commandData.params[0].type.type );
+  std::string firstType   = commandData.params[nonConstPointerParamIndices[0]].type.compose();
+  assert( endsWith( firstType, "*" ) );
+  firstType.pop_back();
+  std::string secondType = commandData.params[nonConstPointerParamIndices[1]].type.compose();
+  assert( endsWith( secondType, "*" ) );
+  secondType.pop_back();
+  std::string returnBaseType = "std::pair<" + firstType + ", " + secondType + ">";
+  std::string returnType     = constructReturnType( commandData, returnBaseType );
+
+  if ( definition )
+  {
+    std::string const functionTemplate =
+      R"(  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
+  {
+    std::pair<${firstType}, ${secondType}> returnValues;
+    ${firstType} & ${firstValueName} = returnValues.first;
+    ${secondType} & ${secondValueName} = returnValues.second;
+    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
+    return createResultValue( result, returnValues, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
+  })";
+
+    return replaceWithMap(
+      functionTemplate,
+      { { "argumentList", argumentList },
+        { "callArguments",
+          constructCallArgumentsEnhanced( commandData.handle, commandData.params, false, INVALID_INDEX ) },
+        { "className", commandData.handle.empty() ? "" : stripPrefix( commandData.handle, "Vk" ) },
+        { "classSeparator", commandData.handle.empty() ? "" : "::" },
+        { "commandName", commandName },
+        { "firstType", firstType },
+        { "firstValueName",
+          startLowerCase( stripPrefix( commandData.params[nonConstPointerParamIndices[0]].name, "p" ) ) },
+        { "returnType", returnType },
+        { "secondType", secondType },
+        { "secondValueName",
+          startLowerCase( stripPrefix( commandData.params[nonConstPointerParamIndices[1]].name, "p" ) ) },
+        { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
+        { "vkCommand", name } } );
+  }
+  else
+  {
+    std::string const functionTemplate =
+      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const;)";
+
+    return replaceWithMap(
+      functionTemplate,
+      { { "argumentList", argumentList }, { "commandName", commandName }, { "returnType", returnType } } );
+  }
+}
+
 std::string
   VulkanHppGenerator::constructCommandResultGetTwoVectors( std::string const &              name,
                                                            CommandData const &              commandData,
@@ -4122,7 +4213,7 @@ std::string
   assert( commandData.params[0].type.type == commandData.handle );
 
 #if !defined( NDEBUG )
-  auto firstVectorParamIt = vectorParamIndices.begin();
+  auto firstVectorParamIt  = vectorParamIndices.begin();
   auto secondVectorParamIt = std::next( firstVectorParamIt );
   assert( firstVectorParamIt->second == secondVectorParamIt->second );
 #endif
@@ -5362,15 +5453,15 @@ std::string VulkanHppGenerator::constructCommandVoidGetValue( std::string const 
   }
 }
 
-std::string
-  VulkanHppGenerator::constructConstexprString( std::pair<std::string, StructureData> const & structData, bool assignmentOperator ) const
+std::string VulkanHppGenerator::constructConstexprString( std::pair<std::string, StructureData> const & structData,
+                                                          bool assignmentOperator ) const
 {
   // structs with a union (and VkBaseInStructure and VkBaseOutStructure) can't be a constexpr!
   bool isConstExpression = !containsUnion( structData.first ) && ( structData.first != "VkBaseInStructure" ) &&
                            ( structData.first != "VkBaseOutStructure" );
-  return isConstExpression
-           ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( (containsArray( structData.first ) || assignmentOperator) ? "_14 " : " " ) )
-           : "";
+  return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) +
+                               ( ( containsArray( structData.first ) || assignmentOperator ) ? "_14 " : " " ) )
+                           : "";
 }
 
 std::string VulkanHppGenerator::constructFunctionBodyEnhanced( std::string const &              indentation,
@@ -5691,9 +5782,10 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
         if ( litit != lenIts.end() )
         {
           // len arguments just have an initalizer, from the ArrayProxyNoTemporaries size
-          initializers +=
-            ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
-          sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), prefix, structData.second.mutualExclusiveLens );
+          initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " +
+                          generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
+          sizeChecks += generateSizeCheck(
+            litit->second, stripPrefix( structData.first, "Vk" ), prefix, structData.second.mutualExclusiveLens );
         }
         else if ( std::find( memberIts.begin(), memberIts.end(), mit ) != memberIts.end() )
         {
@@ -6595,12 +6687,12 @@ void VulkanHppGenerator::checkCorrectness()
     {
       assert( !handle.second.objTypeEnum.empty() );
       check( std::find_if( objectTypeIt->second.values.begin(),
-                            objectTypeIt->second.values.end(),
-                            [&handle]( EnumValueData const & evd ) {
-                              return evd.vulkanValue == handle.second.objTypeEnum;
-                            } ) != objectTypeIt->second.values.end(),
-              handle.second.xmlLine,
-              "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
+                           objectTypeIt->second.values.end(),
+                           [&handle]( EnumValueData const & evd ) {
+                             return evd.vulkanValue == handle.second.objTypeEnum;
+                           } ) != objectTypeIt->second.values.end(),
+             handle.second.xmlLine,
+             "handle <" + handle.first + "> specifies unknown \"objtypeenum\" <" + handle.second.objTypeEnum + ">" );
     }
   }
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
@@ -6608,13 +6700,13 @@ void VulkanHppGenerator::checkCorrectness()
     if ( objectTypeValue.vkValue != "eUnknown" )
     {
       check( std::find_if( m_handles.begin(),
-                          m_handles.end(),
-                          [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
-                            return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
-                          } ) != m_handles.end(),
-            objectTypeValue.xmlLine,
-            "VkObjectType value <" + objectTypeValue.vulkanValue +
-              "> not specified as \"objtypeenum\" for any handle" );
+                           m_handles.end(),
+                           [&objectTypeValue]( std::pair<std::string, HandleData> const & hd ) {
+                             return hd.second.objTypeEnum == objectTypeValue.vulkanValue;
+                           } ) != m_handles.end(),
+             objectTypeValue.xmlLine,
+             "VkObjectType value <" + objectTypeValue.vulkanValue +
+               "> not specified as \"objtypeenum\" for any handle" );
     }
   }
 
@@ -7043,7 +7135,7 @@ std::string VulkanHppGenerator::generateLenInitializer(
   bool                                                                           mutualExclusiveLens ) const
 {
   std::string initializer;
-  if (mutualExclusiveLens)
+  if ( mutualExclusiveLens )
   {
     // there are multiple mutually exclusive arrays related to this len
     for ( size_t i = 0; i + 1 < litit->second.size(); i++ )
@@ -7130,7 +7222,7 @@ std::string
   if ( 1 < arrayIts.size() )
   {
     std::string assertionText, throwText;
-    if (mutualExclusiveLens)
+    if ( mutualExclusiveLens )
     {
       // exactly one of the arrays has to be non-empty
       std::string sum;
@@ -7158,7 +7250,8 @@ std::string
           std::string secondName     = startLowerCase( stripPrefix( arrayIts[second]->name, "p" ) ) + "_";
           std::string assertionCheck = firstName + ".size() == " + secondName + ".size()";
           std::string throwCheck     = firstName + ".size() != " + secondName + ".size()";
-          if ( ( !arrayIts[first]->optional.empty() && arrayIts[first]->optional.front() ) || ( !arrayIts[second]->optional.empty() && arrayIts[second]->optional.front() ) )
+          if ( ( !arrayIts[first]->optional.empty() && arrayIts[first]->optional.front() ) ||
+               ( !arrayIts[second]->optional.empty() && arrayIts[second]->optional.front() ) )
           {
             assertionCheck = "( " + assertionCheck + " )";
             throwCheck     = "( " + throwCheck + " )";

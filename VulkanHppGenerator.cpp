@@ -8117,7 +8117,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     // kick out all the disabled stuff we've read before !!
     for ( auto const & child : children )
     {
-      readExtensionDisabledRequire( name, child );
+      readExtensionDisabledRequire( child );
     }
   }
   else
@@ -8162,48 +8162,7 @@ void VulkanHppGenerator::readExtensionDisabledCommand( tinyxml2::XMLElement cons
   }
 }
 
-void VulkanHppGenerator::readExtensionDisabledEnum( std::string const &          extensionName,
-                                                    tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes(
-    line,
-    attributes,
-    { { "name", {} } },
-    { { "alias", {} }, { "bitpos", {} }, { "extends", {} }, { "extnumber", {} }, { "offset", {} }, { "value", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string extends, name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "extends" )
-    {
-      extends = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-
-  if ( !extends.empty() )
-  {
-    auto enumIt = m_enums.find( extends );
-    check( enumIt != m_enums.end(),
-           line,
-           "disabled extension <" + extensionName + "> references unknown enum <" + extends + ">" );
-    check( std::find_if( enumIt->second.values.begin(),
-                         enumIt->second.values.end(),
-                         [&name]( EnumValueData const & evd ) { return evd.vulkanValue == name; } ) ==
-             enumIt->second.values.end(),
-           line,
-           "disabled extension <" + extensionName + "> references known enum value <" + name + ">" );
-  }
-}
-
-void VulkanHppGenerator::readExtensionDisabledRequire( std::string const &          extensionName,
-                                                       tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readExtensionDisabledRequire( tinyxml2::XMLElement const * element )
 {
   int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, {} );
@@ -8223,7 +8182,7 @@ void VulkanHppGenerator::readExtensionDisabledRequire( std::string const &      
     }
     else if ( value == "enum" )
     {
-      readExtensionDisabledEnum( extensionName, child );
+      // just skip enums of disabled extensions
     }
     else
     {

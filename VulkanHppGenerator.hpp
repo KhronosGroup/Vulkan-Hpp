@@ -139,12 +139,14 @@ private:
 
   struct EnumValueData
   {
-    EnumValueData( int line, std::string const & vulkan, std::string const & vk, bool singleBit_ )
-      : vulkanValue( vulkan ), vkValue( vk ), singleBit( singleBit_ ), xmlLine( line )
+    EnumValueData(
+      int line, std::string const & vulkan, std::string const & vk, std::string const & extension_, bool singleBit_ )
+      : vulkanValue( vulkan ), vkValue( vk ), extension( extension_ ), singleBit( singleBit_ ), xmlLine( line )
     {}
 
     std::string vulkanValue;
     std::string vkValue;
+    std::string extension;
     bool        singleBit;
     int         xmlLine;
   };
@@ -158,6 +160,7 @@ private:
                        bool                bitpos,
                        std::string const & prefix,
                        std::string const & postfix,
+                       std::string const & extension,
                        std::string const & tag );
 
     std::string                                                alias;    // alias for this enum
@@ -730,13 +733,14 @@ private:
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & tag );
-  void                          readRequireEnum( tinyxml2::XMLElement const *               element,
-                                                 std::map<std::string, std::string> const & attributes,
-                                                 std::string const &                        tag );
-  void                          readRequireEnumAlias( tinyxml2::XMLElement const *               element,
-                                                      std::map<std::string, std::string> const & attributes,
-                                                      std::string const &                        tag );
+  void readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension, std::string const & tag );
+  void readRequireEnum( tinyxml2::XMLElement const *               element,
+                        std::map<std::string, std::string> const & attributes,
+                        std::string const &                        extension,
+                        std::string const &                        tag );
+  void readRequireEnumAlias( tinyxml2::XMLElement const *               element,
+                             std::map<std::string, std::string> const & attributes,
+                             std::string const &                        tag );
   void readRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readSPIRVCapability( tinyxml2::XMLElement const * element );
   void readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );

@@ -307,13 +307,6 @@ namespace vk
       {
         enabledLayers.push_back( "VK_LAYER_KHRONOS_validation" );
       }
-      if ( std::find( layers.begin(), layers.end(), "VK_LAYER_LUNARG_assistant_layer" ) == layers.end() &&
-           std::find_if( layerProperties.begin(), layerProperties.end(), []( vk::LayerProperties const & lp ) {
-             return ( strcmp( "VK_LAYER_LUNARG_assistant_layer", lp.layerName ) == 0 );
-           } ) != layerProperties.end() )
-      {
-        enabledLayers.push_back( "VK_LAYER_LUNARG_assistant_layer" );
-      }
 #endif
 
       std::vector<char const *> enabledExtensions;
@@ -350,9 +343,17 @@ namespace vk
       vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
+#  if defined( VULKAN_HPP_UTILS_USE_BEST_PRACTICES )
+      vk::ValidationFeatureEnableEXT validationFeatureEnable = vk::ValidationFeatureEnableEXT::eBestPractices;
+      vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT, vk::ValidationFeaturesEXT>
+        instanceCreateInfo( { {}, &applicationInfo, enabledLayers, enabledExtensions },
+                            { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback },
+                            { validationFeatureEnable } );
+#  else
       vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> instanceCreateInfo(
         { {}, &applicationInfo, enabledLayers, enabledExtensions },
         { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback } );
+#  endif
 #endif
       vk::UniqueInstance instance = vk::createInstanceUnique( instanceCreateInfo.get<vk::InstanceCreateInfo>() );
 
@@ -402,7 +403,7 @@ namespace vk
                                                  colorAttachment,
                                                  {},
                                                  ( depthFormat != vk::Format::eUndefined ) ? &depthAttachment
-                                                                                           : nullptr );
+                                                                                            : nullptr );
       return device->createRenderPassUnique(
         vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
     }
@@ -413,6 +414,19 @@ namespace vk
                                    VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData,
                                    void * /*pUserData*/ )
     {
+#if !defined(NDEBUG)
+      if ( pCallbackData->messageIdNumber == 648835635 )
+      {
+        // UNASSIGNED-khronos-Validation-debug-build-warning-message
+        return VK_FALSE;
+      }
+      if ( pCallbackData->messageIdNumber == 767975156 )
+      {
+        // UNASSIGNED-BestPractices-vkCreateInstance-specialuse-extension
+        return VK_FALSE;
+      }
+#endif
+
       std::cerr << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
                 << vk::to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
       std::cerr << "\t"
@@ -531,7 +545,7 @@ namespace vk
         }
         typeBits >>= 1;
       }
-      assert( typeIndex != uint32_t(~0) );
+      assert( typeIndex != uint32_t( ~0 ) );
       return typeIndex;
     }
 
@@ -944,11 +958,11 @@ namespace vk
       vk::CompositeAlphaFlagBitsKHR compositeAlpha =
         ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )
           ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
-          : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied )
-              ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
-              : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit )
-                  ? vk::CompositeAlphaFlagBitsKHR::eInherit
-                  : vk::CompositeAlphaFlagBitsKHR::eOpaque;
+        : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied )
+          ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
+        : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit )
+          ? vk::CompositeAlphaFlagBitsKHR::eInherit
+          : vk::CompositeAlphaFlagBitsKHR::eOpaque;
       vk::PresentModeKHR presentMode = vk::su::pickPresentMode( physicalDevice.getSurfacePresentModesKHR( surface ) );
       vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
                                                       surface,
@@ -1056,7 +1070,7 @@ namespace vk
                               bool                       forceStaging )
       : format( vk::Format::eR8G8B8A8Unorm ), extent( extent_ )
     {
-      vk::FormatProperties               formatProperties = physicalDevice.getFormatProperties( format );
+      vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( format );
 
       formatFeatureFlags |= vk::FormatFeatureFlagBits::eSampledImage;
       needsStaging =

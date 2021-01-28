@@ -518,7 +518,7 @@ This names the default dispatcher type, as specified by ```VULKAN_HPP_DEFAULT_DI
 
 #### VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
-If you not have defined your own ```VULKAN_HPP_DEFAULT_DISPATCHER```, and have ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` defined to be 1 (the default), you need to have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in any of your source files to provide storage for that default dispatcher.
+If you have not defined your own ```VULKAN_HPP_DEFAULT_DISPATCHER```, and have ```VULKAN_HPP_DISPATCH_LOADER_DYNAMIC``` defined to be 1 (the default), you need to have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in any of your source files to provide storage for that default dispatcher. ```VULKAN_HPP_STORAGE_API``` then controls the import/export status of that default dispatcher.
 
 #### VULKAN_HPP_DISABLE_ENHANCED_MODE
 
@@ -562,7 +562,7 @@ With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that op
 
 #### VULKAN_HPP_STORAGE_API
 
-With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported. If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.
+With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported (see ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```). If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.
 
 
 #### VULKAN_HPP_TYPESAFE_CONVERSION

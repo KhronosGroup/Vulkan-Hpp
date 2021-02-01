@@ -430,16 +430,17 @@ By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when
 
 ### Extensions / Per Device function pointers
 
-The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan
-functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch
-class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, ```DispatchLoaderDynamic```, which fetches all function pointers known to the library.
+The Vulkan loader exposes only the Vulkan core functions and a limited number of extensions. To use Vulkan-Hpp with extensions it's required to have either a library which provides stubs to all used Vulkan functions or to tell Vulkan-Hpp to dispatch those functions pointers. Vulkan-Hpp provides a per-function dispatch mechanism by accepting a dispatch class as last parameter in each function call. The dispatch class must provide a callable type for each used Vulkan function. Vulkan-Hpp provides one implementation, ```DispatchLoaderDynamic```, which fetches all function pointers known to the library.
 
 ```c++
-// This dispatch class will fetch all function pointers through the passed instance
-vk::DispatchLoaderDynamic dldi(instance);
+// Providing a function pointer resolving vkGetInstanceProcAddr, just the few functions not depending an an instance or a device are fetched
+vk::DispatchLoaderDynamic dld( getInstanceProcAddr );
 
-// This dispatch class will fetch function pointers for the passed device if possible, else for the passed instance
-vk::DispatchLoaderDynamic dldid(instance, device);
+// Providing an already created VkInstance and a function pointer resolving vkGetInstanceProcAddr, all functions are fetched
+vk::DispatchLoaderDynamic dldi( instance, getInstanceProcAddr );
+
+// Providing also an already created VkDevice and optionally a function pointer resolving vkGetDeviceProcAddr, all functions are fetched as well, but now device-specific functions are fetched via vkDeviceGetProcAddr.
+vk::DispatchLoaderDynamic dldid( instance, getInstanceProcAddr, device );
 
 // Pass dispatch class to function call as last parameter
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);

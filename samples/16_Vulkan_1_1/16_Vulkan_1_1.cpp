@@ -41,7 +41,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     desiredVersionString += ".";
     desiredVersionString += std::to_string( desiredMinorVersion );
 
-#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 ) && !defined( VK_USE_PLATFORM_ANDROID_KHR )
     // initialize the DipatchLoaderDynamic to use
     static vk::DynamicLoader  dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =

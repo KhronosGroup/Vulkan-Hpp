@@ -387,6 +387,7 @@ private:
                                          size_t                           returnParamIndex,
                                          bool                             definition ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
+                                                  std::string &       androidFunctions,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
                                                   std::string &       deviceFunctionsInstance,

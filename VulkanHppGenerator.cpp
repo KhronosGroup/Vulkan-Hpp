@@ -1923,20 +1923,62 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   public:
 )";
 
-  std::string emptyFunctions;
-  std::string deviceFunctions;
-  std::string deviceFunctionsInstance;
-  std::string instanceFunctions;
+  std::string androidFunctions, emptyFunctions, deviceFunctions, deviceFunctionsInstance, instanceFunctions;
   for ( auto const & command : m_commands )
   {
-    appendDispatchLoaderDynamicCommand(
-      str, emptyFunctions, deviceFunctions, deviceFunctionsInstance, instanceFunctions, command.first, command.second );
+    appendDispatchLoaderDynamicCommand( str,
+                                        androidFunctions,
+                                        emptyFunctions,
+                                        deviceFunctions,
+                                        deviceFunctionsInstance,
+                                        instanceFunctions,
+                                        command.first,
+                                        command.second );
   }
 
   // append initialization function to fetch function pointers
   str += R"(
   public:
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+
+    template <typename DynamicLoader
+#  if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+              = VULKAN_HPP_NAMESPACE::DynamicLoader
+#  endif
+              >
+    DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT
+    {
+      static DynamicLoader dl;
+      init( dl );
+    }
+
+    template <typename DynamicLoader>
+    DispatchLoaderDynamic( DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
+    {
+      init( dl );
+    }
+
+    template <typename DynamicLoader>
+    void init( DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
+    {
+)";
+  str += androidFunctions;
+  str += R"(    }
+
+#else
+
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT = default;
+
+    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
+    {
+      init(getInstanceProcAddr);
+    }
+
+    // This interface does not require a linked vulkan library.
+    DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
+    {
+      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
+    }
 
 #if !defined(VK_NO_PROTOTYPES)
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
@@ -1953,18 +1995,13 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
       = VULKAN_HPP_NAMESPACE::DynamicLoader
 #endif
-    >
+      >
     void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
     {
       static DynamicLoader dl;
       init(instance, device, dl);
     }
 #endif // !defined(VK_NO_PROTOTYPES)
-
-    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
-    {
-      init(getInstanceProcAddr);
-    }
 
     void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
     {
@@ -1976,12 +2013,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   str += emptyFunctions;
 
   str += R"(    }
-
-    // This interface does not require a linked vulkan library.
-    DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
-    {
-      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
-    }
 
     // This interface does not require a linked vulkan library.
     void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
@@ -2006,6 +2037,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   str += "      VkDevice device = static_cast<VkDevice>(deviceCpp);\n";
   str += deviceFunctions;
   str += R"(    }
+#endif // if defined( VK_USE_PLATFORM_ANDROID_KHR )
   };
 
 )";
@@ -2135,6 +2167,7 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 }
 
 void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &       str,
+                                                             std::string &       androidFunctions,
                                                              std::string &       emptyFunctions,
                                                              std::string &       deviceFunctions,
                                                              std::string &       deviceFunctionsInstance,
@@ -2151,6 +2184,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
       aliasCommandData.extensions = aliasData.second.extensions;
       aliasCommandData.feature    = aliasData.second.feature;
       appendDispatchLoaderDynamicCommand( str,
+                                          androidFunctions,
                                           emptyFunctions,
                                           deviceFunctions,
                                           deviceFunctionsInstance,
@@ -2163,6 +2197,12 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
   std::string enter, leave;
   std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
   str += enter + "    PFN_" + commandName + " " + commandName + " = 0;\n" + leave;
+
+  if ( enter.empty() || ( enter.find( "VK_USE_PLATFORM_WIN32_KHR" ) != std::string::npos ) )
+  {
+    androidFunctions +=
+      commandName + " = dl.template getProcAddress<PFN_" + commandName + ">( " + commandName + " );\n";
+  }
 
   bool isDeviceFunction = !commandData.handle.empty() && !commandData.params.empty() &&
                           ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&

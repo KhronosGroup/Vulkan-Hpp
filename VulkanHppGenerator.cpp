@@ -2703,6 +2703,10 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
           commandData.extensions.clear();
           commandData.feature.clear();
         }
+        assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handleData.first ) );
+        commandData.params[1].optional =
+          false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
+
         appendCommand( destroyCommandString, commandIt->first, commandData, false );
         std::string shortenedName;
         if ( commandIt->first.substr( 2, 7 ) == "Destroy" )
@@ -2936,6 +2940,9 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
           commandData.extensions.clear();
           commandData.feature.clear();
         }
+        assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handle.first ) );
+        commandData.params[1].optional =
+          false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
 
         appendCommand( destroyCommandString, commandIt->first, commandData, true );
         std::string shortenedName;
@@ -3194,7 +3201,6 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
   {
     if ( skippedParams.find( i ) == skippedParams.end() )
     {
-      bool hasDefaultAssignment = false;
       if ( i == singularParam )
       {
         assert( params[i].type.isConstPointer() && !params[i].len.empty() &&
@@ -3215,10 +3221,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
           }
           else if ( params[i].optional )
           {
-            argumentList +=
-              "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " + name +
-              ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
-            hasDefaultAssignment = true;
+            argumentList += "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " + name;
           }
           else
           {
@@ -3233,10 +3236,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
             assert( params[i].type.type == "char" );
             if ( params[i].optional )
             {
-              argumentList +=
-                "Optional<const std::string> " + name +
-                ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
-              hasDefaultAssignment = true;
+              argumentList += "Optional<const std::string> " + name;
             }
             else
             {
@@ -3255,11 +3255,6 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
             }
 
             argumentList += "ArrayProxy<" + type + "> const & " + name;
-            if ( params[i].optional && !definition )
-            {
-              argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
-              hasDefaultAssignment = true;
-            }
           }
         }
       }
@@ -3275,7 +3270,17 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       else if ( beginsWith( params[i].type.type, "Vk" ) )
       {
         assert( !params[i].type.isConstPointer() );
-        argumentList += params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes );
+        if ( params[i].optional )
+        {
+          assert( params[i].arraySizes.empty() );
+          argumentList +=
+            "VULKAN_HPP_NAMESPACE::Optional<const " + params[i].type.compose() + "> const & " + params[i].name;
+        }
+        else
+        {
+          argumentList +=
+            params[i].type.compose() + " " + params[i].name + constructCArraySizes( params[i].arraySizes );
+        }
       }
       else
       {
@@ -3283,8 +3288,8 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
         argumentList += params[i].type.compose() + " " + params[i].name;
       }
       argumentList +=
-        std::string( !definition && params[i].optional && ( defaultStartIndex <= i ) && !hasDefaultAssignment
-                       ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
+        std::string( !definition && params[i].optional && ( defaultStartIndex <= i )
+                       ? " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT"
                        : "" ) +
         ", ";
     }
@@ -3476,6 +3481,10 @@ std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string cons
             {
               arguments += " * sizeof( T )";
             }
+          }
+          else if ( param.optional )
+          {
+            arguments += param.name + " ? static_cast<" + param.type.type + ">( *" + param.name + " ) : 0";
           }
           else
           {
@@ -10611,13 +10620,23 @@ int main( int argc, char ** argv )
   class Optional
   {
   public:
-    Optional(RefType & reference) VULKAN_HPP_NOEXCEPT { m_ptr = &reference; }
-    Optional(RefType * ptr) VULKAN_HPP_NOEXCEPT { m_ptr = ptr; }
-    Optional(std::nullptr_t) VULKAN_HPP_NOEXCEPT { m_ptr = nullptr; }
+    Optional() VULKAN_HPP_NOEXCEPT : m_ptr( nullptr ) {}
+    Optional( RefType & reference ) VULKAN_HPP_NOEXCEPT : m_ptr( &reference ) {}
+    Optional( RefType * ptr ) VULKAN_HPP_NOEXCEPT : m_ptr( ptr ) {}
+    Optional( std::nullptr_t ) VULKAN_HPP_NOEXCEPT : m_ptr( nullptr ) {}
 
-    operator RefType*() const VULKAN_HPP_NOEXCEPT { return m_ptr; }
-    RefType const* operator->() const VULKAN_HPP_NOEXCEPT { return m_ptr; }
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT { return !!m_ptr; }
+    operator RefType *() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+    RefType const * operator->() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return !!m_ptr;
+    }
 
   private:
     RefType *m_ptr;

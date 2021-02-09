@@ -3255,6 +3255,11 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
             }
 
             argumentList += "ArrayProxy<" + type + "> const & " + name;
+            if ( params[i].optional && !definition )
+            {
+              argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
+              hasDefaultAssignment = true;
+            }
           }
         }
       }

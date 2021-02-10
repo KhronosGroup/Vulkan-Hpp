@@ -3477,6 +3477,10 @@ std::string VulkanHppGenerator::constructCallArgumentsEnhanced( std::string cons
               arguments += " * sizeof( T )";
             }
           }
+          else if ( isHandleType( param.type.type ) )
+          {
+            arguments += param.name;
+          }
           else
           {
             arguments += "static_cast<" + param.type.type + ">( " + param.name + " )";

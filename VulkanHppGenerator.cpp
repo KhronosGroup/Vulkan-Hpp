@@ -3199,7 +3199,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       {
         assert( params[i].type.isConstPointer() && !params[i].len.empty() &&
                 !isLenByStructMember( params[i].len, params ) && beginsWith( params[i].type.type, "Vk" ) );
-        argumentList += "const " + stripPrefix( params[i].type.type, "Vk" ) + " & " +
+        argumentList += "const VULKAN_HPP_NAMESPACE::" + stripPrefix( params[i].type.type, "Vk" ) + " & " +
                         stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) );
       }
       else if ( params[i].type.isConstPointer() )

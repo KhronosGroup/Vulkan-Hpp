@@ -69,7 +69,6 @@ private:
   {
     std::string              name;
     std::vector<std::string> arraySizes;
-    std::string              bitCount;
   };
 
   struct TypeInfo

@@ -27,12 +27,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     /* VULKAN_HPP_KEY_START */
 
@@ -40,25 +41,26 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
     // get the first index into queueFamiliyProperties which supports graphics
-    size_t graphicsQueueFamilyIndex = std::distance(
-      queueFamilyProperties.begin(),
-      std::find_if(
-        queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
-          return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
-        } ) );
+    auto propertyIterator = std::find_if(
+      queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
+        return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
+      } );
+    size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
     assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
-    // create a UniqueDevice
+    // create a Device
     float                     queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
       vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-    vk::UniqueDevice device =
-      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
+    vk::Device device =
+      physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
-    // Note: No need to explicitly destroy the device, as the corresponding destroy function is
-    // called by the destructor of the UniqueDevice on leaving this scope.
+    // destroy the device
+    device.destroy();
 
     /* VULKAN_HPP_KEY_END */
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

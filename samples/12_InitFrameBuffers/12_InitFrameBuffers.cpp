@@ -27,57 +27,64 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.surface );
-    vk::UniqueDevice device =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device device =
       vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::su::SwapChainData swapChainData( physicalDevice,
                                          device,
-                                         *surfaceData.surface,
+                                         surfaceData.surface,
                                          surfaceData.extent,
                                          vk::ImageUsageFlagBits::eColorAttachment |
                                            vk::ImageUsageFlagBits::eTransferSrc,
-                                         vk::UniqueSwapchainKHR(),
+                                         nullptr,
                                          graphicsAndPresentQueueFamilyIndex.first,
                                          graphicsAndPresentQueueFamilyIndex.second );
 
     vk::su::DepthBufferData depthBufferData( physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent );
 
-    vk::UniqueRenderPass renderPass =
-      vk::su::createRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
+    vk::RenderPass renderPass = vk::su::createRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
 
     /* VULKAN_KEY_START */
 
     std::array<vk::ImageView, 2> attachments;
-    attachments[1] = depthBufferData.imageView.get();
+    attachments[1] = depthBufferData.imageView;
 
-    std::vector<vk::UniqueFramebuffer> framebuffers;
+    vk::FramebufferCreateInfo framebufferCreateInfo(
+      vk::FramebufferCreateFlags(), renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
+    std::vector<vk::Framebuffer> framebuffers;
     framebuffers.reserve( swapChainData.imageViews.size() );
-    for ( auto const & view : swapChainData.imageViews )
+    for ( auto const & imageView : swapChainData.imageViews )
     {
-      attachments[0] = view.get();
-      framebuffers.push_back( device->createFramebufferUnique( vk::FramebufferCreateInfo( vk::FramebufferCreateFlags(),
-                                                                                          renderPass.get(),
-                                                                                          attachments,
-                                                                                          surfaceData.extent.width,
-                                                                                          surfaceData.extent.height,
-                                                                                          1 ) ) );
+      attachments[0] = imageView;
+      framebuffers.push_back( device.createFramebuffer( framebufferCreateInfo ) );
     }
 
-    // Note: No need to explicitly destroy the Framebuffers, as the destroy functions are called by the destructor of
-    // the UniqueFramebuffer on leaving this scope.
+    for ( auto const & framebuffer : framebuffers )
+    {
+      device.destroyFramebuffer( framebuffer );
+    }
 
     /* VULKAN_KEY_END */
+
+    device.destroyRenderPass( renderPass );
+    depthBufferData.clear( device );
+    swapChainData.clear( device );
+    device.destroy();
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

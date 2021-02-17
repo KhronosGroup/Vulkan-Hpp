@@ -64,6 +64,10 @@ In some cases it might be necessary to move Vulkan-Hpp to a custom namespace. Th
 
 Vulkan-Hpp declares a class for all handles to ensure full type safety and to add support for member functions on handles. A member function has been added to a handle class for each function which accepts the corresponding handle as first parameter. Instead of `vkBindBufferMemory(device, ...)` one can write `device.bindBufferMemory(...)` or `vk::bindBufferMemory(device, ...)`.
 
+### namespace vk::raii
+
+There is an additional header named vulkan_raii.hpp generated. That header holds raii-compliant wrapper classes for the handle types. That is, for e.g. the handle type VkInstance, there's a raii-compliant wrapper vk::raii::Instance. Please have a look at the samples using those classes in the directory RAII_Samples.
+
 ### C/C++ Interop for Handles
 
 On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan handles and C Vulkan handles. On 32-bit platforms all non-dispatchable handles are defined as `uint64_t`, thus preventing type-conversion checks at compile time which would catch assignments between incompatible handle types.. Due to that Vulkan-Hpp does not enable implicit conversion for 32-bit platforms by default and it is recommended to use a `static_cast` for the conversion like this: `VkDevice = static_cast<VkDevice>(cppDevice)` to prevent converting some arbitrary int to a handle or vice versa by accident. If you're developing your code on a 64-bit platform, but want compile your code for a 32-bit platform without adding the explicit casts you can define `VULKAN_HPP_TYPESAFE_CONVERSION` to 1 in your build system or before including `vulkan.hpp`. On 64-bit platforms this define is set to 1 by default and can be set to 0 to disable implicit conversions.

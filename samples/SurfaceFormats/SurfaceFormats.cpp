@@ -29,13 +29,14 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
@@ -46,7 +47,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
       std::vector<vk::SurfaceFormatKHR> surfaceFormats =
-        physicalDevices[i].getSurfaceFormatsKHR( *surfaceData.surface );
+        physicalDevices[i].getSurfaceFormatsKHR( surfaceData.surface );
       for ( size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << "\tFormat " << j << "\n";
@@ -59,6 +60,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     /* VULKAN_KEY_END */
+
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

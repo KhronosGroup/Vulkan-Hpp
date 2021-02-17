@@ -148,15 +148,15 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     vk::InstanceCreateInfo instanceCreateInfo(
       vk::InstanceCreateFlags(), &applicationInfo, instanceLayerNames, instanceExtensionNames );
-    vk::UniqueInstance instance = vk::createInstanceUnique( instanceCreateInfo );
+    vk::Instance instance = vk::createInstance( instanceCreateInfo );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize function pointers for instance
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( *instance );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init( instance );
 #endif
 
     pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance->getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
@@ -164,7 +164,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance->getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -176,35 +176,37 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::UniqueDebugUtilsMessengerEXT      debugUtilsMessenger = instance->createDebugUtilsMessengerEXTUnique(
+    vk::DebugUtilsMessengerEXT            debugUtilsMessenger = instance.createDebugUtilsMessengerEXT(
       vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-    assert( !queueFamilyProperties.empty() );
-
-    auto qfpIt = std::find_if(
-      queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
-        return !!( qfp.queueFlags & vk::QueueFlagBits::eGraphics );
-      } );
-    assert( qfpIt != queueFamilyProperties.end() );
-    uint32_t queueFamilyIndex = static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), qfpIt ) );
+    // get the index of the first queue family that supports graphics
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     float                     queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-      vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority );
-    vk::UniqueDevice device =
-      physicalDevice.createDeviceUnique( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
+      vk::DeviceQueueCreateFlags(), graphicsQueueFamilyIndex, 1, &queuePriority );
+    vk::Device device =
+      physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
-    // Create a command pool (not a UniqueCommandPool, for testing purposes!
+    // Create a CommandPool and don't destroy it, for testing purposes!
     vk::CommandPool commandPool =
-      device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), queueFamilyIndex ) );
+      device.createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
 
-    // The commandPool is not destroyed automatically (as it's not a UniqueCommandPool.
+#if true
+    // The commandPool is not destroyed automatically
     // That is, the device is destroyed before the commmand pool and will trigger a validation error.
-    std::cout << "*** INTENTIONALLY calling vkDestroyDevice before destroying command pool ***\n";
+    std::cout << "*** INTENTIONALLY destroying the Device before destroying a CommandPool ***\n";
     std::cout << "*** The following error message is EXPECTED ***\n";
+#else
+    device.destroyCommandPool( commandPool );
+#endif
+
+    device.destroy();
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
 
     /* VULKAN_KEY_END */
   }

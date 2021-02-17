@@ -63,14 +63,15 @@ int main( int /*argc*/, char ** /*argv*/ )
          ( loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion ) )
     {
       // Create the instance
-      vk::UniqueInstance instance =
+      vk::Instance instance =
         vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion );
 #if !defined( NDEBUG )
-      vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+      vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+        instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
       // Get the list of physical devices
-      std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+      std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 
       // Go through the list of physical devices and select only those that are capable of running the API version we
       // want.
@@ -87,6 +88,9 @@ int main( int /*argc*/, char ** /*argv*/ )
         usingMajorVersion = desiredMajorVersion;
         usingMinorVersion = desiredMinorVersion;
       }
+
+      instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+      instance.destroy();
     }
 
     usingVersionString += std::to_string( usingMajorVersion );

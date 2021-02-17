@@ -29,15 +29,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(
-      physicalDevice, vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() ) );
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -48,21 +50,25 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( ok );
 
     vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), vertexShaderSPV );
-    vk::UniqueShaderModule     vertexShaderModule = device->createShaderModuleUnique( vertexShaderModuleCreateInfo );
+    vk::ShaderModule           vertexShaderModule = device.createShaderModule( vertexShaderModuleCreateInfo );
 
     std::vector<unsigned int> fragmentShaderSPV;
     ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
     assert( ok );
 
     vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), fragmentShaderSPV );
-    vk::UniqueShaderModule fragmentShaderModule = device->createShaderModuleUnique( fragmentShaderModuleCreateInfo );
+    vk::ShaderModule           fragmentShaderModule = device.createShaderModule( fragmentShaderModuleCreateInfo );
 
     glslang::FinalizeProcess();
 
-    // Note: No need to explicitly destroy the ShaderModules, as the corresponding destroy
-    // functions are called by the destructor of the UniqueShaderModule on leaving this scope.
+    device.destroyShaderModule( fragmentShaderModule );
+    device.destroyShaderModule( vertexShaderModule );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroy();
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

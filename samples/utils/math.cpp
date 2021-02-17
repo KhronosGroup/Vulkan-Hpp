@@ -40,22 +40,12 @@ namespace vk
       glm::mat4x4 view =
         glm::lookAt( glm::vec3( -5.0f, 3.0f, -10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
       glm::mat4x4 projection = glm::perspective( fov, 1.0f, 0.1f, 100.0f );
-      glm::mat4x4 clip       = glm::mat4x4( 1.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.0f,
-                                      -1.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.5f,
-                                      0.0f,
-                                      0.0f,
-                                      0.0f,
-                                      0.5f,
-                                      1.0f );  // vulkan clip space has inverted y and half z !
+      // clang-format off
+      glm::mat4x4 clip = glm::mat4x4( 1.0f,  0.0f, 0.0f, 0.0f,
+                                      0.0f, -1.0f, 0.0f, 0.0f,
+                                      0.0f,  0.0f, 0.5f, 0.0f,
+                                      0.0f,  0.0f, 0.5f, 1.0f );  // vulkan clip space has inverted y and half z !
+      // clang-format on 
       return clip * projection * view * model;
     }
   }  // namespace su

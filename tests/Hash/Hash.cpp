@@ -16,7 +16,7 @@
 //                     Compile test on using std::hash on handles
 
 #if defined( _MSC_VER )
-#  pragma warning( disable : 4189 )   // local variable is initialized but not referenced
+#  pragma warning( disable : 4189 )  // local variable is initialized but not referenced
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
 #else
@@ -40,7 +40,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
 
     auto h1 = std::hash<vk::Instance>{}( *instance );
-    auto h2 = std::hash<VkInstance>{}( *instance );
+    auto h2 = std::hash<VkInstance>{}( static_cast<VkInstance>( *instance ) );
     assert( h1 == h2 );
 
     std::unordered_set<vk::Instance> uset;

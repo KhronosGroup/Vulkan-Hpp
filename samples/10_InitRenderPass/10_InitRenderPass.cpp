@@ -16,8 +16,8 @@
 //                     Initialize a render pass
 
 #if defined( _MSC_VER )
-#  pragma warning( disable : 4201 )   // disable warning C4201: nonstandard extension used: nameless struct/union; needed
-                                      // to get glm/detail/type_vec?.hpp without warnings
+#  pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
+                                     // to get glm/detail/type_vec?.hpp without warnings
 #elif defined( __GNUC__ )
 // don't know how to switch off that warning here
 #else
@@ -39,22 +39,23 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.surface );
-    vk::UniqueDevice device =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device device =
       vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::Format colorFormat =
-      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface.get() ) ).format;
+      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface ) ).format;
     vk::Format depthFormat = vk::Format::eD16Unorm;
 
     /* VULKAN_HPP_KEY_START */
@@ -84,13 +85,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SubpassDescription  subpass(
       vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, {}, colorReference, {}, &depthReference );
 
-    vk::UniqueRenderPass renderPass = device->createRenderPassUnique(
+    vk::RenderPass renderPass = device.createRenderPass(
       vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpass ) );
 
-    // Note: No need to explicitly destroy the RenderPass or the Semaphore, as the corresponding destroy
-    // functions are called by the destructor of the UniqueRenderPass and the UniqueSemaphore on leaving this scope.
+    device.destroyRenderPass( renderPass );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroy();
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

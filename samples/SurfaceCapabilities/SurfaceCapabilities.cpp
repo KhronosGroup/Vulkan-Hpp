@@ -67,12 +67,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
 
     std::vector<vk::ExtensionProperties> instanceExtensionProperties = vk::enumerateInstanceExtensionProperties();
-    bool                                 supportsGetSurfaceCapabilities2 =
-      ( std::find_if( instanceExtensionProperties.begin(),
-                      instanceExtensionProperties.end(),
-                      []( vk::ExtensionProperties const & ep ) {
-                        return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0;
-                      } ) != instanceExtensionProperties.end() );
+    auto                                 propertyIterator            = std::find_if(
+      instanceExtensionProperties.begin(), instanceExtensionProperties.end(), []( vk::ExtensionProperties const & ep ) {
+        return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0;
+      } );
+    bool supportsGetSurfaceCapabilities2 = ( propertyIterator != instanceExtensionProperties.end() );
 
     std::vector<std::string> extensions = vk::su::getInstanceExtensions();
     if ( supportsGetSurfaceCapabilities2 )
@@ -80,13 +79,14 @@ int main( int /*argc*/, char ** /*argv*/ )
       extensions.push_back( VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME );
     }
 
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, extensions );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, extensions );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
@@ -108,7 +108,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                         vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
                                         vk::SharedPresentSurfaceCapabilitiesKHR,
                                         vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
-                                        vk::SurfaceProtectedCapabilitiesKHR>( *surfaceData.surface );
+                                        vk::SurfaceProtectedCapabilitiesKHR>( surfaceData.surface );
 
         vk::SurfaceCapabilitiesKHR const & surfaceCapabilities =
           surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
@@ -159,12 +159,16 @@ int main( int /*argc*/, char ** /*argv*/ )
       else
       {
         vk::SurfaceCapabilitiesKHR surfaceCapabilities =
-          physicalDevices[i].getSurfaceCapabilitiesKHR( *surfaceData.surface );
+          physicalDevices[i].getSurfaceCapabilitiesKHR( surfaceData.surface );
         cout( surfaceCapabilities );
       }
     }
 
     /* VULKAN_KEY_END */
+
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

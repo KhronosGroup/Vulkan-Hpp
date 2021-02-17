@@ -86,9 +86,9 @@ namespace vk
       return true;
     }
 
-    vk::UniqueShaderModule createShaderModule( vk::UniqueDevice &      device,
-                                               vk::ShaderStageFlagBits shaderStage,
-                                               std::string const &     shaderText )
+    vk::ShaderModule createShaderModule( vk::Device const &      device,
+                                         vk::ShaderStageFlagBits shaderStage,
+                                         std::string const &     shaderText )
     {
       std::vector<unsigned int> shaderSPV;
       if ( !GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )
@@ -96,7 +96,7 @@ namespace vk
         throw std::runtime_error( "Could not convert glsl shader to spir-v -> terminating" );
       }
 
-      return device->createShaderModuleUnique( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
+      return device.createShaderModule( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
     }
   }  // namespace su
 }  // namespace vk

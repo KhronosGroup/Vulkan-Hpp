@@ -41,34 +41,35 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.surface );
-    vk::UniqueDevice device =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device device =
       vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(
+    vk::RenderPass renderPass = vk::su::createRenderPass(
       device,
-      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface.get() ) ).format,
+      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface ) ).format,
       vk::Format::eD16Unorm );
 
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
+    vk::DescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
       device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
-    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
+    vk::PipelineLayout pipelineLayout = device.createPipelineLayout(
+      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), descriptorSetLayout ) );
 
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule =
+    vk::ShaderModule vertexShaderModule =
       vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C );
-    vk::UniqueShaderModule fragmentShaderModule =
+    vk::ShaderModule fragmentShaderModule =
       vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C );
     glslang::FinalizeProcess();
 
@@ -76,9 +77,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
       vk::PipelineShaderStageCreateInfo(
-        vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule.get(), "main" ),
+        vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule, "main" ),
       vk::PipelineShaderStageCreateInfo(
-        vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule.get(), "main" )
+        vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule, "main" )
     };
 
     vk::VertexInputBindingDescription                  vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
@@ -167,14 +168,13 @@ int main( int /*argc*/, char ** /*argv*/ )
       &pipelineDepthStencilStateCreateInfo,   // pDepthStencilState
       &pipelineColorBlendStateCreateInfo,     // pColorBlendState
       &pipelineDynamicStateCreateInfo,        // pDynamicState
-      pipelineLayout.get(),                   // layout
-      renderPass.get()                        // renderPass
+      pipelineLayout,                         // layout
+      renderPass                              // renderPass
     );
 
-    vk::Result         result;
-    vk::UniquePipeline pipeline;
-    std::tie( result, pipeline ) =
-      device->createGraphicsPipelineUnique( nullptr, graphicsPipelineCreateInfo ).asTuple();
+    vk::Result   result;
+    vk::Pipeline pipeline;
+    std::tie( result, pipeline ) = device.createGraphicsPipeline( nullptr, graphicsPipelineCreateInfo );
     switch ( result )
     {
       case vk::Result::eSuccess: break;
@@ -184,7 +184,19 @@ int main( int /*argc*/, char ** /*argv*/ )
       default: assert( false );  // should never happen
     }
 
+    device.destroyPipeline( pipeline );
+
     /* VULKAN_KEY_END */
+
+    device.destroyShaderModule( fragmentShaderModule );
+    device.destroyShaderModule( vertexShaderModule );
+    device.destroyPipelineLayout( pipelineLayout );
+    device.destroyDescriptorSetLayout( descriptorSetLayout );
+    device.destroyRenderPass( renderPass );
+    device.destroy();
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

@@ -8141,8 +8141,9 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 #if !defined( NDEBUG )
     else if ( attribute.first == "provisional" )
     {
-      assert( attribute.second == "true" );
-      assert( platform == "provisional" );
+      check( platform == "provisional",
+             line,
+             "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\"" );
     }
 #endif
     else if ( attribute.first == "requires" )

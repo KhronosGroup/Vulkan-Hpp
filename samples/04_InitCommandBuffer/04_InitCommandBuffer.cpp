@@ -27,34 +27,41 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     uint32_t graphicsQueueFamilyIndex =
       vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::UniqueDevice device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
+    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
-    // create a UniqueCommandPool to allocate a CommandBuffer from
-    vk::UniqueCommandPool commandPool = device->createCommandPoolUnique(
-      vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
+    // create a CommandPool to allocate a CommandBuffer from
+    vk::CommandPool commandPool =
+      device.createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
 
     // allocate a CommandBuffer from the CommandPool
-    vk::UniqueCommandBuffer commandBuffer = std::move( device
-                                                         ->allocateCommandBuffersUnique( vk::CommandBufferAllocateInfo(
-                                                           commandPool.get(), vk::CommandBufferLevel::ePrimary, 1 ) )
-                                                         .front() );
+    vk::CommandBuffer commandBuffer =
+      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) )
+        .front();
 
-    // Note: No need to explicitly free the CommandBuffer or destroy the CommandPool, as the corresponding free and
-    // destroy functions are called by the destructor of the UniqueCommandBuffer and the UniqueCommandPool on leaving
-    // this scope.
+    // freeing the commandBuffer is optional, as it will automatically freed when the corresponding CommandPool is
+    // destroyed.
+    device.freeCommandBuffers( commandPool, commandBuffer );
+
+    // destroy the commandPool
+    device.destroyCommandPool( commandPool );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroy();
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

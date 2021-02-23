@@ -27,18 +27,19 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.surface );
-    vk::UniqueDevice device =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device device =
       vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     /* VULKAN_HPP_KEY_START */
@@ -68,10 +69,10 @@ int main( int /*argc*/, char ** /*argv*/ )
                                          vk::SampleCountFlagBits::e1,
                                          tiling,
                                          vk::ImageUsageFlagBits::eDepthStencilAttachment );
-    vk::UniqueImage     depthImage = device->createImageUnique( imageCreateInfo );
+    vk::Image           depthImage = device.createImage( imageCreateInfo );
 
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
-    vk::MemoryRequirements             memoryRequirements = device->getImageMemoryRequirements( depthImage.get() );
+    vk::MemoryRequirements             memoryRequirements = device.getImageMemoryRequirements( depthImage );
     uint32_t                           typeBits           = memoryRequirements.memoryTypeBits;
     uint32_t                           typeIndex          = uint32_t( ~0 );
     for ( uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
@@ -86,22 +87,32 @@ int main( int /*argc*/, char ** /*argv*/ )
       typeBits >>= 1;
     }
     assert( typeIndex != uint32_t( ~0 ) );
-    vk::UniqueDeviceMemory depthMemory =
-      device->allocateMemoryUnique( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
+    vk::DeviceMemory depthMemory =
+      device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 
-    device->bindImageMemory( depthImage.get(), depthMemory.get(), 0 );
+    device.bindImageMemory( depthImage, depthMemory, 0 );
 
     vk::ComponentMapping componentMapping(
       vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
     vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 );
-    vk::UniqueImageView depthView = device->createImageViewUnique( vk::ImageViewCreateInfo( vk::ImageViewCreateFlags(),
-                                                                                            depthImage.get(),
-                                                                                            vk::ImageViewType::e2D,
-                                                                                            depthFormat,
-                                                                                            componentMapping,
-                                                                                            subResourceRange ) );
+    vk::ImageView             depthView = device.createImageView( vk::ImageViewCreateInfo( vk::ImageViewCreateFlags(),
+                                                                               depthImage,
+                                                                               vk::ImageViewType::e2D,
+                                                                               depthFormat,
+                                                                               componentMapping,
+                                                                               subResourceRange ) );
+
+    // destroy depthView, depthMemory, and depthImage
+    device.destroyImageView( depthView );
+    device.freeMemory( depthMemory );
+    device.destroyImage( depthImage );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroy();
+    instance.destroySurfaceKHR( surfaceData.surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

@@ -114,10 +114,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<vk::ExtensionProperties> props = vk::enumerateInstanceExtensionProperties();
 
-    auto propsIterator = std::find_if( props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) {
+    auto propertyIterator = std::find_if( props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) {
       return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0;
     } );
-    if ( propsIterator == props.end() )
+    if ( propertyIterator == props.end() )
     {
       std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension"
                 << std::endl;
@@ -126,11 +126,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     const char *        extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
-    vk::UniqueInstance  instance      = vk::createInstanceUnique(
-      vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
+    vk::Instance        instance =
+      vk::createInstance( vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
 
     pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance->getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
@@ -138,7 +138,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance->getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -150,8 +150,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::UniqueDebugUtilsMessengerEXT      debugUtilsMessenger = instance->createDebugUtilsMessengerEXTUnique(
+    vk::DebugUtilsMessengerEXT            debugUtilsMessenger = instance.createDebugUtilsMessengerEXT(
       vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
+
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
 
     /* VULKAN_KEY_END */
   }

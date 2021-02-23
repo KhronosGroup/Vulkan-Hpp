@@ -13,14 +13,14 @@
 // limitations under the License.
 //
 // VulkanHpp Samples : 01_InitInstance
-//                     Create and destroy a vk::UniqueInstance
+//                     Create and destroy a vk::Instance
 
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>
 
-static char const * AppName    = "01_InitInstance";
-static char const * EngineName = "Vulkan.hpp";
+static std::string AppName    = "01_InitInstance";
+static std::string EngineName = "Vulkan.hpp";
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -29,16 +29,16 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     // initialize the vk::ApplicationInfo structure
-    vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, VK_API_VERSION_1_1 );
 
     // initialize the vk::InstanceCreateInfo
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );
 
-    // create a UniqueInstance
-    vk::UniqueInstance instance = vk::createInstanceUnique( instanceCreateInfo );
+    // create an Instance
+    vk::Instance instance = vk::createInstance( instanceCreateInfo );
 
-    // Note: No need to explicitly destroy the instance, as the corresponding destroy function is
-    // called by the destructor of the UniqueInstance on leaving this scope.
+    // destroy it again
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

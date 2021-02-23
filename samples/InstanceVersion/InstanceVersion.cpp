@@ -33,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 
     uint32_t apiVersion = vk::enumerateInstanceVersion();
-    std::cout << "APIVersion = " << decodeAPIVersion( apiVersion );
+    std::cout << "APIVersion = " << decodeAPIVersion( apiVersion ) << std::endl;
 
     /* VULKAN_KEY_END */
   }

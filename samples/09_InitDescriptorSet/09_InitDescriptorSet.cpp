@@ -40,42 +40,52 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(
-      physicalDevice, vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() ) );
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     vk::su::BufferData uniformBufferData(
       physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
-    vk::su::copyToDevice(
-      device, uniformBufferData.deviceMemory, vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) ) );
+    glm::mat4x4 mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
+    vk::su::copyToDevice( device, uniformBufferData.deviceMemory, mvpcMatrix );
 
-    vk::UniqueDescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
+    vk::DescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
       device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a descriptor pool
-    vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eUniformBuffer, 1 );
-    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique(
+    vk::DescriptorPoolSize poolSize( vk::DescriptorType::eUniformBuffer, 1 );
+    vk::DescriptorPool     descriptorPool = device.createDescriptorPool(
       vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
 
     // allocate a descriptor set
-    vk::UniqueDescriptorSet descriptorSet = std::move(
-      device->allocateDescriptorSetsUnique( vk::DescriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout ) )
-        .front() );
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
+    vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
-    vk::DescriptorBufferInfo descriptorBufferInfo( uniformBufferData.buffer.get(), 0, sizeof( glm::mat4x4 ) );
-    device->updateDescriptorSets(
-      vk::WriteDescriptorSet( descriptorSet.get(), 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo ),
-      {} );
+    vk::DescriptorBufferInfo descriptorBufferInfo( uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
+    vk::WriteDescriptorSet   writeDescriptorSet(
+      descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
+    device.updateDescriptorSets( writeDescriptorSet, nullptr );
+
+    device.freeDescriptorSets( descriptorPool, descriptorSet );
+    device.destroyDescriptorPool( descriptorPool );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroyDescriptorSetLayout( descriptorSetLayout );
+    uniformBufferData.clear( device );
+    device.destroy();
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

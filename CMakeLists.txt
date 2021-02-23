@@ -74,7 +74,9 @@ if (NOT DEFINED VulkanHeaders_INCLUDE_DIR)
 endif()
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
-add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}")
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_raii_hpp)
+string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
+add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}" -DVULKAN_RAII_HPP_FILE="${vulkan_raii_hpp}")
 include_directories(${VulkanHeaders_INCLUDE_DIR})
 
 set(HEADERS
@@ -146,6 +148,7 @@ if (SAMPLES_BUILD)
   add_subdirectory(glslang)
   # samples
   add_subdirectory(samples)
+  add_subdirectory(RAII_Samples)
 endif ()
 
 option (TESTS_BUILD "Build tests" OFF)

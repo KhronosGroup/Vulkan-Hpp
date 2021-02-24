@@ -523,6 +523,11 @@ private:
                                               size_t                         singularParamIndex,
                                               bool                           raiiHandleMemberFunction ) const;
   std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
+  std::string constructCommandBoolGetValue( std::string const & name,
+                                            CommandData const & commandData,
+                                            size_t              initialSkipCount,
+                                            bool                definition,
+                                            size_t              nonConstPointerIndex ) const;
   std::string constructCommandResult( std::string const &              name,
                                       CommandData const &              commandData,
                                       size_t                           initialSkipCount,
@@ -832,6 +837,11 @@ private:
                                           std::string const &           command,
                                           size_t                        initialSkipCount,
                                           std::set<std::string> const & specialFunctions ) const;
+  std::pair<std::string, std::string>
+    constructRAIIHandleMemberFunctionBoolGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                   size_t                                             initialSkipCount,
+                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                   std::vector<size_t> const &      nonConstPointerParamIndices ) const;
   std::pair<std::string, std::string>
     constructRAIIHandleMemberFunctions( std::pair<std::string, HandleData> const & handle,
                                         std::set<std::string> const &              specialFunctions ) const;

@@ -50,7 +50,7 @@ To avoid name collisions with the Vulkan C API the C++ bindings reside in the vk
   * `vkCreateInstance` can be accessed as `vk::createInstance`
   * `VkImageTiling` can be accessed as `vk::ImageTiling`
   * `VkImageCreateInfo` can be accessed as `vk::ImageCreateInfo`
-* Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension the extension suffix has been removed from the enum values.
+* Enums are mapped to scoped enums to provide compile time type safety. The names have been changed to 'e' + CamelCase with the VK_ prefix and type infix removed. In case the enum type is an extension. The extension suffix has been removed from the enum values.
 
 In all other cases the extension suffix has not been removed.
   * `VK_IMAGETYPE_2D` is now `vk::ImageType::e2D`.

@@ -89,7 +89,7 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
                                            R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
                                            "2*VK_UUID_SIZE",
                                            "2*ename:VK_UUID_SIZE" };
-const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t" };
+const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
 
 void appendArgumentCount( std::string &       str,
                           size_t              vectorIndex,
@@ -1121,6 +1121,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   bool                     appendedFunction            = false;
   std::map<size_t, size_t> vectorParamIndices          = determineVectorParamIndicesNew( commandData.params );
   std::vector<size_t>      nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandData.params );
+
+
   switch ( nonConstPointerParamIndices.size() )
   {
     case 0:
@@ -1963,7 +1965,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     {
       if ( !vulkanLibraryName.empty() )
       {
-#  if defined( __linux__ ) || defined( __APPLE__ )
+#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ )
         m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
         m_library = ::LoadLibraryA( vulkanLibraryName.c_str() );
@@ -1973,7 +1975,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
       }
       else
       {
-#  if defined( __linux__ )
+#  if defined( __linux__ ) || defined( __QNXNTO__ )
         m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
         if ( m_library == nullptr )
         {
@@ -2016,7 +2018,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     {
       if ( m_library )
       {
-#  if defined( __linux__ ) || defined( __APPLE__ )
+#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ )
         dlclose( m_library );
 #  elif defined( _WIN32 )
         ::FreeLibrary( m_library );
@@ -2029,7 +2031,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     template <typename T>
     T getProcAddress( const char* function ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( __linux__ ) || defined( __APPLE__ )
+#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ )
       return (T)dlsym( m_library, function );
 #  elif defined( _WIN32 )
       return (T)::GetProcAddress( m_library, function );
@@ -2041,7 +2043,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     bool success() const VULKAN_HPP_NOEXCEPT { return m_library != nullptr; }
 
   private:
-#  if defined( __linux__ ) || defined( __APPLE__ )
+#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ )
     void * m_library;
 #  elif defined( _WIN32 )
     ::HINSTANCE m_library;
@@ -14987,7 +14989,7 @@ int main( int argc, char ** argv )
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
-#  if defined( __linux__ ) || defined( __APPLE__ )
+#  if defined( __linux__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ )
 #    include <dlfcn.h>
 #  elif defined( _WIN32 )
 typedef struct HINSTANCE__ * HINSTANCE;

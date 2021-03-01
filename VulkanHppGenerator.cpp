@@ -2058,6 +2058,8 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   class DispatchLoaderDynamic
   {
   public:
+    using PFN_dummy = void ( * )();
+
 )";
 
   std::string emptyFunctions;
@@ -2300,7 +2302,12 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
 
   std::string enter, leave;
   std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
-  str += enter + "    PFN_" + commandName + " " + commandName + " = 0;\n" + leave;
+  std::string command      = "    PFN_" + commandName + " " + commandName + " = 0;\n";
+  if ( !enter.empty() )
+  {
+    command = enter + command + "#else\n    PFN_dummy placeholder_dont_call_" + commandName + " = 0;\n" + leave;
+  }
+  str += command;
 
   bool isDeviceFunction = !commandData.handle.empty() && !commandData.params.empty() &&
                           ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&

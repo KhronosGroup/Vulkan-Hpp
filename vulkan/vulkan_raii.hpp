@@ -340,6 +340,12 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename StructureChain>
       VULKAN_HPP_NODISCARD std::vector<StructureChain> getQueueFamilyProperties2() const;
 
+#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
+                           getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
+                                                            struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>
                            getSparseImageFormatProperties( VULKAN_HPP_NAMESPACE::Format              format,
                                                            VULKAN_HPP_NAMESPACE::ImageType           type,
@@ -5099,6 +5105,28 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
+#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+      SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
+                  VULKAN_HPP_NAMESPACE::ScreenSurfaceCreateInfoQNX const &                        createInfo,
+                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_instance( *instance )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( instance.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result =
+          static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateScreenSurfaceQNX(
+            static_cast<VkInstance>( *instance ),
+            reinterpret_cast<const VkScreenSurfaceCreateInfoQNX *>( &createInfo ),
+            m_allocator,
+            reinterpret_cast<VkSurfaceKHR *>( &m_surfaceKHR ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateScreenSurfaceQNX" );
+        }
+      }
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
 #  ifdef VK_USE_PLATFORM_GGP
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::StreamDescriptorSurfaceCreateInfoGGP const &              createInfo,
@@ -6423,6 +6451,17 @@ namespace VULKAN_HPP_NAMESPACE
       }
       return returnVector;
     }
+
+#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
+                                           PhysicalDevice::getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
+                                                       struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT
+    {
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
+        getDispatcher()->vkGetPhysicalDeviceScreenPresentationSupportQNX(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &window ) );
+    }
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>
                          PhysicalDevice::getSparseImageFormatProperties( VULKAN_HPP_NAMESPACE::Format              format,

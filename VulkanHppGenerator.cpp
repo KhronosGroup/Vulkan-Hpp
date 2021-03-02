@@ -7137,7 +7137,7 @@ ${leave})";
 
   const std::string definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const
   {
     std::vector<${vectorElementType}> ${vectorName};
     ${counterType} ${counterName};
@@ -7229,7 +7229,7 @@ ${leave})";
 
   const std::string definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::pair<std::vector<${firstType}>, std::vector<${secondType}>> ${className}::${commandName}( ${argumentList} ) const
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${firstType}>, std::vector<${secondType}>> ${className}::${commandName}( ${argumentList} ) const
   {
     std::pair<std::vector<${firstType}>, std::vector<${secondType}>> data;
     std::vector<${firstType}> & ${firstVectorName} = data.first;
@@ -7382,7 +7382,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, ${returnType}> ${className}::${commandName}( ${argumentList} ) const
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, ${returnType}> ${className}::${commandName}( ${argumentList} ) const
   {
     ${returnType} ${valueName};
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -7446,7 +7446,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  template <typename T>
-  VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>> ${className}::${commandName}( ${argumentList} ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>> ${className}::${commandName}( ${argumentList} ) const
   {
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T> ${dataName}( ${dataSize} / sizeof( T ) );
@@ -7770,7 +7770,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::pair<std::vector<${vectorElementType}>, ${valueType}> ${className}::${commandName}( ${argumentList} ) const
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${vectorElementType}>, ${valueType}> ${className}::${commandName}( ${argumentList} ) const
   {
     std::pair<std::vector<${vectorElementType}>, ${valueType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize} ), std::forward_as_tuple( 0 ) );
     std::vector<${vectorElementType}> & ${vectorName} = data.first;
@@ -7839,7 +7839,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  template <typename T>
-  VULKAN_HPP_NODISCARD std::vector<T> ${className}::${commandName}( ${argumentList} ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> ${className}::${commandName}( ${argumentList} ) const
   {
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T> ${dataName}( ${dataSize} / sizeof( T ) );
@@ -8030,7 +8030,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD ${returnType} ${className}::${commandName}( ${argumentList} ) const
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
   {
     ${returnType} ${valueName};
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -8447,7 +8447,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::pair<Bool32,${returnType}> ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32,${returnType}> ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {${vectorSizeCheck}
     std::pair<Bool32,${returnType}> result;
     ${returnType} & ${returnVariable} = result.second;
@@ -8538,7 +8538,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {${vectorSizeCheck}
     return getDispatcher()->${vkCommand}( ${callArguments} );
   }
@@ -8734,7 +8734,7 @@ ${leave})";
 
   const std::string definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
     ${counterType} ${counterName};
     getDispatcher()->${vkCommand}( ${firstCallArguments} );
@@ -8804,7 +8804,7 @@ ${leave})";
   const std::string definitionTemplate =
     R"(
 ${enter}  template <typename StructureChain>
-  VULKAN_HPP_NODISCARD std::vector<StructureChain> ${className}::${commandName}( ${argumentList} ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain> ${className}::${commandName}( ${argumentList} ) const
   {
     ${counterType} ${counterName};
     getDispatcher()->${vkCommand}( ${firstCallArguments} );
@@ -8879,7 +8879,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  template <typename X, typename Y, typename... Z>
-  VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
     StructureChain<X, Y, Z...> structureChain;
     ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
@@ -8942,7 +8942,7 @@ ${leave})";
 
   std::string const definitionTemplate =
     R"(
-${enter}  VULKAN_HPP_NODISCARD ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {${vectorSizeCheck}
     ${returnType} ${returnVariable};
     getDispatcher()->${vkCommand}( ${callArguments} );
@@ -15427,7 +15427,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
 
     template <class T, class U = T>
-    VULKAN_HPP_CONSTEXPR_14 T exchange( T & obj, U && newValue )
+    VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
     {
 #  if ( 14 <= VULKAN_HPP_CPP_VERSION )
       return std::exchange<T>( obj, std::forward<U>( newValue ) );

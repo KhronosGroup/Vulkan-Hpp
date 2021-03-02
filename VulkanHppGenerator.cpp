@@ -958,28 +958,33 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
     }
   }
   std::string name = ( enumName.empty() ? emptyEnumName : enumName );
-  str +=
-    "\n"
-    "  using " +
-    bitmaskName + " = Flags<" + name + ">;\n";
+  str += "\n  using " + bitmaskName + " = Flags<" + name + ">;\n";
 
   if ( !enumValues.empty() )
   {
     std::string allFlags;
-    if ( !enumValues.empty() )
+    bool        encounteredFlag = false;
+    std::string previousEnter, previousLeave;
+    for ( auto const & value : enumValues )
     {
-      for ( auto const & value : enumValues )
+      std::string enter, leave;
+      if ( !value.extension.empty() )
       {
-        std::string enter, leave;
-        if ( !value.extension.empty() )
+        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+        if ( !leave.empty() )
         {
-          std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+          assert( leave.back() );
+          leave.pop_back();
+          leave = "\n" + leave;
         }
-        allFlags += enter + bitmaskType + "(" + enumName + "::" + value.vkValue + ") |\n" + leave;
       }
-      assert( endsWith( allFlags, " |\n" ) );
-      allFlags = stripPostfix( allFlags, " |\n" );
+      allFlags += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "        " +
+                  ( encounteredFlag ? "| " : "  " ) + bitmaskType + "( " + enumName + "::" + value.vkValue + " )";
+      encounteredFlag = true;
+      previousEnter   = enter;
+      previousLeave   = leave;
     }
+    allFlags += previousLeave;
 
     static const std::string bitmaskOperatorsTemplate = R"(
   template <> struct FlagTraits<${enumName}>
@@ -2387,43 +2392,64 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     assert( bitmaskIt != m_bitmasks.end() );
     str += " : " + bitmaskIt->first;
   }
-  str +=
-    "\n"
-    "  {";
 
-  if ( !enumData.second.values.empty() || !enumData.second.aliases.empty() )
+  bool        encounteredValue = false, containsProtection = false;
+  std::string enumList, previousEnter, previousLeave;
+  for ( auto const & value : enumData.second.values )
   {
-    for ( auto const & value : enumData.second.values )
+    std::string enter, leave;
+    if ( !value.extension.empty() )
     {
-      std::string enter, leave;
-      if ( !value.extension.empty() )
-      {
-        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
-      }
-      if ( !leave.empty() )
-      {
-        assert( leave.back() == '\n' );
-        leave.pop_back();
-        leave = "\n" + leave;
-      }
-      str += "\n" + enter + "    " + value.vkValue + " = " + value.vulkanValue + "," + leave;
+      std::tie( enter, leave ) = generateProtection( "", { value.extension } );
     }
-    for ( auto const & alias : enumData.second.aliases )
+    if ( !leave.empty() )
     {
-      // make sure to only list alias values that differ from all non-alias values
-      if ( std::find_if(
-             enumData.second.values.begin(), enumData.second.values.end(), [&alias]( EnumValueData const & evd ) {
-               return alias.second.second == evd.vkValue;
-             } ) == enumData.second.values.end() )
-      {
-        str += "\n    " + alias.second.second + " = " + alias.first + ",";
-      }
+      assert( leave.back() == '\n' );
+      leave.pop_back();
+      leave = "\n" + leave;
+      containsProtection = true;
     }
-    assert( str.back() == ',' );
-    str.pop_back();
+    enumList += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "    " +
+                ( encounteredValue ? ", " : "  " ) + value.vkValue + " = " + value.vulkanValue;
+
+    encounteredValue = true;
+    previousEnter    = enter;
+    previousLeave    = leave;
+  }
+  enumList += previousLeave;
+  for ( auto const & alias : enumData.second.aliases )
+  {
+    assert( encounteredValue );
+    // make sure to only list alias values that differ from all non-alias values
+    if ( std::find_if(
+           enumData.second.values.begin(), enumData.second.values.end(), [&alias]( EnumValueData const & evd ) {
+             return alias.second.second == evd.vkValue;
+           } ) == enumData.second.values.end() )
+    {
+#if !defined( NDEBUG )
+      auto enumIt =
+        std::find_if( enumData.second.values.begin(),
+                      enumData.second.values.end(),
+                      [&alias]( EnumValueData const & evd ) { return alias.second.first == evd.vulkanValue; } );
+      if ( enumIt == enumData.second.values.end() )
+      {
+        auto aliasIt = enumData.second.aliases.find( alias.second.first );
+        assert( aliasIt != enumData.second.aliases.end() );
+        enumIt =
+          std::find_if( enumData.second.values.begin(),
+                        enumData.second.values.end(),
+                        [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.first == evd.vulkanValue; } );
+      }
+      assert( enumIt != enumData.second.values.end() );
+      assert( enumIt->extension.empty() || generateProtection( "", { enumIt->extension } ).first.empty() );
+#endif
+      enumList += "\n    , " + alias.second.second + " = " + alias.first;
+    }
   }
 
-  str += "};\n";
+  str += "\n  {" +
+         ( containsProtection ? ( "\n    // clang-format off" + enumList + "\n    // clang-format on" ) : enumList ) +
+         "\n  };\n";
 
   if ( !enumData.second.alias.empty() )
   {
@@ -2514,6 +2540,7 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
       "\n"
       "    switch ( value )\n"
       "    {\n";
+    std::string previousEnter, previousLeave;
     for ( auto const & value : enumData.second.values )
     {
       std::string enter, leave;
@@ -2521,10 +2548,13 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
       {
         std::tie( enter, leave ) = generateProtection( "", { value.extension } );
       }
-      str += enter + "      case " + enumName + "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) +
-             "\";\n" + leave;
+      str += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "      case " + enumName +
+             "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) + "\";\n";
+      previousEnter = enter;
+      previousLeave = leave;
     }
     str +=
+      previousLeave +
       "      default: return \"invalid ( \" + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + \" )\";\n"
       "    }\n";
   }
@@ -11324,7 +11354,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const *              
                      { "comment", {} },
                      { "errorcodes", {} },
                      { "pipeline", { "compute", "graphics", "transfer" } },
-                     { "queues", { "compute", "graphics", "sparse_binding", "transfer" } },
+                     { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
                      { "renderpass", { "both", "inside", "outside" } },
                      { "successcodes", {} } } );
 

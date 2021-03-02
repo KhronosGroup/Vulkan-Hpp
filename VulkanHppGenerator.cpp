@@ -89,7 +89,9 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
                                            R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
                                            "2*VK_UUID_SIZE",
                                            "2*ename:VK_UUID_SIZE" };
-const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
+const std::set<std::string> specialPointerTypes = {
+  "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
+};
 
 void appendArgumentCount( std::string &       str,
                           size_t              vectorIndex,
@@ -1122,7 +1124,6 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
   std::map<size_t, size_t> vectorParamIndices          = determineVectorParamIndicesNew( commandData.params );
   std::vector<size_t>      nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandData.params );
 
-
   switch ( nonConstPointerParamIndices.size() )
   {
     case 0:
@@ -1232,7 +1233,8 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
         auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
         if ( returnVectorParamIt == vectorParamIndices.end() )
         {
-          if ( ( commandData.returnType == "VkBool32" ) || ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
+          if ( ( commandData.returnType == "VkBool32" ) || ( commandData.returnType == "VkResult" ) ||
+               ( commandData.returnType == "void" ) )
           {
             appendCommandStandardAndEnhanced(
               str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
@@ -4048,10 +4050,10 @@ std::string VulkanHppGenerator::constructCallArgumentsStandard( std::string cons
 }
 
 std::string VulkanHppGenerator::constructCommandBoolGetValue( std::string const & name,
-                                                                CommandData const & commandData,
-                                                                size_t              initialSkipCount,
-                                                                bool                definition,
-                                                                size_t              nonConstPointerIndex ) const
+                                                              CommandData const & commandData,
+                                                              size_t              initialSkipCount,
+                                                              bool                definition,
+                                                              size_t              nonConstPointerIndex ) const
 {
   assert( commandData.returnType == "VkBool32" );
 
@@ -12496,6 +12498,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
                      { "dir", { "-" } },
                      { "extnumber", {} },
                      { "offset", {} },
+                     { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } },
                      { "value", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
@@ -12517,6 +12520,18 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
     else if ( attribute.first == "offset" )
     {
       offset = attribute.second;
+    }
+    else if ( attribute.first == "protect" )
+    {
+      // for now, attribute "protect" is, if set at all, set to "VK_ENABLE_BETA_EXTENSIONS"
+      // and it's redundant with the platform set for this extension!
+      auto extIt = m_extensions.find( extension );
+      assert( extIt != m_extensions.end() );
+      check(
+        extIt->second.platform == "provisional",
+        line,
+        "attribute <protect> is \"VK_ENABLE_BETA_EXTENSIONS\", but the extensions platform is not \"provisional\" but \"" +
+          extIt->second.platform + "\"" );
     }
     else if ( attribute.first == "value" )
     {

@@ -25,7 +25,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
 
     template <class T, class U = T>
-    VULKAN_HPP_CONSTEXPR_14 T exchange( T & obj, U && newValue )
+    VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
     {
 #  if ( 14 <= VULKAN_HPP_CPP_VERSION )
       return std::exchange<T>( obj, std::forward<U>( newValue ) );
@@ -5578,8 +5578,8 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_RAII_DISPATCHER_TYPE const *  m_dispatcher;
     };
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
-                         Context::enumerateInstanceExtensionProperties( Optional<const std::string> layerName ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
+      Context::enumerateInstanceExtensionProperties( Optional<const std::string> layerName ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties> properties;
       uint32_t                                               propertyCount;
@@ -5609,8 +5609,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LayerProperties>
-                         Context::enumerateInstanceLayerProperties() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::LayerProperties>
+                                           Context::enumerateInstanceLayerProperties() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::LayerProperties> properties;
       uint32_t                                           propertyCount;
@@ -5638,7 +5638,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD uint32_t Context::enumerateInstanceVersion() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t Context::enumerateInstanceVersion() const
     {
       uint32_t                     apiVersion;
       VULKAN_HPP_NAMESPACE::Result result =
@@ -5668,8 +5668,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                 message.c_str() );
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>
-                         Instance::enumeratePhysicalDeviceGroups() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>
+                                           Instance::enumeratePhysicalDeviceGroups() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties;
       uint32_t                                                         physicalDeviceGroupCount;
@@ -5700,7 +5700,8 @@ namespace VULKAN_HPP_NAMESPACE
       return physicalDeviceGroupProperties;
     }
 
-    VULKAN_HPP_NODISCARD PFN_vkVoidFunction Instance::getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE PFN_vkVoidFunction
+      Instance::getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetInstanceProcAddr( static_cast<VkInstance>( m_instance ), name.c_str() );
     }
@@ -5731,7 +5732,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
       PhysicalDevice::enumerateDeviceExtensionProperties( Optional<const std::string> layerName ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties> properties;
@@ -5767,8 +5768,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LayerProperties>
-                         PhysicalDevice::enumerateDeviceLayerProperties() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::LayerProperties>
+                                           PhysicalDevice::enumerateDeviceLayerProperties() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::LayerProperties> properties;
       uint32_t                                           propertyCount;
@@ -5798,7 +5799,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>>
+    VULKAN_HPP_NODISCARD
+      VULKAN_HPP_INLINE std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>>
       PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex ) const
     {
       std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>> data;
@@ -5838,7 +5840,7 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilities2KHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilities2KHR
       PhysicalDevice::getDisplayPlaneCapabilities2KHR( const DisplayPlaneInfo2KHR & displayPlaneInfo ) const
     {
       VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilities2KHR capabilities;
@@ -5854,8 +5856,8 @@ namespace VULKAN_HPP_NAMESPACE
       return capabilities;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT>
-                         PhysicalDevice::getCalibrateableTimeDomainsEXT() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT>
+                                           PhysicalDevice::getCalibrateableTimeDomainsEXT() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT> timeDomains;
       uint32_t                                         timeDomainCount;
@@ -5887,8 +5889,8 @@ namespace VULKAN_HPP_NAMESPACE
       return timeDomains;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV>
-                         PhysicalDevice::getCooperativeMatrixPropertiesNV() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV>
+                                           PhysicalDevice::getCooperativeMatrixPropertiesNV() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV> properties;
       uint32_t                                                         propertyCount;
@@ -5932,8 +5934,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>
-                         PhysicalDevice::getDisplayPlaneProperties2KHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>
+                                           PhysicalDevice::getDisplayPlaneProperties2KHR() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR> properties;
       uint32_t                                                      propertyCount;
@@ -5965,8 +5967,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>
-                         PhysicalDevice::getDisplayPlanePropertiesKHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>
+                                           PhysicalDevice::getDisplayPlanePropertiesKHR() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR> properties;
       uint32_t                                                     propertyCount;
@@ -5998,8 +6000,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>
-                         PhysicalDevice::getDisplayProperties2KHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>
+                                           PhysicalDevice::getDisplayProperties2KHR() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR> properties;
       uint32_t                                                 propertyCount;
@@ -6029,8 +6031,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>
-                         PhysicalDevice::getDisplayPropertiesKHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>
+                                           PhysicalDevice::getDisplayPropertiesKHR() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR> properties;
       uint32_t                                                propertyCount;
@@ -6060,8 +6062,9 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalBufferProperties PhysicalDevice::getExternalBufferProperties(
-      const PhysicalDeviceExternalBufferInfo & externalBufferInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalBufferProperties
+      PhysicalDevice::getExternalBufferProperties( const PhysicalDeviceExternalBufferInfo & externalBufferInfo ) const
+      VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::ExternalBufferProperties externalBufferProperties;
       getDispatcher()->vkGetPhysicalDeviceExternalBufferProperties(
@@ -6071,8 +6074,9 @@ namespace VULKAN_HPP_NAMESPACE
       return externalBufferProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalFenceProperties PhysicalDevice::getExternalFenceProperties(
-      const PhysicalDeviceExternalFenceInfo & externalFenceInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalFenceProperties
+      PhysicalDevice::getExternalFenceProperties( const PhysicalDeviceExternalFenceInfo & externalFenceInfo ) const
+      VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::ExternalFenceProperties externalFenceProperties;
       getDispatcher()->vkGetPhysicalDeviceExternalFenceProperties(
@@ -6082,8 +6086,8 @@ namespace VULKAN_HPP_NAMESPACE
       return externalFenceProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalImageFormatPropertiesNV
-                         PhysicalDevice::getExternalImageFormatPropertiesNV(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalImageFormatPropertiesNV
+                                           PhysicalDevice::getExternalImageFormatPropertiesNV(
         VULKAN_HPP_NAMESPACE::Format                          format,
         VULKAN_HPP_NAMESPACE::ImageType                       type,
         VULKAN_HPP_NAMESPACE::ImageTiling                     tiling,
@@ -6110,8 +6114,8 @@ namespace VULKAN_HPP_NAMESPACE
       return externalImageFormatProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExternalSemaphoreProperties
-                         PhysicalDevice::getExternalSemaphoreProperties(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalSemaphoreProperties
+                                           PhysicalDevice::getExternalSemaphoreProperties(
         const PhysicalDeviceExternalSemaphoreInfo & externalSemaphoreInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::ExternalSemaphoreProperties externalSemaphoreProperties;
@@ -6122,8 +6126,8 @@ namespace VULKAN_HPP_NAMESPACE
       return externalSemaphoreProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures
-                         PhysicalDevice::getFeatures() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures
+                                           PhysicalDevice::getFeatures() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures features;
       getDispatcher()->vkGetPhysicalDeviceFeatures( static_cast<VkPhysicalDevice>( m_physicalDevice ),
@@ -6131,8 +6135,8 @@ namespace VULKAN_HPP_NAMESPACE
       return features;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2
-                         PhysicalDevice::getFeatures2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2
+                                           PhysicalDevice::getFeatures2() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2 features;
       getDispatcher()->vkGetPhysicalDeviceFeatures2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
@@ -6141,7 +6145,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> PhysicalDevice::getFeatures2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           PhysicalDevice::getFeatures2() const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                      structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2 & features =
@@ -6151,7 +6156,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::FormatProperties
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::FormatProperties
       PhysicalDevice::getFormatProperties( VULKAN_HPP_NAMESPACE::Format format ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::FormatProperties formatProperties;
@@ -6162,7 +6167,7 @@ namespace VULKAN_HPP_NAMESPACE
       return formatProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::FormatProperties2
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::FormatProperties2
       PhysicalDevice::getFormatProperties2( VULKAN_HPP_NAMESPACE::Format format ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::FormatProperties2 formatProperties;
@@ -6174,7 +6179,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
       PhysicalDevice::getFormatProperties2( VULKAN_HPP_NAMESPACE::Format format ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                structureChain;
@@ -6187,8 +6192,8 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>
-                         PhysicalDevice::getFragmentShadingRatesKHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>
+                                           PhysicalDevice::getFragmentShadingRatesKHR() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR> fragmentShadingRates;
       uint32_t                                                                fragmentShadingRateCount;
@@ -6220,8 +6225,8 @@ namespace VULKAN_HPP_NAMESPACE
       return fragmentShadingRates;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageFormatProperties
-                         PhysicalDevice::getImageFormatProperties( VULKAN_HPP_NAMESPACE::Format           format,
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ImageFormatProperties
+      PhysicalDevice::getImageFormatProperties( VULKAN_HPP_NAMESPACE::Format           format,
                                                 VULKAN_HPP_NAMESPACE::ImageType        type,
                                                 VULKAN_HPP_NAMESPACE::ImageTiling      tiling,
                                                 VULKAN_HPP_NAMESPACE::ImageUsageFlags  usage,
@@ -6244,7 +6249,7 @@ namespace VULKAN_HPP_NAMESPACE
       return imageFormatProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageFormatProperties2
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ImageFormatProperties2
       PhysicalDevice::getImageFormatProperties2( const PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
     {
       VULKAN_HPP_NAMESPACE::ImageFormatProperties2 imageFormatProperties;
@@ -6279,8 +6284,8 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties
-                         PhysicalDevice::getMemoryProperties() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties
+                                           PhysicalDevice::getMemoryProperties() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties memoryProperties;
       getDispatcher()->vkGetPhysicalDeviceMemoryProperties(
@@ -6289,8 +6294,8 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2
-                         PhysicalDevice::getMemoryProperties2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2
+                                           PhysicalDevice::getMemoryProperties2() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2 memoryProperties;
       getDispatcher()->vkGetPhysicalDeviceMemoryProperties2(
@@ -6300,7 +6305,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> PhysicalDevice::getMemoryProperties2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           PhysicalDevice::getMemoryProperties2() const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                              structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2 & memoryProperties =
@@ -6311,8 +6317,9 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT PhysicalDevice::getMultisamplePropertiesEXT(
-      VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT
+      PhysicalDevice::getMultisamplePropertiesEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples ) const
+      VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT multisampleProperties;
       getDispatcher()->vkGetPhysicalDeviceMultisamplePropertiesEXT(
@@ -6322,8 +6329,8 @@ namespace VULKAN_HPP_NAMESPACE
       return multisampleProperties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::Rect2D>
-                         PhysicalDevice::getPresentRectanglesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::Rect2D>
+      PhysicalDevice::getPresentRectanglesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::Rect2D> rects;
       uint32_t                                  rectCount;
@@ -6357,8 +6364,8 @@ namespace VULKAN_HPP_NAMESPACE
       return rects;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties
-                         PhysicalDevice::getProperties() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties
+                                           PhysicalDevice::getProperties() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties properties;
       getDispatcher()->vkGetPhysicalDeviceProperties( static_cast<VkPhysicalDevice>( m_physicalDevice ),
@@ -6366,8 +6373,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2
-                         PhysicalDevice::getProperties2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2
+                                           PhysicalDevice::getProperties2() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2 properties;
       getDispatcher()->vkGetPhysicalDeviceProperties2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
@@ -6376,7 +6383,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> PhysicalDevice::getProperties2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           PhysicalDevice::getProperties2() const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                        structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2 & properties =
@@ -6386,7 +6394,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD uint32_t PhysicalDevice::getQueueFamilyPerformanceQueryPassesKHR(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t PhysicalDevice::getQueueFamilyPerformanceQueryPassesKHR(
       const QueryPoolPerformanceCreateInfoKHR & performanceQueryCreateInfo ) const VULKAN_HPP_NOEXCEPT
     {
       uint32_t numPasses;
@@ -6397,8 +6405,8 @@ namespace VULKAN_HPP_NAMESPACE
       return numPasses;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties>
-                         PhysicalDevice::getQueueFamilyProperties() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties>
+                                           PhysicalDevice::getQueueFamilyProperties() const VULKAN_HPP_NOEXCEPT
     {
       uint32_t queueFamilyPropertyCount;
       getDispatcher()->vkGetPhysicalDeviceQueueFamilyProperties(
@@ -6412,8 +6420,8 @@ namespace VULKAN_HPP_NAMESPACE
       return queueFamilyProperties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>
-                         PhysicalDevice::getQueueFamilyProperties2() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>
+                                           PhysicalDevice::getQueueFamilyProperties2() const VULKAN_HPP_NOEXCEPT
     {
       uint32_t queueFamilyPropertyCount;
       getDispatcher()->vkGetPhysicalDeviceQueueFamilyProperties2(
@@ -6428,7 +6436,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename StructureChain>
-    VULKAN_HPP_NODISCARD std::vector<StructureChain> PhysicalDevice::getQueueFamilyProperties2() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain> PhysicalDevice::getQueueFamilyProperties2() const
     {
       uint32_t queueFamilyPropertyCount;
       getDispatcher()->vkGetPhysicalDeviceQueueFamilyProperties2(
@@ -6463,8 +6471,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>
-                         PhysicalDevice::getSparseImageFormatProperties( VULKAN_HPP_NAMESPACE::Format              format,
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>
+      PhysicalDevice::getSparseImageFormatProperties( VULKAN_HPP_NAMESPACE::Format              format,
                                                       VULKAN_HPP_NAMESPACE::ImageType           type,
                                                       VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples,
                                                       VULKAN_HPP_NAMESPACE::ImageUsageFlags     usage,
@@ -6495,7 +6503,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>
       PhysicalDevice::getSparseImageFormatProperties2( const PhysicalDeviceSparseImageFormatInfo2 & formatInfo ) const
       VULKAN_HPP_NOEXCEPT
     {
@@ -6515,8 +6523,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV>
-                         PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV>
+                                           PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV> combinations;
       uint32_t                                                                combinationCount;
@@ -6549,8 +6557,8 @@ namespace VULKAN_HPP_NAMESPACE
       return combinations;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SurfaceCapabilities2EXT
-                         PhysicalDevice::getSurfaceCapabilities2EXT( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SurfaceCapabilities2EXT
+      PhysicalDevice::getSurfaceCapabilities2EXT( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       VULKAN_HPP_NAMESPACE::SurfaceCapabilities2EXT surfaceCapabilities;
       VULKAN_HPP_NAMESPACE::Result                  result =
@@ -6565,7 +6573,7 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceCapabilities;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SurfaceCapabilities2KHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SurfaceCapabilities2KHR
       PhysicalDevice::getSurfaceCapabilities2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
       VULKAN_HPP_NAMESPACE::SurfaceCapabilities2KHR surfaceCapabilities;
@@ -6600,8 +6608,8 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesKHR
-                         PhysicalDevice::getSurfaceCapabilitiesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesKHR
+      PhysicalDevice::getSurfaceCapabilitiesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       VULKAN_HPP_NAMESPACE::SurfaceCapabilitiesKHR surfaceCapabilities;
       VULKAN_HPP_NAMESPACE::Result                 result =
@@ -6616,7 +6624,7 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceCapabilities;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>
       PhysicalDevice::getSurfaceFormats2KHR( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR> surfaceFormats;
@@ -6651,8 +6659,8 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceFormats;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>
-                         PhysicalDevice::getSurfaceFormatsKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>
+      PhysicalDevice::getSurfaceFormatsKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR> surfaceFormats;
       uint32_t                                            surfaceFormatCount;
@@ -6687,7 +6695,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
       PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR> presentModes;
@@ -6724,8 +6732,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
-                         PhysicalDevice::getSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
+      PhysicalDevice::getSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR> presentModes;
       uint32_t                                          presentModeCount;
@@ -6760,7 +6768,7 @@ namespace VULKAN_HPP_NAMESPACE
       return presentModes;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
       PhysicalDevice::getSurfaceSupportKHR( uint32_t queueFamilyIndex, VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       VULKAN_HPP_NAMESPACE::Bool32 supported;
@@ -6776,8 +6784,8 @@ namespace VULKAN_HPP_NAMESPACE
       return supported;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT>
-                         PhysicalDevice::getToolPropertiesEXT() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT>
+                                           PhysicalDevice::getToolPropertiesEXT() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT> toolProperties;
       uint32_t                                                           toolCount;
@@ -6845,8 +6853,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
-    VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t>
-                         Device::acquireNextImage2KHR( const AcquireNextImageInfoKHR & acquireInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t>
+      Device::acquireNextImage2KHR( const AcquireNextImageInfoKHR & acquireInfo ) const
     {
       uint32_t                     imageIndex;
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
@@ -7056,7 +7064,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR
       Device::getAccelerationStructureBuildSizesKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR buildType,
                                                      const AccelerationStructureBuildGeometryInfoKHR &       buildInfo,
                                                      ArrayProxy<const uint32_t> const & maxPrimitiveCounts ) const
@@ -7082,8 +7090,8 @@ namespace VULKAN_HPP_NAMESPACE
           reinterpret_cast<const VkAccelerationStructureDeviceAddressInfoKHR *>( &info ) ) );
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR
-                         Device::getAccelerationStructureMemoryRequirementsNV(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR
+                                           Device::getAccelerationStructureMemoryRequirementsNV(
         const AccelerationStructureMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR memoryRequirements;
@@ -7095,8 +7103,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getAccelerationStructureMemoryRequirementsNV(
-      const AccelerationStructureMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           Device::getAccelerationStructureMemoryRequirementsNV(
+        const AccelerationStructureMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                     structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR & memoryRequirements =
@@ -7109,7 +7118,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_ANDROID_KHR
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID
       Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const
     {
       VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID properties;
@@ -7156,7 +7165,7 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) ) );
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
       Device::getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
@@ -7168,7 +7177,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
       Device::getBufferMemoryRequirements2( const BufferMemoryRequirementsInfo2 & info ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                  structureChain;
@@ -7181,15 +7190,16 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD uint64_t
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
       Device::getBufferOpaqueCaptureAddress( const BufferDeviceAddressInfo & info ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetBufferOpaqueCaptureAddress(
         static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) );
     }
 
-    VULKAN_HPP_NODISCARD std::pair<std::vector<uint64_t>, uint64_t> Device::getCalibratedTimestampsEXT(
-      ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<uint64_t>, uint64_t>
+                                           Device::getCalibratedTimestampsEXT(
+        ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos ) const
     {
       std::pair<std::vector<uint64_t>, uint64_t> data(
         std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
@@ -7209,8 +7219,9 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport Device::getDescriptorSetLayoutSupport(
-      const DescriptorSetLayoutCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport
+      Device::getDescriptorSetLayoutSupport( const DescriptorSetLayoutCreateInfo & createInfo ) const
+      VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport support;
       getDispatcher()->vkGetDescriptorSetLayoutSupport(
@@ -7221,7 +7232,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getDescriptorSetLayoutSupport(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getDescriptorSetLayoutSupport(
       const DescriptorSetLayoutCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                         structureChain;
@@ -7234,7 +7245,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
       Device::getAccelerationStructureCompatibilityKHR( const AccelerationStructureVersionInfoKHR & versionInfo ) const
       VULKAN_HPP_NOEXCEPT
     {
@@ -7246,8 +7257,10 @@ namespace VULKAN_HPP_NAMESPACE
       return compatibility;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PeerMemoryFeatureFlags Device::getGroupPeerMemoryFeatures(
-      uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PeerMemoryFeatureFlags
+                                           Device::getGroupPeerMemoryFeatures( uint32_t heapIndex,
+                                          uint32_t localDeviceIndex,
+                                          uint32_t remoteDeviceIndex ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::PeerMemoryFeatureFlags peerMemoryFeatures;
       getDispatcher()->vkGetDeviceGroupPeerMemoryFeatures(
@@ -7259,8 +7272,8 @@ namespace VULKAN_HPP_NAMESPACE
       return peerMemoryFeatures;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR
-                         Device::getGroupPresentCapabilitiesKHR() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR
+                                           Device::getGroupPresentCapabilitiesKHR() const
     {
       VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR deviceGroupPresentCapabilities;
       VULKAN_HPP_NAMESPACE::Result                            result =
@@ -7275,7 +7288,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
       Device::getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
       VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR modes;
@@ -7292,8 +7305,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
-                         Device::getGroupSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
+      Device::getGroupSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const
     {
       VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR modes;
       VULKAN_HPP_NAMESPACE::Result                         result =
@@ -7308,19 +7321,20 @@ namespace VULKAN_HPP_NAMESPACE
       return modes;
     }
 
-    VULKAN_HPP_NODISCARD uint64_t Device::getMemoryOpaqueCaptureAddress(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Device::getMemoryOpaqueCaptureAddress(
       const DeviceMemoryOpaqueCaptureAddressInfo & info ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetDeviceMemoryOpaqueCaptureAddress(
         static_cast<VkDevice>( m_device ), reinterpret_cast<const VkDeviceMemoryOpaqueCaptureAddressInfo *>( &info ) );
     }
 
-    VULKAN_HPP_NODISCARD PFN_vkVoidFunction Device::getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE PFN_vkVoidFunction
+      Device::getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetDeviceProcAddr( static_cast<VkDevice>( m_device ), name.c_str() );
     }
 
-    VULKAN_HPP_NODISCARD int Device::getFenceFdKHR( const FenceGetFdInfoKHR & getFdInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE int Device::getFenceFdKHR( const FenceGetFdInfoKHR & getFdInfo ) const
     {
       int                          fd;
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetFenceFdKHR(
@@ -7333,7 +7347,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD HANDLE
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
       HANDLE                       handle;
@@ -7350,8 +7364,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2 Device::getGeneratedCommandsMemoryRequirementsNV(
-      const GeneratedCommandsMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getGeneratedCommandsMemoryRequirementsNV( const GeneratedCommandsMemoryRequirementsInfoNV & info ) const
+      VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
       getDispatcher()->vkGetGeneratedCommandsMemoryRequirementsNV(
@@ -7362,7 +7377,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getGeneratedCommandsMemoryRequirementsNV(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::getGeneratedCommandsMemoryRequirementsNV(
       const GeneratedCommandsMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                  structureChain;
@@ -7375,7 +7390,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
       Device::getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
@@ -7387,7 +7402,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
       Device::getImageMemoryRequirements2( const ImageMemoryRequirementsInfo2 & info ) const VULKAN_HPP_NOEXCEPT
     {
       StructureChain<X, Y, Z...>                  structureChain;
@@ -7400,7 +7415,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>
       Device::getImageSparseMemoryRequirements2( const ImageSparseMemoryRequirementsInfo2 & info ) const
       VULKAN_HPP_NOEXCEPT
     {
@@ -7421,7 +7436,7 @@ namespace VULKAN_HPP_NAMESPACE
       return sparseMemoryRequirements;
     }
 
-    VULKAN_HPP_NODISCARD uint32_t
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t
       Device::getImageViewHandleNVX( const ImageViewHandleInfoNVX & info ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetImageViewHandleNVX( static_cast<VkDevice>( m_device ),
@@ -7429,7 +7444,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_ANDROID_KHR
-    VULKAN_HPP_NODISCARD struct AHardwareBuffer *
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE struct AHardwareBuffer *
       Device::getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID & info ) const
     {
       struct AHardwareBuffer *     buffer;
@@ -7446,7 +7461,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-    VULKAN_HPP_NODISCARD int Device::getMemoryFdKHR( const MemoryGetFdInfoKHR & getFdInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE int Device::getMemoryFdKHR( const MemoryGetFdInfoKHR & getFdInfo ) const
     {
       int                          fd;
       VULKAN_HPP_NAMESPACE::Result result =
@@ -7459,7 +7474,7 @@ namespace VULKAN_HPP_NAMESPACE
       return fd;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryFdPropertiesKHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryFdPropertiesKHR
       Device::getMemoryFdPropertiesKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                         int                                                    fd ) const
     {
@@ -7477,7 +7492,7 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryFdProperties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryHostPointerPropertiesEXT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryHostPointerPropertiesEXT
       Device::getMemoryHostPointerPropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                                  const void * pHostPointer ) const
     {
@@ -7496,7 +7511,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD HANDLE
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
       HANDLE                       handle;
@@ -7514,7 +7529,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryWin32HandlePropertiesKHR
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryWin32HandlePropertiesKHR
       Device::getMemoryWin32HandlePropertiesKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                                  HANDLE                                                 handle ) const
     {
@@ -7533,7 +7548,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PerformanceValueINTEL
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PerformanceValueINTEL
       Device::getPerformanceParameterINTEL( VULKAN_HPP_NAMESPACE::PerformanceParameterTypeINTEL parameter ) const
     {
       VULKAN_HPP_NAMESPACE::PerformanceValueINTEL value;
@@ -7548,7 +7563,8 @@ namespace VULKAN_HPP_NAMESPACE
       return value;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>
+    VULKAN_HPP_NODISCARD
+      VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>
       Device::getPipelineExecutableInternalRepresentationsKHR( const PipelineExecutableInfoKHR & executableInfo ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR> internalRepresentations;
@@ -7587,8 +7603,8 @@ namespace VULKAN_HPP_NAMESPACE
       return internalRepresentations;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR>
-                         Device::getPipelineExecutablePropertiesKHR( const PipelineInfoKHR & pipelineInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR>
+      Device::getPipelineExecutablePropertiesKHR( const PipelineInfoKHR & pipelineInfo ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR> properties;
       uint32_t                                                           executableCount;
@@ -7622,7 +7638,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR>
       Device::getPipelineExecutableStatisticsKHR( const PipelineExecutableInfoKHR & executableInfo ) const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR> statistics;
@@ -7657,7 +7673,7 @@ namespace VULKAN_HPP_NAMESPACE
       return statistics;
     }
 
-    VULKAN_HPP_NODISCARD uint64_t
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
       Device::getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType         objectType_,
                                  uint64_t                                 objectHandle,
                                  VULKAN_HPP_NAMESPACE::PrivateDataSlotEXT privateDataSlot ) const VULKAN_HPP_NOEXCEPT
@@ -7671,7 +7687,8 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    VULKAN_HPP_NODISCARD int Device::getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR & getFdInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE int
+      Device::getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR & getFdInfo ) const
     {
       int                          fd;
       VULKAN_HPP_NAMESPACE::Result result =
@@ -7685,7 +7702,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD HANDLE
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
       HANDLE                       handle;
@@ -7919,7 +7936,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T>
-    VULKAN_HPP_NODISCARD std::vector<T> Device::writeAccelerationStructuresPropertiesKHR(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> Device::writeAccelerationStructuresPropertiesKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
       VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
       size_t                                                                   dataSize,
@@ -7966,7 +7983,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T>
-    VULKAN_HPP_NODISCARD std::vector<T> AccelerationStructureNV::getHandle( size_t dataSize ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> AccelerationStructureNV::getHandle( size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
       std::vector<T> data( dataSize / sizeof( T ) );
@@ -8012,8 +8029,8 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements
-                         Buffer::getMemoryRequirements() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements
+                                           Buffer::getMemoryRequirements() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements memoryRequirements;
       getDispatcher()->vkGetBufferMemoryRequirements( static_cast<VkDevice>( m_device ),
@@ -9546,7 +9563,7 @@ namespace VULKAN_HPP_NAMESPACE
       return result;
     }
 
-    VULKAN_HPP_NODISCARD uint32_t DeferredOperationKHR::getMaxConcurrency() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t DeferredOperationKHR::getMaxConcurrency() const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetDeferredOperationMaxConcurrencyKHR(
         static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_deferredOperationKHR ) );
@@ -9578,7 +9595,8 @@ namespace VULKAN_HPP_NAMESPACE
         pData );
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceSize DeviceMemory::getCommitment() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceSize
+                                           DeviceMemory::getCommitment() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::DeviceSize committedMemoryInBytes;
       getDispatcher()->vkGetDeviceMemoryCommitment( static_cast<VkDevice>( m_device ),
@@ -9588,7 +9606,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
-    VULKAN_HPP_NODISCARD HANDLE
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       DeviceMemory::getMemoryWin32HandleNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleType ) const
     {
       HANDLE                       handle;
@@ -9605,9 +9623,10 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD void * DeviceMemory::mapMemory( VULKAN_HPP_NAMESPACE::DeviceSize     offset,
-                                                         VULKAN_HPP_NAMESPACE::DeviceSize     size,
-                                                         VULKAN_HPP_NAMESPACE::MemoryMapFlags flags ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE void *
+                         DeviceMemory::mapMemory( VULKAN_HPP_NAMESPACE::DeviceSize     offset,
+                               VULKAN_HPP_NAMESPACE::DeviceSize     size,
+                               VULKAN_HPP_NAMESPACE::MemoryMapFlags flags ) const
     {
       void *                       pData;
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
@@ -9643,8 +9662,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>
-                         DisplayKHR::getModeProperties2() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>
+                                           DisplayKHR::getModeProperties2() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR> properties;
       uint32_t                                                     propertyCount;
@@ -9678,8 +9697,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>
-                         DisplayKHR::getModeProperties() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>
+                                           DisplayKHR::getModeProperties() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR> properties;
       uint32_t                                                    propertyCount;
@@ -9713,8 +9732,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR
-                         DisplayModeKHR::getDisplayPlaneCapabilities( uint32_t planeIndex ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR
+                                           DisplayModeKHR::getDisplayPlaneCapabilities( uint32_t planeIndex ) const
     {
       VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR capabilities;
       VULKAN_HPP_NAMESPACE::Result                      result =
@@ -9788,8 +9807,8 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT
-                         Image::getDrmFormatModifierPropertiesEXT() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT
+                                           Image::getDrmFormatModifierPropertiesEXT() const
     {
       VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT properties;
       VULKAN_HPP_NAMESPACE::Result                              result =
@@ -9804,8 +9823,8 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements
-                         Image::getMemoryRequirements() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements
+                                           Image::getMemoryRequirements() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::MemoryRequirements memoryRequirements;
       getDispatcher()->vkGetImageMemoryRequirements( static_cast<VkDevice>( m_device ),
@@ -9814,8 +9833,8 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryRequirements;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements>
-                         Image::getSparseMemoryRequirements() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements>
+                                           Image::getSparseMemoryRequirements() const VULKAN_HPP_NOEXCEPT
     {
       uint32_t sparseMemoryRequirementCount;
       getDispatcher()->vkGetImageSparseMemoryRequirements(
@@ -9831,8 +9850,8 @@ namespace VULKAN_HPP_NAMESPACE
       return sparseMemoryRequirements;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout
-                         Image::getSubresourceLayout( const ImageSubresource & subresource ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SubresourceLayout
+      Image::getSubresourceLayout( const ImageSubresource & subresource ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::SubresourceLayout layout;
       getDispatcher()->vkGetImageSubresourceLayout( static_cast<VkDevice>( m_device ),
@@ -9842,7 +9861,8 @@ namespace VULKAN_HPP_NAMESPACE
       return layout;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX ImageView::getAddressNVX() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX
+                                           ImageView::getAddressNVX() const
     {
       VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX properties;
       VULKAN_HPP_NAMESPACE::Result                        result =
@@ -9857,7 +9877,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<uint8_t> PipelineCache::getData() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<uint8_t> PipelineCache::getData() const
     {
       std::vector<uint8_t>         data;
       size_t                       dataSize;
@@ -9914,7 +9934,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T>
-    VULKAN_HPP_NODISCARD std::vector<T> Pipeline::getRayTracingCaptureReplayShaderGroupHandlesKHR(
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> Pipeline::getRayTracingCaptureReplayShaderGroupHandlesKHR(
       uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
@@ -9955,7 +9975,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T>
-    VULKAN_HPP_NODISCARD std::vector<T>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T>
       Pipeline::getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
@@ -10003,8 +10023,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  static_cast<VkShaderGroupShaderKHR>( groupShader ) ) );
     }
 
-    VULKAN_HPP_NODISCARD std::vector<uint8_t>
-                         Pipeline::getShaderInfoAMD( VULKAN_HPP_NAMESPACE::ShaderStageFlagBits shaderStage,
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<uint8_t>
+      Pipeline::getShaderInfoAMD( VULKAN_HPP_NAMESPACE::ShaderStageFlagBits shaderStage,
                                   VULKAN_HPP_NAMESPACE::ShaderInfoTypeAMD   infoType ) const
     {
       std::vector<uint8_t>         info;
@@ -10044,8 +10064,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T>
-    VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>>
-                         QueryPool::getResults( uint32_t                               firstQuery,
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>>
+                                           QueryPool::getResults( uint32_t                               firstQuery,
                              uint32_t                               queryCount,
                              size_t                                 dataSize,
                              VULKAN_HPP_NAMESPACE::DeviceSize       stride,
@@ -10101,8 +10121,8 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkDevice>( m_device ), static_cast<VkQueryPool>( m_queryPool ), firstQuery, queryCount );
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV>
-                         Queue::getCheckpointData2NV() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV>
+                                           Queue::getCheckpointData2NV() const VULKAN_HPP_NOEXCEPT
     {
       uint32_t checkpointDataCount;
       getDispatcher()->vkGetQueueCheckpointData2NV( static_cast<VkQueue>( m_queue ), &checkpointDataCount, nullptr );
@@ -10114,8 +10134,8 @@ namespace VULKAN_HPP_NAMESPACE
       return checkpointData;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointDataNV>
-                         Queue::getCheckpointDataNV() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointDataNV>
+                                           Queue::getCheckpointDataNV() const VULKAN_HPP_NOEXCEPT
     {
       uint32_t checkpointDataCount;
       getDispatcher()->vkGetQueueCheckpointDataNV( static_cast<VkQueue>( m_queue ), &checkpointDataCount, nullptr );
@@ -10224,7 +10244,8 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Extent2D RenderPass::getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Extent2D
+                                           RenderPass::getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_NAMESPACE::Extent2D granularity;
       getDispatcher()->vkGetRenderAreaGranularity( static_cast<VkDevice>( m_device ),
@@ -10233,7 +10254,7 @@ namespace VULKAN_HPP_NAMESPACE
       return granularity;
     }
 
-    VULKAN_HPP_NODISCARD uint64_t Semaphore::getCounterValue() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Semaphore::getCounterValue() const
     {
       uint64_t                     value;
       VULKAN_HPP_NAMESPACE::Result result =
@@ -10259,8 +10280,10 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-    VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t> SwapchainKHR::acquireNextImage(
-      uint64_t timeout, VULKAN_HPP_NAMESPACE::Semaphore semaphore, VULKAN_HPP_NAMESPACE::Fence fence ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t>
+                                           SwapchainKHR::acquireNextImage( uint64_t                        timeout,
+                                      VULKAN_HPP_NAMESPACE::Semaphore semaphore,
+                                      VULKAN_HPP_NAMESPACE::Fence     fence ) const
     {
       uint32_t                     imageIndex;
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
@@ -10280,8 +10303,8 @@ namespace VULKAN_HPP_NAMESPACE
       return std::make_pair( result, imageIndex );
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE>
-                         SwapchainKHR::getPastPresentationTimingGOOGLE() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE>
+                                           SwapchainKHR::getPastPresentationTimingGOOGLE() const
     {
       std::vector<VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE> presentationTimings;
       uint32_t                                                        presentationTimingCount;
@@ -10316,8 +10339,8 @@ namespace VULKAN_HPP_NAMESPACE
       return presentationTimings;
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::RefreshCycleDurationGOOGLE
-                         SwapchainKHR::getRefreshCycleDurationGOOGLE() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::RefreshCycleDurationGOOGLE
+                                           SwapchainKHR::getRefreshCycleDurationGOOGLE() const
     {
       VULKAN_HPP_NAMESPACE::RefreshCycleDurationGOOGLE displayTimingProperties;
       VULKAN_HPP_NAMESPACE::Result                     result =
@@ -10332,7 +10355,7 @@ namespace VULKAN_HPP_NAMESPACE
       return displayTimingProperties;
     }
 
-    VULKAN_HPP_NODISCARD uint64_t
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
       SwapchainKHR::getCounterEXT( VULKAN_HPP_NAMESPACE::SurfaceCounterFlagBitsEXT counter ) const
     {
       uint64_t                     counterValue;
@@ -10348,7 +10371,7 @@ namespace VULKAN_HPP_NAMESPACE
       return counterValue;
     }
 
-    VULKAN_HPP_NODISCARD std::vector<VkImage> SwapchainKHR::getImages() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VkImage> SwapchainKHR::getImages() const
     {
       std::vector<VkImage>         swapchainImages;
       uint32_t                     swapchainImageCount;
@@ -10416,7 +10439,7 @@ namespace VULKAN_HPP_NAMESPACE
                                              static_cast<VkBool32>( localDimmingEnable ) );
     }
 
-    VULKAN_HPP_NODISCARD std::vector<uint8_t> ValidationCacheEXT::getData() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<uint8_t> ValidationCacheEXT::getData() const
     {
       std::vector<uint8_t>         data;
       size_t                       dataSize;

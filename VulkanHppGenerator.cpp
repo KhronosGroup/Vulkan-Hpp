@@ -11859,14 +11859,19 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     {
       promotedTo = attribute.second;
     }
-#if !defined( NDEBUG )
     else if ( attribute.first == "provisional" )
     {
-      check( platform == "provisional",
-             line,
-             "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\"" );
+      if ( platform.empty() )
+      {
+        // for now, having the attribute provisional="true" implies attribute platform="provisional" to get stuff protected by VK_ENABLE_BETA_EXTENSIONS
+        platform = "provisional";
+      }
+      check(
+        platform == "provisional",
+        line,
+        "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" +
+          platform + "\"" );
     }
-#endif
     else if ( attribute.first == "requires" )
     {
       requirements = tokenize( attribute.second, "," );

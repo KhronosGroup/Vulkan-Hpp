@@ -119,7 +119,12 @@ namespace vk
       vk::DeviceCreateInfo deviceCreateInfo( {}, deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures );
       deviceCreateInfo.pNext = pNext;
 
-      return physicalDevice.createDevice( deviceCreateInfo );
+      vk::Device device = physicalDevice.createDevice( deviceCreateInfo );
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+      // initialize function pointers for instance
+      VULKAN_HPP_DEFAULT_DISPATCHER.init( device );
+#endif
+      return device;
     }
 
     std::vector<vk::Framebuffer> createFramebuffers( vk::Device const &                 device,

@@ -1047,7 +1047,7 @@ private:
   std::map<std::string, BaseTypeData>    m_baseTypes;
   std::map<std::string, BitmaskData>     m_bitmasks;
   std::map<std::string, CommandData>     m_commands;
-  std::set<std::string>                  m_constants;
+  std::map<std::string, std::string>     m_constants;
   std::set<std::string>                  m_defines;
   std::map<std::string, EnumData>        m_enums;
   std::set<std::string>                  m_extendedStructs;  // structs which are referenced by the structextends tag

@@ -2505,7 +2505,8 @@ void VulkanHppGenerator::appendEnumInitializer( std::string &                   
   else
   {
     assert( arraySizes.size() == 1 );
-    int count = std::stoi( arraySizes[0] );
+    auto constIt = m_constants.find( arraySizes[0] );
+    int count = std::stoi( ( constIt == m_constants.end() ) ? arraySizes[0] : constIt->second );
     assert( 1 < count );
     str += "{ { " + value;
     for ( int i = 1; i < count; i++ )
@@ -11713,6 +11714,7 @@ void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element 
   checkAttributes( line, attributes, { { "name", {} } }, { { "alias", {} }, { "comment", {} }, { "value", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
+  std::string alias, name, value;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
@@ -11720,14 +11722,25 @@ void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element 
       check( m_constants.find( attribute.second ) != m_constants.end(),
              line,
              "unknown enum constant alias <" + attribute.second + ">" );
+      alias = attribute.second;
     }
     else if ( attribute.first == "name" )
     {
-      check( m_constants.insert( attribute.second ).second,
+      check( m_constants.find( attribute.second ) == m_constants.end(),
              line,
              "already specified enum constant <" + attribute.second + ">" );
+      name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      check( !attribute.second.empty(),
+             line,
+             "value of enum constant is empty");
+      value = attribute.second;
     }
   }
+  check( alias.empty() != value.empty(), line, "for enum <" + name + "> either alias or value need to be specified" );
+  m_constants[name] = alias.empty() ? value : m_constants[alias];
 }
 
 void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )

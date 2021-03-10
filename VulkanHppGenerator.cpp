@@ -3879,13 +3879,14 @@ std::string VulkanHppGenerator::constructCallArgumentEnhanced( ParamData const &
     std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
     if ( param.len.empty() )
     {
-      assert( param.arraySizes.empty() && !param.optional );
+      assert( param.arraySizes.empty() );
       if ( beginsWith( param.type.type, "Vk" ) )
       {
         argument = "reinterpret_cast<" + param.type.type + " *>( &" + name + " )";
       }
       else
       {
+        assert( !param.optional );
         argument = "&" + name;
       }
     }

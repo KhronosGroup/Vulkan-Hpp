@@ -2406,7 +2406,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     {
       assert( leave.back() == '\n' );
       leave.pop_back();
-      leave = "\n" + leave;
+      leave              = "\n" + leave;
       containsProtection = true;
     }
     enumList += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "    " +
@@ -2506,7 +2506,7 @@ void VulkanHppGenerator::appendEnumInitializer( std::string &                   
   {
     assert( arraySizes.size() == 1 );
     auto constIt = m_constants.find( arraySizes[0] );
-    int count = std::stoi( ( constIt == m_constants.end() ) ? arraySizes[0] : constIt->second );
+    int  count   = std::stoi( ( constIt == m_constants.end() ) ? arraySizes[0] : constIt->second );
     assert( 1 < count );
     str += "{ { " + value;
     for ( int i = 1; i < count; i++ )
@@ -11733,9 +11733,7 @@ void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element 
     }
     else if ( attribute.first == "value" )
     {
-      check( !attribute.second.empty(),
-             line,
-             "value of enum constant is empty");
+      check( !attribute.second.empty(), line, "value of enum constant is empty" );
       value = attribute.second;
     }
   }
@@ -11876,7 +11874,8 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     {
       if ( platform.empty() )
       {
-        // for now, having the attribute provisional="true" implies attribute platform="provisional" to get stuff protected by VK_ENABLE_BETA_EXTENSIONS
+        // for now, having the attribute provisional="true" implies attribute platform="provisional" to get stuff
+        // protected by VK_ENABLE_BETA_EXTENSIONS
         platform = "provisional";
       }
       check(
@@ -13025,6 +13024,9 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
     it->second.subStruct = determineSubStruct( *it );
 
     // check if multiple structure members use the very same (not empty) len attribute
+    // Note: even though the arrays are not mared as optional, they still might be mutually exclusive (like in
+    // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we need
+    // this external knowledge!
     static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",
                                                             "VkWriteDescriptorSet" };
     static std::set<std::string> multipleLenStructs     = { "VkIndirectCommandsLayoutTokenNV",
@@ -13035,14 +13037,14 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
                                                         "VkSubpassDescription2",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-    for ( size_t i = 0; i < it->second.members.size(); ++i )
+    bool                         warned                 = false;
+    for ( auto m0It = it->second.members.begin(); !warned && ( m0It != it->second.members.end() ); ++m0It )
     {
-      if ( !it->second.members[i].len.empty() && ( it->second.members[i].len.front() != "null-terminated" ) )
+      if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )
       {
-        for ( size_t j = i + 1; j < it->second.members.size(); ++j )
+        for ( auto m1It = std::next( m0It ); !warned && ( m1It != it->second.members.end() ); ++m1It )
         {
-          if ( !it->second.members[j].len.empty() &&
-               ( it->second.members[i].len.front() == it->second.members[j].len.front() ) )
+          if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
           {
             if ( mutualExclusiveStructs.find( it->first ) != mutualExclusiveStructs.end() )
             {
@@ -13055,6 +13057,7 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
                 line,
                 "Encountered structure <" + it->first +
                   "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
+              warned = true;
             }
           }
         }

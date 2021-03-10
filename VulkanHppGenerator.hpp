@@ -776,6 +776,11 @@ private:
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
     std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
+  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultGetTwoValues(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
+    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
   std::pair<std::string, std::string>
     constructRAIIHandleMemberFunctionResultMulti( std::map<std::string, CommandData>::const_iterator commandIt,
                                                   size_t                                             initialSkipCount,

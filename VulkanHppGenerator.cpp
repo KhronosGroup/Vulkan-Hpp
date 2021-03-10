@@ -7312,6 +7312,83 @@ ${leave})";
   return std::make_pair( declaration, definition );
 }
 
+std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResultGetTwoValues(
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount,
+  std::map<size_t, size_t> const &                   vectorParamIndices,
+  std::vector<size_t> const &                        nonConstPointerParamIndices ) const
+{
+  assert( nonConstPointerParamIndices.size() == 2 );
+  std::set<size_t> skippedParameters = determineSkippedParams(
+    commandIt->second.params, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices, false );
+  std::string argumentListDeclaration = constructArgumentListEnhanced(
+    commandIt->second.params, skippedParameters, INVALID_INDEX, false, false, false, false );
+  std::string argumentListDefinition = constructArgumentListEnhanced(
+    commandIt->second.params, skippedParameters, INVALID_INDEX, true, false, false, false );
+  std::string commandName = determineCommandName(
+    commandIt->first, initialSkipCount ? commandIt->second.params[initialSkipCount - 1].type.type : "", m_tags );
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::string callArguments =
+    constructCallArgumentsEnhanced( commandIt->second.params, initialSkipCount, false, INVALID_INDEX, true );
+  std::string firstReturnName =
+    startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
+  std::string firstReturnType =
+    stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
+  std::string secondReturnName =
+    startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[1]].name, "p" ) );
+  std::string secondReturnType =
+    stripPostfix( commandIt->second.params[nonConstPointerParamIndices[1]].type.compose(), "*" );
+
+  std::string const declarationTemplate =
+    R"(
+${enter}    VULKAN_HPP_NODISCARD std::tuple<VULKAN_HPP_NAMESPACE::Result,${firstReturnType},${secondReturnType}> ${commandName}( ${argumentList} ) const;
+${leave})";
+
+  std::string declaration = replaceWithMap( declarationTemplate,
+                                            { { "argumentList", argumentListDeclaration },
+                                              { "commandName", commandName },
+                                              { "enter", enter },
+                                              { "firstReturnType", firstReturnType },
+                                              { "leave", leave },
+                                              { "secondReturnType", secondReturnType } } );
+
+  const std::string definitionTemplate =
+    R"(
+${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::tuple<VULKAN_HPP_NAMESPACE::Result,${firstReturnType},${secondReturnType}> ${className}::${commandName}( ${argumentList} ) const
+  {
+    std::tuple<VULKAN_HPP_NAMESPACE::Result,${firstReturnType},${secondReturnType}> data;
+    VULKAN_HPP_NAMESPACE::Result & result = std::get<0>( data );
+    ${firstReturnType} & ${firstReturnName} = std::get<1>( data );
+    ${secondReturnType} & ${secondReturnName} = std::get<2>( data );
+    result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
+    if ( ${failureCheck} )
+    {
+      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
+    }
+    return data;
+  }
+${leave})";
+
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className",
+        initialSkipCount ? stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) : "Context" },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "firstReturnName", firstReturnName },
+      { "firstReturnType", firstReturnType },
+      { "leave", leave },
+      { "secondReturnName", secondReturnName },
+      { "secondReturnType", secondReturnType },
+      { "vkCommand", commandIt->first } } );
+
+  return std::make_pair( declaration, definition );
+}
+
 std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResultMulti(
   std::map<std::string, CommandData>::const_iterator commandIt,
   size_t                                             initialSkipCount,
@@ -8297,6 +8374,25 @@ void VulkanHppGenerator::constructRAIIHandleMemberFunction( std::string &       
         assert( !isHandleType( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) );
         switch ( vectorParamIndices.size() )
         {
+          case 0:
+            // two non-vector returns
+            if ( commandIt->second.returnType == "VkResult" )
+            {
+              // as the returnType is "VkResult", there has to be at least one success code
+              assert( !commandIt->second.successCodes.empty() );
+              if ( !commandIt->second.errorCodes.empty() )
+              {
+                if ( ( commandIt->second.successCodes.size() == 2 ) &&
+                     ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
+                     ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
+                {
+                  std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultGetTwoValues(
+                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
+                  commandConstructed = true;
+                }
+              }
+            }
+            break;
           case 1:
           {
             // two returns but just one vector

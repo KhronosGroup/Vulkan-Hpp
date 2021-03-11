@@ -53,6 +53,12 @@ environment:
       GENERATOR_ARCH: x64
       PYTHON: "C:\\Python38-x64"
       CXX_STANDARD: 20
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+      GCC_VERSION: 5
       
 install:
   - git submodule update --init --recursive

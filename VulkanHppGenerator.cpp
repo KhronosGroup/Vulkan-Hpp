@@ -251,6 +251,33 @@ std::string constructCArraySizes( std::vector<std::string> const & sizes )
   return arraySizes;
 }
 
+std::string constructFunctionPointerCheck( std::string const &           function,
+                                           std::set<std::string> const & extensions,
+                                           std::string const &           feature )
+{
+  std::string functionPointerCheck;
+  if ( !extensions.empty() )
+  {
+    assert( feature.empty() );
+    std::string message = "Function <" + function + "> needs ";
+    if ( extensions.size() == 1 )
+    {
+      message += "extension <" + *extensions.begin() + "> enabled!";
+    }
+    else
+    {
+      message += "at least one of the following extensions enabled: ";
+      for ( auto const & ext : extensions )
+      {
+        message += "<" + ext + ">, ";
+      }
+      message = stripPostfix( message, ", " );
+    }
+    functionPointerCheck = "\n      VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );\n";
+  }
+  return functionPointerCheck;
+}
+
 std::string constructStandardArray( std::string const & type, std::vector<std::string> const & sizes )
 {
   std::string arrayString = "std::array<" + type + "," + sizes.back() + ">";
@@ -7170,7 +7197,7 @@ ${leave})";
   const std::string definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     std::vector<${vectorElementType}> ${vectorName};
     ${counterType} ${counterName};
     VULKAN_HPP_NAMESPACE::Result result;
@@ -7206,6 +7233,8 @@ ${leave})";
       { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
       { "enter", enter },
       { "firstCallArguments", firstCallArguments },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
       { "leave", leave },
       { "secondCallArguments", secondCallArguments },
       { "vectorElementType", vectorElementType },
@@ -7262,7 +7291,7 @@ ${leave})";
   const std::string definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${firstType}>, std::vector<${secondType}>> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     std::pair<std::vector<${firstType}>, std::vector<${secondType}>> data;
     std::vector<${firstType}> & ${firstVectorName} = data.first;
     std::vector<${secondType}> & ${secondVectorName} = data.second;
@@ -7292,22 +7321,24 @@ ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${firstTy
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "counterName", counterName },
-                      { "counterType", commandIt->second.params[firstVectorParamIt->second].type.type },
-                      { "enter", enter },
-                      { "firstCallArguments", firstCallArguments },
-                      { "firstType", firstType },
-                      { "firstVectorName", firstVectorName },
-                      { "leave", leave },
-                      { "secondCallArguments", secondCallArguments },
-                      { "secondType", secondType },
-                      { "secondVectorName", secondVectorName },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "counterName", counterName },
+      { "counterType", commandIt->second.params[firstVectorParamIt->second].type.type },
+      { "enter", enter },
+      { "firstCallArguments", firstCallArguments },
+      { "firstType", firstType },
+      { "firstVectorName", firstVectorName },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "secondCallArguments", secondCallArguments },
+      { "secondType", secondType },
+      { "secondVectorName", secondVectorName },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7356,7 +7387,7 @@ ${leave})";
   const std::string definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::tuple<VULKAN_HPP_NAMESPACE::Result,${firstReturnType},${secondReturnType}> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     std::tuple<VULKAN_HPP_NAMESPACE::Result,${firstReturnType},${secondReturnType}> data;
     VULKAN_HPP_NAMESPACE::Result & result = std::get<0>( data );
     ${firstReturnType} & ${firstReturnName} = std::get<1>( data );
@@ -7381,6 +7412,8 @@ ${leave})";
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
       { "firstReturnName", firstReturnName },
       { "firstReturnType", firstReturnType },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
       { "leave", leave },
       { "secondReturnName", secondReturnName },
       { "secondReturnType", secondReturnType },
@@ -7428,7 +7461,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result ${className}::${commandName}( ${argumentList} ) const
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
     {
@@ -7438,17 +7471,19 @@ ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result ${
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7492,7 +7527,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, ${returnType}> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     ${returnType} ${valueName};
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
@@ -7503,18 +7538,20 @@ ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE:
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "valueName", valueName },
-                      { "returnType", returnType },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "valueName", valueName },
+      { "returnType", returnType },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7556,7 +7593,7 @@ ${leave})";
     R"(
 ${enter}  template <typename T>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T> ${dataName}( ${dataSize} / sizeof( T ) );
     Result result = static_cast<Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -7568,18 +7605,20 @@ ${enter}  template <typename T>
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "dataName", dataName },
-                      { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "dataName", dataName },
+      { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7687,21 +7726,23 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     return static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7745,7 +7786,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
     {
@@ -7754,17 +7795,19 @@ ${enter}  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} )
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7880,7 +7923,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${vectorElementType}>, ${valueType}> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     std::pair<std::vector<${vectorElementType}>, ${valueType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize} ), std::forward_as_tuple( 0 ) );
     std::vector<${vectorElementType}> & ${vectorName} = data.first;
     ${valueType} & ${valueName} = data.second;
@@ -7893,21 +7936,23 @@ ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${vectorE
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "valueName", valueName },
-                      { "valueType", valueType },
-                      { "vectorElementType", vectorElementType },
-                      { "vectorName", vectorName },
-                      { "vectorSize", vectorSize },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "valueName", valueName },
+      { "valueType", valueType },
+      { "vectorElementType", vectorElementType },
+      { "vectorName", vectorName },
+      { "vectorSize", vectorSize },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -7949,7 +7994,7 @@ ${leave})";
     R"(
 ${enter}  template <typename T>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T> ${dataName}( ${dataSize} / sizeof( T ) );
     Result result = static_cast<Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -7961,18 +8006,20 @@ ${enter}  template <typename T>
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "dataName", dataName },
-                      { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
-                      { "enter", enter },
-                      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-                      { "leave", leave },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "dataName", dataName },
+      { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
+      { "enter", enter },
+      { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -8080,21 +8127,23 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     getDispatcher()->${vkCommand}( ${callArguments} );
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -8140,7 +8189,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     ${returnType} ${valueName};
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
@@ -8160,6 +8209,8 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
       { "leave", leave },
       { "valueName", valueName },
       { "returnType", returnType },
@@ -8576,7 +8627,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32,${returnType}> ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     std::pair<Bool32,${returnType}> result;
     ${returnType} & ${returnVariable} = result.second;
     result.first = static_cast<Bool32>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -8592,6 +8643,8 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
       { "leave", leave },
       { "noexcept", noexceptString },
       { "vectorSizeCheck",
@@ -8667,22 +8720,24 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     return getDispatcher()->${vkCommand}( ${callArguments} );
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "returnType", returnType },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "returnType", returnType },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -8730,22 +8785,24 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     return static_cast<${returnType}>( getDispatcher()->${vkCommand}( ${callArguments} ) );
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "returnType", returnType },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "returnType", returnType },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -8797,23 +8854,25 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  ${template}VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     getDispatcher()->${vkCommand}( ${callArguments} );
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "noexcept", noexceptString },
-                      { "template", templateString },
-                      { "vectorSizeCheck", vectorSizeCheckString },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "noexcept", noexceptString },
+      { "template", templateString },
+      { "vectorSizeCheck", vectorSizeCheckString },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -8863,7 +8922,7 @@ ${leave})";
   const std::string definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {
+  {${functionPointerCheck}
     ${counterType} ${counterName};
     getDispatcher()->${vkCommand}( ${firstCallArguments} );
     std::vector<${vectorElementType}> ${vectorName}( ${counterName} );
@@ -8873,20 +8932,22 @@ ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "counterName", counterName },
-                      { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
-                      { "enter", enter },
-                      { "firstCallArguments", firstCallArguments },
-                      { "leave", leave },
-                      { "secondCallArguments", secondCallArguments },
-                      { "vectorElementType", vectorElementType },
-                      { "vectorName", vectorName },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "counterName", counterName },
+      { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
+      { "enter", enter },
+      { "firstCallArguments", firstCallArguments },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "secondCallArguments", secondCallArguments },
+      { "vectorElementType", vectorElementType },
+      { "vectorName", vectorName },
+      { "vkCommand", commandIt->first } } );
   return std::make_pair( declaration, definition );
 }
 
@@ -8933,7 +8994,7 @@ ${leave})";
     R"(
 ${enter}  template <typename StructureChain>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain> ${className}::${commandName}( ${argumentList} ) const
-  {
+  {${functionPointerCheck}
     ${counterType} ${counterName};
     getDispatcher()->${vkCommand}( ${firstCallArguments} );
     std::vector<StructureChain> returnVector( ${counterName} );
@@ -8952,20 +9013,22 @@ ${enter}  template <typename StructureChain>
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "counterName", counterName },
-                      { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
-                      { "enter", enter },
-                      { "firstCallArguments", firstCallArguments },
-                      { "leave", leave },
-                      { "secondCallArguments", secondCallArguments },
-                      { "vectorElementType", vectorElementType },
-                      { "vectorName", vectorName },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "counterName", counterName },
+      { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
+      { "enter", enter },
+      { "firstCallArguments", firstCallArguments },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "secondCallArguments", secondCallArguments },
+      { "vectorElementType", vectorElementType },
+      { "vectorName", vectorName },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -9008,7 +9071,7 @@ ${leave})";
     R"(
 ${enter}  template <typename X, typename Y, typename... Z>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {
+  {${functionPointerCheck}
     StructureChain<X, Y, Z...> structureChain;
     ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
     getDispatcher()->${vkCommand}( ${callArguments} );
@@ -9016,17 +9079,19 @@ ${enter}  template <typename X, typename Y, typename... Z>
   }
 ${leave})";
 
-  std::string definition =
-    replaceWithMap( definitionTemplate,
-                    { { "argumentList", argumentListDefinition },
-                      { "callArguments", callArguments },
-                      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                      { "commandName", commandName },
-                      { "enter", enter },
-                      { "leave", leave },
-                      { "returnVariable", returnVariable },
-                      { "returnType", returnType },
-                      { "vkCommand", commandIt->first } } );
+  std::string definition = replaceWithMap(
+    definitionTemplate,
+    { { "argumentList", argumentListDefinition },
+      { "callArguments", callArguments },
+      { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+      { "commandName", commandName },
+      { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "leave", leave },
+      { "returnVariable", returnVariable },
+      { "returnType", returnType },
+      { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
 }
@@ -9071,7 +9136,7 @@ ${leave})";
   std::string const definitionTemplate =
     R"(
 ${enter}  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {${functionPointerCheck}${vectorSizeCheck}
     ${returnType} ${returnVariable};
     getDispatcher()->${vkCommand}( ${callArguments} );
     return ${returnVariable};
@@ -9086,6 +9151,8 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
+      { "functionPointerCheck",
+        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
       { "leave", leave },
       { "noexcept", noexceptString },
       { "vectorSizeCheck",

@@ -11731,9 +11731,6 @@ void VulkanHppGenerator::readDefine( tinyxml2::XMLElement const *               
   if ( !name.empty() )
   {
     check( !element->FirstChildElement(), line, "unknown formatting of type category=define name <" + name + ">" );
-    check( ( name == "VK_USE_64_BIT_PTR_DEFINES" ) || ( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
-           line,
-           "unknown type category=define name <" + name + ">" );
     check( element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(),
            line,
            "unknown formatting of type category=define named <" + name + ">" );
@@ -11743,7 +11740,7 @@ void VulkanHppGenerator::readDefine( tinyxml2::XMLElement const *               
     {
       m_typesafeCheck = "#if defined( VK_USE_64_BIT_PTR_DEFINES )\n";
     }
-    else if ( m_typesafeCheck.empty() )
+    else if ( ( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ) && ( m_typesafeCheck.empty() ) )
     {
       std::string text  = element->LastChild()->ToText()->Value();
       size_t      start = text.find( "#if defined(__LP64__)" );

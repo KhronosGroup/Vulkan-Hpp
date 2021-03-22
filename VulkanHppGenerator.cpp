@@ -11731,18 +11731,27 @@ void VulkanHppGenerator::readDefine( tinyxml2::XMLElement const *               
   if ( !name.empty() )
   {
     check( !element->FirstChildElement(), line, "unknown formatting of type category=define name <" + name + ">" );
-    check( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE", line, "unknown type category=define name <" + name + ">" );
+    check( ( name == "VK_USE_64_BIT_PTR_DEFINES" ) || ( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ),
+           line,
+           "unknown type category=define name <" + name + ">" );
     check( element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(),
            line,
            "unknown formatting of type category=define named <" + name + ">" );
 
     // filter out the check for the different types of VK_DEFINE_NON_DISPATCHABLE_HANDLE
-    std::string text  = element->LastChild()->ToText()->Value();
-    size_t      start = text.find( "#if defined(__LP64__)" );
-    check( start != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
-    size_t end = text.find_first_of( "\r\n", start + 1 );
-    check( end != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
-    m_typesafeCheck = text.substr( start, end - start );
+    if ( name == "VK_USE_64_BIT_PTR_DEFINES" )
+    {
+      m_typesafeCheck = "#if defined( VK_USE_64_BIT_PTR_DEFINES )\n";
+    }
+    else if ( m_typesafeCheck.empty() )
+    {
+      std::string text  = element->LastChild()->ToText()->Value();
+      size_t      start = text.find( "#if defined(__LP64__)" );
+      check( start != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
+      size_t end = text.find_first_of( "\r\n", start + 1 );
+      check( end != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
+      m_typesafeCheck = text.substr( start, end - start );
+    }
   }
   else if ( element->GetText() )
   {

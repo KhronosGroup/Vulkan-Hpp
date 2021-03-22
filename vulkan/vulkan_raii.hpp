@@ -707,6 +707,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            HANDLE                                                 handle ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+      VULKAN_HPP_NODISCARD zx_handle_t
+        getMemoryZirconHandleFUCHSIA( const MemoryGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryZirconHandlePropertiesFUCHSIA
+        getMemoryZirconHandlePropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                                zx_handle_t zirconHandle ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PerformanceValueINTEL
         getPerformanceParameterINTEL( VULKAN_HPP_NAMESPACE::PerformanceParameterTypeINTEL parameter ) const;
 
@@ -731,6 +742,11 @@ namespace VULKAN_HPP_NAMESPACE
         getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+      VULKAN_HPP_NODISCARD zx_handle_t
+        getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
       void importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo ) const;
 
 #  ifdef VK_USE_PLATFORM_WIN32_KHR
@@ -743,6 +759,11 @@ namespace VULKAN_HPP_NAMESPACE
       void
         importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+      void importSemaphoreZirconHandleFUCHSIA(
+        const ImportSemaphoreZirconHandleInfoFUCHSIA & importSemaphoreZirconHandleInfo ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
       void initializePerformanceApiINTEL( const InitializePerformanceApiInfoINTEL & initializeInfo ) const;
 
@@ -7785,6 +7806,52 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE zx_handle_t
+      Device::getMemoryZirconHandleFUCHSIA( const MemoryGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetMemoryZirconHandleFUCHSIA &&
+        "Function <vkGetMemoryZirconHandleFUCHSIA> needs extension <VK_FUCHSIA_external_memory> enabled!" );
+
+      zx_handle_t                  zirconHandle;
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetMemoryZirconHandleFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          reinterpret_cast<const VkMemoryGetZirconHandleInfoFUCHSIA *>( &getZirconHandleInfo ),
+          &zirconHandle ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryZirconHandleFUCHSIA" );
+      }
+      return zirconHandle;
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryZirconHandlePropertiesFUCHSIA
+      Device::getMemoryZirconHandlePropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
+                                                      zx_handle_t zirconHandle ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetMemoryZirconHandlePropertiesFUCHSIA &&
+        "Function <vkGetMemoryZirconHandlePropertiesFUCHSIA> needs extension <VK_FUCHSIA_external_memory> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::MemoryZirconHandlePropertiesFUCHSIA memoryZirconHandleProperties;
+      VULKAN_HPP_NAMESPACE::Result                              result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetMemoryZirconHandlePropertiesFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkExternalMemoryHandleTypeFlagBits>( handleType ),
+          zirconHandle,
+          reinterpret_cast<VkMemoryZirconHandlePropertiesFUCHSIA *>( &memoryZirconHandleProperties ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryZirconHandlePropertiesFUCHSIA" );
+      }
+      return memoryZirconHandleProperties;
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PerformanceValueINTEL
       Device::getPerformanceParameterINTEL( VULKAN_HPP_NAMESPACE::PerformanceParameterTypeINTEL parameter ) const
     {
@@ -7982,6 +8049,28 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE zx_handle_t
+      Device::getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetSemaphoreZirconHandleFUCHSIA &&
+        "Function <vkGetSemaphoreZirconHandleFUCHSIA> needs extension <VK_FUCHSIA_external_semaphore> enabled!" );
+
+      zx_handle_t                  zirconHandle;
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetSemaphoreZirconHandleFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          reinterpret_cast<const VkSemaphoreGetZirconHandleInfoFUCHSIA *>( &getZirconHandleInfo ),
+          &zirconHandle ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreZirconHandleFUCHSIA" );
+      }
+      return zirconHandle;
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
     VULKAN_HPP_INLINE void Device::importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkImportFenceFdKHR &&
@@ -8048,6 +8137,25 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#  ifdef VK_USE_PLATFORM_FUCHSIA
+    VULKAN_HPP_INLINE void Device::importSemaphoreZirconHandleFUCHSIA(
+      const ImportSemaphoreZirconHandleInfoFUCHSIA & importSemaphoreZirconHandleInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkImportSemaphoreZirconHandleFUCHSIA &&
+        "Function <vkImportSemaphoreZirconHandleFUCHSIA> needs extension <VK_FUCHSIA_external_semaphore> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkImportSemaphoreZirconHandleFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          reinterpret_cast<const VkImportSemaphoreZirconHandleInfoFUCHSIA *>( &importSemaphoreZirconHandleInfo ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::importSemaphoreZirconHandleFUCHSIA" );
+      }
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     VULKAN_HPP_INLINE void
       Device::initializePerformanceApiINTEL( const InitializePerformanceApiInfoINTEL & initializeInfo ) const

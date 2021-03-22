@@ -21,9 +21,32 @@
 
 #include <iostream>
 
-#if defined(__clang__) || defined(__GNUC__)
-#pragma GCC diagnostic ignored "-Wunused-variable"
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
+
+class MyVulkanTest
+{
+public:
+  MyVulkanTest();
+
+private:
+  vk::ApplicationInfo applicationInfo;
+};
+
+MyVulkanTest::MyVulkanTest()
+  : applicationInfo{ .pApplicationName   = "My Application",
+                     .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
+                     .pEngineName        = "My Engine",
+                     .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
+                     .apiVersion         = VK_API_VERSION_1_0 }
+{
+  this->applicationInfo = vk::ApplicationInfo{ .pApplicationName   = "My Application",
+                                               .applicationVersion = VK_MAKE_VERSION( 0, 0, 1 ),
+                                               .pEngineName        = "My Engine",
+                                               .engineVersion      = VK_MAKE_VERSION( 0, 0, 1 ),
+                                               .apiVersion         = VK_API_VERSION_1_0 };
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

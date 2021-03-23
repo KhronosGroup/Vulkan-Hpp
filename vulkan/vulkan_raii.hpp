@@ -219,7 +219,7 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-#  ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       void acquireXlibDisplayEXT( Display & dpy, VULKAN_HPP_NAMESPACE::DisplayKHR display ) const;
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
@@ -239,7 +239,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV>
                            getCooperativeMatrixPropertiesNV() const;
 
-#  ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
         getDirectFBPresentationSupportEXT( uint32_t queueFamilyIndex, IDirectFB & dfb ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
@@ -340,7 +340,7 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename StructureChain>
       VULKAN_HPP_NODISCARD std::vector<StructureChain> getQueueFamilyProperties2() const;
 
-#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
                            getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
                                                             struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT;
@@ -379,7 +379,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>
                            getSurfaceFormatsKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
                            getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -393,23 +393,23 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT>
                            getToolPropertiesEXT() const;
 
-#  ifdef VK_USE_PLATFORM_WAYLAND_KHR
+#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
                            getWaylandPresentationSupportKHR( uint32_t            queueFamilyIndex,
                                                              struct wl_display & display ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
                            getWin32PresentationSupportKHR( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XCB_KHR
+#  if defined( VK_USE_PLATFORM_XCB_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32 getXcbPresentationSupportKHR(
         uint32_t queueFamilyIndex, xcb_connection_t & connection, xcb_visualid_t visual_id ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XLIB_KHR
+#  if defined( VK_USE_PLATFORM_XLIB_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32 getXlibPresentationSupportKHR(
         uint32_t queueFamilyIndex, Display & dpy, VisualID visualID ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
@@ -599,12 +599,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getAccelerationStructureMemoryRequirementsNV(
         const AccelerationStructureMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT;
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID
                            getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
                            getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const;
@@ -643,7 +643,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR
                            getGroupPresentCapabilitiesKHR() const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
                            getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -658,7 +658,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD int getFenceFdKHR( const FenceGetFdInfoKHR & getFdInfo ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD HANDLE getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
@@ -682,7 +682,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD uint32_t
         getImageViewHandleNVX( const ImageViewHandleInfoNVX & info ) const VULKAN_HPP_NOEXCEPT;
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       VULKAN_HPP_NODISCARD struct AHardwareBuffer *
         getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID & info ) const;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -696,23 +696,23 @@ namespace VULKAN_HPP_NAMESPACE
         getMemoryHostPointerPropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                            const void *                                           pHostPointer ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD HANDLE
         getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryWin32HandlePropertiesKHR
         getMemoryWin32HandlePropertiesKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                            HANDLE                                                 handle ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       VULKAN_HPP_NODISCARD zx_handle_t
         getMemoryZirconHandleFUCHSIA( const MemoryGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryZirconHandlePropertiesFUCHSIA
         getMemoryZirconHandlePropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                                 zx_handle_t zirconHandle ) const;
@@ -737,30 +737,30 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD int getSemaphoreFdKHR( const SemaphoreGetFdInfoKHR & getFdInfo ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD HANDLE
         getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       VULKAN_HPP_NODISCARD zx_handle_t
         getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
       void importFenceFdKHR( const ImportFenceFdInfoKHR & importFenceFdInfo ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       void importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR & importFenceWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
       void importSemaphoreFdKHR( const ImportSemaphoreFdInfoKHR & importSemaphoreFdInfo ) const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       void
         importSemaphoreWin32HandleKHR( const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       void importSemaphoreZirconHandleFUCHSIA(
         const ImportSemaphoreZirconHandleInfoFUCHSIA & importSemaphoreZirconHandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -2681,7 +2681,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceSize getCommitment() const VULKAN_HPP_NOEXCEPT;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       VULKAN_HPP_NODISCARD HANDLE
         getMemoryWin32HandleNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleType ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -2721,7 +2721,7 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
 
     public:
-#  ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice,
                   Display &                                                               dpy,
                   RROutput                                                                rrOutput )
@@ -2739,7 +2739,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice,
                   uint32_t                                                                deviceRelativeId )
         : m_physicalDevice( *physicalDevice ), m_dispatcher( physicalDevice.getDispatcher() )
@@ -2796,7 +2796,7 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       void acquireWinrtNV() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
@@ -4955,7 +4955,7 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSurfaceKHR;
 
     public:
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::AndroidSurfaceCreateInfoKHR const &                       createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -4977,7 +4977,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#  ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::DirectFBSurfaceCreateInfoEXT const &                      createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5039,7 +5039,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
       }
 
-#  ifdef VK_USE_PLATFORM_IOS_MVK
+#  if defined( VK_USE_PLATFORM_IOS_MVK )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::IOSSurfaceCreateInfoMVK const &                           createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5060,7 +5060,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_IOS_MVK*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::ImagePipeSurfaceCreateInfoFUCHSIA const &                 createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5082,7 +5082,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  ifdef VK_USE_PLATFORM_MACOS_MVK
+#  if defined( VK_USE_PLATFORM_MACOS_MVK )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::MacOSSurfaceCreateInfoMVK const &                         createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5104,7 +5104,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
-#  ifdef VK_USE_PLATFORM_METAL_EXT
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::MetalSurfaceCreateInfoEXT const &                         createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5126,7 +5126,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
-#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::ScreenSurfaceCreateInfoQNX const &                        createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5148,7 +5148,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-#  ifdef VK_USE_PLATFORM_GGP
+#  if defined( VK_USE_PLATFORM_GGP )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::StreamDescriptorSurfaceCreateInfoGGP const &              createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5170,7 +5170,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_GGP*/
 
-#  ifdef VK_USE_PLATFORM_VI_NN
+#  if defined( VK_USE_PLATFORM_VI_NN )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::ViSurfaceCreateInfoNN const &                             createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5191,7 +5191,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_VI_NN*/
 
-#  ifdef VK_USE_PLATFORM_WAYLAND_KHR
+#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::WaylandSurfaceCreateInfoKHR const &                       createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5213,7 +5213,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::Win32SurfaceCreateInfoKHR const &                         createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5235,7 +5235,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XCB_KHR
+#  if defined( VK_USE_PLATFORM_XCB_KHR )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::XcbSurfaceCreateInfoKHR const &                           createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5256,7 +5256,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XLIB_KHR
+#  if defined( VK_USE_PLATFORM_XLIB_KHR )
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VULKAN_HPP_NAMESPACE::XlibSurfaceCreateInfoKHR const &                          createInfo,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
@@ -5415,7 +5415,7 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       void acquireFullScreenExclusiveModeEXT() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
@@ -5435,7 +5435,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getStatus() const;
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       void releaseFullScreenExclusiveModeEXT() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
@@ -5745,7 +5745,7 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkDebugUtilsMessengerCallbackDataEXT *>( &callbackData ) );
     }
 
-#  ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
     VULKAN_HPP_INLINE void PhysicalDevice::acquireXlibDisplayEXT( Display &                        dpy,
                                                                   VULKAN_HPP_NAMESPACE::DisplayKHR display ) const
     {
@@ -5969,7 +5969,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-#  ifdef VK_USE_PLATFORM_DIRECTFB_EXT
+#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getDirectFBPresentationSupportEXT( uint32_t    queueFamilyIndex,
                                                          IDirectFB & dfb ) const VULKAN_HPP_NOEXCEPT
@@ -6546,7 +6546,7 @@ namespace VULKAN_HPP_NAMESPACE
       return returnVector;
     }
 
-#  ifdef VK_USE_PLATFORM_SCREEN_QNX
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
                                                        struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT
@@ -6807,7 +6807,7 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceFormats;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
       PhysicalDevice::getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
@@ -6943,7 +6943,7 @@ namespace VULKAN_HPP_NAMESPACE
       return toolProperties;
     }
 
-#  ifdef VK_USE_PLATFORM_WAYLAND_KHR
+#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getWaylandPresentationSupportKHR( uint32_t            queueFamilyIndex,
                                                         struct wl_display & display ) const VULKAN_HPP_NOEXCEPT
@@ -6958,7 +6958,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
       PhysicalDevice::getWin32PresentationSupportKHR( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT
     {
@@ -6971,7 +6971,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XCB_KHR
+#  if defined( VK_USE_PLATFORM_XCB_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32 PhysicalDevice::getXcbPresentationSupportKHR(
       uint32_t queueFamilyIndex, xcb_connection_t & connection, xcb_visualid_t visual_id ) const VULKAN_HPP_NOEXCEPT
     {
@@ -6984,7 +6984,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 
-#  ifdef VK_USE_PLATFORM_XLIB_KHR
+#  if defined( VK_USE_PLATFORM_XLIB_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32 PhysicalDevice::getXlibPresentationSupportKHR(
       uint32_t queueFamilyIndex, Display & dpy, VisualID visualID ) const VULKAN_HPP_NOEXCEPT
     {
@@ -7312,7 +7312,7 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID
       Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const
     {
@@ -7335,7 +7335,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
     template <typename X, typename Y, typename... Z>
     VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
       Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const
@@ -7498,7 +7498,7 @@ namespace VULKAN_HPP_NAMESPACE
       return deviceGroupPresentCapabilities;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR
       Device::getGroupSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
@@ -7568,7 +7568,7 @@ namespace VULKAN_HPP_NAMESPACE
       return fd;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getFenceWin32HandleKHR( const FenceGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
@@ -7679,7 +7679,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<const VkImageViewHandleInfoNVX *>( &info ) );
     }
 
-#  ifdef VK_USE_PLATFORM_ANDROID_KHR
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE struct AHardwareBuffer *
       Device::getMemoryAndroidHardwareBufferANDROID( const MemoryGetAndroidHardwareBufferInfoANDROID & info ) const
     {
@@ -7760,7 +7760,7 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryHostPointerProperties;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getMemoryWin32HandleKHR( const MemoryGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
@@ -7782,7 +7782,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryWin32HandlePropertiesKHR
       Device::getMemoryWin32HandlePropertiesKHR( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                                  HANDLE                                                 handle ) const
@@ -7806,7 +7806,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE zx_handle_t
       Device::getMemoryZirconHandleFUCHSIA( const MemoryGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const
     {
@@ -7828,7 +7828,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryZirconHandlePropertiesFUCHSIA
       Device::getMemoryZirconHandlePropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType,
                                                       zx_handle_t zirconHandle ) const
@@ -8027,7 +8027,7 @@ namespace VULKAN_HPP_NAMESPACE
       return fd;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       Device::getSemaphoreWin32HandleKHR( const SemaphoreGetWin32HandleInfoKHR & getWin32HandleInfo ) const
     {
@@ -8049,7 +8049,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE zx_handle_t
       Device::getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const
     {
@@ -8085,7 +8085,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_INLINE void
       Device::importFenceWin32HandleKHR( const ImportFenceWin32HandleInfoKHR & importFenceWin32HandleInfo ) const
     {
@@ -8119,7 +8119,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_INLINE void Device::importSemaphoreWin32HandleKHR(
       const ImportSemaphoreWin32HandleInfoKHR & importSemaphoreWin32HandleInfo ) const
     {
@@ -8138,7 +8138,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
-#  ifdef VK_USE_PLATFORM_FUCHSIA
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     VULKAN_HPP_INLINE void Device::importSemaphoreZirconHandleFUCHSIA(
       const ImportSemaphoreZirconHandleInfoFUCHSIA & importSemaphoreZirconHandleInfo ) const
     {
@@ -10291,7 +10291,7 @@ namespace VULKAN_HPP_NAMESPACE
       return committedMemoryInBytes;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE HANDLE
       DeviceMemory::getMemoryWin32HandleNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleType ) const
     {
@@ -10338,7 +10338,7 @@ namespace VULKAN_HPP_NAMESPACE
                                       static_cast<VkDeviceMemory>( m_deviceMemory ) );
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_INLINE void DisplayKHR::acquireWinrtNV() const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireWinrtDisplayNV &&
@@ -11020,7 +11020,7 @@ namespace VULKAN_HPP_NAMESPACE
       return value;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_INLINE void SwapchainKHR::acquireFullScreenExclusiveModeEXT() const
     {
       VULKAN_HPP_ASSERT(
@@ -11196,7 +11196,7 @@ namespace VULKAN_HPP_NAMESPACE
       return result;
     }
 
-#  ifdef VK_USE_PLATFORM_WIN32_KHR
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
     VULKAN_HPP_INLINE void SwapchainKHR::releaseFullScreenExclusiveModeEXT() const
     {
       VULKAN_HPP_ASSERT(

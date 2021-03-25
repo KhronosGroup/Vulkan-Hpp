@@ -35,6 +35,7 @@ public:
   void                appendHandles( std::string & str );
   void                appendHandlesCommandDefinitions( std::string & str ) const;
   void                appendHashStructures( std::string & str ) const;
+  void                appendRAIIDispatchers( std::string & str ) const;
   void                appendRAIIHandles( std::string & str, std::string & commandDefinitions );
   void                appendResultExceptions( std::string & str ) const;
   void                appendStructs( std::string & str );
@@ -975,6 +976,7 @@ private:
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,
                                                      size_t                           returnParamIndex ) const;
+  bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                isHandleType( std::string const & type ) const;
   bool isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isLenByStructMember( std::string const & name, ParamData const & param ) const;

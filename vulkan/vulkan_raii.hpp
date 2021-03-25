@@ -36,15 +36,33 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
     }
 
+    class ContextDispatcher
+    {
+    public:
+      ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
+        : vkGetInstanceProcAddr( getProcAddr )
+        , vkCreateInstance( PFN_vkCreateInstance( getProcAddr( NULL, "vkCreateInstance" ) ) )
+        , vkEnumerateInstanceExtensionProperties( PFN_vkEnumerateInstanceExtensionProperties(
+            getProcAddr( NULL, "vkEnumerateInstanceExtensionProperties" ) ) )
+        , vkEnumerateInstanceLayerProperties(
+            PFN_vkEnumerateInstanceLayerProperties( getProcAddr( NULL, "vkEnumerateInstanceLayerProperties" ) ) )
+        , vkEnumerateInstanceVersion(
+            PFN_vkEnumerateInstanceVersion( getProcAddr( NULL, "vkEnumerateInstanceVersion" ) ) )
+      {}
+
+    public:
+      PFN_vkGetInstanceProcAddr                  vkGetInstanceProcAddr                  = 0;
+      PFN_vkCreateInstance                       vkCreateInstance                       = 0;
+      PFN_vkEnumerateInstanceExtensionProperties vkEnumerateInstanceExtensionProperties = 0;
+      PFN_vkEnumerateInstanceLayerProperties     vkEnumerateInstanceLayerProperties     = 0;
+      PFN_vkEnumerateInstanceVersion             vkEnumerateInstanceVersion             = 0;
+    };
+
     class Context
     {
     public:
-      Context()
-      {
-        PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-          m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-        m_dispatcher.init( vkGetInstanceProcAddr );
-      }
+      Context() : m_dispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) )
+      {}
 
       ~Context() = default;
 
@@ -70,14 +88,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD uint32_t enumerateInstanceVersion() const;
 
-      VULKAN_HPP_RAII_DISPATCHER_TYPE const * getDispatcher() const
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
       {
         return &m_dispatcher;
       }
 
     private:
-      vk::DynamicLoader               m_dynamicLoader;
-      VULKAN_HPP_RAII_DISPATCHER_TYPE m_dispatcher;
+      VULKAN_HPP_NAMESPACE::DynamicLoader                                m_dynamicLoader;
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher m_dispatcher;
     };
 
     class Instance
@@ -96,7 +114,7 @@ namespace VULKAN_HPP_NAMESPACE
                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
         : m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
             static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
-        , m_dispatcher( *context.getDispatcher() )
+        , m_dispatcher( context.getDispatcher()->vkGetInstanceProcAddr )
       {
         VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
           getDispatcher()->vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo *>( &createInfo ),
@@ -115,7 +133,7 @@ namespace VULKAN_HPP_NAMESPACE
         : m_instance( instance )
         , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
             static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
-        , m_dispatcher( *context.getDispatcher() )
+        , m_dispatcher( context.getDispatcher()->vkGetInstanceProcAddr )
       {
         m_dispatcher.init( m_instance );
       }

@@ -201,8 +201,8 @@ private:
 
   struct HandleData
   {
-    HandleData( std::vector<std::string> const & p, std::string const & objType, int line )
-      : objTypeEnum( objType ), parents( p ), xmlLine( line )
+    HandleData( std::string const & p, std::string const & objType, int line )
+      : objTypeEnum( objType ), parent( p ), xmlLine( line )
     {}
 
     std::string              alias;
@@ -211,7 +211,7 @@ private:
     std::string              deleteCommand;
     std::string              deletePool;
     std::string              objTypeEnum;
-    std::vector<std::string> parents;
+    std::string              parent;
     std::set<std::string>    secondLevelCommands;
     int                      xmlLine;
 

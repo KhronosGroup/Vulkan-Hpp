@@ -11878,7 +11878,8 @@ void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element 
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "alias", {} }, { "comment", {} }, { "value", {} } } );
+  checkAttributes(
+    line, attributes, { { "name", {} } }, { { "alias", {} }, { "comment", {} }, { "type", {} }, { "value", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
   std::string alias, name, value;

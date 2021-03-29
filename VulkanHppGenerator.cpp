@@ -10441,12 +10441,9 @@ void VulkanHppGenerator::checkCorrectness()
   assert( objectTypeIt != m_enums.end() );
   for ( auto const & handle : m_handles )
   {
-    for ( auto const & parent : handle.second.parents )
-    {
-      check( m_handles.find( parent ) != m_handles.end(),
-             handle.second.xmlLine,
-             "handle <" + handle.first + "> with unknown parent <" + parent + ">" );
-    }
+    check( m_handles.find( handle.second.parent ) != m_handles.end(),
+            handle.second.xmlLine,
+            "handle <" + handle.first + "> with unknown parent <" + handle.second.parent + ">" );
 
     if ( !handle.first.empty() )
     {
@@ -12526,7 +12523,9 @@ void VulkanHppGenerator::readHandle( tinyxml2::XMLElement const *               
     check( typeInfo.postfix == "(", line, "unexpected type postfix <" + typeInfo.postfix + ">" );
     check( !objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
 
-    check( m_handles.insert( std::make_pair( nameData.name, HandleData( tokenize( parent, "," ), objTypeEnum, line ) ) )
+    check(
+      parent.find( ',' ) == std::string::npos, line, "mulitple parents specified for handle <" + nameData.name + ">" );
+    check( m_handles.insert( std::make_pair( nameData.name, HandleData( parent, objTypeEnum, line ) ) )
              .second,
            line,
            "handle <" + nameData.name + "> already specified" );
@@ -13667,14 +13666,11 @@ void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                    
                                                std::set<std::string> const &              specialFunctions ) const
 {
   listedHandles.insert( handle.first );
-  for ( auto const & parent : handle.second.parents )
+  if ( !handle.second.parent.empty() && ( listedHandles.find( handle.second.parent ) == listedHandles.end() ) )
   {
-    if ( listedHandles.find( parent ) == listedHandles.end() )
-    {
-      auto parentIt = m_handles.find( parent );
-      assert( parentIt != m_handles.end() );
-      appendRAIIHandle( str, commandDefinitions, *parentIt, listedHandles, specialFunctions );
-    }
+    auto parentIt = m_handles.find( handle.second.parent );
+    assert( parentIt != m_handles.end() );
+    appendRAIIHandle( str, commandDefinitions, *parentIt, listedHandles, specialFunctions );
   }
 
   for ( auto constructorIt : handle.second.constructorIts )

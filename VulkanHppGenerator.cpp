@@ -11735,7 +11735,7 @@ void VulkanHppGenerator::readDefine( tinyxml2::XMLElement const *               
     // filter out the check for the different types of VK_DEFINE_NON_DISPATCHABLE_HANDLE
     if ( name == "VK_USE_64_BIT_PTR_DEFINES" )
     {
-      m_typesafeCheck = "#if defined( VK_USE_64_BIT_PTR_DEFINES )\n";
+      m_typesafeCheck = "#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )";
     }
     else if ( ( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ) && ( m_typesafeCheck.empty() ) )
     {

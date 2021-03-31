@@ -1,0 +1,89 @@
+﻿---
+AccessModifierOffset : -2
+AlignAfterOpenBracket : Align
+AlignConsecutiveAssignments : true
+AlignConsecutiveDeclarations : true
+AlignConsecutiveMacros : true
+AlignEscapedNewlines : Left
+AlignOperands : true
+AlignTrailingComments : true
+AllowAllArgumentsOnNextLine : true
+AllowAllConstructorInitializersOnNextLine : true
+AllowAllParametersOfDeclarationOnNextLine : true
+AllowShortBlocksOnASingleLine : Empty
+AllowShortCaseLabelsOnASingleLine : true
+AllowShortFunctionsOnASingleLine : Empty
+AllowShortIfStatementsOnASingleLine : Never
+AllowShortLambdasOnASingleLine : Inline
+AllowShortLoopsOnASingleLine : false
+AlwaysBreakAfterReturnType : None
+AlwaysBreakBeforeMultilineStrings : true
+AlwaysBreakTemplateDeclarations : Yes
+BinPackArguments : false
+BinPackParameters : false
+BraceWrapping :
+    AfterCaseLabel : true
+    AfterClass : true
+    AfterControlStatement : Always
+    AfterEnum : true
+    AfterFunction : true
+    AfterNamespace : true
+    AfterStruct : true
+    AfterUnion : true
+    AfterExternBlock : true
+    BeforeCatch : true
+    BeforeElse : true
+    BeforeLambdaBody : true
+    IndentBraces : false
+    SplitEmptyFunction : false
+    SplitEmptyRecord : false
+    SplitEmptyNamespace : false
+BreakBeforeBinaryOperators : None
+BreakBeforeBraces : Custom
+BreakBeforeTernaryOperators : true
+BreakConstructorInitializers : BeforeComma
+BreakInheritanceList : BeforeComma
+BreakStringLiterals : false
+ColumnLimit : 120
+CompactNamespaces : false
+ConstructorInitializerAllOnOneLineOrOnePerLine : true
+ConstructorInitializerIndentWidth : 2
+ContinuationIndentWidth : 2
+Cpp11BracedListStyle : false
+FixNamespaceComments : true
+IncludeBlocks : Regroup
+IndentCaseBlocks : true
+IndentCaseLabels : true
+IndentPPDirectives : AfterHash
+IndentWidth : 2
+IndentWrappedFunctionNames : true
+KeepEmptyLinesAtTheStartOfBlocks : false
+MaxEmptyLinesToKeep : 1
+NamespaceIndentation : All
+PointerAlignment : Middle
+ReflowComments : true
+SortIncludes : true
+SortUsingDeclarations : true
+SpaceAfterCStyleCast : false
+SpaceAfterLogicalNot : false
+SpaceAfterTemplateKeyword : true
+SpaceBeforeAssignmentOperators : true
+SpaceBeforeCpp11BracedList : false
+SpaceBeforeCtorInitializerColon : true
+SpaceBeforeInheritanceColon : true
+SpaceBeforeParens : ControlStatements
+SpaceBeforeRangeBasedForLoopColon : true
+SpaceBeforeSquareBrackets : false
+SpaceInEmptyBlock : false
+SpaceInEmptyParentheses : false
+SpacesBeforeTrailingComments : 2
+SpacesInAngles : false
+SpacesInCStyleCastParentheses : false
+SpacesInConditionalStatement : true
+SpacesInContainerLiterals : true
+SpacesInParentheses : true
+SpacesInSquareBrackets : false
+Standard : Latest
+UseCRLF : true
+UseTab : Never
+...

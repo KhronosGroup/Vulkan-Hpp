@@ -128,9 +128,9 @@ void appendTypesafeStuff( std::string & str, std::string const & typesafeCheck )
     "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION\n" +
     typesafeCheck +
     "\n"
-    "# if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )\n"
-    "#  define VULKAN_HPP_TYPESAFE_CONVERSION\n"
-    "# endif\n"
+    "#  if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )\n"
+    "#    define VULKAN_HPP_TYPESAFE_CONVERSION\n"
+    "#  endif\n"
     "#endif\n";
 }
 
@@ -2033,14 +2033,14 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 #endif
     }
 
-    DynamicLoader( DynamicLoader const& ) = delete;
+    DynamicLoader( DynamicLoader const & ) = delete;
 
     DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT : m_library(other.m_library)
     {
       other.m_library = nullptr;
     }
 
-    DynamicLoader &operator=( DynamicLoader const& ) = delete;
+    DynamicLoader &operator=( DynamicLoader const & ) = delete;
 
     DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
     {
@@ -2112,10 +2112,10 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT = default;
     DispatchLoaderDynamic( DispatchLoaderDynamic const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
-#if !defined(VK_NO_PROTOTYPES)
+#if !defined( VK_NO_PROTOTYPES )
     // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
     template <typename DynamicLoader>
-    void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device, DynamicLoader const& dl) VULKAN_HPP_NOEXCEPT
+    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device, DynamicLoader const & dl) VULKAN_HPP_NOEXCEPT
     {
       PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
       PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
@@ -2128,12 +2128,12 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
       = VULKAN_HPP_NAMESPACE::DynamicLoader
 #endif
     >
-    void init(VULKAN_HPP_NAMESPACE::Instance const& instance, VULKAN_HPP_NAMESPACE::Device const& device) VULKAN_HPP_NOEXCEPT
+    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device) VULKAN_HPP_NOEXCEPT
     {
       static DynamicLoader dl;
       init(instance, device, dl);
     }
-#endif // !defined(VK_NO_PROTOTYPES)
+#endif // !defined( VK_NO_PROTOTYPES )
 
     DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
     {
@@ -2188,7 +2188,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
 void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
 {
   str += R"(
-#if !defined(VK_NO_PROTOTYPES)
+#if !defined( VK_NO_PROTOTYPES )
   class DispatchLoaderStatic
   {
   public:)";
@@ -2247,7 +2247,7 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
     "\n"
     R"(  class DispatchLoaderDynamic;
 #if !defined(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC)
-# if defined(VK_NO_PROTOTYPES)
+# if defined( VK_NO_PROTOTYPES )
 #  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 # else
 #  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
@@ -2301,9 +2301,9 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT
 #else
-#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT = {}
+#  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT         = {}
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT = VULKAN_HPP_DEFAULT_DISPATCHER
+#  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
 #endif
 )";
 }
@@ -2989,7 +2989,7 @@ ${enter}  class ${className}
     }
 
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${className} const& ) const = default;
+    auto operator<=>( ${className} const & ) const = default;
 #else
     bool operator==( ${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
@@ -3223,7 +3223,7 @@ void VulkanHppGenerator::appendHashStructures( std::string & str ) const
 {
   const std::string hashTemplate = R"(  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
   {
-    std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const& ${name}) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const & ${name}) const VULKAN_HPP_NOEXCEPT
     {
       return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
     }
@@ -3291,7 +3291,7 @@ void VulkanHppGenerator::appendResultExceptions( std::string & str ) const
 ${enter}  class ${className} : public SystemError
   {
   public:
-    ${className}( std::string const& message )
+    ${className}( std::string const & message )
       : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
     ${className}( char const * message )
       : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
@@ -3601,14 +3601,14 @@ void VulkanHppGenerator::appendStructCompareOperators( std::string &            
 
   static const std::string compareTemplate = R"(
 #if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${name} const& ) const = default;
+    auto operator<=>( ${name} const & ) const = default;
 #else
-    bool operator==( ${name} const& rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return ${compareMembers};
     }
 
-    bool operator!=( ${name} const& rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator!=( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
@@ -6283,7 +6283,7 @@ std::string
   }
   if ( withAllocator )
   {
-    str += "Allocator const& vectorAllocator, ";
+    str += "Allocator const & vectorAllocator, ";
   }
   str += "Dispatch const &d";
   if ( withDefaults )
@@ -9581,11 +9581,11 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
       }
     }
     static const std::string constructorTemplate = R"(
-#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${templateHeader}${prefix}${structName}( ${arguments} )
 ${prefix}${initializers}
 ${prefix}{${sizeChecks}}
-#endif  // !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 )";
 
     str += replaceWithMap( constructorTemplate,
@@ -9613,7 +9613,7 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
     }
     else
     {
-      str += constructStandardArray( memberData.type.compose(), memberData.arraySizes ) + " const& ";
+      str += constructStandardArray( memberData.type.compose(), memberData.arraySizes ) + " const & ";
     }
     str += memberData.name + "_";
 
@@ -9803,14 +9803,14 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       }
 
       static const std::string setArrayTemplate = R"(
-#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
     ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${lenName} = ${lenValue};
       ${memberName} = ${arrayName}_.data();
       return *this;
     }
-#endif  // !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 )";
 
       str += replaceWithMap( setArrayTemplate,
@@ -9864,7 +9864,7 @@ void VulkanHppGenerator::appendStructSubConstructor( std::string &              
     str +=
       "\n"
       "    explicit " +
-      stripPrefix( structData.first, "Vk" ) + "( " + stripPrefix( subStruct->first, "Vk" ) + " const& " +
+      stripPrefix( structData.first, "Vk" ) + "( " + stripPrefix( subStruct->first, "Vk" ) + " const & " +
       subStructArgumentName + subArguments + " )\n" + subCopies + "    {}\n";
   }
 }
@@ -9881,7 +9881,7 @@ void VulkanHppGenerator::appendStructure( std::string &                         
   constructorAndSetters += "#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )";
   appendStructConstructors( constructorAndSetters, structure, "    " );
   appendStructSubConstructor( constructorAndSetters, structure, "    " );
-  constructorAndSetters += "#endif // !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )\n";
+  constructorAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/\n";
   appendStructAssignmentOperators( constructorAndSetters, structure, "    " );
   if ( !structure.second.returnedOnly )
   {
@@ -9910,7 +9910,7 @@ ${allowDuplicate}
 ${structureType}
 ${constructorAndSetters}
 
-    operator ${vkName} const&() const VULKAN_HPP_NOEXCEPT
+    operator ${vkName} const &() const VULKAN_HPP_NOEXCEPT
     {
       return *reinterpret_cast<const ${vkName}*>( this );
     }
@@ -10127,9 +10127,9 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
          "  {\n"
          "    " +
          unionName + "( VULKAN_HPP_NAMESPACE::" + unionName +
-         " const& rhs ) VULKAN_HPP_NOEXCEPT\n"
+         " const & rhs ) VULKAN_HPP_NOEXCEPT\n"
          "    {\n"
-         "      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::" +
+         "      memcpy( static_cast<void*>( this ), &rhs, sizeof( VULKAN_HPP_NAMESPACE::" +
          unionName +
          " ) );\n"
          "    }\n";
@@ -10179,18 +10179,18 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
   static const std::string operatorsTemplate = R"(
     VULKAN_HPP_NAMESPACE::${unionName} & operator=( VULKAN_HPP_NAMESPACE::${unionName} const & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      memcpy( static_cast<void*>(this), &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
+      memcpy( static_cast<void*>( this ), &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
       return *this;
     }
 
-    operator Vk${unionName} const&() const
+    operator Vk${unionName} const &() const
     {
-      return *reinterpret_cast<const Vk${unionName}*>(this);
+      return *reinterpret_cast<const Vk${unionName}*>( this );
     }
 
     operator Vk${unionName} &()
     {
-      return *reinterpret_cast<Vk${unionName}*>(this);
+      return *reinterpret_cast<Vk${unionName}*>( this );
     }
 
 )";
@@ -11089,7 +11089,7 @@ std::pair<std::string, std::string>
       std::string const & protect = platformIt->second.protect;
       if ( !protect.empty() )
       {
-        return std::make_pair( "#ifdef " + protect + "\n", "#endif /*" + protect + "*/\n" );
+        return std::make_pair( "#if defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
       }
     }
   }
@@ -13698,6 +13698,14 @@ void VulkanHppGenerator::setVulkanLicenseHeader( int line, std::string const & c
   {
     m_vulkanLicenseHeader.replace( pos, 1, "\n// " );
   }
+  // replace any " \n" with "\n"
+  for ( size_t pos = m_vulkanLicenseHeader.find( " \n" ); pos != std::string::npos;
+        pos        = m_vulkanLicenseHeader.find( " \n", pos ) )
+  {
+    m_vulkanLicenseHeader.replace( pos, 2, "\n" );
+  }
+  // remove any trailing spaces
+  m_vulkanLicenseHeader = trimEnd( m_vulkanLicenseHeader );
 
   // and add a little message on our own
   m_vulkanLicenseHeader += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
@@ -13760,7 +13768,7 @@ std::string to_string( tinyxml2::XMLError error )
 int main( int argc, char ** argv )
 {
   static const std::string classArrayProxy = R"(
-#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   template <typename T>
   class ArrayProxy
   {
@@ -13797,10 +13805,10 @@ int main( int argc, char ** argv )
       , m_ptr( ptr )
     {}
 
-#if __GNUC__ >= 9
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Winit-list-lifetime"
-#endif
+#  if __GNUC__ >= 9
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#  endif
 
     ArrayProxy( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
@@ -13824,9 +13832,9 @@ int main( int argc, char ** argv )
       , m_ptr( list.begin() )
     {}
 
-#if __GNUC__ >= 9
-#pragma GCC diagnostic pop
-#endif
+#  if __GNUC__ >= 9
+#    pragma GCC diagnostic pop
+#  endif
 
     template <size_t N>
     ArrayProxy( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT
@@ -14123,30 +14131,30 @@ int main( int argc, char ** argv )
 
   static const std::string classArrayWrapper = R"(
   template <typename T, size_t N>
-  class ArrayWrapper1D : public std::array<T,N>
+  class ArrayWrapper1D : public std::array<T, N>
   {
   public:
     VULKAN_HPP_CONSTEXPR ArrayWrapper1D() VULKAN_HPP_NOEXCEPT
       : std::array<T, N>()
     {}
 
-    VULKAN_HPP_CONSTEXPR ArrayWrapper1D(std::array<T,N> const& data) VULKAN_HPP_NOEXCEPT
-      : std::array<T, N>(data)
+    VULKAN_HPP_CONSTEXPR ArrayWrapper1D( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : std::array<T, N>( data )
     {}
 
-#if defined(_WIN32) && !defined(_WIN64)
-    VULKAN_HPP_CONSTEXPR T const& operator[](int index) const VULKAN_HPP_NOEXCEPT
+#if defined( _WIN32 ) && !defined( _WIN64 )
+    VULKAN_HPP_CONSTEXPR T const & operator[]( int index ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::array<T, N>::operator[](index);
+      return std::array<T, N>::operator[]( index );
     }
 
-    T & operator[](int index) VULKAN_HPP_NOEXCEPT
+    T & operator[]( int index ) VULKAN_HPP_NOEXCEPT
     {
-      return std::array<T, N>::operator[](index);
+      return std::array<T, N>::operator[]( index );
     }
 #endif
 
-    operator T const* () const VULKAN_HPP_NOEXCEPT
+    operator T const * () const VULKAN_HPP_NOEXCEPT
     {
       return this->data();
     }
@@ -14209,59 +14217,63 @@ int main( int argc, char ** argv )
 
   // specialization of relational operators between std::string and arrays of chars
   template <size_t N>
-  bool operator<(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator<( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs < rhs.data();
   }
 
   template <size_t N>
-  bool operator<=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator<=( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs <= rhs.data();
   }
 
   template <size_t N>
-  bool operator>(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator>( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs > rhs.data();
   }
 
   template <size_t N>
-  bool operator>=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator>=( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs >= rhs.data();
   }
 
   template <size_t N>
-  bool operator==(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator==( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs == rhs.data();
   }
 
   template <size_t N>
-  bool operator!=(std::string const& lhs, ArrayWrapper1D<char, N> const& rhs) VULKAN_HPP_NOEXCEPT
+  bool operator!=( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
   {
     return lhs != rhs.data();
   }
 
   template <typename T, size_t N, size_t M>
-  class ArrayWrapper2D : public std::array<ArrayWrapper1D<T,M>,N>
+  class ArrayWrapper2D : public std::array<ArrayWrapper1D<T, M>, N>
   {
   public:
     VULKAN_HPP_CONSTEXPR ArrayWrapper2D() VULKAN_HPP_NOEXCEPT
-      : std::array<ArrayWrapper1D<T,M>, N>()
+      : std::array<ArrayWrapper1D<T, M>, N>()
     {}
 
-    VULKAN_HPP_CONSTEXPR ArrayWrapper2D(std::array<std::array<T,M>,N> const& data) VULKAN_HPP_NOEXCEPT
-      : std::array<ArrayWrapper1D<T,M>, N>(*reinterpret_cast<std::array<ArrayWrapper1D<T,M>,N> const*>(&data))
+    VULKAN_HPP_CONSTEXPR ArrayWrapper2D( std::array<std::array<T, M>, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : std::array<ArrayWrapper1D<T, M>, N>( *reinterpret_cast<std::array<ArrayWrapper1D<T, M>, N> const *>( &data ) )
     {}
   };
 )";
 
   static const std::string classFlags = R"(
-  template <typename FlagBitsType> struct FlagTraits
+  template <typename FlagBitsType>
+  struct FlagTraits
   {
-    enum { allFlags = 0 };
+    enum
+    {
+      allFlags = 0
+    };
   };
 
   template <typename BitType>
@@ -14272,49 +14284,49 @@ int main( int argc, char ** argv )
 
     // constructors
     VULKAN_HPP_CONSTEXPR Flags() VULKAN_HPP_NOEXCEPT
-      : m_mask(0)
+      : m_mask( 0 )
     {}
 
-    VULKAN_HPP_CONSTEXPR Flags(BitType bit) VULKAN_HPP_NOEXCEPT
-      : m_mask(static_cast<MaskType>(bit))
+    VULKAN_HPP_CONSTEXPR Flags( BitType bit ) VULKAN_HPP_NOEXCEPT
+      : m_mask( static_cast<MaskType>( bit ) )
     {}
 
-    VULKAN_HPP_CONSTEXPR Flags(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT = default;
+    VULKAN_HPP_CONSTEXPR Flags( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
-    VULKAN_HPP_CONSTEXPR explicit Flags(MaskType flags) VULKAN_HPP_NOEXCEPT
-      : m_mask(flags)
+    VULKAN_HPP_CONSTEXPR explicit Flags( MaskType flags ) VULKAN_HPP_NOEXCEPT
+      : m_mask( flags )
     {}
 
     // relational operators
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>(Flags<BitType> const&) const = default;
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( Flags<BitType> const & ) const = default;
 #else
-    VULKAN_HPP_CONSTEXPR bool operator<(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask < rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator<=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator<=( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask <= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask > rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator>=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator>=( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask >= rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator==(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator==( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask == rhs.m_mask;
     }
 
-    VULKAN_HPP_CONSTEXPR bool operator!=(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR bool operator!=( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_mask != rhs.m_mask;
     }
@@ -14327,42 +14339,42 @@ int main( int argc, char ** argv )
     }
 
     // bitwise operators
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator&( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask & rhs.m_mask);
+      return Flags<BitType>( m_mask & rhs.m_mask );
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator|( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask | rhs.m_mask);
+      return Flags<BitType>( m_mask | rhs.m_mask );
     }
 
-    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(Flags<BitType> const& rhs) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR Flags<BitType> operator^( Flags<BitType> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask ^ rhs.m_mask);
+      return Flags<BitType>( m_mask ^ rhs.m_mask );
     }
 
     VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>(m_mask ^ FlagTraits<BitType>::allFlags);
+      return Flags<BitType>( m_mask ^ FlagTraits<BitType>::allFlags );
     }
 
     // assignment operators
-    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT = default;
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator=( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
-    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator|=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator|=( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       m_mask |= rhs.m_mask;
       return *this;
     }
 
-    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator&=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator&=( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       m_mask &= rhs.m_mask;
       return *this;
     }
 
-    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator^=(Flags<BitType> const& rhs) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 Flags<BitType> & operator^=( Flags<BitType> const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       m_mask ^= rhs.m_mask;
       return *this;
@@ -14376,51 +14388,51 @@ int main( int argc, char ** argv )
 
     explicit VULKAN_HPP_CONSTEXPR operator MaskType() const VULKAN_HPP_NOEXCEPT
     {
-        return m_mask;
+      return m_mask;
     }
 
-#if defined(VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC)
+#if defined( VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC )
   public:
 #else
   private:
 #endif
-    MaskType  m_mask;
+    MaskType m_mask;
   };
 
-#if !defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+#if !defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
   // relational operators only needed for pre C++20
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator<(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator<( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator>( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator<=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator<=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator>=( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator>(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator>( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator<( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator>=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator>=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
-    return flags.operator<=(bit);
+    return flags.operator<=( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator==(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator==( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator==( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR bool operator!=(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR bool operator!=( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator!=( bit );
   }
@@ -14428,19 +14440,19 @@ int main( int argc, char ** argv )
 
   // bitwise operators
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator&( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator&( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator|( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator|( bit );
   }
 
   template <typename BitType>
-  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^(BitType bit, Flags<BitType> const& flags) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_CONSTEXPR Flags<BitType> operator^( BitType bit, Flags<BitType> const & flags ) VULKAN_HPP_NOEXCEPT
   {
     return flags.operator^( bit );
   }
@@ -14484,7 +14496,7 @@ int main( int argc, char ** argv )
   class NoParent;
 
   template <typename Dispatch>
-  class ObjectDestroy<NoParent,Dispatch>
+  class ObjectDestroy<NoParent, Dispatch>
   {
   public:
     ObjectDestroy() = default;
@@ -14587,16 +14599,34 @@ int main( int argc, char ** argv )
   class Optional
   {
   public:
-    Optional(RefType & reference) VULKAN_HPP_NOEXCEPT { m_ptr = &reference; }
-    Optional(RefType * ptr) VULKAN_HPP_NOEXCEPT { m_ptr = ptr; }
-    Optional(std::nullptr_t) VULKAN_HPP_NOEXCEPT { m_ptr = nullptr; }
+    Optional( RefType & reference ) VULKAN_HPP_NOEXCEPT
+    {
+      m_ptr = &reference;
+    }
+    Optional( RefType * ptr ) VULKAN_HPP_NOEXCEPT
+    {
+      m_ptr = ptr;
+    }
+    Optional( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_ptr = nullptr;
+    }
 
-    operator RefType*() const VULKAN_HPP_NOEXCEPT { return m_ptr; }
-    RefType const* operator->() const VULKAN_HPP_NOEXCEPT { return m_ptr; }
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT { return !!m_ptr; }
+    operator RefType *() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+    RefType const * operator->() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_ptr;
+    }
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return !!m_ptr;
+    }
 
   private:
-    RefType *m_ptr;
+    RefType * m_ptr;
   };
 )";
 
@@ -14633,15 +14663,22 @@ int main( int argc, char ** argv )
 )";
 
   static const std::string classStructureChain = R"(
-  template <typename X, typename Y> struct StructExtends { enum { value = false }; };
+  template <typename X, typename Y>
+  struct StructExtends
+  {
+    enum
+    {
+      value = false
+    };
+  };
 
-  template<typename Type, class...>
+  template <typename Type, class...>
   struct IsPartOfStructureChain
   {
     static const bool valid = false;
   };
 
-  template<typename Type, typename Head, typename... Tail>
+  template <typename Type, typename Head, typename... Tail>
   struct IsPartOfStructureChain<Type, Head, Tail...>
   {
     static const bool valid = std::is_same<Type, Head>::value || IsPartOfStructureChain<Type, Tail...>::valid;
@@ -14650,14 +14687,16 @@ int main( int argc, char ** argv )
   template <size_t Index, typename T, typename... ChainElements>
   struct StructureChainContains
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
-                              StructureChainContains<Index - 1, T, ChainElements...>::value;
+    static const bool value =
+      std::is_same<T, typename std::tuple_element<Index, std::tuple<ChainElements...>>::type>::value ||
+      StructureChainContains<Index - 1, T, ChainElements...>::value;
   };
 
   template <typename T, typename... ChainElements>
   struct StructureChainContains<0, T, ChainElements...>
   {
-    static const bool value = std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
+    static const bool value =
+      std::is_same<T, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value;
   };
 
   template <size_t Index, typename... ChainElements>
@@ -14721,13 +14760,15 @@ int main( int argc, char ** argv )
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     T & get() VULKAN_HPP_NOEXCEPT
     {
-      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...>&>( *this ) );
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>(
+        static_cast<std::tuple<ChainElements...> &>( *this ) );
     }
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     T const & get() const VULKAN_HPP_NOEXCEPT
     {
-      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>( static_cast<std::tuple<ChainElements...> const &>( *this ) );
+      return std::get<ChainElementIndex<0, T, Which, void, ChainElements...>::value>(
+        static_cast<std::tuple<ChainElements...> const &>( *this ) );
     }
 
     template <typename T0, typename T1, typename... Ts>
@@ -14840,8 +14881,8 @@ int main( int argc, char ** argv )
     template <size_t Index>
     typename std::enable_if<Index != 0, void>::type link() VULKAN_HPP_NOEXCEPT
     {
-      auto & x = std::get<Index - 1>( static_cast<std::tuple<ChainElements...>&>( *this ) );
-      x.pNext  = &std::get<Index>( static_cast<std::tuple<ChainElements...>&>( *this ) );
+      auto & x = std::get<Index - 1>( static_cast<std::tuple<ChainElements...> &>( *this ) );
+      x.pNext  = &std::get<Index>( static_cast<std::tuple<ChainElements...> &>( *this ) );
       link<Index - 1>();
     }
 
@@ -14851,8 +14892,8 @@ int main( int argc, char ** argv )
 
     void unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {
-      VkBaseOutStructure * elementPtr = reinterpret_cast<VkBaseOutStructure *>(
-        &std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) ) );
+      VkBaseOutStructure * elementPtr =
+        reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( static_cast<std::tuple<ChainElements...> &>( *this ) ) );
       while ( elementPtr && ( elementPtr->pNext != pNext ) )
       {
         elementPtr = elementPtr->pNext;
@@ -14870,14 +14911,15 @@ int main( int argc, char ** argv )
 )";
 
   static const std::string classUniqueHandle = R"(
-#if !defined(VULKAN_HPP_NO_SMART_HANDLE)
-  template <typename Type, typename Dispatch> class UniqueHandleTraits;
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+  template <typename Type, typename Dispatch>
+  class UniqueHandleTraits;
 
   template <typename Type, typename Dispatch>
-  class UniqueHandle : public UniqueHandleTraits<Type,Dispatch>::deleter
+  class UniqueHandle : public UniqueHandleTraits<Type, Dispatch>::deleter
   {
   private:
-    using Deleter = typename UniqueHandleTraits<Type,Dispatch>::deleter;
+    using Deleter = typename UniqueHandleTraits<Type, Dispatch>::deleter;
 
   public:
     using element_type = Type;
@@ -14887,29 +14929,32 @@ int main( int argc, char ** argv )
       , m_value()
     {}
 
-    explicit UniqueHandle( Type const& value, Deleter const& deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
-      : Deleter( deleter)
+    explicit UniqueHandle( Type const & value, Deleter const & deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
+      : Deleter( deleter )
       , m_value( value )
     {}
 
-    UniqueHandle( UniqueHandle const& ) = delete;
+    UniqueHandle( UniqueHandle const & ) = delete;
 
     UniqueHandle( UniqueHandle && other ) VULKAN_HPP_NOEXCEPT
-      : Deleter( std::move( static_cast<Deleter&>( other ) ) )
+      : Deleter( std::move( static_cast<Deleter &>( other ) ) )
       , m_value( other.release() )
     {}
 
     ~UniqueHandle() VULKAN_HPP_NOEXCEPT
     {
-      if ( m_value ) this->destroy( m_value );
+      if ( m_value )
+      {
+        this->destroy( m_value );
+      }
     }
 
-    UniqueHandle & operator=( UniqueHandle const& ) = delete;
+    UniqueHandle & operator=( UniqueHandle const & ) = delete;
 
     UniqueHandle & operator=( UniqueHandle && other ) VULKAN_HPP_NOEXCEPT
     {
       reset( other.release() );
-      *static_cast<Deleter*>(this) = std::move( static_cast<Deleter&>(other) );
+      *static_cast<Deleter *>( this ) = std::move( static_cast<Deleter &>( other ) );
       return *this;
     }
 
@@ -14918,7 +14963,7 @@ int main( int argc, char ** argv )
       return m_value.operator bool();
     }
 
-    Type const* operator->() const VULKAN_HPP_NOEXCEPT
+    Type const * operator->() const VULKAN_HPP_NOEXCEPT
     {
       return &m_value;
     }
@@ -14928,7 +14973,7 @@ int main( int argc, char ** argv )
       return &m_value;
     }
 
-    Type const& operator*() const VULKAN_HPP_NOEXCEPT
+    Type const & operator*() const VULKAN_HPP_NOEXCEPT
     {
       return m_value;
     }
@@ -14948,11 +14993,14 @@ int main( int argc, char ** argv )
       return m_value;
     }
 
-    void reset( Type const& value = Type() ) VULKAN_HPP_NOEXCEPT
+    void reset( Type const & value = Type() ) VULKAN_HPP_NOEXCEPT
     {
       if ( m_value != value )
       {
-        if ( m_value ) this->destroy( m_value );
+        if ( m_value )
+        {
+          this->destroy( m_value );
+        }
         m_value = value;
       }
     }
@@ -14960,30 +15008,33 @@ int main( int argc, char ** argv )
     Type release() VULKAN_HPP_NOEXCEPT
     {
       Type value = m_value;
-      m_value = nullptr;
+      m_value    = nullptr;
       return value;
     }
 
-    void swap( UniqueHandle<Type,Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
+    void swap( UniqueHandle<Type, Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      std::swap(m_value, rhs.m_value);
-      std::swap(static_cast<Deleter&>(*this), static_cast<Deleter&>(rhs));
+      std::swap( m_value, rhs.m_value );
+      std::swap( static_cast<Deleter &>( *this ), static_cast<Deleter &>( rhs ) );
     }
 
   private:
-    Type    m_value;
+    Type m_value;
   };
 
   template <typename UniqueType>
-  VULKAN_HPP_INLINE std::vector<typename UniqueType::element_type> uniqueToRaw(std::vector<UniqueType> const& handles)
+  VULKAN_HPP_INLINE std::vector<typename UniqueType::element_type>
+                    uniqueToRaw( std::vector<UniqueType> const & handles )
   {
-    std::vector<typename UniqueType::element_type> newBuffer(handles.size());
-    std::transform(handles.begin(), handles.end(), newBuffer.begin(), [](UniqueType const& handle) { return handle.get(); });
+    std::vector<typename UniqueType::element_type> newBuffer( handles.size() );
+    std::transform(
+      handles.begin(), handles.end(), newBuffer.begin(), []( UniqueType const & handle ) { return handle.get(); } );
     return newBuffer;
   }
 
   template <typename Type, typename Dispatch>
-  VULKAN_HPP_INLINE void swap( UniqueHandle<Type,Dispatch> & lhs, UniqueHandle<Type,Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void swap( UniqueHandle<Type, Dispatch> & lhs,
+                               UniqueHandle<Type, Dispatch> & rhs ) VULKAN_HPP_NOEXCEPT
   {
     lhs.swap( rhs );
   }
@@ -14994,84 +15045,84 @@ int main( int argc, char ** argv )
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
 // which is an expression in a constructor initializer list.
-#if defined(major)
-  #undef major
+#if defined( major )
+#  undef major
 #endif
-#if defined(minor)
-  #undef minor
+#if defined( minor )
+#  undef minor
 #endif
 
 // Windows defines MemoryBarrier which is deprecated and collides
 // with the VULKAN_HPP_NAMESPACE::MemoryBarrier struct.
-#if defined(MemoryBarrier)
-  #undef MemoryBarrier
+#if defined( MemoryBarrier )
+#  undef MemoryBarrier
 #endif
 
-#if !defined(VULKAN_HPP_HAS_UNRESTRICTED_UNIONS)
-# if defined(__clang__)
-#  if __has_feature(cxx_unrestricted_unions)
-#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#if !defined( VULKAN_HPP_HAS_UNRESTRICTED_UNIONS )
+#  if defined( __clang__ )
+#    if __has_feature( cxx_unrestricted_unions )
+#      define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#    endif
+#  elif defined( __GNUC__ )
+#    define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
+#    if 40600 <= GCC_VERSION
+#      define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#    endif
+#  elif defined( _MSC_VER )
+#    if 1900 <= _MSC_VER
+#      define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
+#    endif
 #  endif
-# elif defined(__GNUC__)
-#  define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-#  if 40600 <= GCC_VERSION
-#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
-#  endif
-# elif defined(_MSC_VER)
-#  if 1900 <= _MSC_VER
-#   define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
-#  endif
-# endif
 #endif
 
-#if !defined(VULKAN_HPP_INLINE)
-# if defined(__clang__)
-#  if __has_attribute(always_inline)
-#   define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
+#if !defined( VULKAN_HPP_INLINE )
+#  if defined( __clang__ )
+#    if __has_attribute( always_inline )
+#      define VULKAN_HPP_INLINE __attribute__( ( always_inline ) ) __inline__
+#    else
+#      define VULKAN_HPP_INLINE inline
+#    endif
+#  elif defined( __GNUC__ )
+#    define VULKAN_HPP_INLINE __attribute__( ( always_inline ) ) __inline__
+#  elif defined( _MSC_VER )
+#    define VULKAN_HPP_INLINE inline
 #  else
-#   define VULKAN_HPP_INLINE inline
+#    define VULKAN_HPP_INLINE inline
 #  endif
-# elif defined(__GNUC__)
-#  define VULKAN_HPP_INLINE __attribute__((always_inline)) __inline__
-# elif defined(_MSC_VER)
-#  define VULKAN_HPP_INLINE inline
-# else
-#  define VULKAN_HPP_INLINE inline
-# endif
 #endif
 
-#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
-# define VULKAN_HPP_TYPESAFE_EXPLICIT
+#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#  define VULKAN_HPP_TYPESAFE_EXPLICIT
 #else
-# define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
+#  define VULKAN_HPP_TYPESAFE_EXPLICIT explicit
 #endif
 
-#if defined(__cpp_constexpr)
-# define VULKAN_HPP_CONSTEXPR constexpr
-# if __cpp_constexpr >= 201304
-#  define VULKAN_HPP_CONSTEXPR_14  constexpr
-# else
+#if defined( __cpp_constexpr )
+#  define VULKAN_HPP_CONSTEXPR constexpr
+#  if __cpp_constexpr >= 201304
+#    define VULKAN_HPP_CONSTEXPR_14 constexpr
+#  else
+#    define VULKAN_HPP_CONSTEXPR_14
+#  endif
+#  define VULKAN_HPP_CONST_OR_CONSTEXPR constexpr
+#else
+#  define VULKAN_HPP_CONSTEXPR
 #  define VULKAN_HPP_CONSTEXPR_14
-# endif
-# define VULKAN_HPP_CONST_OR_CONSTEXPR  constexpr
-#else
-# define VULKAN_HPP_CONSTEXPR
-# define VULKAN_HPP_CONSTEXPR_14
-# define VULKAN_HPP_CONST_OR_CONSTEXPR  const
+#  define VULKAN_HPP_CONST_OR_CONSTEXPR const
 #endif
 
-#if !defined(VULKAN_HPP_NOEXCEPT)
-# if defined(_MSC_VER) && (_MSC_VER <= 1800)
-#  define VULKAN_HPP_NOEXCEPT
-# else
-#  define VULKAN_HPP_NOEXCEPT noexcept
-#  define VULKAN_HPP_HAS_NOEXCEPT 1
-#  if defined(VULKAN_HPP_NO_EXCEPTIONS)
-#    define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS noexcept
+#if !defined( VULKAN_HPP_NOEXCEPT )
+#  if defined( _MSC_VER ) && ( _MSC_VER <= 1800 )
+#    define VULKAN_HPP_NOEXCEPT
 #  else
-#    define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+#    define VULKAN_HPP_NOEXCEPT     noexcept
+#    define VULKAN_HPP_HAS_NOEXCEPT 1
+#    if defined( VULKAN_HPP_NO_EXCEPTIONS )
+#      define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS noexcept
+#    else
+#      define VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+#    endif
 #  endif
-# endif
 #endif
 
 #if 14 <= VULKAN_HPP_CPP_VERSION
@@ -15082,7 +15133,7 @@ int main( int argc, char ** argv )
 
 #if ( 17 <= VULKAN_HPP_CPP_VERSION ) && !defined( VULKAN_HPP_NO_NODISCARD_WARNINGS )
 #  define VULKAN_HPP_NODISCARD [[nodiscard]]
-#  if defined(VULKAN_HPP_NO_EXCEPTIONS)
+#  if defined( VULKAN_HPP_NO_EXCEPTIONS )
 #    define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS [[nodiscard]]
 #  else
 #    define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
@@ -15092,13 +15143,13 @@ int main( int argc, char ** argv )
 #  define VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
 #endif
 
-#if !defined(VULKAN_HPP_NAMESPACE)
-#define VULKAN_HPP_NAMESPACE vk
+#if !defined( VULKAN_HPP_NAMESPACE )
+#  define VULKAN_HPP_NAMESPACE vk
 #endif
 
-#define VULKAN_HPP_STRINGIFY2(text) #text
-#define VULKAN_HPP_STRINGIFY(text) VULKAN_HPP_STRINGIFY2(text)
-#define VULKAN_HPP_NAMESPACE_STRING VULKAN_HPP_STRINGIFY(VULKAN_HPP_NAMESPACE)
+#define VULKAN_HPP_STRINGIFY2( text ) #text
+#define VULKAN_HPP_STRINGIFY( text )  VULKAN_HPP_STRINGIFY2( text )
+#define VULKAN_HPP_NAMESPACE_STRING   VULKAN_HPP_STRINGIFY( VULKAN_HPP_NAMESPACE )
 )";
 
   static const std::string exceptions = R"(
@@ -15135,15 +15186,15 @@ int main( int argc, char ** argv )
     public:
     SystemError( std::error_code ec )
       : Error(), std::system_error(ec) {}
-    SystemError( std::error_code ec, std::string const& what )
+    SystemError( std::error_code ec, std::string const & what )
       : Error(), std::system_error(ec, what) {}
     SystemError( std::error_code ec, char const * what )
       : Error(), std::system_error(ec, what) {}
-    SystemError( int ev, std::error_category const& ecat )
+    SystemError( int ev, std::error_category const & ecat )
       : Error(), std::system_error(ev, ecat) {}
-    SystemError( int ev, std::error_category const& ecat, std::string const& what)
+    SystemError( int ev, std::error_category const & ecat, std::string const & what)
       : Error(), std::system_error(ev, ecat, what) {}
-    SystemError( int ev, std::error_category const& ecat, char const * what)
+    SystemError( int ev, std::error_category const & ecat, char const * what)
       : Error(), std::system_error(ev, ecat, what) {}
 
     virtual const char* what() const VULKAN_HPP_NOEXCEPT { return std::system_error::what(); }
@@ -15203,29 +15254,29 @@ int main( int argc, char ** argv )
 #include <vulkan/vulkan.h>
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-#include <string_view>
+#  include <string_view>
 #endif
 
-#if defined(VULKAN_HPP_DISABLE_ENHANCED_MODE)
-# if !defined(VULKAN_HPP_NO_SMART_HANDLE)
-#  define VULKAN_HPP_NO_SMART_HANDLE
-# endif
+#if defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+#  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+#    define VULKAN_HPP_NO_SMART_HANDLE
+#  endif
 #else
-# include <memory>
-# include <vector>
+#  include <memory>
+#  include <vector>
 #endif
 
-#if !defined(VULKAN_HPP_ASSERT)
-# include <cassert>
-# define VULKAN_HPP_ASSERT   assert
+#if !defined( VULKAN_HPP_ASSERT )
+#  include <cassert>
+#  define VULKAN_HPP_ASSERT assert
 #endif
 
-#if !defined(VULKAN_HPP_ASSERT_ON_RESULT)
-# define VULKAN_HPP_ASSERT_ON_RESULT VULKAN_HPP_ASSERT
+#if !defined( VULKAN_HPP_ASSERT_ON_RESULT )
+#  define VULKAN_HPP_ASSERT_ON_RESULT VULKAN_HPP_ASSERT
 #endif
 
-#if !defined(VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL)
-# define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
+#if !defined( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )
+#  define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 1
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
@@ -15244,15 +15295,15 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-#if !defined(__has_include)
-# define __has_include(x) false
+#if !defined( __has_include )
+#  define __has_include( x ) false
 #endif
 
 #if ( 201711 <= __cpp_impl_three_way_comparison ) && __has_include( <compare> ) && !defined( VULKAN_HPP_NO_SPACESHIP_OPERATOR )
-# define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
+#  define VULKAN_HPP_HAS_SPACESHIP_OPERATOR
 #endif
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-# include <compare>
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+#  include <compare>
 #endif
 
 )";
@@ -15269,7 +15320,7 @@ namespace std
 )";
 
   static const std::string structResultValue = R"(
-  template <typename T> void ignore(T const&) VULKAN_HPP_NOEXCEPT {}
+  template <typename T> void ignore(T const &) VULKAN_HPP_NOEXCEPT {}
 
   template <typename T>
   struct ResultValue
@@ -15299,7 +15350,7 @@ namespace std
 
 #if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
     VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T const& () const & VULKAN_HPP_NOEXCEPT
+    operator T const & () const & VULKAN_HPP_NOEXCEPT
     {
       return value;
     }
@@ -15311,7 +15362,7 @@ namespace std
     }
 
     VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T const&& () const && VULKAN_HPP_NOEXCEPT
+    operator T const && () const && VULKAN_HPP_NOEXCEPT
     {
       return std::move( value );
     }
@@ -15324,9 +15375,9 @@ namespace std
 #endif
   };
 
-#if !defined(VULKAN_HPP_NO_SMART_HANDLE)
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename Type, typename Dispatch>
-  struct ResultValue<UniqueHandle<Type,Dispatch>>
+  struct ResultValue<UniqueHandle<Type, Dispatch>>
   {
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
     ResultValue(Result r, UniqueHandle<Type, Dispatch> && v) VULKAN_HPP_NOEXCEPT
@@ -15465,18 +15516,18 @@ namespace std
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename T, typename D>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const& deleter )
+  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const & deleter )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore(message);
     VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter) );
+    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter ) );
 #else
     if ( result != Result::eSuccess )
     {
       throwResultException( result, message );
     }
-    return UniqueHandle<T,D>(data, deleter);
+    return UniqueHandle<T,D>(data, deleter );
 #endif
   }
 
@@ -15577,7 +15628,7 @@ namespace std
     str += generator.getVulkanLicenseHeader() + includes + "\n";
     appendVersionCheck( str, generator.getVersion() );
     appendTypesafeStuff( str, generator.getTypesafeCheck() );
-    str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{\n" + classArrayProxy + classArrayWrapper +
+    str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{" + classArrayProxy + classArrayWrapper +
            classFlags + classOptional + classStructureChain + classUniqueHandle;
     generator.appendDispatchLoaderStatic( str );
     generator.appendDispatchLoaderDefault( str );
@@ -15614,7 +15665,9 @@ namespace std
 
 #if defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: Formatting " << VULKAN_HPP_FILE << " using clang-format..." << std::endl;
-    int ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " VULKAN_HPP_FILE );
+    int ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" --version" );
+    assert( ret == 0 );
+    ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " VULKAN_HPP_FILE );
     if ( ret != 0 )
     {
       std::cout << "VulkanHppGenerator: failed to format file " << VULKAN_HPP_FILE << " with error <" << ret << ">\n";
@@ -15642,7 +15695,7 @@ namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
-#if !defined(VULKAN_HPP_DISABLE_ENHANCED_MODE) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
 
     template <class T, class U = T>
     VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )

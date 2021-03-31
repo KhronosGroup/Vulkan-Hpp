@@ -347,3 +347,4 @@ script:
     -DCMAKE_CXX_STANDARD=$CXX_STANDARD
     $ADDITIONAL_BUILD_OPTIONS
   - cmake --build .
+  - ./VulkanHppGenerator

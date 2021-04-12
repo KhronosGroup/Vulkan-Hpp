@@ -15921,7 +15921,7 @@ namespace std
       throwResultException( result, message );
     }
 #endif
-    return ResultValue<T>( result, data );
+    return ResultValue<T>( result, std::move( data ) );
   }
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE

@@ -15,41 +15,57 @@
 // VulkanHpp Samples : 02_EnumerateDevices
 //                     Enumerate physical devices
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wunused-variable"
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
-static char const* AppName = "02_EnumerateDevices";
-static char const* EngineName = "Vulkan.hpp";
+static std::string AppName    = "02_EnumerateDevices";
+static std::string EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessengerEXT( instance );
 #endif
 
     /* VULKAN_HPP_KEY_START */
 
     // enumerate the physicalDevices
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
-
-    // Note: PhysicalDevices are not created, but just enumerated. Therefore, there is nothing like a UniquePhysicalDevice.
-    // A PhysicalDevice is unique by definition, and there's no need to destroy it.
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     /* VULKAN_HPP_KEY_END */
+
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (...)
+  catch ( std::exception & err )
+  {
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
+  }
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

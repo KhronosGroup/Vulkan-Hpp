@@ -16,12 +16,18 @@ cmake_minimum_required(VERSION 3.2)
 
 project(Vulkan-Hpp_Samples)
 
-option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" OFF)
-option (SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF)
+option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON)
+option (SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF)
 
 if(NOT (SAMPLES_BUILD_ONLY_DYNAMIC AND SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP))
   find_package(Vulkan REQUIRED)
 endif()
+
+if(MSVC)
+  add_compile_options(/W4 /WX /permissive-)
+else(MSVC)
+  add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif(MSVC)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)

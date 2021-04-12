@@ -17,41 +17,42 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <sstream>
 #include <vector>
 
-static char const* AppName = "PhysicalDeviceMemoryProperties";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "PhysicalDeviceMemoryProperties";
+static char const * EngineName = "Vulkan.hpp";
 
-std::string formatSize(vk::DeviceSize size)
+std::string formatSize( vk::DeviceSize size )
 {
   std::ostringstream oss;
-  if (size < 1024)
+  if ( size < 1024 )
   {
     oss << size << " B";
   }
-  else if (size < 1024 * 1024)
+  else if ( size < 1024 * 1024 )
   {
     oss << size / 1024.f << " KB";
   }
-  else if (size < 1024 * 1024 * 1024)
+  else if ( size < 1024 * 1024 * 1024 )
   {
-    oss << size / (1024.0f * 1024.0f) << " MB";
+    oss << size / ( 1024.0f * 1024.0f ) << " MB";
   }
   else
   {
-    oss << size / (1024.0f * 1024.0f * 1024.0f) << " GB";
+    oss << size / ( 1024.0f * 1024.0f * 1024.0f ) << " GB";
   }
   return oss.str();
 }
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+#if !defined( NDEBUG )
+    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
 #endif
 
     // enumerate the physicalDevices
@@ -59,48 +60,56 @@ int main(int /*argc*/, char ** /*argv*/)
 
     /* VULKAN_KEY_START */
 
-    for (size_t i=0 ; i<physicalDevices.size() ; i++)
+    for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
-      bool containsMemoryBudget = vk::su::contains(extensionProperties, "VK_EXT_memory_budget");
+      std::vector<vk::ExtensionProperties> extensionProperties =
+        physicalDevices[i].enumerateDeviceExtensionProperties();
+      bool containsMemoryBudget = vk::su::contains( extensionProperties, "VK_EXT_memory_budget" );
 
       std::cout << "PhysicalDevice " << i << "\n";
-      auto memoryProperties2 = physicalDevices[i].getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
-      vk::PhysicalDeviceMemoryProperties const& memoryProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;
-      vk::PhysicalDeviceMemoryBudgetPropertiesEXT const& memoryBudgetProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+      auto memoryProperties2 =
+        physicalDevices[i]
+          .getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+      vk::PhysicalDeviceMemoryProperties const & memoryProperties =
+        memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;
+      vk::PhysicalDeviceMemoryBudgetPropertiesEXT const & memoryBudgetProperties =
+        memoryProperties2.get<vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
       std::cout << "memoryHeapCount: " << memoryProperties.memoryHeapCount << "\n";
-      for (uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++)
+      for ( uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++ )
       {
-        std::cout << "  " << j << ": size = " << formatSize(memoryProperties.memoryHeaps[j].size) << ", flags = " << vk::to_string(memoryProperties.memoryHeaps[j].flags) << "\n";
-        if (containsMemoryBudget)
+        std::cout << "  " << j << ": size = " << formatSize( memoryProperties.memoryHeaps[j].size )
+                  << ", flags = " << vk::to_string( memoryProperties.memoryHeaps[j].flags ) << "\n";
+        if ( containsMemoryBudget )
         {
-          std::cout << "     heapBudget = " << formatSize(memoryBudgetProperties.heapBudget[j]) << ", heapUsage = " << formatSize(memoryBudgetProperties.heapUsage[j]) << "\n";
+          std::cout << "     heapBudget = " << formatSize( memoryBudgetProperties.heapBudget[j] )
+                    << ", heapUsage = " << formatSize( memoryBudgetProperties.heapUsage[j] ) << "\n";
         }
       }
       std::cout << "memoryTypeCount: " << memoryProperties.memoryTypeCount << "\n";
-      for (uint32_t j = 0; j < memoryProperties.memoryTypeCount; j++)
+      for ( uint32_t j = 0; j < memoryProperties.memoryTypeCount; j++ )
       {
-        std::cout << "  " << j << ": heapIndex = " << memoryProperties.memoryTypes[j].heapIndex << ", flags = " << vk::to_string(memoryProperties.memoryTypes[j].propertyFlags) << "\n";
+        std::cout << "  " << j << ": heapIndex = " << memoryProperties.memoryTypes[j].heapIndex
+                  << ", flags = " << vk::to_string( memoryProperties.memoryTypes[j].propertyFlags ) << "\n";
       }
     }
 
     /* VULKAN_KEY_END */
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

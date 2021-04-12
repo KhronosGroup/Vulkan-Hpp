@@ -17,65 +17,73 @@
 
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 #include "SPIRV/GlslangToSpv.h"
+#include "vulkan/vulkan.hpp"
+
 #include <iostream>
 
-static char const* AppName = "11_InitShaders";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "11_InitShaders";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, vk::su::getInstanceExtensions());
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+#if !defined( NDEBUG )
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, vk::su::findGraphicsQueueFamilyIndex(physicalDevice.getQueueFamilyProperties()));
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
     glslang::InitializeProcess();
 
     std::vector<unsigned int> vertexShaderSPV;
-    bool ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV);
-    assert(ok);
+    bool ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV );
+    assert( ok );
 
-    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), vertexShaderSPV.size() * sizeof(unsigned int), vertexShaderSPV.data());
-    vk::UniqueShaderModule vertexShaderModule = device->createShaderModuleUnique(vertexShaderModuleCreateInfo);
+    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), vertexShaderSPV );
+    vk::ShaderModule           vertexShaderModule = device.createShaderModule( vertexShaderModuleCreateInfo );
 
     std::vector<unsigned int> fragmentShaderSPV;
-    ok = vk::su::GLSLtoSPV(vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV);
-    assert(ok);
+    ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
+    assert( ok );
 
-    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo(vk::ShaderModuleCreateFlags(), fragmentShaderSPV.size() * sizeof(unsigned int), fragmentShaderSPV.data());
-    vk::UniqueShaderModule fragmentShaderModule = device->createShaderModuleUnique(fragmentShaderModuleCreateInfo);
+    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), fragmentShaderSPV );
+    vk::ShaderModule           fragmentShaderModule = device.createShaderModule( fragmentShaderModuleCreateInfo );
 
     glslang::FinalizeProcess();
 
-    // Note: No need to explicitly destroy the ShaderModules, as the corresponding destroy
-    // functions are called by the destructor of the UniqueShaderModule on leaving this scope.
+    device.destroyShaderModule( fragmentShaderModule );
+    device.destroyShaderModule( vertexShaderModule );
 
     /* VULKAN_HPP_KEY_END */
+
+    device.destroy();
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

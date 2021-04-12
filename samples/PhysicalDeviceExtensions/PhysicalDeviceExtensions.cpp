@@ -17,33 +17,40 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <vector>
 
-static char const* AppName = "DeviceExtensionProperties";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "DeviceExtensionProperties";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName );
+#if !defined( NDEBUG )
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 
     /* VULKAN_KEY_START */
 
-    for (size_t i=0 ; i<physicalDevices.size() ; i++)
+    for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
-      std::cout << "PhysicalDevice " << i << "\n";
-      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties =
+        physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::cout << "PhysicalDevice " << i << " : " << extensionProperties.size() << " extensions:\n";
 
       // sort the extensions alphabetically
-      std::sort(extensionProperties.begin(), extensionProperties.end(), [](vk::ExtensionProperties const& a, vk::ExtensionProperties const& b) { return strcmp(a.extensionName, b.extensionName) < 0; });
-      for (auto const& ep : extensionProperties)
+      std::sort( extensionProperties.begin(),
+                 extensionProperties.end(),
+                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) {
+                   return strcmp( a.extensionName, b.extensionName ) < 0;
+                 } );
+      for ( auto const & ep : extensionProperties )
       {
         std::cout << "\t" << ep.extensionName << ":" << std::endl;
         std::cout << "\t\tVersion: " << ep.specVersion << std::endl;
@@ -52,21 +59,24 @@ int main(int /*argc*/, char ** /*argv*/)
     }
 
     /* VULKAN_KEY_END */
+
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

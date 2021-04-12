@@ -1,20 +1,62 @@
-image:
-  - Visual Studio 2015 
-  - Visual Studio 2017
-
-configuration:
-  - Debug
-
 build:
   verbosity: detailed
 
 environment:
   matrix:
-    - GENERATOR_ARCH: Win32
-    - GENERATOR_ARCH: x64
-
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: Win32
+      PYTHON: "C:\\Python38"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 11
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 14
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 17
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Debug
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 20
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      BUILD_TYPE: Release
+      GENERATOR_ARCH: x64
+      PYTHON: "C:\\Python38-x64"
+      CXX_STANDARD: 20
+      
 install:
   - git submodule update --init --recursive
+  - set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
 
 build_script:
   - mkdir build
@@ -28,4 +70,6 @@ build_script:
     -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+    -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
+    -DCMAKE_CXX_STANDARD=%CXX_STANDARD%
   - cmake --build . --config %CONFIGURATION%

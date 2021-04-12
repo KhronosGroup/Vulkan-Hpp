@@ -15,133 +15,214 @@
 // VulkanHpp Samples : RayTracing
 //                     Simple sample how to ray trace using Vulkan
 
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4201 )  // disable warning C4201: nonstandard extension used: nameless struct/union; needed
+                                     // to get glm/detail/type_vec?.hpp without warnings
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wmissing-braces"
+#  if ( 10 <= __clang_major__ )
+#    pragma clang diagnostic ignored "-Wdeprecated-volatile"  // to keep glm/detail/type_half.inl compiling
+#  endif
+#elif defined( __GNUC__ )
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
+// clang-format off
+// we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
+#include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
+// clang-format on
 #include <numeric>
 #include <random>
 #include <sstream>
 
-#include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
-
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
-#pragma warning(disable:4201)   // disable warning C4201: nonstandard extension used: nameless struct/union; needed to get glm/detail/type_vec?.hpp without warnings
+#include "../utils/shaders.hpp"
+#include "../utils/utils.hpp"
+#include "CameraManipulator.hpp"
+#include "SPIRV/GlslangToSpv.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "CameraManipulator.hpp"
-#include "../utils/shaders.hpp"
-#include "../utils/utils.hpp"
-#include "SPIRV/GlslangToSpv.h"
-
-static char const* AppName = "RayTracing";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "RayTracing";
+static char const * EngineName = "Vulkan.hpp";
 
 struct GeometryInstanceData
 {
-  GeometryInstanceData(glm::mat4x4 const& transform_, uint32_t instanceID_, uint8_t mask_, uint32_t instanceOffset_, uint8_t flags_, uint64_t accelerationStructureHandle_)
-    : instanceId(instanceID_)
-    , mask(mask_)
-    , instanceOffset(instanceOffset_)
-    , flags(flags_)
-    , accelerationStructureHandle(accelerationStructureHandle_)
+  GeometryInstanceData( glm::mat4x4 const & transform_,
+                        uint32_t            instanceID_,
+                        uint8_t             mask_,
+                        uint32_t            instanceOffset_,
+                        uint8_t             flags_,
+                        uint64_t            accelerationStructureHandle_ )
+    : instanceId( instanceID_ )
+    , mask( mask_ )
+    , instanceOffset( instanceOffset_ )
+    , flags( flags_ )
+    , accelerationStructureHandle( accelerationStructureHandle_ )
   {
-    assert(!(instanceID_ & 0xFF000000) && !(instanceOffset_ & 0xFF000000));
-    memcpy(transform, &transform_, 12 * sizeof(float));
+    assert( !( instanceID_ & 0xFF000000 ) && !( instanceOffset_ & 0xFF000000 ) );
+    memcpy( transform, &transform_, 12 * sizeof( float ) );
   }
 
-  float     transform[12];                // Transform matrix, containing only the top 3 rows
-  uint32_t  instanceId     : 24;          // Instance index
-  uint32_t  mask           :  8;          // Visibility mask
-  uint32_t  instanceOffset : 24;          // Index of the hit group which will be invoked when a ray hits the instance
-  uint32_t  flags          :  8;          // Instance flags, such as culling
-  uint64_t  accelerationStructureHandle;  // Opaque handle of the bottom-level acceleration structure
+  float    transform[12];                // Transform matrix, containing only the top 3 rows
+  uint32_t instanceId : 24;              // Instance index
+  uint32_t mask : 8;                     // Visibility mask
+  uint32_t instanceOffset : 24;          // Index of the hit group which will be invoked when a ray hits the instance
+  uint32_t flags : 8;                    // Instance flags, such as culling
+  uint64_t accelerationStructureHandle;  // Opaque handle of the bottom-level acceleration structure
 };
-static_assert(sizeof(GeometryInstanceData) == 64, "GeometryInstanceData structure compiles to incorrect size");
+static_assert( sizeof( GeometryInstanceData ) == 64, "GeometryInstanceData structure compiles to incorrect size" );
 
 struct AccelerationStructureData
 {
-  vk::UniqueAccelerationStructureNV   acclerationStructure;
+  void clear( vk::Device device )
+  {
+    device.destroyAccelerationStructureNV( accelerationStructure );
+    if ( scratchBufferData )
+    {
+      scratchBufferData->clear( device );
+    }
+    if ( resultBufferData )
+    {
+      resultBufferData->clear( device );
+    }
+    if ( instanceBufferData )
+    {
+      instanceBufferData->clear( device );
+    }
+  }
+
+  vk::AccelerationStructureNV         accelerationStructure;
   std::unique_ptr<vk::su::BufferData> scratchBufferData;
   std::unique_ptr<vk::su::BufferData> resultBufferData;
   std::unique_ptr<vk::su::BufferData> instanceBufferData;
 };
 
-AccelerationStructureData createAccelerationStructureData(vk::PhysicalDevice const& physicalDevice, vk::UniqueDevice const& device, vk::UniqueCommandBuffer const& commandBuffer,
-                                                          std::vector<std::pair<vk::AccelerationStructureNV, glm::mat4x4>> const& instances, std::vector<vk::GeometryNV> const& geometries)
+AccelerationStructureData
+  createAccelerationStructureData( vk::PhysicalDevice const & physicalDevice,
+                                   vk::Device const &         device,
+                                   vk::CommandBuffer const &  commandBuffer,
+                                   std::vector<std::pair<vk::AccelerationStructureNV, glm::mat4x4>> const & instances,
+                                   std::vector<vk::GeometryNV> const &                                      geometries )
 {
-  assert(instances.empty() ^ geometries.empty());
+  assert( instances.empty() ^ geometries.empty() );
 
   AccelerationStructureData accelerationStructureData;
 
-  vk::AccelerationStructureTypeNV accelerationStructureType = instances.empty() ? vk::AccelerationStructureTypeNV::eBottomLevel : vk::AccelerationStructureTypeNV::eTopLevel;
-  vk::AccelerationStructureInfoNV accelerationStructureInfo(accelerationStructureType, {}, vk::su::checked_cast<uint32_t>(instances.size()),
-                                                            vk::su::checked_cast<uint32_t>(geometries.size()), geometries.data());
-  accelerationStructureData.acclerationStructure = device->createAccelerationStructureNVUnique(vk::AccelerationStructureCreateInfoNV(0, accelerationStructureInfo));
+  vk::AccelerationStructureTypeNV accelerationStructureType =
+    instances.empty() ? vk::AccelerationStructureTypeNV::eBottomLevel : vk::AccelerationStructureTypeNV::eTopLevel;
+  vk::AccelerationStructureInfoNV accelerationStructureInfo(
+    accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
+  accelerationStructureData.accelerationStructure =
+    device.createAccelerationStructureNV( vk::AccelerationStructureCreateInfoNV( 0, accelerationStructureInfo ) );
 
-  vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, *accelerationStructureData.acclerationStructure);
-  vk::DeviceSize resultSizeInBytes = device->getAccelerationStructureMemoryRequirementsNV(objectRequirements).memoryRequirements.size;
-  assert(0 < resultSizeInBytes);
-  accelerationStructureData.resultBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, resultSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
-                                                                                                          vk::MemoryPropertyFlagBits::eDeviceLocal));
+  vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, accelerationStructureData.accelerationStructure );
+  vk::DeviceSize resultSizeInBytes =
+    device.getAccelerationStructureMemoryRequirementsNV( objectRequirements ).memoryRequirements.size;
+  assert( 0 < resultSizeInBytes );
+  accelerationStructureData.resultBufferData =
+    std::unique_ptr<vk::su::BufferData>( new vk::su::BufferData( physicalDevice,
+                                                                 device,
+                                                                 resultSizeInBytes,
+                                                                 vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                 vk::MemoryPropertyFlagBits::eDeviceLocal ) );
 
-  vk::AccelerationStructureMemoryRequirementsInfoNV buildScratchRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch,
-                                                                             *accelerationStructureData.acclerationStructure);
-  vk::AccelerationStructureMemoryRequirementsInfoNV updateScratchRequirements(vk::AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch,
-                                                                              *accelerationStructureData.acclerationStructure);
-  vk::DeviceSize scratchSizeInBytes = 
-    std::max(device->getAccelerationStructureMemoryRequirementsNV(buildScratchRequirements).memoryRequirements.size,
-             device->getAccelerationStructureMemoryRequirementsNV(updateScratchRequirements).memoryRequirements.size);
-  assert(0 < scratchSizeInBytes);
+  vk::AccelerationStructureMemoryRequirementsInfoNV buildScratchRequirements(
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch, accelerationStructureData.accelerationStructure );
+  vk::AccelerationStructureMemoryRequirementsInfoNV updateScratchRequirements(
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch,
+    accelerationStructureData.accelerationStructure );
+  vk::DeviceSize scratchSizeInBytes = std::max(
+    device.getAccelerationStructureMemoryRequirementsNV( buildScratchRequirements ).memoryRequirements.size,
+    device.getAccelerationStructureMemoryRequirementsNV( updateScratchRequirements ).memoryRequirements.size );
+  assert( 0 < scratchSizeInBytes );
 
-  accelerationStructureData.scratchBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, scratchSizeInBytes, vk::BufferUsageFlagBits::eRayTracingNV,
-                                                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal));
+  accelerationStructureData.scratchBufferData =
+    std::unique_ptr<vk::su::BufferData>( new vk::su::BufferData( physicalDevice,
+                                                                 device,
+                                                                 scratchSizeInBytes,
+                                                                 vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                 vk::MemoryPropertyFlagBits::eDeviceLocal ) );
 
-  if (!instances.empty())
+  if ( !instances.empty() )
   {
-    accelerationStructureData.instanceBufferData = std::unique_ptr<vk::su::BufferData>(new vk::su::BufferData(physicalDevice, device, instances.size() * sizeof(GeometryInstanceData),
-                                                                                                              vk::BufferUsageFlagBits::eRayTracingNV));
+    accelerationStructureData.instanceBufferData =
+      std::unique_ptr<vk::su::BufferData>( new vk::su::BufferData( physicalDevice,
+                                                                   device,
+                                                                   instances.size() * sizeof( GeometryInstanceData ),
+                                                                   vk::BufferUsageFlagBits::eRayTracingNV ) );
 
     std::vector<GeometryInstanceData> geometryInstanceData;
-    for(size_t i = 0; i < instances.size(); i++)
+    for ( size_t i = 0; i < instances.size(); i++ )
     {
-      uint64_t accelerationStructureHandle = 0;
-      device->getAccelerationStructureHandleNV(instances[i].first, sizeof(uint64_t), &accelerationStructureHandle);
+      uint64_t accelerationStructureHandle = device.getAccelerationStructureHandleNV<uint64_t>( instances[i].first );
 
       // For each instance we set its instance index to its index i in the instance vector, and set
       // its hit group index to 2*i. The hit group index defines which entry of the shader binding
       // table will contain the hit group to be executed when hitting this instance. We set this
       // index to 2*i due to the use of 2 types of rays in the scene: the camera rays and the shadow
       // rays. For each instance, the SBT will then have 2 hit groups
-      geometryInstanceData.push_back(GeometryInstanceData(glm::transpose(instances[i].second), static_cast<uint32_t>(i), 0xFF, static_cast<uint32_t>(2 * i),
-                                                          static_cast<uint8_t>(vk::GeometryInstanceFlagBitsNV::eTriangleCullDisable), accelerationStructureHandle));
+      geometryInstanceData.emplace_back(
+        GeometryInstanceData( glm::transpose( instances[i].second ),
+                              static_cast<uint32_t>( i ),
+                              0xFF,
+                              static_cast<uint32_t>( 2 * i ),
+                              static_cast<uint8_t>( vk::GeometryInstanceFlagBitsNV::eTriangleCullDisable ),
+                              accelerationStructureHandle ) );
     }
-    accelerationStructureData.instanceBufferData->upload(device, geometryInstanceData);
+    accelerationStructureData.instanceBufferData->upload( device, geometryInstanceData );
   }
 
-  device->bindAccelerationStructureMemoryNV(vk::BindAccelerationStructureMemoryInfoNV(*accelerationStructureData.acclerationStructure,
-                                                                                      *accelerationStructureData.resultBufferData->deviceMemory));
+  device.bindAccelerationStructureMemoryNV( vk::BindAccelerationStructureMemoryInfoNV(
+    accelerationStructureData.accelerationStructure, accelerationStructureData.resultBufferData->deviceMemory ) );
 
-  commandBuffer->buildAccelerationStructureNV(vk::AccelerationStructureInfoNV(accelerationStructureType, {}, vk::su::checked_cast<uint32_t>(instances.size()),
-                                                                              vk::su::checked_cast<uint32_t>(geometries.size()), geometries.data()),
-                                              accelerationStructureData.instanceBufferData ? *accelerationStructureData.instanceBufferData->buffer : nullptr, 0, false,
-                                              *accelerationStructureData.acclerationStructure, nullptr, *accelerationStructureData.scratchBufferData->buffer, 0);
+  commandBuffer.buildAccelerationStructureNV(
+    vk::AccelerationStructureInfoNV(
+      accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries ),
+    accelerationStructureData.instanceBufferData ? accelerationStructureData.instanceBufferData->buffer : nullptr,
+    0,
+    false,
+    accelerationStructureData.accelerationStructure,
+    nullptr,
+    accelerationStructureData.scratchBufferData->buffer,
+    0 );
 
-  commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eAccelerationStructureBuildNV, vk::PipelineStageFlagBits::eAccelerationStructureBuildNV, {},
-                                 vk::MemoryBarrier(vk::AccessFlagBits::eAccelerationStructureWriteNV | vk::AccessFlagBits::eAccelerationStructureReadNV,
-                                                   vk::AccessFlagBits::eAccelerationStructureWriteNV | vk::AccessFlagBits::eAccelerationStructureReadNV), {}, {});
+  commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAccelerationStructureBuildNV,
+                                 vk::PipelineStageFlagBits::eAccelerationStructureBuildNV,
+                                 {},
+                                 vk::MemoryBarrier( vk::AccessFlagBits::eAccelerationStructureWriteNV |
+                                                      vk::AccessFlagBits::eAccelerationStructureReadNV,
+                                                    vk::AccessFlagBits::eAccelerationStructureWriteNV |
+                                                      vk::AccessFlagBits::eAccelerationStructureReadNV ),
+                                 {},
+                                 {} );
 
   return accelerationStructureData;
 }
 
 struct PerFrameData
 {
-  vk::UniqueCommandPool   commandPool;
-  vk::UniqueCommandBuffer commandBuffer;
-  vk::UniqueFence         fence;
-  vk::UniqueSemaphore     presentCompleteSemaphore;
-  vk::UniqueSemaphore     renderCompleteSemaphore;
+  void clear( vk::Device device )
+  {
+    device.freeCommandBuffers( commandPool, commandBuffer );
+    device.destroyCommandPool( commandPool );
+    device.destroyFence( fence );
+    device.destroySemaphore( presentCompleteSemaphore );
+    device.destroySemaphore( renderCompleteSemaphore );
+  }
+
+  vk::CommandPool   commandPool;
+  vk::CommandBuffer commandBuffer;
+  vk::Fence         fence;
+  vk::Semaphore     presentCompleteSemaphore;
+  vk::Semaphore     renderCompleteSemaphore;
 };
 
 struct UniformBufferObject
@@ -156,18 +237,15 @@ struct UniformBufferObject
 
 struct Material
 {
-  glm::vec3 diffuse = glm::vec3(0.7f, 0.7f, 0.7f);
-  int textureID     = -1;
+  glm::vec3 diffuse   = glm::vec3( 0.7f, 0.7f, 0.7f );
+  int       textureID = -1;
 };
-const size_t MaterialStride = ((sizeof(Material) + 15) / 16) * 16;
+const size_t MaterialStride = ( ( sizeof( Material ) + 15 ) / 16 ) * 16;
 
 struct Vertex
 {
-  Vertex(glm::vec3 const& p, glm::vec3 const& n, glm::vec2 const& tc, int m = 0)
-    : pos(p)
-    , nrm(n)
-    , texCoord(tc)
-    , matID(m)
+  Vertex( glm::vec3 const & p, glm::vec3 const & n, glm::vec2 const & tc, int m = 0 )
+    : pos( p ), nrm( n ), texCoord( tc ), matID( m )
   {}
 
   glm::vec3 pos;
@@ -175,53 +253,52 @@ struct Vertex
   glm::vec2 texCoord;
   int       matID;
 };
-const size_t VertexStride = ((sizeof(Vertex) + 15) / 16) * 16;
+const size_t VertexStride = ( ( sizeof( Vertex ) + 15 ) / 16 ) * 16;
 
-static const std::vector<Vertex> cubeData =
-{
+static const std::vector<Vertex> cubeData = {
   //        pos                               nrm                             texcoord              matID
   //  front face
-  { Vertex(glm::vec3(-1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f,  0.0f,  1.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
   //  back face
-  { Vertex(glm::vec3( 1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f,  0.0f, -1.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, 0.0f, -1.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
   //  left face
-  { Vertex(glm::vec3(-1.0f, -1.0f, -1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f,  1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f,  1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f,  1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f, -1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f, -1.0f),   glm::vec3(-1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, -1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, 1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, -1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, -1.0f ), glm::vec3( -1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
   //  right face
-  { Vertex(glm::vec3( 1.0f, -1.0f,  1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f, -1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f, -1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f, -1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f,  1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f,  1.0f),   glm::vec3( 1.0f,  0.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, 1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, -1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, -1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, -1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, 1.0f ), glm::vec3( 1.0f, 0.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
   //  top face
-  { Vertex(glm::vec3(-1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f, -1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f,  1.0f,  1.0f),   glm::vec3( 0.0f,  1.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, -1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), glm::vec3( 0.0f, 1.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
   //  bottom face
-  { Vertex(glm::vec3(-1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(1.0f, 0.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3( 1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(1.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f,  1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(0.0f, 1.0f),   0) },
-  { Vertex(glm::vec3(-1.0f, -1.0f, -1.0f),   glm::vec3( 0.0f, -1.0f,  0.0f),  glm::vec2(0.0f, 0.0f),   0) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 1.0f, 0.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( 1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 1.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, 1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 0.0f, 1.0f ), 0 ) },
+  { Vertex( glm::vec3( -1.0f, -1.0f, -1.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ), glm::vec2( 0.0f, 0.0f ), 0 ) },
 };
 
 static std::string vertexShaderText = R"(
@@ -476,81 +553,83 @@ void main()
 )";
 
 #ifndef IMGUI_VK_QUEUED_FRAMES
-#define IMGUI_VK_QUEUED_FRAMES 2
+#  define IMGUI_VK_QUEUED_FRAMES 2
 #endif  // !IMGUI_VK_QUEUED_FRAMES
 
 struct AppInfo
 {
   vk::su::CameraManipulator cameraManipulator;
-  bool                      useRasterRender     = false;
+  bool                      useRasterRender = false;
 };
 
-static void check_vk_result(VkResult err)
+static void check_vk_result( VkResult err )
 {
-  if (err != 0)
+  if ( err != 0 )
   {
-    std::cerr << AppName << ": Vulkan error " << vk::to_string(static_cast<vk::Result>(err));
-    if (err < 0)
+    std::cerr << AppName << ": Vulkan error " << vk::to_string( static_cast<vk::Result>( err ) );
+    if ( err < 0 )
     {
       abort();
     }
   }
 }
 
-static void cursorPosCallback(GLFWwindow* window, double mouseX, double mouseY)
+static void cursorPosCallback( GLFWwindow * window, double mouseX, double mouseY )
 {
-  vk::su::CameraManipulator::MouseButton mouseButton = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-                                                      ? vk::su::CameraManipulator::MouseButton::Left
-                                                      : (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS)
-                                                        ? vk::su::CameraManipulator::MouseButton::Middle
-                                                        : (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-                                                          ? vk::su::CameraManipulator::MouseButton::Right
-                                                          : vk::su::CameraManipulator::MouseButton::None;
-  if (mouseButton != vk::su::CameraManipulator::MouseButton::None)
+  vk::su::CameraManipulator::MouseButton mouseButton =
+    ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS )
+      ? vk::su::CameraManipulator::MouseButton::Left
+    : ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_MIDDLE ) == GLFW_PRESS )
+      ? vk::su::CameraManipulator::MouseButton::Middle
+    : ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_RIGHT ) == GLFW_PRESS )
+      ? vk::su::CameraManipulator::MouseButton::Right
+      : vk::su::CameraManipulator::MouseButton::None;
+  if ( mouseButton != vk::su::CameraManipulator::MouseButton::None )
   {
     vk::su::CameraManipulator::ModifierFlags modifiers;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+    if ( glfwGetKey( window, GLFW_KEY_LEFT_ALT ) == GLFW_PRESS )
     {
       modifiers |= vk::su::CameraManipulator::ModifierFlagBits::Alt;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    if ( glfwGetKey( window, GLFW_KEY_LEFT_CONTROL ) == GLFW_PRESS )
     {
       modifiers |= vk::su::CameraManipulator::ModifierFlagBits::Ctrl;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if ( glfwGetKey( window, GLFW_KEY_LEFT_SHIFT ) == GLFW_PRESS )
     {
       modifiers |= vk::su::CameraManipulator::ModifierFlagBits::Shift;
     }
 
-    vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo*>(glfwGetWindowUserPointer(window))->cameraManipulator;
-    cameraManipulator.mouseMove(glm::ivec2(static_cast<int>(mouseX), static_cast<int>(mouseY)), mouseButton, modifiers);
+    vk::su::CameraManipulator & cameraManipulator =
+      reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
+    cameraManipulator.mouseMove(
+      glm::ivec2( static_cast<int>( mouseX ), static_cast<int>( mouseY ) ), mouseButton, modifiers );
   }
 }
 
-static void errorCallback(int error, const char* description)
+static void errorCallback( int error, const char * description )
 {
-  fprintf(stderr, "GLFW Error %d: %s\n", error, description);
+  fprintf( stderr, "GLFW Error %d: %s\n", error, description );
 }
 
-static void framebufferSizeCallback(GLFWwindow* window, int w, int h)
+static void framebufferSizeCallback( GLFWwindow * window, int w, int h )
 {
-  vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo*>(glfwGetWindowUserPointer(window))->cameraManipulator;
-  cameraManipulator.setWindowSize(glm::ivec2(w, h));
+  vk::su::CameraManipulator & cameraManipulator =
+    reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
+  cameraManipulator.setWindowSize( glm::ivec2( w, h ) );
 }
 
-static void keyCallback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/)
+static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int action, int /*mods*/ )
 {
-  if (action == GLFW_PRESS)
+  if ( action == GLFW_PRESS )
   {
-    switch (key)
+    switch ( key )
     {
       case GLFW_KEY_ESCAPE:
-      case 'Q':
-        glfwSetWindowShouldClose(window, 1);
-        break;
+      case 'Q': glfwSetWindowShouldClose( window, 1 ); break;
       case 'R':
       {
-        AppInfo * appInfo = reinterpret_cast<AppInfo*>(glfwGetWindowUserPointer(window));
+        AppInfo * appInfo        = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) );
         appInfo->useRasterRender = !appInfo->useRasterRender;
       }
       break;
@@ -558,43 +637,51 @@ static void keyCallback(GLFWwindow* window, int key, int /*scancode*/, int actio
   }
 }
 
-static void mouseButtonCallback(GLFWwindow* window, int /*button*/, int /*action*/, int /*mods*/)
+static void mouseButtonCallback( GLFWwindow * window, int /*button*/, int /*action*/, int /*mods*/ )
 {
   double xpos, ypos;
-  glfwGetCursorPos(window, &xpos, &ypos);
+  glfwGetCursorPos( window, &xpos, &ypos );
 
-  vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo*>(glfwGetWindowUserPointer(window))->cameraManipulator;
-  cameraManipulator.setMousePosition(glm::ivec2(static_cast<int>(xpos), static_cast<int>(ypos)));
+  vk::su::CameraManipulator & cameraManipulator =
+    reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
+  cameraManipulator.setMousePosition( glm::ivec2( static_cast<int>( xpos ), static_cast<int>( ypos ) ) );
 }
 
-static void scrollCallback(GLFWwindow* window, double /*xoffset*/, double yoffset)
+static void scrollCallback( GLFWwindow * window, double /*xoffset*/, double yoffset )
 {
-  vk::su::CameraManipulator & cameraManipulator = reinterpret_cast<AppInfo*>(glfwGetWindowUserPointer(window))->cameraManipulator;
-  cameraManipulator.wheel(static_cast<int>(yoffset));
+  vk::su::CameraManipulator & cameraManipulator =
+    reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) )->cameraManipulator;
+  cameraManipulator.wheel( static_cast<int>( yoffset ) );
 }
-
 
 // random data and functions
 static std::random_device randomDevice;
-static std::mt19937 randomGenerator(randomDevice());
+static std::mt19937       randomGenerator( randomDevice() );
 
 template <typename T>
-T random(T minValue = std::numeric_limits<T>::min(), T maxValue = std::numeric_limits<T>::max())
+T random( T minValue = std::numeric_limits<T>::min(), T maxValue = std::numeric_limits<T>::max() )
 {
-  static_assert(std::numeric_limits<T>::is_integer, "Type T needs to be an integral type!\n");
-  std::uniform_int_distribution<> randomDistribution(minValue, maxValue);
+  static_assert( std::numeric_limits<T>::is_integer, "Type T needs to be an integral type!\n" );
+  std::uniform_int_distribution<> randomDistribution( minValue, maxValue );
 
-  return static_cast<T>(randomDistribution(randomGenerator));
+  return static_cast<T>( randomDistribution( randomGenerator ) );
 }
 
-glm::vec3 randomVec3(float minValue, float maxValue)
+glm::vec3 randomVec3( float minValue, float maxValue )
 {
-  std::uniform_real_distribution<float> randomDistribution(minValue, maxValue);
+  std::uniform_real_distribution<float> randomDistribution( minValue, maxValue );
 
-  return glm::vec3(randomDistribution(randomGenerator), randomDistribution(randomGenerator), randomDistribution(randomGenerator));
+  return glm::vec3( randomDistribution( randomGenerator ),
+                    randomDistribution( randomGenerator ),
+                    randomDistribution( randomGenerator ) );
 }
 
-int main(int /*argc*/, char** /*argv*/)
+uint32_t roundUp( uint32_t value, uint32_t alignment )
+{
+  return ( ( value + alignment - 1 ) / alignment ) * alignment;
+}
+
+int main( int /*argc*/, char ** /*argv*/ )
 {
   // number of cubes in x-, y-, and z-direction
   const size_t xMax = 10;
@@ -606,481 +693,740 @@ int main(int /*argc*/, char** /*argv*/)
   try
   {
     // Setup glfw
-    glfwSetErrorCallback(errorCallback);
-    if (!glfwInit())
+    glfwSetErrorCallback( errorCallback );
+    if ( !glfwInit() )
     {
       std::cerr << AppName << ": can't initialize glfw!\n";
       return 1;
     }
-    if (!glfwVulkanSupported())
+    if ( !glfwVulkanSupported() )
     {
       std::cerr << AppName << ": Vulkan not supported!\n";
       return 1;
     }
 
     // create a window using glfw
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    vk::Extent2D windowExtent(1280, 720);
-    GLFWwindow* window = glfwCreateWindow(windowExtent.width, windowExtent.height, AppName, nullptr, nullptr);
+    glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
+    vk::Extent2D windowExtent( 1280, 720 );
+    GLFWwindow * window = glfwCreateWindow( windowExtent.width, windowExtent.height, AppName, nullptr, nullptr );
 
     // install some callbacks
-    glfwSetCursorPosCallback(window, cursorPosCallback);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
-    glfwSetKeyCallback(window, keyCallback);
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
-    glfwSetScrollCallback(window, scrollCallback);
+    glfwSetCursorPosCallback( window, cursorPosCallback );
+    glfwSetFramebufferSizeCallback( window, framebufferSizeCallback );
+    glfwSetKeyCallback( window, keyCallback );
+    glfwSetMouseButtonCallback( window, mouseButtonCallback );
+    glfwSetScrollCallback( window, scrollCallback );
 
     // Setup camera and make it available as the userPointer in the glfw window
-    appInfo.cameraManipulator.setWindowSize(glm::u32vec2(windowExtent.width, windowExtent.height));
-    glm::vec3 diagonal = 3.0f * glm::vec3(static_cast<float>(xMax), static_cast<float>(yMax), static_cast<float>(zMax));
-    appInfo.cameraManipulator.setLookat(1.5f * diagonal, 0.5f *diagonal, glm::vec3(0, 1, 0));
-    glfwSetWindowUserPointer(window, &appInfo);
+    appInfo.cameraManipulator.setWindowSize( glm::u32vec2( windowExtent.width, windowExtent.height ) );
+    glm::vec3 diagonal =
+      3.0f * glm::vec3( static_cast<float>( xMax ), static_cast<float>( yMax ), static_cast<float>( zMax ) );
+    appInfo.cameraManipulator.setLookat( 1.5f * diagonal, 0.5f * diagonal, glm::vec3( 0, 1, 0 ) );
+    glfwSetWindowUserPointer( window, &appInfo );
 
     // Create Vulkan Instance with needed extensions
-    uint32_t glfwExtensionsCount;
-    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionsCount);
+    uint32_t                 glfwExtensionsCount;
+    const char **            glfwExtensions = glfwGetRequiredInstanceExtensions( &glfwExtensionsCount );
     std::vector<std::string> instanceExtensions;
-    instanceExtensions.reserve(glfwExtensionsCount + 1);
-    for (uint32_t i = 0; i < glfwExtensionsCount; i++)
+    instanceExtensions.reserve( glfwExtensionsCount + 1 );
+    for ( uint32_t i = 0; i < glfwExtensionsCount; i++ )
     {
-      instanceExtensions.push_back(glfwExtensions[i]);
+      instanceExtensions.push_back( glfwExtensions[i] );
     }
-    instanceExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+    instanceExtensions.push_back( VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME );
 
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName, {}, instanceExtensions);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, instanceExtensions );
+#if !defined( NDEBUG )
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
+    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     // Create Window Surface (using glfw)
     vk::SurfaceKHR surface;
-    VkResult err = glfwCreateWindowSurface(VkInstance(*instance), window, nullptr, reinterpret_cast<VkSurfaceKHR*>(&surface));
-    check_vk_result(err);
+    VkResult       err = glfwCreateWindowSurface(
+      static_cast<VkInstance>( instance ), window, nullptr, reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    check_vk_result( err );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex(physicalDevice, surface);
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
+      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surface );
 
     // Create a Device with ray tracing support (besides some other extensions needed) and needed features
-    auto supportedFeatures = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
-    vk::UniqueDevice device = vk::su::createDevice(physicalDevice, graphicsAndPresentQueueFamilyIndex.first,
-                                                   {VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_NV_RAY_TRACING_EXTENSION_NAME, VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME},
-                                                   &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features, &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>());
+    auto supportedFeatures =
+      physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
+    vk::Device device =
+      vk::su::createDevice( physicalDevice,
+                            graphicsAndPresentQueueFamilyIndex.first,
+                            { VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                              VK_NV_RAY_TRACING_EXTENSION_NAME,
+                              VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME },
+                            &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
+                            &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
 
     // setup stuff per frame
     std::array<PerFrameData, IMGUI_VK_QUEUED_FRAMES> perFrameData;
-    for (int i = 0; i < IMGUI_VK_QUEUED_FRAMES; i++)
+    for ( int i = 0; i < IMGUI_VK_QUEUED_FRAMES; i++ )
     {
-      perFrameData[i].commandPool = device->createCommandPoolUnique(vk::CommandPoolCreateInfo(vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first));
-      perFrameData[i].commandBuffer = std::move(device->allocateCommandBuffersUnique(vk::CommandBufferAllocateInfo(*perFrameData[i].commandPool, vk::CommandBufferLevel::ePrimary, 1)).front());
-      perFrameData[i].fence = device->createFenceUnique(vk::FenceCreateInfo(vk::FenceCreateFlagBits::eSignaled));
-      perFrameData[i].presentCompleteSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
-      perFrameData[i].renderCompleteSemaphore = device->createSemaphoreUnique(vk::SemaphoreCreateInfo());
+      perFrameData[i].commandPool   = device.createCommandPool( vk::CommandPoolCreateInfo(
+        vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first ) );
+      perFrameData[i].commandBuffer = device
+                                        .allocateCommandBuffers( vk::CommandBufferAllocateInfo(
+                                          perFrameData[i].commandPool, vk::CommandBufferLevel::ePrimary, 1 ) )
+                                        .front();
+      perFrameData[i].fence = device.createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) );
+      perFrameData[i].presentCompleteSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
+      perFrameData[i].renderCompleteSemaphore  = device.createSemaphore( vk::SemaphoreCreateInfo() );
     }
 
-    vk::Queue graphicsQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.first, 0);
-    vk::Queue presentQueue = device->getQueue(graphicsAndPresentQueueFamilyIndex.second, 0);
+    vk::Queue graphicsQueue = device.getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
+    vk::Queue presentQueue  = device.getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
 
     // create a descriptor pool with a number of available descriptors
-    std::vector<vk::DescriptorPoolSize> poolSizes =
-    {
+    std::vector<vk::DescriptorPoolSize> poolSizes = {
       { vk::DescriptorType::eCombinedImageSampler, 1000 },
-      { vk::DescriptorType::eUniformBuffer, 1000},
+      { vk::DescriptorType::eUniformBuffer, 1000 },
       { vk::DescriptorType::eStorageBuffer, 1000 },
     };
-    vk::UniqueDescriptorPool descriptorPool = vk::su::createDescriptorPool(device, poolSizes);
+    vk::DescriptorPool descriptorPool = vk::su::createDescriptorPool( device, poolSizes );
 
     // setup swap chain, render pass, depth buffer and the frame buffers
-    vk::su::SwapChainData swapChainData(physicalDevice, device, surface, windowExtent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage, vk::UniqueSwapchainKHR(),
-                                        graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
-    vk::SurfaceFormatKHR surfaceFormat = vk::su::pickSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surface));
-    vk::Format depthFormat = vk::su::pickDepthFormat(physicalDevice);
+    vk::su::SwapChainData swapChainData( physicalDevice,
+                                         device,
+                                         surface,
+                                         windowExtent,
+                                         vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage,
+                                         nullptr,
+                                         graphicsAndPresentQueueFamilyIndex.first,
+                                         graphicsAndPresentQueueFamilyIndex.second );
+    vk::SurfaceFormatKHR  surfaceFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
+    vk::Format            depthFormat   = vk::su::pickDepthFormat( physicalDevice );
 
     // setup a render pass
-    vk::UniqueRenderPass renderPass = vk::su::createRenderPass(device, surfaceFormat.format, depthFormat);
+    vk::RenderPass renderPass = vk::su::createRenderPass( device, surfaceFormat.format, depthFormat );
 
-    vk::su::DepthBufferData depthBufferData(physicalDevice, device, depthFormat, windowExtent);
-    std::vector<vk::UniqueFramebuffer> framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent);
+    vk::su::DepthBufferData      depthBufferData( physicalDevice, device, depthFormat, windowExtent );
+    std::vector<vk::Framebuffer> framebuffers = vk::su::createFramebuffers(
+      device, renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent );
 
-    bool samplerAnisotropy = supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features.samplerAnisotropy;
+    bool samplerAnisotropy = !!supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features.samplerAnisotropy;
 
     // create some simple checkerboard textures, randomly sized and colored
-    const size_t textureCount = 10;
+    const size_t                     textureCount = 10;
     std::vector<vk::su::TextureData> textures;
-    textures.reserve(textureCount);
-    for (size_t i = 0; i < textureCount; i++)
+    textures.reserve( textureCount );
+    for ( size_t i = 0; i < textureCount; i++ )
     {
-      textures.push_back(vk::su::TextureData(physicalDevice, device, {random<uint32_t>(2, 8) * 16, random<uint32_t>(2, 8) * 16},
-                                             vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, {}, samplerAnisotropy, true));
+      textures.emplace_back( physicalDevice,
+                             device,
+                             vk::Extent2D( random<uint32_t>( 2, 8 ) * 16, random<uint32_t>( 2, 8 ) * 16 ),
+                             vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+                             vk::FormatFeatureFlags(),
+                             samplerAnisotropy,
+                             true );
     }
-    vk::su::oneTimeSubmit(device, perFrameData[0].commandPool, graphicsQueue,
-                          [&](vk::UniqueCommandBuffer const& commandBuffer)
-                          {
-                            for (auto & t : textures)
-                            {
-                              t.setImage(device, commandBuffer, vk::su::CheckerboardImageGenerator({random<uint8_t>(), random<uint8_t>(), random<uint8_t>()},
-                                                                                                   {random<uint8_t>(), random<uint8_t>(), random<uint8_t>()}));
-                            }
-                          });
+    vk::su::oneTimeSubmit(
+      device, perFrameData[0].commandPool, graphicsQueue, [&]( vk::CommandBuffer const & commandBuffer ) {
+        for ( auto & t : textures )
+        {
+          t.setImage(
+            device,
+            commandBuffer,
+            vk::su::CheckerboardImageGenerator( { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() },
+                                                { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() } ) );
+        }
+      } );
 
     // create some materials with a random diffuse color, referencing one of the above textures
     const size_t materialCount = 10;
-    assert(materialCount == textureCount);
-    std::vector<Material> materials(materialCount);
-    for (size_t i = 0; i < materialCount; i++)
+    assert( materialCount == textureCount );
+    std::vector<Material> materials( materialCount );
+    for ( size_t i = 0; i < materialCount; i++ )
     {
-      materials[i].diffuse = randomVec3(0.0f, 1.0f);
-      materials[i].textureID = vk::su::checked_cast<uint32_t>(i);
+      materials[i].diffuse   = randomVec3( 0.0f, 1.0f );
+      materials[i].textureID = vk::su::checked_cast<uint32_t>( i );
     }
-    vk::su::BufferData materialBufferData(physicalDevice, device, materialCount * MaterialStride, vk::BufferUsageFlagBits::eStorageBuffer);
-    materialBufferData.upload(device, materials, MaterialStride);
+    vk::su::BufferData materialBufferData(
+      physicalDevice, device, materialCount * MaterialStride, vk::BufferUsageFlagBits::eStorageBuffer );
+    materialBufferData.upload( device, materials, MaterialStride );
 
     // create a a 3D-array of cubes, randomly jittered, using a random material
     std::vector<Vertex> vertices;
-    vertices.reserve(xMax * yMax * zMax * cubeData.size());
-    for (size_t x = 0; x < xMax; x++)
+    vertices.reserve( xMax * yMax * zMax * cubeData.size() );
+    for ( size_t x = 0; x < xMax; x++ )
     {
-      for (size_t y = 0; y < yMax; y++)
+      for ( size_t y = 0; y < yMax; y++ )
       {
-        for (size_t z = 0; z < zMax; z++)
+        for ( size_t z = 0; z < zMax; z++ )
         {
-          int m = random<int>(0, materialCount - 1);
-          glm::vec3 jitter = randomVec3(0.0f, 0.6f);
-          for (auto const& v : cubeData)
+          int       m      = random<int>( 0, materialCount - 1 );
+          glm::vec3 jitter = randomVec3( 0.0f, 0.6f );
+          for ( auto const & v : cubeData )
           {
-            vertices.push_back(v);
-            vertices.back().pos += 3.0f * glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z)) + jitter;
-            vertices.back().matID = static_cast<int>(m);
+            vertices.push_back( v );
+            vertices.back().pos +=
+              3.0f * glm::vec3( static_cast<float>( x ), static_cast<float>( y ), static_cast<float>( z ) ) + jitter;
+            vertices.back().matID = static_cast<int>( m );
           }
         }
       }
     }
 
     // create an 1-1 index buffer
-    std::vector<unsigned int> indices(vertices.size());
-    std::iota(indices.begin(), indices.end(), 0);
+    std::vector<unsigned int> indices( vertices.size() );
+    std::iota( indices.begin(), indices.end(), 0 );
 
     // there's just one vertex- and one index-buffer, but with more complex scene loaders there might be more!
-    vk::su::BufferData  vertexBufferData(physicalDevice, device, vertices.size() * VertexStride,
-                                         vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eStorageBuffer,
-                                         vk::MemoryPropertyFlagBits::eDeviceLocal);
-    vertexBufferData.upload(physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, vertices, VertexStride);
+    vk::su::BufferData vertexBufferData( physicalDevice,
+                                         device,
+                                         vertices.size() * VertexStride,
+                                         vk::BufferUsageFlagBits::eTransferDst |
+                                           vk::BufferUsageFlagBits::eVertexBuffer |
+                                           vk::BufferUsageFlagBits::eStorageBuffer,
+                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
+    vertexBufferData.upload(
+      physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, vertices, VertexStride );
 
-    vk::su::BufferData  indexBufferData(physicalDevice, device, indices.size() * sizeof(uint32_t),
-                                        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eStorageBuffer,
-                                        vk::MemoryPropertyFlagBits::eDeviceLocal);
-    indexBufferData.upload(physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, indices, sizeof(uint32_t));
+    vk::su::BufferData indexBufferData( physicalDevice,
+                                        device,
+                                        indices.size() * sizeof( uint32_t ),
+                                        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer |
+                                          vk::BufferUsageFlagBits::eStorageBuffer,
+                                        vk::MemoryPropertyFlagBits::eDeviceLocal );
+    indexBufferData.upload(
+      physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, indices, sizeof( uint32_t ) );
 
-    glm::mat4x4 transform(glm::mat4x4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+    glm::mat4x4 transform(
+      glm::mat4x4( 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f ) );
 
-    vk::UniqueDescriptorSetLayout descriptorSetLayout =
-      vk::su::createDescriptorSetLayout(device,
-                                        {
-                                          { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
-                                          { vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment },
-                                          { vk::DescriptorType::eCombinedImageSampler, static_cast<uint32_t>(textures.size()), vk::ShaderStageFlagBits::eFragment }
-                                        });
-    vk::UniquePipelineLayout pipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo({}, 1, &(*descriptorSetLayout)));
+    vk::DescriptorSetLayout descriptorSetLayout =
+      vk::su::createDescriptorSetLayout( device,
+                                         { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
+                                           { vk::DescriptorType::eStorageBuffer,
+                                             1,
+                                             vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment },
+                                           { vk::DescriptorType::eCombinedImageSampler,
+                                             static_cast<uint32_t>( textures.size() ),
+                                             vk::ShaderStageFlagBits::eFragment } } );
+    vk::PipelineLayout pipelineLayout =
+      device.createPipelineLayout( vk::PipelineLayoutCreateInfo( {}, descriptorSetLayout ) );
 
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eVertex, vertexShaderText);
-    vk::UniqueShaderModule fragmentShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText);
+    vk::ShaderModule vertexShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText );
+    vk::ShaderModule fragmentShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText );
     glslang::FinalizeProcess();
 
-    vk::UniquePipeline graphicsPipeline = vk::su::createGraphicsPipeline(device, vk::UniquePipelineCache(), std::make_pair(*vertexShaderModule, nullptr),
-                                                                         std::make_pair(*fragmentShaderModule, nullptr), VertexStride,
-                                                                         {
-                                                                           { vk::Format::eR32G32B32Sfloat, vk::su::checked_cast<uint32_t>(offsetof(Vertex, pos)) },
-                                                                           { vk::Format::eR32G32B32Sfloat, vk::su::checked_cast<uint32_t>(offsetof(Vertex, nrm)) },
-                                                                           { vk::Format::eR32G32Sfloat, vk::su::checked_cast<uint32_t>(offsetof(Vertex, texCoord)) },
-                                                                           { vk::Format::eR32Sint, vk::su::checked_cast<uint32_t>(offsetof(Vertex, matID)) }
-                                                                         }, vk::FrontFace::eCounterClockwise, true, pipelineLayout, renderPass);
+    vk::Pipeline graphicsPipeline = vk::su::createGraphicsPipeline(
+      device,
+      {},
+      std::make_pair( vertexShaderModule, nullptr ),
+      std::make_pair( fragmentShaderModule, nullptr ),
+      VertexStride,
+      { { vk::Format::eR32G32B32Sfloat, vk::su::checked_cast<uint32_t>( offsetof( Vertex, pos ) ) },
+        { vk::Format::eR32G32B32Sfloat, vk::su::checked_cast<uint32_t>( offsetof( Vertex, nrm ) ) },
+        { vk::Format::eR32G32Sfloat, vk::su::checked_cast<uint32_t>( offsetof( Vertex, texCoord ) ) },
+        { vk::Format::eR32Sint, vk::su::checked_cast<uint32_t>( offsetof( Vertex, matID ) ) } },
+      vk::FrontFace::eCounterClockwise,
+      true,
+      pipelineLayout,
+      renderPass );
 
-    vk::su::BufferData uniformBufferData(physicalDevice, device, sizeof(UniformBufferObject), vk::BufferUsageFlagBits::eUniformBuffer);
+    vk::su::BufferData uniformBufferData(
+      physicalDevice, device, sizeof( UniformBufferObject ), vk::BufferUsageFlagBits::eUniformBuffer );
 
-    vk::UniqueDescriptorSet descriptorSet = std::move(device->allocateDescriptorSetsUnique(vk::DescriptorSetAllocateInfo(*descriptorPool, 1, &*descriptorSetLayout)).front());
-    vk::su::updateDescriptorSets(device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, vk::UniqueBufferView() },
-                                                          { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, vk::UniqueBufferView() } }, textures);
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
+    vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
+    vk::su::updateDescriptorSets( device,
+                                  descriptorSet,
+                                  { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} },
+                                    { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
+                                  textures );
 
     // RayTracing specific stuff
 
     // create acceleration structures: one top-level, and just one bottom-level
     AccelerationStructureData topLevelAS, bottomLevelAS;
-    vk::su::oneTimeSubmit(device, perFrameData[0].commandPool, graphicsQueue,
-                          [&](vk::UniqueCommandBuffer const& commandBuffer)
-                          {
-                            vk::GeometryDataNV geometryDataNV(vk::GeometryTrianglesNV(*vertexBufferData.buffer, 0, vk::su::checked_cast<uint32_t>(vertices.size()), VertexStride,
-                                                                                      vk::Format::eR32G32B32Sfloat, *indexBufferData.buffer, 0,
-                                                                                      vk::su::checked_cast<uint32_t>(indices.size()), vk::IndexType::eUint32), {});
-                            bottomLevelAS = createAccelerationStructureData(physicalDevice, device, commandBuffer, {}, {vk::GeometryNV(vk::GeometryTypeNV::eTriangles, geometryDataNV)});
+    vk::su::oneTimeSubmit(
+      device, perFrameData[0].commandPool, graphicsQueue, [&]( vk::CommandBuffer const & commandBuffer ) {
+        vk::GeometryDataNV geometryDataNV( vk::GeometryTrianglesNV( vertexBufferData.buffer,
+                                                                    0,
+                                                                    vk::su::checked_cast<uint32_t>( vertices.size() ),
+                                                                    VertexStride,
+                                                                    vk::Format::eR32G32B32Sfloat,
+                                                                    indexBufferData.buffer,
+                                                                    0,
+                                                                    vk::su::checked_cast<uint32_t>( indices.size() ),
+                                                                    vk::IndexType::eUint32 ),
+                                           {} );
+        bottomLevelAS =
+          createAccelerationStructureData( physicalDevice,
+                                           device,
+                                           commandBuffer,
+                                           {},
+                                           { vk::GeometryNV( vk::GeometryTypeNV::eTriangles, geometryDataNV ) } );
 
-                            topLevelAS = createAccelerationStructureData(physicalDevice, device, commandBuffer, {std::make_pair(*bottomLevelAS.acclerationStructure, transform)},
-                                                                         std::vector<vk::GeometryNV>());
-                          });
+        topLevelAS =
+          createAccelerationStructureData( physicalDevice,
+                                           device,
+                                           commandBuffer,
+                                           { std::make_pair( bottomLevelAS.accelerationStructure, transform ) },
+                                           std::vector<vk::GeometryNV>() );
+      } );
 
     // create raytracing descriptor set
-    vk::su::oneTimeSubmit(device, perFrameData[0].commandPool, graphicsQueue,
-                          [&](vk::UniqueCommandBuffer const& commandBuffer)
-                          {
-                            vk::BufferMemoryBarrier bufferMemoryBarrier({}, vk::AccessFlagBits::eShaderRead, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, *vertexBufferData.buffer, 0,
-                                                                        VK_WHOLE_SIZE);
-                            commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, nullptr, bufferMemoryBarrier, nullptr);
+    vk::su::oneTimeSubmit(
+      device, perFrameData[0].commandPool, graphicsQueue, [&]( vk::CommandBuffer const & commandBuffer ) {
+        vk::BufferMemoryBarrier bufferMemoryBarrier( {},
+                                                     vk::AccessFlagBits::eShaderRead,
+                                                     VK_QUEUE_FAMILY_IGNORED,
+                                                     VK_QUEUE_FAMILY_IGNORED,
+                                                     vertexBufferData.buffer,
+                                                     0,
+                                                     VK_WHOLE_SIZE );
+        commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
+                                       vk::PipelineStageFlagBits::eAllCommands,
+                                       {},
+                                       nullptr,
+                                       bufferMemoryBarrier,
+                                       nullptr );
 
-                            bufferMemoryBarrier.buffer = *indexBufferData.buffer;
-                            commandBuffer->pipelineBarrier(vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, nullptr, bufferMemoryBarrier, nullptr);
-                          });
+        bufferMemoryBarrier.buffer = indexBufferData.buffer;
+        commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
+                                       vk::PipelineStageFlagBits::eAllCommands,
+                                       {},
+                                       nullptr,
+                                       bufferMemoryBarrier,
+                                       nullptr );
+      } );
 
     std::vector<vk::DescriptorSetLayoutBinding> bindings;
-    bindings.push_back(vk::DescriptorSetLayoutBinding(0, vk::DescriptorType::eAccelerationStructureNV, 1, vk::ShaderStageFlagBits::eRaygenNV | vk::ShaderStageFlagBits::eClosestHitNV));
-    bindings.push_back(vk::DescriptorSetLayoutBinding(1, vk::DescriptorType::eStorageImage, 1, vk::ShaderStageFlagBits::eRaygenNV));        // raytracing output
-    bindings.push_back(vk::DescriptorSetLayoutBinding(2, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eRaygenNV));       // camera information
-    bindings.push_back(vk::DescriptorSetLayoutBinding(3, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // vertex buffer
-    bindings.push_back(vk::DescriptorSetLayoutBinding(4, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // index buffer
-    bindings.push_back(vk::DescriptorSetLayoutBinding(5, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV));   // material buffer
-    bindings.push_back(vk::DescriptorSetLayoutBinding(6, vk::DescriptorType::eCombinedImageSampler, vk::su::checked_cast<uint32_t>(textures.size()), vk::ShaderStageFlagBits::eClosestHitNV));   // textures
+    bindings.emplace_back( 0,
+                           vk::DescriptorType::eAccelerationStructureNV,
+                           1,
+                           vk::ShaderStageFlagBits::eRaygenNV | vk::ShaderStageFlagBits::eClosestHitNV );
+    bindings.emplace_back(
+      1, vk::DescriptorType::eStorageImage, 1, vk::ShaderStageFlagBits::eRaygenNV );  // raytracing output
+    bindings.emplace_back(
+      2, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eRaygenNV );  // camera information
+    bindings.emplace_back(
+      3, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV );  // vertex buffer
+    bindings.emplace_back(
+      4, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV );  // index buffer
+    bindings.emplace_back(
+      5, vk::DescriptorType::eStorageBuffer, 1, vk::ShaderStageFlagBits::eClosestHitNV );  // material buffer
+    bindings.emplace_back( 6,
+                           vk::DescriptorType::eCombinedImageSampler,
+                           vk::su::checked_cast<uint32_t>( textures.size() ),
+                           vk::ShaderStageFlagBits::eClosestHitNV );  // textures
 
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
-    descriptorPoolSizes.reserve(bindings.size());
-    for (const auto& b : bindings)
+    descriptorPoolSizes.reserve( bindings.size() );
+    for ( const auto & b : bindings )
     {
-      descriptorPoolSizes.push_back(vk::DescriptorPoolSize(b.descriptorType, vk::su::checked_cast<uint32_t>(swapChainData.images.size()) * b.descriptorCount));
+      descriptorPoolSizes.emplace_back(
+        b.descriptorType, vk::su::checked_cast<uint32_t>( swapChainData.images.size() ) * b.descriptorCount );
     }
-    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, vk::su::checked_cast<uint32_t>(swapChainData.images.size()),
-                                                          vk::su::checked_cast<uint32_t>(descriptorPoolSizes.size()), descriptorPoolSizes.data());
-    vk::UniqueDescriptorPool rayTracingDescriptorPool = device->createDescriptorPoolUnique(descriptorPoolCreateInfo);
-    vk::UniqueDescriptorSetLayout rayTracingDescriptorSetLayout = device->createDescriptorSetLayoutUnique(vk::DescriptorSetLayoutCreateInfo({}, static_cast<uint32_t>(bindings.size()),
-                                                                                                                                            bindings.data()));
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
+      vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
+      vk::su::checked_cast<uint32_t>( swapChainData.images.size() ),
+      descriptorPoolSizes );
+    vk::DescriptorPool      rayTracingDescriptorPool = device.createDescriptorPool( descriptorPoolCreateInfo );
+    vk::DescriptorSetLayout rayTracingDescriptorSetLayout =
+      device.createDescriptorSetLayout( vk::DescriptorSetLayoutCreateInfo( {}, bindings ) );
     std::vector<vk::DescriptorSetLayout> layouts;
-    for (size_t i = 0; i < swapChainData.images.size(); i++)
+    for ( size_t i = 0; i < swapChainData.images.size(); i++ )
     {
-      layouts.push_back(*rayTracingDescriptorSetLayout);
+      layouts.push_back( rayTracingDescriptorSetLayout );
     }
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(*rayTracingDescriptorPool, vk::su::checked_cast<uint32_t>(layouts.size()), layouts.data());
-    std::vector<vk::UniqueDescriptorSet> rayTracingDescriptorSets = device->allocateDescriptorSetsUnique(descriptorSetAllocateInfo);
+    descriptorSetAllocateInfo = vk::DescriptorSetAllocateInfo( rayTracingDescriptorPool, layouts );
+    std::vector<vk::DescriptorSet> rayTracingDescriptorSets =
+      device.allocateDescriptorSets( descriptorSetAllocateInfo );
 
     // Bind ray tracing specific descriptor sets into pNext of a vk::WriteDescriptorSet
-    vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration(1, &*topLevelAS.acclerationStructure);
-    std::vector<vk::WriteDescriptorSet> accelerationDescriptionSets;
-    for (size_t i = 0; i < rayTracingDescriptorSets.size(); i++)
+    vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration( 1,
+                                                                                  &topLevelAS.accelerationStructure );
+    std::vector<vk::WriteDescriptorSet>           accelerationDescriptionSets;
+    for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
-      accelerationDescriptionSets.push_back(vk::WriteDescriptorSet(*rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType));
+      accelerationDescriptionSets.emplace_back( rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType );
       accelerationDescriptionSets.back().pNext = &writeDescriptorSetAcceleration;
     }
-    device->updateDescriptorSets(accelerationDescriptionSets, {});
+    device.updateDescriptorSets( accelerationDescriptionSets, nullptr );
 
-    // Bind all the other buffers and images, starting with dstBinding == 2 (dstBinding == 1 is used by the backBuffer view)
-    for (size_t i = 0; i < rayTracingDescriptorSets.size(); i++)
+    // Bind all the other buffers and images, starting with dstBinding == 2 (dstBinding == 1 is used by the backBuffer
+    // view)
+    for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
-      vk::su::updateDescriptorSets(device, rayTracingDescriptorSets[i],
-                                  {
-                                    { bindings[2].descriptorType, uniformBufferData.buffer, vk::UniqueBufferView() },
-                                    { bindings[3].descriptorType, vertexBufferData.buffer, vk::UniqueBufferView() },
-                                    { bindings[4].descriptorType, indexBufferData.buffer, vk::UniqueBufferView() },
-                                    { bindings[5].descriptorType, materialBufferData.buffer, vk::UniqueBufferView() }
-                                  }, textures, 2);
+      vk::su::updateDescriptorSets( device,
+                                    rayTracingDescriptorSets[i],
+                                    { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
+                                      { bindings[3].descriptorType, vertexBufferData.buffer, {} },
+                                      { bindings[4].descriptorType, indexBufferData.buffer, {} },
+                                      { bindings[5].descriptorType, materialBufferData.buffer, {} } },
+                                    textures,
+                                    2 );
     }
 
     // create the ray-tracing shader modules
     glslang::InitializeProcess();
-    vk::UniqueShaderModule raygenShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eRaygenNV, raygenShaderText);
-    vk::UniqueShaderModule missShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eMissNV, missShaderText);
-    vk::UniqueShaderModule shadowMissShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eMissNV, shadowMissShaderText);
-    vk::UniqueShaderModule closestHitShaderModule = vk::su::createShaderModule(device, vk::ShaderStageFlagBits::eClosestHitNV, closestHitShaderText);
+    vk::ShaderModule raygenShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eRaygenNV, raygenShaderText );
+    vk::ShaderModule missShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eMissNV, missShaderText );
+    vk::ShaderModule shadowMissShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eMissNV, shadowMissShaderText );
+    vk::ShaderModule closestHitShaderModule =
+      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eClosestHitNV, closestHitShaderText );
     glslang::FinalizeProcess();
 
     // create the ray tracing pipeline
-    std::vector<vk::PipelineShaderStageCreateInfo> shaderStages;
+    std::vector<vk::PipelineShaderStageCreateInfo>     shaderStages;
     std::vector<vk::RayTracingShaderGroupCreateInfoNV> shaderGroups;
 
     // We use only one ray generation, that will implement the camera model
-    shaderStages.push_back(vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eRaygenNV, *raygenShaderModule, "main"));
-    shaderGroups.push_back(vk::RayTracingShaderGroupCreateInfoNV(vk::RayTracingShaderGroupTypeNV::eGeneral, 0, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV));
+    shaderStages.emplace_back(
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eRaygenNV, raygenShaderModule, "main" );
+    shaderGroups.emplace_back(
+      vk::RayTracingShaderGroupTypeNV::eGeneral, 0, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
     // The first miss shader is used to look-up the environment in case the rays from the camera miss the geometry
-    shaderStages.push_back(vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eMissNV, *missShaderModule, "main"));
-    shaderGroups.push_back(vk::RayTracingShaderGroupCreateInfoNV(vk::RayTracingShaderGroupTypeNV::eGeneral, 1, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV));
+    shaderStages.emplace_back(
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, missShaderModule, "main" );
+    shaderGroups.emplace_back(
+      vk::RayTracingShaderGroupTypeNV::eGeneral, 1, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
-    // The second miss shader is invoked when a shadow ray misses the geometry. It simply indicates that no occlusion has been found
-    shaderStages.push_back(vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eMissNV, *shadowMissShaderModule, "main"));
-    shaderGroups.push_back(vk::RayTracingShaderGroupCreateInfoNV(vk::RayTracingShaderGroupTypeNV::eGeneral, 2, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV));
+    // The second miss shader is invoked when a shadow ray misses the geometry. It simply indicates that no occlusion
+    // has been found
+    shaderStages.emplace_back(
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, shadowMissShaderModule, "main" );
+    shaderGroups.emplace_back(
+      vk::RayTracingShaderGroupTypeNV::eGeneral, 2, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
-    // The first hit group defines the shaders invoked when a ray shot from the camera hit the geometry. In this case we only specify the closest hit
-    // shader, and rely on the build-in triangle intersection and pass-through any-hit shader. However, explicit intersection and any hit shaders could be added as well.
-    shaderStages.push_back(vk::PipelineShaderStageCreateInfo({}, vk::ShaderStageFlagBits::eClosestHitNV, *closestHitShaderModule, "main"));
-    shaderGroups.push_back(vk::RayTracingShaderGroupCreateInfoNV(vk::RayTracingShaderGroupTypeNV::eTrianglesHitGroup, VK_SHADER_UNUSED_NV, 3, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV));
+    // The first hit group defines the shaders invoked when a ray shot from the camera hit the geometry. In this case we
+    // only specify the closest hit shader, and rely on the build-in triangle intersection and pass-through any-hit
+    // shader. However, explicit intersection and any hit shaders could be added as well.
+    shaderStages.emplace_back(
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eClosestHitNV, closestHitShaderModule, "main" );
+    shaderGroups.emplace_back( vk::RayTracingShaderGroupTypeNV::eTrianglesHitGroup,
+                               VK_SHADER_UNUSED_NV,
+                               3,
+                               VK_SHADER_UNUSED_NV,
+                               VK_SHADER_UNUSED_NV );
 
-    // The second hit group defines the shaders invoked when a shadow ray hits the geometry. For simple shadows we do not need any shader in that group: we will rely on
-    // initializing the payload and update it only in the miss shader
-    shaderGroups.push_back(vk::RayTracingShaderGroupCreateInfoNV(vk::RayTracingShaderGroupTypeNV::eTrianglesHitGroup, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV));
+    // The second hit group defines the shaders invoked when a shadow ray hits the geometry. For simple shadows we do
+    // not need any shader in that group: we will rely on initializing the payload and update it only in the miss shader
+    shaderGroups.emplace_back( vk::RayTracingShaderGroupTypeNV::eTrianglesHitGroup,
+                               VK_SHADER_UNUSED_NV,
+                               VK_SHADER_UNUSED_NV,
+                               VK_SHADER_UNUSED_NV,
+                               VK_SHADER_UNUSED_NV );
 
     // Create the layout of the pipeline following the provided descriptor set layout
-    vk::UniquePipelineLayout rayTracingPipelineLayout = device->createPipelineLayoutUnique(vk::PipelineLayoutCreateInfo({}, 1, &*rayTracingDescriptorSetLayout));
+    vk::PipelineLayout rayTracingPipelineLayout =
+      device.createPipelineLayout( vk::PipelineLayoutCreateInfo( {}, rayTracingDescriptorSetLayout ) );
 
     // Assemble the shader stages and recursion depth info into the raytracing pipeline
     // The ray tracing process can shoot rays from the camera, and a shadow ray can be shot from the
     // hit points of the camera rays, hence a recursion level of 2. This number should be kept as low
     // as possible for performance reasons. Even recursive ray tracing should be flattened into a loop
     // in the ray generation to avoid deep recursion.
-    uint32_t maxRecursionDepth = 2;
-    vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo({}, static_cast<uint32_t>(shaderStages.size()), shaderStages.data(), static_cast<uint32_t>(shaderGroups.size()),
-                                                                    shaderGroups.data(), maxRecursionDepth, *rayTracingPipelineLayout);
-    vk::UniquePipeline rayTracingPipeline = device->createRayTracingPipelineNVUnique(nullptr, rayTracingPipelineCreateInfo);
+    uint32_t                           maxRecursionDepth = 2;
+    vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo(
+      {}, shaderStages, shaderGroups, maxRecursionDepth, rayTracingPipelineLayout );
+    vk::Pipeline                  rayTracingPipeline;
+    vk::ResultValue<vk::Pipeline> rvPipeline =
+      device.createRayTracingPipelineNV( nullptr, rayTracingPipelineCreateInfo );
+    switch ( rvPipeline.result )
+    {
+      case vk::Result::eSuccess: rayTracingPipeline = rvPipeline.value; break;
+      case vk::Result::ePipelineCompileRequiredEXT:
+        // something meaningfull here
+        break;
+      default: assert( false );  // should never happen
+    }
 
-    uint32_t shaderGroupHandleSize = physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>().get<vk::PhysicalDeviceRayTracingPropertiesNV>().shaderGroupHandleSize;
-    assert(!(shaderGroupHandleSize % 16));
-    uint32_t shaderBindingTableSize = 5 * shaderGroupHandleSize;    // 1x raygen, 2x miss, 2x hitGroup
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV> propertiesChain =
+      physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>();
+    uint32_t shaderGroupBaseAlignment =
+      propertiesChain.get<vk::PhysicalDeviceRayTracingPropertiesNV>().shaderGroupBaseAlignment;
+    uint32_t shaderGroupHandleSize =
+      propertiesChain.get<vk::PhysicalDeviceRayTracingPropertiesNV>().shaderGroupHandleSize;
 
-    // with 5 shaders, we need a buffer to hold 5 shaderGroupHandles
-    std::vector<uint8_t> shaderHandleStorage(shaderBindingTableSize);
-    device->getRayTracingShaderGroupHandlesNV<uint8_t>(*rayTracingPipeline, 0, 5, shaderHandleStorage);
+    uint32_t raygenShaderBindingOffset = 0;                      // starting with raygen
+    uint32_t raygenShaderTableSize     = shaderGroupHandleSize;  // one raygen shader
+    uint32_t missShaderBindingOffset =
+      raygenShaderBindingOffset + roundUp( raygenShaderTableSize, shaderGroupBaseAlignment );
+    uint32_t missShaderBindingStride = shaderGroupHandleSize;
+    uint32_t missShaderTableSize     = 2 * missShaderBindingStride;  // two raygen shaders
+    uint32_t hitShaderBindingOffset =
+      missShaderBindingOffset + roundUp( missShaderTableSize, shaderGroupBaseAlignment );
+    uint32_t hitShaderBindingStride = shaderGroupHandleSize;
+    uint32_t hitShaderTableSize     = 2 * hitShaderBindingStride;  // two hit shaders
 
-    vk::su::BufferData shaderBindingTableBufferData(physicalDevice, device, shaderBindingTableSize, vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eHostVisible);
-    shaderBindingTableBufferData.upload(device, shaderHandleStorage);
+    uint32_t             shaderBindingTableSize = hitShaderBindingOffset + hitShaderTableSize;
+    std::vector<uint8_t> shaderHandleStorage( shaderBindingTableSize );
+    (void)device.getRayTracingShaderGroupHandlesNV(
+      rayTracingPipeline, 0, 1, raygenShaderTableSize, &shaderHandleStorage[raygenShaderBindingOffset] );
+    (void)device.getRayTracingShaderGroupHandlesNV(
+      rayTracingPipeline, 1, 2, missShaderTableSize, &shaderHandleStorage[missShaderBindingOffset] );
+    (void)device.getRayTracingShaderGroupHandlesNV(
+      rayTracingPipeline, 3, 2, hitShaderTableSize, &shaderHandleStorage[hitShaderBindingOffset] );
+
+    vk::su::BufferData shaderBindingTableBufferData( physicalDevice,
+                                                     device,
+                                                     shaderBindingTableSize,
+                                                     vk::BufferUsageFlagBits::eTransferDst,
+                                                     vk::MemoryPropertyFlagBits::eHostVisible );
+    shaderBindingTableBufferData.upload( device, shaderHandleStorage );
 
     std::array<vk::ClearValue, 2> clearValues;
-    clearValues[0].color = vk::ClearColorValue(std::array<float, 4>({0.2f, 0.2f, 0.2f, 0.2f}));
-    clearValues[1].depthStencil = vk::ClearDepthStencilValue(1.0f, 0);
+    clearValues[0].color        = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
+    clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
 
     // Main loop
-    uint32_t frameIndex = 0;
+    uint32_t            frameIndex = 0;
     UniformBufferObject uniformBufferObject;
-    uniformBufferObject.model   = glm::mat4(1);
-    uniformBufferObject.modelIT = glm::inverseTranspose(uniformBufferObject.model);
+    uniformBufferObject.model   = glm::mat4( 1 );
+    uniformBufferObject.modelIT = glm::inverseTranspose( uniformBufferObject.model );
 
-    double accumulatedTime{0.0};
-    size_t frameCount{0};
-    while (!glfwWindowShouldClose(window))
+    double accumulatedTime{ 0.0 };
+    size_t frameCount{ 0 };
+    while ( !glfwWindowShouldClose( window ) )
     {
       double startTime = glfwGetTime();
       glfwPollEvents();
 
-      vk::UniqueCommandBuffer const& commandBuffer = perFrameData[frameIndex].commandBuffer;
+      vk::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
 
       int w, h;
-      glfwGetWindowSize(window, &w, &h);
-      if ((w != static_cast<int>(windowExtent.width)) || (h != static_cast<int>(windowExtent.height)))
+      glfwGetWindowSize( window, &w, &h );
+      if ( ( w != static_cast<int>( windowExtent.width ) ) || ( h != static_cast<int>( windowExtent.height ) ) )
       {
-        windowExtent.width = w;
+        windowExtent.width  = w;
         windowExtent.height = h;
-        device->waitIdle();
-        swapChainData = vk::su::SwapChainData(physicalDevice, device, surface, windowExtent, vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage, swapChainData.swapChain,
-                                              graphicsAndPresentQueueFamilyIndex.first, graphicsAndPresentQueueFamilyIndex.second);
-        depthBufferData = vk::su::DepthBufferData(physicalDevice, device, vk::su::pickDepthFormat(physicalDevice), windowExtent);
+        device.waitIdle();
+        swapChainData =
+          vk::su::SwapChainData( physicalDevice,
+                                 device,
+                                 surface,
+                                 windowExtent,
+                                 vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage,
+                                 swapChainData.swapChain,
+                                 graphicsAndPresentQueueFamilyIndex.first,
+                                 graphicsAndPresentQueueFamilyIndex.second );
+        depthBufferData =
+          vk::su::DepthBufferData( physicalDevice, device, vk::su::pickDepthFormat( physicalDevice ), windowExtent );
 
-        vk::su::oneTimeSubmit(commandBuffer, graphicsQueue,
-                              [&](vk::UniqueCommandBuffer const& commandBuffer)
-                              {
-                                vk::su::setImageLayout(commandBuffer, *depthBufferData.image, depthFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eDepthStencilAttachmentOptimal);
-                              });
+        vk::su::oneTimeSubmit( commandBuffer, graphicsQueue, [&]( vk::CommandBuffer const & commandBuffer ) {
+          vk::su::setImageLayout( commandBuffer,
+                                  depthBufferData.image,
+                                  depthFormat,
+                                  vk::ImageLayout::eUndefined,
+                                  vk::ImageLayout::eDepthStencilAttachmentOptimal );
+        } );
 
-        framebuffers = vk::su::createFramebuffers(device, renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent);
+        framebuffers = vk::su::createFramebuffers(
+          device, renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent );
       }
 
       // update the uniformBufferObject
-      assert(0 < windowExtent.height);
+      assert( 0 < windowExtent.height );
       uniformBufferObject.view = appInfo.cameraManipulator.getMatrix();
-      uniformBufferObject.proj = glm::perspective(glm::radians(65.0f), windowExtent.width / static_cast<float>(windowExtent.height), 0.1f, 1000.0f);
+      uniformBufferObject.proj = glm::perspective(
+        glm::radians( 65.0f ), windowExtent.width / static_cast<float>( windowExtent.height ), 0.1f, 1000.0f );
       uniformBufferObject.proj[1][1] *= -1;  // Inverting Y for Vulkan
-      uniformBufferObject.viewInverse = glm::inverse(uniformBufferObject.view);
-      uniformBufferObject.projInverse = glm::inverse(uniformBufferObject.proj);
-      uniformBufferData.upload(device, uniformBufferObject);
+      uniformBufferObject.viewInverse = glm::inverse( uniformBufferObject.view );
+      uniformBufferObject.projInverse = glm::inverse( uniformBufferObject.proj );
+      uniformBufferData.upload( device, uniformBufferObject );
 
       // frame begin
-      vk::ResultValue<uint32_t> rv = device->acquireNextImageKHR(*swapChainData.swapChain, UINT64_MAX, *perFrameData[frameIndex].presentCompleteSemaphore, nullptr);
-      assert(rv.result == vk::Result::eSuccess);
+      vk::ResultValue<uint32_t> rv = device.acquireNextImageKHR(
+        swapChainData.swapChain, UINT64_MAX, perFrameData[frameIndex].presentCompleteSemaphore, nullptr );
+      assert( rv.result == vk::Result::eSuccess );
       uint32_t backBufferIndex = rv.value;
 
-      while (vk::Result::eTimeout == device->waitForFences(*perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout))
+      while ( vk::Result::eTimeout ==
+              device.waitForFences( perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout ) )
         ;
-      device->resetFences(*perFrameData[frameIndex].fence);
+      device.resetFences( perFrameData[frameIndex].fence );
 
-      commandBuffer->begin(vk::CommandBufferBeginInfo(vk::CommandBufferUsageFlagBits::eOneTimeSubmit));
+      commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
 
-      if (appInfo.useRasterRender)
+      if ( appInfo.useRasterRender )
       {
-        commandBuffer->beginRenderPass(vk::RenderPassBeginInfo(*renderPass, *framebuffers[backBufferIndex], vk::Rect2D(vk::Offset2D(0, 0), windowExtent),
-                                                               static_cast<uint32_t>(clearValues.size()), clearValues.data()), vk::SubpassContents::eInline);
+        commandBuffer.beginRenderPass(
+          vk::RenderPassBeginInfo(
+            renderPass, framebuffers[backBufferIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ), clearValues ),
+          vk::SubpassContents::eInline );
 
-        commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, *graphicsPipeline);
-        commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, *descriptorSet, nullptr);
+        commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline );
+        commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, descriptorSet, nullptr );
 
-        commandBuffer->setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(windowExtent.width), static_cast<float>(windowExtent.height), 0.0f, 1.0f));
-        commandBuffer->setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), windowExtent));
+        commandBuffer.setViewport( 0,
+                                   vk::Viewport( 0.0f,
+                                                 0.0f,
+                                                 static_cast<float>( windowExtent.width ),
+                                                 static_cast<float>( windowExtent.height ),
+                                                 0.0f,
+                                                 1.0f ) );
+        commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ) );
 
-        commandBuffer->bindVertexBuffers(0, *vertexBufferData.buffer, {0});
-        commandBuffer->bindIndexBuffer(*indexBufferData.buffer, 0, vk::IndexType::eUint32);
-        commandBuffer->drawIndexed(vk::su::checked_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+        commandBuffer.bindVertexBuffers( 0, vertexBufferData.buffer, { 0 } );
+        commandBuffer.bindIndexBuffer( indexBufferData.buffer, 0, vk::IndexType::eUint32 );
+        commandBuffer.drawIndexed( vk::su::checked_cast<uint32_t>( indices.size() ), 1, 0, 0, 0 );
 
-        commandBuffer->endRenderPass();
+        commandBuffer.endRenderPass();
       }
       else
       {
-        vk::DescriptorImageInfo imageInfo(nullptr, *swapChainData.imageViews[backBufferIndex], vk::ImageLayout::eGeneral);
-        device->updateDescriptorSets(vk::WriteDescriptorSet(*rayTracingDescriptorSets[backBufferIndex], 1, 0, 1, bindings[1].descriptorType, &imageInfo), {});
+        vk::DescriptorImageInfo imageInfo(
+          nullptr, swapChainData.imageViews[backBufferIndex], vk::ImageLayout::eGeneral );
+        vk::WriteDescriptorSet writeDescriptorSet(
+          rayTracingDescriptorSets[backBufferIndex], 1, 0, bindings[1].descriptorType, imageInfo );
+        device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
-        vk::su::setImageLayout(commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral);
+        vk::su::setImageLayout( commandBuffer,
+                                swapChainData.images[backBufferIndex],
+                                surfaceFormat.format,
+                                vk::ImageLayout::eUndefined,
+                                vk::ImageLayout::eGeneral );
 
-        commandBuffer->bindPipeline(vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipeline);
+        commandBuffer.bindPipeline( vk::PipelineBindPoint::eRayTracingNV, rayTracingPipeline );
 
-        commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipelineLayout, 0, *rayTracingDescriptorSets[backBufferIndex], nullptr);
+        commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eRayTracingNV,
+                                          rayTracingPipelineLayout,
+                                          0,
+                                          rayTracingDescriptorSets[backBufferIndex],
+                                          nullptr );
 
-        VkDeviceSize rayGenOffset = 0;                        // starting with raygen
-        VkDeviceSize missOffset = shaderGroupHandleSize;      // after raygen
-        VkDeviceSize missStride = shaderGroupHandleSize;
-        VkDeviceSize hitGroupOffset = shaderGroupHandleSize + 2 * shaderGroupHandleSize;    // after 1x raygen and 2x miss
-        VkDeviceSize hitGroupStride = shaderGroupHandleSize;
+        commandBuffer.traceRaysNV( shaderBindingTableBufferData.buffer,
+                                   raygenShaderBindingOffset,
+                                   shaderBindingTableBufferData.buffer,
+                                   missShaderBindingOffset,
+                                   missShaderBindingStride,
+                                   shaderBindingTableBufferData.buffer,
+                                   hitShaderBindingOffset,
+                                   hitShaderBindingStride,
+                                   nullptr,
+                                   0,
+                                   0,
+                                   windowExtent.width,
+                                   windowExtent.height,
+                                   1 );
 
-        commandBuffer->traceRaysNV(*shaderBindingTableBufferData.buffer, rayGenOffset, *shaderBindingTableBufferData.buffer, missOffset, missStride, *shaderBindingTableBufferData.buffer,
-                                   hitGroupOffset, hitGroupStride, nullptr, 0, 0, windowExtent.width, windowExtent.height, 1);
-
-        vk::su::setImageLayout(commandBuffer, swapChainData.images[backBufferIndex], surfaceFormat.format, vk::ImageLayout::eGeneral, vk::ImageLayout::ePresentSrcKHR);
+        vk::su::setImageLayout( commandBuffer,
+                                swapChainData.images[backBufferIndex],
+                                surfaceFormat.format,
+                                vk::ImageLayout::eGeneral,
+                                vk::ImageLayout::ePresentSrcKHR );
       }
 
       // frame end
-      commandBuffer->end();
+      commandBuffer.end();
       const vk::PipelineStageFlags waitDstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-      graphicsQueue.submit(vk::SubmitInfo(1, &(*perFrameData[frameIndex].presentCompleteSemaphore), &waitDstStageMask, 1, &(*commandBuffer), 1,
-                                          &(*perFrameData[frameIndex].renderCompleteSemaphore)), *perFrameData[frameIndex].fence);
-      presentQueue.presentKHR(vk::PresentInfoKHR(1, &(*perFrameData[frameIndex].renderCompleteSemaphore), 1, &(*swapChainData.swapChain), &backBufferIndex));
-      frameIndex = (frameIndex + 1) % IMGUI_VK_QUEUED_FRAMES;
+      graphicsQueue.submit( vk::SubmitInfo( 1,
+                                            &( perFrameData[frameIndex].presentCompleteSemaphore ),
+                                            &waitDstStageMask,
+                                            1,
+                                            &commandBuffer,
+                                            1,
+                                            &( perFrameData[frameIndex].renderCompleteSemaphore ) ),
+                            perFrameData[frameIndex].fence );
+      vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR(
+        perFrameData[frameIndex].renderCompleteSemaphore, swapChainData.swapChain, backBufferIndex ) );
+      switch ( result )
+      {
+        case vk::Result::eSuccess: break;
+        case vk::Result::eSuboptimalKHR:
+          std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
+          break;
+        default: assert( false );  // an unexpected result is returned !
+      }
+      frameIndex = ( frameIndex + 1 ) % IMGUI_VK_QUEUED_FRAMES;
 
       double endTime = glfwGetTime();
       accumulatedTime += endTime - startTime;
       ++frameCount;
-      if (1.0 < accumulatedTime)
+      if ( 1.0 < accumulatedTime )
       {
-        assert(0 < frameCount);
+        assert( 0 < frameCount );
 
         std::ostringstream oss;
-        oss << AppName << ": " << vertices.size() << " Vertices " << (appInfo.useRasterRender ? "Rastering" : "RayTracing") << " ( " << frameCount / accumulatedTime << " fps)";
-        glfwSetWindowTitle(window, oss.str().c_str());
+        oss << AppName << ": " << vertices.size() << " Vertices "
+            << ( appInfo.useRasterRender ? "Rastering" : "RayTracing" ) << " ( " << frameCount / accumulatedTime
+            << " fps)";
+        glfwSetWindowTitle( window, oss.str().c_str() );
 
         accumulatedTime = 0.0;
-        frameCount = 0;
+        frameCount      = 0;
       }
     }
 
     // Cleanup
-    device->waitIdle();
-    swapChainData.swapChain.reset();    // need to reset swapChain before destroying the surface !
-    VULKAN_HPP_DEFAULT_DISPATCHER.vkDestroySurfaceKHR(VkInstance(*instance), VkSurfaceKHR(surface), nullptr);
-    glfwDestroyWindow(window);
+    device.waitIdle();
+
+    shaderBindingTableBufferData.clear( device );
+    device.destroyPipeline( rayTracingPipeline );
+    device.destroyPipelineLayout( rayTracingPipelineLayout );
+    device.destroyShaderModule( closestHitShaderModule );
+    device.destroyShaderModule( shadowMissShaderModule );
+    device.destroyShaderModule( missShaderModule );
+    device.destroyShaderModule( raygenShaderModule );
+    device.freeDescriptorSets( rayTracingDescriptorPool, rayTracingDescriptorSets );
+    device.destroyDescriptorSetLayout( rayTracingDescriptorSetLayout );
+    device.destroyDescriptorPool( rayTracingDescriptorPool );
+    topLevelAS.clear( device );
+    bottomLevelAS.clear( device );
+    device.freeDescriptorSets( descriptorPool, descriptorSet );
+    uniformBufferData.clear( device );
+    device.destroyPipeline( graphicsPipeline );
+    device.destroyShaderModule( fragmentShaderModule );
+    device.destroyShaderModule( vertexShaderModule );
+    device.destroyPipelineLayout( pipelineLayout );
+    device.destroyDescriptorSetLayout( descriptorSetLayout );
+    indexBufferData.clear( device );
+    vertexBufferData.clear( device );
+    materialBufferData.clear( device );
+    for ( auto & texture : textures )
+    {
+      texture.clear( device );
+    }
+    for ( auto framebuffer : framebuffers )
+    {
+      device.destroyFramebuffer( framebuffer );
+    }
+    depthBufferData.clear( device );
+    device.destroyRenderPass( renderPass );
+    swapChainData.clear( device );
+    device.destroyDescriptorPool( descriptorPool );
+    for ( int i = 0; i < IMGUI_VK_QUEUED_FRAMES; i++ )
+    {
+      perFrameData[i].clear( device );
+    }
+    device.destroy();
+    instance.destroySurfaceKHR( surface );
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
+
+    glfwDestroyWindow( window );
     glfwTerminate();
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

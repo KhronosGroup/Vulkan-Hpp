@@ -17,38 +17,43 @@
 
 #include "../utils/utils.hpp"
 #include "vulkan/vulkan.hpp"
+
 #include <vector>
 
-static char const* AppName = "PhysicalDeviceGroups";
-static char const* EngineName = "Vulkan.hpp";
+static char const * AppName    = "PhysicalDeviceGroups";
+static char const * EngineName = "Vulkan.hpp";
 
-int main(int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance(AppName, EngineName);
-#if !defined(NDEBUG)
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger(instance);
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+#if !defined( NDEBUG )
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     /* VULKAN_KEY_START */
 
-    std::vector<vk::PhysicalDeviceGroupProperties> groupProperties = instance->enumeratePhysicalDeviceGroups();
+    std::vector<vk::PhysicalDeviceGroupProperties> groupProperties = instance.enumeratePhysicalDeviceGroups();
 
     std::cout << std::boolalpha;
-    for (size_t i=0 ; i< groupProperties.size() ; i++)
+    for ( size_t i = 0; i < groupProperties.size(); i++ )
     {
       std::cout << "Group Properties " << i << "\n";
-      std::cout << "\t" << "physicalDeviceCount = " << groupProperties[i].physicalDeviceCount << "\n";
-      std::cout << "\t" << "physicalDevices:\n";
-      for (size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++)
+      std::cout << "\t"
+                << "physicalDeviceCount = " << groupProperties[i].physicalDeviceCount << "\n";
+      std::cout << "\t"
+                << "physicalDevices:\n";
+      for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
         std::cout << "\t\t" << j << " : " << groupProperties[i].physicalDevices[j].getProperties().deviceName << "\n";
       }
-      std::cout << "\t" << "subsetAllocation    = " << static_cast<bool>(groupProperties[i].subsetAllocation) << "\n";
+      std::cout << "\t"
+                << "subsetAllocation    = " << !!groupProperties[i].subsetAllocation << "\n";
       std::cout << "\n";
 
-      if (1 < groupProperties[i].physicalDeviceCount)
+      if ( 1 < groupProperties[i].physicalDeviceCount )
       {
         vk::PhysicalDevice physicalDevice = groupProperties[i].physicalDevices[0];
 
@@ -56,40 +61,49 @@ int main(int /*argc*/, char ** /*argv*/)
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
         // get the first index into queueFamiliyProperties which supports graphics
-        size_t graphicsQueueFamilyIndex = std::distance(queueFamilyProperties.begin(),
-                                                        std::find_if(queueFamilyProperties.begin(),
-                                                                     queueFamilyProperties.end(),
-                                                                     [](vk::QueueFamilyProperties const& qfp) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; }));
-        assert(graphicsQueueFamilyIndex < queueFamilyProperties.size());
+        auto propertyIterator = std::find_if(
+          queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
+            return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
+          } );
+        size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
+        assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
-        // create a UniqueDevice
-        float queuePriority = 0.0f;
-        vk::DeviceQueueCreateInfo deviceQueueCreateInfo(vk::DeviceQueueCreateFlags(), static_cast<uint32_t>(graphicsQueueFamilyIndex), 1, &queuePriority);
-        vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(), 1, &deviceQueueCreateInfo);
+        // create a Device
+        float                     queuePriority = 0.0f;
+        vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
+          vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
+        vk::DeviceCreateInfo deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
 
-        vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo(groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices);
+        vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo( groupProperties[i].physicalDeviceCount,
+                                                                     groupProperties[i].physicalDevices );
         deviceCreateInfo.pNext = &deviceGroupDeviceCreateInfo;
 
-        vk::UniqueDevice device = physicalDevice.createDeviceUnique(deviceCreateInfo);
+        vk::Device device = physicalDevice.createDevice( deviceCreateInfo );
+
+        // ... and destroy it again
+        device.destroy();
       }
     }
 
     /* VULKAN_KEY_END */
+
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+    instance.destroy();
   }
-  catch (vk::SystemError& err)
+  catch ( vk::SystemError & err )
   {
     std::cout << "vk::SystemError: " << err.what() << std::endl;
-    exit(-1);
+    exit( -1 );
   }
-  catch (std::runtime_error& err)
+  catch ( std::exception & err )
   {
-    std::cout << "std::runtime_error: " << err.what() << std::endl;
-    exit(-1);
+    std::cout << "std::exception: " << err.what() << std::endl;
+    exit( -1 );
   }
-  catch (...)
+  catch ( ... )
   {
     std::cout << "unknown error\n";
-    exit(-1);
+    exit( -1 );
   }
   return 0;
 }

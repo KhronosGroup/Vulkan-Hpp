@@ -19,6 +19,8 @@ matrix:
       env: 
         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
         - ADDITIONAL_BUILD_OPTIONS="-DSAMPLES_BUILD=OFF"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: g++-5
 
     - os: linux
@@ -33,6 +35,8 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: g++-6
 
     - os: linux
@@ -47,6 +51,8 @@ matrix:
           - libglu1-mesa-dev
       env: 
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: g++-7
 
     - os: linux
@@ -61,23 +67,57 @@ matrix:
             - libglu1-mesa-dev
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: g++-8
 
     - os: linux
-      before_install:
-        - sudo apt-get update
-        - sudo apt-get purge g++
-        - sudo apt-get install clang-3.9
-        - CC=clang-3.9 && CXX=clang++-3.9
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
+            - g++-9
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
-      compiler: clang++-3.9
+      env:
+        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: g++-9
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: g++-10
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+        - BUILD_TYPE="Release"
+        - CXX_STANDARD="11"
+      compiler: g++-10
 
     - os: linux
       before_install:
@@ -93,6 +133,9 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: clang++-4.0
 
     - os: linux
@@ -109,6 +152,9 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: clang++-5.0
 
     - os: linux
@@ -125,7 +171,162 @@ matrix:
             - ninja-build
             - xorg-dev 
             - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
       compiler: clang++-6.0
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-7
+        - CC=clang-7 && CXX=clang++-7
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: clang++-7
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-8
+        - CC=clang-8 && CXX=clang++-8
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: clang++-8
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-9
+        - CC=clang-9 && CXX=clang++-9
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: clang++-9
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="11"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="14"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="17"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Debug"
+        - CXX_STANDARD="20"
+      compiler: clang++-10
+
+    - os: linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get purge g++
+        - sudo apt-get install clang-10
+        - CC=clang-10 && CXX=clang++-10
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - ninja-build
+            - xorg-dev 
+            - libglu1-mesa-dev
+      env:
+        - BUILD_TYPE="Release"
+        - CXX_STANDARD="20"
+      compiler: clang++-10
 
 before_install:
   - eval "${MATRIX_EVAL}"
@@ -141,5 +342,9 @@ script:
     -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON 
     -DTESTS_BUILD_ONLY_DYNAMIC=ON 
     -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+    -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
+    -DCMAKE_CXX_FLAGS="-Wall -Wpedantic -Wextra"
+    -DCMAKE_CXX_STANDARD=$CXX_STANDARD
     $ADDITIONAL_BUILD_OPTIONS
   - cmake --build .
+  - ./VulkanHppGenerator

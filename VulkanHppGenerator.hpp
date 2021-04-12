@@ -205,15 +205,15 @@ private:
       : objTypeEnum( objType ), parent( p ), xmlLine( line )
     {}
 
-    std::string              alias;
-    std::set<std::string>    childrenHandles;
-    std::set<std::string>    commands;
-    std::string              deleteCommand;
-    std::string              deletePool;
-    std::string              objTypeEnum;
-    std::string              parent;
-    std::set<std::string>    secondLevelCommands;
-    int                      xmlLine;
+    std::string           alias;
+    std::set<std::string> childrenHandles;
+    std::set<std::string> commands;
+    std::string           deleteCommand;
+    std::string           deletePool;
+    std::string           objTypeEnum;
+    std::string           parent;
+    std::set<std::string> secondLevelCommands;
+    int                   xmlLine;
 
     // RAII data
     std::map<std::string, CommandData>::const_iterator              destructorIt;
@@ -390,6 +390,13 @@ private:
                                              std::map<size_t, size_t> const & vectorParamIndices,
                                              std::vector<size_t> const &      returnParamIndices,
                                              bool                             definition ) const;
+  void        appendCommandVectorSingular( std::string &                    str,
+                                           std::string const &              name,
+                                           CommandData const &              commandData,
+                                           size_t                           initialSkipCount,
+                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                           size_t                           returnParamIndex,
+                                           bool                             definition ) const;
   void        appendCommandVectorSingularUnique( std::string &                    str,
                                                  std::string const &              name,
                                                  CommandData const &              commandData,
@@ -505,22 +512,24 @@ private:
            std::vector<ParamData>::const_iterator                                  lenIt ) const;
   std::string constructArgumentListEnhanced( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams,
-                                             size_t                         singularParam,
+                                             std::set<size_t> const &       singularParams,
                                              bool                           definition,
                                              bool                           withAllocators,
                                              bool                           structureChain,
                                              bool                           withDispatcher ) const;
   std::string constructArgumentListStandard( std::vector<ParamData> const & params,
                                              std::set<size_t> const &       skippedParams ) const;
-  std::string constructCallArgumentEnhanced( ParamData const &              param,
-                                             std::vector<ParamData> const & params,
+  std::string constructCallArgumentEnhanced( std::vector<ParamData> const & params,
+                                             size_t                         paramIndex,
                                              bool                           nonConstPointerAsNullptr,
-                                             size_t                         singularParamIndex,
+                                             std::set<size_t> const &       singularParams,
+                                             std::vector<size_t> const &    returnParamIndices,
                                              bool                           raiiHandleMemberFunction ) const;
   std::string constructCallArgumentsEnhanced( std::vector<ParamData> const & params,
                                               size_t                         initialSkipCount,
                                               bool                           nonConstPointerAsNullptr,
-                                              size_t                         singularParamIndex,
+                                              std::set<size_t> const &       singularParams,
+                                              std::vector<size_t> const &    returnParamIndices,
                                               bool                           raiiHandleMemberFunction ) const;
   std::string constructCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string constructCommandBoolGetValue( std::string const & name,
@@ -596,6 +605,13 @@ private:
                                                bool                             definition,
                                                std::map<size_t, size_t> const & vectorParamIndices,
                                                size_t                           returnParamIndex ) const;
+  std::string constructCommandResultGetVector( std::string const &              name,
+                                               CommandData const &              commandData,
+                                               size_t                           initialSkipCount,
+                                               bool                             definition,
+                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                               size_t                           returnParamIndex,
+                                               bool                             withAllocator ) const;
   std::string constructCommandResultGetVectorAndValue( std::string const &              name,
                                                        CommandData const &              commandData,
                                                        size_t                           initialSkipCount,
@@ -636,6 +652,12 @@ private:
                                                                       bool                             definition,
                                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                                       size_t                           returnParamIndex ) const;
+  std::string constructCommandResultGetVectorOfVoidSingular( std::string const &              name,
+                                                             CommandData const &              commandData,
+                                                             size_t                           initialSkipCount,
+                                                             bool                             definition,
+                                                             std::map<size_t, size_t> const & vectorParamIndices,
+                                                             size_t                           returnParamIndex ) const;
   std::string constructCommandResultGetVectorSingular( std::string const &              name,
                                                        CommandData const &              commandData,
                                                        size_t                           initialSkipCount,
@@ -711,14 +733,20 @@ private:
     std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
     std::string const &                                                    enter,
     std::string const &                                                    leave ) const;
-  std::string constructRAIIHandleConstructorArguments( std::string const &            handleType,
-                                                       std::vector<ParamData> const & params,
-                                                       bool                           singular,
-                                                       bool                           encounteredArgument ) const;
+  std::string                         constructRAIIHandleConstructorArguments( std::string const &            handleType,
+                                                                               std::vector<ParamData> const & params,
+                                                                               bool                           singular,
+                                                                               bool                           encounteredArgument ) const;
+  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVector(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
+    size_t                                             returnParamIndex ) const;
   std::string constructRAIIHandleConstructorCallArguments( std::string const &            handleType,
                                                            std::vector<ParamData> const & params,
                                                            bool                           nonConstPointerAsNullptr,
-                                                           size_t                         singularParamIndex,
+                                                           std::set<size_t> const &       singularParams,
+                                                           std::vector<size_t> const &    returnParamIndices,
                                                            bool allocatorIsMemberVariable ) const;
   std::string constructRAIIHandleConstructorEnumerate(
     std::pair<std::string, HandleData> const &                             handle,
@@ -823,6 +851,11 @@ private:
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
     std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
+  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorSingular(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
+    size_t                                             returnParamIndex ) const;
   std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoidSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,

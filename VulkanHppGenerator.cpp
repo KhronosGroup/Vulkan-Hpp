@@ -15908,13 +15908,22 @@ namespace std
       , value( std::move( v ) )
     {}
 
+    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple()
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
     Result                                    result;
     std::vector<UniqueHandle<Type, Dispatch>> value;
 
+#  if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
+    VULKAN_HPP_DEPRECATED(
+      "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
     operator std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>() VULKAN_HPP_NOEXCEPT
     {
       return std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>( result, value );
     }
+#  endif
   };
 #endif
 

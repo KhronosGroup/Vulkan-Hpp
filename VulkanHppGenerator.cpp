@@ -3321,6 +3321,59 @@ void VulkanHppGenerator::appendHashStructures( std::string & str ) const
   }
 }
 
+void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
+{
+  std::string contextInitializerList, deviceInitializerList, instanceInitializerList;
+  std::string contextMembers, deviceMembers, instanceMembers;
+  std::string contextMoveAssignments, deviceMoveAssignments, instanceMoveAssignments;
+  std::string contextMoveConstruction, deviceMoveConstruction, instanceMoveConstruction;
+  for ( auto const & command : m_commands )
+  {
+    if ( command.second.handle.empty() )
+    {
+      contextInitializerList +=
+        ", " + command.first + "( PFN_" + command.first + "( getProcAddr( NULL, \"" + command.first + "\" ) ) )";
+      contextMembers += "    PFN_" + command.first + " " + command.first + " = 0;\n";
+      contextMoveAssignments += "          " + command.first + " = rhs." + command.first + ";\n";
+      contextMoveConstruction += "        , " + command.first + "( rhs." + command.first + " )\n";
+    }
+    else if ( ( command.second.handle == "VkDevice" ) || hasParentHandle( command.second.handle, "VkDevice" ) )
+    {
+      deviceInitializerList += "        " + command.first + " = PFN_" + command.first + "( getProcAddr( device, \"" +
+                               command.first + "\" ) );\n";
+      deviceMembers += "    PFN_" + command.first + " " + command.first + " = 0;\n";
+      deviceMoveAssignments += "          " + command.first + " = rhs." + command.first + ";\n";
+      deviceMoveConstruction += "        , " + command.first + "( rhs." + command.first + " )\n";
+    }
+    else if ( command.first != "vkGetInstanceProcAddr" )
+    {
+      assert( ( command.second.handle == "VkInstance" ) || hasParentHandle( command.second.handle, "VkInstance" ) );
+      instanceInitializerList += "        " + command.first + " = PFN_" + command.first +
+                                 "( getProcAddr( instance, \"" + command.first + "\" ) );\n";
+      instanceMembers += "    PFN_" + command.first + " " + command.first + " = 0;\n";
+      instanceMoveAssignments += "          " + command.first + " = rhs." + command.first + ";\n";
+      instanceMoveConstruction += "        , " + command.first + "( rhs." + command.first + " )\n";
+    }
+  }
+
+  std::string contextDispatcherTemplate = R"(
+    class ContextDispatcher
+    {
+      public:
+        ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
+          : vkGetInstanceProcAddr( getProcAddr )${initializerList}
+        {}
+
+      public:
+        PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
+${members}
+    };
+)";
+
+  str += replaceWithMap( contextDispatcherTemplate,
+                         { { "initializerList", contextInitializerList }, { "members", contextMembers } } );
+}
+
 void VulkanHppGenerator::appendRAIIHandles( std::string & str, std::string & commandDefinitions )
 {
   // Enum -> Type translations are always able to occur.
@@ -3546,10 +3599,8 @@ void VulkanHppGenerator::appendRAIIHandleContext( std::string &                 
   {
   public:
     Context()
-    {
-      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-      m_dispatcher.init( vkGetInstanceProcAddr );
-    }
+      : m_dispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) )
+    {}
 
     ~Context() = default;
 
@@ -3571,14 +3622,14 @@ void VulkanHppGenerator::appendRAIIHandleContext( std::string &                 
 
 ${memberFunctionDeclarations}
 
-    VULKAN_HPP_RAII_DISPATCHER_TYPE const * getDispatcher() const
+    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
     {
       return &m_dispatcher;
     }
 
   private:
-    vk::DynamicLoader               m_dynamicLoader;
-    VULKAN_HPP_RAII_DISPATCHER_TYPE m_dispatcher;
+    VULKAN_HPP_NAMESPACE::DynamicLoader                                m_dynamicLoader;
+    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher m_dispatcher;
   };
 
 )";
@@ -6922,20 +6973,25 @@ std::string VulkanHppGenerator::constructRAIIHandleConstructorResult(
 {
   std::string callArguments = constructRAIIHandleConstructorCallArguments(
     handle.first, constructorIt->second.params, false, {}, {}, handle.second.destructorIt != m_commands.end() );
-  std::string constructorArguments;
+  std::string constructorArguments, dispatcherArgument, dispatcherInit;
   if ( handle.first == "VkInstance" )
   {
     constructorArguments = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Context const & context";
+    dispatcherArgument   = "context.getDispatcher()->vkGetInstanceProcAddr";
+  }
+  else
+  {
+    dispatcherArgument = constructorIt->second.params[0].name + ".getDispatcher()";
+    if ( handle.first == "VkDevice" )
+    {
+      dispatcherArgument = "*" + dispatcherArgument;
+    }
   }
   constructorArguments += constructRAIIHandleConstructorArguments(
     handle.first, constructorIt->second.params, false, handle.first == "VkInstance" );
-  std::string dispatcherArgument =
-    ( ( handle.first == "VkInstance" ) ? "context" : constructorIt->second.params[0].name ) + ".getDispatcher()";
-  std::string dispatcherInit;
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherArgument = "*" + dispatcherArgument;
-    dispatcherInit     = "\n    m_dispatcher.init( m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " );";
+    dispatcherInit = "\n    m_dispatcher.init( m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " );";
   }
   std::string initializationList = constructRAIIHandleConstructorInitializationList(
     handle.first, constructorIt, handle.second.destructorIt, !handle.second.secondLevelCommands.empty() );
@@ -6975,7 +7031,7 @@ std::string VulkanHppGenerator::constructRAIIHandleConstructorTakeOwnership(
   if ( handle.first == "VkInstance" )
   {
     constructorArguments = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Context const & context";
-    dispatcherArgument   = "context.getDispatcher()";
+    dispatcherArgument   = "context.getDispatcher()->vkGetInstanceProcAddr";
   }
   else
   {
@@ -6987,7 +7043,7 @@ std::string VulkanHppGenerator::constructRAIIHandleConstructorTakeOwnership(
       "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + paramType + " const & " + startLowerCase( paramType );
     dispatcherArgument = startLowerCase( paramType ) + ".getDispatcher()";
   }
-  if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
+  if ( handle.first == "VkDevice" )
   {
     dispatcherArgument = "*" + dispatcherArgument;
   }
@@ -11644,6 +11700,25 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &   
   }
 }
 
+bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::string const & parent ) const
+{
+  std::string candidate = handle;
+  while ( !candidate.empty() )
+  {
+    auto const & handleIt = m_handles.find( candidate );
+    assert( handleIt != m_handles.end() );
+    if ( handleIt->second.parent == parent )
+    {
+      return true;
+    }
+    else
+    {
+      candidate = handleIt->second.parent;
+    }
+  }
+  return false;
+}
+
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
   if ( beginsWith( type, "Vk" ) )
@@ -16074,9 +16149,9 @@ namespace std
     ofs.close();
 
 #if defined( CLANG_FORMAT_EXECUTABLE )
-    std::cout << "VulkanHppGenerator: Formatting " << VULKAN_HPP_FILE << " using clang-format..." << std::endl;
     int ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" --version" );
     assert( ret == 0 );
+    std::cout << "VulkanHppGenerator: Formatting " << VULKAN_HPP_FILE << " using clang-format..." << std::endl;
     ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " VULKAN_HPP_FILE );
     if ( ret != 0 )
     {
@@ -16120,6 +16195,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 )";
+
+    generator.appendRAIIDispatchers( str );
+
     std::string raiiHandlesCommandDefinitions;
     generator.appendRAIIHandles( str, raiiHandlesCommandDefinitions );
     str += raiiHandlesCommandDefinitions;

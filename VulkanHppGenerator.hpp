@@ -166,6 +166,7 @@ private:
 
     std::string                                                alias;    // alias for this enum
     std::map<std::string, std::pair<std::string, std::string>> aliases;  // map from name to alias and vk-name
+    std::string                                                bitwidth;
     bool                                                       isBitmask = false;
     std::vector<EnumValueData>                                 values;
   };

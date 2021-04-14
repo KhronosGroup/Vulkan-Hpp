@@ -971,7 +971,9 @@ private:
                                            std::string const &                                          structName,
                                            std::string const &                                          prefix,
                                            bool mutualExclusiveLens ) const;
-  std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
+  std::string           getEnumPrefix( int line, std::string const & name, bool bitmask ) const;
+  std::set<std::string> getPlatforms(
+    std::set<std::string> const & extensions ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,

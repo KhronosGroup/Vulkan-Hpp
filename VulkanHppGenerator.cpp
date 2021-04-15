@@ -158,7 +158,7 @@ void check( bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
-    throw std::runtime_error( "Spec error on line " + std::to_string( line ) + ": " + message );
+    throw std::runtime_error( "VulkanHppGenerator: Spec error on line " + std::to_string( line ) + ": " + message );
   }
 }
 
@@ -781,7 +781,8 @@ void warn( bool condition, int line, std::string const & message )
 {
   if ( !condition )
   {
-    std::cerr << "Spec warning on line " << std::to_string( line ) << ": " << message << "!" << std::endl;
+    std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!"
+              << std::endl;
   }
 }
 
@@ -2202,13 +2203,19 @@ void VulkanHppGenerator::appendDispatchLoaderDynamic( std::string & str )
   str += R"(    }
 
     // This interface does not require a linked vulkan library.
-    DispatchLoaderDynamic( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
+    DispatchLoaderDynamic( VkInstance                instance,
+                           PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+                           VkDevice                  device            = {},
+                           PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
     {
       init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
     }
 
     // This interface does not require a linked vulkan library.
-    void init( VkInstance instance, PFN_vkGetInstanceProcAddr getInstanceProcAddr, VkDevice device = VK_NULL_HANDLE, PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
+    void init( VkInstance                instance,
+               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+               VkDevice                  device              = {},
+               PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
@@ -3013,14 +3020,9 @@ ${enter}  class ${className}
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
-    VULKAN_HPP_CONSTEXPR ${className}() VULKAN_HPP_NOEXCEPT
-      : m_${memberName}(VK_NULL_HANDLE)
-    {}
-
+    VULKAN_HPP_CONSTEXPR ${className}() = default;
     VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-      : m_${memberName}(VK_NULL_HANDLE)
     {}
-
     VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
       : m_${memberName}( ${memberName} )
     {}
@@ -3035,7 +3037,7 @@ ${enter}  class ${className}
 
     ${className} & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
-      m_${memberName} = VK_NULL_HANDLE;
+      m_${memberName} = {};
       return *this;
     }
 
@@ -3074,7 +3076,7 @@ ${commands}
     }
 
   private:
-    Vk${className} m_${memberName};
+    Vk${className} m_${memberName} = {};
   };
   static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
 
@@ -13782,6 +13784,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                    { { "altlen", {} },
                      { "externsync", { "true" } },
                      { "len", {} },
+                     { "limittype", { "bitmask", "max", "min", "noauto", "range", "struct" } },
                      { "noautovalidity", { "true" } },
                      { "optional", { "false", "true" } },
                      { "selection", {} },

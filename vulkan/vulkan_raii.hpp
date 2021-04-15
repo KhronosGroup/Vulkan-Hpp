@@ -411,6 +411,22 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolPropertiesEXT>
                            getToolPropertiesEXT() const;
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR
+                           getVideoCapabilitiesKHR( const VideoProfileKHR & videoProfile ) const;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+                           getVideoCapabilitiesKHR( const VideoProfileKHR & videoProfile ) const;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR>
+        getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR & videoFormatInfo ) const;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32
                            getWaylandPresentationSupportKHR( uint32_t            queueFamilyIndex,
@@ -1402,6 +1418,10 @@ namespace VULKAN_HPP_NAMESPACE
                                         VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const
         VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void beginVideoCodingKHR( const VideoBeginCodingInfoKHR & beginInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
       void bindDescriptorSets( VULKAN_HPP_NAMESPACE::PipelineBindPoint                       pipelineBindPoint,
                                VULKAN_HPP_NAMESPACE::PipelineLayout                          layout,
                                uint32_t                                                      firstSet,
@@ -1487,6 +1507,10 @@ namespace VULKAN_HPP_NAMESPACE
                                    ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageSubresourceRange> const & ranges ) const
         VULKAN_HPP_NOEXCEPT;
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void controlVideoCodingKHR( const VideoCodingControlInfoKHR & codingControlInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
       void copyAccelerationStructureKHR( const CopyAccelerationStructureInfoKHR & info ) const VULKAN_HPP_NOEXCEPT;
 
       void copyAccelerationStructureNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV          dst,
@@ -1544,6 +1568,10 @@ namespace VULKAN_HPP_NAMESPACE
       void debugMarkerEndEXT() const VULKAN_HPP_NOEXCEPT;
 
       void debugMarkerInsertEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const VULKAN_HPP_NOEXCEPT;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void decodeVideoKHR( const VideoDecodeInfoKHR & frameInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       void dispatch( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT;
 
@@ -1613,6 +1641,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void drawMeshTasksNV( uint32_t taskCount, uint32_t firstTask ) const VULKAN_HPP_NOEXCEPT;
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void encodeVideoKHR( const VideoEncodeInfoKHR & encodeInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
       void endConditionalRenderingEXT() const VULKAN_HPP_NOEXCEPT;
 
       void endDebugUtilsLabelEXT() const VULKAN_HPP_NOEXCEPT;
@@ -1632,6 +1664,10 @@ namespace VULKAN_HPP_NAMESPACE
                                     ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & counterBufferOffsets
                                       VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const
         VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void endVideoCodingKHR( const VideoEndCodingInfoKHR & endCodingInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       void executeCommands( ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers ) const
         VULKAN_HPP_NOEXCEPT;
@@ -1708,6 +1744,9 @@ namespace VULKAN_HPP_NAMESPACE
       void setCoarseSampleOrderNV( VULKAN_HPP_NAMESPACE::CoarseSampleOrderTypeNV sampleOrderType,
                                    ArrayProxy<const VULKAN_HPP_NAMESPACE::CoarseSampleOrderCustomNV> const &
                                      customSampleOrders ) const VULKAN_HPP_NOEXCEPT;
+
+      void setColorWriteEnableEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables ) const
+        VULKAN_HPP_NOEXCEPT;
 
       void setCullModeEXT( VULKAN_HPP_NAMESPACE::CullModeFlags cullMode VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const
         VULKAN_HPP_NOEXCEPT;
@@ -1791,6 +1830,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setStencilWriteMask( VULKAN_HPP_NAMESPACE::StencilFaceFlags faceMask,
                                 uint32_t                               writeMask ) const VULKAN_HPP_NOEXCEPT;
+
+      void setVertexInputEXT(
+        ArrayProxy<const VULKAN_HPP_NAMESPACE::VertexInputBindingDescription2EXT> const & vertexBindingDescriptions,
+        ArrayProxy<const VULKAN_HPP_NAMESPACE::VertexInputAttributeDescription2EXT> const &
+          vertexAttributeDescriptions ) const VULKAN_HPP_NOEXCEPT;
 
       void setViewport( uint32_t                                                 firstViewport,
                         ArrayProxy<const VULKAN_HPP_NAMESPACE::Viewport> const & viewports ) const VULKAN_HPP_NOEXCEPT;
@@ -5617,6 +5661,210 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_RAII_DISPATCHER_TYPE const *  m_dispatcher;
     };
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    class VideoSessionKHR
+    {
+    public:
+      using CType = VkVideoSessionKHR;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+        VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionKHR;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      VideoSessionKHR(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result =
+          static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateVideoSessionKHR(
+            static_cast<VkDevice>( *device ),
+            reinterpret_cast<const VkVideoSessionCreateInfoKHR *>( &createInfo ),
+            m_allocator,
+            reinterpret_cast<VkVideoSessionKHR *>( &m_videoSessionKHR ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateVideoSessionKHR" );
+        }
+      }
+
+      VideoSessionKHR(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VkVideoSessionKHR                                                               videoSessionKHR,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_videoSessionKHR( videoSessionKHR )
+        , m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {}
+
+      ~VideoSessionKHR()
+      {
+        if ( m_videoSessionKHR )
+        {
+          getDispatcher()->vkDestroyVideoSessionKHR(
+            m_device, static_cast<VkVideoSessionKHR>( m_videoSessionKHR ), m_allocator );
+        }
+      }
+
+      VideoSessionKHR()                          = delete;
+      VideoSessionKHR( VideoSessionKHR const & ) = delete;
+      VideoSessionKHR( VideoSessionKHR && rhs )
+        : m_videoSessionKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionKHR, {} ) )
+        , m_device( rhs.m_device )
+        , m_allocator( rhs.m_allocator )
+        , m_dispatcher( rhs.m_dispatcher )
+      {}
+      VideoSessionKHR & operator=( VideoSessionKHR const & ) = delete;
+      VideoSessionKHR & operator                             =( VideoSessionKHR && rhs )
+      {
+        if ( this != &rhs )
+        {
+          getDispatcher()->vkDestroyVideoSessionKHR(
+            m_device, static_cast<VkVideoSessionKHR>( m_videoSessionKHR ), m_allocator );
+          m_videoSessionKHR = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionKHR, {} );
+          m_device          = rhs.m_device;
+          m_allocator       = rhs.m_allocator;
+          m_dispatcher      = rhs.m_dispatcher;
+        }
+        return *this;
+      }
+
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void
+        bindMemory( ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories ) const;
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR> getMemoryRequirements() const;
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+      VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionKHR;
+      }
+
+      VULKAN_HPP_RAII_DISPATCHER_TYPE const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::VideoSessionKHR   m_videoSessionKHR;
+      VkDevice                                m_device;
+      const VkAllocationCallbacks *           m_allocator;
+      VULKAN_HPP_RAII_DISPATCHER_TYPE const * m_dispatcher;
+    };
+
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    class VideoSessionParametersKHR
+    {
+    public:
+      using CType = VkVideoSessionParametersKHR;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+        VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionParametersKHR;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      VideoSessionParametersKHR(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VULKAN_HPP_NAMESPACE::VideoSessionParametersCreateInfoKHR const &               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result =
+          static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateVideoSessionParametersKHR(
+            static_cast<VkDevice>( *device ),
+            reinterpret_cast<const VkVideoSessionParametersCreateInfoKHR *>( &createInfo ),
+            m_allocator,
+            reinterpret_cast<VkVideoSessionParametersKHR *>( &m_videoSessionParametersKHR ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateVideoSessionParametersKHR" );
+        }
+      }
+
+      VideoSessionParametersKHR(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VkVideoSessionParametersKHR                                                     videoSessionParametersKHR,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_videoSessionParametersKHR( videoSessionParametersKHR )
+        , m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {}
+
+      ~VideoSessionParametersKHR()
+      {
+        if ( m_videoSessionParametersKHR )
+        {
+          getDispatcher()->vkDestroyVideoSessionParametersKHR(
+            m_device, static_cast<VkVideoSessionParametersKHR>( m_videoSessionParametersKHR ), m_allocator );
+        }
+      }
+
+      VideoSessionParametersKHR()                                    = delete;
+      VideoSessionParametersKHR( VideoSessionParametersKHR const & ) = delete;
+      VideoSessionParametersKHR( VideoSessionParametersKHR && rhs )
+        : m_videoSessionParametersKHR(
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionParametersKHR, {} ) )
+        , m_device( rhs.m_device )
+        , m_allocator( rhs.m_allocator )
+        , m_dispatcher( rhs.m_dispatcher )
+      {}
+      VideoSessionParametersKHR & operator=( VideoSessionParametersKHR const & ) = delete;
+      VideoSessionParametersKHR & operator                                       =( VideoSessionParametersKHR && rhs )
+      {
+        if ( this != &rhs )
+        {
+          getDispatcher()->vkDestroyVideoSessionParametersKHR(
+            m_device, static_cast<VkVideoSessionParametersKHR>( m_videoSessionParametersKHR ), m_allocator );
+          m_videoSessionParametersKHR =
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionParametersKHR, {} );
+          m_device     = rhs.m_device;
+          m_allocator  = rhs.m_allocator;
+          m_dispatcher = rhs.m_dispatcher;
+        }
+        return *this;
+      }
+
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
+      void update( const VideoSessionParametersUpdateInfoKHR & updateInfo ) const;
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionParametersKHR;
+      }
+
+      VULKAN_HPP_RAII_DISPATCHER_TYPE const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR m_videoSessionParametersKHR;
+      VkDevice                                        m_device;
+      const VkAllocationCallbacks *                   m_allocator;
+      VULKAN_HPP_RAII_DISPATCHER_TYPE const *         m_dispatcher;
+    };
+
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
       Context::enumerateInstanceExtensionProperties( Optional<const std::string> layerName ) const
     {
@@ -6960,6 +7208,93 @@ namespace VULKAN_HPP_NAMESPACE
       }
       return toolProperties;
     }
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR
+      PhysicalDevice::getVideoCapabilitiesKHR( const VideoProfileKHR & videoProfile ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR &&
+        "Function <vkGetPhysicalDeviceVideoCapabilitiesKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR capabilities;
+      VULKAN_HPP_NAMESPACE::Result               result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ),
+          reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ),
+          reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
+      }
+      return capabilities;
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+                         PhysicalDevice::getVideoCapabilitiesKHR( const VideoProfileKHR & videoProfile ) const
+    {
+      StructureChain<X, Y, Z...>                   structureChain;
+      VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR & capabilities =
+        structureChain.template get<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>();
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ),
+          reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ),
+          reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
+      }
+      return structureChain;
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR>
+      PhysicalDevice::getVideoFormatPropertiesKHR( const PhysicalDeviceVideoFormatInfoKHR & videoFormatInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetPhysicalDeviceVideoFormatPropertiesKHR &&
+        "Function <vkGetPhysicalDeviceVideoFormatPropertiesKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR> videoFormatProperties;
+      uint32_t                                                    videoFormatPropertyCount;
+      VULKAN_HPP_NAMESPACE::Result                                result;
+      do
+      {
+        result =
+          static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceVideoFormatPropertiesKHR(
+            static_cast<VkPhysicalDevice>( m_physicalDevice ),
+            reinterpret_cast<const VkPhysicalDeviceVideoFormatInfoKHR *>( &videoFormatInfo ),
+            &videoFormatPropertyCount,
+            nullptr ) );
+        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && videoFormatPropertyCount )
+        {
+          videoFormatProperties.resize( videoFormatPropertyCount );
+          result =
+            static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceVideoFormatPropertiesKHR(
+              static_cast<VkPhysicalDevice>( m_physicalDevice ),
+              reinterpret_cast<const VkPhysicalDeviceVideoFormatInfoKHR *>( &videoFormatInfo ),
+              &videoFormatPropertyCount,
+              reinterpret_cast<VkVideoFormatPropertiesKHR *>( videoFormatProperties.data() ) ) );
+          VULKAN_HPP_ASSERT( videoFormatPropertyCount <= videoFormatProperties.size() );
+        }
+      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
+           ( videoFormatPropertyCount < videoFormatProperties.size() ) )
+      {
+        videoFormatProperties.resize( videoFormatPropertyCount );
+      }
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoFormatPropertiesKHR" );
+      }
+      return videoFormatProperties;
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
@@ -8598,6 +8933,18 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkDeviceSize *>( counterBufferOffsets.data() ) );
     }
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void
+      CommandBuffer::beginVideoCodingKHR( const VideoBeginCodingInfoKHR & beginInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginVideoCodingKHR &&
+                         "Function <vkCmdBeginVideoCodingKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      getDispatcher()->vkCmdBeginVideoCodingKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                 reinterpret_cast<const VkVideoBeginCodingInfoKHR *>( &beginInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     VULKAN_HPP_INLINE void
       CommandBuffer::bindDescriptorSets( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint,
                                          VULKAN_HPP_NAMESPACE::PipelineLayout    layout,
@@ -8922,6 +9269,19 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkImageSubresourceRange *>( ranges.data() ) );
     }
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void CommandBuffer::controlVideoCodingKHR(
+      const VideoCodingControlInfoKHR & codingControlInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdControlVideoCodingKHR &&
+                         "Function <vkCmdControlVideoCodingKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      getDispatcher()->vkCmdControlVideoCodingKHR(
+        static_cast<VkCommandBuffer>( m_commandBuffer ),
+        reinterpret_cast<const VkVideoCodingControlInfoKHR *>( &codingControlInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     VULKAN_HPP_INLINE void CommandBuffer::copyAccelerationStructureKHR(
       const CopyAccelerationStructureInfoKHR & info ) const VULKAN_HPP_NOEXCEPT
     {
@@ -9117,6 +9477,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                   reinterpret_cast<const VkDebugMarkerMarkerInfoEXT *>( &markerInfo ) );
     }
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void
+      CommandBuffer::decodeVideoKHR( const VideoDecodeInfoKHR & frameInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDecodeVideoKHR &&
+                         "Function <vkCmdDecodeVideoKHR> needs extension <VK_KHR_video_decode_queue> enabled!" );
+
+      getDispatcher()->vkCmdDecodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                            reinterpret_cast<const VkVideoDecodeInfoKHR *>( &frameInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     VULKAN_HPP_INLINE void CommandBuffer::dispatch( uint32_t groupCountX,
                                                     uint32_t groupCountY,
                                                     uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT
@@ -9294,6 +9666,18 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdDrawMeshTasksNV( static_cast<VkCommandBuffer>( m_commandBuffer ), taskCount, firstTask );
     }
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void
+      CommandBuffer::encodeVideoKHR( const VideoEncodeInfoKHR & encodeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEncodeVideoKHR &&
+                         "Function <vkCmdEncodeVideoKHR> needs extension <VK_KHR_video_encode_queue> enabled!" );
+
+      getDispatcher()->vkCmdEncodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                            reinterpret_cast<const VkVideoEncodeInfoKHR *>( &encodeInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     VULKAN_HPP_INLINE void CommandBuffer::endConditionalRenderingEXT() const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT(
@@ -9369,6 +9753,18 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkBuffer *>( counterBuffers.data() ),
         reinterpret_cast<const VkDeviceSize *>( counterBufferOffsets.data() ) );
     }
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void
+      CommandBuffer::endVideoCodingKHR( const VideoEndCodingInfoKHR & endCodingInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndVideoCodingKHR &&
+                         "Function <vkCmdEndVideoCodingKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      getDispatcher()->vkCmdEndVideoCodingKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                               reinterpret_cast<const VkVideoEndCodingInfoKHR *>( &endCodingInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     VULKAN_HPP_INLINE void CommandBuffer::executeCommands(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers ) const VULKAN_HPP_NOEXCEPT
@@ -9607,6 +10003,18 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkCoarseSampleOrderTypeNV>( sampleOrderType ),
         customSampleOrders.size(),
         reinterpret_cast<const VkCoarseSampleOrderCustomNV *>( customSampleOrders.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setColorWriteEnableEXT(
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetColorWriteEnableEXT &&
+        "Function <vkCmdSetColorWriteEnableEXT> needs extension <VK_EXT_color_write_enable> enabled!" );
+
+      getDispatcher()->vkCmdSetColorWriteEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                    colorWriteEnables.size(),
+                                                    reinterpret_cast<const VkBool32 *>( colorWriteEnables.data() ) );
     }
 
     VULKAN_HPP_INLINE void
@@ -9939,6 +10347,23 @@ namespace VULKAN_HPP_NAMESPACE
     {
       getDispatcher()->vkCmdSetStencilWriteMask(
         static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkStencilFaceFlags>( faceMask ), writeMask );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setVertexInputEXT(
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::VertexInputBindingDescription2EXT> const &   vertexBindingDescriptions,
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::VertexInputAttributeDescription2EXT> const & vertexAttributeDescriptions )
+      const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetVertexInputEXT &&
+        "Function <vkCmdSetVertexInputEXT> needs extension <VK_EXT_vertex_input_dynamic_state> enabled!" );
+
+      getDispatcher()->vkCmdSetVertexInputEXT(
+        static_cast<VkCommandBuffer>( m_commandBuffer ),
+        vertexBindingDescriptions.size(),
+        reinterpret_cast<const VkVertexInputBindingDescription2EXT *>( vertexBindingDescriptions.data() ),
+        vertexAttributeDescriptions.size(),
+        reinterpret_cast<const VkVertexInputAttributeDescription2EXT *>( vertexAttributeDescriptions.data() ) );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::setViewport(
@@ -11296,6 +11721,87 @@ namespace VULKAN_HPP_NAMESPACE
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::ValidationCacheEXT::merge" );
       }
     }
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void VideoSessionKHR::bindMemory(
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkBindVideoSessionMemoryKHR &&
+                         "Function <vkBindVideoSessionMemoryKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkBindVideoSessionMemoryKHR(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkVideoSessionKHR>( m_videoSessionKHR ),
+          videoSessionBindMemories.size(),
+          reinterpret_cast<const VkVideoBindMemoryKHR *>( videoSessionBindMemories.data() ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::VideoSessionKHR::bindMemory" );
+      }
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>
+                                           VideoSessionKHR::getMemoryRequirements() const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetVideoSessionMemoryRequirementsKHR &&
+        "Function <vkGetVideoSessionMemoryRequirementsKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR> videoSessionMemoryRequirements;
+      uint32_t                                                       videoSessionMemoryRequirementsCount;
+      VULKAN_HPP_NAMESPACE::Result                                   result;
+      do
+      {
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkGetVideoSessionMemoryRequirementsKHR( static_cast<VkDevice>( m_device ),
+                                                                   static_cast<VkVideoSessionKHR>( m_videoSessionKHR ),
+                                                                   &videoSessionMemoryRequirementsCount,
+                                                                   nullptr ) );
+        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && videoSessionMemoryRequirementsCount )
+        {
+          videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+          result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetVideoSessionMemoryRequirementsKHR(
+            static_cast<VkDevice>( m_device ),
+            static_cast<VkVideoSessionKHR>( m_videoSessionKHR ),
+            &videoSessionMemoryRequirementsCount,
+            reinterpret_cast<VkVideoGetMemoryPropertiesKHR *>( videoSessionMemoryRequirements.data() ) ) );
+          VULKAN_HPP_ASSERT( videoSessionMemoryRequirementsCount <= videoSessionMemoryRequirements.size() );
+        }
+      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
+           ( videoSessionMemoryRequirementsCount < videoSessionMemoryRequirements.size() ) )
+      {
+        videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+      }
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::VideoSessionKHR::getMemoryRequirements" );
+      }
+      return videoSessionMemoryRequirements;
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    VULKAN_HPP_INLINE void
+      VideoSessionParametersKHR::update( const VideoSessionParametersUpdateInfoKHR & updateInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkUpdateVideoSessionParametersKHR &&
+                         "Function <vkUpdateVideoSessionParametersKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkUpdateVideoSessionParametersKHR(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkVideoSessionParametersKHR>( m_videoSessionParametersKHR ),
+          reinterpret_cast<const VkVideoSessionParametersUpdateInfoKHR *>( &updateInfo ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::VideoSessionParametersKHR::update" );
+      }
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #endif
   }  // namespace VULKAN_HPP_RAII_NAMESPACE

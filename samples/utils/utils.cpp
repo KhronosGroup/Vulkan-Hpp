@@ -1195,7 +1195,7 @@ namespace vk
 std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid )
 {
   os << std::setfill( '0' ) << std::hex;
-  for ( int j = 0; j < VK_UUID_SIZE; ++j )
+  for ( uint32_t j = 0; j < VK_UUID_SIZE; ++j )
   {
     os << std::setw( 2 ) << static_cast<uint32_t>( uuid.m_data[j] );
     if ( j == 3 || j == 5 || j == 7 || j == 9 )

@@ -5263,7 +5263,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVector( std::string con
 
     return replaceWithMap(
       functionTemplate,
-      { { "allocateInitializer", withAllocator ? ( ", " + vectorElementType + "Allocator" ) : "" },
+      { { "allocateInitializer", withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "" },
         { "allocatorType", allocatorType },
         { "argumentList", argumentList },
         { "callArguments",
@@ -5355,7 +5355,7 @@ std::string
 
     return replaceWithMap(
       functionTemplate,
-      { { "allocateInitializer", withAllocator ? ( ", " + vectorElementType + "Allocator" ) : "" },
+      { { "allocateInitializer", withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "" },
         { "allocatorType", allocatorType },
         { "argumentList", argumentList },
         { "callArguments",

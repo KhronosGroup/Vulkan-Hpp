@@ -1755,6 +1755,8 @@ namespace VULKAN_HPP_NAMESPACE
                          float depthBiasClamp,
                          float depthBiasSlopeFactor ) const VULKAN_HPP_NOEXCEPT;
 
+      void setDepthBiasEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthBiasEnable ) const VULKAN_HPP_NOEXCEPT;
+
       void setDepthBounds( float minDepthBounds, float maxDepthBounds ) const VULKAN_HPP_NOEXCEPT;
 
       void setDepthBoundsTestEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthBoundsTestEnable ) const VULKAN_HPP_NOEXCEPT;
@@ -1795,6 +1797,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setLineWidth( float lineWidth ) const VULKAN_HPP_NOEXCEPT;
 
+      void setLogicOpEXT( VULKAN_HPP_NAMESPACE::LogicOp logicOp ) const VULKAN_HPP_NOEXCEPT;
+
+      void setPatchControlPointsEXT( uint32_t patchControlPoints ) const VULKAN_HPP_NOEXCEPT;
+
       void setPerformanceMarkerINTEL( const PerformanceMarkerInfoINTEL & markerInfo ) const;
 
       void setPerformanceOverrideINTEL( const PerformanceOverrideInfoINTEL & overrideInfo ) const;
@@ -1802,7 +1808,13 @@ namespace VULKAN_HPP_NAMESPACE
       void setPerformanceStreamMarkerINTEL( const PerformanceStreamMarkerInfoINTEL & markerInfo ) const;
 
       void
+        setPrimitiveRestartEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 primitiveRestartEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void
         setPrimitiveTopologyEXT( VULKAN_HPP_NAMESPACE::PrimitiveTopology primitiveTopology ) const VULKAN_HPP_NOEXCEPT;
+
+      void
+        setRasterizerDiscardEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 rasterizerDiscardEnable ) const VULKAN_HPP_NOEXCEPT;
 
       void setRayTracingPipelineStackSizeKHR( uint32_t pipelineStackSize ) const VULKAN_HPP_NOEXCEPT;
 
@@ -10037,6 +10049,17 @@ namespace VULKAN_HPP_NAMESPACE
                                           depthBiasSlopeFactor );
     }
 
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setDepthBiasEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthBiasEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetDepthBiasEnableEXT &&
+        "Function <vkCmdSetDepthBiasEnableEXT> needs extension <VK_EXT_extended_dynamic_state2> enabled!" );
+
+      getDispatcher()->vkCmdSetDepthBiasEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                   static_cast<VkBool32>( depthBiasEnable ) );
+    }
+
     VULKAN_HPP_INLINE void CommandBuffer::setDepthBounds( float minDepthBounds,
                                                           float maxDepthBounds ) const VULKAN_HPP_NOEXCEPT
     {
@@ -10195,6 +10218,27 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     VULKAN_HPP_INLINE void
+      CommandBuffer::setLogicOpEXT( VULKAN_HPP_NAMESPACE::LogicOp logicOp ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLogicOpEXT &&
+                         "Function <vkCmdSetLogicOpEXT> needs extension <VK_EXT_extended_dynamic_state2> enabled!" );
+
+      getDispatcher()->vkCmdSetLogicOpEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                           static_cast<VkLogicOp>( logicOp ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setPatchControlPointsEXT( uint32_t patchControlPoints ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetPatchControlPointsEXT &&
+        "Function <vkCmdSetPatchControlPointsEXT> needs extension <VK_EXT_extended_dynamic_state2> enabled!" );
+
+      getDispatcher()->vkCmdSetPatchControlPointsEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                      patchControlPoints );
+    }
+
+    VULKAN_HPP_INLINE void
       CommandBuffer::setPerformanceMarkerINTEL( const PerformanceMarkerInfoINTEL & markerInfo ) const
     {
       VULKAN_HPP_ASSERT(
@@ -10245,6 +10289,17 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
+    VULKAN_HPP_INLINE void CommandBuffer::setPrimitiveRestartEnableEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 primitiveRestartEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetPrimitiveRestartEnableEXT &&
+        "Function <vkCmdSetPrimitiveRestartEnableEXT> needs extension <VK_EXT_extended_dynamic_state2> enabled!" );
+
+      getDispatcher()->vkCmdSetPrimitiveRestartEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                          static_cast<VkBool32>( primitiveRestartEnable ) );
+    }
+
     VULKAN_HPP_INLINE void CommandBuffer::setPrimitiveTopologyEXT(
       VULKAN_HPP_NAMESPACE::PrimitiveTopology primitiveTopology ) const VULKAN_HPP_NOEXCEPT
     {
@@ -10254,6 +10309,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdSetPrimitiveTopologyEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                      static_cast<VkPrimitiveTopology>( primitiveTopology ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setRasterizerDiscardEnableEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 rasterizerDiscardEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkCmdSetRasterizerDiscardEnableEXT &&
+        "Function <vkCmdSetRasterizerDiscardEnableEXT> needs extension <VK_EXT_extended_dynamic_state2> enabled!" );
+
+      getDispatcher()->vkCmdSetRasterizerDiscardEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                           static_cast<VkBool32>( rasterizerDiscardEnable ) );
     }
 
     VULKAN_HPP_INLINE void

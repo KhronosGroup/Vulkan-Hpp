@@ -6049,9 +6049,9 @@ std::string
     constructArgumentListEnhanced( commandData.params, skippedParams, singularParams, definition, false, false, true );
   std::string commandName =
     stripPluralS( determineCommandName( name, commandData.params[initialSkipCount - 1].type.type, m_tags ) );
-  std::string nodiscard = determineNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string returnType =
-    constructReturnType( commandData, stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" ) );
+  std::string nodiscard  = determineNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
+  std::string dataType   = stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" );
+  std::string returnType = constructReturnType( commandData, dataType );
 
   if ( definition )
   {
@@ -6059,7 +6059,7 @@ std::string
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
-    ${returnType} ${dataName};
+    ${dataType} ${dataName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
   })";
@@ -6075,6 +6075,7 @@ std::string
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
         { "dataName", stripPluralS( startLowerCase( stripPrefix( commandData.params[returnParamIndex].name, "p" ) ) ) },
+        { "dataType", dataType },
         { "nodiscard", nodiscard },
         { "returnType", returnType },
         { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },

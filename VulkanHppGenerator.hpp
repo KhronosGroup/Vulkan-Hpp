@@ -332,6 +332,34 @@ private:
                              bool                             definition,
                              std::map<size_t, size_t> const & vectorParamIndices,
                              size_t                           nonConstPointerIndex ) const;
+  bool appendCommandResult( std::string &       str,
+                            std::string const & name,
+                            CommandData const & commandData,
+                            size_t              initialSkipCount,
+                            bool                definition ) const;
+  bool appendCommandResult0Return( std::string &       str,
+                                   std::string const & name,
+                                   CommandData const & commandData,
+                                   size_t              initialSkipCount,
+                                   bool                definition ) const;
+  bool appendCommandResult1Return( std::string &       str,
+                                   std::string const & name,
+                                   CommandData const & commandData,
+                                   size_t              initialSkipCount,
+                                   bool                definition,
+                                   size_t              returnParamIndex ) const;
+  bool appendCommandResult2Return( std::string &               str,
+                                   std::string const &         name,
+                                   CommandData const &         commandData,
+                                   size_t                      initialSkipCount,
+                                   bool                        definition,
+                                   std::vector<size_t> const & returnParamIndices ) const;
+  bool appendCommandResult3Return( std::string &               str,
+                                   std::string const &         name,
+                                   CommandData const &         commandData,
+                                   size_t                      initialSkipCount,
+                                   bool                        definition,
+                                   std::vector<size_t> const & returnParamIndices ) const;
   void appendCommandSingular( std::string &                    str,
                               std::string const &              name,
                               CommandData const &              commandData,
@@ -370,6 +398,16 @@ private:
                                    size_t              initialSkipCount,
                                    size_t              nonConstPointerIndex,
                                    bool                definition ) const;
+  bool        appendCommandValue( std::string &       str,
+                                  std::string const & name,
+                                  CommandData const & commandData,
+                                  size_t              initialSkipCount,
+                                  bool                definition ) const;
+  bool        appendCommandValue0Return( std::string &       str,
+                                         std::string const & name,
+                                         CommandData const & commandData,
+                                         size_t              initialSkipCount,
+                                         bool                definition ) const;
   void        appendCommandVector( std::string &                     str,
                                    std::string const &               name,
                                    CommandData const &               commandData,
@@ -412,6 +450,28 @@ private:
                                          std::map<size_t, size_t> const & vectorParamIndices,
                                          size_t                           returnParamIndex,
                                          bool                             definition ) const;
+  bool        appendCommandVoid( std::string &       str,
+                                 std::string const & name,
+                                 CommandData const & commandData,
+                                 size_t              initialSkipCount,
+                                 bool                definition ) const;
+  bool        appendCommandVoid0Return( std::string &       str,
+                                        std::string const & name,
+                                        CommandData const & commandData,
+                                        size_t              initialSkipCount,
+                                        bool                definition ) const;
+  bool        appendCommandVoid1Return( std::string &       str,
+                                        std::string const & name,
+                                        CommandData const & commandData,
+                                        size_t              initialSkipCount,
+                                        bool                definition,
+                                        size_t              returnParamIndex ) const;
+  bool        appendCommandVoid2Return( std::string &               str,
+                                        std::string const &         name,
+                                        CommandData const &         commandData,
+                                        size_t                      initialSkipCount,
+                                        bool                        definition,
+                                        std::vector<size_t> const & returnParamIndices ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -877,10 +937,29 @@ private:
                                           size_t                        initialSkipCount,
                                           std::set<std::string> const & specialFunctions ) const;
   std::pair<std::string, std::string>
-    constructRAIIHandleMemberFunctionBoolGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                   size_t                                             initialSkipCount,
-                                                   std::map<size_t, size_t> const & vectorParamIndices,
-                                                   std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+       constructRAIIHandleMemberFunctionBoolGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                      size_t                                             initialSkipCount,
+                                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                                      std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+  bool constructRAIIHandleMemberFunctionResult( std::string &                                      functionDeclarations,
+                                                std::string &                                      functionDefinitions,
+                                                std::map<std::string, CommandData>::const_iterator commandIt,
+                                                size_t initialSkipCount ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionResult0Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                    size_t initialSkipCount ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionResult1Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                    size_t                                             initialSkipCount,
+                                                    size_t returnParamIndex ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionResult2Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                    size_t                                             initialSkipCount,
+                                                    std::vector<size_t> const & returnParamIndices ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionResult3Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                    size_t                                             initialSkipCount,
+                                                    std::vector<size_t> const & returnParamIndices ) const;
   std::pair<std::string, std::string>
     constructRAIIHandleMemberFunctions( std::pair<std::string, HandleData> const & handle,
                                         std::set<std::string> const &              specialFunctions ) const;
@@ -889,13 +968,31 @@ private:
                                            size_t                                             initialSkipCount,
                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::pair<std::string, std::string>
-    constructRAIIHandleMemberFunctionVkType( std::map<std::string, CommandData>::const_iterator commandIt,
-                                             size_t                                             initialSkipCount,
-                                             std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string>
-    constructRAIIHandleMemberFunctionVoid( std::map<std::string, CommandData>::const_iterator commandIt,
-                                           size_t                                             initialSkipCount,
-                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
+       constructRAIIHandleMemberFunctionVkType( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                size_t                                             initialSkipCount,
+                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
+  bool constructRAIIHandleMemberFunctionValue( std::string &                                      functionDeclarations,
+                                               std::string &                                      functionDefinitions,
+                                               std::map<std::string, CommandData>::const_iterator commandIt,
+                                               size_t initialSkipCount ) const;
+  std::tuple<bool, std::string, std::string>
+       constructRAIIHandleMemberFunctionValue0Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                      size_t initialSkipCount ) const;
+  bool constructRAIIHandleMemberFunctionVoid( std::string &                                      functionDeclarations,
+                                              std::string &                                      functionDefinitions,
+                                              std::map<std::string, CommandData>::const_iterator commandIt,
+                                              size_t initialSkipCount ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionVoid0Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                  size_t initialSkipCount ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionVoid1Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                  size_t                                             initialSkipCount,
+                                                  size_t returnParamIndex ) const;
+  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionVoid2Return( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                  size_t                                             initialSkipCount,
+                                                  std::vector<size_t> const & returnParamIndices ) const;
   std::pair<std::string, std::string>
     constructRAIIHandleMemberFunctionVoidEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
                                                     size_t                                             initialSkipCount,
@@ -972,8 +1069,7 @@ private:
                                            std::string const &                                          prefix,
                                            bool mutualExclusiveLens ) const;
   std::string           getEnumPrefix( int line, std::string const & name, bool bitmask ) const;
-  std::set<std::string> getPlatforms(
-    std::set<std::string> const & extensions ) const;
+  std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,

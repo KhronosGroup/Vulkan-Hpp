@@ -1145,267 +1145,22 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
                                         size_t              initialSkipCount,
                                         bool                definition ) const
 {
-  bool                     appendedFunction            = false;
-  std::map<size_t, size_t> vectorParamIndices          = determineVectorParamIndicesNew( commandData.params );
-  std::vector<size_t>      nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandData.params );
-
-  switch ( nonConstPointerParamIndices.size() )
+  bool appendedFunction = false;
+  if ( commandData.returnType == "VkResult" )
   {
-    case 0:
-      // no return parameter
-      {
-        std::vector<size_t> constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
-        if ( vectorParamIndices.empty() && std::find_if( constPointerParamIndices.begin(),
-                                                         constPointerParamIndices.end(),
-                                                         [&commandData]( size_t idx ) {
-                                                           return commandData.params[idx].type.type != "void";
-                                                         } ) == constPointerParamIndices.end() )
-        {
-          // no vector paramter and no non-void const-pointer
-          if ( commandData.returnType == "VkResult" )
-          {
-            // function returning a result but no fancy input have either standard or enhanced call
-            appendCommandStandardOrEnhanced( str, name, commandData, initialSkipCount, definition );
-            appendedFunction = true;
-          }
-          else
-          {
-            // void functions and functions returning some value with no fancy input have just standard call
-            appendCommandStandard( str, name, commandData, initialSkipCount, definition );
-            appendedFunction = true;
-          }
-        }
-        else
-        {
-          // functions with some fancy input have both, standard and enhanced call
-          appendCommandStandardAndEnhanced(
-            str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
-          appendedFunction = true;
-        }
-      }
-      break;
-    case 1:
-      // one return parameter
-      if ( isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
-      {
-        // get handle(s)
-        auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
-        if ( returnVectorParamIt == vectorParamIndices.end() )
-        {
-          // the return parameter is not a vector -> get just one handle
-          if ( commandData.returnType == "VkResult" )
-          {
-            // provide standard, enhanced, and unique call
-            appendCommandUnique( str, name, commandData, initialSkipCount, nonConstPointerParamIndices[0], definition );
-            appendedFunction = true;
-          }
-          else if ( ( commandData.returnType == "void" ) && beginsWith( name, "vkGet" ) )
-          {
-            // it's a handle type, but without construction and destruction function; it's just get
-            appendCommandStandardAndEnhanced(
-              str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
-            appendedFunction = true;
-          }
-        }
-        else
-        {
-          // get a vector of handles
-          if ( ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
-          {
-            if ( ( vectorParamIndices.size() == 2 ) &&
-                 ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second ) )
-            {
-              // provide standard, enhanced, vector, singular, and unique (and the combinations!) calls
-              appendCommandVectorSingularUnique( str,
-                                                 name,
-                                                 commandData,
-                                                 initialSkipCount,
-                                                 vectorParamIndices,
-                                                 nonConstPointerParamIndices[0],
-                                                 definition );
-              appendedFunction = true;
-            }
-          }
-          else if ( ( ( isLenByStructMember( commandData.params[returnVectorParamIt->first].len,
-                                             commandData.params[returnVectorParamIt->second] ) ) ) &&
-                    ( vectorParamIndices.size() == 1 ) )
-          {
-            // provide standard, enhanced, vector, and unique (and the combinations!) calls
-            appendCommandVectorUnique( str,
-                                       name,
-                                       commandData,
-                                       initialSkipCount,
-                                       vectorParamIndices,
-                                       nonConstPointerParamIndices[0],
-                                       definition );
-            appendedFunction = true;
-          }
-        }
-      }
-      else if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
-      {
-        auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
-        if ( returnVectorParamIt == vectorParamIndices.end() )
-        {
-          // provide standard, enhanced, and chained call
-          appendCommandChained(
-            str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices[0] );
-          appendedFunction = true;
-        }
-      }
-      else
-      {
-        auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
-        if ( returnVectorParamIt == vectorParamIndices.end() )
-        {
-          if ( ( commandData.returnType == "VkBool32" ) || ( commandData.returnType == "VkResult" ) ||
-               ( commandData.returnType == "void" ) )
-          {
-            appendCommandStandardAndEnhanced(
-              str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
-            appendedFunction = true;
-          }
-        }
-        else if ( commandData.params[returnVectorParamIt->second].type.isValue() )
-        {
-          // the vector size is given by value
-          // -> provide standard, enhanced, and singular calls
-          if ( commandData.params[returnVectorParamIt->first].type.type == "void" )
-          {
-            appendCommandSingular( str,
-                                   name,
-                                   commandData,
-                                   initialSkipCount,
-                                   definition,
-                                   vectorParamIndices,
-                                   nonConstPointerParamIndices[0] );
-          }
-          else
-          {
-            appendCommandVectorSingular( str,
-                                         name,
-                                         commandData,
-                                         initialSkipCount,
-                                         vectorParamIndices,
-                                         nonConstPointerParamIndices[0],
-                                         definition );
-          }
-          appendedFunction = true;
-        }
-      }
-      break;
-    case 2:
-      // two return parameters
-      if ( !isHandleType( commandData.params[nonConstPointerParamIndices[0]].type.type ) &&
-           !isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[0]].type.type ) )
-      {
-        if ( isStructureChainAnchor( commandData.params[nonConstPointerParamIndices[1]].type.type ) )
-        {
-          if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
-          {
-            appendCommandVectorChained(
-              str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
-            appendedFunction = true;
-          }
-        }
-        else
-        {
-          // non of the return parameters is a StructureChain
-          // Note: if the vector returned holds handles, the function does not create them, but just gets them
-          switch ( vectorParamIndices.size() )
-          {
-            case 0:
-              // two returns but no vector
-              if ( ( commandData.returnType == "VkResult" ) && ( 1 < commandData.successCodes.size() ) )
-              {
-                // two returns and a non-trivial success code -> need to return a complex ResultValue!!
-                appendCommandStandardAndEnhanced( str,
-                                                  name,
-                                                  commandData,
-                                                  initialSkipCount,
-                                                  definition,
-                                                  vectorParamIndices,
-                                                  nonConstPointerParamIndices );
-                appendedFunction = true;
-              }
-              break;
-            case 1:
-              {
-                // two returns but just one vector
-                auto vectorParamIndexIt = vectorParamIndices.begin();
-                if ( ( vectorParamIndexIt->second == nonConstPointerParamIndices[0] ) &&
-                     ( vectorParamIndexIt->first == nonConstPointerParamIndices[1] ) )
-                {
-                  // the size is a return value as well -> enumerate the values
-                  // and the vector data is not of type void
-                  if ( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) )
-                  {
-                    // provide standard, enhanced, and vector calls
-                    appendCommandVector( str,
-                                         name,
-                                         commandData,
-                                         initialSkipCount,
-                                         definition,
-                                         *vectorParamIndexIt,
-                                         nonConstPointerParamIndices );
-                    appendedFunction = true;
-                  }
-                }
-              }
-              break;
-            case 2:
-              {
-                // two returns and two vectors! But one input vector, one output vector of the same size, and one
-                // output value
-                if ( ( vectorParamIndices.find( nonConstPointerParamIndices[0] ) != vectorParamIndices.end() ) &&
-                     ( vectorParamIndices.find( nonConstPointerParamIndices[1] ) == vectorParamIndices.end() ) &&
-                     ( commandData.returnType == "VkResult" ) )
-                {
-                  // provide standard, enhanced deprecated, enhanced, and enhanced with allocator calls
-                  appendCommandStandardEnhancedDeprecatedAllocator( str,
-                                                                    name,
-                                                                    commandData,
-                                                                    initialSkipCount,
-                                                                    definition,
-                                                                    vectorParamIndices,
-                                                                    nonConstPointerParamIndices );
-                  appendedFunction = true;
-                }
-              }
-              break;
-          }
-        }
-      }
-      break;
-    case 3:
-      // three return parameters
-      if ( ( vectorParamIndices.size() == 2 ) &&
-           ( vectorParamIndices.begin()->second == nonConstPointerParamIndices[0] ) &&
-           ( vectorParamIndices.begin()->first == nonConstPointerParamIndices[1] ) &&
-           ( std::next( vectorParamIndices.begin() )->first == nonConstPointerParamIndices[2] ) )
-      {
-        // two vector parameters
-        auto                           firstVectorParam  = vectorParamIndices.begin();
-        auto                           secondVectorParam = std::next( firstVectorParam );
-        std::vector<ParamData> const & params            = commandData.params;
-        if ( ( firstVectorParam->second != INVALID_INDEX ) &&
-             ( firstVectorParam->second == secondVectorParam->second ) )
-        {
-          // the two vectors use the very same size parameter
-          if ( params[firstVectorParam->first].type.isNonConstPointer() &&
-               params[secondVectorParam->first].type.isNonConstPointer() &&
-               params[firstVectorParam->second].type.isNonConstPointer() )
-          {
-            // both vectors, as well as the size parameter are non-const pointer that is output parameters
-            // provide standard, enhanced, vector and deprecated calls!
-            appendCommandVectorDeprecated(
-              str, name, commandData, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices, definition );
-            appendedFunction = true;
-          }
-        }
-      }
-      break;
-    default: break;
+    appendedFunction = appendCommandResult( str, name, commandData, initialSkipCount, definition );
+  }
+  else
+  {
+    assert( commandData.successCodes.empty() && commandData.errorCodes.empty() );
+    if ( commandData.returnType == "void" )
+    {
+      appendedFunction = appendCommandVoid( str, name, commandData, initialSkipCount, definition );
+    }
+    else
+    {
+      appendedFunction = appendCommandValue( str, name, commandData, initialSkipCount, definition );
+    }
   }
 
   if ( appendedFunction )
@@ -1465,6 +1220,230 @@ ${leave})";
         { "enter", enter },
         { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+bool VulkanHppGenerator::appendCommandResult( std::string &       str,
+                                              std::string const & name,
+                                              CommandData const & commandData,
+                                              size_t              initialSkipCount,
+                                              bool                definition ) const
+{
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandData.params );
+  switch ( returnParamIndices.size() )
+  {
+    case 0: return appendCommandResult0Return( str, name, commandData, initialSkipCount, definition );
+    case 1:
+      return appendCommandResult1Return( str, name, commandData, initialSkipCount, definition, returnParamIndices[0] );
+    case 2:
+      return appendCommandResult2Return( str, name, commandData, initialSkipCount, definition, returnParamIndices );
+    case 3:
+      return appendCommandResult3Return( str, name, commandData, initialSkipCount, definition, returnParamIndices );
+    default: return false;
+  }
+}
+
+bool VulkanHppGenerator::appendCommandResult0Return( std::string &       str,
+                                                     std::string const & name,
+                                                     CommandData const & commandData,
+                                                     size_t              initialSkipCount,
+                                                     bool                definition ) const
+{
+  std::map<size_t, size_t> vectorParamIndices       = determineVectorParamIndicesNew( commandData.params );
+  std::vector<size_t>      constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
+
+  if ( vectorParamIndices.empty() && std::find_if( constPointerParamIndices.begin(),
+                                                   constPointerParamIndices.end(),
+                                                   [&commandData]( size_t idx ) {
+                                                     return commandData.params[idx].type.type != "void";
+                                                   } ) == constPointerParamIndices.end() )
+  {
+    // no vector paramter and no non-void const-pointer
+    // function returning a result but no fancy input have either standard or enhanced call
+    appendCommandStandardOrEnhanced( str, name, commandData, initialSkipCount, definition );
+  }
+  else
+  {
+    // functions with some fancy input have both, standard and enhanced call
+    appendCommandStandardAndEnhanced( str, name, commandData, initialSkipCount, definition, vectorParamIndices, {} );
+  }
+  return true;
+}
+
+bool VulkanHppGenerator::appendCommandResult1Return( std::string &       str,
+                                                     std::string const & name,
+                                                     CommandData const & commandData,
+                                                     size_t              initialSkipCount,
+                                                     bool                definition,
+                                                     size_t              returnParamIndex ) const
+{
+  bool                     appendedFunction   = false;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandData.params );
+  if ( isHandleType( commandData.params[returnParamIndex].type.type ) )
+  {
+    // get handle(s)
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // the return parameter is not a vector -> get just one handle
+      // provide standard, enhanced, and unique call
+      appendCommandUnique( str, name, commandData, initialSkipCount, returnParamIndex, definition );
+      appendedFunction = true;
+    }
+    else
+    {
+      // get a vector of handles
+      if ( ( commandData.params[returnVectorParamIt->second].type.isValue() ) )
+      {
+        if ( ( vectorParamIndices.size() == 2 ) &&
+             ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second ) )
+        {
+          // provide standard, enhanced, vector, singular, and unique (and the combinations!) calls
+          appendCommandVectorSingularUnique(
+            str, name, commandData, initialSkipCount, vectorParamIndices, returnParamIndex, definition );
+          appendedFunction = true;
+        }
+      }
+      else if ( ( ( isLenByStructMember( commandData.params[returnVectorParamIt->first].len,
+                                         commandData.params[returnVectorParamIt->second] ) ) ) &&
+                ( vectorParamIndices.size() == 1 ) )
+      {
+        // provide standard, enhanced, vector, and unique (and the combinations!) calls
+        appendCommandVectorUnique(
+          str, name, commandData, initialSkipCount, vectorParamIndices, returnParamIndex, definition );
+        appendedFunction = true;
+      }
+    }
+  }
+  else if ( isStructureChainAnchor( commandData.params[returnParamIndex].type.type ) )
+  {
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // provide standard, enhanced, and chained call
+      appendCommandChained(
+        str, name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndex );
+      appendedFunction = true;
+    }
+  }
+  else
+  {
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      appendCommandStandardAndEnhanced(
+        str, name, commandData, initialSkipCount, definition, vectorParamIndices, { returnParamIndex } );
+      appendedFunction = true;
+    }
+    else if ( commandData.params[returnVectorParamIt->second].type.isValue() )
+    {
+      // the vector size is given by value
+      // -> provide standard, enhanced, and singular calls
+      if ( commandData.params[returnVectorParamIt->first].type.type == "void" )
+      {
+        appendCommandSingular(
+          str, name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndex );
+      }
+      else
+      {
+        appendCommandVectorSingular(
+          str, name, commandData, initialSkipCount, vectorParamIndices, returnParamIndex, definition );
+      }
+      appendedFunction = true;
+    }
+  }
+  return appendedFunction;
+}
+
+bool VulkanHppGenerator::appendCommandResult2Return( std::string &               str,
+                                                     std::string const &         name,
+                                                     CommandData const &         commandData,
+                                                     size_t                      initialSkipCount,
+                                                     bool                        definition,
+                                                     std::vector<size_t> const & returnParamIndices ) const
+{
+  assert( returnParamIndices.size() == 2 );
+
+  bool                     appendedFunction   = false;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandData.params );
+  if ( !isHandleType( commandData.params[returnParamIndices[0]].type.type ) &&
+       !isStructureChainAnchor( commandData.params[returnParamIndices[0]].type.type ) )
+  {
+    assert( !isStructureChainAnchor( commandData.params[returnParamIndices[1]].type.type ) );
+    // non of the return parameters is a StructureChain
+    // Note: if the vector returned holds handles, the function does not create them, but just gets them
+    assert( !vectorParamIndices.empty() );
+    switch ( vectorParamIndices.size() )
+    {
+      case 1:
+        {
+          // two returns but just one vector
+          auto vectorParamIndexIt = vectorParamIndices.begin();
+          if ( ( vectorParamIndexIt->second == returnParamIndices[0] ) &&
+               ( vectorParamIndexIt->first == returnParamIndices[1] ) )
+          {
+            // the size is a return value as well -> enumerate the values
+            // and the vector data is not of type void
+            // provide standard, enhanced, and vector calls
+            appendCommandVector(
+              str, name, commandData, initialSkipCount, definition, *vectorParamIndexIt, returnParamIndices );
+            appendedFunction = true;
+          }
+        }
+        break;
+      case 2:
+        {
+          // two returns and two vectors! But one input vector, one output vector of the same size, and one
+          // output value
+          if ( ( vectorParamIndices.find( returnParamIndices[0] ) != vectorParamIndices.end() ) &&
+               ( vectorParamIndices.find( returnParamIndices[1] ) == vectorParamIndices.end() ) )
+          {
+            // provide standard, enhanced deprecated, enhanced, and enhanced with allocator calls
+            appendCommandStandardEnhancedDeprecatedAllocator(
+              str, name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndices );
+            appendedFunction = true;
+          }
+        }
+        break;
+    }
+  }
+  return appendedFunction;
+}
+
+bool VulkanHppGenerator::appendCommandResult3Return( std::string &               str,
+                                                     std::string const &         name,
+                                                     CommandData const &         commandData,
+                                                     size_t                      initialSkipCount,
+                                                     bool                        definition,
+                                                     std::vector<size_t> const & returnParamIndices ) const
+{
+  assert( returnParamIndices.size() == 3 );
+
+  bool                     appendedFunction   = false;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandData.params );
+  if ( ( vectorParamIndices.size() == 2 ) && ( vectorParamIndices.begin()->second == returnParamIndices[0] ) &&
+       ( vectorParamIndices.begin()->first == returnParamIndices[1] ) &&
+       ( std::next( vectorParamIndices.begin() )->first == returnParamIndices[2] ) )
+  {
+    // two vector parameters
+    auto                           firstVectorParam  = vectorParamIndices.begin();
+    auto                           secondVectorParam = std::next( firstVectorParam );
+    std::vector<ParamData> const & params            = commandData.params;
+    if ( ( firstVectorParam->second != INVALID_INDEX ) && ( firstVectorParam->second == secondVectorParam->second ) )
+    {
+      // the two vectors use the very same size parameter
+      if ( params[firstVectorParam->first].type.isNonConstPointer() &&
+           params[secondVectorParam->first].type.isNonConstPointer() &&
+           params[firstVectorParam->second].type.isNonConstPointer() )
+      {
+        // both vectors, as well as the size parameter are non-const pointer that is output parameters
+        // provide standard, enhanced, vector and deprecated calls!
+        appendCommandVectorDeprecated(
+          str, name, commandData, initialSkipCount, vectorParamIndices, returnParamIndices, definition );
+        appendedFunction = true;
+      }
+    }
+  }
+  return appendedFunction;
 }
 
 void VulkanHppGenerator::appendCommandSingular( std::string &                    str,
@@ -1726,6 +1705,51 @@ ${leave})";
         { "enter", enter },
         { "leave", leave },
         { "newlineOnDefinition", definition ? "\n" : "" } } ) );
+}
+
+bool VulkanHppGenerator::appendCommandValue( std::string &       str,
+                                             std::string const & name,
+                                             CommandData const & commandData,
+                                             size_t              initialSkipCount,
+                                             bool                definition ) const
+{
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandData.params );
+  if ( returnParamIndices.empty() )
+  {
+    return appendCommandValue0Return( str, name, commandData, initialSkipCount, definition );
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool VulkanHppGenerator::appendCommandValue0Return( std::string &       str,
+                                                    std::string const & name,
+                                                    CommandData const & commandData,
+                                                    size_t              initialSkipCount,
+                                                    bool                definition ) const
+{
+  std::map<size_t, size_t> vectorParamIndices       = determineVectorParamIndicesNew( commandData.params );
+  std::vector<size_t>      constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
+  if ( vectorParamIndices.empty() && std::find_if( constPointerParamIndices.begin(),
+                                                   constPointerParamIndices.end(),
+                                                   [&commandData]( size_t idx ) {
+                                                     return commandData.params[idx].type.type != "void";
+                                                   } ) == constPointerParamIndices.end() )
+  {
+    // no vector paramter and no non-void const-pointer
+    // void functions and functions returning some value with no fancy input have just standard call
+    appendCommandStandard( str, name, commandData, initialSkipCount, definition );
+  }
+  else
+  {
+    // functions with some fancy input have both, standard and enhanced call
+    std::vector<size_t> nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandData.params );
+    appendCommandStandardAndEnhanced(
+      str, name, commandData, initialSkipCount, definition, vectorParamIndices, nonConstPointerParamIndices );
+  }
+  return true;
 }
 
 void VulkanHppGenerator::appendCommandVector( std::string &                     str,
@@ -2363,6 +2387,146 @@ void VulkanHppGenerator::appendDispatchLoaderDefault( std::string & str )
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
 #endif
 )";
+}
+
+bool VulkanHppGenerator::appendCommandVoid( std::string &       str,
+                                            std::string const & name,
+                                            CommandData const & commandData,
+                                            size_t              initialSkipCount,
+                                            bool                definition ) const
+{
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandData.params );
+  switch ( returnParamIndices.size() )
+  {
+    case 0: return appendCommandVoid0Return( str, name, commandData, initialSkipCount, definition );
+    case 1:
+      return appendCommandVoid1Return( str, name, commandData, initialSkipCount, definition, returnParamIndices[0] );
+    case 2: return appendCommandVoid2Return( str, name, commandData, initialSkipCount, definition, returnParamIndices );
+    default: return false;
+  }
+}
+
+bool VulkanHppGenerator::appendCommandVoid0Return( std::string &       str,
+                                                   std::string const & name,
+                                                   CommandData const & commandData,
+                                                   size_t              initialSkipCount,
+                                                   bool                definition ) const
+{
+  std::map<size_t, size_t> vectorParamIndices       = determineVectorParamIndicesNew( commandData.params );
+  std::vector<size_t>      constPointerParamIndices = determineConstPointerParamIndices( commandData.params );
+  if ( vectorParamIndices.empty() && std::find_if( constPointerParamIndices.begin(),
+                                                   constPointerParamIndices.end(),
+                                                   [&commandData]( size_t idx ) {
+                                                     return commandData.params[idx].type.type != "void";
+                                                   } ) == constPointerParamIndices.end() )
+  {
+    // no vector paramter and no non-void const-pointer
+    // void functions and functions returning some value with no fancy input have just standard call
+    appendCommandStandard( str, name, commandData, initialSkipCount, definition );
+  }
+  else
+  {
+    // functions with some fancy input have both, standard and enhanced call
+    appendCommandStandardAndEnhanced( str, name, commandData, initialSkipCount, definition, vectorParamIndices, {} );
+  }
+  return true;
+}
+
+bool VulkanHppGenerator::appendCommandVoid1Return( std::string &       str,
+                                                   std::string const & name,
+                                                   CommandData const & commandData,
+                                                   size_t              initialSkipCount,
+                                                   bool                definition,
+                                                   size_t              returnParamIndex ) const
+{
+  bool                     appendedFunction   = false;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandData.params );
+  if ( isHandleType( commandData.params[returnParamIndex].type.type ) )
+  {
+    // get handle(s)
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // the return parameter is not a vector -> get just one handle
+      if ( beginsWith( name, "vkGet" ) )
+      {
+        // it's a handle type, but without construction and destruction function; it's just get
+        appendCommandStandardAndEnhanced(
+          str, name, commandData, initialSkipCount, definition, vectorParamIndices, { returnParamIndex } );
+        appendedFunction = true;
+      }
+    }
+  }
+  else if ( isStructureChainAnchor( commandData.params[returnParamIndex].type.type ) )
+  {
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // provide standard, enhanced, and chained call
+      appendCommandChained(
+        str, name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndex );
+      appendedFunction = true;
+    }
+  }
+  else
+  {
+    auto returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      appendCommandStandardAndEnhanced(
+        str, name, commandData, initialSkipCount, definition, vectorParamIndices, { returnParamIndex } );
+      appendedFunction = true;
+    }
+  }
+  return appendedFunction;
+}
+
+bool VulkanHppGenerator::appendCommandVoid2Return( std::string &               str,
+                                                   std::string const &         name,
+                                                   CommandData const &         commandData,
+                                                   size_t                      initialSkipCount,
+                                                   bool                        definition,
+                                                   std::vector<size_t> const & returnParamIndices ) const
+{
+  assert( returnParamIndices.size() == 2 );
+
+  bool                     appendedFunction   = false;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandData.params );
+  if ( !isHandleType( commandData.params[returnParamIndices[0]].type.type ) &&
+       !isStructureChainAnchor( commandData.params[returnParamIndices[0]].type.type ) )
+  {
+    if ( isStructureChainAnchor( commandData.params[returnParamIndices[1]].type.type ) )
+    {
+      appendCommandVectorChained(
+        str, name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndices );
+      appendedFunction = true;
+    }
+    else
+    {
+      // non of the return parameters is a StructureChain
+      // Note: if the vector returned holds handles, the function does not create them, but just gets them
+      switch ( vectorParamIndices.size() )
+      {
+        case 1:
+          {
+            // two returns but just one vector
+            auto vectorParamIndexIt = vectorParamIndices.begin();
+            if ( ( vectorParamIndexIt->second == returnParamIndices[0] ) &&
+                 ( vectorParamIndexIt->first == returnParamIndices[1] ) )
+            {
+              // the size is a return value as well -> enumerate the values
+              // and the vector data is not of type void
+              // provide standard, enhanced, and vector calls
+              appendCommandVector(
+                str, name, commandData, initialSkipCount, definition, *vectorParamIndexIt, returnParamIndices );
+              appendedFunction = true;
+            }
+          }
+          break;
+      }
+    }
+  }
+  return appendedFunction;
 }
 
 void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &       str,
@@ -8655,373 +8819,26 @@ void VulkanHppGenerator::constructRAIIHandleMemberFunction( std::string &       
     auto commandIt          = m_commands.find( command );
     assert( commandIt != m_commands.end() );
 
-    std::map<size_t, size_t> vectorParamIndices     = determineVectorParamIndicesNew( commandIt->second.params );
-    std::vector<size_t> nonConstPointerParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
-
-    std::string declaration, definition;
-    switch ( nonConstPointerParamIndices.size() )
+    if ( commandIt->second.returnType == "VkResult" )
     {
-      case 0:
-        if ( commandIt->second.returnType == "VkResult" )
-        {
-          // as the returnType is "VkResult", there has to be at least one success code
-          assert( !commandIt->second.successCodes.empty() );
-          if ( commandIt->second.errorCodes.empty() )
-          {
-            if ( commandIt->second.successCodes.size() == 1 )
-            {
-              std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleNoErrors(
-                commandIt, initialSkipCount, vectorParamIndices );
-            }
-            else
-            {
-              std::tie( declaration, definition ) =
-                constructRAIIHandleMemberFunctionResultMultiNoErrors( commandIt, initialSkipCount, vectorParamIndices );
-            }
-          }
-          else
-          {
-            if ( commandIt->second.successCodes.size() == 1 )
-            {
-              std::tie( declaration, definition ) =
-                constructRAIIHandleMemberFunctionResultSingle( commandIt, initialSkipCount, vectorParamIndices );
-            }
-            else
-            {
-              std::tie( declaration, definition ) =
-                constructRAIIHandleMemberFunctionResultMulti( commandIt, initialSkipCount, vectorParamIndices );
-            }
-          }
-        }
-        else
-        {
-          // as the return type is not "VkResult", there are no success or error codes allowed
-          assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
-          if ( commandIt->second.returnType == "void" )
-          {
-            std::tie( declaration, definition ) =
-              constructRAIIHandleMemberFunctionVoid( commandIt, initialSkipCount, vectorParamIndices );
-          }
-          else if ( beginsWith( commandIt->second.returnType, "Vk" ) )
-          {
-            std::tie( declaration, definition ) =
-              constructRAIIHandleMemberFunctionVkType( commandIt, initialSkipCount, vectorParamIndices );
-          }
-          else
-          {
-            std::tie( declaration, definition ) =
-              constructRAIIHandleMemberFunctionType( commandIt, initialSkipCount, vectorParamIndices );
-          }
-        }
-        commandConstructed = true;
-        break;
-      case 1:
-        // one return parameter (and it's not a handle, that would be a constructor)
-        assert( !isHandleType( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) );
-        {
-          auto returnVectorParamIt = vectorParamIndices.find( nonConstPointerParamIndices[0] );
-          if ( returnVectorParamIt == vectorParamIndices.end() )
-          {
-            // the return parameter is not a vector -> return a value
-            if ( commandIt->second.returnType == "VkResult" )
-            {
-              // as the returnType is "VkResult", there has to be at least one success code
-              assert( !commandIt->second.successCodes.empty() );
-              if ( !commandIt->second.errorCodes.empty() )
-              {
-                if ( commandIt->second.successCodes.size() == 1 )
-                {
-                  std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetValue(
-                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                }
-                else
-                {
-                  std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultMultiGetValue(
-                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                }
-                commandConstructed = true;
-              }
-            }
-            else
-            {
-              // as the return type is not "VkResult", there are no success or error codes allowed
-              assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
-              if ( commandIt->second.returnType == "VkBool32" )
-              {
-                std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionBoolGetValue(
-                  commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                commandConstructed = true;
-              }
-              else if ( commandIt->second.returnType == "void" )
-              {
-                std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionVoidGetValue(
-                  commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                commandConstructed = true;
-              }
-            }
-          }
-          else
-          {
-            // the return parameter is a vector -> return a vector
-            if ( commandIt->second.returnType == "VkResult" )
-            {
-              // as the returnType is "VkResult", there has to be at least one success code
-              assert( !commandIt->second.successCodes.empty() );
-              if ( !commandIt->second.errorCodes.empty() &&
-                   ( commandIt->second.params[returnVectorParamIt->second].type.isValue() ) )
-              {
-                // there are error codes, and the size is give by value
-                if ( commandIt->second.params[returnVectorParamIt->first].type.type == "void" )
-                {
-                  // the return parameter is of type void
-                  if ( commandIt->second.successCodes.size() == 1 )
-                  {
-                    std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoid(
-                      commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-
-                    std::string singularDeclaration, singularDefinition;
-                    std::tie( singularDeclaration, singularDefinition ) =
-                      constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoidSingular(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                    declaration += singularDeclaration;
-                    definition += singularDefinition;
-                  }
-                  else
-                  {
-                    std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoid(
-                      commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-
-                    std::string singularDeclaration, singularDefinition;
-                    std::tie( singularDeclaration, singularDefinition ) =
-                      constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoidSingular(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                    declaration += singularDeclaration;
-                    definition += singularDefinition;
-                  }
-                  commandConstructed = true;
-                }
-                else
-                {
-                  // the return parameter is of a concrete type
-                  if ( commandIt->second.successCodes.size() == 1 )
-                  {
-                    std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetVector(
-                      commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices[0] );
-
-                    std::string singularDeclaration, singularDefinition;
-                    std::tie( singularDeclaration, singularDefinition ) =
-                      constructRAIIHandleMemberFunctionResultSingleGetVectorSingular(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices[0] );
-                    declaration += singularDeclaration;
-                    definition += singularDefinition;
-                    commandConstructed = true;
-                  }
-                }
-              }
-            }
-          }
-          if ( isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) )
-          {
-            // for StructureChain returns, add functions returning a StructureChain
-            commandConstructed = false;
-            if ( returnVectorParamIt == vectorParamIndices.end() )
-            {
-              if ( commandIt->second.returnType == "VkResult" )
-              {
-                // as the returnType is "VkResult", there has to be at least one success code
-                assert( !commandIt->second.successCodes.empty() );
-                if ( !commandIt->second.errorCodes.empty() )
-                {
-                  if ( commandIt->second.successCodes.size() == 1 )
-                  {
-                    std::string chainDeclaration, chainDefinition;
-                    std::tie( chainDeclaration, chainDefinition ) =
-                      constructRAIIHandleMemberFunctionResultSingleGetChain(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                    declaration += chainDeclaration;
-                    definition += chainDefinition;
-                    commandConstructed = true;
-                  }
-                }
-              }
-              else
-              {
-                // as the return type is not "VkResult", there are no success or error codes allowed
-                assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
-                if ( commandIt->second.returnType == "void" )
-                {
-                  std::string chainDeclaration, chainDefinition;
-                  std::tie( chainDeclaration, chainDefinition ) = constructRAIIHandleMemberFunctionVoidGetChain(
-                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                  declaration += chainDeclaration;
-                  definition += chainDefinition;
-                  commandConstructed = true;
-                }
-              }
-            }
-          }
-        }
-        break;
-      case 2:
-        // two return parameters (and the first one is not a handle, that would be a constructor)
-        assert( !isHandleType( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) );
-        switch ( vectorParamIndices.size() )
-        {
-          case 0:
-            // two non-vector returns
-            if ( commandIt->second.returnType == "VkResult" )
-            {
-              // as the returnType is "VkResult", there has to be at least one success code
-              assert( !commandIt->second.successCodes.empty() );
-              if ( !commandIt->second.errorCodes.empty() )
-              {
-                if ( ( commandIt->second.successCodes.size() == 2 ) &&
-                     ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
-                     ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
-                {
-                  std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultGetTwoValues(
-                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                  commandConstructed = true;
-                }
-              }
-            }
-            break;
-          case 1:
-            {
-              // two returns but just one vector
-              auto vectorParamIndexIt = vectorParamIndices.begin();
-              if ( ( vectorParamIndexIt->second == nonConstPointerParamIndices[0] ) &&
-                   ( vectorParamIndexIt->first == nonConstPointerParamIndices[1] ) )
-              {
-                // the size is a return value as well -> enumerate the values
-                if ( commandIt->second.returnType == "VkResult" )
-                {
-                  // as the returnType is "VkResult", there has to be at least one success code
-                  assert( !commandIt->second.successCodes.empty() );
-                  if ( !commandIt->second.errorCodes.empty() )
-                  {
-                    if ( ( commandIt->second.successCodes.size() == 2 ) &&
-                         ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
-                         ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
-                    {
-                      std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultEnumerate(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                      commandConstructed = true;
-                    }
-                  }
-                }
-                else
-                {
-                  if ( commandIt->second.returnType == "void" )
-                  {
-                    std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionVoidEnumerate(
-                      commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                    commandConstructed = true;
-                  }
-                }
-              }
-            }
-            break;
-          case 2:
-            // two returns and two vectors
-            if ( ( vectorParamIndices.find( nonConstPointerParamIndices[0] ) != vectorParamIndices.end() ) &&
-                 ( vectorParamIndices.find( nonConstPointerParamIndices[1] ) == vectorParamIndices.end() ) )
-            {
-              // two returns and two vectors! But one input vector, one output vector of the same size, and one output
-              // value
-              if ( commandIt->second.returnType == "VkResult" )
-              {
-                // as the returnType is "VkResult", there has to be at least one success code
-                assert( !commandIt->second.successCodes.empty() );
-                if ( !commandIt->second.errorCodes.empty() )
-                {
-                  if ( commandIt->second.successCodes.size() == 1 )
-                  {
-                    std::tie( declaration, definition ) =
-                      constructRAIIHandleMemberFunctionResultSingleGetVectorAndValue(
-                        commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                    commandConstructed = true;
-                  }
-                }
-              }
-            }
-            break;
-        }
-        if ( isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) )
-        {
-          commandConstructed = false;
-        }
-        if ( isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[1]].type.type ) )
-        {
-          commandConstructed = false;
-          if ( vectorParamIndices.size() == 1 )
-          {
-            // two returns but just one vector
-            auto vectorParamIndexIt = vectorParamIndices.begin();
-            if ( ( vectorParamIndexIt->second == nonConstPointerParamIndices[0] ) &&
-                 ( vectorParamIndexIt->first == nonConstPointerParamIndices[1] ) )
-            {
-              // the size is a return value as well -> enumerate the values
-              std::string vectorElementType = commandIt->second.params[vectorParamIndices.begin()->first].type.type;
-              if ( commandIt->second.returnType == "void" )
-              {
-                std::string chainDeclaration, chainDefinition;
-                std::tie( chainDeclaration, chainDefinition ) = constructRAIIHandleMemberFunctionVoidEnumerateChain(
-                  commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                declaration += chainDeclaration;
-                definition += chainDefinition;
-                commandConstructed = true;
-              }
-            }
-          }
-        }
-        break;
-      case 3:
-        // three return parameters
-        if ( vectorParamIndices.size() == 2 )
-        {
-          // two vector parameters
-          auto firstVectorParamIt  = vectorParamIndices.begin();
-          auto secondVectorParamIt = std::next( firstVectorParamIt );
-          if ( ( firstVectorParamIt->second == nonConstPointerParamIndices[0] ) &&
-               ( firstVectorParamIt->first == nonConstPointerParamIndices[1] ) &&
-               ( secondVectorParamIt->first == nonConstPointerParamIndices[2] ) &&
-               ( firstVectorParamIt->second == secondVectorParamIt->second ) )
-          {
-            // the two vectors use the very same size parameter
-            // both vectors, as well as the size parameter are non-const pointer that is output parameters
-            assert( commandIt->second.params[firstVectorParamIt->first].type.isNonConstPointer() &&
-                    commandIt->second.params[secondVectorParamIt->first].type.isNonConstPointer() &&
-                    commandIt->second.params[firstVectorParamIt->second].type.isNonConstPointer() );
-            // the size is a return value as well -> enumerate the values
-            if ( commandIt->second.returnType == "VkResult" )
-            {
-              // as the returnType is "VkResult", there has to be at least one success code
-              assert( !commandIt->second.successCodes.empty() );
-              if ( !commandIt->second.errorCodes.empty() )
-              {
-                if ( ( commandIt->second.successCodes.size() == 2 ) &&
-                     ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
-                     ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
-                {
-                  std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultEnumerateTwoVectors(
-                    commandIt, initialSkipCount, vectorParamIndices, nonConstPointerParamIndices );
-                  commandConstructed = true;
-                }
-              }
-            }
-          }
-        }
-        if ( isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[0]].type.type ) ||
-             isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[1]].type.type ) ||
-             isStructureChainAnchor( commandIt->second.params[nonConstPointerParamIndices[2]].type.type ) )
-        {
-          commandConstructed = true;
-        }
-        break;
+      commandConstructed = constructRAIIHandleMemberFunctionResult(
+        functionDeclarations, functionDefinitions, commandIt, initialSkipCount );
     }
-    functionDeclarations += declaration;
-    functionDefinitions += definition;
+    else
+    {
+      assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+      if ( commandIt->second.returnType == "void" )
+      {
+        commandConstructed = constructRAIIHandleMemberFunctionVoid(
+          functionDeclarations, functionDefinitions, commandIt, initialSkipCount );
+      }
+      else
+      {
+        commandConstructed = constructRAIIHandleMemberFunctionValue(
+          functionDeclarations, functionDefinitions, commandIt, initialSkipCount );
+      }
+    }
+
     if ( !commandConstructed )
     {
       throw std::runtime_error( "Never encountered a function like <" + commandIt->first + "> !" );
@@ -9101,6 +8918,305 @@ ${leave})";
       { "vkCommand", commandIt->first } } );
 
   return std::make_pair( declaration, definition );
+}
+
+bool VulkanHppGenerator::constructRAIIHandleMemberFunctionResult(
+  std::string &                                      functionDeclarations,
+  std::string &                                      functionDefinitions,
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount ) const
+{
+  // as the returnType is "VkResult", there has to be at least one success code
+  assert( !commandIt->second.successCodes.empty() );
+
+  bool                commandConstructed = false;
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
+  std::string         declaration, definition;
+  switch ( returnParamIndices.size() )
+  {
+    case 0:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionResult0Return( commandIt, initialSkipCount );
+      break;
+    case 1:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionResult1Return( commandIt, initialSkipCount, returnParamIndices[0] );
+      break;
+    case 2:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionResult2Return( commandIt, initialSkipCount, returnParamIndices );
+      break;
+    case 3:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionResult3Return( commandIt, initialSkipCount, returnParamIndices );
+      break;
+  }
+  functionDeclarations += declaration;
+  functionDefinitions += definition;
+  return commandConstructed;
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResult0Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount ) const
+{
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+  if ( commandIt->second.errorCodes.empty() )
+  {
+    if ( commandIt->second.successCodes.size() == 1 )
+    {
+      std::tie( declaration, definition ) =
+        constructRAIIHandleMemberFunctionResultSingleNoErrors( commandIt, initialSkipCount, vectorParamIndices );
+    }
+    else
+    {
+      std::tie( declaration, definition ) =
+        constructRAIIHandleMemberFunctionResultMultiNoErrors( commandIt, initialSkipCount, vectorParamIndices );
+    }
+  }
+  else
+  {
+    if ( commandIt->second.successCodes.size() == 1 )
+    {
+      std::tie( declaration, definition ) =
+        constructRAIIHandleMemberFunctionResultSingle( commandIt, initialSkipCount, vectorParamIndices );
+    }
+    else
+    {
+      std::tie( declaration, definition ) =
+        constructRAIIHandleMemberFunctionResultMulti( commandIt, initialSkipCount, vectorParamIndices );
+    }
+  }
+  return std::make_tuple( true, declaration, definition );
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResult1Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, size_t returnParamIndex ) const
+{
+  // one return parameter (and it's not a handle, that would be a constructor)
+  assert( !isHandleType( commandIt->second.params[returnParamIndex].type.type ) );
+
+  bool                     commandConstructed = false;
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices  = determineVectorParamIndicesNew( commandIt->second.params );
+  auto                     returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+  if ( returnVectorParamIt == vectorParamIndices.end() )
+  {
+    // the return parameter is not a vector -> return a value
+    // as the returnType is "VkResult", there has to be at least one success code
+    assert( !commandIt->second.successCodes.empty() );
+    if ( !commandIt->second.errorCodes.empty() )
+    {
+      if ( commandIt->second.successCodes.size() == 1 )
+      {
+        std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetValue(
+          commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+      }
+      else
+      {
+        std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultMultiGetValue(
+          commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+      }
+      commandConstructed = true;
+    }
+  }
+  else
+  {
+    // the return parameter is a vector -> return a vector
+    // as the returnType is "VkResult", there has to be at least one success code
+    assert( !commandIt->second.successCodes.empty() );
+    if ( !commandIt->second.errorCodes.empty() &&
+         ( commandIt->second.params[returnVectorParamIt->second].type.isValue() ) )
+    {
+      // there are error codes, and the size is give by value
+      if ( commandIt->second.params[returnVectorParamIt->first].type.type == "void" )
+      {
+        // the return parameter is of type void
+        if ( commandIt->second.successCodes.size() == 1 )
+        {
+          std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoid(
+            commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+
+          std::string singularDeclaration, singularDefinition;
+          std::tie( singularDeclaration, singularDefinition ) =
+            constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoidSingular(
+              commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+          declaration += singularDeclaration;
+          definition += singularDefinition;
+        }
+        else
+        {
+          std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoid(
+            commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+
+          std::string singularDeclaration, singularDefinition;
+          std::tie( singularDeclaration, singularDefinition ) =
+            constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoidSingular(
+              commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+          declaration += singularDeclaration;
+          definition += singularDefinition;
+        }
+        commandConstructed = true;
+      }
+      else
+      {
+        // the return parameter is of a concrete type
+        if ( commandIt->second.successCodes.size() == 1 )
+        {
+          std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetVector(
+            commandIt, initialSkipCount, vectorParamIndices, returnParamIndex );
+
+          std::string singularDeclaration, singularDefinition;
+          std::tie( singularDeclaration, singularDefinition ) =
+            constructRAIIHandleMemberFunctionResultSingleGetVectorSingular(
+              commandIt, initialSkipCount, vectorParamIndices, returnParamIndex );
+          declaration += singularDeclaration;
+          definition += singularDefinition;
+          commandConstructed = true;
+        }
+      }
+    }
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndex].type.type ) )
+  {
+    // for StructureChain returns, add functions returning a StructureChain
+    commandConstructed = false;
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // as the returnType is "VkResult", there has to be at least one success code
+      assert( !commandIt->second.successCodes.empty() );
+      if ( !commandIt->second.errorCodes.empty() )
+      {
+        if ( commandIt->second.successCodes.size() == 1 )
+        {
+          std::string chainDeclaration, chainDefinition;
+          std::tie( chainDeclaration, chainDefinition ) = constructRAIIHandleMemberFunctionResultSingleGetChain(
+            commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+          declaration += chainDeclaration;
+          definition += chainDefinition;
+          commandConstructed = true;
+        }
+      }
+    }
+  }
+
+  return std::make_tuple( commandConstructed, declaration, definition );
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResult2Return(
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount,
+  std::vector<size_t> const &                        returnParamIndices ) const
+{
+  // two return parameters (and the first one is not a handle, that would be a constructor)
+  assert( returnParamIndices.size() == 2 );
+  assert( !isHandleType( commandIt->second.params[returnParamIndices[0]].type.type ) );
+
+  bool                     commandConstructed = false;
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+  switch ( vectorParamIndices.size() )
+  {
+    case 1:
+      {
+        // two returns but just one vector
+        auto vectorParamIndexIt = vectorParamIndices.begin();
+        if ( ( vectorParamIndexIt->second == returnParamIndices[0] ) &&
+             ( vectorParamIndexIt->first == returnParamIndices[1] ) )
+        {
+          // the size is a return value as well -> enumerate the values
+          // as the returnType is "VkResult", there has to be at least one success code
+          assert( !commandIt->second.successCodes.empty() );
+          if ( !commandIt->second.errorCodes.empty() )
+          {
+            if ( ( commandIt->second.successCodes.size() == 2 ) &&
+                 ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
+                 ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
+            {
+              std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultEnumerate(
+                commandIt, initialSkipCount, vectorParamIndices, returnParamIndices );
+              commandConstructed = true;
+            }
+          }
+        }
+      }
+      break;
+    case 2:
+      // two returns and two vectors
+      if ( ( vectorParamIndices.find( returnParamIndices[0] ) != vectorParamIndices.end() ) &&
+           ( vectorParamIndices.find( returnParamIndices[1] ) == vectorParamIndices.end() ) )
+      {
+        // two returns and two vectors! But one input vector, one output vector of the same size, and one output
+        // value
+        // as the returnType is "VkResult", there has to be at least one success code
+        assert( !commandIt->second.successCodes.empty() );
+        if ( !commandIt->second.errorCodes.empty() )
+        {
+          if ( commandIt->second.successCodes.size() == 1 )
+          {
+            std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultSingleGetVectorAndValue(
+              commandIt, initialSkipCount, vectorParamIndices, returnParamIndices );
+            commandConstructed = true;
+          }
+        }
+      }
+      break;
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndices[0]].type.type ) )
+  {
+    commandConstructed = false;
+  }
+  return std::make_tuple( commandConstructed, declaration, definition );
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionResult3Return(
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount,
+  std::vector<size_t> const &                        returnParamIndices ) const
+{
+  // three return parameters
+  assert( returnParamIndices.size() == 3 );
+
+  bool                     commandConstructed = false;
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+  if ( vectorParamIndices.size() == 2 )
+  {
+    // two vector parameters
+    auto firstVectorParamIt  = vectorParamIndices.begin();
+    auto secondVectorParamIt = std::next( firstVectorParamIt );
+    if ( ( firstVectorParamIt->second == returnParamIndices[0] ) &&
+         ( firstVectorParamIt->first == returnParamIndices[1] ) &&
+         ( secondVectorParamIt->first == returnParamIndices[2] ) &&
+         ( firstVectorParamIt->second == secondVectorParamIt->second ) )
+    {
+      // the two vectors use the very same size parameter
+      // both vectors, as well as the size parameter are non-const pointer that is output parameters
+      assert( commandIt->second.params[firstVectorParamIt->first].type.isNonConstPointer() &&
+              commandIt->second.params[secondVectorParamIt->first].type.isNonConstPointer() &&
+              commandIt->second.params[firstVectorParamIt->second].type.isNonConstPointer() );
+      // the size is a return value as well -> enumerate the values
+      // as the returnType is "VkResult", there has to be at least one success code
+      assert( !commandIt->second.successCodes.empty() );
+      if ( !commandIt->second.errorCodes.empty() )
+      {
+        if ( ( commandIt->second.successCodes.size() == 2 ) && ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
+             ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
+        {
+          std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionResultEnumerateTwoVectors(
+            commandIt, initialSkipCount, vectorParamIndices, returnParamIndices );
+          commandConstructed = true;
+        }
+      }
+    }
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndices[0]].type.type ) ||
+       isStructureChainAnchor( commandIt->second.params[returnParamIndices[1]].type.type ) ||
+       isStructureChainAnchor( commandIt->second.params[returnParamIndices[2]].type.type ) )
+  {
+    commandConstructed = true;
+  }
+  return std::make_tuple( commandConstructed, declaration, definition );
 }
 
 std::pair<std::string, std::string>
@@ -9250,12 +9366,85 @@ ${leave})";
   return std::make_pair( declaration, definition );
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionVoid(
+bool VulkanHppGenerator::constructRAIIHandleMemberFunctionValue(
+  std::string &                                      functionDeclarations,
+  std::string &                                      functionDefinitions,
   std::map<std::string, CommandData>::const_iterator commandIt,
-  size_t                                             initialSkipCount,
-  std::map<size_t, size_t> const &                   vectorParamIndices ) const
+  size_t                                             initialSkipCount ) const
 {
+  // as the return type is not "VkResult", there are no success or error codes allowed
   assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+
+  bool                commandConstructed = false;
+  std::string         declaration, definition;
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
+  if ( returnParamIndices.empty() )
+  {
+    std::tie( commandConstructed, declaration, definition ) =
+      constructRAIIHandleMemberFunctionValue0Return( commandIt, initialSkipCount );
+  }
+
+  functionDeclarations += declaration;
+  functionDefinitions += definition;
+  return commandConstructed;
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionValue0Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount ) const
+{
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+  if ( beginsWith( commandIt->second.returnType, "Vk" ) )
+  {
+    std::tie( declaration, definition ) =
+      constructRAIIHandleMemberFunctionVkType( commandIt, initialSkipCount, vectorParamIndices );
+  }
+  else
+  {
+    std::tie( declaration, definition ) =
+      constructRAIIHandleMemberFunctionType( commandIt, initialSkipCount, vectorParamIndices );
+  }
+  return std::make_tuple( true, declaration, definition );
+}
+
+bool VulkanHppGenerator::constructRAIIHandleMemberFunctionVoid(
+  std::string &                                      functionDeclarations,
+  std::string &                                      functionDefinitions,
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount ) const
+{
+  // as the return type is not "VkResult", there are no success or error codes allowed
+  assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+
+  bool                commandConstructed = false;
+  std::string         declaration, definition;
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
+  switch ( returnParamIndices.size() )
+  {
+    case 0:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionVoid0Return( commandIt, initialSkipCount );
+      break;
+    case 1:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionVoid1Return( commandIt, initialSkipCount, returnParamIndices[0] );
+      break;
+    case 2:
+      std::tie( commandConstructed, declaration, definition ) =
+        constructRAIIHandleMemberFunctionVoid2Return( commandIt, initialSkipCount, returnParamIndices );
+      break;
+  }
+
+  functionDeclarations += declaration;
+  functionDefinitions += definition;
+  return commandConstructed;
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionVoid0Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount ) const
+{
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+
   std::set<size_t> skippedParameters =
     determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParamIndices, {}, false );
   std::string argumentListDeclaration =
@@ -9317,7 +9506,105 @@ ${leave})";
       { "vectorSizeCheck", vectorSizeCheckString },
       { "vkCommand", commandIt->first } } );
 
-  return std::make_pair( declaration, definition );
+  return std::make_tuple( true, declaration, definition );
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionVoid1Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, size_t returnParamIndex ) const
+{
+  // one return parameter (and it's not a handle, that would be a constructor)
+  assert( !isHandleType( commandIt->second.params[returnParamIndex].type.type ) );
+
+  bool                     commandConstructed = false;
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices  = determineVectorParamIndicesNew( commandIt->second.params );
+  auto                     returnVectorParamIt = vectorParamIndices.find( returnParamIndex );
+  if ( returnVectorParamIt == vectorParamIndices.end() )
+  {
+    // the return parameter is not a vector -> return a value
+    // as the return type is not "VkResult", there are no success or error codes allowed
+    assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+    std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionVoidGetValue(
+      commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+    commandConstructed = true;
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndex].type.type ) )
+  {
+    // for StructureChain returns, add functions returning a StructureChain
+    commandConstructed = false;
+    if ( returnVectorParamIt == vectorParamIndices.end() )
+    {
+      // as the return type is not "VkResult", there are no success or error codes allowed
+      assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+      std::string chainDeclaration, chainDefinition;
+      std::tie( chainDeclaration, chainDefinition ) = constructRAIIHandleMemberFunctionVoidGetChain(
+        commandIt, initialSkipCount, vectorParamIndices, { returnParamIndex } );
+      declaration += chainDeclaration;
+      definition += chainDefinition;
+      commandConstructed = true;
+    }
+  }
+  return std::make_tuple( commandConstructed, declaration, definition );
+}
+
+std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionVoid2Return(
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount,
+  std::vector<size_t> const &                        returnParamIndices ) const
+{
+  // two return parameters (and the first one is not a handle, that would be a constructor)
+  assert( returnParamIndices.size() == 2 );
+  assert( !isHandleType( commandIt->second.params[returnParamIndices[0]].type.type ) );
+
+  bool                     commandConstructed = false;
+  std::string              declaration, definition;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndicesNew( commandIt->second.params );
+  switch ( vectorParamIndices.size() )
+  {
+    case 1:
+      {
+        // two returns but just one vector
+        auto vectorParamIndexIt = vectorParamIndices.begin();
+        if ( ( vectorParamIndexIt->second == returnParamIndices[0] ) &&
+             ( vectorParamIndexIt->first == returnParamIndices[1] ) )
+        {
+          // the size is a return value as well -> enumerate the values
+          std::tie( declaration, definition ) = constructRAIIHandleMemberFunctionVoidEnumerate(
+            commandIt, initialSkipCount, vectorParamIndices, returnParamIndices );
+          commandConstructed = true;
+        }
+      }
+      break;
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndices[0]].type.type ) )
+  {
+    commandConstructed = false;
+  }
+  if ( isStructureChainAnchor( commandIt->second.params[returnParamIndices[1]].type.type ) )
+  {
+    commandConstructed = false;
+    if ( vectorParamIndices.size() == 1 )
+    {
+      // two returns but just one vector
+      auto vectorParamIndexIt = vectorParamIndices.begin();
+      if ( ( vectorParamIndexIt->second == returnParamIndices[0] ) &&
+           ( vectorParamIndexIt->first == returnParamIndices[1] ) )
+      {
+        // the size is a return value as well -> enumerate the values
+        std::string vectorElementType = commandIt->second.params[vectorParamIndices.begin()->first].type.type;
+        if ( commandIt->second.returnType == "void" )
+        {
+          std::string chainDeclaration, chainDefinition;
+          std::tie( chainDeclaration, chainDefinition ) = constructRAIIHandleMemberFunctionVoidEnumerateChain(
+            commandIt, initialSkipCount, vectorParamIndices, returnParamIndices );
+          declaration += chainDeclaration;
+          definition += chainDefinition;
+          commandConstructed = true;
+        }
+      }
+    }
+  }
+  return std::make_tuple( commandConstructed, declaration, definition );
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMemberFunctionVoidEnumerate(

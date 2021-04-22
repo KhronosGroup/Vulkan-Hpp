@@ -11951,11 +11951,11 @@ std::string
         sum += "!" + startLowerCase( stripPrefix( arrayIts[first]->name, "p" ) ) + "_.empty() + ";
       }
       sum += "!" + startLowerCase( stripPrefix( arrayIts.back()->name, "p" ) ) + "_.empty()";
-      assertionText += prefix + "  VULKAN_HPP_ASSERT( ( " + sum + " ) == 1 );\n";
-      throwText += prefix + "  if ( ( " + sum + " ) != 1 )\n";
+      assertionText += prefix + "  VULKAN_HPP_ASSERT( ( " + sum + " ) <= 1);\n";
+      throwText += prefix + "  if ( 1 < ( " + sum + " ) )\n";
       throwText += prefix + "  {\n";
       throwText += prefix + "    throw LogicError( VULKAN_HPP_NAMESPACE_STRING \"::" + structName + "::" + structName +
-                   ": ( " + sum + " ) != 1\" );\n";
+                   ": 1 < ( " + sum + " )\" );\n";
       throwText += prefix + "  }\n";
     }
     else
@@ -14059,7 +14059,7 @@ void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               
     it->second.subStruct = determineSubStruct( *it );
 
     // check if multiple structure members use the very same (not empty) len attribute
-    // Note: even though the arrays are not mared as optional, they still might be mutually exclusive (like in
+    // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
     // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
     // need this external knowledge!
     static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",

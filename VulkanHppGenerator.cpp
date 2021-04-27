@@ -71,7 +71,6 @@ std::string stripPostfix( std::string const & value, std::string const & postfix
 std::string stripPluralS( std::string const & name );
 std::string stripPrefix( std::string const & value, std::string const & prefix );
 std::string toCamelCase( std::string const & value );
-std::string toString( std::vector<std::string> const & strings );
 std::string toUpperCase( std::string const & name );
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
 std::string              trim( std::string const & input );
@@ -251,33 +250,6 @@ std::string constructCArraySizes( std::vector<std::string> const & sizes )
     arraySizes += "[" + s + "]";
   }
   return arraySizes;
-}
-
-std::string constructFunctionPointerCheck( std::string const &           function,
-                                           std::set<std::string> const & extensions,
-                                           std::string const &           feature )
-{
-  std::string functionPointerCheck;
-  if ( !extensions.empty() )
-  {
-    assert( feature.empty() );
-    std::string message = "Function <" + function + "> needs ";
-    if ( extensions.size() == 1 )
-    {
-      message += "extension <" + *extensions.begin() + "> enabled!";
-    }
-    else
-    {
-      message += "at least one of the following extensions enabled: ";
-      for ( auto const & ext : extensions )
-      {
-        message += "<" + ext + ">, ";
-      }
-      message = stripPostfix( message, ", " );
-    }
-    functionPointerCheck = "\n      VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );\n";
-  }
-  return functionPointerCheck;
 }
 
 std::string constructStandardArray( std::string const & type, std::vector<std::string> const & sizes )
@@ -688,16 +660,19 @@ std::string toCamelCase( std::string const & value )
   return result;
 }
 
-std::string toString( std::vector<std::string> const & strings )
+template <typename StringContainer>
+std::string toString( StringContainer const & strings )
 {
   std::string str;
-  if ( !strings.empty() )
+  bool        encounteredMember = false;
+  for ( auto s : strings )
   {
-    str = strings[0];
-    for ( size_t i = 1; i < strings.size(); i++ )
+    if ( encounteredMember )
     {
-      str += ", " + strings[i];
+      str += ", ";
     }
+    str += s;
+    encounteredMember = true;
   }
   return str;
 }
@@ -990,7 +965,7 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
       std::string enter, leave;
       if ( !value.extension.empty() )
       {
-        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+        std::tie( enter, leave ) = generateProtection( value.extension );
         if ( !leave.empty() )
         {
           assert( leave.back() );
@@ -1082,7 +1057,7 @@ void VulkanHppGenerator::appendBitmaskToStringFunction( std::string &           
         std::string enter, leave;
         if ( !evd.extension.empty() )
         {
-          std::tie( enter, leave ) = generateProtection( "", { evd.extension } );
+          std::tie( enter, leave ) = generateProtection( evd.extension );
           if ( !leave.empty() )
           {
             leave = "\n" + leave;
@@ -1171,9 +1146,7 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
       aliasCommandData.aliasData.clear();
       for ( auto const & ad : commandData.aliasData )
       {
-        aliasCommandData.extensions = ad.second.extensions;
-        aliasCommandData.feature    = ad.second.feature;
-        aliasCommandData.xmlLine    = ad.second.xmlLine;
+        aliasCommandData.referencedIn = ad.second.referencedIn;
         appendCommand( str, ad.first, aliasCommandData, initialSkipCount, definition );
       }
     }
@@ -1202,7 +1175,7 @@ ${commandEnhancedChained}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1466,7 +1439,7 @@ ${commandEnhancedSingular}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1497,7 +1470,7 @@ ${enter}${commandStandard}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1524,7 +1497,7 @@ ${commandEnhanced}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   std::string commandEnhanced;
   switch ( nonConstPointerParamIndices.size() )
@@ -1624,7 +1597,7 @@ ${commandEnhancedWithAllocator}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1662,7 +1635,7 @@ ${leave}
 )";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1691,7 +1664,7 @@ ${commandEnhancedUnique}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1763,7 +1736,7 @@ void VulkanHppGenerator::appendCommandVector( std::string &                     
   assert( ( commandData.returnType == "VkResult" ) || ( commandData.returnType == "void" ) );
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   const std::string functionTemplate = R"(
 ${enter}${commandStandard}${newlineOnDefinition}
@@ -1815,7 +1788,7 @@ ${commandEnhancedChainedWithAllocator}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1887,7 +1860,7 @@ void VulkanHppGenerator::appendCommandVectorDeprecated( std::string &           
   assert( vectorParamIndices.size() == 2 );
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
   assert( enter.empty() );
 
   const std::string functionTemplate = R"(
@@ -1939,7 +1912,7 @@ ${commandEnhancedSingular}${newlineOnDefinition}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -1984,7 +1957,7 @@ ${commandEnhancedUniqueSingular}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -2036,7 +2009,7 @@ ${commandEnhancedUniqueWithAllocators}
 ${leave})";
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
 
   str += replaceWithMap(
     functionTemplate,
@@ -2294,7 +2267,7 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
 
     str += "\n";
     std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( command.second.feature, command.second.extensions );
+    std::tie( enter, leave ) = generateProtection( command.second.referencedIn );
     str += enter + "    " + command.second.returnType + " vk" + commandName + "( " + parameterList +
            " ) const VULKAN_HPP_NOEXCEPT\n"
            "    {\n"
@@ -2308,7 +2281,7 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
     {
       commandName = stripPrefix( aliasData.first, "vk" );
       str += "\n";
-      std::tie( enter, leave ) = generateProtection( aliasData.second.feature, aliasData.second.extensions );
+      std::tie( enter, leave ) = generateProtection( aliasData.second.referencedIn );
       str += enter + "    " + command.second.returnType + " vk" + commandName + "( " + parameterList +
              " ) const VULKAN_HPP_NOEXCEPT\n"
              "    {\n"
@@ -2543,8 +2516,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
     aliasCommandData.aliasData.clear();
     for ( auto const & aliasData : commandData.aliasData )
     {
-      aliasCommandData.extensions = aliasData.second.extensions;
-      aliasCommandData.feature    = aliasData.second.feature;
+      aliasCommandData.referencedIn = aliasData.second.referencedIn;
       appendDispatchLoaderDynamicCommand( str,
                                           emptyFunctions,
                                           deviceFunctions,
@@ -2556,7 +2528,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
   }
 
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.feature, commandData.extensions );
+  std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
   std::string command      = "    PFN_" + commandName + " " + commandName + " = 0;\n";
   if ( !enter.empty() )
   {
@@ -2598,7 +2570,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
                     []( std::pair<std::string, CommandAliasData> const & ad ) { return endsWith( ad.first, "KHR" ); } );
     if ( aliasKHRIt != commandData.aliasData.end() )
     {
-      assert( generateProtection( aliasKHRIt->second.feature, aliasKHRIt->second.extensions ).first.empty() );
+      assert( generateProtection( aliasKHRIt->second.referencedIn ).first.empty() );
       if ( isDeviceFunction )
       {
         checkedAssignment( deviceFunctions, leave, commandName, aliasKHRIt->first );
@@ -2614,7 +2586,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
       // then all the others, with no specific order
       if ( aliasIt != aliasKHRIt )
       {
-        assert( generateProtection( aliasIt->second.feature, aliasIt->second.extensions ).first.empty() );
+        assert( generateProtection( aliasIt->second.referencedIn ).first.empty() );
         if ( isDeviceFunction )
         {
           checkedAssignment( deviceFunctions, leave, commandName, aliasIt->first );
@@ -2649,7 +2621,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     std::string enter, leave;
     if ( !value.extension.empty() )
     {
-      std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+      std::tie( enter, leave ) = generateProtection( value.extension );
     }
     if ( !leave.empty() )
     {
@@ -2690,7 +2662,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
                         [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.first == evd.vulkanValue; } );
       }
       assert( enumIt != enumData.second.values.end() );
-      assert( enumIt->extension.empty() || generateProtection( "", { enumIt->extension } ).first.empty() );
+      assert( enumIt->extension.empty() || generateProtection( enumIt->extension ).first.empty() );
 #endif
       enumList += "\n    , " + alias.second.second + " = " + alias.first;
     }
@@ -2796,7 +2768,7 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
       std::string enter, leave;
       if ( !value.extension.empty() )
       {
-        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+        std::tie( enter, leave ) = generateProtection( value.extension );
       }
       str += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "      case " + enumName +
              "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) + "\";\n";
@@ -3129,8 +3101,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
         commandData.aliasData.clear();
         if ( needsComplexBody( commandIt->second ) )
         {
-          commandData.extensions.clear();
-          commandData.feature.clear();
+          commandData.referencedIn.clear();
         }
         assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handleData.first ) );
         commandData.params[1].optional =
@@ -3359,8 +3330,7 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
         bool complex = needsComplexBody( commandIt->second );
         if ( complex )
         {
-          commandData.extensions.clear();
-          commandData.feature.clear();
+          commandData.referencedIn.clear();
         }
         assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handle.first ) );
         commandData.params[1].optional =
@@ -3404,14 +3374,13 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
         if ( complex )
         {
           std::string enter, leave;
-          std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+          std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
           assert( commandIt->second.aliasData.size() == 1 );
           auto aliasDataIt = commandIt->second.aliasData.begin();
 #if !defined( NDEBUG )
           std::string aliasEnter, aliasLeave;
-          std::tie( aliasEnter, aliasLeave ) =
-            generateProtection( aliasDataIt->second.feature, aliasDataIt->second.extensions );
+          std::tie( aliasEnter, aliasLeave ) = generateProtection( aliasDataIt->second.referencedIn );
           assert( aliasEnter.empty() );
 #endif
 
@@ -3470,7 +3439,7 @@ void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
   for ( auto const & command : m_commands )
   {
     std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( command.second.feature, command.second.extensions );
+    std::tie( enter, leave ) = generateProtection( command.second.referencedIn );
 
     if ( command.second.handle.empty() )
     {
@@ -3620,7 +3589,7 @@ ${leave})";
       std::string enter, leave;
       if ( !value.extension.empty() )
       {
-        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+        std::tie( enter, leave ) = generateProtection( value.extension );
       }
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( value.vkValue, "eError" ) + "Error" },
@@ -6782,6 +6751,18 @@ std::string
   return str;
 }
 
+std::string VulkanHppGenerator::constructFunctionPointerCheck( std::string const & function,
+                                                               std::string const & referencedIn ) const
+{
+  std::string functionPointerCheck;
+  if ( m_extensions.find( referencedIn ) != m_extensions.end() )
+  {
+    std::string message  = "Function <" + function + "> needs extension <" + referencedIn + "> enabled!";
+    functionPointerCheck = "\n      VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );\n";
+  }
+  return functionPointerCheck;
+}
+
 std::string VulkanHppGenerator::constructNoDiscardStandard( CommandData const & commandData ) const
 {
   return ( 1 < commandData.successCodes.size() + commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD " : "";
@@ -7195,7 +7176,8 @@ std::string VulkanHppGenerator::constructRAIIHandleConstructorResult(
     handle.first, constructorIt->second.params, false, handle.first == "VkInstance" );
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherInit = "\n    m_dispatcher.init( static_cast<" + handle.first + ">( m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );";
+    dispatcherInit = "\n    m_dispatcher.init( static_cast<" + handle.first + ">( m_" +
+                     startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );";
   }
   std::string initializationList = constructRAIIHandleConstructorInitializationList(
     handle.first, constructorIt, handle.second.destructorIt, !handle.second.secondLevelCommands.empty() );
@@ -7279,8 +7261,8 @@ std::string VulkanHppGenerator::constructRAIIHandleConstructorTakeOwnership(
   std::string dispatcherInit;
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherInit =
-      "\n      m_dispatcher.init( static_cast<" + handle.first + ">( m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );\n    ";
+    dispatcherInit = "\n      m_dispatcher.init( static_cast<" + handle.first + ">( m_" +
+                     startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );\n    ";
   }
 
   const std::string constructorTemplate =
@@ -7311,8 +7293,7 @@ std::pair<std::string, std::string>
 
     // check for additional enter/leave guards for the constructors
     std::string constructorEnter, constructorLeave;
-    std::tie( constructorEnter, constructorLeave ) =
-      generateProtection( constructorIt->second.feature, constructorIt->second.extensions );
+    std::tie( constructorEnter, constructorLeave ) = generateProtection( constructorIt->second.referencedIn );
     if ( constructorEnter == enter )
     {
       constructorEnter.clear();
@@ -7498,9 +7479,8 @@ std::pair<std::string, std::string>
                                                      std::string const &                                enter ) const
 {
   std::string destructorEnter, destructorLeave;
-  std::tie( destructorEnter, destructorLeave ) =
-    generateProtection( destructorIt->second.feature, destructorIt->second.extensions );
-  bool doProtect = !destructorEnter.empty() && ( destructorEnter != enter );
+  std::tie( destructorEnter, destructorLeave ) = generateProtection( destructorIt->second.referencedIn );
+  bool doProtect                               = !destructorEnter.empty() && ( destructorEnter != enter );
   if ( !doProtect )
   {
     destructorEnter.clear();
@@ -7685,7 +7665,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string counterName =
     startLowerCase( stripPrefix( commandIt->second.params[vectorParamIndices.begin()->second].name, "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave )       = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave )       = generateProtection( commandIt->second.referencedIn );
   std::string firstCallArguments = constructCallArgumentsEnhanced(
     commandIt->second.params, initialSkipCount, true, {}, nonConstPointerParamIndices, true );
   std::string secondCallArguments = constructCallArgumentsEnhanced(
@@ -7755,8 +7735,7 @@ ${leave})";
       { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
       { "enter", enter },
       { "firstCallArguments", firstCallArguments },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "secondCallArguments", secondCallArguments },
       { "vectorElementType", vectorElementType },
@@ -7785,7 +7764,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string counterName =
     startLowerCase( stripPrefix( stripPluralS( commandIt->second.params[firstVectorParamIt->second].name ), "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave )       = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave )       = generateProtection( commandIt->second.referencedIn );
   std::string firstCallArguments = constructCallArgumentsEnhanced(
     commandIt->second.params, initialSkipCount, true, {}, nonConstPointerParamIndices, true );
   std::string firstType = stripPrefix( commandIt->second.params[firstVectorParamIt->first].type.type, "Vk" );
@@ -7854,8 +7833,7 @@ ${leave})";
       { "firstCallArguments", firstCallArguments },
       { "firstType", firstType },
       { "firstVectorName", firstVectorName },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "secondCallArguments", secondCallArguments },
       { "secondType", secondType },
@@ -7881,7 +7859,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName = determineCommandName(
     commandIt->first, initialSkipCount ? commandIt->second.params[initialSkipCount - 1].type.type : "", m_tags );
   std::string enter, leave;
-  std::tie( enter, leave )  = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave )  = generateProtection( commandIt->second.referencedIn );
   std::string callArguments = constructCallArgumentsEnhanced(
     commandIt->second.params, initialSkipCount, false, {}, nonConstPointerParamIndices, true );
   std::string firstReturnName =
@@ -7934,8 +7912,7 @@ ${leave})";
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
       { "firstReturnName", firstReturnName },
       { "firstReturnType", firstReturnType },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "secondReturnName", secondReturnName },
       { "secondReturnType", secondReturnType },
@@ -7960,7 +7937,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string                                            vectorSizeCheckString =
@@ -8001,8 +7978,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorSizeCheck", vectorSizeCheckString },
       { "vkCommand", commandIt->first } } );
@@ -8027,7 +8003,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::string valueName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
@@ -8068,8 +8044,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "valueName", valueName },
       { "returnType", returnType },
@@ -8097,7 +8072,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string dataName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::string const declarationTemplate =
     R"(
@@ -8137,8 +8112,7 @@ ${leave})";
       { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vkCommand", commandIt->first } } );
 
@@ -8167,7 +8141,7 @@ std::pair<std::string, std::string>
   std::string dataName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::string const singularDeclarationTemplate =
     R"(
@@ -8227,7 +8201,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string                                            vectorSizeCheckString =
@@ -8262,8 +8236,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorSizeCheck", vectorSizeCheckString },
       { "vkCommand", commandIt->first } } );
@@ -8287,7 +8260,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string                                            vectorSizeCheckString =
@@ -8327,8 +8300,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorSizeCheck", vectorSizeCheckString },
       { "vkCommand", commandIt->first } } );
@@ -8353,7 +8325,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::string returnVariable =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
@@ -8419,7 +8391,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave )      = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave )      = generateProtection( commandIt->second.referencedIn );
   std::string vectorElementType = commandIt->second.params[returnParamIndex].type.type;
   std::string vectorName        = startLowerCase( stripPrefix( commandIt->second.params[returnParamIndex].name, "p" ) );
   std::string vectorSize =
@@ -8461,8 +8433,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorElementType", vectorElementType },
       { "vectorName", vectorName },
@@ -8489,7 +8460,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string valueName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[1]].name, "p" ) );
   std::string valueType         = commandIt->second.params[nonConstPointerParamIndices[1]].type.type;
@@ -8538,8 +8509,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "valueName", valueName },
       { "valueType", valueType },
@@ -8571,7 +8541,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string dataName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::string const declarationTemplate =
     R"(
@@ -8611,8 +8581,7 @@ ${leave})";
       { "dataSize", commandIt->second.params[nonConstPointerParamIndices[0]].len },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vkCommand", commandIt->first } } );
 
@@ -8642,7 +8611,7 @@ std::pair<std::string, std::string>
   std::string dataName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::string const singularDeclarationTemplate =
     R"(
@@ -8704,7 +8673,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName = stripPluralS(
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags ) );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string vectorElementName =
     stripPluralS( startLowerCase( stripPrefix( commandIt->second.params[returnParamIndex].name, "p" ) ) );
   std::string vectorElementType = commandIt->second.params[returnParamIndex].type.type;
@@ -8745,8 +8714,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorElementName", vectorElementName },
       { "vectorElementType", vectorElementType },
@@ -8771,7 +8739,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
 
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string                                            vectorSizeCheckString =
@@ -8806,8 +8774,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "vectorSizeCheck", vectorSizeCheckString },
       { "vkCommand", commandIt->first } } );
@@ -8834,7 +8801,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName = determineCommandName(
     commandIt->first, initialSkipCount ? commandIt->second.params[initialSkipCount - 1].type.type : "", m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::string valueName =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
@@ -8876,8 +8843,7 @@ ${leave})";
       { "commandName", commandName },
       { "enter", enter },
       { "failureCheck", constructFailureCheck( commandIt->second.successCodes ) },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "valueName", valueName },
       { "returnType", returnType },
@@ -8942,7 +8908,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
@@ -8982,8 +8948,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "noexcept", noexceptString },
       { "vectorSizeCheck",
@@ -9332,7 +9297,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string                                            returnType = namespacedType( commandIt->second.returnType );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string                                            vectorSizeCheckString =
@@ -9370,8 +9335,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "returnType", returnType },
       { "vectorSizeCheck", vectorSizeCheckString },
@@ -9396,7 +9360,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType   = namespacedType( commandIt->second.returnType );
 
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
@@ -9435,8 +9399,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "returnType", returnType },
       { "vectorSizeCheck", vectorSizeCheckString },
@@ -9535,7 +9498,7 @@ std::tuple<bool, std::string, std::string> VulkanHppGenerator::constructRAIIHand
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
   std::string vectorSizeCheckString =
@@ -9577,8 +9540,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "noexcept", noexceptString },
       { "template", templateString },
@@ -9704,7 +9666,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string vectorElementType =
     stripPostfix( commandIt->second.params[vectorParamIndices.begin()->first].type.compose(), "*" );
   std::string counterName =
@@ -9750,8 +9712,7 @@ ${leave})";
       { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
       { "enter", enter },
       { "firstCallArguments", firstCallArguments },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "secondCallArguments", secondCallArguments },
       { "vectorElementType", vectorElementType },
@@ -9777,7 +9738,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave )       = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave )       = generateProtection( commandIt->second.referencedIn );
   std::string firstCallArguments = constructCallArgumentsEnhanced(
     commandIt->second.params, initialSkipCount, true, {}, nonConstPointerParamIndices, true );
   std::string secondCallArguments = constructCallArgumentsEnhanced(
@@ -9831,8 +9792,7 @@ ${leave})";
       { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
       { "enter", enter },
       { "firstCallArguments", firstCallArguments },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "secondCallArguments", secondCallArguments },
       { "vectorElementType", vectorElementType },
@@ -9859,7 +9819,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::string returnVariable =
     startLowerCase( stripPrefix( commandIt->second.params[nonConstPointerParamIndices[0]].name, "p" ) );
@@ -9895,8 +9855,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "returnVariable", returnVariable },
       { "returnType", returnType },
@@ -9922,7 +9881,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleMembe
   std::string commandName =
     determineCommandName( commandIt->first, commandIt->second.params[initialSkipCount - 1].type.type, m_tags );
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandIt->second.feature, commandIt->second.extensions );
+  std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParamIndices );
   std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
@@ -9961,8 +9920,7 @@ ${leave})";
       { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
       { "commandName", commandName },
       { "enter", enter },
-      { "functionPointerCheck",
-        constructFunctionPointerCheck( commandIt->first, commandIt->second.extensions, commandIt->second.feature ) },
+      { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
       { "leave", leave },
       { "noexcept", noexceptString },
       { "vectorSizeCheck",
@@ -10861,7 +10819,7 @@ void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
       std::string enter, leave;
       if ( !value.extension.empty() )
       {
-        std::tie( enter, leave ) = generateProtection( "", { value.extension } );
+        std::tie( enter, leave ) = generateProtection( value.extension );
       }
 
       str += enter + "      case Result::" + value.vkValue + ": throw " + stripPrefix( value.vkValue, "eError" ) +
@@ -11181,6 +11139,9 @@ void VulkanHppGenerator::checkCorrectness()
   // command checks
   for ( auto const & command : m_commands )
   {
+    check( !command.second.referencedIn.empty(),
+           command.second.xmlLine,
+           "command <" + command.first + "> not listed in any feature or extension" );
     for ( auto const & ec : command.second.errorCodes )
     {
       check( resultCodes.find( ec ) != resultCodes.end(),
@@ -11207,6 +11168,16 @@ void VulkanHppGenerator::checkCorrectness()
     check( m_types.find( command.second.returnType ) != m_types.end(),
            command.second.xmlLine,
            "command uses unknown return type <" + command.second.returnType + ">" );
+  }
+
+  // enum checks
+  for ( auto const & e : m_enums )
+  {
+    auto typeIt = m_types.find( e.first );
+    assert( typeIt != m_types.end() );
+    warn( !typeIt->second.referencedIn.empty(),
+          e.second.xmlLine,
+          "enum <" + e.first + "> not listed in any feature or extension" );
   }
 
   // extension checks
@@ -11291,6 +11262,12 @@ void VulkanHppGenerator::checkCorrectness()
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
   {
+    auto typeIt = m_types.find( structure.first );
+    assert( typeIt != m_types.end() );
+    check( !typeIt->second.referencedIn.empty(),
+          structure.second.xmlLine,
+          "structure <" + structure.first + "> not listed in any feature or extension" );
+
     for ( auto const & extend : structure.second.structExtends )
     {
       check(
@@ -11896,16 +11873,15 @@ std::string VulkanHppGenerator::generateLenInitializer(
   return initializer;
 }
 
-std::pair<std::string, std::string>
-  VulkanHppGenerator::generateProtection( std::string const & feature, std::set<std::string> const & extensions ) const
+std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & referencedIn ) const
 {
-  if ( feature.empty() && !extensions.empty() )
+  if ( !referencedIn.empty() && m_features.find( referencedIn ) == m_features.end() )
   {
-    assert( getPlatforms( extensions ).size() == 1 );
-    std::string platform = *getPlatforms( extensions ).begin();
-    if ( !platform.empty() )
+    auto extensionIt = m_extensions.find( referencedIn );
+    assert( extensionIt != m_extensions.end() );
+    if ( !extensionIt->second.platform.empty() )
     {
-      auto platformIt = m_platforms.find( platform );
+      auto platformIt = m_platforms.find( extensionIt->second.platform );
       assert( platformIt != m_platforms.end() );
       std::string const & protect = platformIt->second.protect;
       if ( !protect.empty() )
@@ -11928,7 +11904,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
   {
     auto typeIt = m_types.find( type );
     assert( typeIt != m_types.end() );
-    return generateProtection( typeIt->second.feature, typeIt->second.extensions );
+    return generateProtection( typeIt->second.referencedIn );
   }
 }
 
@@ -12027,16 +12003,11 @@ std::string VulkanHppGenerator::getEnumPrefix( int line, std::string const & nam
   return prefix;
 }
 
-std::set<std::string> VulkanHppGenerator::getPlatforms( std::set<std::string> const & extensions ) const
+std::string VulkanHppGenerator::getPlatform( std::string const & extension ) const
 {
-  std::set<std::string> platforms;
-  for ( auto const & e : extensions )
-  {
-    auto extensionIt = m_extensions.find( e );
-    assert( extensionIt != m_extensions.end() );
-    platforms.insert( extensionIt->second.platform );
-  }
-  return platforms;
+  auto extensionIt = m_extensions.find( extension );
+  assert( extensionIt != m_extensions.end() );
+  return extensionIt->second.platform;
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std::string const & type ) const
@@ -12220,8 +12191,7 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
 
 bool VulkanHppGenerator::needsComplexBody( CommandData const & commandData ) const
 {
-  return !commandData.aliasData.empty() &&
-         !generateProtection( commandData.feature, commandData.extensions ).first.empty();
+  return !commandData.aliasData.empty() && !generateProtection( commandData.referencedIn ).first.empty();
 }
 
 std::pair<bool, std::map<size_t, std::vector<size_t>>>
@@ -13151,15 +13121,24 @@ void VulkanHppGenerator::readExtensionRequireCommand( tinyxml2::XMLElement const
       auto aliasDataIt = commandIt->second.aliasData.find( name );
       if ( aliasDataIt != commandIt->second.aliasData.end() )
       {
-        aliasDataIt->second.extensions.insert( extension );
-        foundAlias = true;
+        assert( aliasDataIt->second.referencedIn.empty() );
+        aliasDataIt->second.referencedIn = extension;
+        foundAlias                       = true;
       }
     }
     check( foundAlias, line, "extension <" + extension + "> requires unknown command <" + name + ">" );
   }
+  else if ( commandIt->second.referencedIn.empty() )
+  {
+    commandIt->second.referencedIn = extension;
+  }
   else
   {
-    commandIt->second.extensions.insert( extension );
+    check( getPlatform( commandIt->second.referencedIn ) == getPlatform( extension ),
+           line,
+           "command <" + name + "> is referenced in extensions <" + commandIt->second.referencedIn + "> and <" +
+             extension + "> and thus protected by different platforms <" +
+             getPlatform( commandIt->second.referencedIn ) + "> and <" + getPlatform( extension ) + ">!" );
   }
 }
 
@@ -13182,10 +13161,18 @@ void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * 
 
   auto typeIt = m_types.find( name );
   check( typeIt != m_types.end(), line, "failed to find required type <" + name + ">" );
-  typeIt->second.extensions.insert( extension );
-  check( getPlatforms( typeIt->second.extensions ).size() == 1,
-         line,
-         "type <" + name + "> is protected by more than one platform" );
+  if ( typeIt->second.referencedIn.empty() )
+  {
+    typeIt->second.referencedIn = extension;
+  }
+  else
+  {
+    check( getPlatform( typeIt->second.referencedIn ) == getPlatform( extension ),
+           line,
+           "type <" + name + "> is referenced in extensions <" + typeIt->second.referencedIn + "> and <" + extension +
+             "> and thus protected by different platforms <" + getPlatform( typeIt->second.referencedIn ) + "> and <" +
+             getPlatform( extension ) + ">!" );
+  }
 }
 
 void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
@@ -13271,10 +13258,10 @@ void VulkanHppGenerator::readFeatureRequireCommand( tinyxml2::XMLElement const *
   std::string command   = attributes.find( "name" )->second;
   auto        commandIt = m_commands.find( command );
   check( commandIt != m_commands.end(), line, "feature requires unknown command <" + command + ">" );
-  check( commandIt->second.feature.empty(),
+  check( commandIt->second.referencedIn.empty(),
          line,
-         "command <" + commandIt->first + "> already listed with feature <" + commandIt->second.feature + ">" );
-  commandIt->second.feature = feature;
+         "command <" + commandIt->first + "> already listed with feature <" + commandIt->second.referencedIn + ">" );
+  commandIt->second.referencedIn = feature;
 }
 
 void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const * element, std::string const & feature )
@@ -13290,10 +13277,10 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const * el
   {
     auto typeIt = m_types.find( type );
     check( typeIt != m_types.end(), line, "feature requires unknown type <" + type + ">" );
-    check( typeIt->second.feature.empty() || ( typeIt->second.feature == feature ),
+    check( typeIt->second.referencedIn.empty() || ( typeIt->second.referencedIn == feature ),
            line,
-           "type <" + type + "> already listed on feature <" + typeIt->second.feature + ">" );
-    typeIt->second.feature = feature;
+           "type <" + type + "> already listed on feature <" + typeIt->second.referencedIn + ">" );
+    typeIt->second.referencedIn = feature;
   }
 }
 
@@ -14426,7 +14413,9 @@ void VulkanHppGenerator::readTypeEnum( tinyxml2::XMLElement const *             
 
   if ( alias.empty() )
   {
-    check( m_enums.insert( std::make_pair( name, EnumData() ) ).second, line, "enum <" + name + "> already specified" );
+    check( m_enums.insert( std::make_pair( name, EnumData( line ) ) ).second,
+           line,
+           "enum <" + name + "> already specified" );
   }
   else
   {

@@ -118,9 +118,8 @@ private:
   {
     CommandAliasData( int line ) : xmlLine( line ) {}
 
-    std::set<std::string> extensions;
-    std::string           feature;
-    int                   xmlLine;
+    std::string referencedIn;
+    int         xmlLine;
   };
 
   struct CommandData
@@ -129,10 +128,9 @@ private:
 
     std::map<std::string, CommandAliasData> aliasData;
     std::vector<std::string>                errorCodes;
-    std::set<std::string>                   extensions;
-    std::string                             feature;
     std::string                             handle;
     std::vector<ParamData>                  params;
+    std::string                             referencedIn;
     std::string                             returnType;
     std::vector<std::string>                successCodes;
     int                                     xmlLine;
@@ -154,6 +152,7 @@ private:
 
   struct EnumData
   {
+    EnumData( int line ) : xmlLine( line ) {}
     void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & vkName );
     void addEnumValue( int                 line,
                        std::string const & valueName,
@@ -168,6 +167,7 @@ private:
     std::map<std::string, std::pair<std::string, std::string>> aliases;  // map from name to alias and vk-name
     bool                                                       isBitmask = false;
     std::vector<EnumValueData>                                 values;
+    int                                                        xmlLine;
   };
 
   struct ExtensionData
@@ -279,9 +279,8 @@ private:
   {
     TypeData( TypeCategory category_ ) : category( category_ ) {}
 
-    TypeCategory          category;
-    std::set<std::string> extensions;
-    std::string           feature;
+    TypeCategory category;
+    std::string  referencedIn;
   };
 
 private:
@@ -788,6 +787,7 @@ private:
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         bool                             withDefaults,
                                                         bool                             withAllocator ) const;
+  std::string constructFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const;
   std::string constructNoDiscardStandard( CommandData const & commandData ) const;
   std::pair<std::string, std::string> constructRAIIHandleConstructor(
     std::pair<std::string, HandleData> const &                             handle,
@@ -1061,15 +1061,14 @@ private:
                                                               std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
                                                               bool mutualExclusiveLens ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const &           feature,
-                                                          std::set<std::string> const & extension ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
-  std::string           generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
-                                           std::string const &                                          structName,
-                                           std::string const &                                          prefix,
-                                           bool mutualExclusiveLens ) const;
-  std::string           getEnumPrefix( int line, std::string const & name, bool bitmask ) const;
-  std::set<std::string> getPlatforms( std::set<std::string> const & extensions ) const;
+  std::string generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
+                                 std::string const &                                          structName,
+                                 std::string const &                                          prefix,
+                                 bool mutualExclusiveLens ) const;
+  std::string getEnumPrefix( int line, std::string const & name, bool bitmask ) const;
+  std::string getPlatform( std::string const & extension ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,

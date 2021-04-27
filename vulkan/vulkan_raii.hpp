@@ -8082,7 +8082,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetPhysicalDevicePresentRectanglesKHR &&
-        "Function <vkGetPhysicalDevicePresentRectanglesKHR> needs at least one of the following extensions enabled: <VK_KHR_device_group>, <VK_KHR_swapchain>" );
+        "Function <vkGetPhysicalDevicePresentRectanglesKHR> needs extension <VK_KHR_swapchain> enabled!" );
 
       std::vector<VULKAN_HPP_NAMESPACE::Rect2D> rects;
       uint32_t                                  rectCount;
@@ -8757,9 +8757,8 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t>
       Device::acquireNextImage2KHR( const AcquireNextImageInfoKHR & acquireInfo ) const
     {
-      VULKAN_HPP_ASSERT(
-        getDispatcher()->vkAcquireNextImage2KHR &&
-        "Function <vkAcquireNextImage2KHR> needs at least one of the following extensions enabled: <VK_KHR_device_group>, <VK_KHR_swapchain>" );
+      VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireNextImage2KHR &&
+                         "Function <vkAcquireNextImage2KHR> needs extension <VK_KHR_swapchain> enabled!" );
 
       uint32_t                     imageIndex;
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
@@ -9241,7 +9240,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetDeviceGroupPresentCapabilitiesKHR &&
-        "Function <vkGetDeviceGroupPresentCapabilitiesKHR> needs at least one of the following extensions enabled: <VK_KHR_device_group>, <VK_KHR_swapchain>" );
+        "Function <vkGetDeviceGroupPresentCapabilitiesKHR> needs extension <VK_KHR_swapchain> enabled!" );
 
       VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR deviceGroupPresentCapabilities;
       VULKAN_HPP_NAMESPACE::Result                            result =
@@ -9282,7 +9281,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetDeviceGroupSurfacePresentModesKHR &&
-        "Function <vkGetDeviceGroupSurfacePresentModesKHR> needs at least one of the following extensions enabled: <VK_KHR_device_group>, <VK_KHR_swapchain>" );
+        "Function <vkGetDeviceGroupSurfacePresentModesKHR> needs extension <VK_KHR_swapchain> enabled!" );
 
       VULKAN_HPP_NAMESPACE::DeviceGroupPresentModeFlagsKHR modes;
       VULKAN_HPP_NAMESPACE::Result                         result =
@@ -11313,7 +11312,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkCmdPushDescriptorSetWithTemplateKHR &&
-        "Function <vkCmdPushDescriptorSetWithTemplateKHR> needs at least one of the following extensions enabled: <VK_KHR_descriptor_update_template>, <VK_KHR_push_descriptor>" );
+        "Function <vkCmdPushDescriptorSetWithTemplateKHR> needs extension <VK_KHR_push_descriptor> enabled!" );
 
       getDispatcher()->vkCmdPushDescriptorSetWithTemplateKHR(
         static_cast<VkCommandBuffer>( m_commandBuffer ),

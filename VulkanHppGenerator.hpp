@@ -170,21 +170,33 @@ private:
     int                                                        xmlLine;
   };
 
+  struct FeatureData
+  {
+    FeatureData( std::string const & number_ ) : number( number_ ) {}
+
+    std::vector<std::string> commands;
+    std::string              number;
+  };
+
   struct ExtensionData
   {
     ExtensionData( int                 line,
                    std::string const & deprecatedBy_,
+                   std::string const & number_,
                    std::string const & obsoletedBy_,
                    std::string const & platform_,
                    std::string const & promotedTo_ )
       : deprecatedBy( deprecatedBy_ )
+      , number( number_ )
       , obsoletedBy( obsoletedBy_ )
       , platform( platform_ )
       , promotedTo( promotedTo_ )
       , xmlLine( line )
     {}
 
+    std::vector<std::string>   commands;
     std::string                deprecatedBy;
+    std::string                number;
     std::string                obsoletedBy;
     std::string                platform;
     std::string                promotedTo;
@@ -535,10 +547,12 @@ private:
                                        std::string &                              commandDefinitions,
                                        std::pair<std::string, HandleData> const & handle,
                                        std::set<std::string> const &              specialFunctions ) const;
-  void        appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
-  void        appendStructAssignmentOperators( std::string &                                 str,
-                                               std::pair<std::string, StructureData> const & structure,
-                                               std::string const &                           prefix ) const;
+  std::pair<std::string, std::string> appendStaticCommand( std::string &                               str,
+                                                           std::pair<std::string, CommandData> const & command );
+  void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
+  void appendStructAssignmentOperators( std::string &                                 str,
+                                        std::pair<std::string, StructureData> const & structure,
+                                        std::string const &                           prefix ) const;
   void appendStructCompareOperators( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
   void appendStructConstructors( std::string &                                 str,
                                  std::pair<std::string, StructureData> const & structData,
@@ -1118,16 +1132,18 @@ private:
   void readExtensionDisabledCommand( tinyxml2::XMLElement const * element );
   void readExtensionDisabledRequire( tinyxml2::XMLElement const * element );
   void readExtensionDisabledType( tinyxml2::XMLElement const * element );
-  void readExtensionRequire( tinyxml2::XMLElement const * element,
-                             std::string const &          extension,
-                             std::string const &          tag,
-                             std::map<std::string, int> & requirements );
-  void readExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & extension );
+  void readExtensionRequire( tinyxml2::XMLElement const *                   element,
+                             std::map<std::string, ExtensionData>::iterator extensionIt,
+                             std::string const &                            tag );
+  void readExtensionRequireCommand( tinyxml2::XMLElement const *                   element,
+                                    std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extension );
   void readExtensions( tinyxml2::XMLElement const * element );
   void readFeature( tinyxml2::XMLElement const * element );
-  void readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & feature );
-  void readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::string const & feature );
+  void readFeatureRequire( tinyxml2::XMLElement const *                 element,
+                           std::map<std::string, FeatureData>::iterator featureIt );
+  void readFeatureRequireCommand( tinyxml2::XMLElement const *                 element,
+                                  std::map<std::string, FeatureData>::iterator featureIt );
   void readFeatureRequireType( tinyxml2::XMLElement const * element, std::string const & feature );
   void readFuncpointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
@@ -1189,7 +1205,7 @@ private:
   std::map<std::string, EnumData>        m_enums;
   std::set<std::string>                  m_extendedStructs;  // structs which are referenced by the structextends tag
   std::map<std::string, ExtensionData>   m_extensions;
-  std::map<std::string, std::string>     m_features;
+  std::map<std::string, FeatureData>     m_features;
   std::map<std::string, FuncPointerData> m_funcPointers;
   std::map<std::string, HandleData>      m_handles;
   std::set<std::string>                  m_includes;

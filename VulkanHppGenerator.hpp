@@ -114,26 +114,18 @@ private:
     int                      xmlLine;
   };
 
-  struct CommandAliasData
-  {
-    CommandAliasData( int line ) : xmlLine( line ) {}
-
-    std::string referencedIn;
-    int         xmlLine;
-  };
-
   struct CommandData
   {
     CommandData( int line ) : xmlLine( line ) {}
 
-    std::map<std::string, CommandAliasData> aliasData;
-    std::vector<std::string>                errorCodes;
-    std::string                             handle;
-    std::vector<ParamData>                  params;
-    std::string                             referencedIn;
-    std::string                             returnType;
-    std::vector<std::string>                successCodes;
-    int                                     xmlLine;
+    std::string              alias;
+    std::vector<std::string> errorCodes;
+    std::string              handle;
+    std::vector<ParamData>   params;
+    std::string              referencedIn;
+    std::string              returnType;
+    std::vector<std::string> successCodes;
+    int                      xmlLine;
   };
 
   struct EnumValueData
@@ -296,6 +288,7 @@ private:
   };
 
 private:
+  void addCommand( std::string const & name, CommandData & commandData );
   void appendArgumentPlainType( std::string & str, ParamData const & paramData ) const;
   void appendArguments( std::string &                    str,
                         CommandData const &              commandData,
@@ -1054,7 +1047,8 @@ private:
                                            bool                isStructureChain ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
-                                     std::map<std::string, CommandData>::const_iterator destructorIt ) const;
+                                     std::map<std::string, CommandData>::const_iterator destructorIt,
+                                     std::set<std::string> &                            specialFunctions ) const;
   std::map<std::string, CommandData>::const_iterator
                            determineRAIIHandleDestructor( std::string const & handleType ) const;
   size_t                   determineReturnParamIndex( CommandData const &              commandData,
@@ -1095,7 +1089,6 @@ private:
     std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
-  bool needsComplexBody( CommandData const & commandData ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>
        needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;
   void readBaseType( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

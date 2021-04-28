@@ -776,6 +776,29 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
   checkCorrectness();
 }
 
+void VulkanHppGenerator::addCommand( std::string const & name, CommandData & commandData )
+{
+  // find the handle this command is going to be associated to
+  check( !commandData.params.empty(), commandData.xmlLine, "command <" + name + "> with no params" );
+  std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
+  if ( handleIt == m_handles.end() )
+  {
+    handleIt = m_handles.find( "" );
+  }
+  check( handleIt != m_handles.end(), commandData.xmlLine, "could not find a handle to hold command <" + name + ">" );
+  commandData.handle = handleIt->first;
+
+  // add this command to the list of commands
+  check( m_commands.insert( std::make_pair( name, commandData ) ).second,
+         commandData.xmlLine,
+         "already encountered command <" + name + ">" );
+
+  // put the command into the handle's list of commands
+  check( handleIt->second.commands.insert( name ).second,
+         commandData.xmlLine,
+         "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
+}
+
 void VulkanHppGenerator::appendArgumentPlainType( std::string & str, ParamData const & paramData ) const
 {
   // this parameter is just a plain type
@@ -1138,22 +1161,10 @@ void VulkanHppGenerator::appendCommand( std::string &       str,
     }
   }
 
-  if ( appendedFunction )
+  if ( !appendedFunction )
   {
-    if ( !commandData.aliasData.empty() )
-    {
-      CommandData aliasCommandData = commandData;
-      aliasCommandData.aliasData.clear();
-      for ( auto const & ad : commandData.aliasData )
-      {
-        aliasCommandData.referencedIn = ad.second.referencedIn;
-        appendCommand( str, ad.first, aliasCommandData, initialSkipCount, definition );
-      }
-    }
-    return;
+    throw std::runtime_error( "Never encountered a function like <" + name + "> !" );
   }
-
-  throw std::runtime_error( "Never encountered a function like <" + name + "> !" );
 }
 
 void VulkanHppGenerator::appendCommandChained( std::string &                    str,
@@ -2274,26 +2285,11 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
   {
     if ( !extIt.second->second.commands.empty() )
     {
-      std::string referencedIn;
       std::string firstCommandName = *extIt.second->second.commands.begin();
       auto        commandIt        = m_commands.find( firstCommandName );
-      if ( commandIt == m_commands.end() )
-      {
-        commandIt =
-          std::find_if( m_commands.begin(),
-                        m_commands.end(),
-                        [&firstCommandName]( auto const & command ) {
-                          return command.second.aliasData.find( firstCommandName ) != command.second.aliasData.end();
-                        } );
-        assert( commandIt != m_commands.end() );
-        auto aliasDataIt = commandIt->second.aliasData.find( firstCommandName );
-        assert( aliasDataIt != commandIt->second.aliasData.end() );
-        referencedIn = aliasDataIt->second.referencedIn;
-      }
-      else
-      {
-        referencedIn = commandIt->second.referencedIn;
-      }
+      assert( commandIt != m_commands.end() );
+      std::string referencedIn = commandIt->second.referencedIn;
+
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( referencedIn );
       if ( !enter.empty() )
@@ -2309,31 +2305,11 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
           listedCommands.insert( commandName );
 
           commandIt = m_commands.find( commandName );
-          if ( commandIt == m_commands.end() )
-          {
-            commandIt =
-              std::find_if( m_commands.begin(),
-                            m_commands.end(),
-                            [&commandName]( auto const & command ) {
-                              return command.second.aliasData.find( commandName ) != command.second.aliasData.end();
-                            } );
-            assert( commandIt != m_commands.end() );
-            auto aliasDataIt = commandIt->second.aliasData.find( commandName );
-            assert( aliasDataIt != commandIt->second.aliasData.end() );
-            assert( aliasDataIt->second.referencedIn == referencedIn );
-            std::pair<std::string, CommandData> aliasCommand = std::make_pair( aliasDataIt->first, commandIt->second );
-            aliasCommand.second.aliasData.clear();
-            aliasCommand.second.xmlLine = aliasDataIt->second.xmlLine;
-            str += "\n";
-            appendStaticCommand( str, aliasCommand );
-          }
-          else
-          {
-            assert( commandIt->second.referencedIn == referencedIn );
+          assert( commandIt != m_commands.end() );
+          assert( commandIt->second.referencedIn == referencedIn );
 
-            str += "\n";
-            appendStaticCommand( str, *commandIt );
-          }
+          str += "\n";
+          appendStaticCommand( str, *commandIt );
         }
       }
       str += leave;
@@ -2558,23 +2534,6 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
                                                              std::string const & commandName,
                                                              CommandData const & commandData )
 {
-  if ( !commandData.aliasData.empty() )
-  {
-    CommandData aliasCommandData = commandData;
-    aliasCommandData.aliasData.clear();
-    for ( auto const & aliasData : commandData.aliasData )
-    {
-      aliasCommandData.referencedIn = aliasData.second.referencedIn;
-      appendDispatchLoaderDynamicCommand( str,
-                                          emptyFunctions,
-                                          deviceFunctions,
-                                          deviceFunctionsInstance,
-                                          instanceFunctions,
-                                          aliasData.first,
-                                          aliasCommandData );
-    }
-  }
-
   std::string enter, leave;
   std::tie( enter, leave ) = generateProtection( commandData.referencedIn );
   std::string command      = "    PFN_" + commandName + " " + commandName + " = 0;\n";
@@ -2591,61 +2550,36 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &      
 
   if ( commandData.handle.empty() )
   {
-    assert( commandData.aliasData.empty() );
+    assert( commandData.alias.empty() );
     emptyFunctions += enter + "      " + commandName + " = PFN_" + commandName + "( vkGetInstanceProcAddr( NULL, \"" +
                       commandName + "\" ) );\n" + leave;
   }
   else if ( isDeviceFunction )
   {
     deviceFunctions += enter + "      " + commandName + " = PFN_" + commandName + "( vkGetDeviceProcAddr( device, \"" +
-                       commandName + "\" ) );\n" + leave;
-
+                       commandName + "\" ) );\n";
     deviceFunctionsInstance += enter + "      " + commandName + " = PFN_" + commandName +
-                               "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n" + leave;
+                               "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n";
+    // if this is an alias'ed function, use it as a fallback for the original one
+    if ( !commandData.alias.empty() )
+    {
+      deviceFunctions += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
+      deviceFunctionsInstance +=
+        "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
+    }
+    deviceFunctions += leave;
+    deviceFunctionsInstance += leave;
   }
   else
   {
     instanceFunctions += enter + "      " + commandName + " = PFN_" + commandName +
-                         "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n" + leave;
-  }
-
-  if ( !commandData.aliasData.empty() )
-  {
-    // first look for an alias with "KHR"-suffix
-    auto aliasKHRIt =
-      std::find_if( commandData.aliasData.begin(),
-                    commandData.aliasData.end(),
-                    []( std::pair<std::string, CommandAliasData> const & ad ) { return endsWith( ad.first, "KHR" ); } );
-    if ( aliasKHRIt != commandData.aliasData.end() )
+                         "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n";
+    // if this is an alias'ed function, use it as a fallback for the original one
+    if ( !commandData.alias.empty() )
     {
-      assert( generateProtection( aliasKHRIt->second.referencedIn ).first.empty() );
-      if ( isDeviceFunction )
-      {
-        checkedAssignment( deviceFunctions, leave, commandName, aliasKHRIt->first );
-        checkedAssignment( deviceFunctionsInstance, leave, commandName, aliasKHRIt->first );
-      }
-      else
-      {
-        checkedAssignment( instanceFunctions, leave, commandName, aliasKHRIt->first );
-      }
+      instanceFunctions += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
     }
-    for ( auto aliasIt = commandData.aliasData.begin(); aliasIt != commandData.aliasData.end(); ++aliasIt )
-    {
-      // then all the others, with no specific order
-      if ( aliasIt != aliasKHRIt )
-      {
-        assert( generateProtection( aliasIt->second.referencedIn ).first.empty() );
-        if ( isDeviceFunction )
-        {
-          checkedAssignment( deviceFunctions, leave, commandName, aliasIt->first );
-          checkedAssignment( deviceFunctionsInstance, leave, commandName, aliasIt->first );
-        }
-        else
-        {
-          checkedAssignment( instanceFunctions, leave, commandName, aliasIt->first );
-        }
-      }
-    }
+    instanceFunctions += leave;
   }
 }
 
@@ -3138,19 +3072,14 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
       commands += "\n";
       appendCommand( commands, commandIt->first, commandIt->second, 1, false );
 
-      // special handling for destroy functions
-      if ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-           ( commandIt->first.substr( 2, 4 ) == "Free" ) ||
-           ( commandIt->first == "vkReleasePerformanceConfigurationINTEL" ) )
+      // special handling for destroy functions, filter out alias functions
+      if ( commandIt->second.alias.empty() &&
+           ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+             ( commandIt->first.substr( 2, 4 ) == "Free" ) ||
+             ( commandIt->first == "vkReleasePerformanceConfigurationINTEL" ) ) )
       {
         std::string destroyCommandString;
-        // in case there are aliases to this function, filter them out here
         CommandData commandData = commandIt->second;
-        commandData.aliasData.clear();
-        if ( needsComplexBody( commandIt->second ) )
-        {
-          commandData.referencedIn.clear();
-        }
         assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handleData.first ) );
         commandData.params[1].optional =
           false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
@@ -3365,21 +3294,15 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
       str += "\n";
       appendCommand( str, commandIt->first, commandIt->second, handle.first.empty() ? 0 : 1, true );
 
-      // special handling for destroy functions
+      // special handling for destroy functions, filter out alias functions
       std::string commandName = determineCommandName( commandIt->first, commandIt->second.params[0].type.type, m_tags );
-      if ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-           ( commandIt->first.substr( 2, 4 ) == "Free" ) ||
-           ( commandIt->first == "vkReleasePerformanceConfigurationINTEL" ) )
+      if ( commandIt->second.alias.empty() &&
+           ( ( ( commandIt->first.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+             ( commandIt->first.substr( 2, 4 ) == "Free" ) ||
+             ( commandIt->first == "vkReleasePerformanceConfigurationINTEL" ) ) )
       {
         std::string destroyCommandString;
-        // in case there are aliases to this function, filter them out here
         CommandData commandData = commandIt->second;
-        commandData.aliasData.clear();
-        bool complex = needsComplexBody( commandIt->second );
-        if ( complex )
-        {
-          commandData.referencedIn.clear();
-        }
         assert( ( 1 < commandData.params.size() ) && ( commandData.params[0].type.type == handle.first ) );
         commandData.params[1].optional =
           false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
@@ -3417,35 +3340,6 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
         if ( pos != std::string::npos )
         {
           destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
-        }
-
-        if ( complex )
-        {
-          std::string enter, leave;
-          std::tie( enter, leave ) = generateProtection( commandIt->second.referencedIn );
-
-          assert( commandIt->second.aliasData.size() == 1 );
-          auto aliasDataIt = commandIt->second.aliasData.begin();
-#if !defined( NDEBUG )
-          std::string aliasEnter, aliasLeave;
-          std::tie( aliasEnter, aliasLeave ) = generateProtection( aliasDataIt->second.referencedIn );
-          assert( aliasEnter.empty() );
-#endif
-
-          assert( !enter.empty() );
-          pos = destroyCommandString.find( commandIt->first );
-          while ( pos != std::string::npos )
-          {
-            assert( ( 6 < pos ) && ( destroyCommandString.substr( pos - 6, 6 ) == "    d." ) );
-            size_t endPos = destroyCommandString.find( ';', pos );
-            assert( endPos != std::string::npos );
-            std::string originalCall = destroyCommandString.substr( pos - 6, endPos - pos + 7 );
-            std::string aliasCall    = originalCall;
-            aliasCall.replace( 6, commandIt->first.length(), aliasDataIt->first );
-            destroyCommandString.replace(
-              pos - 6, endPos - pos + 7, enter + originalCall + "\n#else\n" + aliasCall + "\n" + leave );
-            pos = destroyCommandString.find( commandIt->first, endPos );
-          }
         }
         str += "\n" + destroyCommandString;
       }
@@ -3492,6 +3386,7 @@ void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
     if ( command.second.handle.empty() )
     {
       assert( enter.empty() );
+      assert( command.second.alias.empty() );
       contextInitializerList +=
         ", " + command.first + "( PFN_" + command.first + "( getProcAddr( NULL, \"" + command.first + "\" ) ) )";
       contextMembers += "      PFN_" + command.first + " " + command.first + " = 0;\n";
@@ -3499,7 +3394,15 @@ void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
     else if ( ( command.second.handle == "VkDevice" ) || hasParentHandle( command.second.handle, "VkDevice" ) )
     {
       deviceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
-                               "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n" + leave;
+                               "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
+      // if this is an alias'ed function, use it as a fallback for the original one
+      if ( !command.second.alias.empty() )
+      {
+        deviceInitAssignments +=
+          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
+      }
+      deviceInitAssignments += leave;
+
       deviceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
     }
     else
@@ -3507,7 +3410,15 @@ void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
       assert( ( command.second.handle == "VkInstance" ) || hasParentHandle( command.second.handle, "VkInstance" ) );
 
       instanceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
-                                 "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n" + leave;
+                                 "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+      // if this is an alias'ed function, use it as a fallback for the original one
+      if ( !command.second.alias.empty() )
+      {
+        instanceInitAssignments +=
+          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
+      }
+      instanceInitAssignments += leave;
+
       instanceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
     }
     previousEnter = enter;
@@ -3590,15 +3501,12 @@ void VulkanHppGenerator::appendRAIIHandles( std::string & str, std::string & com
     if ( !handle.first.empty() )
     {
       handle.second.destructorIt   = determineRAIIHandleDestructor( handle.first );
-      handle.second.constructorIts = determineRAIIHandleConstructors( handle.first, handle.second.destructorIt );
       if ( handle.second.destructorIt != m_commands.end() )
       {
         specialFunctions.insert( handle.second.destructorIt->first );
       }
-      for ( auto const & constructorIt : handle.second.constructorIts )
-      {
-        specialFunctions.insert( constructorIt->first );
-      }
+      handle.second.constructorIts =
+        determineRAIIHandleConstructors( handle.first, handle.second.destructorIt, specialFunctions );
     }
   }
 
@@ -11523,7 +11431,7 @@ std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const &
 
 std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator>
   VulkanHppGenerator::determineRAIIHandleConstructors(
-    std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const
+    std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt, std::set<std::string> & specialFunctions ) const
 {
   std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts;
   for ( auto commandIt = m_commands.begin(); commandIt != m_commands.end(); )
@@ -11541,38 +11449,44 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
                     } );
     if ( commandIt != m_commands.end() )
     {
-      // only commands that provide all information needed for the destructor can be considered a constructor!
-      bool valid = true;
-      if ( destructorIt != m_commands.end() )
-      {
-        auto paramIt = std::find_if( destructorIt->second.params.begin(),
-                                     destructorIt->second.params.end(),
-                                     [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
-        assert( paramIt != destructorIt->second.params.end() );
-        for ( auto pit = destructorIt->second.params.begin(); valid && pit != destructorIt->second.params.end(); ++pit )
+        // only commands that provide all information needed for the destructor can be considered a constructor!
+        bool valid = true;
+        if ( destructorIt != m_commands.end() )
         {
-          valid = ( pit->name == paramIt->len ) || ( std::find_if( commandIt->second.params.begin(),
-                                                                   commandIt->second.params.end(),
-                                                                   [&pit]( ParamData const & pd ) {
-                                                                     return pd.type.type == pit->type.type;
-                                                                   } ) != commandIt->second.params.end() );
-          for ( auto cit = commandIt->second.params.begin(); !valid && cit != commandIt->second.params.end(); ++cit )
+          auto paramIt = std::find_if( destructorIt->second.params.begin(),
+                                       destructorIt->second.params.end(),
+                                       [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
+          assert( paramIt != destructorIt->second.params.end() );
+          for ( auto pit = destructorIt->second.params.begin(); valid && pit != destructorIt->second.params.end();
+                ++pit )
           {
-            auto structureIt = m_structures.find( cit->type.type );
-            if ( structureIt != m_structures.end() )
+            valid = ( pit->name == paramIt->len ) || ( std::find_if( commandIt->second.params.begin(),
+                                                                     commandIt->second.params.end(),
+                                                                     [&pit]( ParamData const & pd ) {
+                                                                       return pd.type.type == pit->type.type;
+                                                                     } ) != commandIt->second.params.end() );
+            for ( auto cit = commandIt->second.params.begin(); !valid && cit != commandIt->second.params.end(); ++cit )
             {
-              valid = std::find_if( structureIt->second.members.begin(),
-                                    structureIt->second.members.end(),
-                                    [&pit]( MemberData const & md )
-                                    { return md.type.type == pit->type.type; } ) != structureIt->second.members.end();
+              auto structureIt = m_structures.find( cit->type.type );
+              if ( structureIt != m_structures.end() )
+              {
+                valid = std::find_if( structureIt->second.members.begin(),
+                                      structureIt->second.members.end(),
+                                      [&pit]( MemberData const & md )
+                                      { return md.type.type == pit->type.type; } ) != structureIt->second.members.end();
+              }
             }
           }
         }
-      }
-      if ( valid )
-      {
-        constructorIts.push_back( commandIt );
-      }
+        if ( valid )
+        {
+          specialFunctions.insert( commandIt->first );
+          // filter out alias functions
+          if ( commandIt->second.alias.empty() )
+          {
+            constructorIts.push_back( commandIt );
+          }
+        }
       ++commandIt;
     }
   }
@@ -12266,11 +12180,6 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
   return false;
 }
 
-bool VulkanHppGenerator::needsComplexBody( CommandData const & commandData ) const
-{
-  return !commandData.aliasData.empty() && !generateProtection( commandData.referencedIn ).first.empty();
-}
-
 std::pair<bool, std::map<size_t, std::vector<size_t>>>
   VulkanHppGenerator::needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const
 {
@@ -12468,26 +12377,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const *              
   assert( !name.empty() );
 
   registerDeleter( name, std::make_pair( name, commandData ) );
-
-  // find the handle this command is going to be associated to
-  check( !commandData.params.empty(), line, "command <" + name + "> with no params" );
-  std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
-  if ( handleIt == m_handles.end() )
-  {
-    handleIt = m_handles.find( "" );
-  }
-  check( handleIt != m_handles.end(), line, "could not find a handle to hold command <" + name + ">" );
-  commandData.handle = handleIt->first;
-
-  // add this command to the list of commands
-  check( m_commands.insert( std::make_pair( name, commandData ) ).second,
-         line,
-         "already encountered command <" + name + ">" );
-
-  // put the command into the handle's list of commands
-  check( handleIt->second.commands.insert( name ).second,
-         line,
-         "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
+  addCommand( name, commandData );
 }
 
 void VulkanHppGenerator::readCommandAlias( tinyxml2::XMLElement const *               element,
@@ -12520,9 +12410,10 @@ void VulkanHppGenerator::readCommandAlias( tinyxml2::XMLElement const *         
 
   auto commandIt = m_commands.find( alias );
   check( commandIt != m_commands.end(), line, "missing command <" + alias + ">" );
-  check( commandIt->second.aliasData.insert( std::make_pair( name, CommandAliasData( line ) ) ).second,
-         line,
-         "command <" + name + "> already listed as alias to <" + alias + ">" );
+  CommandData commandData = commandIt->second;
+  commandData.alias       = alias;
+  commandData.xmlLine     = line;
+  addCommand( name, commandData );
 }
 
 VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XMLElement const *   element,
@@ -13193,22 +13084,8 @@ void VulkanHppGenerator::readExtensionRequireCommand( tinyxml2::XMLElement const
 
   // mark this command be part of this extension
   auto commandIt = m_commands.find( name );
-  if ( commandIt == m_commands.end() )
-  {
-    bool foundAlias = false;
-    for ( commandIt = m_commands.begin(); !foundAlias && commandIt != m_commands.end(); ++commandIt )
-    {
-      auto aliasDataIt = commandIt->second.aliasData.find( name );
-      if ( aliasDataIt != commandIt->second.aliasData.end() )
-      {
-        assert( aliasDataIt->second.referencedIn.empty() );
-        aliasDataIt->second.referencedIn = extensionIt->first;
-        foundAlias                       = true;
-      }
-    }
-    check( foundAlias, line, "extension <" + extensionIt->first + "> requires unknown command <" + name + ">" );
-  }
-  else if ( commandIt->second.referencedIn.empty() )
+  assert( commandIt != m_commands.end() );
+  if ( commandIt->second.referencedIn.empty() )
   {
     commandIt->second.referencedIn = extensionIt->first;
   }
@@ -13873,7 +13750,8 @@ void VulkanHppGenerator::readSPIRVCapabilityEnableProperty( int                 
     }
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      std::vector<std::string>
+      requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -13934,7 +13812,8 @@ void VulkanHppGenerator::readSPIRVCapabilityEnableStruct( int                   
   {
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      std::vector<std::string>
+      requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),

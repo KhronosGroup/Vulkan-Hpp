@@ -2274,14 +2274,15 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
     }
   }
 
-  std::map<std::string, std::map<std::string, ExtensionData>::const_iterator> numberToExtensionMap;
+  std::map<int, std::map<std::string, ExtensionData>::const_iterator> extensionsByNumber;
   for ( auto extensionIt = m_extensions.begin(); extensionIt != m_extensions.end(); ++extensionIt )
   {
-    assert( numberToExtensionMap.find( extensionIt->second.number ) == numberToExtensionMap.end() );
-    numberToExtensionMap[extensionIt->second.number] = extensionIt;
+    int number = atoi( extensionIt->second.number.c_str() );
+    assert( extensionsByNumber.find( number ) == extensionsByNumber.end() );
+    extensionsByNumber[number] = extensionIt;
   }
 
-  for ( auto const & extIt : numberToExtensionMap )
+  for ( auto const & extIt : extensionsByNumber )
   {
     if ( !extIt.second->second.commands.empty() )
     {

@@ -923,31 +923,82 @@ void VulkanHppGenerator::appendBaseTypes( std::string & str ) const
 
 void VulkanHppGenerator::appendBitmasks( std::string & str ) const
 {
-  for ( auto const & bitmask : m_bitmasks )
+  str += R"(
+  //================
+  //=== BITMASKs ===
+  //================
+)";
+
+  std::set<std::string> listedBitmasks;
+  for ( auto const & feature : m_features )
   {
-    auto bitmaskBits = m_enums.find( bitmask.second.requirements );
-    bool hasBits     = ( bitmaskBits != m_enums.end() );
-    check( bitmask.second.requirements.empty() || hasBits,
-           bitmask.second.xmlLine,
-           "bitmask <" + bitmask.first + "> references the undefined requires <" + bitmask.second.requirements + ">" );
-
-    std::string strippedBitmaskName = stripPrefix( bitmask.first, "Vk" );
-    std::string strippedEnumName    = hasBits ? stripPrefix( bitmaskBits->first, "Vk" ) : "";
-
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( bitmask.first, !bitmask.second.alias.empty() );
-
-    str += "\n" + enter;
-    appendBitmask( str,
-                   strippedBitmaskName,
-                   bitmask.second.type,
-                   bitmask.second.alias,
-                   strippedEnumName,
-                   hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
-    appendBitmaskToStringFunction(
-      str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
-    str += leave;
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & type : feature.second.types )
+    {
+      auto bitmaskIt = m_bitmasks.find( type );
+      if ( bitmaskIt != m_bitmasks.end() )
+      {
+        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
+        listedBitmasks.insert( type );
+        appendBitmask( str, bitmaskIt );
+      }
+    }
   }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    std::vector<std::map<std::string, BitmaskData>::const_iterator> bitmaskIts;
+    for ( auto const & type : extIt.second->second.types )
+    {
+      auto bitmaskIt = m_bitmasks.find( type );
+      if ( bitmaskIt != m_bitmasks.end() )
+      {
+        bitmaskIts.push_back( bitmaskIt );
+      }
+    }
+
+    if ( !bitmaskIts.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) =
+        generateProtection( bitmaskIts.front()->first, !bitmaskIts.front()->second.alias.empty() );
+      if ( !enter.empty() )
+      {
+        enter = "\n" + enter;
+      }
+      str += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      for ( auto bitmaskIt : bitmaskIts )
+      {
+        assert( listedBitmasks.find( bitmaskIt->first ) == listedBitmasks.end() );
+        listedBitmasks.insert( bitmaskIt->first );
+        appendBitmask( str, bitmaskIt );
+      }
+      str += leave;
+    }
+  }
+}
+
+void VulkanHppGenerator::appendBitmask( std::string &                                      str,
+                                        std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const
+{
+  auto bitmaskBits = m_enums.find( bitmaskIt->second.requirements );
+  bool hasBits     = ( bitmaskBits != m_enums.end() );
+  check( bitmaskIt->second.requirements.empty() || hasBits,
+         bitmaskIt->second.xmlLine,
+         "bitmask <" + bitmaskIt->first + "> references the undefined requires <" + bitmaskIt->second.requirements +
+           ">" );
+
+  std::string strippedBitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
+  std::string strippedEnumName    = hasBits ? stripPrefix( bitmaskBits->first, "Vk" ) : "";
+
+  appendBitmask( str,
+                 strippedBitmaskName,
+                 bitmaskIt->second.type,
+                 bitmaskIt->second.alias,
+                 strippedEnumName,
+                 hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
+  appendBitmaskToStringFunction(
+    str, strippedBitmaskName, strippedEnumName, hasBits ? bitmaskBits->second.values : std::vector<EnumValueData>() );
 }
 
 void VulkanHppGenerator::appendBitmask( std::string &                      str,
@@ -970,7 +1021,8 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
     // if this emptyEnumName is not in the list of enums, list it here
     if ( m_enums.find( "Vk" + emptyEnumName ) == m_enums.end() )
     {
-      const std::string templateString = R"x(  enum class ${enumName} : ${bitmaskType}
+      const std::string templateString = R"x(
+  enum class ${enumName} : ${bitmaskType}
   {};
 
   VULKAN_HPP_INLINE std::string to_string( ${enumName} )
@@ -1071,13 +1123,12 @@ void VulkanHppGenerator::appendBitmaskToStringFunction( std::string &           
 
   if ( enumValues.empty() )
   {
-    str += "\n    return \"{}\";\n";
+    str += "    return \"{}\";\n";
   }
   else
   {
     // 'or' together all the bits in the value
     str +=
-      "\n"
       "    if ( !value ) return \"{}\";\n"
       "    std::string result;\n";
     for ( auto const & evd : enumValues )
@@ -2608,7 +2659,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     {
       assert( leave.back() == '\n' );
       leave.pop_back();
-      leave              = "\n" + leave;
+      leave = "\n" + leave;
     }
     enumList += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "    " + value.vkValue +
                 " = " + value.vulkanValue + ",";

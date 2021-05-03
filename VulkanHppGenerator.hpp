@@ -308,6 +308,7 @@ private:
                              size_t            templateParamIndex,
                              bool              twoStep,
                              bool              firstCall ) const;
+  void appendBitmask( std::string & str, std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   void appendBitmask( std::string &                      os,
                       std::string const &                bitmaskName,
                       std::string const &                bitmaskType,

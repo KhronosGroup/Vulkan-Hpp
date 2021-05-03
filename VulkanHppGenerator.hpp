@@ -168,6 +168,7 @@ private:
 
     std::vector<std::string> commands;
     std::string              number;
+    std::vector<std::string> types;
   };
 
   struct ExtensionData
@@ -193,6 +194,7 @@ private:
     std::string                platform;
     std::string                promotedTo;
     std::map<std::string, int> requirements;
+    std::vector<std::string>   types;
     int                        xmlLine;
   };
 
@@ -1130,14 +1132,16 @@ private:
                              std::string const &                            tag );
   void readExtensionRequireCommand( tinyxml2::XMLElement const *                   element,
                                     std::map<std::string, ExtensionData>::iterator extensionIt );
-  void readExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extension );
+  void readExtensionRequireType( tinyxml2::XMLElement const *                   element,
+                                 std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensions( tinyxml2::XMLElement const * element );
   void readFeature( tinyxml2::XMLElement const * element );
   void readFeatureRequire( tinyxml2::XMLElement const *                 element,
                            std::map<std::string, FeatureData>::iterator featureIt );
   void readFeatureRequireCommand( tinyxml2::XMLElement const *                 element,
                                   std::map<std::string, FeatureData>::iterator featureIt );
-  void readFeatureRequireType( tinyxml2::XMLElement const * element, std::string const & feature );
+  void readFeatureRequireType( tinyxml2::XMLElement const *                 element,
+                               std::map<std::string, FeatureData>::iterator featureIt );
   void readFuncpointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readHandle( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   std::pair<NameData, TypeInfo> readNameAndType( tinyxml2::XMLElement const * elements );
@@ -1190,28 +1194,29 @@ private:
   std::string toString( TypeCategory category );
 
 private:
-  std::map<std::string, BaseTypeData>    m_baseTypes;
-  std::map<std::string, BitmaskData>     m_bitmasks;
-  std::map<std::string, CommandData>     m_commands;
-  std::map<std::string, std::string>     m_constants;
-  std::set<std::string>                  m_defines;
-  std::map<std::string, EnumData>        m_enums;
-  std::set<std::string>                  m_extendedStructs;  // structs which are referenced by the structextends tag
-  std::map<std::string, ExtensionData>   m_extensions;
-  std::map<std::string, FeatureData>     m_features;
-  std::map<std::string, FuncPointerData> m_funcPointers;
-  std::map<std::string, HandleData>      m_handles;
-  std::set<std::string>                  m_includes;
-  std::set<std::string>                  m_listedTypes;
-  std::set<std::string>                  m_listingTypes;
-  std::map<std::string, PlatformData>    m_platforms;
-  std::map<std::string, std::string>     m_structureAliases;
-  std::map<std::string, StructureData>   m_structures;
-  std::set<std::string>                  m_tags;
-  std::map<std::string, TypeData>        m_types;
-  std::string                            m_typesafeCheck;
-  std::string                            m_version;
-  std::string                            m_vulkanLicenseHeader;
+  std::map<std::string, BaseTypeData>  m_baseTypes;
+  std::map<std::string, BitmaskData>   m_bitmasks;
+  std::map<std::string, CommandData>   m_commands;
+  std::map<std::string, std::string>   m_constants;
+  std::set<std::string>                m_defines;
+  std::map<std::string, EnumData>      m_enums;
+  std::set<std::string>                m_extendedStructs;  // structs which are referenced by the structextends tag
+  std::map<std::string, ExtensionData> m_extensions;
+  std::map<int, std::map<std::string, ExtensionData>::const_iterator> m_extensionsByNumber;
+  std::map<std::string, FeatureData>                                  m_features;
+  std::map<std::string, FuncPointerData>                              m_funcPointers;
+  std::map<std::string, HandleData>                                   m_handles;
+  std::set<std::string>                                               m_includes;
+  std::set<std::string>                                               m_listedTypes;
+  std::set<std::string>                                               m_listingTypes;
+  std::map<std::string, PlatformData>                                 m_platforms;
+  std::map<std::string, std::string>                                  m_structureAliases;
+  std::map<std::string, StructureData>                                m_structures;
+  std::set<std::string>                                               m_tags;
+  std::map<std::string, TypeData>                                     m_types;
+  std::string                                                         m_typesafeCheck;
+  std::string                                                         m_version;
+  std::string                                                         m_vulkanLicenseHeader;
 };
 
 const size_t INVALID_INDEX = (size_t)~0;

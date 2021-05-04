@@ -14,43 +14,35 @@
 
 #include "VulkanHppGenerator.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <exception>
 #include <fstream>
-#include <functional>
-#include <iterator>
 #include <regex>
 
-void             appendArgumentCount( std::string &       str,
-                                      size_t              vectorIndex,
-                                      std::string const & vectorName,
-                                      size_t              templateParamIndex );
-void             appendReinterpretCast( std::string & str, bool leadingConst, std::string const & type );
-void             appendTypesafeStuff( std::string & str, std::string const & typesafeCheck );
-void             appendVersionCheck( std::string & str, std::string const & version );
-bool             beginsWith( std::string const & text, std::string const & prefix );
-bool             endsWith( std::string const & text, std::string const & postfix );
-void             check( bool condition, int line, std::string const & message );
-void             checkAttributes( int                                                  line,
-                                  std::map<std::string, std::string> const &           attributes,
-                                  std::map<std::string, std::set<std::string>> const & required,
-                                  std::map<std::string, std::set<std::string>> const & optional );
-void             checkElements( int                                               line,
-                                std::vector<tinyxml2::XMLElement const *> const & elements,
-                                std::map<std::string, bool> const &               required,
-                                std::set<std::string> const &                     optional = {} );
-std::string      constructStandardArray( std::string const & type, std::vector<std::string> const & sizes );
-std::string      createEnumValueName( std::string const & name,
-                                      std::string const & prefix,
-                                      std::string const & postfix,
-                                      bool                bitmask,
-                                      std::string const & tag );
-std::string      createSuccessCode( std::string const & code, std::set<std::string> const & tags );
-std::string      determineCommandName( std::string const &           vulkanCommandName,
-                                       std::string const &           argumentType,
-                                       std::set<std::string> const & tags );
-std::string      determineNoDiscard( bool multiSuccessCodes, bool multiErrorCodes );
+void        appendReinterpretCast( std::string & str, bool leadingConst, std::string const & type );
+void        appendTypesafeStuff( std::string & str, std::string const & typesafeCheck );
+void        appendVersionCheck( std::string & str, std::string const & version );
+bool        beginsWith( std::string const & text, std::string const & prefix );
+bool        endsWith( std::string const & text, std::string const & postfix );
+void        check( bool condition, int line, std::string const & message );
+void        checkAttributes( int                                                  line,
+                             std::map<std::string, std::string> const &           attributes,
+                             std::map<std::string, std::set<std::string>> const & required,
+                             std::map<std::string, std::set<std::string>> const & optional );
+void        checkElements( int                                               line,
+                           std::vector<tinyxml2::XMLElement const *> const & elements,
+                           std::map<std::string, bool> const &               required,
+                           std::set<std::string> const &                     optional = {} );
+std::string constructStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+std::string createEnumValueName( std::string const & name,
+                                 std::string const & prefix,
+                                 std::string const & postfix,
+                                 bool                bitmask,
+                                 std::string const & tag );
+std::string createSuccessCode( std::string const & code, std::set<std::string> const & tags );
+std::string determineCommandName( std::string const &           vulkanCommandName,
+                                  std::string const &           argumentType,
+                                  std::set<std::string> const & tags );
+std::string determineNoDiscard( bool multiSuccessCodes, bool multiErrorCodes );
 std::set<size_t> determineSingularParams( size_t                           returnParamIndex,
                                           std::map<size_t, size_t> const & vectorParamIndices );
 std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices );
@@ -93,24 +85,6 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
 const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
-
-void appendArgumentCount( std::string &       str,
-                          size_t              vectorIndex,
-                          std::string const & vectorName,
-                          size_t              templateParamIndex )
-{
-  // this parameter is a count parameter for a vector parameter
-  // the corresponding vector parameter is not the return parameter, or it's not a two-step algorithm
-  // for the non-singular version, the count is the size of the vector parameter
-  // -> use the vector parameter name without leading 'p' to get the size (in number of elements, not in bytes)
-  assert( vectorName[0] == 'p' );
-  str += startLowerCase( stripPrefix( vectorName, "p" ) ) + ".size() ";
-  if ( templateParamIndex == vectorIndex )
-  {
-    // if the vector parameter is templatized -> multiply by the size of that type to get the size in bytes
-    str += "* sizeof( T ) ";
-  }
-}
 
 void appendReinterpretCast( std::string & str, bool leadingConst, std::string const & type )
 {
@@ -858,7 +832,17 @@ void VulkanHppGenerator::appendArguments( std::string &                    str,
                     [i]( std::pair<size_t, size_t> const & vpi ) { return vpi.second == i; } );
       if ( it != vectorParamIndices.end() )
       {
-        appendArgumentCount( str, it->first, commandData.params[it->first].name, templateParamIndex );
+        // this parameter is a count parameter for a vector parameter
+        // the corresponding vector parameter is not the return parameter, or it's not a two-step algorithm
+        // for the non-singular version, the count is the size of the vector parameter
+        // -> use the vector parameter name without leading 'p' to get the size (in number of elements, not in bytes)
+        assert( commandData.params[it->first].name[0] == 'p' );
+        str += startLowerCase( stripPrefix( commandData.params[it->first].name, "p" ) ) + ".size() ";
+        if ( it->first == templateParamIndex )
+        {
+          // if the vector parameter is templatized -> multiply by the size of that type to get the size in bytes
+          str += "* sizeof( T ) ";
+        }
       }
       else if ( beginsWith( commandData.params[i].type.type, "Vk" ) )
       {
@@ -2674,26 +2658,26 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     if ( std::find_if( enumData.second.values.begin(),
                        enumData.second.values.end(),
                        [&alias]( EnumValueData const & evd )
-                       { return alias.second.second == evd.vkValue; } ) == enumData.second.values.end() )
+                       { return alias.second.vkValue == evd.vkValue; } ) == enumData.second.values.end() )
     {
 #if !defined( NDEBUG )
       auto enumIt =
         std::find_if( enumData.second.values.begin(),
                       enumData.second.values.end(),
-                      [&alias]( EnumValueData const & evd ) { return alias.second.first == evd.vulkanValue; } );
+                      [&alias]( EnumValueData const & evd ) { return alias.second.vulkanValue == evd.vulkanValue; } );
       if ( enumIt == enumData.second.values.end() )
       {
-        auto aliasIt = enumData.second.aliases.find( alias.second.first );
+        auto aliasIt = enumData.second.aliases.find( alias.second.vulkanValue );
         assert( aliasIt != enumData.second.aliases.end() );
-        enumIt =
-          std::find_if( enumData.second.values.begin(),
-                        enumData.second.values.end(),
-                        [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.first == evd.vulkanValue; } );
+        enumIt = std::find_if( enumData.second.values.begin(),
+                               enumData.second.values.end(),
+                               [&aliasIt]( EnumValueData const & evd )
+                               { return aliasIt->second.vulkanValue == evd.vulkanValue; } );
       }
       assert( enumIt != enumData.second.values.end() );
       assert( enumIt->extension.empty() || generateProtection( enumIt->extension ).first.empty() );
 #endif
-      enumList += "\n    " + alias.second.second + " = " + alias.first + ",";
+      enumList += "\n    " + alias.second.vkValue + " = " + alias.first + ",";
     }
   }
   if ( !enumList.empty() )
@@ -11129,28 +11113,19 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int                 line,
                                                  std::string const & aliasName,
                                                  std::string const & vkName )
 {
-  // check that the aliasName is either a known enum value or at least a known alias
-  check( ( std::find_if( values.begin(),
-                         values.end(),
-                         [&aliasName]( EnumValueData const & evd )
-                         { return evd.vulkanValue == aliasName; } ) != values.end() ) ||
-           ( aliases.find( aliasName ) != aliases.end() ),
-         line,
-         "unknown enum alias <" + aliasName + ">" );
-
   auto aliasIt = aliases.find( name );
-  check( ( aliasIt == aliases.end() ) || ( aliasIt->second.first == aliasName ),
+  check( ( aliasIt == aliases.end() ) || ( aliasIt->second.vulkanValue == aliasName ),
          line,
          "enum alias <" + name + "> already listed for a different enum value" );
 
   // only list aliases that map to different vkNames
   aliasIt = std::find_if( aliases.begin(),
                           aliases.end(),
-                          [&vkName]( std::pair<std::string, std::pair<std::string, std::string>> const & aliasEntry )
-                          { return vkName == aliasEntry.second.second; } );
+                          [&vkName]( std::pair<std::string, EnumAliasData> const & aliasEntry )
+                          { return vkName == aliasEntry.second.vkValue; } );
   if ( aliasIt == aliases.end() )
   {
-    aliases.insert( std::make_pair( name, std::make_pair( aliasName, vkName ) ) );
+    aliases.insert( std::make_pair( name, EnumAliasData( aliasName, vkName, line ) ) );
   }
 }
 
@@ -11258,6 +11233,18 @@ void VulkanHppGenerator::checkCorrectness()
     warn( !typeIt->second.referencedIn.empty(),
           e.second.xmlLine,
           "enum <" + e.first + "> not listed in any feature or extension" );
+
+    // check that the aliasNames are known enum values or known aliases
+    for ( auto const & alias : e.second.aliases )
+    {
+      check( ( std::find_if( e.second.values.begin(),
+                             e.second.values.end(),
+                             [&alias]( EnumValueData const & evd )
+                             { return evd.vulkanValue == alias.second.vulkanValue; } ) != e.second.values.end() ) ||
+               ( e.second.aliases.find( alias.second.vulkanValue ) != e.second.aliases.end() ),
+             alias.second.xmlLine,
+             "unknown enum alias <" + alias.second.vulkanValue + ">" );
+    }
   }
 
   // extension checks

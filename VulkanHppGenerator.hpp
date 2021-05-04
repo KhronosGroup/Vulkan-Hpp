@@ -128,6 +128,17 @@ private:
     int                      xmlLine;
   };
 
+  struct EnumAliasData
+  {
+    EnumAliasData( std::string const & vulkanValue_, std::string const & vkValue_, int line )
+      : vulkanValue( vulkanValue_ ), vkValue( vkValue_ ), xmlLine( line )
+    {}
+
+    std::string vulkanValue;
+    std::string vkValue;
+    int         xmlLine;
+  };
+
   struct EnumValueData
   {
     EnumValueData(
@@ -155,11 +166,11 @@ private:
                        std::string const & extension,
                        std::string const & tag );
 
-    std::string                                                alias;    // alias for this enum
-    std::map<std::string, std::pair<std::string, std::string>> aliases;  // map from name to alias and vk-name
-    bool                                                       isBitmask = false;
-    std::vector<EnumValueData>                                 values;
-    int                                                        xmlLine;
+    std::string                          alias;  // alias for this enum
+    std::map<std::string, EnumAliasData> aliases;
+    bool                                 isBitmask = false;
+    std::vector<EnumValueData>           values;
+    int                                  xmlLine;
   };
 
   struct FeatureData

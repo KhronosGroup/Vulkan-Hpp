@@ -18,7 +18,6 @@
 #include <fstream>
 #include <regex>
 
-void        appendReinterpretCast( std::string & str, bool leadingConst, std::string const & type );
 void        appendTypesafeStuff( std::string & str, std::string const & typesafeCheck );
 void        appendVersionCheck( std::string & str, std::string const & version );
 bool        beginsWith( std::string const & text, std::string const & prefix );
@@ -85,16 +84,6 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
 const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
-
-void appendReinterpretCast( std::string & str, bool leadingConst, std::string const & type )
-{
-  str += "reinterpret_cast<";
-  if ( leadingConst )
-  {
-    str += "const ";
-  }
-  str += type + "*>";
-}
 
 void appendTypesafeStuff( std::string & str, std::string const & typesafeCheck )
 {
@@ -880,8 +869,12 @@ void VulkanHppGenerator::appendArgumentVector( std::string &     str,
       // CHECK for !commandData.params[it->first].optional
 
       // this parameter is a vulkan type or a templated type -> need to reinterpret cast
-      appendReinterpretCast( str, paramData.type.prefix.find( "const" ) == 0, paramData.type.type );
-      str += "( " + parameterName + ".data() )";
+      str += "reinterpret_cast<";
+      if ( paramData.type.prefix.find( "const" ) == 0 )
+      {
+        str += "const ";
+      }
+      str += paramData.type.type + "*>( " + parameterName + ".data() )";
     }
     else
     {
@@ -12457,6 +12450,12 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const *              
     }
   }
   assert( !name.empty() );
+  check( ( commandData.returnType == "VkResult" ) || commandData.errorCodes.empty(),
+         line,
+         "command <" + name + "> does not return a VkResult but specifies errorcodes" );
+  check( ( commandData.returnType == "VkResult" ) || commandData.successCodes.empty(),
+         line,
+         "command <" + name + "> does not return a VkResult but specifies successcodes" );
 
   registerDeleter( name, std::make_pair( name, commandData ) );
   addCommand( name, commandData );

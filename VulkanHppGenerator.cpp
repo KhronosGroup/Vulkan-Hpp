@@ -18,30 +18,29 @@
 #include <fstream>
 #include <regex>
 
-void        appendTypesafeStuff( std::string & str, std::string const & typesafeCheck );
-void        appendVersionCheck( std::string & str, std::string const & version );
-bool        beginsWith( std::string const & text, std::string const & prefix );
-bool        endsWith( std::string const & text, std::string const & postfix );
-void        check( bool condition, int line, std::string const & message );
-void        checkAttributes( int                                                  line,
-                             std::map<std::string, std::string> const &           attributes,
-                             std::map<std::string, std::set<std::string>> const & required,
-                             std::map<std::string, std::set<std::string>> const & optional );
-void        checkElements( int                                               line,
-                           std::vector<tinyxml2::XMLElement const *> const & elements,
-                           std::map<std::string, bool> const &               required,
-                           std::set<std::string> const &                     optional = {} );
-std::string constructStandardArray( std::string const & type, std::vector<std::string> const & sizes );
-std::string createEnumValueName( std::string const & name,
-                                 std::string const & prefix,
-                                 std::string const & postfix,
-                                 bool                bitmask,
-                                 std::string const & tag );
-std::string createSuccessCode( std::string const & code, std::set<std::string> const & tags );
-std::string determineCommandName( std::string const &           vulkanCommandName,
-                                  std::string const &           argumentType,
-                                  std::set<std::string> const & tags );
-std::string determineNoDiscard( bool multiSuccessCodes, bool multiErrorCodes );
+void             appendVersionCheck( std::string & str, std::string const & version );
+bool             beginsWith( std::string const & text, std::string const & prefix );
+bool             endsWith( std::string const & text, std::string const & postfix );
+void             check( bool condition, int line, std::string const & message );
+void             checkAttributes( int                                                  line,
+                                  std::map<std::string, std::string> const &           attributes,
+                                  std::map<std::string, std::set<std::string>> const & required,
+                                  std::map<std::string, std::set<std::string>> const & optional );
+void             checkElements( int                                               line,
+                                std::vector<tinyxml2::XMLElement const *> const & elements,
+                                std::map<std::string, bool> const &               required,
+                                std::set<std::string> const &                     optional = {} );
+std::string      constructStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+std::string      createEnumValueName( std::string const & name,
+                                      std::string const & prefix,
+                                      std::string const & postfix,
+                                      bool                bitmask,
+                                      std::string const & tag );
+std::string      createSuccessCode( std::string const & code, std::set<std::string> const & tags );
+std::string      determineCommandName( std::string const &           vulkanCommandName,
+                                       std::string const &           argumentType,
+                                       std::set<std::string> const & tags );
+std::string      determineNoDiscard( bool multiSuccessCodes, bool multiErrorCodes );
 std::set<size_t> determineSingularParams( size_t                           returnParamIndex,
                                           std::map<size_t, size_t> const & vectorParamIndices );
 std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices );
@@ -84,19 +83,6 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
 const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
-
-void appendTypesafeStuff( std::string & str, std::string const & typesafeCheck )
-{
-  str +=
-    "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.\n"
-    "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION\n" +
-    typesafeCheck +
-    "\n"
-    "#  if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )\n"
-    "#    define VULKAN_HPP_TYPESAFE_CONVERSION\n"
-    "#  endif\n"
-    "#endif\n";
-}
 
 void appendVersionCheck( std::string & str, std::string const & version )
 {
@@ -912,11 +898,11 @@ void VulkanHppGenerator::appendBitmasks( std::string & str ) const
     str += "\n  //=== " + feature.first + " ===\n";
     for ( auto const & type : feature.second.types )
     {
-      auto bitmaskIt = m_bitmasks.find( type );
+      auto bitmaskIt = m_bitmasks.find( type.first );
       if ( bitmaskIt != m_bitmasks.end() )
       {
-        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
-        listedBitmasks.insert( type );
+        assert( listedBitmasks.find( type.first ) == listedBitmasks.end() );
+        listedBitmasks.insert( type.first );
         appendBitmask( str, bitmaskIt );
       }
     }
@@ -2711,11 +2697,11 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     str += "\n  //=== " + feature.first + " ===\n";
     for ( auto const & type : feature.second.types )
     {
-      auto enumIt = m_enums.find( type );
+      auto enumIt = m_enums.find( type.first );
       if ( enumIt != m_enums.end() )
       {
-        assert( listedEnums.find( type ) == listedEnums.end() );
-        listedEnums.insert( type );
+        assert( listedEnums.find( type.first ) == listedEnums.end() );
+        listedEnums.insert( type.first );
 
         str += "\n";
         appendEnum( str, *enumIt );
@@ -13332,7 +13318,17 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "comment", {} }, { "name", {} } } );
   checkElements( line, getChildElements( element ), {} );
-  std::string name = attributes.find( "name" )->second;
+
+  std::string name          = attributes.find( "name" )->second;
+  auto        featureTypeIt = std::find_if( featureIt->second.types.begin(),
+                                     featureIt->second.types.end(),
+                                     [&name]( std::pair<std::string, int> const & typeLine )
+                                     { return ( typeLine.first == name ) && ( typeLine.second != 0 ); } );
+  check( featureTypeIt == featureIt->second.types.end(),
+         line,
+         "type <" + name + "> already listed for this feature on line " +
+           ( ( featureTypeIt == featureIt->second.types.end() ) ? "" : std::to_string( featureTypeIt->second ) ) +
+           " !" );
 
   // some types are in fact includes (like vk_platform) or defines (like VK_API_VERSION)
   if ( ( m_defines.find( name ) == m_defines.end() ) && ( m_includes.find( name ) == m_includes.end() ) )
@@ -13349,13 +13345,16 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
     {
       assert( !featureIt->second.types.empty() );
       std::string flagBits = name.substr( 0, name.length() - 5 ) + "FlagBits";
-      if ( featureIt->second.types.back() != flagBits )
+      if ( featureIt->second.types.back().first != flagBits )
       {
-        assert( std::find( featureIt->second.types.begin(), featureIt->second.types.end(), flagBits ) ==
-                featureIt->second.types.end() );
-        featureIt->second.types.push_back( flagBits );
+        assert( std::find_if( featureIt->second.types.begin(),
+                              featureIt->second.types.end(),
+                              [&flagBits]( std::pair<std::string, int> const & typeLine )
+                              { return ( typeLine.first == flagBits ); } ) == featureIt->second.types.end() );
+        featureIt->second.types.push_back( std::make_pair( flagBits, 0 ) );
       }
     }
+
     // filter out FlagBits that are listed after their Flags!
     // (and therefore have been added right before that Flags, above)
     bool skipIt = false;
@@ -13363,18 +13362,28 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
     {
       assert( !featureIt->second.types.empty() );
       std::string flags = name.substr( 0, name.length() - 4 ) + "s";
-      if ( featureIt->second.types.back() == flags )
+      if ( featureIt->second.types.back().first == flags )
       {
-        assert( std::find( featureIt->second.types.begin(), featureIt->second.types.end(), flags ) !=
-                featureIt->second.types.end() );
-        skipIt = true;
+        skipIt          = true;
+        auto flagBitsIt = std::find_if( featureIt->second.types.begin(),
+                                        featureIt->second.types.end(),
+                                        [&name]( std::pair<std::string, int> const & typeLine )
+                                        { return ( typeLine.first == name ); } );
+        assert( flagBitsIt != featureIt->second.types.end() );
+        assert( flagBitsIt->second == 0 );
+        flagBitsIt->second = line;
+      }
+      else
+      {
+        assert( std::find_if( featureIt->second.types.begin(),
+                              featureIt->second.types.end(),
+                              [&flags]( std::pair<std::string, int> const & typeLine )
+                              { return ( typeLine.first == flags ); } ) == featureIt->second.types.end() );
       }
     }
     if ( !skipIt )
     {
-      assert( std::find( featureIt->second.types.begin(), featureIt->second.types.end(), name ) ==
-              featureIt->second.types.end() );
-      featureIt->second.types.push_back( name );
+      featureIt->second.types.push_back( std::make_pair( name, line ) );
     }
   }
 }
@@ -16589,7 +16598,15 @@ namespace std
     str.reserve( estimatedLength );
     str += generator.getVulkanLicenseHeader() + includes + "\n";
     appendVersionCheck( str, generator.getVersion() );
-    appendTypesafeStuff( str, generator.getTypesafeCheck() );
+    str +=
+      "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.\n"
+      "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION\n" +
+      generator.getTypesafeCheck() +
+      "\n"
+      "#  if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )\n"
+      "#    define VULKAN_HPP_TYPESAFE_CONVERSION\n"
+      "#  endif\n"
+      "#endif\n";
     str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{" + classArrayProxy + classArrayWrapper +
            classFlags + classOptional + classStructureChain + classUniqueHandle;
     generator.appendDispatchLoaderStatic( str );

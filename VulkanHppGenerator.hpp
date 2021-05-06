@@ -177,9 +177,9 @@ private:
   {
     FeatureData( std::string const & number_ ) : number( number_ ) {}
 
-    std::vector<std::string> commands;
-    std::string              number;
-    std::vector<std::string> types;
+    std::vector<std::string>                 commands;
+    std::string                              number;
+    std::vector<std::pair<std::string, int>> types;
   };
 
   struct ExtensionData

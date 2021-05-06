@@ -6836,7 +6836,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleConst
                                      [&handle]( ParamData const & pd ) { return pd.type.type == handle.first; } );
   assert( handleParamIt != constructorIt->second.params.end() && handleParamIt->type.isNonConstPointer() );
 
-  std::string singularConstructor, arrayConstructor;
+  std::string singularConstructor, arrayConstructor, throwDetail;
   bool        constructedConstructor = false;
   if ( handleParamIt->len.empty() )
   {
@@ -6845,11 +6845,17 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleConst
       singularConstructor    = constructRAIIHandleConstructorVoid( handle, constructorIt, enter, leave );
       constructedConstructor = true;
     }
-    else if ( ( constructorIt->second.returnType == "VkResult" ) &&
-              ( constructorIt->second.successCodes.size() == 1 ) && ( !constructorIt->second.errorCodes.empty() ) )
+    else if ( ( constructorIt->second.returnType == "VkResult" ) && ( constructorIt->second.successCodes.size() == 1 ) )
     {
-      singularConstructor    = constructRAIIHandleConstructorResult( handle, constructorIt, enter, leave );
-      constructedConstructor = true;
+      if ( !constructorIt->second.errorCodes.empty() )
+      {
+        singularConstructor    = constructRAIIHandleConstructorResult( handle, constructorIt, enter, leave );
+        constructedConstructor = true;
+      }
+      else
+      {
+        throwDetail = "\n\tReason: no errorcodes provided.";
+      }
     }
   }
   else
@@ -6880,7 +6886,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::constructRAIIHandleConst
   }
   if ( !constructedConstructor )
   {
-    throw std::runtime_error( "Never encountered a constructor function like " + constructorIt->first + " !" );
+    throw std::runtime_error( "Never encountered a constructor function like " + constructorIt->first + " !" +
+                              throwDetail );
   }
   return std::make_pair( singularConstructor, arrayConstructor );
 }

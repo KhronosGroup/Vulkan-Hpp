@@ -18,7 +18,6 @@
 #include <fstream>
 #include <regex>
 
-void             appendVersionCheck( std::string & str, std::string const & version );
 bool             beginsWith( std::string const & text, std::string const & prefix );
 bool             endsWith( std::string const & text, std::string const & postfix );
 void             check( bool condition, int line, std::string const & message );
@@ -44,7 +43,6 @@ std::string      determineNoDiscard( bool multiSuccessCodes, bool multiErrorCode
 std::set<size_t> determineSingularParams( size_t                           returnParamIndex,
                                           std::map<size_t, size_t> const & vectorParamIndices );
 std::set<size_t> determineSkippedParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices );
-std::string      extractTag( int line, std::string const & name, std::set<std::string> const & tags );
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
@@ -83,13 +81,6 @@ const std::set<std::string> ignoreLens          = { "null-terminated",
 const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
-
-void appendVersionCheck( std::string & str, std::string const & version )
-{
-  str += "static_assert( VK_HEADER_VERSION == " + version +
-         " , \"Wrong VK_HEADER_VERSION!\" );\n"
-         "\n";
-}
 
 bool beginsWith( std::string const & text, std::string const & prefix )
 {
@@ -396,18 +387,6 @@ std::string getEnumPostfix( std::string const & name, std::set<std::string> cons
     }
   }
   return postfix;
-}
-
-std::string extractTag( int line, std::string const & name, std::set<std::string> const & tags )
-{
-  // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
-  size_t tagStart = name.find( '_' );
-  check( tagStart != std::string::npos, line, "name <" + name + "> is missing an underscore '_'" );
-  size_t tagEnd = name.find( '_', tagStart + 1 );
-  check( tagEnd != std::string::npos, line, "name <" + name + "> is missing an underscore '_'" );
-  std::string tag = name.substr( tagStart + 1, tagEnd - tagStart - 1 );
-  check( tags.find( tag ) != tags.end(), line, "name <" + name + "> is using an unknown tag <" + tag + ">" );
-  return tag;
 }
 
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )
@@ -12975,7 +12954,14 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
              "required extension <" + r + "> already listed" );
     }
 
-    std::string tag = extractTag( line, name, m_tags );
+    // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
+    size_t tagStart = name.find( '_' );
+    check( tagStart != std::string::npos, line, "name <" + name + "> is missing an underscore '_'" );
+    size_t tagEnd = name.find( '_', tagStart + 1 );
+    check( tagEnd != std::string::npos, line, "name <" + name + "> is missing an underscore '_'" );
+    std::string tag = name.substr( tagStart + 1, tagEnd - tagStart - 1 );
+    check( m_tags.find( tag ) != m_tags.end(), line, "name <" + name + "> is using an unknown tag <" + tag + ">" );
+
     for ( auto child : children )
     {
       readExtensionRequire( child, pitb.first, tag );
@@ -16597,7 +16583,9 @@ namespace std
     static const size_t estimatedLength = 4 * 1024 * 1024;
     str.reserve( estimatedLength );
     str += generator.getVulkanLicenseHeader() + includes + "\n";
-    appendVersionCheck( str, generator.getVersion() );
+    str += "static_assert( VK_HEADER_VERSION == " + generator.getVersion() +
+           " , \"Wrong VK_HEADER_VERSION!\" );\n"
+           "\n";
     str +=
       "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.\n"
       "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION\n" +

@@ -596,6 +596,7 @@ namespace VULKAN_HPP_NAMESPACE
           vkGetDeviceProcAddr( device, "vkCmdCopyMemoryToAccelerationStructureKHR" ) );
         vkCmdCopyQueryPoolResults =
           PFN_vkCmdCopyQueryPoolResults( vkGetDeviceProcAddr( device, "vkCmdCopyQueryPoolResults" ) );
+        vkCmdCuLaunchKernelNVX = PFN_vkCmdCuLaunchKernelNVX( vkGetDeviceProcAddr( device, "vkCmdCuLaunchKernelNVX" ) );
         vkCmdDebugMarkerBeginEXT =
           PFN_vkCmdDebugMarkerBeginEXT( vkGetDeviceProcAddr( device, "vkCmdDebugMarkerBeginEXT" ) );
         vkCmdDebugMarkerEndEXT = PFN_vkCmdDebugMarkerEndEXT( vkGetDeviceProcAddr( device, "vkCmdDebugMarkerEndEXT" ) );
@@ -796,6 +797,8 @@ namespace VULKAN_HPP_NAMESPACE
         vkCreateCommandPool = PFN_vkCreateCommandPool( vkGetDeviceProcAddr( device, "vkCreateCommandPool" ) );
         vkCreateComputePipelines =
           PFN_vkCreateComputePipelines( vkGetDeviceProcAddr( device, "vkCreateComputePipelines" ) );
+        vkCreateCuFunctionNVX = PFN_vkCreateCuFunctionNVX( vkGetDeviceProcAddr( device, "vkCreateCuFunctionNVX" ) );
+        vkCreateCuModuleNVX   = PFN_vkCreateCuModuleNVX( vkGetDeviceProcAddr( device, "vkCreateCuModuleNVX" ) );
         vkCreateDeferredOperationKHR =
           PFN_vkCreateDeferredOperationKHR( vkGetDeviceProcAddr( device, "vkCreateDeferredOperationKHR" ) );
         vkCreateDescriptorPool = PFN_vkCreateDescriptorPool( vkGetDeviceProcAddr( device, "vkCreateDescriptorPool" ) );
@@ -862,9 +865,11 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkDestroyAccelerationStructureKHR( vkGetDeviceProcAddr( device, "vkDestroyAccelerationStructureKHR" ) );
         vkDestroyAccelerationStructureNV =
           PFN_vkDestroyAccelerationStructureNV( vkGetDeviceProcAddr( device, "vkDestroyAccelerationStructureNV" ) );
-        vkDestroyBuffer      = PFN_vkDestroyBuffer( vkGetDeviceProcAddr( device, "vkDestroyBuffer" ) );
-        vkDestroyBufferView  = PFN_vkDestroyBufferView( vkGetDeviceProcAddr( device, "vkDestroyBufferView" ) );
-        vkDestroyCommandPool = PFN_vkDestroyCommandPool( vkGetDeviceProcAddr( device, "vkDestroyCommandPool" ) );
+        vkDestroyBuffer        = PFN_vkDestroyBuffer( vkGetDeviceProcAddr( device, "vkDestroyBuffer" ) );
+        vkDestroyBufferView    = PFN_vkDestroyBufferView( vkGetDeviceProcAddr( device, "vkDestroyBufferView" ) );
+        vkDestroyCommandPool   = PFN_vkDestroyCommandPool( vkGetDeviceProcAddr( device, "vkDestroyCommandPool" ) );
+        vkDestroyCuFunctionNVX = PFN_vkDestroyCuFunctionNVX( vkGetDeviceProcAddr( device, "vkDestroyCuFunctionNVX" ) );
+        vkDestroyCuModuleNVX   = PFN_vkDestroyCuModuleNVX( vkGetDeviceProcAddr( device, "vkDestroyCuModuleNVX" ) );
         vkDestroyDeferredOperationKHR =
           PFN_vkDestroyDeferredOperationKHR( vkGetDeviceProcAddr( device, "vkDestroyDeferredOperationKHR" ) );
         vkDestroyDescriptorPool =
@@ -1279,6 +1284,7 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdCopyImageToBuffer2KHR                vkCmdCopyImageToBuffer2KHR                = 0;
       PFN_vkCmdCopyMemoryToAccelerationStructureKHR vkCmdCopyMemoryToAccelerationStructureKHR = 0;
       PFN_vkCmdCopyQueryPoolResults                 vkCmdCopyQueryPoolResults                 = 0;
+      PFN_vkCmdCuLaunchKernelNVX                    vkCmdCuLaunchKernelNVX                    = 0;
       PFN_vkCmdDebugMarkerBeginEXT                  vkCmdDebugMarkerBeginEXT                  = 0;
       PFN_vkCmdDebugMarkerEndEXT                    vkCmdDebugMarkerEndEXT                    = 0;
       PFN_vkCmdDebugMarkerInsertEXT                 vkCmdDebugMarkerInsertEXT                 = 0;
@@ -1402,6 +1408,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCreateBufferView                            vkCreateBufferView                            = 0;
       PFN_vkCreateCommandPool                           vkCreateCommandPool                           = 0;
       PFN_vkCreateComputePipelines                      vkCreateComputePipelines                      = 0;
+      PFN_vkCreateCuFunctionNVX                         vkCreateCuFunctionNVX                         = 0;
+      PFN_vkCreateCuModuleNVX                           vkCreateCuModuleNVX                           = 0;
       PFN_vkCreateDeferredOperationKHR                  vkCreateDeferredOperationKHR                  = 0;
       PFN_vkCreateDescriptorPool                        vkCreateDescriptorPool                        = 0;
       PFN_vkCreateDescriptorSetLayout                   vkCreateDescriptorSetLayout                   = 0;
@@ -1445,6 +1453,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkDestroyBuffer                      vkDestroyBuffer                      = 0;
       PFN_vkDestroyBufferView                  vkDestroyBufferView                  = 0;
       PFN_vkDestroyCommandPool                 vkDestroyCommandPool                 = 0;
+      PFN_vkDestroyCuFunctionNVX               vkDestroyCuFunctionNVX               = 0;
+      PFN_vkDestroyCuModuleNVX                 vkDestroyCuModuleNVX                 = 0;
       PFN_vkDestroyDeferredOperationKHR        vkDestroyDeferredOperationKHR        = 0;
       PFN_vkDestroyDescriptorPool              vkDestroyDescriptorPool              = 0;
       PFN_vkDestroyDescriptorSetLayout         vkDestroyDescriptorSetLayout         = 0;
@@ -3276,6 +3286,8 @@ namespace VULKAN_HPP_NAMESPACE
                                  VULKAN_HPP_NAMESPACE::QueryResultFlags flags
                                    VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
+      void cuLaunchKernelNVX( const CuLaunchInfoNVX & launchInfo ) const VULKAN_HPP_NOEXCEPT;
+
       void debugMarkerBeginEXT( const DebugMarkerMarkerInfoEXT & markerInfo ) const VULKAN_HPP_NOEXCEPT;
 
       void debugMarkerEndEXT() const VULKAN_HPP_NOEXCEPT;
@@ -3748,6 +3760,184 @@ namespace VULKAN_HPP_NAMESPACE
       CommandBuffers( CommandBuffers && rhs )  = default;
       CommandBuffers & operator=( CommandBuffers const & ) = delete;
       CommandBuffers & operator=( CommandBuffers && rhs ) = default;
+    };
+
+    class CuFunctionNVX
+    {
+    public:
+      using CType = VkCuFunctionNVX;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+        VULKAN_HPP_NAMESPACE::ObjectType::eCuFunctionNVX;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuFunctionNVX;
+
+    public:
+      CuFunctionNVX(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VULKAN_HPP_NAMESPACE::CuFunctionCreateInfoNVX const &                           createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkCreateCuFunctionNVX( static_cast<VkDevice>( *device ),
+                                                  reinterpret_cast<const VkCuFunctionCreateInfoNVX *>( &createInfo ),
+                                                  m_allocator,
+                                                  reinterpret_cast<VkCuFunctionNVX *>( &m_cuFunctionNVX ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateCuFunctionNVX" );
+        }
+      }
+
+      CuFunctionNVX(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VkCuFunctionNVX                                                                 cuFunctionNVX,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_cuFunctionNVX( cuFunctionNVX )
+        , m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {}
+
+      ~CuFunctionNVX()
+      {
+        if ( m_cuFunctionNVX )
+        {
+          getDispatcher()->vkDestroyCuFunctionNVX(
+            m_device, static_cast<VkCuFunctionNVX>( m_cuFunctionNVX ), m_allocator );
+        }
+      }
+
+      CuFunctionNVX()                        = delete;
+      CuFunctionNVX( CuFunctionNVX const & ) = delete;
+      CuFunctionNVX( CuFunctionNVX && rhs )
+        : m_cuFunctionNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuFunctionNVX, {} ) )
+        , m_device( rhs.m_device )
+        , m_allocator( rhs.m_allocator )
+        , m_dispatcher( rhs.m_dispatcher )
+      {}
+      CuFunctionNVX & operator=( CuFunctionNVX const & ) = delete;
+      CuFunctionNVX & operator                           =( CuFunctionNVX && rhs )
+      {
+        if ( this != &rhs )
+        {
+          getDispatcher()->vkDestroyCuFunctionNVX(
+            m_device, static_cast<VkCuFunctionNVX>( m_cuFunctionNVX ), m_allocator );
+          m_cuFunctionNVX = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuFunctionNVX, {} );
+          m_device        = rhs.m_device;
+          m_allocator     = rhs.m_allocator;
+          m_dispatcher    = rhs.m_dispatcher;
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::CuFunctionNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuFunctionNVX;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::CuFunctionNVX                                       m_cuFunctionNVX;
+      VkDevice                                                                  m_device;
+      const VkAllocationCallbacks *                                             m_allocator;
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher;
+    };
+
+    class CuModuleNVX
+    {
+    public:
+      using CType = VkCuModuleNVX;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+        VULKAN_HPP_NAMESPACE::ObjectType::eCuModuleNVX;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuModuleNVX;
+
+    public:
+      CuModuleNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                   VULKAN_HPP_NAMESPACE::CuModuleCreateInfoNVX const &                             createInfo,
+                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkCreateCuModuleNVX( static_cast<VkDevice>( *device ),
+                                                reinterpret_cast<const VkCuModuleCreateInfoNVX *>( &createInfo ),
+                                                m_allocator,
+                                                reinterpret_cast<VkCuModuleNVX *>( &m_cuModuleNVX ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateCuModuleNVX" );
+        }
+      }
+
+      CuModuleNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                   VkCuModuleNVX                                                                   cuModuleNVX,
+                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_cuModuleNVX( cuModuleNVX )
+        , m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {}
+
+      ~CuModuleNVX()
+      {
+        if ( m_cuModuleNVX )
+        {
+          getDispatcher()->vkDestroyCuModuleNVX( m_device, static_cast<VkCuModuleNVX>( m_cuModuleNVX ), m_allocator );
+        }
+      }
+
+      CuModuleNVX()                      = delete;
+      CuModuleNVX( CuModuleNVX const & ) = delete;
+      CuModuleNVX( CuModuleNVX && rhs )
+        : m_cuModuleNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuModuleNVX, {} ) )
+        , m_device( rhs.m_device )
+        , m_allocator( rhs.m_allocator )
+        , m_dispatcher( rhs.m_dispatcher )
+      {}
+      CuModuleNVX & operator=( CuModuleNVX const & ) = delete;
+      CuModuleNVX & operator                         =( CuModuleNVX && rhs )
+      {
+        if ( this != &rhs )
+        {
+          getDispatcher()->vkDestroyCuModuleNVX( m_device, static_cast<VkCuModuleNVX>( m_cuModuleNVX ), m_allocator );
+          m_cuModuleNVX = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuModuleNVX, {} );
+          m_device      = rhs.m_device;
+          m_allocator   = rhs.m_allocator;
+          m_dispatcher  = rhs.m_dispatcher;
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::CuModuleNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuModuleNVX;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::CuModuleNVX                                         m_cuModuleNVX;
+      VkDevice                                                                  m_device;
+      const VkAllocationCallbacks *                                             m_allocator;
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher;
     };
 
     class DebugReportCallbackEXT
@@ -11853,6 +12043,16 @@ namespace VULKAN_HPP_NAMESPACE
                                                   static_cast<VkDeviceSize>( dstOffset ),
                                                   static_cast<VkDeviceSize>( stride ),
                                                   static_cast<VkQueryResultFlags>( flags ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::cuLaunchKernelNVX( const CuLaunchInfoNVX & launchInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCuLaunchKernelNVX &&
+                         "Function <vkCmdCuLaunchKernelNVX> needs extension <VK_NVX_binary_import> enabled!" );
+
+      getDispatcher()->vkCmdCuLaunchKernelNVX( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                               reinterpret_cast<const VkCuLaunchInfoNVX *>( &launchInfo ) );
     }
 
     VULKAN_HPP_INLINE void

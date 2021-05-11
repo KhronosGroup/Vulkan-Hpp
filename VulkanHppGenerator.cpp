@@ -5035,7 +5035,7 @@ std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::stri
     if ( ( name.find( "Acquire" ) != std::string::npos ) || ( name.find( "Get" ) != std::string::npos ) )
     {
       if ( ( name == "vkAcquirePerformanceConfigurationINTEL" ) || ( name == "vkGetRandROutputDisplayEXT" ) ||
-           ( name == "vkGetWinrtDisplayNV" ) )
+           ( name == "vkGetWinrtDisplayNV" ) || ( name == "vkGetDrmDisplayEXT" ))
       {
         objectDeleter = "ObjectRelease";
       }

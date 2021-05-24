@@ -450,7 +450,7 @@ vk::DispatchLoaderDynamic dldid( instance, getInstanceProcAddr, device );
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
-To use the ```DispatchLoaderDynamic``` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  ```#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1```, and have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` excactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro ```VULKAN_HPP_DEFAULT_DISPATCHER```, as is shown in the code snippets below.
+To use the ```DispatchLoaderDynamic``` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  ```#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1```, and have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro ```VULKAN_HPP_DEFAULT_DISPATCHER```, as is shown in the code snippets below.
 To ease creating such a ```DispatchLoaderDynamic```, there is a little helper class ```DynamicLoader```.
 Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step process:
 1. initialize it with a function pointer of type PFN_vkGetInstanceProcAddr, to get the instance independent function pointers:

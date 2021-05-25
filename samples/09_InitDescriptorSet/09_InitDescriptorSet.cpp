@@ -84,7 +84,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroyDescriptorSetLayout( descriptorSetLayout );
     uniformBufferData.clear( device );
     device.destroy();
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

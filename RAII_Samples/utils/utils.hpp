@@ -260,9 +260,11 @@ namespace vk
           copyToDevice( *stagingBuffer.deviceMemory, data.data(), data.size(), elementSize );
 
           vk::raii::su::oneTimeSubmit(
-            device, commandPool, queue, [&]( vk::raii::CommandBuffer const & commandBuffer ) {
-              commandBuffer.copyBuffer( **stagingBuffer.buffer, **this->buffer, vk::BufferCopy( 0, 0, dataSize ) );
-            } );
+            device,
+            commandPool,
+            queue,
+            [&]( vk::raii::CommandBuffer const & commandBuffer )
+            { commandBuffer.copyBuffer( **stagingBuffer.buffer, **this->buffer, vk::BufferCopy( 0, 0, dataSize ) ); } );
         }
 
         std::unique_ptr<vk::raii::Buffer>       buffer;
@@ -634,10 +636,11 @@ namespace vk
                                   std::vector<vk::DescriptorPoolSize> const & poolSizes )
       {
         assert( !poolSizes.empty() );
-        uint32_t maxSets = std::accumulate(
-          poolSizes.begin(), poolSizes.end(), 0, []( uint32_t sum, vk::DescriptorPoolSize const & dps ) {
-            return sum + dps.descriptorCount;
-          } );
+        uint32_t maxSets = std::accumulate( poolSizes.begin(),
+                                            poolSizes.end(),
+                                            0,
+                                            []( uint32_t sum, vk::DescriptorPoolSize const & dps )
+                                            { return sum + dps.descriptorCount; } );
         assert( 0 < maxSets );
 
         vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
@@ -853,10 +856,19 @@ namespace vk
                                                               uint32_t apiVersion = VK_API_VERSION_1_0 )
       {
         vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );
-        std::vector<char const *> enabledLayers =
-          vk::su::gatherLayers( layers, context.enumerateInstanceLayerProperties() );
+        std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers
+#if !defined( NDEBUG )
+                                                                        ,
+                                                                        context.enumerateInstanceLayerProperties()
+#endif
+        );
         std::vector<char const *> enabledExtensions =
-          vk::su::gatherExtensions( extensions, context.enumerateInstanceExtensionProperties() );
+          vk::su::gatherExtensions( extensions
+#if !defined( NDEBUG )
+                                    ,
+                                    context.enumerateInstanceExtensionProperties()
+#endif
+          );
 #if defined( NDEBUG )
         vk::StructureChain<vk::InstanceCreateInfo>
 #else

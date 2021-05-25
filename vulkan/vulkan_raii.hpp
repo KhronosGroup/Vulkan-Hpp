@@ -1670,11 +1670,12 @@ namespace VULKAN_HPP_NAMESPACE
       ~Context() = default;
 
       Context( Context const & ) = delete;
-      Context( Context && rhs )
-        : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) ), m_dispatcher( std::move( rhs.m_dispatcher ) )
+      Context( Context && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) )
+        , m_dispatcher( std::move( rhs.m_dispatcher ) )
       {}
       Context & operator=( Context const & ) = delete;
-      Context & operator                     =( Context && rhs )
+      Context & operator                     =( Context && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -1751,13 +1752,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       Instance()                   = delete;
       Instance( Instance const & ) = delete;
-      Instance( Instance && rhs )
+      Instance( Instance && rhs ) VULKAN_HPP_NOEXCEPT
         : m_instance( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_instance, {} ) )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Instance & operator=( Instance const & ) = delete;
-      Instance & operator                      =( Instance && rhs )
+      Instance & operator                      =( Instance && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -1829,12 +1830,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       PhysicalDevice()                         = delete;
       PhysicalDevice( PhysicalDevice const & ) = delete;
-      PhysicalDevice( PhysicalDevice && rhs )
+      PhysicalDevice( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_physicalDevice, {} ) )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       PhysicalDevice & operator=( PhysicalDevice const & ) = delete;
-      PhysicalDevice & operator                            =( PhysicalDevice && rhs )
+      PhysicalDevice & operator                            =( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -2214,13 +2215,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       Device()                 = delete;
       Device( Device const & ) = delete;
-      Device( Device && rhs )
+      Device( Device && rhs ) VULKAN_HPP_NOEXCEPT
         : m_device( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} ) )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Device & operator=( Device const & ) = delete;
-      Device & operator                    =( Device && rhs )
+      Device & operator                    =( Device && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -2637,7 +2638,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       AccelerationStructureKHR()                                   = delete;
       AccelerationStructureKHR( AccelerationStructureKHR const & ) = delete;
-      AccelerationStructureKHR( AccelerationStructureKHR && rhs )
+      AccelerationStructureKHR( AccelerationStructureKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_accelerationStructureKHR(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_accelerationStructureKHR, {} ) )
         , m_device( rhs.m_device )
@@ -2645,7 +2646,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       AccelerationStructureKHR & operator=( AccelerationStructureKHR const & ) = delete;
-      AccelerationStructureKHR & operator                                      =( AccelerationStructureKHR && rhs )
+      AccelerationStructureKHR & operator=( AccelerationStructureKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -2731,7 +2732,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       AccelerationStructureNV()                                  = delete;
       AccelerationStructureNV( AccelerationStructureNV const & ) = delete;
-      AccelerationStructureNV( AccelerationStructureNV && rhs )
+      AccelerationStructureNV( AccelerationStructureNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_accelerationStructureNV(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_accelerationStructureNV, {} ) )
         , m_device( rhs.m_device )
@@ -2739,7 +2740,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       AccelerationStructureNV & operator=( AccelerationStructureNV const & ) = delete;
-      AccelerationStructureNV & operator                                     =( AccelerationStructureNV && rhs )
+      AccelerationStructureNV & operator=( AccelerationStructureNV && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -2827,14 +2828,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Buffer()                 = delete;
       Buffer( Buffer const & ) = delete;
-      Buffer( Buffer && rhs )
+      Buffer( Buffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_buffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_buffer, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Buffer & operator=( Buffer const & ) = delete;
-      Buffer & operator                    =( Buffer && rhs )
+      Buffer & operator                    =( Buffer && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -2918,14 +2919,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       BufferView()                     = delete;
       BufferView( BufferView const & ) = delete;
-      BufferView( BufferView && rhs )
+      BufferView( BufferView && rhs ) VULKAN_HPP_NOEXCEPT
         : m_bufferView( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_bufferView, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       BufferView & operator=( BufferView const & ) = delete;
-      BufferView & operator                        =( BufferView && rhs )
+      BufferView & operator                        =( BufferView && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -3005,14 +3006,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       CommandPool()                      = delete;
       CommandPool( CommandPool const & ) = delete;
-      CommandPool( CommandPool && rhs )
+      CommandPool( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_commandPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_commandPool, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       CommandPool & operator=( CommandPool const & ) = delete;
-      CommandPool & operator                         =( CommandPool && rhs )
+      CommandPool & operator                         =( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -3088,14 +3089,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       CommandBuffer()                        = delete;
       CommandBuffer( CommandBuffer const & ) = delete;
-      CommandBuffer( CommandBuffer && rhs )
+      CommandBuffer( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_commandBuffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_commandBuffer, {} ) )
         , m_device( rhs.m_device )
         , m_commandPool( rhs.m_commandPool )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       CommandBuffer & operator=( CommandBuffer const & ) = delete;
-      CommandBuffer & operator                           =( CommandBuffer && rhs )
+      CommandBuffer & operator                           =( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -3815,14 +3816,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       CuFunctionNVX()                        = delete;
       CuFunctionNVX( CuFunctionNVX const & ) = delete;
-      CuFunctionNVX( CuFunctionNVX && rhs )
+      CuFunctionNVX( CuFunctionNVX && rhs ) VULKAN_HPP_NOEXCEPT
         : m_cuFunctionNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuFunctionNVX, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       CuFunctionNVX & operator=( CuFunctionNVX const & ) = delete;
-      CuFunctionNVX & operator                           =( CuFunctionNVX && rhs )
+      CuFunctionNVX & operator                           =( CuFunctionNVX && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -3903,14 +3904,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       CuModuleNVX()                      = delete;
       CuModuleNVX( CuModuleNVX const & ) = delete;
-      CuModuleNVX( CuModuleNVX && rhs )
+      CuModuleNVX( CuModuleNVX && rhs ) VULKAN_HPP_NOEXCEPT
         : m_cuModuleNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_cuModuleNVX, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       CuModuleNVX & operator=( CuModuleNVX const & ) = delete;
-      CuModuleNVX & operator                         =( CuModuleNVX && rhs )
+      CuModuleNVX & operator                         =( CuModuleNVX && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -3994,7 +3995,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       DebugReportCallbackEXT()                                 = delete;
       DebugReportCallbackEXT( DebugReportCallbackEXT const & ) = delete;
-      DebugReportCallbackEXT( DebugReportCallbackEXT && rhs )
+      DebugReportCallbackEXT( DebugReportCallbackEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_debugReportCallbackEXT(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_debugReportCallbackEXT, {} ) )
         , m_instance( rhs.m_instance )
@@ -4002,7 +4003,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DebugReportCallbackEXT & operator=( DebugReportCallbackEXT const & ) = delete;
-      DebugReportCallbackEXT & operator                                    =( DebugReportCallbackEXT && rhs )
+      DebugReportCallbackEXT & operator=( DebugReportCallbackEXT && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4088,7 +4089,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       DebugUtilsMessengerEXT()                                 = delete;
       DebugUtilsMessengerEXT( DebugUtilsMessengerEXT const & ) = delete;
-      DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs )
+      DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
         : m_debugUtilsMessengerEXT(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_debugUtilsMessengerEXT, {} ) )
         , m_instance( rhs.m_instance )
@@ -4096,7 +4097,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT const & ) = delete;
-      DebugUtilsMessengerEXT & operator                                    =( DebugUtilsMessengerEXT && rhs )
+      DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4180,15 +4181,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       DeferredOperationKHR()                               = delete;
       DeferredOperationKHR( DeferredOperationKHR const & ) = delete;
-      DeferredOperationKHR( DeferredOperationKHR && rhs )
-        : m_deferredOperationKHR(
-            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_deferredOperationKHR, {} ) )
+      DeferredOperationKHR( DeferredOperationKHR && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_deferredOperationKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_deferredOperationKHR,
+                                                                                             {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DeferredOperationKHR & operator=( DeferredOperationKHR const & ) = delete;
-      DeferredOperationKHR & operator                                  =( DeferredOperationKHR && rhs )
+      DeferredOperationKHR & operator=( DeferredOperationKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4279,14 +4280,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       DescriptorPool()                         = delete;
       DescriptorPool( DescriptorPool const & ) = delete;
-      DescriptorPool( DescriptorPool && rhs )
+      DescriptorPool( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_descriptorPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_descriptorPool, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DescriptorPool & operator=( DescriptorPool const & ) = delete;
-      DescriptorPool & operator                            =( DescriptorPool && rhs )
+      DescriptorPool & operator                            =( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4361,14 +4362,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       DescriptorSet()                        = delete;
       DescriptorSet( DescriptorSet const & ) = delete;
-      DescriptorSet( DescriptorSet && rhs )
+      DescriptorSet( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT
         : m_descriptorSet( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_descriptorSet, {} ) )
         , m_device( rhs.m_device )
         , m_descriptorPool( rhs.m_descriptorPool )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DescriptorSet & operator=( DescriptorSet const & ) = delete;
-      DescriptorSet & operator                           =( DescriptorSet && rhs )
+      DescriptorSet & operator                           =( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4495,15 +4496,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       DescriptorSetLayout()                              = delete;
       DescriptorSetLayout( DescriptorSetLayout const & ) = delete;
-      DescriptorSetLayout( DescriptorSetLayout && rhs )
-        : m_descriptorSetLayout(
-            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_descriptorSetLayout, {} ) )
+      DescriptorSetLayout( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_descriptorSetLayout( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_descriptorSetLayout,
+                                                                                            {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DescriptorSetLayout & operator=( DescriptorSetLayout const & ) = delete;
-      DescriptorSetLayout & operator                                 =( DescriptorSetLayout && rhs )
+      DescriptorSetLayout & operator                                 =( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4589,7 +4590,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       DescriptorUpdateTemplate()                                   = delete;
       DescriptorUpdateTemplate( DescriptorUpdateTemplate const & ) = delete;
-      DescriptorUpdateTemplate( DescriptorUpdateTemplate && rhs )
+      DescriptorUpdateTemplate( DescriptorUpdateTemplate && rhs ) VULKAN_HPP_NOEXCEPT
         : m_descriptorUpdateTemplate(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_descriptorUpdateTemplate, {} ) )
         , m_device( rhs.m_device )
@@ -4597,7 +4598,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DescriptorUpdateTemplate & operator=( DescriptorUpdateTemplate const & ) = delete;
-      DescriptorUpdateTemplate & operator                                      =( DescriptorUpdateTemplate && rhs )
+      DescriptorUpdateTemplate & operator=( DescriptorUpdateTemplate && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4681,14 +4682,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       DeviceMemory()                       = delete;
       DeviceMemory( DeviceMemory const & ) = delete;
-      DeviceMemory( DeviceMemory && rhs )
+      DeviceMemory( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT
         : m_deviceMemory( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_deviceMemory, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DeviceMemory & operator=( DeviceMemory const & ) = delete;
-      DeviceMemory & operator                          =( DeviceMemory && rhs )
+      DeviceMemory & operator                          =( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4800,13 +4801,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       DisplayKHR()                     = delete;
       DisplayKHR( DisplayKHR const & ) = delete;
-      DisplayKHR( DisplayKHR && rhs )
+      DisplayKHR( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_displayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_displayKHR, {} ) )
         , m_physicalDevice( rhs.m_physicalDevice )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DisplayKHR & operator=( DisplayKHR const & ) = delete;
-      DisplayKHR & operator                        =( DisplayKHR && rhs )
+      DisplayKHR & operator                        =( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -4927,12 +4928,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       DisplayModeKHR()                         = delete;
       DisplayModeKHR( DisplayModeKHR const & ) = delete;
-      DisplayModeKHR( DisplayModeKHR && rhs )
+      DisplayModeKHR( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_displayModeKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_displayModeKHR, {} ) )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       DisplayModeKHR & operator=( DisplayModeKHR const & ) = delete;
-      DisplayModeKHR & operator                            =( DisplayModeKHR && rhs )
+      DisplayModeKHR & operator                            =( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5011,14 +5012,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Event()                = delete;
       Event( Event const & ) = delete;
-      Event( Event && rhs )
+      Event( Event && rhs ) VULKAN_HPP_NOEXCEPT
         : m_event( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_event, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Event & operator=( Event const & ) = delete;
-      Event & operator                   =( Event && rhs )
+      Event & operator                   =( Event && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5145,14 +5146,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Fence()                = delete;
       Fence( Fence const & ) = delete;
-      Fence( Fence && rhs )
+      Fence( Fence && rhs ) VULKAN_HPP_NOEXCEPT
         : m_fence( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_fence, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Fence & operator=( Fence const & ) = delete;
-      Fence & operator                   =( Fence && rhs )
+      Fence & operator                   =( Fence && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5234,14 +5235,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Framebuffer()                      = delete;
       Framebuffer( Framebuffer const & ) = delete;
-      Framebuffer( Framebuffer && rhs )
+      Framebuffer( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT
         : m_framebuffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_framebuffer, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Framebuffer & operator=( Framebuffer const & ) = delete;
-      Framebuffer & operator                         =( Framebuffer && rhs )
+      Framebuffer & operator                         =( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5321,14 +5322,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Image()                = delete;
       Image( Image const & ) = delete;
-      Image( Image && rhs )
+      Image( Image && rhs ) VULKAN_HPP_NOEXCEPT
         : m_image( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_image, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Image & operator=( Image const & ) = delete;
-      Image & operator                   =( Image && rhs )
+      Image & operator                   =( Image && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5421,14 +5422,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       ImageView()                    = delete;
       ImageView( ImageView const & ) = delete;
-      ImageView( ImageView && rhs )
+      ImageView( ImageView && rhs ) VULKAN_HPP_NOEXCEPT
         : m_imageView( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_imageView, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       ImageView & operator=( ImageView const & ) = delete;
-      ImageView & operator                       =( ImageView && rhs )
+      ImageView & operator                       =( ImageView && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5514,7 +5515,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       IndirectCommandsLayoutNV()                                   = delete;
       IndirectCommandsLayoutNV( IndirectCommandsLayoutNV const & ) = delete;
-      IndirectCommandsLayoutNV( IndirectCommandsLayoutNV && rhs )
+      IndirectCommandsLayoutNV( IndirectCommandsLayoutNV && rhs ) VULKAN_HPP_NOEXCEPT
         : m_indirectCommandsLayoutNV(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_indirectCommandsLayoutNV, {} ) )
         , m_device( rhs.m_device )
@@ -5522,7 +5523,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       IndirectCommandsLayoutNV & operator=( IndirectCommandsLayoutNV const & ) = delete;
-      IndirectCommandsLayoutNV & operator                                      =( IndirectCommandsLayoutNV && rhs )
+      IndirectCommandsLayoutNV & operator=( IndirectCommandsLayoutNV && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5599,14 +5600,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       PerformanceConfigurationINTEL()                                        = delete;
       PerformanceConfigurationINTEL( PerformanceConfigurationINTEL const & ) = delete;
-      PerformanceConfigurationINTEL( PerformanceConfigurationINTEL && rhs )
+      PerformanceConfigurationINTEL( PerformanceConfigurationINTEL && rhs ) VULKAN_HPP_NOEXCEPT
         : m_performanceConfigurationINTEL(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_performanceConfigurationINTEL, {} ) )
         , m_device( rhs.m_device )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       PerformanceConfigurationINTEL & operator=( PerformanceConfigurationINTEL const & ) = delete;
-      PerformanceConfigurationINTEL & operator=( PerformanceConfigurationINTEL && rhs )
+      PerformanceConfigurationINTEL & operator=( PerformanceConfigurationINTEL && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5689,14 +5690,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       PipelineCache()                        = delete;
       PipelineCache( PipelineCache const & ) = delete;
-      PipelineCache( PipelineCache && rhs )
+      PipelineCache( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT
         : m_pipelineCache( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_pipelineCache, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       PipelineCache & operator=( PipelineCache const & ) = delete;
-      PipelineCache & operator                           =( PipelineCache && rhs )
+      PipelineCache & operator                           =( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -5882,14 +5883,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Pipeline()                   = delete;
       Pipeline( Pipeline const & ) = delete;
-      Pipeline( Pipeline && rhs )
+      Pipeline( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT
         : m_pipeline( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_pipeline, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Pipeline & operator=( Pipeline const & ) = delete;
-      Pipeline & operator                      =( Pipeline && rhs )
+      Pipeline & operator                      =( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6177,14 +6178,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       PipelineLayout()                         = delete;
       PipelineLayout( PipelineLayout const & ) = delete;
-      PipelineLayout( PipelineLayout && rhs )
+      PipelineLayout( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT
         : m_pipelineLayout( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_pipelineLayout, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       PipelineLayout & operator=( PipelineLayout const & ) = delete;
-      PipelineLayout & operator                            =( PipelineLayout && rhs )
+      PipelineLayout & operator                            =( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6269,15 +6270,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       PrivateDataSlotEXT()                             = delete;
       PrivateDataSlotEXT( PrivateDataSlotEXT const & ) = delete;
-      PrivateDataSlotEXT( PrivateDataSlotEXT && rhs )
-        : m_privateDataSlotEXT(
-            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_privateDataSlotEXT, {} ) )
+      PrivateDataSlotEXT( PrivateDataSlotEXT && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_privateDataSlotEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_privateDataSlotEXT,
+                                                                                           {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       PrivateDataSlotEXT & operator=( PrivateDataSlotEXT const & ) = delete;
-      PrivateDataSlotEXT & operator                                =( PrivateDataSlotEXT && rhs )
+      PrivateDataSlotEXT & operator                                =( PrivateDataSlotEXT && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6359,14 +6360,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       QueryPool()                    = delete;
       QueryPool( QueryPool const & ) = delete;
-      QueryPool( QueryPool && rhs )
+      QueryPool( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT
         : m_queryPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_queryPool, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       QueryPool & operator=( QueryPool const & ) = delete;
-      QueryPool & operator                       =( QueryPool && rhs )
+      QueryPool & operator                       =( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6450,12 +6451,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       Queue()                = delete;
       Queue( Queue const & ) = delete;
-      Queue( Queue && rhs )
+      Queue( Queue && rhs ) VULKAN_HPP_NOEXCEPT
         : m_queue( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_queue, {} ) )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Queue & operator=( Queue const & ) = delete;
-      Queue & operator                   =( Queue && rhs )
+      Queue & operator                   =( Queue && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6576,14 +6577,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       RenderPass()                     = delete;
       RenderPass( RenderPass const & ) = delete;
-      RenderPass( RenderPass && rhs )
+      RenderPass( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT
         : m_renderPass( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_renderPass, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       RenderPass & operator=( RenderPass const & ) = delete;
-      RenderPass & operator                        =( RenderPass && rhs )
+      RenderPass & operator                        =( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6665,14 +6666,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Sampler()                  = delete;
       Sampler( Sampler const & ) = delete;
-      Sampler( Sampler && rhs )
+      Sampler( Sampler && rhs ) VULKAN_HPP_NOEXCEPT
         : m_sampler( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_sampler, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Sampler & operator=( Sampler const & ) = delete;
-      Sampler & operator                     =( Sampler && rhs )
+      Sampler & operator                     =( Sampler && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6756,7 +6757,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       SamplerYcbcrConversion()                                 = delete;
       SamplerYcbcrConversion( SamplerYcbcrConversion const & ) = delete;
-      SamplerYcbcrConversion( SamplerYcbcrConversion && rhs )
+      SamplerYcbcrConversion( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
         : m_samplerYcbcrConversion(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_samplerYcbcrConversion, {} ) )
         , m_device( rhs.m_device )
@@ -6764,7 +6765,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       SamplerYcbcrConversion & operator=( SamplerYcbcrConversion const & ) = delete;
-      SamplerYcbcrConversion & operator                                    =( SamplerYcbcrConversion && rhs )
+      SamplerYcbcrConversion & operator=( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6846,14 +6847,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       Semaphore()                    = delete;
       Semaphore( Semaphore const & ) = delete;
-      Semaphore( Semaphore && rhs )
+      Semaphore( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT
         : m_semaphore( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_semaphore, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       Semaphore & operator=( Semaphore const & ) = delete;
-      Semaphore & operator                       =( Semaphore && rhs )
+      Semaphore & operator                       =( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6940,14 +6941,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       ShaderModule()                       = delete;
       ShaderModule( ShaderModule const & ) = delete;
-      ShaderModule( ShaderModule && rhs )
+      ShaderModule( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT
         : m_shaderModule( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_shaderModule, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       ShaderModule & operator=( ShaderModule const & ) = delete;
-      ShaderModule & operator                          =( ShaderModule && rhs )
+      ShaderModule & operator                          =( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -7331,14 +7332,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       SurfaceKHR()                     = delete;
       SurfaceKHR( SurfaceKHR const & ) = delete;
-      SurfaceKHR( SurfaceKHR && rhs )
+      SurfaceKHR( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_surfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_surfaceKHR, {} ) )
         , m_instance( rhs.m_instance )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       SurfaceKHR & operator=( SurfaceKHR const & ) = delete;
-      SurfaceKHR & operator                        =( SurfaceKHR && rhs )
+      SurfaceKHR & operator                        =( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -7428,14 +7429,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       SwapchainKHR()                       = delete;
       SwapchainKHR( SwapchainKHR const & ) = delete;
-      SwapchainKHR( SwapchainKHR && rhs )
+      SwapchainKHR( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_swapchainKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_swapchainKHR, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       SwapchainKHR & operator=( SwapchainKHR const & ) = delete;
-      SwapchainKHR & operator                          =( SwapchainKHR && rhs )
+      SwapchainKHR & operator                          =( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -7589,15 +7590,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       ValidationCacheEXT()                             = delete;
       ValidationCacheEXT( ValidationCacheEXT const & ) = delete;
-      ValidationCacheEXT( ValidationCacheEXT && rhs )
-        : m_validationCacheEXT(
-            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_validationCacheEXT, {} ) )
+      ValidationCacheEXT( ValidationCacheEXT && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_validationCacheEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_validationCacheEXT,
+                                                                                           {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       ValidationCacheEXT & operator=( ValidationCacheEXT const & ) = delete;
-      ValidationCacheEXT & operator                                =( ValidationCacheEXT && rhs )
+      ValidationCacheEXT & operator                                =( ValidationCacheEXT && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -7688,14 +7689,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       VideoSessionKHR()                          = delete;
       VideoSessionKHR( VideoSessionKHR const & ) = delete;
-      VideoSessionKHR( VideoSessionKHR && rhs )
+      VideoSessionKHR( VideoSessionKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_videoSessionKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionKHR, {} ) )
         , m_device( rhs.m_device )
         , m_allocator( rhs.m_allocator )
         , m_dispatcher( rhs.m_dispatcher )
       {}
       VideoSessionKHR & operator=( VideoSessionKHR const & ) = delete;
-      VideoSessionKHR & operator                             =( VideoSessionKHR && rhs )
+      VideoSessionKHR & operator                             =( VideoSessionKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -7791,7 +7792,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       VideoSessionParametersKHR()                                    = delete;
       VideoSessionParametersKHR( VideoSessionParametersKHR const & ) = delete;
-      VideoSessionParametersKHR( VideoSessionParametersKHR && rhs )
+      VideoSessionParametersKHR( VideoSessionParametersKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_videoSessionParametersKHR(
             VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_videoSessionParametersKHR, {} ) )
         , m_device( rhs.m_device )
@@ -7799,7 +7800,7 @@ namespace VULKAN_HPP_NAMESPACE
         , m_dispatcher( rhs.m_dispatcher )
       {}
       VideoSessionParametersKHR & operator=( VideoSessionParametersKHR const & ) = delete;
-      VideoSessionParametersKHR & operator                                       =( VideoSessionParametersKHR && rhs )
+      VideoSessionParametersKHR & operator=( VideoSessionParametersKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {

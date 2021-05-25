@@ -3664,11 +3664,11 @@ ${destructor}
 
     ${handleType}() = delete;
     ${handleType}( ${handleType} const & ) = delete;
-    ${handleType}( ${handleType} && rhs )
+    ${handleType}( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
       : ${moveConstructorInitializerList}
     {}
     ${handleType} & operator=( ${handleType} const & ) = delete;
-    ${handleType} & operator=( ${handleType} && rhs )
+    ${handleType} & operator=( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
     {
       if ( this != &rhs )
       {
@@ -3759,12 +3759,12 @@ void VulkanHppGenerator::appendRAIIHandleContext( std::string &                 
     ~Context() = default;
 
     Context( Context const & ) = delete;
-    Context( Context && rhs )
+    Context( Context && rhs ) VULKAN_HPP_NOEXCEPT
       : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) )
       , m_dispatcher( std::move( rhs.m_dispatcher ) )
     {}
     Context & operator=( Context const & ) = delete;
-    Context & operator=( Context && rhs )
+    Context & operator=( Context && rhs ) VULKAN_HPP_NOEXCEPT
     {
       if ( this != &rhs )
       {

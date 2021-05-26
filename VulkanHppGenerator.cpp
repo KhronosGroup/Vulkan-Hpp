@@ -2695,7 +2695,9 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     for ( auto const & type : extIt.second->second.types )
     {
       auto enumIt = m_enums.find( type );
-      if ( enumIt != m_enums.end() )
+      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
+      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
+      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
       {
         enumIts.push_back( enumIt );
       }
@@ -2712,9 +2714,6 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
       str += enter + "\n  //=== " + extIt.second->first + " ===\n";
       for ( auto enumIt : enumIts )
       {
-        assert( listedEnums.find( enumIt->first ) == listedEnums.end() );
-        listedEnums.insert( enumIt->first );
-
         str += "\n";
         appendEnum( str, *enumIt );
         appendEnumToString( str, *enumIt );
@@ -5035,7 +5034,7 @@ std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::stri
     if ( ( name.find( "Acquire" ) != std::string::npos ) || ( name.find( "Get" ) != std::string::npos ) )
     {
       if ( ( name == "vkAcquirePerformanceConfigurationINTEL" ) || ( name == "vkGetRandROutputDisplayEXT" ) ||
-           ( name == "vkGetWinrtDisplayNV" ) || ( name == "vkGetDrmDisplayEXT" ))
+           ( name == "vkGetWinrtDisplayNV" ) || ( name == "vkGetDrmDisplayEXT" ) )
       {
         objectDeleter = "ObjectRelease";
       }

@@ -83,7 +83,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     swapChainData.clear( device );
     device.destroy();
     instance.destroySurfaceKHR( surfaceData.surface );
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

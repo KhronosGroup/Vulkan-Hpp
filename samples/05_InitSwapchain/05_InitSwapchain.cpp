@@ -187,7 +187,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_HPP_KEY_END */
 
     device.destroy();
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

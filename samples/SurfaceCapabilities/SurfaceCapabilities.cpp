@@ -167,7 +167,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_END */
 
     instance.destroySurfaceKHR( surfaceData.surface );
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

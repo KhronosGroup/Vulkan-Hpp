@@ -89,7 +89,9 @@ int main( int /*argc*/, char ** /*argv*/ )
         usingMinorVersion = desiredMinorVersion;
       }
 
+#if !defined( NDEBUG )
       instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
       instance.destroy();
     }
 

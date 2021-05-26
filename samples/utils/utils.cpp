@@ -51,10 +51,10 @@ namespace vk
 
     bool contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName )
     {
-      auto propertyIterator = std::find_if(
-        extensionProperties.begin(), extensionProperties.end(), [&extensionName]( vk::ExtensionProperties const & ep ) {
-          return extensionName == ep.extensionName;
-        } );
+      auto propertyIterator = std::find_if( extensionProperties.begin(),
+                                            extensionProperties.end(),
+                                            [&extensionName]( vk::ExtensionProperties const & ep )
+                                            { return extensionName == ep.extensionName; } );
       return ( propertyIterator != extensionProperties.end() );
     }
 
@@ -75,9 +75,10 @@ namespace vk
     {
       assert( !poolSizes.empty() );
       uint32_t maxSets =
-        std::accumulate( poolSizes.begin(), poolSizes.end(), 0, []( uint32_t sum, vk::DescriptorPoolSize const & dps ) {
-          return sum + dps.descriptorCount;
-        } );
+        std::accumulate( poolSizes.begin(),
+                         poolSizes.end(),
+                         0,
+                         []( uint32_t sum, vk::DescriptorPoolSize const & dps ) { return sum + dps.descriptorCount; } );
       assert( 0 < maxSets );
 
       vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
@@ -273,18 +274,19 @@ namespace vk
       enabledExtensions.reserve( extensions.size() );
       for ( auto const & ext : extensions )
       {
-        assert( std::find_if(
-                  extensionProperties.begin(), extensionProperties.end(), [ext]( vk::ExtensionProperties const & ep ) {
-                    return ext == ep.extensionName;
-                  } ) != extensionProperties.end() );
+        assert( std::find_if( extensionProperties.begin(),
+                              extensionProperties.end(),
+                              [ext]( vk::ExtensionProperties const & ep )
+                              { return ext == ep.extensionName; } ) != extensionProperties.end() );
         enabledExtensions.push_back( ext.data() );
       }
 #if !defined( NDEBUG )
       if ( std::find( extensions.begin(), extensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == extensions.end() &&
-           std::find_if(
-             extensionProperties.begin(), extensionProperties.end(), []( vk::ExtensionProperties const & ep ) {
-               return ( strcmp( VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName ) == 0 );
-             } ) != extensionProperties.end() )
+           std::find_if( extensionProperties.begin(),
+                         extensionProperties.end(),
+                         []( vk::ExtensionProperties const & ep ) {
+                           return ( strcmp( VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName ) == 0 );
+                         } ) != extensionProperties.end() )
       {
         enabledExtensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
       }
@@ -303,18 +305,20 @@ namespace vk
       enabledLayers.reserve( layers.size() );
       for ( auto const & layer : layers )
       {
-        assert(
-          std::find_if( layerProperties.begin(), layerProperties.end(), [layer]( vk::LayerProperties const & lp ) {
-            return layer == lp.layerName;
-          } ) != layerProperties.end() );
+        assert( std::find_if( layerProperties.begin(),
+                              layerProperties.end(),
+                              [layer]( vk::LayerProperties const & lp )
+                              { return layer == lp.layerName; } ) != layerProperties.end() );
         enabledLayers.push_back( layer.data() );
       }
 #if !defined( NDEBUG )
       // Enable standard validation layer to find as much errors as possible!
       if ( std::find( layers.begin(), layers.end(), "VK_LAYER_KHRONOS_validation" ) == layers.end() &&
-           std::find_if( layerProperties.begin(), layerProperties.end(), []( vk::LayerProperties const & lp ) {
-             return ( strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 );
-           } ) != layerProperties.end() )
+           std::find_if( layerProperties.begin(),
+                         layerProperties.end(),
+                         []( vk::LayerProperties const & lp ) {
+                           return ( strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 );
+                         } ) != layerProperties.end() )
       {
         enabledLayers.push_back( "VK_LAYER_KHRONOS_validation" );
       }
@@ -336,9 +340,18 @@ namespace vk
 #endif
 
       vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );
-      std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers, vk::enumerateInstanceLayerProperties() );
-      std::vector<char const *> enabledExtensions =
-        vk::su::gatherExtensions( extensions, vk::enumerateInstanceExtensionProperties() );
+      std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers
+#if !defined( NDEBUG )
+                                                                      ,
+                                                                      vk::enumerateInstanceLayerProperties()
+#endif
+      );
+      std::vector<char const *> enabledExtensions = vk::su::gatherExtensions( extensions
+#if !defined( NDEBUG )
+                                                                              ,
+                                                                              vk::enumerateInstanceExtensionProperties()
+#endif
+      );
 
 #if defined( NDEBUG )
       // in non-debug mode just use the InstanceCreateInfo for instance creation
@@ -352,7 +365,7 @@ namespace vk
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
 #  if defined( VULKAN_HPP_UTILS_USE_BEST_PRACTICES )
-      vk::ValidationFeatureEnableEXT validationFeatureEnable = vk::ValidationFeatureEnableEXT::eBestPractices;
+      vk::ValidationFeatureEnableEXT        validationFeatureEnable = vk::ValidationFeatureEnableEXT::eBestPractices;
       vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT, vk::ValidationFeaturesEXT>
         instanceCreateInfo( { {}, &applicationInfo, enabledLayers, enabledExtensions },
                             { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback },
@@ -492,9 +505,9 @@ namespace vk
     {
       // get the first index into queueFamiliyProperties which supports graphics
       std::vector<vk::QueueFamilyProperties>::const_iterator graphicsQueueFamilyProperty = std::find_if(
-        queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
-          return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
-        } );
+        queueFamilyProperties.begin(),
+        queueFamilyProperties.end(),
+        []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
       assert( graphicsQueueFamilyProperty != queueFamilyProperties.end() );
       return static_cast<uint32_t>( std::distance( queueFamilyProperties.begin(), graphicsQueueFamilyProperty ) );
     }
@@ -647,10 +660,11 @@ namespace vk
         for ( size_t i = 0; i < sizeof( requestedFormats ) / sizeof( requestedFormats[0] ); i++ )
         {
           vk::Format requestedFormat = requestedFormats[i];
-          auto       it              = std::find_if(
-            formats.begin(), formats.end(), [requestedFormat, requestedColorSpace]( vk::SurfaceFormatKHR const & f ) {
-              return ( f.format == requestedFormat ) && ( f.colorSpace == requestedColorSpace );
-            } );
+          auto       it              = std::find_if( formats.begin(),
+                                  formats.end(),
+                                  [requestedFormat, requestedColorSpace]( vk::SurfaceFormatKHR const & f ) {
+                                    return ( f.format == requestedFormat ) && ( f.colorSpace == requestedColorSpace );
+                                  } );
           if ( it != formats.end() )
           {
             pickedFormat = *it;
@@ -1133,10 +1147,12 @@ namespace vk
         glfwContext()
         {
           glfwInit();
-          glfwSetErrorCallback( []( int error, const char * msg ) {
-            std::cerr << "glfw: "
-                      << "(" << error << ") " << msg << std::endl;
-          } );
+          glfwSetErrorCallback(
+            []( int error, const char * msg )
+            {
+              std::cerr << "glfw: "
+                        << "(" << error << ") " << msg << std::endl;
+            } );
         }
 
         ~glfwContext()
@@ -1174,7 +1190,7 @@ namespace vk
 #if defined( NDEBUG )
       // in non-debug mode just use the InstanceCreateInfo for instance creation
       vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo(
-        { {}, &applicationInfo, enabledLayers, enabledExtensions } );
+        { {}, &applicationInfo, layers, extensions } );
 #else
       // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
       vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |

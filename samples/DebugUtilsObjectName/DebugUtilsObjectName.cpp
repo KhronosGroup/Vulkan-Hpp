@@ -66,7 +66,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     device.destroyImage( image );
     device.destroy();
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

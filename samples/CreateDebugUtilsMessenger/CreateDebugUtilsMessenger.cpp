@@ -153,7 +153,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DebugUtilsMessengerEXT            debugUtilsMessenger = instance.createDebugUtilsMessengerEXT(
       vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
 
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
 
     /* VULKAN_KEY_END */

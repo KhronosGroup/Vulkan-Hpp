@@ -205,7 +205,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 #endif
 
     device.destroy();
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
 
     /* VULKAN_KEY_END */

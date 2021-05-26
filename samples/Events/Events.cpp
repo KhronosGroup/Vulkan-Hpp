@@ -142,7 +142,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.freeCommandBuffers( commandPool, commandBuffer );
     device.destroyCommandPool( commandPool );
     device.destroy();
+#if !defined( NDEBUG )
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
     instance.destroy();
   }
   catch ( vk::SystemError & err )

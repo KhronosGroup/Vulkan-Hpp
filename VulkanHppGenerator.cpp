@@ -924,13 +924,7 @@ void VulkanHppGenerator::appendBitmasks( std::string & str ) const
       std::string enter, leave;
       std::tie( enter, leave ) =
         generateProtection( bitmaskIts.front()->first, !bitmaskIts.front()->second.alias.empty() );
-      if ( !enter.empty() )
-      {
-        enter = "\n" + enter;
-        assert( endsWith( enter, "\n" ) );
-        enter.resize( enter.size() - strlen( "\n" ) );
-      }
-      str += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto bitmaskIt : bitmaskIts )
       {
         assert( listedBitmasks.find( bitmaskIt->first ) == listedBitmasks.end() );
@@ -1009,23 +1003,19 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
     for ( auto const & value : enumValues )
     {
       std::string enter, leave;
-      if ( !value.extension.empty() )
-      {
-        std::tie( enter, leave ) = generateProtection( value.extension );
-        if ( !leave.empty() )
-        {
-          assert( leave.back() );
-          leave.pop_back();
-          leave = "\n" + leave;
-        }
-      }
-      allFlags += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "        " +
+      std::tie( enter, leave ) = generateProtection( value.extension );
+      allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " +
                   ( encounteredFlag ? "| " : "  " ) + bitmaskType + "( " + enumName + "::" + value.vkValue + " )";
       encounteredFlag = true;
       previousEnter   = enter;
       previousLeave   = leave;
     }
-    allFlags += previousLeave;
+    if ( !previousLeave.empty() )
+    {
+      assert( endsWith( previousLeave, "\n" ) );
+      previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
+      allFlags += "\n" + previousLeave;
+    }
 
     static const std::string bitmaskOperatorsTemplate = R"(
   template <> struct FlagTraits<${enumName}>
@@ -1093,29 +1083,19 @@ void VulkanHppGenerator::appendBitmaskToStringFunction( std::string &           
   {
     // 'or' together all the bits in the value
     str +=
-      "    if ( !value ) return \"{}\";\n"
+      "    if ( !value ) return \"{}\";\n\n"
       "    std::string result;\n";
     for ( auto const & evd : enumValues )
     {
       if ( evd.singleBit )
       {
         std::string enter, leave;
-        if ( !evd.extension.empty() )
-        {
-          std::tie( enter, leave ) = generateProtection( evd.extension );
-          if ( !leave.empty() )
-          {
-            leave = "\n" + leave;
-            leave.pop_back();
-          }
-        }
-        str += "\n" + enter + "    if ( value & " + enumName + "::" + evd.vkValue + " ) result += \"" +
-               evd.vkValue.substr( 1 ) + " | \";" + leave;
+        std::tie( enter, leave ) = generateProtection( evd.extension );
+        str += enter + "    if ( value & " + enumName + "::" + evd.vkValue + " ) result += \"" +
+               evd.vkValue.substr( 1 ) + " | \";\n" + leave;
       }
     }
-    str +=
-      "\n"
-      "    return \"{ \" + result.substr(0, result.size() - 3) + \" }\";\n";
+    str += "    return \"{ \" + result.substr(0, result.size() - 3) + \" }\";\n";
   }
 
   str += "  }\n";
@@ -2306,13 +2286,7 @@ void VulkanHppGenerator::appendDispatchLoaderStatic( std::string & str )
 
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( referencedIn );
-      if ( !enter.empty() )
-      {
-        enter = "\n" + enter;
-        assert( endsWith( enter, "\n" ) );
-        enter.resize( enter.size() - strlen( "\n" ) );
-      }
-      str += enter + "\n    //=== " + extIt.second->first + " ===\n";
+      str += "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
       for ( auto const & commandName : extIt.second->second.commands )
       {
         // some commands are listed for multiple extensions !
@@ -2670,23 +2644,18 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
   for ( auto const & value : enumData.second.values )
   {
     std::string enter, leave;
-    if ( !value.extension.empty() )
+    std::tie( enter, leave ) = generateProtection( value.extension );
+    if ( previousEnter != enter )
     {
-      std::tie( enter, leave ) = generateProtection( value.extension );
+      enumList += previousLeave + enter;
     }
-    if ( !leave.empty() )
-    {
-      assert( leave.back() == '\n' );
-      leave.pop_back();
-      leave = "\n" + leave;
-    }
-    enumList += ( ( previousEnter != enter ) ? ( previousLeave + "\n" + enter ) : "\n" ) + "    " + value.vkValue +
-                " = " + value.vulkanValue + ",";
+    enumList += "    " + value.vkValue + " = " + value.vulkanValue + ",\n";
 
     previousEnter = enter;
     previousLeave = leave;
   }
   enumList += previousLeave;
+
   for ( auto const & alias : enumData.second.aliases )
   {
     // make sure to only list alias values that differ from all non-alias values
@@ -2712,17 +2681,20 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
       assert( enumIt != enumData.second.values.end() );
       assert( enumIt->extension.empty() || generateProtection( enumIt->extension ).first.empty() );
 #endif
-      enumList += "\n    " + alias.second.vkValue + " = " + alias.first + ",";
+      enumList += "    " + alias.second.vkValue + " = " + alias.first + ",\n";
     }
   }
-  if ( !enumList.empty() )
+  if ( enumList.empty() )
+  {
+    str += "\n  {};\n";
+  }
+  else
   {
     size_t pos = enumList.rfind( ',' );
     assert( pos != std::string::npos );
     enumList.erase( pos, 1 );
+    str += "\n  {\n" + enumList + "  };\n";
   }
-
-  str += "\n  {" + enumList + "\n  };\n";
 
   if ( !enumData.second.alias.empty() )
   {
@@ -2784,13 +2756,7 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
-      if ( !enter.empty() )
-      {
-        enter = "\n" + enter;
-        assert( endsWith( enter, "\n" ) );
-        enter.resize( enter.size() - strlen( "\n" ) );
-      }
-      str += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto enumIt : enumIts )
       {
         str += "\n";
@@ -2863,12 +2829,12 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
     for ( auto const & value : enumData.second.values )
     {
       std::string enter, leave;
-      if ( !value.extension.empty() )
+      std::tie( enter, leave ) = generateProtection( value.extension );
+      if ( previousEnter != enter )
       {
-        std::tie( enter, leave ) = generateProtection( value.extension );
+        str += previousLeave + enter;
       }
-      str += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "      case " + enumName +
-             "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) + "\";\n";
+      str += "      case " + enumName + "::" + value.vkValue + " : return \"" + value.vkValue.substr( 1 ) + "\";\n";
       previousEnter = enter;
       previousLeave = leave;
     }
@@ -3224,14 +3190,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
       {
         std::string enter, leave;
         std::tie( enter, leave ) = generateProtection( extIt.second->first );
-        if ( !enter.empty() )
-        {
-          enter = "\n" + enter;
-          assert( endsWith( enter, "\n" ) );
-          enter.resize( enter.size() - strlen( "\n" ) );
-        }
-
-        commands += enter + "\n  //=== " + extIt.second->first + " ===\n";
+        commands += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
         for ( auto const & command : commandNames )
         {
           auto commandIt = m_commands.find( command );
@@ -3337,7 +3296,7 @@ ${CppTypeFromDebugReportObjectTypeEXT}
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
-)";
+${usingAlias}${leave})";
 
     std::string className = stripPrefix( handleData.first, "Vk" );
 
@@ -3370,6 +3329,12 @@ ${CppTypeFromDebugReportObjectTypeEXT}
                             [&handleData]( EnumValueData const & evd )
                             { return evd.vulkanValue == handleData.second.objTypeEnum; } );
     assert( valueIt != enumIt->second.values.end() );
+    std::string usingAlias;
+    if ( !handleData.second.alias.empty() )
+    {
+      usingAlias += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " +
+                    stripPrefix( handleData.first, "Vk" ) + ";\n";
+    }
 
     str += replaceWithMap( templateString,
                            { { "className", className },
@@ -3377,15 +3342,10 @@ ${CppTypeFromDebugReportObjectTypeEXT}
                              { "CppTypeFromDebugReportObjectTypeEXT", cppTypeFromDebugReportObjectTypeEXT },
                              { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
+                             { "leave", leave },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", valueIt->vkValue } } );
-
-    if ( !handleData.second.alias.empty() )
-    {
-      str += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) +
-             ";\n";
-    }
-    str += leave;
+                             { "objTypeEnum", valueIt->vkValue },
+                             { "usingAlias", usingAlias } } );
   }
 
   m_listingTypes.erase( handleData.first );
@@ -3434,13 +3394,7 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( extIt.second->first );
-      if ( !enter.empty() )
-      {
-        enter = "\n" + enter;
-        assert( endsWith( enter, "\n" ) );
-        enter.resize( enter.size() - strlen( "\n" ) );
-      }
-      str += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : extIt.second->second.commands )
       {
         if ( listedCommands.find( command ) == listedCommands.end() )
@@ -3458,14 +3412,16 @@ void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) co
 
 void VulkanHppGenerator::appendHashStructures( std::string & str ) const
 {
-  const std::string hashTemplate = R"(  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
+  const std::string hashTemplate = R"(
+${enter}  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
   {
     std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const & ${name}) const VULKAN_HPP_NOEXCEPT
     {
       return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
     }
   };
-)";
+${leave})";
+
   for ( auto handle : m_handles )
   {
     if ( !handle.first.empty() )
@@ -3473,11 +3429,10 @@ void VulkanHppGenerator::appendHashStructures( std::string & str ) const
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( handle.first, !handle.second.alias.empty() );
 
-      str += "\n" + enter;
       std::string type = stripPrefix( handle.first, "Vk" );
       std::string name = startLowerCase( type );
-      str += replaceWithMap( hashTemplate, { { "name", name }, { "type", type } } );
-      str += leave;
+      str +=
+        replaceWithMap( hashTemplate, { { "enter", enter }, { "leave", leave }, { "name", name }, { "type", type } } );
     }
   }
 }
@@ -3521,13 +3476,7 @@ void VulkanHppGenerator::appendRAIICommands( std::string & str, std::set<std::st
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( extIt.second->first );
-      if ( !enter.empty() )
-      {
-        enter = "\n" + enter;
-        assert( endsWith( enter, "\n" ) );
-        enter.resize( enter.size() - strlen( "\n" ) );
-      }
-      str += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : commands )
       {
         str +=
@@ -3686,10 +3635,7 @@ ${leave})";
     if ( beginsWith( value.vkValue, "eError" ) )
     {
       std::string enter, leave;
-      if ( !value.extension.empty() )
-      {
-        std::tie( enter, leave ) = generateProtection( value.extension );
-      }
+      std::tie( enter, leave ) = generateProtection( value.extension );
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( value.vkValue, "eError" ) + "Error" },
                                { "enter", enter },
@@ -9398,14 +9344,8 @@ std::string VulkanHppGenerator::constructRAIIHandleMemberFunctionDeclarations(
       if ( extIt.second->first != m_types.find( handle.first )->second.referencedIn )
       {
         std::tie( enter, leave ) = generateProtection( extIt.second->first );
-        if ( !enter.empty() )
-        {
-          enter = "\n" + enter;
-          assert( endsWith( enter, "\n" ) );
-          enter.resize( enter.size() - strlen( "\n" ) );
-        }
       }
-      functionDeclarations += enter + "\n  //=== " + extIt.second->first + " ===\n";
+      functionDeclarations += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : firstLevelCommands )
       {
         functionDeclarations +=
@@ -10918,11 +10858,7 @@ void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
     if ( beginsWith( value.vkValue, "eError" ) )
     {
       std::string enter, leave;
-      if ( !value.extension.empty() )
-      {
-        std::tie( enter, leave ) = generateProtection( value.extension );
-      }
-
+      std::tie( enter, leave ) = generateProtection( value.extension );
       str += enter + "      case Result::" + value.vkValue + ": throw " + stripPrefix( value.vkValue, "eError" ) +
              "Error( message );\n" + leave;
     }

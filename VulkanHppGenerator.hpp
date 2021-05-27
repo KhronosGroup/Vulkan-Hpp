@@ -31,20 +31,22 @@ public:
   void appendDispatchLoaderStatic( std::string & str );   // use exported symbols from loader
   void appendDispatchLoaderDefault(
     std::string & str );  // typedef to DispatchLoaderStatic or undefined type, based on VK_NO_PROTOTYPES
-  void                appendEnums( std::string & str ) const;
-  void                appendHandles( std::string & str );
-  void                appendHandlesCommandDefinitions( std::string & str ) const;
-  void                appendHashStructures( std::string & str ) const;
-  void                appendRAIIDispatchers( std::string & str ) const;
-  void                appendRAIIHandles( std::string & str, std::string & commandDefinitions );
-  void                appendResultExceptions( std::string & str ) const;
-  void                appendStructs( std::string & str );
-  void                appendStructureChainValidation( std::string & str );
-  void                appendThrowExceptions( std::string & str ) const;
-  void                appendIndexTypeTraits( std::string & str ) const;
-  std::string const & getTypesafeCheck() const;
-  std::string const & getVersion() const;
-  std::string const & getVulkanLicenseHeader() const;
+  void                  appendEnums( std::string & str ) const;
+  void                  appendHandles( std::string & str );
+  void                  appendHandlesCommandDefinitions( std::string & str ) const;
+  void                  appendHashStructures( std::string & str ) const;
+  void                  appendRAIICommands( std::string & str, std::set<std::string> const & specialFunctions ) const;
+  void                  appendRAIIDispatchers( std::string & str ) const;
+  void                  appendRAIIHandles( std::string & str, std::set<std::string> const & specialFunctions ) const;
+  void                  appendResultExceptions( std::string & str ) const;
+  void                  appendStructs( std::string & str );
+  void                  appendStructureChainValidation( std::string & str );
+  void                  appendThrowExceptions( std::string & str ) const;
+  void                  appendIndexTypeTraits( std::string & str ) const;
+  std::set<std::string> determineSpecialFunctions();
+  std::string const &   getTypesafeCheck() const;
+  std::string const &   getVersion() const;
+  std::string const &   getVulkanLicenseHeader() const;
 
 private:
   struct BaseTypeData
@@ -338,6 +340,7 @@ private:
                    std::map<size_t, size_t> const & vectorParamIndices,
                    bool                             twoStep,
                    bool                             firstCall ) const;
+  void appendCommand( std::string & str, std::string const & command, std::string const & handle ) const;
   void appendCommand( std::string &       str,
                       std::string const & name,
                       CommandData const & commandData,
@@ -490,6 +493,10 @@ private:
                                         size_t                      initialSkipCount,
                                         bool                        definition,
                                         std::vector<size_t> const & returnParamIndices ) const;
+  void        appendDestroyCommand( std::string &       str,
+                                    std::string const & name,
+                                    CommandData const & commandData,
+                                    std::string const & handleName ) const;
   void        appendDispatchLoaderDynamicCommand( std::string &       str,
                                                   std::string &       emptyFunctions,
                                                   std::string &       deviceFunctions,
@@ -546,12 +553,10 @@ private:
                                                           bool                isTemplateParam ) const;
   void        appendHandle( std::string & str, std::pair<std::string, HandleData> const & handle );
   void        appendRAIIHandle( std::string &                              str,
-                                std::string &                              commandDefinitions,
                                 std::pair<std::string, HandleData> const & handle,
                                 std::set<std::string> &                    listedHandles,
                                 std::set<std::string> const &              specialFunctions ) const;
   void        appendRAIIHandleContext( std::string &                              str,
-                                       std::string &                              commandDefinitions,
                                        std::pair<std::string, HandleData> const & handle,
                                        std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string> appendStaticCommand( std::string &                               str,
@@ -815,15 +820,16 @@ private:
     std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
     std::string const &                                                    enter,
     std::string const &                                                    leave ) const;
-  std::string                         constructRAIIHandleConstructorArguments( std::string const &            handleType,
-                                                                               std::vector<ParamData> const & params,
-                                                                               bool                           singular,
-                                                                               bool                           encounteredArgument ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVector(
+  std::string constructRAIIHandleConstructorArguments( std::string const &            handleType,
+                                                       std::vector<ParamData> const & params,
+                                                       bool                           singular,
+                                                       bool                           encounteredArgument ) const;
+  std::string constructRAIIHandleMemberFunctionResultSingleGetVector(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    size_t                                             returnParamIndex ) const;
+    size_t                                             returnParamIndex,
+    bool                                               definition ) const;
   std::string constructRAIIHandleConstructorCallArguments( std::string const &            handleType,
                                                            std::vector<ParamData> const & params,
                                                            bool                           nonConstPointerAsNullptr,
@@ -874,166 +880,182 @@ private:
   std::string constructRAIIHandleDestructorCallArguments( std::string const &            handleType,
                                                           std::vector<ParamData> const & params ) const;
   std::tuple<std::string, std::string, std::string, std::string>
-    constructRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
-                                std::string const &                        destructorCall ) const;
-  std::pair<std::string, std::string>
+              constructRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
+                                          std::string const &                        destructorCall ) const;
+  std::string constructRAIIHandleMemberFunction( std::string const &           command,
+                                                 size_t                        initialSkipCount,
+                                                 std::set<std::string> const & specialFunctions,
+                                                 bool                          definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResultEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
                                                       size_t                           initialSkipCount,
                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                      std::vector<size_t> const & nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultEnumerateTwoVectors(
+                                                      std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                      bool                             definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultEnumerateTwoVectors(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
   std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultGetTwoValues(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
     std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string>
+  std::string
     constructRAIIHandleMemberFunctionResultMulti( std::map<std::string, CommandData>::const_iterator commandIt,
                                                   size_t                                             initialSkipCount,
-                                                  std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultMultiGetValue(
+                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
+                                                  bool                                               definition ) const;
+  std::string
+    constructRAIIHandleMemberFunctionResultMultiGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                          size_t                           initialSkipCount,
+                                                          std::map<size_t, size_t> const & vectorParamIndices,
+                                                          std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                          bool                             definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoid(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoid(
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoidSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultMultiGetVectorOfVoidSingular(
-    std::map<std::string, CommandData>::const_iterator commandIt,
-    size_t                                             initialSkipCount,
-    std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string>
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResultMultiNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                           size_t                           initialSkipCount,
-                                                          std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string>
+                                                          std::map<size_t, size_t> const & vectorParamIndices,
+                                                          bool                             definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResultSingle( std::map<std::string, CommandData>::const_iterator commandIt,
                                                    size_t                                             initialSkipCount,
-                                                   std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetChain(
+                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                   bool                             definition ) const;
+  std::string
+    constructRAIIHandleMemberFunctionResultSingleGetChain( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                           size_t                           initialSkipCount,
+                                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                                           std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                           bool                             definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultSingleGetVectorAndValue(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorAndValue(
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoid(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoid(
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultSingleGetVectorSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorSingular(
+    size_t                                             returnParamIndex,
+    bool                                               definition ) const;
+  std::string constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoidSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    size_t                                             returnParamIndex ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetVectorOfVoidSingular(
-    std::map<std::string, CommandData>::const_iterator commandIt,
-    size_t                                             initialSkipCount,
-    std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string>
+    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResultSingleNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                            size_t                           initialSkipCount,
-                                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionResultSingleGetValue(
-    std::map<std::string, CommandData>::const_iterator commandIt,
-    size_t                                             initialSkipCount,
-    std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  void constructRAIIHandleMemberFunction( std::string &                 functionDeclarations,
-                                          std::string &                 functionDefinitions,
-                                          std::string const &           command,
-                                          size_t                        initialSkipCount,
-                                          std::set<std::string> const & specialFunctions ) const;
+                                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                                           bool                             definition ) const;
+  std::string
+    constructRAIIHandleMemberFunctionResultSingleGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                           size_t                           initialSkipCount,
+                                                           std::map<size_t, size_t> const & vectorParamIndices,
+                                                           std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                           bool                             definition ) const;
   std::pair<std::string, std::string>
-       constructRAIIHandleMemberFunctionBoolGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                      size_t                                             initialSkipCount,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      std::vector<size_t> const &      nonConstPointerParamIndices ) const;
-  bool constructRAIIHandleMemberFunctionResult( std::string &                                      functionDeclarations,
-                                                std::string &                                      functionDefinitions,
-                                                std::map<std::string, CommandData>::const_iterator commandIt,
-                                                size_t initialSkipCount ) const;
-  std::tuple<bool, std::string, std::string>
-    constructRAIIHandleMemberFunctionResult0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                    size_t initialSkipCount ) const;
-  std::tuple<bool, std::string, std::string>
+    constructRAIIHandleMemberFunctionBoolGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                   size_t                                             initialSkipCount,
+                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                   std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+  std::string constructRAIIHandleMemberFunctionResult( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                       size_t initialSkipCount,
+                                                       bool   definition ) const;
+  std::string constructRAIIHandleMemberFunctionResult0Return(
+    std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResult1Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                     size_t                                             initialSkipCount,
-                                                    size_t returnParamIndex ) const;
-  std::tuple<bool, std::string, std::string>
+                                                    size_t                                             returnParamIndex,
+                                                    bool definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResult2Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                     size_t                                             initialSkipCount,
-                                                    std::vector<size_t> const & returnParamIndices ) const;
-  std::tuple<bool, std::string, std::string>
+                                                    std::vector<size_t> const & returnParamIndices,
+                                                    bool                        definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionResult3Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                     size_t                                             initialSkipCount,
-                                                    std::vector<size_t> const & returnParamIndices ) const;
-  std::pair<std::string, std::string>
-    constructRAIIHandleMemberFunctions( std::pair<std::string, HandleData> const & handle,
-                                        std::set<std::string> const &              specialFunctions ) const;
-  std::pair<std::string, std::string>
-    constructRAIIHandleMemberFunctionType( std::map<std::string, CommandData>::const_iterator commandIt,
-                                           size_t                                             initialSkipCount,
-                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::pair<std::string, std::string>
-       constructRAIIHandleMemberFunctionVkType( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                size_t                                             initialSkipCount,
-                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
-  bool constructRAIIHandleMemberFunctionValue( std::string &                                      functionDeclarations,
-                                               std::string &                                      functionDefinitions,
-                                               std::map<std::string, CommandData>::const_iterator commandIt,
-                                               size_t initialSkipCount ) const;
-  std::tuple<bool, std::string, std::string>
-       constructRAIIHandleMemberFunctionValue0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                      size_t initialSkipCount ) const;
-  bool constructRAIIHandleMemberFunctionVoid( std::string &                                      functionDeclarations,
-                                              std::string &                                      functionDefinitions,
-                                              std::map<std::string, CommandData>::const_iterator commandIt,
-                                              size_t initialSkipCount ) const;
-  std::tuple<bool, std::string, std::string>
-    constructRAIIHandleMemberFunctionVoid0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                  size_t initialSkipCount ) const;
-  std::tuple<bool, std::string, std::string>
+                                                    std::vector<size_t> const & returnParamIndices,
+                                                    bool                        definition ) const;
+  std::string constructRAIIHandleMemberFunctionDeclarations( std::pair<std::string, HandleData> const & handle,
+                                                             std::set<std::string> const & specialFunctions ) const;
+  std::string constructRAIIHandleMemberFunctionType( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                     size_t                           initialSkipCount,
+                                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                                     bool                             definition ) const;
+  std::string constructRAIIHandleMemberFunctionVkType( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                       size_t                           initialSkipCount,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       bool                             definition ) const;
+  std::string constructRAIIHandleMemberFunctionValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                      size_t initialSkipCount,
+                                                      bool   definition ) const;
+  std::string constructRAIIHandleMemberFunctionValue0Return(
+    std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
+  std::string constructRAIIHandleMemberFunctionVoid( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                     size_t initialSkipCount,
+                                                     bool   definition ) const;
+  std::string constructRAIIHandleMemberFunctionVoid0Return(
+    std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionVoid1Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                   size_t                                             initialSkipCount,
-                                                  size_t returnParamIndex ) const;
-  std::tuple<bool, std::string, std::string>
+                                                  size_t                                             returnParamIndex,
+                                                  bool                                               definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionVoid2Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                   size_t                                             initialSkipCount,
-                                                  std::vector<size_t> const & returnParamIndices ) const;
-  std::pair<std::string, std::string>
+                                                  std::vector<size_t> const &                        returnParamIndices,
+                                                  bool                                               definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionVoidEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
                                                     size_t                                             initialSkipCount,
                                                     std::map<size_t, size_t> const & vectorParamIndices,
-                                                    std::vector<size_t> const & nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string> constructRAIIHandleMemberFunctionVoidEnumerateChain(
-    std::map<std::string, CommandData>::const_iterator commandIt,
-    size_t                                             initialSkipCount,
-    std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string>
+                                                    std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                    bool                             definition ) const;
+  std::string
+    constructRAIIHandleMemberFunctionVoidEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                         size_t                           initialSkipCount,
+                                                         std::map<size_t, size_t> const & vectorParamIndices,
+                                                         std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                         bool                             definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionVoidGetChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                    size_t                                             initialSkipCount,
                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                   std::vector<size_t> const &      nonConstPointerParamIndices ) const;
-  std::pair<std::string, std::string>
+                                                   std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                   bool                             definition ) const;
+  std::string
     constructRAIIHandleMemberFunctionVoidGetValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                                    size_t                                             initialSkipCount,
                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                   std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+                                                   std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                   bool                             definition ) const;
   std::string constructRAIIHandleSingularConstructorArguments(
     std::pair<std::string, HandleData> const &         handle,
     std::map<std::string, CommandData>::const_iterator constructorIt ) const;
@@ -1059,6 +1081,7 @@ private:
   std::string determineEnhancedReturnType( CommandData const & commandData,
                                            size_t              returnParamIndex,
                                            bool                isStructureChain ) const;
+  size_t      determineInitialSkipCount( std::string const & command ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
                                      std::map<std::string, CommandData>::const_iterator destructorIt,
@@ -1198,7 +1221,6 @@ private:
   void registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
   void renameFunctionParameters();
   void rescheduleRAIIHandle( std::string &                              str,
-                             std::string &                              commandDefinitions,
                              std::pair<std::string, HandleData> const & handle,
                              std::set<std::string> &                    listedHandles,
                              std::set<std::string> const &              specialFunctions ) const;

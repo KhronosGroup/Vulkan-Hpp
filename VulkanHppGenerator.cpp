@@ -632,7 +632,7 @@ std::string toUpperCase( std::string const & name )
   bool        previousIsDigit     = false;
   for ( auto c : name )
   {
-    if ( ( isupper( c ) && ( previousIsLowerCase || previousIsDigit ) ) || ( isdigit( c ) && !previousIsDigit ) )
+    if ( ( isupper( c ) && ( previousIsLowerCase || previousIsDigit ) ) || ( isdigit( c ) && previousIsLowerCase ) )
     {
       convertedName.push_back( '_' );
     }
@@ -12731,20 +12731,19 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
     if ( attribute.first == "bitpos" )
     {
       bitpos = attribute.second;
-      check( !bitpos.empty(), line, "enum with empty bitpos" );
     }
     else if ( attribute.first == "name" )
     {
       name = attribute.second;
-      check( !name.empty(), line, "enum with empty name" );
     }
     else if ( attribute.first == "value" )
     {
       value = attribute.second;
-      check( !value.empty(), line, "enum with empty value" );
     }
   }
-  assert( !name.empty() );
+  warn( beginsWith( name, prefix ),
+        line,
+        "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
   std::string tag = findTag( m_tags, name, postfix );
 

@@ -132,26 +132,33 @@ private:
 
   struct EnumAliasData
   {
-    EnumAliasData( std::string const & vulkanValue_, std::string const & vkValue_, int line )
-      : vulkanValue( vulkanValue_ ), vkValue( vkValue_ ), xmlLine( line )
+    EnumAliasData( std::string const & name_, std::string const & translatedName_, int line )
+      : name( name_ ), translatedName( translatedName_ ), xmlLine( line )
     {}
 
-    std::string vulkanValue;
-    std::string vkValue;
+    std::string name;            // the original name
+    std::string translatedName;  // the name translated into vk-namespace
     int         xmlLine;
   };
 
   struct EnumValueData
   {
-    EnumValueData(
-      int line, std::string const & vulkan, std::string const & vk, std::string const & extension_, bool singleBit_ )
-      : vulkanValue( vulkan ), vkValue( vk ), extension( extension_ ), singleBit( singleBit_ ), xmlLine( line )
+    EnumValueData( int                 line,
+                   std::string const & name_,
+                   std::string const & extension_,
+                   bool                singleBit_,
+                   std::string const & translatedName_ )
+      : name( name_ )
+      , extension( extension_ )
+      , singleBit( singleBit_ )
+      , translatedName( translatedName_ )
+      , xmlLine( line )
     {}
 
-    std::string vulkanValue;
-    std::string vkValue;
+    std::string name;  // the original name
     std::string extension;
     bool        singleBit;
+    std::string translatedName;  // the name translated into vk-namespace
     int         xmlLine;
   };
 

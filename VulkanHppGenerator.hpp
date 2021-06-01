@@ -132,48 +132,29 @@ private:
 
   struct EnumAliasData
   {
-    EnumAliasData( std::string const & name_, std::string const & translatedName_, int line )
-      : name( name_ ), translatedName( translatedName_ ), xmlLine( line )
-    {}
+    EnumAliasData( std::string const & name_, int line ) : name( name_ ), xmlLine( line ) {}
 
-    std::string name;            // the original name
-    std::string translatedName;  // the name translated into vk-namespace
+    std::string name;
     int         xmlLine;
   };
 
   struct EnumValueData
   {
-    EnumValueData( int                 line,
-                   std::string const & name_,
-                   std::string const & extension_,
-                   bool                singleBit_,
-                   std::string const & translatedName_ )
-      : name( name_ )
-      , extension( extension_ )
-      , singleBit( singleBit_ )
-      , translatedName( translatedName_ )
-      , xmlLine( line )
+    EnumValueData( int line, std::string const & name_, std::string const & extension_, bool singleBit_ )
+      : name( name_ ), extension( extension_ ), singleBit( singleBit_ ), xmlLine( line )
     {}
 
-    std::string name;  // the original name
+    std::string name;
     std::string extension;
     bool        singleBit;
-    std::string translatedName;  // the name translated into vk-namespace
     int         xmlLine;
   };
 
   struct EnumData
   {
     EnumData( int line ) : xmlLine( line ) {}
-    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & vkName );
-    void addEnumValue( int                 line,
-                       std::string const & valueName,
-                       bool                bitmask,
-                       bool                bitpos,
-                       std::string const & prefix,
-                       std::string const & postfix,
-                       std::string const & extension,
-                       std::string const & tag );
+    void addEnumAlias( int line, std::string const & name, std::string const & alias );
+    void addEnumValue( int line, std::string const & valueName, bool bitpos, std::string const & extension );
 
     std::string                          alias;  // alias for this enum
     std::map<std::string, EnumAliasData> aliases;
@@ -519,7 +500,8 @@ private:
   void        appendEnumInitializer( std::string &                      str,
                                      TypeInfo const &                   type,
                                      std::vector<std::string> const &   arraySizes,
-                                     std::vector<EnumValueData> const & values ) const;
+                                     std::vector<EnumValueData> const & values,
+                                     bool                               bitmask ) const;
   void        appendEnumToString( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
   std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &       str,
                                                              std::string const & indentation,
@@ -1123,7 +1105,6 @@ private:
                                  std::string const &                                          structName,
                                  std::string const &                                          prefix,
                                  bool mutualExclusiveLens ) const;
-  std::string getEnumPrefix( int line, std::string const & name, bool bitmask ) const;
   std::string getPlatform( std::string const & extension ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
@@ -1150,23 +1131,13 @@ private:
   void                                readCommands( tinyxml2::XMLElement const * element );
   std::string                         readComment( tinyxml2::XMLElement const * element );
   void readDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readEnum( tinyxml2::XMLElement const * element,
-                 EnumData &                   enumData,
-                 bool                         bitmask,
-                 std::string const &          prefix,
-                 std::string const &          postfix );
+  void readEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
   void readEnum( tinyxml2::XMLElement const *               element,
                  std::map<std::string, std::string> const & attributes,
-                 EnumData &                                 enumData,
-                 bool                                       bitmask,
-                 std::string const &                        prefix,
-                 std::string const &                        postfix );
+                 std::map<std::string, EnumData>::iterator  enumIt );
   void readEnumAlias( tinyxml2::XMLElement const *               element,
                       std::map<std::string, std::string> const & attributes,
-                      EnumData &                                 enumData,
-                      bool                                       bitmask,
-                      std::string const &                        prefix,
-                      std::string const &                        postfix );
+                      EnumData &                                 enumData );
   void readEnumConstant( tinyxml2::XMLElement const * element );
   void readEnums( tinyxml2::XMLElement const * element );
   void readExtension( tinyxml2::XMLElement const * element );
@@ -1174,8 +1145,7 @@ private:
   void readExtensionDisabledRequire( tinyxml2::XMLElement const * element );
   void readExtensionDisabledType( tinyxml2::XMLElement const * element );
   void readExtensionRequire( tinyxml2::XMLElement const *                   element,
-                             std::map<std::string, ExtensionData>::iterator extensionIt,
-                             std::string const &                            tag );
+                             std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensionRequireCommand( tinyxml2::XMLElement const *                   element,
                                     std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensionRequireType( tinyxml2::XMLElement const *                   element,
@@ -1194,14 +1164,12 @@ private:
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  void readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension, std::string const & tag );
-  void readRequireEnum( tinyxml2::XMLElement const *               element,
-                        std::map<std::string, std::string> const & attributes,
-                        std::string const &                        extension,
-                        std::string const &                        tag );
-  void readRequireEnumAlias( tinyxml2::XMLElement const *               element,
-                             std::map<std::string, std::string> const & attributes,
-                             std::string const &                        tag );
+  void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension );
+  void                          readRequireEnum( tinyxml2::XMLElement const *               element,
+                                                 std::map<std::string, std::string> const & attributes,
+                                                 std::string const &                        extension );
+  void                          readRequireEnumAlias( tinyxml2::XMLElement const *               element,
+                                                      std::map<std::string, std::string> const & attributes );
   void readRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readSPIRVCapability( tinyxml2::XMLElement const * element );
   void readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );

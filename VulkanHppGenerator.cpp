@@ -41,28 +41,27 @@ std::vector<std::string> extractHandleCommands( std::vector<std::string> const &
                                                 std::set<std::string> const &    handleCommands,
                                                 std::set<std::string> &          listedCommands );
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
-std::string generateEnumValueName( std::string const & name,
-                                   std::string const & prefix,
-                                   std::string const & postfix,
-                                   bool                bitmask,
-                                   std::string const & tag );
+std::string generateEnumValueName( std::string const &           enumName,
+                                   std::string const &           valueName,
+                                   bool                          bitmask,
+                                   std::set<std::string> const & tags );
 std::string generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element );
-std::string getEnumPostfix( std::string const & name, std::set<std::string> const & tags, std::string & prefix );
-std::string namespacedType( std::string const & type );
-std::string readTypePostfix( tinyxml2::XMLNode const * node );
-std::string readTypePrefix( tinyxml2::XMLNode const * node );
-void        replaceAll( std::string & str, std::string const & from, std::string const & to );
-std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
-std::string startLowerCase( std::string const & input );
-std::string startUpperCase( std::string const & input );
-std::string stripPostfix( std::string const & value, std::string const & postfix );
-std::string stripPluralS( std::string const & name );
-std::string stripPrefix( std::string const & value, std::string const & prefix );
-std::string toCamelCase( std::string const & value );
-std::string toUpperCase( std::string const & name );
+std::pair<std::string, std::string>
+                         getEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags );
+std::string              readTypePostfix( tinyxml2::XMLNode const * node );
+std::string              readTypePrefix( tinyxml2::XMLNode const * node );
+void                     replaceAll( std::string & str, std::string const & from, std::string const & to );
+std::string              replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
+std::string              startLowerCase( std::string const & input );
+std::string              startUpperCase( std::string const & input );
+std::string              stripPostfix( std::string const & value, std::string const & postfix );
+std::string              stripPluralS( std::string const & name );
+std::string              stripPrefix( std::string const & value, std::string const & prefix );
+std::string              toCamelCase( std::string const & value );
+std::string              toUpperCase( std::string const & name );
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
 std::string              trim( std::string const & input );
 std::string              trimEnd( std::string const & input );
@@ -330,13 +329,20 @@ std::string findTag( std::set<std::string> const & tags, std::string const & nam
   return ( tagIt != tags.end() ) ? *tagIt : "";
 }
 
-std::string generateEnumValueName( std::string const & name,
-                                   std::string const & prefix,
-                                   std::string const & postfix,
-                                   bool                bitmask,
-                                   std::string const & tag )
+std::string generateEnumValueName( std::string const &           enumName,
+                                   std::string const &           valueName,
+                                   bool                          bitmask,
+                                   std::set<std::string> const & tags )
 {
-  std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( name, prefix ), postfix ) );
+  std::string prefix, postfix;
+  std::tie( prefix, postfix ) = getEnumSuffixes( enumName, bitmask, tags );
+  std::string tag             = findTag( tags, valueName, "" );
+  if ( postfix == "_" + tag )
+  {
+    tag = findTag( tags, valueName, postfix );
+  }
+
+  std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
   if ( bitmask )
   {
     size_t pos = result.find( "Bit" );
@@ -385,11 +391,33 @@ std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer con
   return childElements;
 }
 
-std::string getEnumPostfix( std::string const & name, std::set<std::string> const & tags, std::string & prefix )
+std::pair<std::string, std::string>
+  getEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags )
 {
-  std::string postfix;
-  if ( name != "VkResult" )
+  std::string prefix, postfix;
+  if ( name == "VkResult" )
   {
+    prefix = "VK_";
+  }
+  else
+  {
+    if ( bitmask )
+    {
+      // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
+      // end that with "Bit"
+      size_t pos = name.find( "FlagBits" );
+      assert( pos != std::string::npos );
+      std::string shortenedName = name;
+      shortenedName.erase( pos, strlen( "FlagBits" ) );
+      std::string tag = findTag( tags, shortenedName );
+      prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
+    }
+    else
+    {
+      // for a non-bitmask enum, convert the name to upper case
+      prefix = toUpperCase( name ) + "_";
+    }
+
     // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value names.
     for ( auto const & tag : tags )
     {
@@ -406,7 +434,8 @@ std::string getEnumPostfix( std::string const & name, std::set<std::string> cons
       }
     }
   }
-  return postfix;
+
+  return std::make_pair( prefix, postfix );
 }
 
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )
@@ -1004,9 +1033,9 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( value.extension );
+      std::string valueName    = generateEnumValueName( "Vk" + name, value.name, true, m_tags );
       allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " +
-                  ( encounteredFlag ? "| " : "  " ) + bitmaskType + "( " + enumName + "::" + value.translatedName +
-                  " )";
+                  ( encounteredFlag ? "| " : "  " ) + bitmaskType + "( " + enumName + "::" + valueName + " )";
       encounteredFlag = true;
       previousEnter   = enter;
       previousLeave   = leave;
@@ -1092,8 +1121,9 @@ void VulkanHppGenerator::appendBitmaskToStringFunction( std::string &           
       {
         std::string enter, leave;
         std::tie( enter, leave ) = generateProtection( evd.extension );
-        str += enter + "    if ( value & " + enumName + "::" + evd.translatedName + " ) result += \"" +
-               evd.translatedName.substr( 1 ) + " | \";\n" + leave;
+        std::string valueName    = generateEnumValueName( "Vk" + enumName, evd.name, true, m_tags );
+        str += enter + "    if ( value & " + enumName + "::" + valueName + " ) result += \"" + valueName.substr( 1 ) +
+               " | \";\n" + leave;
       }
     }
     str += "    return \"{ \" + result.substr(0, result.size() - 3) + \" }\";\n";
@@ -2645,7 +2675,8 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     str += " : " + bitmaskIt->first;
   }
 
-  std::string enumList, previousEnter, previousLeave;
+  std::string           enumList, previousEnter, previousLeave;
+  std::set<std::string> valueNames;
   for ( auto const & value : enumData.second.values )
   {
     std::string enter, leave;
@@ -2654,7 +2685,10 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     {
       enumList += previousLeave + enter;
     }
-    enumList += "    " + value.translatedName + " = " + value.name + ",\n";
+    std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask, m_tags );
+    enumList += "    " + valueName + " = " + value.name + ",\n";
+    assert( valueNames.find( valueName ) == valueNames.end() );
+    valueNames.insert( valueName );
 
     previousEnter = enter;
     previousLeave = leave;
@@ -2663,11 +2697,16 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
 
   for ( auto const & alias : enumData.second.aliases )
   {
+    std::string aliasName =
+      generateEnumValueName( enumData.second.alias.empty() ? enumData.first : enumData.second.alias,
+                             alias.first,
+                             enumData.second.isBitmask,
+                             m_tags );
     // make sure to only list alias values that differ from all non-alias values
-    if ( std::find_if( enumData.second.values.begin(),
-                       enumData.second.values.end(),
-                       [&alias]( EnumValueData const & evd )
-                       { return alias.second.translatedName == evd.translatedName; } ) == enumData.second.values.end() )
+    if ( std::find_if( valueNames.begin(),
+                       valueNames.end(),
+                       [&aliasName]( std::string const & valueName )
+                       { return aliasName == valueName; } ) == valueNames.end() )
     {
 #if !defined( NDEBUG )
       auto enumIt = std::find_if( enumData.second.values.begin(),
@@ -2684,7 +2723,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
       assert( enumIt != enumData.second.values.end() );
       assert( enumIt->extension.empty() || generateProtection( enumIt->extension ).first.empty() );
 #endif
-      enumList += "    " + alias.second.translatedName + " = " + alias.first + ",\n";
+      enumList += "    " + aliasName + " = " + alias.first + ",\n";
     }
   }
   if ( enumList.empty() )
@@ -2780,11 +2819,13 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
 void VulkanHppGenerator::appendEnumInitializer( std::string &                      str,
                                                 TypeInfo const &                   type,
                                                 std::vector<std::string> const &   arraySizes,
-                                                std::vector<EnumValueData> const & values ) const
+                                                std::vector<EnumValueData> const & values,
+                                                bool                               bitmask ) const
 {
   // enum arguments might need special initialization
   assert( type.prefix.empty() && !values.empty() );
-  std::string value = "VULKAN_HPP_NAMESPACE::" + stripPrefix( type.type, "Vk" ) + "::" + values.front().translatedName;
+  std::string valueName = generateEnumValueName( type.type, values.front().name, bitmask, m_tags );
+  std::string value     = "VULKAN_HPP_NAMESPACE::" + stripPrefix( type.type, "Vk" ) + "::" + valueName;
   if ( arraySizes.empty() )
   {
     str += value;
@@ -2837,8 +2878,8 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
       {
         str += previousLeave + enter;
       }
-      str += "      case " + enumName + "::" + value.translatedName + " : return \"" +
-             value.translatedName.substr( 1 ) + "\";\n";
+      std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask, m_tags );
+      str += "      case " + enumName + "::" + valueName + " : return \"" + valueName.substr( 1 ) + "\";\n";
       previousEnter = enter;
       previousLeave = leave;
     }
@@ -3317,13 +3358,14 @@ ${CppTypeFromDebugReportObjectTypeEXT}
 ${usingAlias}${leave})";
 
     std::string className = stripPrefix( handleData.first, "Vk" );
+    std::string valueName = handleData.second.objTypeEnum;
+    valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
 
     auto enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
     assert( enumIt != m_enums.end() );
-    auto valueIt =
-      std::find_if( enumIt->second.values.begin(),
-                    enumIt->second.values.end(),
-                    [&className]( EnumValueData const & evd ) { return evd.translatedName == "e" + className; } );
+    auto                     valueIt                                     = std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&valueName]( EnumValueData const & evd ) { return valueName == evd.name; } );
     static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::e${className}>
@@ -3335,8 +3377,9 @@ ${usingAlias}${leave})";
       ( valueIt != enumIt->second.values.end() )
                      ? replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } )
                      : "";
-    std::string debugReportObjectType =
-      ( valueIt != enumIt->second.values.end() ) ? valueIt->translatedName : "eUnknown";
+    std::string debugReportObjectType = ( valueIt != enumIt->second.values.end() )
+                                          ? generateEnumValueName( enumIt->first, valueIt->name, false, m_tags )
+                                          : "eUnknown";
 
     std::string enter, leave;
     std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
@@ -3364,7 +3407,7 @@ ${usingAlias}${leave})";
                              { "enter", enter },
                              { "leave", leave },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", valueIt->translatedName },
+                             { "objTypeEnum", generateEnumValueName( enumIt->first, valueIt->name, false, m_tags ) },
                              { "usingAlias", usingAlias } } );
   }
 
@@ -3649,18 +3692,19 @@ ${enter}  class ${className} : public SystemError
   };
 ${leave})";
 
-  auto enumData = m_enums.find( "VkResult" );
-  for ( auto const & value : enumData->second.values )
+  auto enumIt = m_enums.find( "VkResult" );
+  for ( auto const & value : enumIt->second.values )
   {
-    if ( beginsWith( value.translatedName, "eError" ) )
+    if ( beginsWith( value.name, "VK_ERROR" ) )
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( value.extension );
+      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
       str += replaceWithMap( templateString,
-                             { { "className", stripPrefix( value.translatedName, "eError" ) + "Error" },
+                             { { "className", stripPrefix( valueName, "eError" ) + "Error" },
                                { "enter", enter },
-                               { "enumName", stripPrefix( enumData->first, "Vk" ) },
-                               { "enumMemberName", value.translatedName },
+                               { "enumName", stripPrefix( enumIt->first, "Vk" ) },
+                               { "enumMemberName", valueName },
                                { "leave", leave } } );
     }
   }
@@ -3703,16 +3747,18 @@ void VulkanHppGenerator::appendRAIIHandle( std::string &                        
                     enumIt->second.values.end(),
                     [&handle]( EnumValueData const & evd ) { return evd.name == handle.second.objTypeEnum; } );
     assert( valueIt != enumIt->second.values.end() );
-    std::string objTypeEnum = valueIt->translatedName;
+    std::string objTypeEnum = generateEnumValueName( enumIt->first, valueIt->name, false, m_tags );
 
     enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
     assert( enumIt != m_enums.end() );
-    valueIt =
-      std::find_if( enumIt->second.values.begin(),
-                    enumIt->second.values.end(),
-                    [&handleType]( EnumValueData const & evd ) { return evd.translatedName == "e" + handleType; } );
-    std::string debugReportObjectType =
-      ( valueIt != enumIt->second.values.end() ) ? valueIt->translatedName : "eUnknown";
+    std::string valueName             = handle.second.objTypeEnum;
+    valueName                         = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
+    valueIt                           = std::find_if( enumIt->second.values.begin(),
+                            enumIt->second.values.end(),
+                            [&valueName]( EnumValueData const & evd ) { return valueName == evd.name; } );
+    std::string debugReportObjectType = ( valueIt != enumIt->second.values.end() )
+                                          ? generateEnumValueName( enumIt->first, valueIt->name, false, m_tags )
+                                          : "eUnknown";
 
     std::string dispatcherType =
       ( ( handle.first == "VkDevice" ) ||
@@ -10457,7 +10503,8 @@ bool VulkanHppGenerator::appendStructConstructorArgument( std::string &      str
       auto enumIt = m_enums.find( memberData.type.type );
       if ( enumIt != m_enums.end() && memberData.type.postfix.empty() )
       {
-        appendEnumInitializer( str, memberData.type, memberData.arraySizes, enumIt->second.values );
+        appendEnumInitializer(
+          str, memberData.type, memberData.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
       }
       else
       {
@@ -10502,14 +10549,15 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
       assert( enumIt != m_enums.end() );
       {
         std::string enumValue = member.values.front();
-        auto        nameIt    = std::find_if( enumIt->second.values.begin(),
-                                    enumIt->second.values.end(),
-                                    [&enumValue]( EnumValueData const & evd ) { return enumValue == evd.name; } );
-        assert( nameIt != enumIt->second.values.end() );
-        str += " = " + stripPrefix( member.type.type, "Vk" ) + "::" + nameIt->translatedName;
+        auto        valueIt   = std::find_if( enumIt->second.values.begin(),
+                                     enumIt->second.values.end(),
+                                     [&enumValue]( EnumValueData const & evd ) { return enumValue == evd.name; } );
+        assert( valueIt != enumIt->second.values.end() );
+        std::string valueName = generateEnumValueName( enumIt->first, valueIt->name, enumIt->second.isBitmask, m_tags );
+        str += " = " + stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
         {
-          sTypeValue = nameIt->translatedName;
+          sTypeValue = valueName;
         }
       }
     }
@@ -10528,7 +10576,7 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
         auto enumIt = m_enums.find( member.type.type );
         if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
         {
-          appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values );
+          appendEnumInitializer( str, member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
         }
         else
         {
@@ -10866,7 +10914,7 @@ void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
 
 void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
 {
-  auto enumData = m_enums.find( "VkResult" );
+  auto enumIt = m_enums.find( "VkResult" );
 
   str +=
     "\n"
@@ -10874,14 +10922,15 @@ void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
     "  {\n"
     "    switch ( result )\n"
     "    {\n";
-  for ( auto const & value : enumData->second.values )
+  for ( auto const & value : enumIt->second.values )
   {
-    if ( beginsWith( value.translatedName, "eError" ) )
+    if ( beginsWith( value.name, "VK_ERROR" ) )
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( value.extension );
-      str += enter + "      case Result::" + value.translatedName + ": throw " +
-             stripPrefix( value.translatedName, "eError" ) + "Error( message );\n" + leave;
+      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
+      str += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) +
+             "Error( message );\n" + leave;
     }
   }
   str +=
@@ -11101,49 +11150,25 @@ void VulkanHppGenerator::appendUniqueTypes( std::string &                 str,
   str += "#endif /*VULKAN_HPP_NO_SMART_HANDLE*/\n";
 }
 
-void VulkanHppGenerator::EnumData::addEnumAlias( int                 line,
-                                                 std::string const & name,
-                                                 std::string const & aliasName,
-                                                 std::string const & vkName )
+void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & aliasName )
 {
   auto aliasIt = aliases.find( name );
   check( ( aliasIt == aliases.end() ) || ( aliasIt->second.name == aliasName ),
          line,
          "enum alias <" + name + "> already listed for a different enum value" );
-
-  // only list aliases that map to different vkNames
-  aliasIt = std::find_if( aliases.begin(),
-                          aliases.end(),
-                          [&vkName]( std::pair<std::string, EnumAliasData> const & aliasEntry )
-                          { return vkName == aliasEntry.second.translatedName; } );
-  if ( aliasIt == aliases.end() )
-  {
-    aliases.insert( std::make_pair( name, EnumAliasData( aliasName, vkName, line ) ) );
-  }
+  aliases.insert( std::make_pair( name, EnumAliasData( aliasName, line ) ) );
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue( int                 line,
                                                  std::string const & valueName,
-                                                 bool                bitmask,
                                                  bool                bitpos,
-                                                 std::string const & prefix,
-                                                 std::string const & postfix,
-                                                 std::string const & extension,
-                                                 std::string const & tag )
+                                                 std::string const & extension )
 {
-  std::string translatedName = generateEnumValueName( valueName, prefix, postfix, bitmask, tag );
-
-  auto it =
-    std::find_if( values.begin(),
-                  values.end(),
-                  [&translatedName]( EnumValueData const & evd ) { return evd.translatedName == translatedName; } );
-  if ( it == values.end() )
+  auto valueIt = std::find_if(
+    values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
+  if ( valueIt == values.end() )
   {
-    values.emplace_back( line, valueName, extension, bitpos, translatedName );
-  }
-  else
-  {
-    check( it->name == valueName, line, "enum value <" + valueName + "> maps to same C++-name as <" + it->name + ">" );
+    values.emplace_back( line, valueName, extension, bitpos );
   }
 }
 
@@ -11304,7 +11329,7 @@ void VulkanHppGenerator::checkCorrectness()
   }
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
-    if ( objectTypeValue.translatedName != "eUnknown" )
+    if ( objectTypeValue.name != "VK_OBJECT_TYPE_UNKNOWN" )
     {
       check( std::find_if( m_handles.begin(),
                            m_handles.end(),
@@ -11793,26 +11818,27 @@ void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
   std::set<std::string> seenCppTypes;
   for ( auto const & value : indexType->second.values )
   {
+    std::string valueName = generateEnumValueName( indexType->first, value.name, false, m_tags );
     std::string cppType;
-    if ( beginsWith( value.translatedName, "eUint8" ) )
+    if ( beginsWith( valueName, "eUint8" ) )
     {
       cppType = "uint8_t";
     }
-    else if ( beginsWith( value.translatedName, "eUint16" ) )
+    else if ( beginsWith( valueName, "eUint16" ) )
     {
       cppType = "uint16_t";
     }
-    else if ( beginsWith( value.translatedName, "eUint32" ) )
+    else if ( beginsWith( valueName, "eUint32" ) )
     {
       cppType = "uint32_t";
     }
-    else if ( beginsWith( value.translatedName, "eUint64" ) )
+    else if ( beginsWith( valueName, "eUint64" ) )
     {
       cppType = "uint64_t";  // No extension for this currently
     }
     else
     {
-      assert( beginsWith( value.translatedName, "eNone" ) );
+      assert( beginsWith( valueName, "eNone" ) );
     }
 
     if ( !cppType.empty() )
@@ -11830,7 +11856,7 @@ void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
           ">\n"
           "  {\n"
           "    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::" +
-          value.translatedName +
+          valueName +
           ";\n"
           "  };\n";
       }
@@ -11839,7 +11865,7 @@ void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
         "\n"
         "  template <>\n"
         "  struct CppType<IndexType, IndexType::" +
-        value.translatedName +
+        valueName +
         ">\n"
         "  {\n"
         "    using Type = " +
@@ -12081,32 +12107,6 @@ std::string
                  "#endif /*VULKAN_HPP_NO_EXCEPTIONS*/\n" + prefix;
   }
   return sizeCheck;
-}
-
-std::string VulkanHppGenerator::getEnumPrefix( int line, std::string const & name, bool bitmask ) const
-{
-  std::string prefix;
-  if ( name == "VkResult" )
-  {
-    prefix = "VK_";
-  }
-  else if ( bitmask )
-  {
-    // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
-    // end that with "Bit"
-    size_t pos = name.find( "FlagBits" );
-    check( pos != std::string::npos, line, "bitmask <" + name + "> does not contain <FlagBits>" );
-    std::string shortenedName = name;
-    shortenedName.erase( pos, strlen( "FlagBits" ) );
-    std::string tag = findTag( m_tags, shortenedName );
-    prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
-  }
-  else
-  {
-    // for a non-bitmask enum, convert the name to upper case
-    prefix = toUpperCase( name ) + "_";
-  }
-  return prefix;
 }
 
 std::string VulkanHppGenerator::getPlatform( std::string const & extension ) const
@@ -12713,30 +12713,24 @@ void VulkanHppGenerator::readDefine( tinyxml2::XMLElement const *               
   check( m_defines.insert( name ).second, line, "define <" + name + "> has already been specified" );
 }
 
-void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const * element,
-                                   EnumData &                   enumData,
-                                   bool                         bitmask,
-                                   std::string const &          prefix,
-                                   std::string const &          postfix )
+void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *              element,
+                                   std::map<std::string, EnumData>::iterator enumIt )
 {
   std::map<std::string, std::string> attributes = getAttributes( element );
   auto                               aliasIt    = attributes.find( "alias" );
   if ( aliasIt != attributes.end() )
   {
-    readEnumAlias( element, attributes, enumData, bitmask, prefix, postfix );
+    readEnumAlias( element, attributes, enumIt->second );
   }
   else
   {
-    readEnum( element, attributes, enumData, bitmask, prefix, postfix );
+    readEnum( element, attributes, enumIt );
   }
 }
 
 void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               element,
                                    std::map<std::string, std::string> const & attributes,
-                                   EnumData &                                 enumData,
-                                   bool                                       bitmask,
-                                   std::string const &                        prefix,
-                                   std::string const &                        postfix )
+                                   std::map<std::string, EnumData>::iterator  enumIt )
 {
   int line = element->GetLineNum();
   checkAttributes( line, attributes, { { "name", {} } }, { { "bitpos", {} }, { "comment", {} }, { "value", {} } } );
@@ -12758,22 +12752,19 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
       value = attribute.second;
     }
   }
+
+  std::string prefix = getEnumSuffixes( enumIt->first, enumIt->second.isBitmask, m_tags ).first;
   warn( beginsWith( name, prefix ),
         line,
         "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
-  std::string tag = findTag( m_tags, name, postfix );
-
   check( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
-  enumData.addEnumValue( line, name, bitmask, !bitpos.empty(), prefix, postfix, "", tag );
+  enumIt->second.addEnumValue( line, name, !bitpos.empty(), "" );
 }
 
 void VulkanHppGenerator::readEnumAlias( tinyxml2::XMLElement const *               element,
                                         std::map<std::string, std::string> const & attributes,
-                                        EnumData &                                 enumData,
-                                        bool                                       bitmask,
-                                        std::string const &                        prefix,
-                                        std::string const &                        postfix )
+                                        EnumData &                                 enumData )
 {
   int line = element->GetLineNum();
   checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "comment", {} } } );
@@ -12795,8 +12786,7 @@ void VulkanHppGenerator::readEnumAlias( tinyxml2::XMLElement const *            
   }
   assert( !name.empty() );
 
-  std::string tag = findTag( m_tags, name, postfix );
-  enumData.addEnumAlias( line, name, alias, generateEnumValueName( name, prefix, postfix, bitmask, tag ) );
+  enumData.addEnumAlias( line, name, alias );
 }
 
 void VulkanHppGenerator::readEnumConstant( tinyxml2::XMLElement const * element )
@@ -12876,14 +12866,15 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
     check( !type.empty(), line, "enum without type" );
 
     // get the EnumData entry in enum map
-    std::map<std::string, EnumData>::iterator it = m_enums.find( name );
-    check( it != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
-    check( it->second.values.empty(), line, "enum <" + name + "> already holds values" );
+    std::map<std::string, EnumData>::iterator enumIt = m_enums.find( name );
+    check( enumIt != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
+    check( enumIt->second.values.empty(), line, "enum <" + name + "> already holds values" );
 
     // mark it as a bitmask, if it is one
     bool bitmask = ( type == "bitmask" );
     if ( bitmask )
     {
+      check( name.find( "FlagBits" ) != std::string::npos, line, "bitmask <" + name + "> does not contain <FlagBits>" );
       auto bitmaskIt = std::find_if( m_bitmasks.begin(),
                                      m_bitmasks.end(),
                                      [&name]( auto const & bitmask ) { return bitmask.second.requirements == name; } );
@@ -12895,10 +12886,8 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
              "enum <" + name + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first +
                "> is not of type <VkFlags64>" );
     }
-    it->second.isBitmask = bitmask;
+    enumIt->second.isBitmask = bitmask;
 
-    std::string prefix  = getEnumPrefix( line, name, bitmask );
-    std::string postfix = getEnumPostfix( name, m_tags, prefix );
     // read the names of the enum values
     for ( auto child : children )
     {
@@ -12909,7 +12898,7 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
       }
       else if ( value == "enum" )
       {
-        readEnum( child, it->second, bitmask, prefix, postfix );
+        readEnum( child, enumIt );
       }
     }
   }
@@ -13031,7 +13020,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
 
     for ( auto child : children )
     {
-      readExtensionRequire( child, pitb.first, tag );
+      readExtensionRequire( child, pitb.first );
     }
   }
 }
@@ -13144,8 +13133,7 @@ void VulkanHppGenerator::readExtensionDisabledType( tinyxml2::XMLElement const *
 }
 
 void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *                   element,
-                                               std::map<std::string, ExtensionData>::iterator extensionIt,
-                                               std::string const &                            tag )
+                                               std::map<std::string, ExtensionData>::iterator extensionIt )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -13182,7 +13170,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionIt->first, tag );
+      readRequireEnum( child, extensionIt->first );
     }
     else if ( value == "type" )
     {
@@ -13340,7 +13328,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const *       
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, "", "" );
+      readRequireEnum( child, "" );
     }
     else if ( value == "type" )
     {
@@ -13697,25 +13685,22 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   }
 }
 
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element,
-                                          std::string const &          extension,
-                                          std::string const &          tag )
+void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension )
 {
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
   {
-    readRequireEnumAlias( element, attributes, tag );
+    readRequireEnumAlias( element, attributes );
   }
   else
   {
-    readRequireEnum( element, attributes, extension, tag );
+    readRequireEnum( element, attributes, extension );
   }
 }
 
 void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *               element,
                                           std::map<std::string, std::string> const & attributes,
-                                          std::string const &                        extension,
-                                          std::string const &                        tag )
+                                          std::string const &                        extension )
 {
   int line = element->GetLineNum();
   checkAttributes( line,
@@ -13773,16 +13758,12 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
     auto enumIt = m_enums.find( extends );
     check( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
 
-    std::string prefix  = getEnumPrefix( element->GetLineNum(), enumIt->first, enumIt->second.isBitmask );
-    std::string postfix = getEnumPostfix( enumIt->first, m_tags, prefix );
-
     // add this enum name to the list of values
     check( bitpos.empty() + offset.empty() + value.empty() == 2,
            line,
            "exactly one out of bitpos = <" + bitpos + ">, offset = <" + offset + ">, and value = <" + value +
              "> are supposed to be empty" );
-    enumIt->second.addEnumValue(
-      element->GetLineNum(), name, enumIt->second.isBitmask, !bitpos.empty(), prefix, postfix, extension, tag );
+    enumIt->second.addEnumValue( element->GetLineNum(), name, !bitpos.empty(), extension );
   }
   else if ( value.empty() )
   {
@@ -13791,8 +13772,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
 }
 
 void VulkanHppGenerator::readRequireEnumAlias( tinyxml2::XMLElement const *               element,
-                                               std::map<std::string, std::string> const & attributes,
-                                               std::string const &                        tag )
+                                               std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
   checkAttributes( line, attributes, { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "comment", {} } } );
@@ -13818,22 +13798,8 @@ void VulkanHppGenerator::readRequireEnumAlias( tinyxml2::XMLElement const *     
   auto enumIt = m_enums.find( extends );
   check( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
 
-  std::string prefix  = getEnumPrefix( element->GetLineNum(), enumIt->first, enumIt->second.isBitmask );
-  std::string postfix = getEnumPostfix( enumIt->first, m_tags, prefix );
-
   // add this enum name to the list of aliases
-  std::string valueName = generateEnumValueName( name, prefix, postfix, enumIt->second.isBitmask, tag );
-  if ( !enumIt->second.alias.empty() )
-  {
-    prefix  = getEnumPrefix( element->GetLineNum(), enumIt->second.alias, enumIt->second.isBitmask );
-    postfix = getEnumPostfix( enumIt->second.alias, m_tags, prefix );
-    if ( endsWith( name, postfix ) )
-    {
-      valueName = generateEnumValueName( name, prefix, postfix, enumIt->second.isBitmask, tag );
-    }
-  }
-
-  enumIt->second.addEnumAlias( line, name, alias, valueName );
+  enumIt->second.addEnumAlias( line, name, alias );
 }
 
 void VulkanHppGenerator::readRequires( tinyxml2::XMLElement const *               element,

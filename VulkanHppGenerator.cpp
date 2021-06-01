@@ -2518,8 +2518,12 @@ bool VulkanHppGenerator::appendCommandVoid2Return( std::string &               s
 
 void VulkanHppGenerator::appendDestroyCommand( std::string &       str,
                                                std::string const & name,
-                                               CommandData const & commandData,
-                                               std::string const & handleName ) const
+                                               CommandData const & commandData
+#if !defined( NDEBUG )
+                                               ,
+                                               std::string const & handleName
+#endif
+) const
 {
   // special handling for destroy functions, filter out alias functions
   std::string commandName = determineCommandName( name, commandData.params[0].type.type, m_tags );
@@ -3178,7 +3182,14 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
 
           commands += "\n";
           appendCommand( commands, commandIt->first, commandIt->second, 1, false );
-          appendDestroyCommand( commands, commandIt->first, commandIt->second, handleData.first );
+          appendDestroyCommand( commands,
+                                commandIt->first,
+                                commandIt->second
+#if !defined( NDEBUG )
+                                ,
+                                handleData.first
+#endif
+          );
         }
       }
     }
@@ -3201,7 +3212,14 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
             determineCommandName( commandIt->first, commandIt->second.params[0].type.type, m_tags );
           commands += "\n";
           appendCommand( commands, commandIt->first, commandIt->second, 1, false );
-          appendDestroyCommand( commands, commandIt->first, commandIt->second, handleData.first );
+          appendDestroyCommand( commands,
+                                commandIt->first,
+                                commandIt->second
+#if !defined( NDEBUG )
+                                ,
+                                handleData.first
+#endif
+          );
         }
         commands += leave;
       }

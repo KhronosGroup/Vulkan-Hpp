@@ -12453,7 +12453,6 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const *              
                    { { "cmdbufferlevel", { "primary", "secondary" } },
                      { "comment", {} },
                      { "errorcodes", {} },
-                     { "pipeline", { "compute", "graphics", "transfer" } },
                      { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
                      { "renderpass", { "both", "inside", "outside" } },
                      { "successcodes", {} } } );

@@ -18,12 +18,25 @@
 #if defined( _MSC_VER )
 #  pragma warning( push )
 #  pragma warning( disable : 4127 )  // conditional expression is constant (glm)
+#elif defined( __clang__ )
+// no need to ignore any warnings with clang
+#elif defined( __GNUC__ )
+#  if ( 10 <= __GNUC__ ) && ( 201703L < __cplusplus )
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wvolatile"
+#  endif
 #endif
 
 #include <glm/glm.hpp>
 
 #if defined( _MSC_VER )
 #  pragma warning( pop )
+#elif defined( __clang__ )
+// no need to ignore any warnings with clang
+#elif defined( __GNUC__ )
+#  if ( 10 <= __GNUC__ ) && ( 201703L < __cplusplus )
+#    pragma GCC diagnostic pop
+#  endif
 #endif
 
 #include <vulkan/vulkan.hpp>

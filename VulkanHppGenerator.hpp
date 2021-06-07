@@ -1196,6 +1196,7 @@ private:
   void readType( tinyxml2::XMLElement const * element );
   void readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  TypeInfo    readTypeInfo( tinyxml2::XMLElement const * element ) const;
   void readTypes( tinyxml2::XMLElement const * element );
   void registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
   void renameFunctionParameters();

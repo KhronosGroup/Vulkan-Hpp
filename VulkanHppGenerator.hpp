@@ -158,6 +158,7 @@ private:
 
     std::string                          alias;  // alias for this enum
     std::map<std::string, EnumAliasData> aliases;
+    std::string                          bitwidth;
     bool                                 isBitmask = false;
     std::vector<EnumValueData>           values;
     int                                  xmlLine;
@@ -169,7 +170,7 @@ private:
 
     std::vector<std::string>                 commands;
     std::string                              number;
-    std::vector<std::pair<std::string, int>> types;
+    std::vector<std::string>                 types;
   };
 
   struct ExtensionData
@@ -292,6 +293,7 @@ private:
 
 private:
   void addCommand( std::string const & name, CommandData & commandData );
+  void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
   void appendArgumentPlainType( std::string & str, ParamData const & paramData ) const;
   void appendArguments( std::string &                    str,
                         CommandData const &              commandData,
@@ -1067,6 +1069,7 @@ private:
                                         std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                         std::set<size_t> const &                      skippedParams ) const;
   void        checkCorrectness();
+  void        checkEnumCorrectness( std::vector<std::string> const & types ) const;
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
   size_t      determineDefaultStartIndex( std::vector<ParamData> const & params,
@@ -1197,14 +1200,14 @@ private:
   void readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   TypeInfo    readTypeInfo( tinyxml2::XMLElement const * element ) const;
-  void readTypes( tinyxml2::XMLElement const * element );
-  void registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
-  void renameFunctionParameters();
-  void rescheduleRAIIHandle( std::string &                              str,
-                             std::pair<std::string, HandleData> const & handle,
-                             std::set<std::string> &                    listedHandles,
-                             std::set<std::string> const &              specialFunctions ) const;
-  void setVulkanLicenseHeader( int line, std::string const & comment );
+  void        readTypes( tinyxml2::XMLElement const * element );
+  void        registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
+  void        renameFunctionParameters();
+  void        rescheduleRAIIHandle( std::string &                              str,
+                                    std::pair<std::string, HandleData> const & handle,
+                                    std::set<std::string> &                    listedHandles,
+                                    std::set<std::string> const &              specialFunctions ) const;
+  void        setVulkanLicenseHeader( int line, std::string const & comment );
   std::string toString( TypeCategory category );
 
 private:

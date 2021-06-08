@@ -715,6 +715,16 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
   readRegistry( elements[0] );
   checkCorrectness();
 
+  // some "FlagBits" enums are not specified, but needed for our "Flags" handling -> add them here
+  for ( auto & feature : m_features )
+  {
+    addMissingFlagBits( feature.second.types, feature.first );
+  }
+  for ( auto & ext : m_extensions )
+  {
+    addMissingFlagBits( ext.second.types, ext.first );
+  }
+
   for ( auto extensionIt = m_extensions.begin(); extensionIt != m_extensions.end(); ++extensionIt )
   {
     int number = atoi( extensionIt->second.number.c_str() );
@@ -744,6 +754,46 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
   check( handleIt->second.commands.insert( name ).second,
          commandData.xmlLine,
          "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
+}
+
+void VulkanHppGenerator::addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn )
+{
+  std::vector<std::string> newTypes;
+  for ( auto & type : types )
+  {
+    auto bitmaskIt = m_bitmasks.find( type );
+    if ( ( bitmaskIt != m_bitmasks.end() ) && bitmaskIt->second.requirements.empty() )
+    {
+      size_t pos = bitmaskIt->first.find( "Flags" );
+      assert( pos != std::string::npos );
+      std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
+      bitmaskIt->second.requirements = flagBits;
+
+      // some flagsBits are specified but never listed as required for any flags!
+      // so, even if this bitmask has not enum listed as required, it might still already exist in the enums list
+      if ( m_enums.find( flagBits ) == m_enums.end() )
+      {
+        EnumData flagBitsData( 0 );
+        flagBitsData.isBitmask = true;
+        m_enums.insert( std::make_pair( flagBits, flagBitsData ) );
+
+        assert( m_types.find( flagBits ) == m_types.end() );
+        TypeData typeData( TypeCategory::Bitmask );
+        typeData.referencedIn = referencedIn;
+        m_types.insert( std::make_pair( flagBits, typeData ) );
+      }
+      else
+      {
+        assert( m_types.find( flagBits ) != m_types.end() );
+      }
+
+      assert( std::find_if( types.begin(),
+                            types.end(),
+                            [&flagBits]( std::string const & type ) { return ( type == flagBits ); } ) == types.end() );
+      newTypes.push_back( flagBits );
+    }
+  }
+  types.insert( types.end(), newTypes.begin(), newTypes.end() );
 }
 
 void VulkanHppGenerator::appendArgumentPlainType( std::string & str, ParamData const & paramData ) const
@@ -889,11 +939,11 @@ void VulkanHppGenerator::appendBitmasks( std::string & str ) const
     str += "\n  //=== " + feature.first + " ===\n";
     for ( auto const & type : feature.second.types )
     {
-      auto bitmaskIt = m_bitmasks.find( type.first );
+      auto bitmaskIt = m_bitmasks.find( type );
       if ( bitmaskIt != m_bitmasks.end() )
       {
-        assert( listedBitmasks.find( type.first ) == listedBitmasks.end() );
-        listedBitmasks.insert( type.first );
+        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
+        listedBitmasks.insert( type );
         appendBitmask( str, bitmaskIt );
       }
     }
@@ -959,33 +1009,7 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
                                         std::vector<EnumValueData> const & enumValues ) const
 {
   // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
-  // if there's no enum for the FlagBits, introduce an artificial empty one
-  std::string emptyEnumName;
-  if ( enumName.empty() )
-  {
-    emptyEnumName = bitmaskName;
-    size_t pos    = emptyEnumName.rfind( "Flags" );
-    assert( pos != std::string::npos );
-    emptyEnumName.replace( pos, 5, "FlagBits" );
-
-    // if this emptyEnumName is not in the list of enums, list it here
-    if ( m_enums.find( "Vk" + emptyEnumName ) == m_enums.end() )
-    {
-      const std::string templateString = R"x(
-  enum class ${enumName} : ${bitmaskType}
-  {};
-
-  VULKAN_HPP_INLINE std::string to_string( ${enumName} )
-  {
-    return "(void)";
-  }
-)x";
-
-      str += replaceWithMap( templateString, { { "enumName", emptyEnumName }, { "bitmaskType", bitmaskType } } );
-    }
-  }
-  std::string name = ( enumName.empty() ? emptyEnumName : enumName );
-  str += "\n  using " + bitmaskName + " = Flags<" + name + ">;\n";
+  str += "\n  using " + bitmaskName + " = Flags<" + enumName + ">;\n";
 
   if ( !enumValues.empty() )
   {
@@ -996,7 +1020,7 @@ void VulkanHppGenerator::appendBitmask( std::string &                      str,
     {
       std::string enter, leave;
       std::tie( enter, leave ) = generateProtection( value.extension );
-      std::string valueName    = generateEnumValueName( "Vk" + name, value.name, true, m_tags );
+      std::string valueName    = generateEnumValueName( "Vk" + enumName, value.name, true, m_tags );
       allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " +
                   ( encounteredFlag ? "| " : "  " ) + bitmaskType + "( " + enumName + "::" + valueName + " )";
       encounteredFlag = true;
@@ -2730,11 +2754,11 @@ void VulkanHppGenerator::appendEnums( std::string & str ) const
     str += "\n  //=== " + feature.first + " ===\n";
     for ( auto const & type : feature.second.types )
     {
-      auto enumIt = m_enums.find( type.first );
+      auto enumIt = m_enums.find( type );
       if ( enumIt != m_enums.end() )
       {
-        assert( listedEnums.find( type.first ) == listedEnums.end() );
-        listedEnums.insert( type.first );
+        assert( listedEnums.find( type ) == listedEnums.end() );
+        listedEnums.insert( type );
 
         str += "\n";
         appendEnum( str, *enumIt );
@@ -11225,6 +11249,16 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
 
+  // enum checks by features and extensions
+  for ( auto & feature : m_features )
+  {
+    checkEnumCorrectness( feature.second.types );
+  }
+  for ( auto & ext : m_extensions )
+  {
+    checkEnumCorrectness( ext.second.types );
+  }
+
   // extension checks
   for ( auto const & extension : m_extensions )
   {
@@ -11419,6 +11453,29 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
   assert( sTypeValues.empty() );
+}
+
+void VulkanHppGenerator::checkEnumCorrectness( std::vector<std::string> const & types ) const
+{
+  for ( auto const & type : types )
+  {
+    auto enumIt = m_enums.find( type );
+    if ( ( enumIt != m_enums.end() ) && enumIt->second.isBitmask )
+    {
+      auto bitmaskIt =
+        std::find_if( m_bitmasks.begin(),
+                      m_bitmasks.end(),
+                      [&enumIt]( auto const & bitmask ) { return bitmask.second.requirements == enumIt->first; } );
+      check( bitmaskIt != m_bitmasks.end(),
+             enumIt->second.xmlLine,
+             "enum <" + enumIt->first +
+               "> is not listed as an requires or bitvalues for any bitmask in the types section" );
+      check( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+             enumIt->second.xmlLine,
+             "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" +
+               bitmaskIt->first + "> is not of type <VkFlags64>" );
+    }
+  }
 }
 
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
@@ -12835,18 +12892,9 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
     if ( bitmask )
     {
       check( name.find( "FlagBits" ) != std::string::npos, line, "bitmask <" + name + "> does not contain <FlagBits>" );
-      auto bitmaskIt = std::find_if( m_bitmasks.begin(),
-                                     m_bitmasks.end(),
-                                     [&name]( auto const & bitmask ) { return bitmask.second.requirements == name; } );
-      check( bitmaskIt != m_bitmasks.end(),
-             line,
-             "enum <" + name + "> is not listed as an requires or bitvalues for any bitmask in the types section" );
-      check( ( bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
-             line,
-             "enum <" + name + "> is marked with bitwidth <64> but corresponding bitmask <" + bitmaskIt->first +
-               "> is not of type <VkFlags64>" );
     }
     enumIt->second.isBitmask = bitmask;
+    enumIt->second.bitwidth  = bitwidth;
 
     // read the names of the enum values
     for ( auto child : children )
@@ -13326,13 +13374,8 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
   std::string name          = attributes.find( "name" )->second;
   auto        featureTypeIt = std::find_if( featureIt->second.types.begin(),
                                      featureIt->second.types.end(),
-                                     [&name]( std::pair<std::string, int> const & typeLine )
-                                     { return ( typeLine.first == name ) && ( typeLine.second != 0 ); } );
-  check( featureTypeIt == featureIt->second.types.end(),
-         line,
-         "type <" + name + "> already listed for this feature on line " +
-           ( ( featureTypeIt == featureIt->second.types.end() ) ? "" : std::to_string( featureTypeIt->second ) ) +
-           " !" );
+                                     [&name]( std::string const & type ) { return type == name; } );
+  check( featureTypeIt == featureIt->second.types.end(), line, "type <" + name + "> already listed for this feature!" );
 
   // some types are in fact includes (like vk_platform) or defines (like VK_API_VERSION)
   if ( ( m_defines.find( name ) == m_defines.end() ) && ( m_includes.find( name ) == m_includes.end() ) )
@@ -13344,51 +13387,7 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
            "type <" + name + "> already listed on feature <" + typeIt->second.referencedIn + ">" );
     typeIt->second.referencedIn = featureIt->first;
 
-    // add missing FlagBits here!
-    if ( ( name != "VkFlags" ) && endsWith( name, "Flags" ) )
-    {
-      assert( !featureIt->second.types.empty() );
-      std::string flagBits = name.substr( 0, name.length() - 5 ) + "FlagBits";
-      if ( featureIt->second.types.back().first != flagBits )
-      {
-        assert( std::find_if( featureIt->second.types.begin(),
-                              featureIt->second.types.end(),
-                              [&flagBits]( std::pair<std::string, int> const & typeLine )
-                              { return ( typeLine.first == flagBits ); } ) == featureIt->second.types.end() );
-        featureIt->second.types.push_back( std::make_pair( flagBits, 0 ) );
-      }
-    }
-
-    // filter out FlagBits that are listed after their Flags!
-    // (and therefore have been added right before that Flags, above)
-    bool skipIt = false;
-    if ( endsWith( name, "FlagBits" ) )
-    {
-      assert( !featureIt->second.types.empty() );
-      std::string flags = name.substr( 0, name.length() - 4 ) + "s";
-      if ( featureIt->second.types.back().first == flags )
-      {
-        skipIt          = true;
-        auto flagBitsIt = std::find_if( featureIt->second.types.begin(),
-                                        featureIt->second.types.end(),
-                                        [&name]( std::pair<std::string, int> const & typeLine )
-                                        { return ( typeLine.first == name ); } );
-        assert( flagBitsIt != featureIt->second.types.end() );
-        assert( flagBitsIt->second == 0 );
-        flagBitsIt->second = line;
-      }
-      else
-      {
-        assert( std::find_if( featureIt->second.types.begin(),
-                              featureIt->second.types.end(),
-                              [&flags]( std::pair<std::string, int> const & typeLine )
-                              { return ( typeLine.first == flags ); } ) == featureIt->second.types.end() );
-      }
-    }
-    if ( !skipIt )
-    {
-      featureIt->second.types.push_back( std::make_pair( name, line ) );
-    }
+    featureIt->second.types.push_back( name );
   }
 }
 

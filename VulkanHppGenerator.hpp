@@ -25,8 +25,6 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document );
 
-  void appendBaseTypes( std::string & str ) const;
-  void appendBitmasks( std::string & str ) const;
   void appendDispatchLoaderDynamic( std::string & str );  // use vkGet*ProcAddress to get function pointers
   void appendDispatchLoaderStatic( std::string & str );   // use exported symbols from loader
   void appendDispatchLoaderDefault(
@@ -44,6 +42,8 @@ public:
   void                  appendThrowExceptions( std::string & str ) const;
   void                  appendIndexTypeTraits( std::string & str ) const;
   std::set<std::string> determineSpecialFunctions();
+  std::string           generateBaseTypes() const;
+  std::string           generateBitmasks() const;
   std::string const &   getTypesafeCheck() const;
   std::string const &   getVersion() const;
   std::string const &   getVulkanLicenseHeader() const;
@@ -158,6 +158,7 @@ private:
 
     std::string                          alias;  // alias for this enum
     std::map<std::string, EnumAliasData> aliases;
+    std::string                          bitwidth;
     bool                                 isBitmask = false;
     std::vector<EnumValueData>           values;
     int                                  xmlLine;
@@ -167,9 +168,9 @@ private:
   {
     FeatureData( std::string const & number_ ) : number( number_ ) {}
 
-    std::vector<std::string>                 commands;
-    std::string                              number;
-    std::vector<std::pair<std::string, int>> types;
+    std::vector<std::string> commands;
+    std::string              number;
+    std::vector<std::string> types;
   };
 
   struct ExtensionData
@@ -292,48 +293,7 @@ private:
 
 private:
   void addCommand( std::string const & name, CommandData & commandData );
-  void appendArgumentPlainType( std::string & str, ParamData const & paramData ) const;
-  void appendArguments( std::string &                    str,
-                        CommandData const &              commandData,
-                        size_t                           returnParamIndex,
-                        size_t                           templateParamIndex,
-                        std::map<size_t, size_t> const & vectorParamIndices,
-                        bool                             twoStep,
-                        bool                             firstCall,
-                        size_t                           from,
-                        size_t                           to ) const;
-  void appendArgumentVector( std::string &     str,
-                             size_t            paramIndex,
-                             ParamData const & paramData,
-                             size_t            returnParamIndex,
-                             size_t            templateParamIndex,
-                             bool              twoStep,
-                             bool              firstCall ) const;
-  void appendBitmask( std::string & str, std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
-  void appendBitmask( std::string &                      os,
-                      std::string const &                bitmaskName,
-                      std::string const &                bitmaskType,
-                      std::string const &                bitmaskAlias,
-                      std::string const &                enumName,
-                      std::vector<EnumValueData> const & enumValues ) const;
-  void appendBitmaskToStringFunction( std::string &                      str,
-                                      std::string const &                flagsName,
-                                      std::string const &                enumName,
-                                      std::vector<EnumValueData> const & enumValues ) const;
-  void appendCall( std::string &                    str,
-                   std::string const &              name,
-                   CommandData const &              commandData,
-                   size_t                           returnParamIndex,
-                   size_t                           templateParamIndex,
-                   std::map<size_t, size_t> const & vectorParamIndices,
-                   bool                             twoStep,
-                   bool                             firstCall ) const;
-  void appendCommand( std::string & str, std::string const & command, std::string const & handle ) const;
-  void appendCommand( std::string &       str,
-                      std::string const & name,
-                      CommandData const & commandData,
-                      size_t              initialSkipCount,
-                      bool                definition ) const;
+  void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
   void appendCommandChained( std::string &                    str,
                              std::string const &              name,
                              CommandData const &              commandData,
@@ -1067,6 +1027,7 @@ private:
                                         std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                         std::set<size_t> const &                      skippedParams ) const;
   void        checkCorrectness();
+  void        checkEnumCorrectness( std::vector<std::string> const & types ) const;
   bool        containsArray( std::string const & type ) const;
   bool        containsUnion( std::string const & type ) const;
   size_t      determineDefaultStartIndex( std::vector<ParamData> const & params,
@@ -1094,6 +1055,19 @@ private:
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
+  std::string              generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string              generateCommand( std::string const & name,
+                                            CommandData const & commandData,
+                                            size_t              initialSkipCount,
+                                            bool                definition ) const;
+  std::string              generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
+  std::string              generateFunctionCall( std::string const &              name,
+                                                 CommandData const &              commandData,
+                                                 size_t                           returnParamIndex,
+                                                 size_t                           templateParamIndex,
+                                                 std::map<size_t, size_t> const & vectorParamIndices,
+                                                 bool                             twoStep,
+                                                 bool                             firstCall ) const;
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,
@@ -1196,14 +1170,15 @@ private:
   void readType( tinyxml2::XMLElement const * element );
   void readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readTypes( tinyxml2::XMLElement const * element );
-  void registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
-  void renameFunctionParameters();
-  void rescheduleRAIIHandle( std::string &                              str,
-                             std::pair<std::string, HandleData> const & handle,
-                             std::set<std::string> &                    listedHandles,
-                             std::set<std::string> const &              specialFunctions ) const;
-  void setVulkanLicenseHeader( int line, std::string const & comment );
+  TypeInfo    readTypeInfo( tinyxml2::XMLElement const * element ) const;
+  void        readTypes( tinyxml2::XMLElement const * element );
+  void        registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
+  void        renameFunctionParameters();
+  void        rescheduleRAIIHandle( std::string &                              str,
+                                    std::pair<std::string, HandleData> const & handle,
+                                    std::set<std::string> &                    listedHandles,
+                                    std::set<std::string> const &              specialFunctions ) const;
+  void        setVulkanLicenseHeader( int line, std::string const & comment );
   std::string toString( TypeCategory category );
 
 private:

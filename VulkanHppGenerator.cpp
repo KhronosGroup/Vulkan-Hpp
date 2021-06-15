@@ -68,6 +68,7 @@ std::string              trim( std::string const & input );
 std::string              trimEnd( std::string const & input );
 std::string              trimStars( std::string const & input );
 void                     warn( bool condition, int line, std::string const & message );
+void                     writeToFile( std::string const & str, std::string const & fileName );
 
 const std::set<std::string> ignoreLens          = { "null-terminated",
                                            R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
@@ -700,6 +701,24 @@ void warn( bool condition, int line, std::string const & message )
     std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!"
               << std::endl;
   }
+}
+
+void writeToFile( std::string const & str, std::string const & fileName )
+{
+  std::ofstream ofs( fileName );
+  assert( !ofs.fail() );
+  ofs << str;
+  ofs.close();
+
+#if defined( CLANG_FORMAT_EXECUTABLE )
+  std::cout << "VulkanHppGenerator: Formatting " << fileName << " ..." << std::endl;
+  std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
+  int ret = std::system( commandString.c_str() );
+  if ( ret != 0 )
+  {
+    std::cout << "VulkanHppGenerator: failed to format file " << fileName << " with error <" << ret << ">\n";
+  }
+#endif
 }
 
 VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
@@ -2754,7 +2773,7 @@ void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string,
     assert( commandIt != m_commands.end() );
     for ( auto const & parameter : commandIt->second.params )
     {
-      if ( handleData.first != parameter.type.type )  // the commands use this handleData type !
+      if ( isHandleType( parameter.type.type ) && ( handleData.first != parameter.type.type ) )  // the commands use this handleData type !
       {
         appendType( str, parameter.type.type );
       }
@@ -3028,6 +3047,17 @@ ${usingAlias}${leave})";
 void VulkanHppGenerator::appendHandles( std::string & str )
 {
   // Note reordering structs or handles by features and extensions is not possible!
+  // first, forward declare all the structs!
+  for ( auto const & structure : m_structures )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) + ";\n" + leave;
+    for ( auto const & alias : structure.second.aliases )
+    {
+      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+    }
+  }
   for ( auto const & handle : m_handles )
   {
     if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
@@ -16218,17 +16248,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 
 )";
 
-  static const std::string is_error_code_enum = R"(
-#ifndef VULKAN_HPP_NO_EXCEPTIONS
-namespace std
-{
-  template <>
-  struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
-  {};
-}
-#endif
-)";
-
   static const std::string structResultValue = R"(
   template <typename T> void ignore(T const &) VULKAN_HPP_NOEXCEPT {}
 
@@ -16540,10 +16559,79 @@ namespace std
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
     VulkanHppGenerator generator( doc );
 
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HPP_FILE << std::endl;
-    std::string         str;
-    static const size_t estimatedLength = 4 * 1024 * 1024;
-    str.reserve( estimatedLength );
+    std::cout << "VulkanHppGenerator: Generating" << VULKAN_ENUMS_HPP_FILE << " ..." << std::endl;
+    std::string str;
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_ENUMS_HPP
+#  define VULKAN_ENUMS_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+    str += typeTraits;
+    generator.appendEnums( str );
+    generator.appendIndexTypeTraits( str );
+    str += generator.generateBitmasks();
+    str += R"(
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+    writeToFile( str, VULKAN_ENUMS_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HANDLES_HPP_FILE << " ..." << std::endl;
+    str.clear();
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_HANDLES_HPP
+#  define VULKAN_HANDLES_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+    generator.appendHandles( str );
+    str += R"(
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+    writeToFile( str, VULKAN_HANDLES_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_STRUCTS_HPP_FILE << " ..." << std::endl;
+    str.clear();
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_STRUCTS_HPP
+#  define VULKAN_STRUCTS_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+    generator.appendStructs( str );
+    str += R"(
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+    writeToFile( str, VULKAN_STRUCTS_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_FUNCS_HPP_FILE << " ..." << std::endl;
+    str.clear();
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_FUNCS_HPP
+#  define VULKAN_FUNCS_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+    generator.appendHandlesCommandDefinitions( str );
+    str += R"(
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+    writeToFile( str, VULKAN_FUNCS_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HPP_FILE << " ..." << std::endl;
+    str.clear();
     str += generator.getVulkanLicenseHeader() + includes + "\n";
     str += "static_assert( VK_HEADER_VERSION == " + generator.getVersion() +
            " , \"Wrong VK_HEADER_VERSION!\" );\n"
@@ -16563,18 +16651,38 @@ namespace std
     generator.appendDispatchLoaderDefault( str );
     str += classObjectDestroy + classObjectFree + classObjectRelease + classPoolFree + "\n";
     str += generator.generateBaseTypes();
-    str += typeTraits;
-    generator.appendEnums( str );
-    generator.appendIndexTypeTraits( str );
-    str += generator.generateBitmasks();
-    str += "} // namespace VULKAN_HPP_NAMESPACE\n" + is_error_code_enum + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" +
-           "{\n" + "#ifndef VULKAN_HPP_NO_EXCEPTIONS" + exceptions;
+    str += R"(} // namespace VULKAN_HPP_NAMESPACE
+
+#include <vulkan/vulkan_enums.hpp>
+
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
+namespace std
+{
+  template <>
+  struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
+  {};
+}
+#endif
+
+namespace VULKAN_HPP_NAMESPACE
+{
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
+)";
+    str += exceptions;
     generator.appendResultExceptions( str );
     generator.appendThrowExceptions( str );
     str += "#endif\n" + structResultValue;
-    generator.appendStructs( str );
-    generator.appendHandles( str );
-    generator.appendHandlesCommandDefinitions( str );
+    str += R"(} // namespace VULKAN_HPP_NAMESPACE
+
+// clang-format off
+#include <vulkan/vulkan_handles.hpp>
+#include <vulkan/vulkan_structs.hpp>
+#include <vulkan/vulkan_funcs.hpp>
+// clang-format on
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
     generator.appendStructureChainValidation( str );
     generator.appendDispatchLoaderDynamic( str );
     str +=
@@ -16587,24 +16695,9 @@ namespace std
       "} // namespace std\n"
       "#endif\n";
 
-    std::ofstream ofs( VULKAN_HPP_FILE );
-    assert( !ofs.fail() );
-    ofs << str;
-    ofs.close();
+    writeToFile( str, VULKAN_HPP_FILE );
 
-#if defined( CLANG_FORMAT_EXECUTABLE )
-    int ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" --version" );
-    assert( ret == 0 );
-    std::cout << "VulkanHppGenerator: Formatting " << VULKAN_HPP_FILE << " using clang-format..." << std::endl;
-    ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " VULKAN_HPP_FILE );
-    if ( ret != 0 )
-    {
-      std::cout << "VulkanHppGenerator: failed to format file " << VULKAN_HPP_FILE << " with error <" << ret << ">\n";
-      return -1;
-    }
-#endif
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_RAII_HPP_FILE << std::endl;
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_RAII_HPP_FILE << " ..." << std::endl;
     str.clear();
     str = generator.getVulkanLicenseHeader() + R"(
 #ifndef VULKAN_RAII_HPP
@@ -16648,21 +16741,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
-    ofs.open( VULKAN_RAII_HPP_FILE );
-    assert( !ofs.fail() );
-    ofs << str;
-    ofs.close();
+    writeToFile( str, VULKAN_RAII_HPP_FILE );
 
-#if defined( CLANG_FORMAT_EXECUTABLE )
-    std::cout << "VulkanHppGenerator: Formatting " << VULKAN_RAII_HPP_FILE << " using clang-format..." << std::endl;
-    ret = std::system( "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " VULKAN_RAII_HPP_FILE );
-    if ( ret != 0 )
-    {
-      std::cout << "VulkanHppGenerator: failed to format file " << VULKAN_RAII_HPP_FILE << " with error <" << ret
-                << ">\n";
-      return -1;
-    }
-#else
+#if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout
       << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";
 #endif

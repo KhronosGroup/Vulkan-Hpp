@@ -3266,6 +3266,10 @@ ${members}
         : vkGetInstanceProcAddr( getProcAddr )
       {}
 
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      InstanceDispatcher() = default;
+#endif
+
       void init( VkInstance instance )
       {
 ${initAssignments}
@@ -3289,6 +3293,10 @@ ${members}
         DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr )
           : vkGetDeviceProcAddr( getProcAddr )
         {}
+
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+        DeviceDispatcher() = default;
+#endif
 
         void init( VkDevice device )
         {
@@ -3420,7 +3428,11 @@ ${singularConstructors}
 ${upgradeConstructor}
 ${destructor}
 
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+    ${handleType}() = default;
+#else
     ${handleType}() = delete;
+#endif
     ${handleType}( ${handleType} const & ) = delete;
     ${handleType}( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
       : ${moveConstructorInitializerList}
@@ -3480,7 +3492,11 @@ ${enter}  class ${handleType}s : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN
   public:
     ${arrayConstructors}
 
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+    ${handleType}s() = default;
+#else
     ${handleType}s() = delete;
+#endif
     ${handleType}s( ${handleType}s const & ) = delete;
     ${handleType}s( ${handleType}s && rhs ) = default;
     ${handleType}s & operator=( ${handleType}s const & ) = delete;
@@ -7371,7 +7387,15 @@ std::tuple<std::string, std::string, std::string, std::string>
                                ", {} );";
   if ( handle.second.destructorIt != m_commands.end() )
   {
-    moveAssignmentInstructions = "        getDispatcher()->" + destructorCall + ";\n" + moveAssignmentInstructions;
+    moveAssignmentInstructions = "        if ( m_" + handleName +
+                                 " )\n"
+                                 "        {\n"
+                                 "          getDispatcher()->" +
+                                 destructorCall +
+                                 ";\n"
+                                 "        }\n"
+                                 "        " +
+                                 moveAssignmentInstructions;
     for ( auto const & destructorParam : handle.second.destructorIt->second.params )
     {
       if ( ( destructorParam.type.type != handle.first ) &&

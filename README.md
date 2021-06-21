@@ -565,6 +565,11 @@ By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the he
 
 With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining ```VULKAN_HPP_NO_SPACESHIP_OPERATOR``` before including vulkan.hpp you can remove that operator from those structs and classes.
 
+#### VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS
+
+By default, the vk::raii wrapper classes don't support default constructors. It would be a contradiction to the raii-principle.
+For those who are desparate enough to ignore that restriction, you can define VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS. The only thing you can do with a default contructed vk::raii wrapper object is move-assigning another vk::raii wrapper object onto it. And you have to make sure that that happens before you use it.
+
 #### VULKAN_HPP_STORAGE_API
 
 With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported (see ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```). If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.

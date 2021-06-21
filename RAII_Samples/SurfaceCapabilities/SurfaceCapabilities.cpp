@@ -58,9 +58,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
-    std::vector<vk::ExtensionProperties> instanceExtensionProperties = context->enumerateInstanceExtensionProperties();
+    std::vector<vk::ExtensionProperties> instanceExtensionProperties = context.enumerateInstanceExtensionProperties();
     bool                                 supportsGetSurfaceCapabilities2 =
       ( std::find_if( instanceExtensionProperties.begin(),
                       instanceExtensionProperties.end(),
@@ -74,17 +74,15 @@ int main( int /*argc*/, char ** /*argv*/ )
       extensions.push_back( VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME );
     }
 
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, extensions );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, extensions );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    vk::raii::PhysicalDevices physicalDevices( *instance );
+    vk::raii::PhysicalDevices physicalDevices( instance );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 500, 500 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     /* VULKAN_KEY_START */
 
@@ -104,7 +102,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                         vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
                                         vk::SharedPresentSurfaceCapabilitiesKHR,
                                         vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
-                                        vk::SurfaceProtectedCapabilitiesKHR>( { **surfaceData.surface } );
+                                        vk::SurfaceProtectedCapabilitiesKHR>( { **surfaceData.pSurface } );
 
         vk::SurfaceCapabilitiesKHR const & surfaceCapabilities =
           surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
@@ -155,7 +153,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       else
       {
         vk::SurfaceCapabilitiesKHR surfaceCapabilities =
-          physicalDevices[i].getSurfaceCapabilitiesKHR( **surfaceData.surface );
+          physicalDevices[i].getSurfaceCapabilitiesKHR( **surfaceData.pSurface );
         cout( surfaceCapabilities );
       }
     }

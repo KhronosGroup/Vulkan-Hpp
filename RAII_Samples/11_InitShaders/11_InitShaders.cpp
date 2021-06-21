@@ -28,18 +28,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    uint32_t                                  graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -49,17 +48,15 @@ int main( int /*argc*/, char ** /*argv*/ )
     bool ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV );
     assert( ok );
 
-    vk::ShaderModuleCreateInfo              vertexShaderModuleCreateInfo( {}, vertexShaderSPV );
-    std::unique_ptr<vk::raii::ShaderModule> vertexShaderModule =
-      vk::raii::su::make_unique<vk::raii::ShaderModule>( *device, vertexShaderModuleCreateInfo );
+    vk::ShaderModuleCreateInfo vertexShaderModuleCreateInfo( {}, vertexShaderSPV );
+    vk::raii::ShaderModule     vertexShaderModule( device, vertexShaderModuleCreateInfo );
 
     std::vector<unsigned int> fragmentShaderSPV;
     ok = vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
     assert( ok );
 
-    vk::ShaderModuleCreateInfo              fragmentShaderModuleCreateInfo( {}, fragmentShaderSPV );
-    std::unique_ptr<vk::raii::ShaderModule> fragmentShaderModule =
-      vk::raii::su::make_unique<vk::raii::ShaderModule>( *device, fragmentShaderModuleCreateInfo );
+    vk::ShaderModuleCreateInfo fragmentShaderModuleCreateInfo( {}, fragmentShaderSPV );
+    vk::raii::ShaderModule     fragmentShaderModule( device, fragmentShaderModuleCreateInfo );
 
     glslang::FinalizeProcess();
 

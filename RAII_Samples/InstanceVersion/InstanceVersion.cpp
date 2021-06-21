@@ -30,11 +30,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
     /* VULKAN_KEY_START */
 
-    uint32_t apiVersion = context->enumerateInstanceVersion();
+    uint32_t apiVersion = context.enumerateInstanceVersion();
     std::cout << "APIVersion = " << decodeAPIVersion( apiVersion ) << std::endl;
 
     /* VULKAN_KEY_END */

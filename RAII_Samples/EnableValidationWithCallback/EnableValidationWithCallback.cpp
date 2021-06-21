@@ -109,20 +109,24 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
 bool checkLayers( std::vector<char const *> const & layers, std::vector<vk::LayerProperties> const & properties )
 {
   // return true if all layers are listed in the properties
-  return std::all_of( layers.begin(), layers.end(), [&properties]( char const * name ) {
-    return std::find_if( properties.begin(), properties.end(), [&name]( vk::LayerProperties const & property ) {
-             return strcmp( property.layerName, name ) == 0;
-           } ) != properties.end();
-  } );
+  return std::all_of( layers.begin(),
+                      layers.end(),
+                      [&properties]( char const * name )
+                      {
+                        return std::find_if( properties.begin(),
+                                             properties.end(),
+                                             [&name]( vk::LayerProperties const & property )
+                                             { return strcmp( property.layerName, name ) == 0; } ) != properties.end();
+                      } );
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
-    std::vector<vk::LayerProperties> instanceLayerProperties = context->enumerateInstanceLayerProperties();
+    std::vector<vk::LayerProperties> instanceLayerProperties = context.enumerateInstanceLayerProperties();
 
     /* VULKAN_KEY_START */
 
@@ -141,10 +145,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, instanceLayerNames, instanceExtensionNames );
-    std::unique_ptr<vk::raii::Instance> instance = vk::raii::su::make_unique<vk::raii::Instance>( *context, instanceCreateInfo );
+    vk::raii::Instance     instance( context, instanceCreateInfo );
 
     pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance->getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
@@ -152,7 +156,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance->getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -166,24 +170,23 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
     vk::DebugUtilsMessengerCreateInfoEXT  debugUtilsMessengerCreateInfoEXT(
       {}, severityFlags, messageTypeFlags, &debugMessageFunc );
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::make_unique<vk::raii::DebugUtilsMessengerEXT>( *instance, debugUtilsMessengerCreateInfoEXT );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
 
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
     // get the index of the first queue family that supports graphics
     uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
-    float                             queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo         deviceQueueCreateInfo( {}, graphicsQueueFamilyIndex, 1, &queuePriority );
-    vk::DeviceCreateInfo              deviceCreateInfo( {}, deviceQueueCreateInfo );
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::make_unique<vk::raii::Device>( *physicalDevice, deviceCreateInfo );
+    float                     queuePriority = 0.0f;
+    vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, graphicsQueueFamilyIndex, 1, &queuePriority );
+    vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo );
+    vk::raii::Device          device( physicalDevice, deviceCreateInfo );
 
     // Create a vk::CommandPool (not a vk::raii::CommandPool, for testing purposes!)
     vk::CommandPoolCreateInfo commandPoolCreateInfo( {}, graphicsQueueFamilyIndex );
     vk::CommandPool           commandPool =
-      ( **device ).createCommandPool( commandPoolCreateInfo, nullptr, *device->getDispatcher() );
+      ( *device ).createCommandPool( commandPoolCreateInfo, nullptr, *device.getDispatcher() );
 
     // The commandPool is not destroyed automatically (as it's not a UniqueCommandPool.
     // That is, the device is destroyed before the commmand pool and will trigger a validation error.

@@ -26,15 +26,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    std::vector<vk::QueueFamilyProperties>    queueFamilyProperties = physicalDevice->getQueueFamilyProperties();
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
     uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
 
     /* VULKAN_HPP_KEY_START */
@@ -43,12 +43,12 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t           height = 64;
     vk::su::WindowData window = vk::su::createWindow( AppName, { width, height } );
     VkSurfaceKHR       _surface;
-    glfwCreateWindowSurface( static_cast<VkInstance>( **instance ), window.handle, nullptr, &_surface );
-    std::unique_ptr<vk::raii::SurfaceKHR> surface = vk::raii::su::make_unique<vk::raii::SurfaceKHR>( *instance, _surface );
+    glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window.handle, nullptr, &_surface );
+    vk::raii::SurfaceKHR surface( instance, _surface );
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
-    uint32_t presentQueueFamilyIndex = physicalDevice->getSurfaceSupportKHR( graphicsQueueFamilyIndex, **surface )
+    uint32_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, *surface )
                                          ? graphicsQueueFamilyIndex
                                          : vk::su::checked_cast<uint32_t>( queueFamilyProperties.size() );
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
@@ -58,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
       {
         if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
-             physicalDevice->getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), **surface ) )
+             physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), *surface ) )
         {
           graphicsQueueFamilyIndex = vk::su::checked_cast<uint32_t>( i );
           presentQueueFamilyIndex  = graphicsQueueFamilyIndex;
@@ -71,7 +71,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         // family index that supports present
         for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
-          if ( physicalDevice->getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), **surface ) )
+          if ( physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), *surface ) )
           {
             presentQueueFamilyIndex = vk::su::checked_cast<uint32_t>( i );
             break;
@@ -86,16 +86,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     // create a device
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex, vk::su::getDeviceExtensions() );
+    vk::raii::Device device =
+      vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex, vk::su::getDeviceExtensions() );
 
     // get the supported VkFormats
-    std::vector<vk::SurfaceFormatKHR> formats = physicalDevice->getSurfaceFormatsKHR( **surface );
+    std::vector<vk::SurfaceFormatKHR> formats = physicalDevice.getSurfaceFormatsKHR( *surface );
     assert( !formats.empty() );
     vk::Format format =
       ( formats[0].format == vk::Format::eUndefined ) ? vk::Format::eB8G8R8A8Unorm : formats[0].format;
 
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice->getSurfaceCapabilitiesKHR( **surface );
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( *surface );
     VkExtent2D                 swapchainExtent;
     if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
     {
@@ -129,7 +129,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         : vk::CompositeAlphaFlagBitsKHR::eOpaque;
 
     vk::SwapchainCreateInfoKHR swapChainCreateInfo( vk::SwapchainCreateFlagsKHR(),
-                                                    **surface,
+                                                    *surface,
                                                     surfaceCapabilities.minImageCount,
                                                     format,
                                                     vk::ColorSpaceKHR::eSrgbNonlinear,
@@ -155,11 +155,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       swapChainCreateInfo.pQueueFamilyIndices   = queueFamilyIndices.data();
     }
 
-    std::unique_ptr<vk::raii::SwapchainKHR> swapChain =
-      vk::raii::su::make_unique<vk::raii::SwapchainKHR>( *device, swapChainCreateInfo );
-    std::vector<VkImage> swapChainImages = swapChain->getImages();
+    vk::raii::SwapchainKHR swapChain( device, swapChainCreateInfo );
+    std::vector<VkImage>   swapChainImages = swapChain.getImages();
 
-    std::vector<std::unique_ptr<vk::raii::ImageView>> imageViews;
+    std::vector<vk::raii::ImageView> imageViews;
     imageViews.reserve( swapChainImages.size() );
     vk::ComponentMapping componentMapping(
       vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
@@ -168,7 +167,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       vk::ImageViewCreateInfo imageViewCreateInfo(
         {}, static_cast<vk::Image>( image ), vk::ImageViewType::e2D, format, componentMapping, subResourceRange );
-      imageViews.push_back( vk::raii::su::make_unique<vk::raii::ImageView>( *device, imageViewCreateInfo ) );
+      imageViews.push_back( { device, imageViewCreateInfo } );
     }
 
     /* VULKAN_HPP_KEY_END */

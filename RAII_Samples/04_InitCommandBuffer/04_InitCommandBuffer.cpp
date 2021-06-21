@@ -26,29 +26,27 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context  = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance = vk::raii::su::makeUniqueInstance( *context, AppName, EngineName );
+    vk::raii::Context  context;
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    uint32_t                                  graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a CommandPool to allocate a CommandBuffer from
-    vk::CommandPoolCreateInfo              commandPoolCreateInfo( {}, graphicsQueueFamilyIndex );
-    std::unique_ptr<vk::raii::CommandPool> commandPool =
-      vk::raii::su::make_unique<vk::raii::CommandPool>( *device, commandPoolCreateInfo );
+    vk::CommandPoolCreateInfo commandPoolCreateInfo( {}, graphicsQueueFamilyIndex );
+    vk::raii::CommandPool     commandPool( device, commandPoolCreateInfo );
 
     // allocate a CommandBuffer from the CommandPool
-    vk::CommandBufferAllocateInfo commandBufferAllocateInfo( **commandPool, vk::CommandBufferLevel::ePrimary, 1 );
-    std::unique_ptr<vk::raii::CommandBuffer> commandBuffer = vk::raii::su::make_unique<vk::raii::CommandBuffer>(
-      std::move( vk::raii::CommandBuffers( *device, commandBufferAllocateInfo ).front() ) );
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 );
+    vk::raii::CommandBuffer       commandBuffer =
+      std::move( vk::raii::CommandBuffers( device, commandBufferAllocateInfo ).front() );
 
     /* VULKAN_HPP_KEY_END */
   }

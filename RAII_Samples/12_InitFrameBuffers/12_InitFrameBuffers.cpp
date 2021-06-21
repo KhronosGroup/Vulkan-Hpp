@@ -26,25 +26,24 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 64, 64 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( *physicalDevice, *surfaceData.surface );
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::makeUniqueDevice(
-      *physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+    vk::raii::Device device = vk::raii::su::makeDevice(
+      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::raii::su::SwapChainData swapChainData( *physicalDevice,
-                                               *device,
-                                               *surfaceData.surface,
+    vk::raii::su::SwapChainData swapChainData( physicalDevice,
+                                               device,
+                                               *surfaceData.pSurface,
                                                surfaceData.extent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eTransferSrc,
@@ -52,25 +51,24 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                graphicsAndPresentQueueFamilyIndex.first,
                                                graphicsAndPresentQueueFamilyIndex.second );
 
-    vk::raii::su::DepthBufferData depthBufferData(
-      *physicalDevice, *device, vk::Format::eD16Unorm, surfaceData.extent );
+    vk::raii::su::DepthBufferData depthBufferData( physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent );
 
-    std::unique_ptr<vk::raii::RenderPass> renderPass =
-      vk::raii::su::makeUniqueRenderPass( *device, swapChainData.colorFormat, depthBufferData.format );
+    vk::raii::RenderPass renderPass =
+      vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
 
     /* VULKAN_KEY_START */
 
     std::array<vk::ImageView, 2> attachments;
-    attachments[1] = **depthBufferData.imageView;
+    attachments[1] = **depthBufferData.pImageView;
 
-    std::vector<std::unique_ptr<vk::raii::Framebuffer>> framebuffers;
+    std::vector<vk::raii::Framebuffer> framebuffers;
     framebuffers.reserve( swapChainData.imageViews.size() );
     for ( auto const & view : swapChainData.imageViews )
     {
       attachments[0] = *view;
       vk::FramebufferCreateInfo framebufferCreateInfo(
-        {}, **renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
-      framebuffers.push_back( vk::raii::su::make_unique<vk::raii::Framebuffer>( *device, framebufferCreateInfo ) );
+        {}, *renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
+      framebuffers.push_back( vk::raii::Framebuffer( device, framebufferCreateInfo ) );
     }
 
     /* VULKAN_KEY_END */

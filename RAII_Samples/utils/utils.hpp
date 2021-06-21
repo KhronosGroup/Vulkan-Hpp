@@ -205,14 +205,16 @@ namespace vk
                     vk::BufferUsageFlags             usage,
                     vk::MemoryPropertyFlags          propertyFlags = vk::MemoryPropertyFlagBits::eHostVisible |
                                                             vk::MemoryPropertyFlagBits::eHostCoherent )
+          : buffer( device, vk::BufferCreateInfo( {}, size, usage ) )
+          , deviceMemory( vk::raii::su::allocateDeviceMemory(
+              device, physicalDevice.getMemoryProperties(), buffer.getMemoryRequirements(), propertyFlags ) )
 #if !defined( NDEBUG )
-          : m_size( size ), m_usage( usage ), m_propertyFlags( propertyFlags )
+          , m_size( size )
+          , m_usage( usage )
+          , m_propertyFlags( propertyFlags )
 #endif
         {
-          buffer       = vk::raii::su::make_unique<vk::raii::Buffer>( device, vk::BufferCreateInfo( {}, size, usage ) );
-          deviceMemory = vk::raii::su::make_unique<vk::raii::DeviceMemory>( vk::raii::su::allocateDeviceMemory(
-            device, physicalDevice.getMemoryProperties(), buffer->getMemoryRequirements(), propertyFlags ) );
-          buffer->bindMemory( **deviceMemory, 0 );
+          buffer.bindMemory( *deviceMemory, 0 );
         }
 
         template <typename DataType>
@@ -222,9 +224,9 @@ namespace vk
                   ( m_propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible ) );
           assert( sizeof( DataType ) <= m_size );
 
-          void * dataPtr = deviceMemory->mapMemory( 0, sizeof( DataType ) );
+          void * dataPtr = deviceMemory.mapMemory( 0, sizeof( DataType ) );
           memcpy( dataPtr, &data, sizeof( DataType ) );
-          deviceMemory->unmapMemory();
+          deviceMemory.unmapMemory();
         }
 
         template <typename DataType>
@@ -235,7 +237,7 @@ namespace vk
           size_t elementSize = stride ? stride : sizeof( DataType );
           assert( sizeof( DataType ) <= elementSize );
 
-          copyToDevice( *deviceMemory, data.data(), data.size(), elementSize );
+          copyToDevice( deviceMemory, data.data(), data.size(), elementSize );
         }
 
         template <typename DataType>
@@ -257,18 +259,19 @@ namespace vk
 
           vk::raii::su::BufferData stagingBuffer(
             physicalDevice, device, dataSize, vk::BufferUsageFlagBits::eTransferSrc );
-          copyToDevice( *stagingBuffer.deviceMemory, data.data(), data.size(), elementSize );
+          copyToDevice( stagingBuffer.deviceMemory, data.data(), data.size(), elementSize );
 
           vk::raii::su::oneTimeSubmit(
             device,
             commandPool,
             queue,
             [&]( vk::raii::CommandBuffer const & commandBuffer )
-            { commandBuffer.copyBuffer( **stagingBuffer.buffer, **this->buffer, vk::BufferCopy( 0, 0, dataSize ) ); } );
+            { commandBuffer.copyBuffer( *stagingBuffer.buffer, *this->buffer, vk::BufferCopy( 0, 0, dataSize ) ); } );
         }
 
-        std::unique_ptr<vk::raii::Buffer>       buffer;
-        std::unique_ptr<vk::raii::DeviceMemory> deviceMemory;
+        // the order of buffer and deviceMemory here is important to get the constructor running !
+        vk::raii::Buffer       buffer;
+        vk::raii::DeviceMemory deviceMemory;
 #if !defined( NDEBUG )
       private:
         vk::DeviceSize          m_size;
@@ -289,38 +292,38 @@ namespace vk
                    vk::MemoryPropertyFlags          memoryProperties,
                    vk::ImageAspectFlags             aspectMask )
           : format( format_ )
+          , image( device,
+                   { vk::ImageCreateFlags(),
+                     vk::ImageType::e2D,
+                     format,
+                     vk::Extent3D( extent, 1 ),
+                     1,
+                     1,
+                     vk::SampleCountFlagBits::e1,
+                     tiling,
+                     usage | vk::ImageUsageFlagBits::eSampled,
+                     vk::SharingMode::eExclusive,
+                     {},
+                     initialLayout } )
+          , deviceMemory( vk::raii::su::allocateDeviceMemory(
+              device, physicalDevice.getMemoryProperties(), image.getMemoryRequirements(), memoryProperties ) )
         {
-          vk::ImageCreateInfo imageCreateInfo( vk::ImageCreateFlags(),
-                                               vk::ImageType::e2D,
-                                               format,
-                                               vk::Extent3D( extent, 1 ),
-                                               1,
-                                               1,
-                                               vk::SampleCountFlagBits::e1,
-                                               tiling,
-                                               usage | vk::ImageUsageFlagBits::eSampled,
-                                               vk::SharingMode::eExclusive,
-                                               {},
-                                               initialLayout );
-          image = vk::raii::su::make_unique<vk::raii::Image>( device, imageCreateInfo );
-
-          deviceMemory = vk::raii::su::make_unique<vk::raii::DeviceMemory>( vk::raii::su::allocateDeviceMemory(
-            device, physicalDevice.getMemoryProperties(), image->getMemoryRequirements(), memoryProperties ) );
-
-          image->bindMemory( **deviceMemory, 0 );
-
-          vk::ComponentMapping componentMapping(
-            ComponentSwizzle::eR, ComponentSwizzle::eG, ComponentSwizzle::eB, ComponentSwizzle::eA );
-          vk::ImageSubresourceRange imageSubresourceRange( aspectMask, 0, 1, 0, 1 );
-          vk::ImageViewCreateInfo   imageViewCreateInfo(
-            {}, **image, vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange );
-          imageView = vk::raii::su::make_unique<vk::raii::ImageView>( device, imageViewCreateInfo );
+          image.bindMemory( *deviceMemory, 0 );
+          pImageView = vk::raii::su::make_unique<vk::raii::ImageView>(
+            device,
+            vk::ImageViewCreateInfo(
+              {},
+              *image,
+              vk::ImageViewType::e2D,
+              format,
+              { ComponentSwizzle::eR, ComponentSwizzle::eG, ComponentSwizzle::eB, ComponentSwizzle::eA },
+              { aspectMask, 0, 1, 0, 1 } ) );
         }
 
-        vk::Format                              format;
-        std::unique_ptr<vk::raii::Image>        image;
-        std::unique_ptr<vk::raii::DeviceMemory> deviceMemory;
-        std::unique_ptr<vk::raii::ImageView>    imageView;
+        vk::Format                           format;
+        vk::raii::Image                      image;
+        vk::raii::DeviceMemory               deviceMemory;
+        std::unique_ptr<vk::raii::ImageView> pImageView;
       };
 
       struct DepthBufferData : public ImageData
@@ -351,24 +354,24 @@ namespace vk
             glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window.handle, nullptr, &_surface );
           if ( err != VK_SUCCESS )
             throw std::runtime_error( "Failed to create window!" );
-          surface = vk::raii::su::make_unique<vk::raii::SurfaceKHR>( instance, _surface );
+          pSurface = vk::raii::su::make_unique<vk::raii::SurfaceKHR>( instance, _surface );
         }
 
         vk::Extent2D                          extent;
         vk::su::WindowData                    window;
-        std::unique_ptr<vk::raii::SurfaceKHR> surface;
+        std::unique_ptr<vk::raii::SurfaceKHR> pSurface;
       };
 
       struct SwapChainData
       {
-        SwapChainData( vk::raii::PhysicalDevice const &                physicalDevice,
-                       vk::raii::Device const &                        device,
-                       vk::raii::SurfaceKHR const &                    surface,
-                       vk::Extent2D const &                            extent,
-                       vk::ImageUsageFlags                             usage,
-                       std::unique_ptr<vk::raii::SwapchainKHR> const & oldSwapchain,
-                       uint32_t                                        graphicsQueueFamilyIndex,
-                       uint32_t                                        presentQueueFamilyIndex )
+        SwapChainData( vk::raii::PhysicalDevice const & physicalDevice,
+                       vk::raii::Device const &         device,
+                       vk::raii::SurfaceKHR const &     surface,
+                       vk::Extent2D const &             extent,
+                       vk::ImageUsageFlags              usage,
+                       vk::raii::SwapchainKHR const *   pOldSwapchain,
+                       uint32_t                         graphicsQueueFamilyIndex,
+                       uint32_t                         presentQueueFamilyIndex )
         {
           vk::SurfaceFormatKHR surfaceFormat =
             vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( *surface ) );
@@ -417,7 +420,7 @@ namespace vk
                                                           compositeAlpha,
                                                           presentMode,
                                                           true,
-                                                          oldSwapchain ? **oldSwapchain : nullptr );
+                                                          pOldSwapchain ? **pOldSwapchain : nullptr );
           if ( graphicsQueueFamilyIndex != presentQueueFamilyIndex )
           {
             uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };
@@ -428,9 +431,9 @@ namespace vk
             swapChainCreateInfo.queueFamilyIndexCount = 2;
             swapChainCreateInfo.pQueueFamilyIndices   = queueFamilyIndices;
           }
-          swapChain = vk::raii::su::make_unique<vk::raii::SwapchainKHR>( device, swapChainCreateInfo );
+          pSwapChain = vk::raii::su::make_unique<vk::raii::SwapchainKHR>( device, swapChainCreateInfo );
 
-          images = swapChain->getImages();
+          images = pSwapChain->getImages();
 
           imageViews.reserve( images.size() );
           vk::ComponentMapping componentMapping(
@@ -449,7 +452,7 @@ namespace vk
         }
 
         vk::Format                              colorFormat;
-        std::unique_ptr<vk::raii::SwapchainKHR> swapChain;
+        std::unique_ptr<vk::raii::SwapchainKHR> pSwapChain;
         std::vector<VkImage>                    images;
         std::vector<vk::raii::ImageView>        imageViews;
       };
@@ -463,7 +466,25 @@ namespace vk
                      vk::FormatFeatureFlags           formatFeatureFlags = {},
                      bool                             anisotropyEnable   = false,
                      bool                             forceStaging       = false )
-          : format( vk::Format::eR8G8B8A8Unorm ), extent( extent_ )
+          : format( vk::Format::eR8G8B8A8Unorm )
+          , extent( extent_ )
+          , sampler( device,
+                     { {},
+                       vk::Filter::eLinear,
+                       vk::Filter::eLinear,
+                       vk::SamplerMipmapMode::eLinear,
+                       vk::SamplerAddressMode::eRepeat,
+                       vk::SamplerAddressMode::eRepeat,
+                       vk::SamplerAddressMode::eRepeat,
+                       0.0f,
+                       anisotropyEnable,
+                       16.0f,
+                       false,
+                       vk::CompareOp::eNever,
+                       0.0f,
+                       0.0f,
+                       vk::BorderColor::eFloatOpaqueBlack } )
+
         {
           vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( format );
 
@@ -476,7 +497,7 @@ namespace vk
           if ( needsStaging )
           {
             assert( ( formatProperties.optimalTilingFeatures & formatFeatureFlags ) == formatFeatureFlags );
-            stagingBufferData = vk::raii::su::make_unique<BufferData>(
+            pStagingBufferData = vk::raii::su::make_unique<BufferData>(
               physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc );
             imageTiling = vk::ImageTiling::eOptimal;
             usageFlags |= vk::ImageUsageFlagBits::eTransferDst;
@@ -488,33 +509,15 @@ namespace vk
             initialLayout = vk::ImageLayout::ePreinitialized;
             requirements  = vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible;
           }
-          imageData = vk::raii::su::make_unique<ImageData>( physicalDevice,
-                                                            device,
-                                                            format,
-                                                            extent,
-                                                            imageTiling,
-                                                            usageFlags | vk::ImageUsageFlagBits::eSampled,
-                                                            initialLayout,
-                                                            requirements,
-                                                            vk::ImageAspectFlagBits::eColor );
-
-          sampler =
-            vk::raii::su::make_unique<vk::raii::Sampler>( device,
-                                                          vk::SamplerCreateInfo( vk::SamplerCreateFlags(),
-                                                                                 vk::Filter::eLinear,
-                                                                                 vk::Filter::eLinear,
-                                                                                 vk::SamplerMipmapMode::eLinear,
-                                                                                 vk::SamplerAddressMode::eRepeat,
-                                                                                 vk::SamplerAddressMode::eRepeat,
-                                                                                 vk::SamplerAddressMode::eRepeat,
-                                                                                 0.0f,
-                                                                                 anisotropyEnable,
-                                                                                 16.0f,
-                                                                                 false,
-                                                                                 vk::CompareOp::eNever,
-                                                                                 0.0f,
-                                                                                 0.0f,
-                                                                                 vk::BorderColor::eFloatOpaqueBlack ) );
+          pImageData = vk::raii::su::make_unique<ImageData>( physicalDevice,
+                                                             device,
+                                                             format,
+                                                             extent,
+                                                             imageTiling,
+                                                             usageFlags | vk::ImageUsageFlagBits::eSampled,
+                                                             initialLayout,
+                                                             requirements,
+                                                             vk::ImageAspectFlagBits::eColor );
         }
 
         template <typename ImageGenerator>
@@ -522,17 +525,17 @@ namespace vk
         {
           void * data =
             needsStaging
-              ? stagingBufferData->deviceMemory->mapMemory( 0, stagingBufferData->buffer->getMemoryRequirements().size )
-              : imageData->deviceMemory->mapMemory( 0, imageData->image->getMemoryRequirements().size );
+              ? pStagingBufferData->deviceMemory.mapMemory( 0, pStagingBufferData->buffer.getMemoryRequirements().size )
+              : pImageData->deviceMemory.mapMemory( 0, pImageData->image.getMemoryRequirements().size );
           imageGenerator( data, extent );
-          needsStaging ? stagingBufferData->deviceMemory->unmapMemory() : imageData->deviceMemory->unmapMemory();
+          needsStaging ? pStagingBufferData->deviceMemory.unmapMemory() : pImageData->deviceMemory.unmapMemory();
 
           if ( needsStaging )
           {
             // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
             vk::raii::su::setImageLayout( commandBuffer,
-                                          **imageData->image,
-                                          imageData->format,
+                                          *pImageData->image,
+                                          pImageData->format,
                                           vk::ImageLayout::eUndefined,
                                           vk::ImageLayout::eTransferDstOptimal );
             vk::BufferImageCopy copyRegion( 0,
@@ -542,11 +545,11 @@ namespace vk
                                             vk::Offset3D( 0, 0, 0 ),
                                             vk::Extent3D( extent, 1 ) );
             commandBuffer.copyBufferToImage(
-              **stagingBufferData->buffer, **imageData->image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
+              *pStagingBufferData->buffer, *pImageData->image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
             // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
             vk::raii::su::setImageLayout( commandBuffer,
-                                          **imageData->image,
-                                          imageData->format,
+                                          *pImageData->image,
+                                          pImageData->format,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           vk::ImageLayout::eShaderReadOnlyOptimal );
           }
@@ -554,19 +557,19 @@ namespace vk
           {
             // If we can use the linear tiled image as a texture, just do it
             vk::raii::su::setImageLayout( commandBuffer,
-                                          **imageData->image,
-                                          imageData->format,
+                                          *pImageData->image,
+                                          pImageData->format,
                                           vk::ImageLayout::ePreinitialized,
                                           vk::ImageLayout::eShaderReadOnlyOptimal );
           }
         }
 
-        vk::Format                         format;
-        vk::Extent2D                       extent;
-        bool                               needsStaging;
-        std::unique_ptr<BufferData>        stagingBufferData;
-        std::unique_ptr<ImageData>         imageData;
-        std::unique_ptr<vk::raii::Sampler> sampler;
+        vk::Format                  format;
+        vk::Extent2D                extent;
+        bool                        needsStaging;
+        std::unique_ptr<BufferData> pStagingBufferData;
+        std::unique_ptr<ImageData>  pImageData;
+        vk::raii::Sampler           sampler;
       };
 
       std::pair<uint32_t, uint32_t>
@@ -608,32 +611,15 @@ namespace vk
         throw std::runtime_error( "Could not find queues for both graphics or present -> terminating" );
       }
 
-      std::unique_ptr<vk::raii::CommandBuffer> makeUniqueCommandBuffer( vk::raii::Device const &      device,
-                                                                        vk::raii::CommandPool const & commandPool )
+      vk::raii::CommandBuffer makeCommandBuffer( vk::raii::Device const &      device,
+                                                 vk::raii::CommandPool const & commandPool )
       {
         vk::CommandBufferAllocateInfo commandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 );
-        return vk::raii::su::make_unique<vk::raii::CommandBuffer>(
-          std::move( vk::raii::CommandBuffers( device, commandBufferAllocateInfo ).front() ) );
+        return std::move( vk::raii::CommandBuffers( device, commandBufferAllocateInfo ).front() );
       }
 
-      std::unique_ptr<vk::raii::CommandPool> makeUniqueCommandPool( vk::raii::Device const & device,
-                                                                    uint32_t                 queueFamilyIndex )
-      {
-        vk::CommandPoolCreateInfo commandPoolCreateInfo( vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-                                                         queueFamilyIndex );
-        return vk::raii::su::make_unique<vk::raii::CommandPool>( device, commandPoolCreateInfo );
-      }
-
-      std::unique_ptr<vk::raii::DebugUtilsMessengerEXT>
-        makeUniqueDebugUtilsMessengerEXT( vk::raii::Instance const & instance )
-      {
-        return vk::raii::su::make_unique<vk::raii::DebugUtilsMessengerEXT>(
-          instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
-      }
-
-      std::unique_ptr<vk::raii::DescriptorPool>
-        makeUniqueDescriptorPool( vk::raii::Device const &                    device,
-                                  std::vector<vk::DescriptorPoolSize> const & poolSizes )
+      vk::raii::DescriptorPool makeDescriptorPool( vk::raii::Device const &                    device,
+                                                   std::vector<vk::DescriptorPoolSize> const & poolSizes )
       {
         assert( !poolSizes.empty() );
         uint32_t maxSets = std::accumulate( poolSizes.begin(),
@@ -645,20 +631,10 @@ namespace vk
 
         vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
           vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, maxSets, poolSizes );
-        return vk::raii::su::make_unique<vk::raii::DescriptorPool>( device, descriptorPoolCreateInfo );
+        return vk::raii::DescriptorPool( device, descriptorPoolCreateInfo );
       }
 
-      std::unique_ptr<vk::raii::DescriptorSet>
-        makeUniqueDescriptorSet( vk::raii::Device const &              device,
-                                 vk::raii::DescriptorPool const &      descriptorPool,
-                                 vk::raii::DescriptorSetLayout const & descriptorSetLayout )
-      {
-        vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
-        return vk::raii::su::make_unique<vk::raii::DescriptorSet>(
-          std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() ) );
-      }
-
-      std::unique_ptr<vk::raii::DescriptorSetLayout> makeUniqueDescriptorSetLayout(
+      vk::raii::DescriptorSetLayout makeDescriptorSetLayout(
         vk::raii::Device const &                                                            device,
         std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
         vk::DescriptorSetLayoutCreateFlags                                                  flags = {} )
@@ -672,15 +648,14 @@ namespace vk
                                                         std::get<2>( bindingData[i] ) );
         }
         vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo( flags, bindings );
-        return vk::raii::su::make_unique<vk::raii::DescriptorSetLayout>( device, descriptorSetLayoutCreateInfo );
+        return vk::raii::DescriptorSetLayout( device, descriptorSetLayoutCreateInfo );
       }
 
-      std::unique_ptr<vk::raii::Device>
-        makeUniqueDevice( vk::raii::PhysicalDevice const &   physicalDevice,
-                          uint32_t                           queueFamilyIndex,
-                          std::vector<std::string> const &   extensions             = {},
-                          vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
-                          void const *                       pNext                  = nullptr )
+      vk::raii::Device makeDevice( vk::raii::PhysicalDevice const &   physicalDevice,
+                                   uint32_t                           queueFamilyIndex,
+                                   std::vector<std::string> const &   extensions             = {},
+                                   vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
+                                   void const *                       pNext                  = nullptr )
       {
         std::vector<char const *> enabledExtensions;
         enabledExtensions.reserve( extensions.size() );
@@ -695,50 +670,49 @@ namespace vk
         vk::DeviceCreateInfo deviceCreateInfo(
           vk::DeviceCreateFlags(), deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures );
         deviceCreateInfo.pNext = pNext;
-        return vk::raii::su::make_unique<vk::raii::Device>( physicalDevice, deviceCreateInfo );
+        return vk::raii::Device( physicalDevice, deviceCreateInfo );
       }
 
-      std::vector<std::unique_ptr<vk::raii::Framebuffer>>
-        makeUniqueFramebuffers( vk::raii::Device const &                     device,
-                                vk::raii::RenderPass &                       renderPass,
-                                std::vector<vk::raii::ImageView> const &     imageViews,
-                                std::unique_ptr<vk::raii::ImageView> const & depthImageView,
-                                vk::Extent2D const &                         extent )
+      std::vector<vk::raii::Framebuffer> makeFramebuffers( vk::raii::Device const &                 device,
+                                                           vk::raii::RenderPass &                   renderPass,
+                                                           std::vector<vk::raii::ImageView> const & imageViews,
+                                                           vk::raii::ImageView const *              pDepthImageView,
+                                                           vk::Extent2D const &                     extent )
       {
         vk::ImageView attachments[2];
-        attachments[1] = depthImageView ? **depthImageView : vk::ImageView();
+        attachments[1] = pDepthImageView ? **pDepthImageView : vk::ImageView();
 
-        vk::FramebufferCreateInfo                           framebufferCreateInfo( vk::FramebufferCreateFlags(),
+        vk::FramebufferCreateInfo          framebufferCreateInfo( vk::FramebufferCreateFlags(),
                                                          *renderPass,
-                                                         depthImageView ? 2 : 1,
+                                                         pDepthImageView ? 2 : 1,
                                                          attachments,
                                                          extent.width,
                                                          extent.height,
                                                          1 );
-        std::vector<std::unique_ptr<vk::raii::Framebuffer>> framebuffers;
+        std::vector<vk::raii::Framebuffer> framebuffers;
         framebuffers.reserve( imageViews.size() );
         for ( auto const & imageView : imageViews )
         {
           attachments[0] = *imageView;
-          framebuffers.push_back( vk::raii::su::make_unique<vk::raii::Framebuffer>( device, framebufferCreateInfo ) );
+          framebuffers.push_back( vk::raii::Framebuffer( device, framebufferCreateInfo ) );
         }
 
         return framebuffers;
       }
 
-      std::unique_ptr<vk::raii::Pipeline> makeUniqueGraphicsPipeline(
-        vk::raii::Device const &                             device,
-        vk::raii::PipelineCache const &                      pipelineCache,
-        vk::raii::ShaderModule const &                       vertexShaderModule,
-        vk::SpecializationInfo const *                       vertexShaderSpecializationInfo,
-        vk::raii::ShaderModule const &                       fragmentShaderModule,
-        vk::SpecializationInfo const *                       fragmentShaderSpecializationInfo,
-        uint32_t                                             vertexStride,
-        std::vector<std::pair<vk::Format, uint32_t>> const & vertexInputAttributeFormatOffset,
-        vk::FrontFace                                        frontFace,
-        bool                                                 depthBuffered,
-        vk::raii::PipelineLayout const &                     pipelineLayout,
-        vk::raii::RenderPass const &                         renderPass )
+      vk::raii::Pipeline
+        makeGraphicsPipeline( vk::raii::Device const &                             device,
+                              vk::raii::PipelineCache const &                      pipelineCache,
+                              vk::raii::ShaderModule const &                       vertexShaderModule,
+                              vk::SpecializationInfo const *                       vertexShaderSpecializationInfo,
+                              vk::raii::ShaderModule const &                       fragmentShaderModule,
+                              vk::SpecializationInfo const *                       fragmentShaderSpecializationInfo,
+                              uint32_t                                             vertexStride,
+                              std::vector<std::pair<vk::Format, uint32_t>> const & vertexInputAttributeFormatOffset,
+                              vk::FrontFace                                        frontFace,
+                              bool                                                 depthBuffered,
+                              vk::raii::PipelineLayout const &                     pipelineLayout,
+                              vk::raii::RenderPass const &                         renderPass )
       {
         std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
           vk::PipelineShaderStageCreateInfo(
@@ -831,10 +805,10 @@ namespace vk
                                                                    *pipelineLayout,
                                                                    *renderPass );
 
-        return vk::raii::su::make_unique<vk::raii::Pipeline>( device, pipelineCache, graphicsPipelineCreateInfo );
+        return vk::raii::Pipeline( device, pipelineCache, graphicsPipelineCreateInfo );
       }
 
-      std::unique_ptr<vk::raii::Image> makeUniqueImage( vk::raii::Device const & device )
+      vk::raii::Image makeImage( vk::raii::Device const & device )
       {
         vk::ImageCreateInfo imageCreateInfo( {},
                                              vk::ImageType::e2D,
@@ -845,15 +819,15 @@ namespace vk
                                              vk::SampleCountFlagBits::e1,
                                              vk::ImageTiling::eLinear,
                                              vk::ImageUsageFlagBits::eTransferSrc );
-        return vk::raii::su::make_unique<vk::raii::Image>( device, imageCreateInfo );
+        return vk::raii::Image( device, imageCreateInfo );
       }
 
-      std::unique_ptr<vk::raii::Instance> makeUniqueInstance( vk::raii::Context const &        context,
-                                                              std::string const &              appName,
-                                                              std::string const &              engineName,
-                                                              std::vector<std::string> const & layers     = {},
-                                                              std::vector<std::string> const & extensions = {},
-                                                              uint32_t apiVersion = VK_API_VERSION_1_0 )
+      vk::raii::Instance makeInstance( vk::raii::Context const &        context,
+                                       std::string const &              appName,
+                                       std::string const &              engineName,
+                                       std::vector<std::string> const & layers     = {},
+                                       std::vector<std::string> const & extensions = {},
+                                       uint32_t                         apiVersion = VK_API_VERSION_1_0 )
       {
         vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );
         std::vector<char const *> enabledLayers = vk::su::gatherLayers( layers
@@ -877,30 +851,14 @@ namespace vk
           instanceCreateInfoChain =
             vk::su::makeInstanceCreateInfoChain( applicationInfo, enabledLayers, enabledExtensions );
 
-        return vk::raii::su::make_unique<vk::raii::Instance>( context,
-                                                              instanceCreateInfoChain.get<vk::InstanceCreateInfo>() );
+        return vk::raii::Instance( context, instanceCreateInfoChain.get<vk::InstanceCreateInfo>() );
       }
 
-      std::unique_ptr<vk::raii::PhysicalDevice> makeUniquePhysicalDevice( vk::raii::Instance const & instance )
-      {
-        return vk::raii::su::make_unique<vk::raii::PhysicalDevice>(
-          std::move( vk::raii::PhysicalDevices( instance ).front() ) );
-      }
-
-      std::unique_ptr<vk::raii::PipelineLayout>
-        makeUniquePipelineLayout( vk::raii::Device const &              device,
-                                  vk::raii::DescriptorSetLayout const & descriptorSetLayout )
-      {
-        vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout );
-        return vk::raii::su::make_unique<vk::raii::PipelineLayout>( device, pipelineLayoutCreateInfo );
-      }
-
-      std::unique_ptr<vk::raii::RenderPass>
-        makeUniqueRenderPass( vk::raii::Device const & device,
-                              vk::Format               colorFormat,
-                              vk::Format               depthFormat,
-                              vk::AttachmentLoadOp     loadOp           = vk::AttachmentLoadOp::eClear,
-                              vk::ImageLayout          colorFinalLayout = vk::ImageLayout::ePresentSrcKHR )
+      vk::raii::RenderPass makeRenderPass( vk::raii::Device const & device,
+                                           vk::Format               colorFormat,
+                                           vk::Format               depthFormat,
+                                           vk::AttachmentLoadOp     loadOp           = vk::AttachmentLoadOp::eClear,
+                                           vk::ImageLayout          colorFinalLayout = vk::ImageLayout::ePresentSrcKHR )
       {
         std::vector<vk::AttachmentDescription> attachmentDescriptions;
         assert( colorFormat != vk::Format::eUndefined );
@@ -936,7 +894,7 @@ namespace vk
                                                                                                : nullptr );
         vk::RenderPassCreateInfo renderPassCreateInfo(
           vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription );
-        return vk::raii::su::make_unique<vk::raii::RenderPass>( device, renderPassCreateInfo );
+        return vk::raii::RenderPass( device, renderPassCreateInfo );
       }
 
       vk::Format pickDepthFormat( vk::raii::PhysicalDevice const & physicalDevice )
@@ -999,7 +957,7 @@ namespace vk
         }
 
         vk::DescriptorImageInfo imageInfo(
-          **textureData.sampler, **textureData.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
+          *textureData.sampler, **textureData.pImageData->pImageView, vk::ImageLayout::eShaderReadOnlyOptimal );
         writeDescriptorSets.emplace_back(
           *descriptorSet, dstBinding, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo, nullptr, nullptr );
 
@@ -1045,7 +1003,7 @@ namespace vk
           for ( auto const & thd : textureData )
           {
             imageInfos.emplace_back(
-              **thd.sampler, **thd.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
+              *thd.sampler, **thd.pImageData->pImageView, vk::ImageLayout::eShaderReadOnlyOptimal );
           }
           writeDescriptorSets.emplace_back( *descriptorSet,
                                             dstBinding,

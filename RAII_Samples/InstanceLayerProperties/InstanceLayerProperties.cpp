@@ -25,11 +25,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
     /* VULKAN_KEY_START */
 
-    std::vector<vk::LayerProperties> layerProperties = context->enumerateInstanceLayerProperties();
+    std::vector<vk::LayerProperties> layerProperties = context.enumerateInstanceLayerProperties();
 
     std::cout << "Instance Layers:" << std::endl;
     if ( layerProperties.empty() )

@@ -41,10 +41,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     desiredVersionString += std::to_string( desiredMinorVersion );
 
     // initialize the vulkan context
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
     // Determine what API version is available
-    uint32_t apiVersion = context->enumerateInstanceVersion();
+    uint32_t apiVersion = context.enumerateInstanceVersion();
 
     // Translate the version into major/minor for easier comparison
     uint32_t loader_major_version = VK_VERSION_MAJOR( apiVersion );
@@ -57,24 +57,23 @@ int main( int /*argc*/, char ** /*argv*/ )
          ( loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion ) )
     {
       // Create the instance
-      std::unique_ptr<vk::raii::Instance> instance =
-        vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+      vk::raii::Instance instance =
+        vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-      std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-        vk::raii::su::make_unique<vk::raii::DebugUtilsMessengerEXT>( *instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+      vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
       // Get the list of physical devices
-      vk::raii::PhysicalDevices physicalDevices( *instance );
+      vk::raii::PhysicalDevices physicalDevices( instance );
 
       // Go through the list of physical devices and select only those that are capable of running the API version we
       // want.
-      std::vector<std::unique_ptr<vk::raii::PhysicalDevice>> desiredPhysicalDevices;
+      std::vector<vk::raii::PhysicalDevice> desiredPhysicalDevices;
       for ( auto & pdh : physicalDevices )
       {
         if ( desiredVersion <= pdh.getProperties().apiVersion )
         {
-          desiredPhysicalDevices.push_back( vk::raii::su::make_unique<vk::raii::PhysicalDevice>( std::move( pdh ) ) );
+          desiredPhysicalDevices.push_back( std::move( pdh ) );
         }
       }
 

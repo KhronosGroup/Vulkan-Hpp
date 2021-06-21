@@ -36,16 +36,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    vk::raii::PhysicalDevices physicalDevices( *instance );
+    vk::raii::PhysicalDevices physicalDevices( instance );
 
     /* VULKAN_KEY_START */
 

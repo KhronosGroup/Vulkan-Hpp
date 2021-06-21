@@ -36,8 +36,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context         = vk::raii::su::make_unique<vk::raii::Context>();
-    std::vector<vk::LayerProperties>   layerProperties = context->enumerateInstanceLayerProperties();
+    vk::raii::Context                context;
+    std::vector<vk::LayerProperties> layerProperties = context.enumerateInstanceLayerProperties();
 
     /* VULKAN_KEY_START */
 
@@ -47,7 +47,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( auto const & layerProperty : layerProperties )
     {
       std::vector<vk::ExtensionProperties> extensionProperties =
-        context->enumerateInstanceExtensionProperties( vk::Optional<const std::string>( layerProperty.layerName ) );
+        context.enumerateInstanceExtensionProperties( vk::Optional<const std::string>( layerProperty.layerName ) );
       propertyData.emplace_back( layerProperty, extensionProperties );
     }
 

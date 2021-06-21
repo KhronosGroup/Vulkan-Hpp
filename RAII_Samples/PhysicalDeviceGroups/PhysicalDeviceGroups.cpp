@@ -27,17 +27,16 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     /* VULKAN_KEY_START */
 
-    std::vector<vk::PhysicalDeviceGroupProperties> groupProperties = instance->enumeratePhysicalDeviceGroups();
+    std::vector<vk::PhysicalDeviceGroupProperties> groupProperties = instance.enumeratePhysicalDeviceGroups();
 
     std::cout << std::boolalpha;
     for ( size_t i = 0; i < groupProperties.size(); i++ )
@@ -49,9 +48,9 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "physicalDevices:\n";
       for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
-        std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::make_unique<vk::raii::PhysicalDevice>(
-          static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ), instance->getDispatcher() );
-        std::cout << "\t\t" << j << " : " << physicalDevice->getProperties().deviceName << "\n";
+        vk::raii::PhysicalDevice physicalDevice( static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ),
+                                                 instance.getDispatcher() );
+        std::cout << "\t\t" << j << " : " << physicalDevice.getProperties().deviceName << "\n";
       }
       std::cout << "\t"
                 << "subsetAllocation    = " << !!groupProperties[i].subsetAllocation << "\n";
@@ -59,17 +58,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( 1 < groupProperties[i].physicalDeviceCount )
       {
-        std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::make_unique<vk::raii::PhysicalDevice>(
-          static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ), instance->getDispatcher() );
+        vk::raii::PhysicalDevice physicalDevice( static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ),
+                                                 instance.getDispatcher() );
 
         // get the QueueFamilyProperties of the first PhysicalDevice
-        std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice->getQueueFamilyProperties();
+        std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
         // get the first index into queueFamiliyProperties which supports graphics
-        auto propertyIterator = std::find_if(
-          queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
-            return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
-          } );
+        auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
+                                              queueFamilyProperties.end(),
+                                              []( vk::QueueFamilyProperties const & qfp )
+                                              { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
         size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
         assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
@@ -81,8 +80,7 @@ int main( int /*argc*/, char ** /*argv*/ )
           { {}, deviceQueueCreateInfo },
           { groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices } );
 
-        std::unique_ptr<vk::raii::Device> device =
-          vk::raii::su::make_unique<vk::raii::Device>( *physicalDevice, deviceCreateInfoChain.get<vk::DeviceCreateInfo>() );
+        vk::raii::Device device( physicalDevice, deviceCreateInfoChain.get<vk::DeviceCreateInfo>() );
       }
     }
 

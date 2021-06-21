@@ -27,15 +27,14 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context  = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance = vk::raii::su::makeUniqueInstance( *context, AppName, EngineName );
+    vk::raii::Context  context;
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    vk::raii::PhysicalDevices physicalDevices( *instance );
+    vk::raii::PhysicalDevices physicalDevices( instance );
 
     /* VULKAN_KEY_START */
 
@@ -48,9 +47,8 @@ int main( int /*argc*/, char ** /*argv*/ )
       // sort the extensions alphabetically
       std::sort( extensionProperties.begin(),
                  extensionProperties.end(),
-                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) {
-                   return strcmp( a.extensionName, b.extensionName ) < 0;
-                 } );
+                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b )
+                 { return strcmp( a.extensionName, b.extensionName ) < 0; } );
       for ( auto const & ep : extensionProperties )
       {
         std::cout << "\t" << ep.extensionName << ":" << std::endl;

@@ -29,18 +29,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context                   context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    vk::raii::PhysicalDevices physicalDevices( *instance );
+    vk::raii::PhysicalDevices physicalDevices( instance );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 500, 500 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     /* VULKAN_KEY_START */
 
@@ -49,7 +48,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
       std::vector<vk::SurfaceFormatKHR> surfaceFormats =
-        physicalDevices[i].getSurfaceFormatsKHR( **surfaceData.surface );
+        physicalDevices[i].getSurfaceFormatsKHR( **surfaceData.pSurface );
       for ( size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << "\tFormat " << j << "\n";

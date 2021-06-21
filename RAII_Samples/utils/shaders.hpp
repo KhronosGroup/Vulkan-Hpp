@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
-#include "utils.hpp"
 #include "../../samples/utils/shaders.hpp"
+#include "utils.hpp"
 
 namespace vk
 {
@@ -23,9 +23,9 @@ namespace vk
     namespace su
     {
       template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-      std::unique_ptr<vk::raii::ShaderModule> makeUniqueShaderModule( vk::raii::Device const & device,
-                                                                      vk::ShaderStageFlagBits  shaderStage,
-                                                                      std::string const &      shaderText )
+      vk::raii::ShaderModule makeShaderModule( vk::raii::Device const & device,
+                                               vk::ShaderStageFlagBits  shaderStage,
+                                               std::string const &      shaderText )
       {
         std::vector<unsigned int> shaderSPV;
         if ( !vk::su::GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )
@@ -33,8 +33,7 @@ namespace vk
           throw std::runtime_error( "Could not convert glsl shader to spir-v -> terminating" );
         }
 
-        return vk::raii::su::make_unique<vk::raii::ShaderModule>(
-          device, vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
+        return vk::raii::ShaderModule( device, vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
       }
     }  // namespace su
   }    // namespace raii

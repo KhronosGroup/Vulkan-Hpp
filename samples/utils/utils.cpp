@@ -353,30 +353,6 @@ namespace vk
 #endif
       );
 
-#if defined( NDEBUG )
-      // in non-debug mode just use the InstanceCreateInfo for instance creation
-      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo(
-        { {}, &applicationInfo, enabledLayers, enabledExtensions } );
-#else
-      // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
-      vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-                                                           vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-      vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                                                          vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
-                                                          vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-#  if defined( VULKAN_HPP_UTILS_USE_BEST_PRACTICES )
-      vk::ValidationFeatureEnableEXT        validationFeatureEnable = vk::ValidationFeatureEnableEXT::eBestPractices;
-      vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT, vk::ValidationFeaturesEXT>
-        instanceCreateInfo( { {}, &applicationInfo, enabledLayers, enabledExtensions },
-                            { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback },
-                            { validationFeatureEnable } );
-#  else
-      vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> instanceCreateInfo(
-        { {}, &applicationInfo, enabledLayers, enabledExtensions },
-        { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback } );
-#  endif
-#endif
-
       vk::Instance instance =
         vk::createInstance( makeInstanceCreateInfoChain( applicationInfo, enabledLayers, enabledExtensions )
                               .get<vk::InstanceCreateInfo>() );

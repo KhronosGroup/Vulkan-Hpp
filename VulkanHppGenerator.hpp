@@ -294,73 +294,6 @@ private:
 private:
   void addCommand( std::string const & name, CommandData & commandData );
   void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
-  void appendCommandChained( std::string &                    str,
-                             std::string const &              name,
-                             CommandData const &              commandData,
-                             size_t                           initialSkipCount,
-                             bool                             definition,
-                             std::map<size_t, size_t> const & vectorParamIndices,
-                             size_t                           nonConstPointerIndex ) const;
-  bool appendCommandResult( std::string &       str,
-                            std::string const & name,
-                            CommandData const & commandData,
-                            size_t              initialSkipCount,
-                            bool                definition ) const;
-  bool appendCommandResult0Return( std::string &       str,
-                                   std::string const & name,
-                                   CommandData const & commandData,
-                                   size_t              initialSkipCount,
-                                   bool                definition ) const;
-  bool appendCommandResult1Return( std::string &       str,
-                                   std::string const & name,
-                                   CommandData const & commandData,
-                                   size_t              initialSkipCount,
-                                   bool                definition,
-                                   size_t              returnParamIndex ) const;
-  bool appendCommandResult2Return( std::string &               str,
-                                   std::string const &         name,
-                                   CommandData const &         commandData,
-                                   size_t                      initialSkipCount,
-                                   bool                        definition,
-                                   std::vector<size_t> const & returnParamIndices ) const;
-  bool appendCommandResult3Return( std::string &               str,
-                                   std::string const &         name,
-                                   CommandData const &         commandData,
-                                   size_t                      initialSkipCount,
-                                   bool                        definition,
-                                   std::vector<size_t> const & returnParamIndices ) const;
-  void appendCommandSingular( std::string &                    str,
-                              std::string const &              name,
-                              CommandData const &              commandData,
-                              size_t                           initialSkipCount,
-                              bool                             definition,
-                              std::map<size_t, size_t> const & vectorParamIndices,
-                              size_t                           returnParamIndex ) const;
-  void appendCommandStandard( std::string &       str,
-                              std::string const & name,
-                              CommandData const & commandData,
-                              size_t              initialSkipCount,
-                              bool                definition ) const;
-  void appendCommandStandardAndEnhanced( std::string &                    str,
-                                         std::string const &              name,
-                                         CommandData const &              commandData,
-                                         size_t                           initialSkipCount,
-                                         bool                             definition,
-                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                         std::vector<size_t> const &      nonConstPointerParamIndices ) const;
-  void
-       appendCommandStandardEnhancedDeprecatedAllocator( std::string &                    str,
-                                                         std::string const &              name,
-                                                         CommandData const &              commandData,
-                                                         size_t                           initialSkipCount,
-                                                         bool                             definition,
-                                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                                         std::vector<size_t> const & nonConstPointerParamIndices ) const;
-  void appendCommandStandardOrEnhanced( std::string &       str,
-                                        std::string const & name,
-                                        CommandData const & commandData,
-                                        size_t              initialSkipCount,
-                                        bool                definition ) const;
   void appendCommandUnique( std::string &       str,
                             std::string const & name,
                             CommandData const & commandData,
@@ -1061,13 +994,63 @@ private:
                                             size_t              initialSkipCount,
                                             bool                definition ) const;
   std::string              generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
-  std::string              generateFunctionCall( std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 size_t                           returnParamIndex,
-                                                 size_t                           templateParamIndex,
-                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                 bool                             twoStep,
-                                                 bool                             firstCall ) const;
+  std::string              generateCommandResult( std::string const & name,
+                                                  CommandData const & commandData,
+                                                  size_t              initialSkipCount,
+                                                  bool                definition ) const;
+  std::string              generateCommandResult0Return( std::string const & name,
+                                                         CommandData const & commandData,
+                                                         size_t              initialSkipCount,
+                                                         bool                definition ) const;
+  std::string              generateCommandResult1Return( std::string const & name,
+                                                         CommandData const & commandData,
+                                                         size_t              initialSkipCount,
+                                                         bool                definition,
+                                                         size_t              returnParamIndex ) const;
+  std::string              generateCommandResult2Return( std::string const &         name,
+                                                         CommandData const &         commandData,
+                                                         size_t                      initialSkipCount,
+                                                         bool                        definition,
+                                                         std::vector<size_t> const & returnParamIndices ) const;
+  std::string              generateCommandResult3Return( std::string const &         name,
+                                                         CommandData const &         commandData,
+                                                         size_t                      initialSkipCount,
+                                                         bool                        definition,
+                                                         std::vector<size_t> const & returnParamIndices ) const;
+  std::string              generateCommandSetStandard( std::string const & name,
+                                                       CommandData const & commandData,
+                                                       size_t              initialSkipCount,
+                                                       bool                definition ) const;
+  std::string              generateCommandSetStandardAndEnhanced( std::string const &              name,
+                                                                  CommandData const &              commandData,
+                                                                  size_t                           initialSkipCount,
+                                                                  bool                             definition,
+                                                                  std::map<size_t, size_t> const & vectorParamIndices,
+                                                                  std::vector<size_t> const & nonConstPointerParamIndices ) const;
+  std::string              generateCommandSetStandardEnhancedDeprecatedAllocator(
+                 std::string const &              name,
+                 CommandData const &              commandData,
+                 size_t                           initialSkipCount,
+                 bool                             definition,
+                 std::map<size_t, size_t> const & vectorParamIndices,
+                 std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+  std::string generateCommandSetStandardOrEnhanced( std::string const & name,
+                                                    CommandData const & commandData,
+                                                    size_t              initialSkipCount,
+                                                    bool                definition ) const;
+  std::string generateCommandsStandardEnhancedChained( std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       size_t                           initialSkipCount,
+                                                       bool                             definition,
+                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                       size_t                           nonConstPointerIndex ) const;
+  std::string generateFunctionCall( std::string const &              name,
+                                    CommandData const &              commandData,
+                                    size_t                           returnParamIndex,
+                                    size_t                           templateParamIndex,
+                                    std::map<size_t, size_t> const & vectorParamIndices,
+                                    bool                             twoStep,
+                                    bool                             firstCall ) const;
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,

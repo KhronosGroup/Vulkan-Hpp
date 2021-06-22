@@ -16653,6 +16653,66 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_EXT_acquire_drm_display ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::acquireDrmDisplayEXT(
+    int32_t drmFd, VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<Result>(
+      d.vkAcquireDrmDisplayEXT( m_physicalDevice, drmFd, static_cast<VkDisplayKHR>( display ) ) );
+  }
+#else
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type PhysicalDevice::acquireDrmDisplayEXT(
+    int32_t drmFd, VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d ) const
+  {
+    Result result =
+      static_cast<Result>( d.vkAcquireDrmDisplayEXT( m_physicalDevice, drmFd, static_cast<VkDisplayKHR>( display ) ) );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::acquireDrmDisplayEXT" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    PhysicalDevice::getDrmDisplayEXT( int32_t                            drmFd,
+                                      uint32_t                           connectorId,
+                                      VULKAN_HPP_NAMESPACE::DisplayKHR * display,
+                                      Dispatch const &                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<Result>(
+      d.vkGetDrmDisplayEXT( m_physicalDevice, drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( display ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::DisplayKHR>::type
+    PhysicalDevice::getDrmDisplayEXT( int32_t drmFd, uint32_t connectorId, Dispatch const & d ) const
+  {
+    VULKAN_HPP_NAMESPACE::DisplayKHR display;
+    Result                           result = static_cast<Result>(
+      d.vkGetDrmDisplayEXT( m_physicalDevice, drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
+    return createResultValue( result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDrmDisplayEXT" );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>>::type
+    PhysicalDevice::getDrmDisplayEXTUnique( int32_t drmFd, uint32_t connectorId, Dispatch const & d ) const
+  {
+    VULKAN_HPP_NAMESPACE::DisplayKHR display;
+    Result                           result = static_cast<Result>(
+      d.vkGetDrmDisplayEXT( m_physicalDevice, drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
+    ObjectRelease<PhysicalDevice, Dispatch> deleter( *this, d );
+    return createResultValue<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>(
+      result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDrmDisplayEXTUnique", deleter );
+  }
+#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   //=== VK_EXT_private_data ===
 
   template <typename Dispatch>
@@ -17903,6 +17963,37 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_FUCHSIA*/
 
+  //=== VK_HUAWEI_subpass_shading ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI(
+    VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<Result>( d.vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+      m_renderPass, reinterpret_cast<VkExtent2D *>( pMaxWorkgroupSize ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
+                                         RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI( Dispatch const & d ) const
+  {
+    VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
+    Result                         result = static_cast<Result>( d.vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+      m_renderPass, reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
+    return createResultValue( result,
+                              maxWorkgroupSize,
+                              VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI",
+                              { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::subpassShadingHUAWEI( Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkCmdSubpassShadingHUAWEI( m_commandBuffer );
+  }
+
   //=== VK_EXT_extended_dynamic_state2 ===
 
   template <typename Dispatch>
@@ -18036,6 +18127,81 @@ namespace VULKAN_HPP_NAMESPACE
   {
     d.vkCmdSetColorWriteEnableEXT(
       m_commandBuffer, colorWriteEnables.size(), reinterpret_cast<const VkBool32 *>( colorWriteEnables.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  //=== VK_EXT_multi_draw ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::drawMultiEXT( uint32_t                                       drawCount,
+                                                      const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT * pVertexInfo,
+                                                      uint32_t                                       instanceCount,
+                                                      uint32_t                                       firstInstance,
+                                                      uint32_t                                       stride,
+                                                      Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkCmdDrawMultiEXT( m_commandBuffer,
+                         drawCount,
+                         reinterpret_cast<const VkMultiDrawInfoEXT *>( pVertexInfo ),
+                         instanceCount,
+                         firstInstance,
+                         stride );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::drawMultiEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT> const & vertexInfo,
+                                 uint32_t                                                         instanceCount,
+                                 uint32_t                                                         firstInstance,
+                                 uint32_t                                                         stride,
+                                 Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkCmdDrawMultiEXT( m_commandBuffer,
+                         vertexInfo.size(),
+                         reinterpret_cast<const VkMultiDrawInfoEXT *>( vertexInfo.data() ),
+                         instanceCount,
+                         firstInstance,
+                         stride );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::drawMultiIndexedEXT( uint32_t                                              drawCount,
+                                        const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT * pIndexInfo,
+                                        uint32_t                                              instanceCount,
+                                        uint32_t                                              firstInstance,
+                                        uint32_t                                              stride,
+                                        const int32_t *                                       pVertexOffset,
+                                        Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkCmdDrawMultiIndexedEXT( m_commandBuffer,
+                                drawCount,
+                                reinterpret_cast<const VkMultiDrawIndexedInfoEXT *>( pIndexInfo ),
+                                instanceCount,
+                                firstInstance,
+                                stride,
+                                pVertexOffset );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::drawMultiIndexedEXT(
+    ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT> const & indexInfo,
+    uint32_t                                                                instanceCount,
+    uint32_t                                                                firstInstance,
+    uint32_t                                                                stride,
+    Optional<const int32_t>                                                 vertexOffset,
+    Dispatch const &                                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    d.vkCmdDrawMultiIndexedEXT( m_commandBuffer,
+                                indexInfo.size(),
+                                reinterpret_cast<const VkMultiDrawIndexedInfoEXT *>( indexInfo.data() ),
+                                instanceCount,
+                                firstInstance,
+                                stride,
+                                static_cast<const int32_t *>( vertexOffset ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 

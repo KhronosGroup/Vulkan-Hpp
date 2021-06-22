@@ -65,6 +65,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       void init( VkInstance instance )
       {
+        vkAcquireDrmDisplayEXT =
+          PFN_vkAcquireDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkAcquireDrmDisplayEXT" ) );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
         vkAcquireWinrtDisplayNV =
           PFN_vkAcquireWinrtDisplayNV( vkGetInstanceProcAddr( instance, "vkAcquireWinrtDisplayNV" ) );
@@ -166,6 +168,7 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetDisplayPlaneCapabilitiesKHR( vkGetInstanceProcAddr( instance, "vkGetDisplayPlaneCapabilitiesKHR" ) );
         vkGetDisplayPlaneSupportedDisplaysKHR = PFN_vkGetDisplayPlaneSupportedDisplaysKHR(
           vkGetInstanceProcAddr( instance, "vkGetDisplayPlaneSupportedDisplaysKHR" ) );
+        vkGetDrmDisplayEXT    = PFN_vkGetDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkGetDrmDisplayEXT" ) );
         vkGetInstanceProcAddr = PFN_vkGetInstanceProcAddr( vkGetInstanceProcAddr( instance, "vkGetInstanceProcAddr" ) );
         vkGetPhysicalDeviceCalibrateableTimeDomainsEXT = PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(
           vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT" ) );
@@ -334,6 +337,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
     public:
+      PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -402,6 +406,7 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetDisplayPlaneCapabilities2KHR     vkGetDisplayPlaneCapabilities2KHR                               = 0;
       PFN_vkGetDisplayPlaneCapabilitiesKHR      vkGetDisplayPlaneCapabilitiesKHR                                = 0;
       PFN_vkGetDisplayPlaneSupportedDisplaysKHR vkGetDisplayPlaneSupportedDisplaysKHR                           = 0;
+      PFN_vkGetDrmDisplayEXT                    vkGetDrmDisplayEXT                                              = 0;
       PFN_vkGetInstanceProcAddr                 vkGetInstanceProcAddr                                           = 0;
       PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT   vkGetPhysicalDeviceCalibrateableTimeDomainsEXT       = 0;
       PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV     = 0;
@@ -650,6 +655,9 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdDrawMeshTasksIndirectNV =
           PFN_vkCmdDrawMeshTasksIndirectNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectNV" ) );
         vkCmdDrawMeshTasksNV = PFN_vkCmdDrawMeshTasksNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksNV" ) );
+        vkCmdDrawMultiEXT    = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
+        vkCmdDrawMultiIndexedEXT =
+          PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
         vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdEncodeVideoKHR" ) );
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -771,6 +779,8 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkCmdSetViewportWScalingNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportWScalingNV" ) );
         vkCmdSetViewportWithCountEXT =
           PFN_vkCmdSetViewportWithCountEXT( vkGetDeviceProcAddr( device, "vkCmdSetViewportWithCountEXT" ) );
+        vkCmdSubpassShadingHUAWEI =
+          PFN_vkCmdSubpassShadingHUAWEI( vkGetDeviceProcAddr( device, "vkCmdSubpassShadingHUAWEI" ) );
         vkCmdTraceRaysIndirectKHR =
           PFN_vkCmdTraceRaysIndirectKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysIndirectKHR" ) );
         vkCmdTraceRaysKHR   = PFN_vkCmdTraceRaysKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysKHR" ) );
@@ -1119,6 +1129,8 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetDeviceProcAddr( device, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
         vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetDeviceProcAddr( device, "vkGetShaderInfoAMD" ) );
+        vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+          vkGetDeviceProcAddr( device, "vkGetSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
         vkGetSwapchainCounterEXT =
           PFN_vkGetSwapchainCounterEXT( vkGetDeviceProcAddr( device, "vkGetSwapchainCounterEXT" ) );
         vkGetSwapchainImagesKHR =
@@ -1317,6 +1329,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdDrawMeshTasksIndirectCountNV vkCmdDrawMeshTasksIndirectCountNV = 0;
       PFN_vkCmdDrawMeshTasksIndirectNV      vkCmdDrawMeshTasksIndirectNV      = 0;
       PFN_vkCmdDrawMeshTasksNV              vkCmdDrawMeshTasksNV              = 0;
+      PFN_vkCmdDrawMultiEXT                 vkCmdDrawMultiEXT                 = 0;
+      PFN_vkCmdDrawMultiIndexedEXT          vkCmdDrawMultiIndexedEXT          = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -1394,6 +1408,7 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdSetViewportShadingRatePaletteNV          vkCmdSetViewportShadingRatePaletteNV          = 0;
       PFN_vkCmdSetViewportWScalingNV                    vkCmdSetViewportWScalingNV                    = 0;
       PFN_vkCmdSetViewportWithCountEXT                  vkCmdSetViewportWithCountEXT                  = 0;
+      PFN_vkCmdSubpassShadingHUAWEI                     vkCmdSubpassShadingHUAWEI                     = 0;
       PFN_vkCmdTraceRaysIndirectKHR                     vkCmdTraceRaysIndirectKHR                     = 0;
       PFN_vkCmdTraceRaysKHR                             vkCmdTraceRaysKHR                             = 0;
       PFN_vkCmdTraceRaysNV                              vkCmdTraceRaysNV                              = 0;
@@ -1598,11 +1613,12 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkGetSemaphoreZirconHandleFUCHSIA vkGetSemaphoreZirconHandleFUCHSIA = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
-      PFN_vkGetShaderInfoAMD          vkGetShaderInfoAMD          = 0;
-      PFN_vkGetSwapchainCounterEXT    vkGetSwapchainCounterEXT    = 0;
-      PFN_vkGetSwapchainImagesKHR     vkGetSwapchainImagesKHR     = 0;
-      PFN_vkGetSwapchainStatusKHR     vkGetSwapchainStatusKHR     = 0;
-      PFN_vkGetValidationCacheDataEXT vkGetValidationCacheDataEXT = 0;
+      PFN_vkGetShaderInfoAMD                        vkGetShaderInfoAMD                        = 0;
+      PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = 0;
+      PFN_vkGetSwapchainCounterEXT                  vkGetSwapchainCounterEXT                  = 0;
+      PFN_vkGetSwapchainImagesKHR                   vkGetSwapchainImagesKHR                   = 0;
+      PFN_vkGetSwapchainStatusKHR                   vkGetSwapchainStatusKHR                   = 0;
+      PFN_vkGetValidationCacheDataEXT               vkGetValidationCacheDataEXT               = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkGetVideoSessionMemoryRequirementsKHR vkGetVideoSessionMemoryRequirementsKHR = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -2177,6 +2193,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR>
                            getSurfacePresentModes2EXT( const PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+      //=== VK_EXT_acquire_drm_display ===
+
+      void acquireDrmDisplayEXT( int32_t drmFd, VULKAN_HPP_NAMESPACE::DisplayKHR display ) const;
 
 #  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       //=== VK_EXT_directfb_surface ===
@@ -3973,6 +3993,10 @@ namespace VULKAN_HPP_NAMESPACE
         ArrayProxy<const VULKAN_HPP_NAMESPACE::VertexInputAttributeDescription2EXT> const &
           vertexAttributeDescriptions ) const VULKAN_HPP_NOEXCEPT;
 
+      //=== VK_HUAWEI_subpass_shading ===
+
+      void subpassShadingHUAWEI() const VULKAN_HPP_NOEXCEPT;
+
       //=== VK_EXT_extended_dynamic_state2 ===
 
       void setPatchControlPointsEXT( uint32_t patchControlPoints ) const VULKAN_HPP_NOEXCEPT;
@@ -3991,6 +4015,20 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setColorWriteEnableEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables ) const
         VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_multi_draw ===
+
+      void drawMultiEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT> const & vertexInfo,
+                         uint32_t                                                         instanceCount,
+                         uint32_t                                                         firstInstance,
+                         uint32_t stride ) const VULKAN_HPP_NOEXCEPT;
+
+      void drawMultiIndexedEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT> const & indexInfo,
+                                uint32_t                                                                instanceCount,
+                                uint32_t                                                                firstInstance,
+                                uint32_t                                                                stride,
+                                Optional<const int32_t> vertexOffset
+                                  VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
       VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
       {
@@ -5116,6 +5154,22 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
 
     public:
+      DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice,
+                  int32_t                                                                 drmFd,
+                  uint32_t                                                                connectorId )
+        : m_physicalDevice( *physicalDevice ), m_dispatcher( physicalDevice.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkGetDrmDisplayEXT( static_cast<VkPhysicalDevice>( *physicalDevice ),
+                                               drmFd,
+                                               connectorId,
+                                               reinterpret_cast<VkDisplayKHR *>( &m_displayKHR ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkGetDrmDisplayEXT" );
+        }
+      }
+
 #  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice,
                   Display &                                                               dpy,
@@ -7130,6 +7184,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_VERSION_1_0 ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Extent2D getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_HUAWEI_subpass_shading ===
+
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
+                           getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
 
       VULKAN_HPP_NAMESPACE::RenderPass const & operator*() const VULKAN_HPP_NOEXCEPT
       {
@@ -14812,6 +14871,23 @@ namespace VULKAN_HPP_NAMESPACE
                                                        groupIndex );
     }
 
+    //=== VK_EXT_acquire_drm_display ===
+
+    VULKAN_HPP_INLINE void PhysicalDevice::acquireDrmDisplayEXT( int32_t                          drmFd,
+                                                                 VULKAN_HPP_NAMESPACE::DisplayKHR display ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireDrmDisplayEXT &&
+                         "Function <vkAcquireDrmDisplayEXT> needs extension <VK_EXT_acquire_drm_display> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkAcquireDrmDisplayEXT(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ), drmFd, static_cast<VkDisplayKHR>( display ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::acquireDrmDisplayEXT" );
+      }
+    }
+
     //=== VK_EXT_private_data ===
 
     VULKAN_HPP_INLINE void Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType         objectType_,
@@ -15365,6 +15441,36 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+    //=== VK_HUAWEI_subpass_shading ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
+                                           RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI() const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetSubpassShadingMaxWorkgroupSizeHUAWEI &&
+        "Function <vkGetSubpassShadingMaxWorkgroupSizeHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
+      VULKAN_HPP_NAMESPACE::Result   result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+          static_cast<VkRenderPass>( m_renderPass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
+      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
+           ( result != VULKAN_HPP_NAMESPACE::Result::eIncomplete ) )
+      {
+        throwResultException( result,
+                              VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI" );
+      }
+      return std::make_pair( result, maxWorkgroupSize );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::subpassShadingHUAWEI() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSubpassShadingHUAWEI &&
+                         "Function <vkCmdSubpassShadingHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
+
+      getDispatcher()->vkCmdSubpassShadingHUAWEI( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+    }
+
     //=== VK_EXT_extended_dynamic_state2 ===
 
     VULKAN_HPP_INLINE void
@@ -15450,6 +15556,45 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdSetColorWriteEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                     colorWriteEnables.size(),
                                                     reinterpret_cast<const VkBool32 *>( colorWriteEnables.data() ) );
+    }
+
+    //=== VK_EXT_multi_draw ===
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::drawMultiEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT> const & vertexInfo,
+                                   uint32_t                                                         instanceCount,
+                                   uint32_t                                                         firstInstance,
+                                   uint32_t stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawMultiEXT &&
+                         "Function <vkCmdDrawMultiEXT> needs extension <VK_EXT_multi_draw> enabled!" );
+
+      getDispatcher()->vkCmdDrawMultiEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                          vertexInfo.size(),
+                                          reinterpret_cast<const VkMultiDrawInfoEXT *>( vertexInfo.data() ),
+                                          instanceCount,
+                                          firstInstance,
+                                          stride );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawMultiIndexedEXT(
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT> const & indexInfo,
+      uint32_t                                                                instanceCount,
+      uint32_t                                                                firstInstance,
+      uint32_t                                                                stride,
+      Optional<const int32_t>                                                 vertexOffset ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawMultiIndexedEXT &&
+                         "Function <vkCmdDrawMultiIndexedEXT> needs extension <VK_EXT_multi_draw> enabled!" );
+
+      getDispatcher()->vkCmdDrawMultiIndexedEXT(
+        static_cast<VkCommandBuffer>( m_commandBuffer ),
+        indexInfo.size(),
+        reinterpret_cast<const VkMultiDrawIndexedInfoEXT *>( indexInfo.data() ),
+        instanceCount,
+        firstInstance,
+        stride,
+        static_cast<const int32_t *>( vertexOffset ) );
     }
 
 #endif

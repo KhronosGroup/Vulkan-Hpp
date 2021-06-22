@@ -254,6 +254,14 @@ private:
     std::string protect;
   };
 
+  struct StructureAliasData
+  {
+    StructureAliasData( std::string const & alias_, int line ) : alias( alias_ ), xmlLine( line ) {}
+
+    std::string alias;
+    int         xmlLine;
+  };
+
   struct StructureData
   {
     StructureData( std::vector<std::string> const & extends, int line ) : structExtends( extends ), xmlLine( line ) {}
@@ -1181,7 +1189,7 @@ private:
   std::set<std::string>                                               m_listedTypes;
   std::set<std::string>                                               m_listingTypes;
   std::map<std::string, PlatformData>                                 m_platforms;
-  std::map<std::string, std::string>                                  m_structureAliases;
+  std::map<std::string, StructureAliasData>                           m_structureAliases;
   std::map<std::string, StructureData>                                m_structures;
   std::set<std::string>                                               m_tags;
   std::map<std::string, TypeData>                                     m_types;

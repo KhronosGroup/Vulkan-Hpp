@@ -10555,6 +10555,18 @@ void VulkanHppGenerator::checkCorrectness()
     }
   }
 
+  // structure alias checks
+  for ( auto structureAlias : m_structureAliases )
+  {
+    auto structureIt = m_structures.find( structureAlias.second.alias );
+    check( structureIt != m_structures.end(),
+           structureAlias.second.xmlLine,
+           "missing alias <" + structureAlias.second.alias + ">." );
+    check( structureIt->second.aliases.insert( structureAlias.first ).second,
+           structureAlias.second.xmlLine,
+           "struct <" + structureAlias.second.alias + "> already uses alias <" + structureAlias.first + ">" );
+  }
+
   // structure checks
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
@@ -13917,7 +13929,8 @@ void VulkanHppGenerator::readSPIRVCapabilityEnableStruct( int                   
     }
     else if ( attribute.first == "struct" )
     {
-      check( m_structures.find( attribute.second ) != m_structures.end(),
+      check( ( m_structures.find( attribute.second ) != m_structures.end() ) ||
+               ( m_structureAliases.find( attribute.second ) != m_structureAliases.end() ),
              xmlLine,
              "unknown structure <" + attribute.second + "> specified for SPIR-V capability" );
       check( attributes.find( "feature" ) != attributes.end(),
@@ -14182,11 +14195,7 @@ void VulkanHppGenerator::readStructAlias( tinyxml2::XMLElement const *          
     }
   }
 
-  auto structIt = m_structures.find( alias );
-  check( structIt != m_structures.end(), line, "missing alias <" + alias + ">." );
-  check(
-    structIt->second.aliases.insert( name ).second, line, "struct <" + alias + "> already uses alias <" + name + ">" );
-  check( m_structureAliases.insert( std::make_pair( name, alias ) ).second,
+  check( m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second,
          line,
          "structure alias <" + name + "> already used" );
   check( m_types.insert( std::make_pair( name, TypeCategory::Struct ) ).second,

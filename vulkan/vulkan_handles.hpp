@@ -22,11 +22,17 @@ namespace VULKAN_HPP_NAMESPACE
   union AccelerationStructureGeometryDataKHR;
   struct AccelerationStructureGeometryInstancesDataKHR;
   struct AccelerationStructureGeometryKHR;
+  struct AccelerationStructureGeometryMotionTrianglesDataNV;
   struct AccelerationStructureGeometryTrianglesDataKHR;
   struct AccelerationStructureInfoNV;
   struct AccelerationStructureInstanceKHR;
   using AccelerationStructureInstanceNV = AccelerationStructureInstanceKHR;
+  struct AccelerationStructureMatrixMotionInstanceNV;
   struct AccelerationStructureMemoryRequirementsInfoNV;
+  struct AccelerationStructureMotionInfoNV;
+  union AccelerationStructureMotionInstanceDataNV;
+  struct AccelerationStructureMotionInstanceNV;
+  struct AccelerationStructureSRTMotionInstanceNV;
   struct AccelerationStructureVersionInfoKHR;
   struct AcquireNextImageInfoKHR;
   struct AcquireProfilingLockInfoKHR;
@@ -399,6 +405,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   struct MetalSurfaceCreateInfoEXT;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
+  struct MultiDrawIndexedInfoEXT;
+  struct MultiDrawInfoEXT;
   struct MultisamplePropertiesEXT;
   struct MutableDescriptorTypeCreateInfoVALVE;
   struct MutableDescriptorTypeListVALVE;
@@ -455,6 +463,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceDiscardRectanglePropertiesEXT;
   struct PhysicalDeviceDriverProperties;
   using PhysicalDeviceDriverPropertiesKHR = PhysicalDeviceDriverProperties;
+  struct PhysicalDeviceDrmPropertiesEXT;
   struct PhysicalDeviceExclusiveScissorFeaturesNV;
   struct PhysicalDeviceExtendedDynamicState2FeaturesEXT;
   struct PhysicalDeviceExtendedDynamicStateFeaturesEXT;
@@ -513,6 +522,8 @@ namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceMemoryProperties2KHR = PhysicalDeviceMemoryProperties2;
   struct PhysicalDeviceMeshShaderFeaturesNV;
   struct PhysicalDeviceMeshShaderPropertiesNV;
+  struct PhysicalDeviceMultiDrawFeaturesEXT;
+  struct PhysicalDeviceMultiDrawPropertiesEXT;
   struct PhysicalDeviceMultiviewFeatures;
   using PhysicalDeviceMultiviewFeaturesKHR = PhysicalDeviceMultiviewFeatures;
   struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX;
@@ -542,6 +553,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceProvokingVertexPropertiesEXT;
   struct PhysicalDevicePushDescriptorPropertiesKHR;
   struct PhysicalDeviceRayQueryFeaturesKHR;
+  struct PhysicalDeviceRayTracingMotionBlurFeaturesNV;
   struct PhysicalDeviceRayTracingPipelineFeaturesKHR;
   struct PhysicalDeviceRayTracingPipelinePropertiesKHR;
   struct PhysicalDeviceRayTracingPropertiesNV;
@@ -586,6 +598,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceSubgroupProperties;
   struct PhysicalDeviceSubgroupSizeControlFeaturesEXT;
   struct PhysicalDeviceSubgroupSizeControlPropertiesEXT;
+  struct PhysicalDeviceSubpassShadingFeaturesHUAWEI;
+  struct PhysicalDeviceSubpassShadingPropertiesHUAWEI;
   struct PhysicalDeviceSurfaceInfo2KHR;
   struct PhysicalDeviceSynchronization2FeaturesKHR;
   struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
@@ -711,6 +725,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassSampleLocationsBeginInfoEXT;
   struct RenderPassTransformBeginInfoQCOM;
   struct ResolveImageInfo2KHR;
+  struct SRTDataNV;
   struct SampleLocationEXT;
   struct SampleLocationsInfoEXT;
   struct SamplerCreateInfo;
@@ -781,6 +796,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SubpassEndInfo;
   using SubpassEndInfoKHR = SubpassEndInfo;
   struct SubpassSampleLocationsEXT;
+  struct SubpassShadingPipelineCreateInfoHUAWEI;
   struct SubresourceLayout;
   struct SurfaceCapabilities2EXT;
   struct SurfaceCapabilities2KHR;
@@ -4350,6 +4366,11 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    //=== VK_HUAWEI_subpass_shading ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void subpassShadingHUAWEI( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
     //=== VK_EXT_extended_dynamic_state2 ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -4386,6 +4407,42 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void
       setColorWriteEnableEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables,
+                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_EXT_multi_draw ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMultiEXT( uint32_t                                       drawCount,
+                       const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT * pVertexInfo,
+                       uint32_t                                       instanceCount,
+                       uint32_t                                       firstInstance,
+                       uint32_t                                       stride,
+                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMultiEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawInfoEXT> const & vertexInfo,
+                       uint32_t                                                         instanceCount,
+                       uint32_t                                                         firstInstance,
+                       uint32_t                                                         stride,
+                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMultiIndexedEXT( uint32_t                                              drawCount,
+                              const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT * pIndexInfo,
+                              uint32_t                                              instanceCount,
+                              uint32_t                                              firstInstance,
+                              uint32_t                                              stride,
+                              const int32_t *                                       pVertexOffset,
+                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMultiIndexedEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::MultiDrawIndexedInfoEXT> const & indexInfo,
+                              uint32_t                                                                instanceCount,
+                              uint32_t                                                                firstInstance,
+                              uint32_t                                                                stride,
+                              Optional<const int32_t> vertexOffset VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -5719,6 +5776,18 @@ namespace VULKAN_HPP_NAMESPACE
       return m_renderPass < rhs.m_renderPass;
     }
 #endif
+
+    //=== VK_HUAWEI_subpass_shading ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getSubpassShadingMaxWorkgroupSizeHUAWEI(
+      VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize,
+      Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
+      getSubpassShadingMaxWorkgroupSizeHUAWEI( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkRenderPass() const VULKAN_HPP_NOEXCEPT
     {
@@ -12101,8 +12170,8 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     typename ResultValueType<void>::type
-         releaseDisplayEXT( VULKAN_HPP_NAMESPACE::DisplayKHR display,
-                            Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      releaseDisplayEXT( VULKAN_HPP_NAMESPACE::DisplayKHR display,
+                         Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
@@ -12524,6 +12593,44 @@ namespace VULKAN_HPP_NAMESPACE
                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_WIN32_KHR*/
+
+    //=== VK_EXT_acquire_drm_display ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      acquireDrmDisplayEXT( int32_t                          drmFd,
+                            VULKAN_HPP_NAMESPACE::DisplayKHR display,
+                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<void>::type
+         acquireDrmDisplayEXT( int32_t                          drmFd,
+                               VULKAN_HPP_NAMESPACE::DisplayKHR display,
+                               Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      getDrmDisplayEXT( int32_t                            drmFd,
+                        uint32_t                           connectorId,
+                        VULKAN_HPP_NAMESPACE::DisplayKHR * display,
+                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<VULKAN_HPP_NAMESPACE::DisplayKHR>::type
+      getDrmDisplayEXT( int32_t            drmFd,
+                        uint32_t           connectorId,
+                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+      typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>>::type
+      getDrmDisplayEXTUnique( int32_t            drmFd,
+                              uint32_t           connectorId,
+                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===

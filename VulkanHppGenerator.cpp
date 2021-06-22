@@ -12536,11 +12536,14 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandParam( tinyxml2::XM
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes(
-    line,
-    attributes,
-    {},
-    { { "externsync", {} }, { "len", {} }, { "noautovalidity", { "true" } }, { "optional", { "false", "true" } } } );
+  checkAttributes( line,
+                   attributes,
+                   {},
+                   { { "externsync", {} },
+                     { "len", {} },
+                     { "noautovalidity", { "true" } },
+                     { "objecttype", { "objectType" } },
+                     { "optional", { "false", "true" } } } );
 
   ParamData paramData( line );
   for ( auto attribute : attributes )
@@ -14205,6 +14208,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                      { "len", {} },
                      { "limittype", { "bitmask", "max", "min", "noauto", "range", "struct" } },
                      { "noautovalidity", { "true" } },
+                     { "objecttype", { "objectType" } },
                      { "optional", { "false", "true" } },
                      { "selection", {} },
                      { "selector", {} },

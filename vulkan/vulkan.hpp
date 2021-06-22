@@ -93,7 +93,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <compare>
 #endif
 
-static_assert( VK_HEADER_VERSION == 181, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 182, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5011,6 +5011,23 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkDestroyIndirectCommandsLayoutNV( device, indirectCommandsLayout, pAllocator );
     }
 
+    //=== VK_EXT_acquire_drm_display ===
+
+    VkResult vkAcquireDrmDisplayEXT( VkPhysicalDevice physicalDevice,
+                                     int32_t          drmFd,
+                                     VkDisplayKHR     display ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkAcquireDrmDisplayEXT( physicalDevice, drmFd, display );
+    }
+
+    VkResult vkGetDrmDisplayEXT( VkPhysicalDevice physicalDevice,
+                                 int32_t          drmFd,
+                                 uint32_t         connectorId,
+                                 VkDisplayKHR *   display ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDrmDisplayEXT( physicalDevice, drmFd, connectorId, display );
+    }
+
     //=== VK_EXT_private_data ===
 
     VkResult vkCreatePrivateDataSlotEXT( VkDevice                               device,
@@ -5341,6 +5358,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+    //=== VK_HUAWEI_subpass_shading ===
+
+    VkResult vkGetSubpassShadingMaxWorkgroupSizeHUAWEI( VkRenderPass renderpass,
+                                                        VkExtent2D * pMaxWorkgroupSize ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetSubpassShadingMaxWorkgroupSizeHUAWEI( renderpass, pMaxWorkgroupSize );
+    }
+
+    void vkCmdSubpassShadingHUAWEI( VkCommandBuffer commandBuffer ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSubpassShadingHUAWEI( commandBuffer );
+    }
+
     //=== VK_EXT_extended_dynamic_state2 ===
 
     void vkCmdSetPatchControlPointsEXT( VkCommandBuffer commandBuffer,
@@ -5397,6 +5427,30 @@ namespace VULKAN_HPP_NAMESPACE
                                       const VkBool32 * pColorWriteEnables ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkCmdSetColorWriteEnableEXT( commandBuffer, attachmentCount, pColorWriteEnables );
+    }
+
+    //=== VK_EXT_multi_draw ===
+
+    void vkCmdDrawMultiEXT( VkCommandBuffer            commandBuffer,
+                            uint32_t                   drawCount,
+                            const VkMultiDrawInfoEXT * pVertexInfo,
+                            uint32_t                   instanceCount,
+                            uint32_t                   firstInstance,
+                            uint32_t                   stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawMultiEXT( commandBuffer, drawCount, pVertexInfo, instanceCount, firstInstance, stride );
+    }
+
+    void vkCmdDrawMultiIndexedEXT( VkCommandBuffer                   commandBuffer,
+                                   uint32_t                          drawCount,
+                                   const VkMultiDrawIndexedInfoEXT * pIndexInfo,
+                                   uint32_t                          instanceCount,
+                                   uint32_t                          firstInstance,
+                                   uint32_t                          stride,
+                                   const int32_t *                   pVertexOffset ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawMultiIndexedEXT(
+        commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset );
     }
   };
 #endif
@@ -6354,6 +6408,23 @@ namespace VULKAN_HPP_NAMESPACE
 
 namespace VULKAN_HPP_NAMESPACE
 {
+  template <>
+  struct StructExtends<AccelerationStructureGeometryMotionTrianglesDataNV,
+                       AccelerationStructureGeometryTrianglesDataKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AccelerationStructureMotionInfoNV, AccelerationStructureCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   template <>
   struct StructExtends<AndroidHardwareBufferFormatPropertiesANDROID, AndroidHardwareBufferPropertiesANDROID>
@@ -7491,6 +7562,14 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<PhysicalDeviceDrmPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
   struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, PhysicalDeviceFeatures2>
   {
     enum
@@ -7915,6 +7994,30 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMultiDrawPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
   struct StructExtends<PhysicalDeviceMultiviewFeatures, PhysicalDeviceFeatures2>
   {
     enum
@@ -8144,6 +8247,22 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, DeviceCreateInfo>
   {
     enum
     {
@@ -8568,6 +8687,30 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceSubgroupSizeControlPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingPropertiesHUAWEI, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -9344,6 +9487,14 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<SubpassShadingPipelineCreateInfoHUAWEI, ComputePipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   template <>
   struct StructExtends<SurfaceCapabilitiesFullScreenExclusiveEXT, SurfaceCapabilities2KHR>
@@ -9940,6 +10091,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using PFN_dummy = void ( * )();
 
+    PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT = 0;
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT = 0;
 #else
@@ -10050,6 +10202,8 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdDrawMeshTasksIndirectCountNV vkCmdDrawMeshTasksIndirectCountNV = 0;
     PFN_vkCmdDrawMeshTasksIndirectNV      vkCmdDrawMeshTasksIndirectNV      = 0;
     PFN_vkCmdDrawMeshTasksNV              vkCmdDrawMeshTasksNV              = 0;
+    PFN_vkCmdDrawMultiEXT                 vkCmdDrawMultiEXT                 = 0;
+    PFN_vkCmdDrawMultiIndexedEXT          vkCmdDrawMultiIndexedEXT          = 0;
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR = 0;
 #else
@@ -10131,6 +10285,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdSetViewportShadingRatePaletteNV          vkCmdSetViewportShadingRatePaletteNV          = 0;
     PFN_vkCmdSetViewportWScalingNV                    vkCmdSetViewportWScalingNV                    = 0;
     PFN_vkCmdSetViewportWithCountEXT                  vkCmdSetViewportWithCountEXT                  = 0;
+    PFN_vkCmdSubpassShadingHUAWEI                     vkCmdSubpassShadingHUAWEI                     = 0;
     PFN_vkCmdTraceRaysIndirectKHR                     vkCmdTraceRaysIndirectKHR                     = 0;
     PFN_vkCmdTraceRaysKHR                             vkCmdTraceRaysKHR                             = 0;
     PFN_vkCmdTraceRaysNV                              vkCmdTraceRaysNV                              = 0;
@@ -10376,6 +10531,7 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetDisplayPlaneCapabilities2KHR        vkGetDisplayPlaneCapabilities2KHR        = 0;
     PFN_vkGetDisplayPlaneCapabilitiesKHR         vkGetDisplayPlaneCapabilitiesKHR         = 0;
     PFN_vkGetDisplayPlaneSupportedDisplaysKHR    vkGetDisplayPlaneSupportedDisplaysKHR    = 0;
+    PFN_vkGetDrmDisplayEXT                       vkGetDrmDisplayEXT                       = 0;
     PFN_vkGetEventStatus                         vkGetEventStatus                         = 0;
     PFN_vkGetFenceFdKHR                          vkGetFenceFdKHR                          = 0;
     PFN_vkGetFenceStatus                         vkGetFenceStatus                         = 0;
@@ -10557,11 +10713,12 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     PFN_dummy placeholder_dont_call_vkGetSemaphoreZirconHandleFUCHSIA                 = 0;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-    PFN_vkGetShaderInfoAMD          vkGetShaderInfoAMD          = 0;
-    PFN_vkGetSwapchainCounterEXT    vkGetSwapchainCounterEXT    = 0;
-    PFN_vkGetSwapchainImagesKHR     vkGetSwapchainImagesKHR     = 0;
-    PFN_vkGetSwapchainStatusKHR     vkGetSwapchainStatusKHR     = 0;
-    PFN_vkGetValidationCacheDataEXT vkGetValidationCacheDataEXT = 0;
+    PFN_vkGetShaderInfoAMD                        vkGetShaderInfoAMD                        = 0;
+    PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = 0;
+    PFN_vkGetSwapchainCounterEXT                  vkGetSwapchainCounterEXT                  = 0;
+    PFN_vkGetSwapchainImagesKHR                   vkGetSwapchainImagesKHR                   = 0;
+    PFN_vkGetSwapchainStatusKHR                   vkGetSwapchainStatusKHR                   = 0;
+    PFN_vkGetValidationCacheDataEXT               vkGetValidationCacheDataEXT               = 0;
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     PFN_vkGetVideoSessionMemoryRequirementsKHR vkGetVideoSessionMemoryRequirementsKHR = 0;
 #else
@@ -10729,6 +10886,8 @@ namespace VULKAN_HPP_NAMESPACE
     void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
     {
       VkInstance instance = static_cast<VkInstance>( instanceCpp );
+      vkAcquireDrmDisplayEXT =
+        PFN_vkAcquireDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkAcquireDrmDisplayEXT" ) );
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       vkAcquireWinrtDisplayNV =
         PFN_vkAcquireWinrtDisplayNV( vkGetInstanceProcAddr( instance, "vkAcquireWinrtDisplayNV" ) );
@@ -10830,6 +10989,7 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDisplayPlaneCapabilitiesKHR( vkGetInstanceProcAddr( instance, "vkGetDisplayPlaneCapabilitiesKHR" ) );
       vkGetDisplayPlaneSupportedDisplaysKHR = PFN_vkGetDisplayPlaneSupportedDisplaysKHR(
         vkGetInstanceProcAddr( instance, "vkGetDisplayPlaneSupportedDisplaysKHR" ) );
+      vkGetDrmDisplayEXT    = PFN_vkGetDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkGetDrmDisplayEXT" ) );
       vkGetInstanceProcAddr = PFN_vkGetInstanceProcAddr( vkGetInstanceProcAddr( instance, "vkGetInstanceProcAddr" ) );
       vkGetPhysicalDeviceCalibrateableTimeDomainsEXT = PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(
         vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT" ) );
@@ -11149,6 +11309,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMeshTasksIndirectNV =
         PFN_vkCmdDrawMeshTasksIndirectNV( vkGetInstanceProcAddr( instance, "vkCmdDrawMeshTasksIndirectNV" ) );
       vkCmdDrawMeshTasksNV = PFN_vkCmdDrawMeshTasksNV( vkGetInstanceProcAddr( instance, "vkCmdDrawMeshTasksNV" ) );
+      vkCmdDrawMultiEXT    = PFN_vkCmdDrawMultiEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiEXT" ) );
+      vkCmdDrawMultiIndexedEXT =
+        PFN_vkCmdDrawMultiIndexedEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiIndexedEXT" ) );
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetInstanceProcAddr( instance, "vkCmdEncodeVideoKHR" ) );
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -11275,6 +11438,8 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkCmdSetViewportWScalingNV( vkGetInstanceProcAddr( instance, "vkCmdSetViewportWScalingNV" ) );
       vkCmdSetViewportWithCountEXT =
         PFN_vkCmdSetViewportWithCountEXT( vkGetInstanceProcAddr( instance, "vkCmdSetViewportWithCountEXT" ) );
+      vkCmdSubpassShadingHUAWEI =
+        PFN_vkCmdSubpassShadingHUAWEI( vkGetInstanceProcAddr( instance, "vkCmdSubpassShadingHUAWEI" ) );
       vkCmdTraceRaysIndirectKHR =
         PFN_vkCmdTraceRaysIndirectKHR( vkGetInstanceProcAddr( instance, "vkCmdTraceRaysIndirectKHR" ) );
       vkCmdTraceRaysKHR   = PFN_vkCmdTraceRaysKHR( vkGetInstanceProcAddr( instance, "vkCmdTraceRaysKHR" ) );
@@ -11629,6 +11794,8 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetInstanceProcAddr( instance, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
       vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetInstanceProcAddr( instance, "vkGetShaderInfoAMD" ) );
+      vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+        vkGetInstanceProcAddr( instance, "vkGetSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
       vkGetSwapchainCounterEXT =
         PFN_vkGetSwapchainCounterEXT( vkGetInstanceProcAddr( instance, "vkGetSwapchainCounterEXT" ) );
       vkGetSwapchainImagesKHR =
@@ -11888,6 +12055,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMeshTasksIndirectNV =
         PFN_vkCmdDrawMeshTasksIndirectNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectNV" ) );
       vkCmdDrawMeshTasksNV = PFN_vkCmdDrawMeshTasksNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksNV" ) );
+      vkCmdDrawMultiEXT    = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
+      vkCmdDrawMultiIndexedEXT =
+        PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdEncodeVideoKHR" ) );
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -12008,6 +12178,8 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkCmdSetViewportWScalingNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportWScalingNV" ) );
       vkCmdSetViewportWithCountEXT =
         PFN_vkCmdSetViewportWithCountEXT( vkGetDeviceProcAddr( device, "vkCmdSetViewportWithCountEXT" ) );
+      vkCmdSubpassShadingHUAWEI =
+        PFN_vkCmdSubpassShadingHUAWEI( vkGetDeviceProcAddr( device, "vkCmdSubpassShadingHUAWEI" ) );
       vkCmdTraceRaysIndirectKHR =
         PFN_vkCmdTraceRaysIndirectKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysIndirectKHR" ) );
       vkCmdTraceRaysKHR   = PFN_vkCmdTraceRaysKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysKHR" ) );
@@ -12351,6 +12523,8 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetDeviceProcAddr( device, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
       vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetDeviceProcAddr( device, "vkGetShaderInfoAMD" ) );
+      vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
+        vkGetDeviceProcAddr( device, "vkGetSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
       vkGetSwapchainCounterEXT =
         PFN_vkGetSwapchainCounterEXT( vkGetDeviceProcAddr( device, "vkGetSwapchainCounterEXT" ) );
       vkGetSwapchainImagesKHR = PFN_vkGetSwapchainImagesKHR( vkGetDeviceProcAddr( device, "vkGetSwapchainImagesKHR" ) );

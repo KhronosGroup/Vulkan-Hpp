@@ -770,6 +770,11 @@ namespace VULKAN_HPP_NAMESPACE
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_ENUMS_FEATURES_NV,
     ePipelineFragmentShadingRateEnumStateCreateInfoNV =
       VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_ENUM_STATE_CREATE_INFO_NV,
+    eAccelerationStructureGeometryMotionTrianglesDataNV =
+      VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_MOTION_TRIANGLES_DATA_NV,
+    ePhysicalDeviceRayTracingMotionBlurFeaturesNV =
+      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_MOTION_BLUR_FEATURES_NV,
+    eAccelerationStructureMotionInfoNV = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_MOTION_INFO_NV,
     ePhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT,
     ePhysicalDeviceFragmentDensityMap2FeaturesEXT =
@@ -802,6 +807,7 @@ namespace VULKAN_HPP_NAMESPACE
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
     eVertexInputBindingDescription2EXT   = VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
     eVertexInputAttributeDescription2EXT = VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
+    ePhysicalDeviceDrmPropertiesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     eImportMemoryZirconHandleInfoFUCHSIA    = VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA,
     eMemoryZirconHandlePropertiesFUCHSIA    = VK_STRUCTURE_TYPE_MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA,
@@ -809,6 +815,9 @@ namespace VULKAN_HPP_NAMESPACE
     eImportSemaphoreZirconHandleInfoFUCHSIA = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
     eSemaphoreGetZirconHandleInfoFUCHSIA    = VK_STRUCTURE_TYPE_SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+    eSubpasssShadingPipelineCreateInfoHUAWEI      = VK_STRUCTURE_TYPE_SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
+    ePhysicalDeviceSubpassShadingFeaturesHUAWEI   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
+    ePhysicalDeviceSubpassShadingPropertiesHUAWEI = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
     ePhysicalDeviceExtendedDynamicState2FeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -819,6 +828,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceGlobalPriorityQueryFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT,
     eQueueFamilyGlobalPriorityPropertiesEXT  = VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT,
+    ePhysicalDeviceMultiDrawFeaturesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT,
+    ePhysicalDeviceMultiDrawPropertiesEXT    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT,
     eAttachmentDescription2KHR               = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentDescriptionStencilLayoutKHR   = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                 = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
@@ -1650,6 +1661,11 @@ namespace VULKAN_HPP_NAMESPACE
         return "PhysicalDeviceFragmentShadingRateEnumsFeaturesNV";
       case StructureType::ePipelineFragmentShadingRateEnumStateCreateInfoNV:
         return "PipelineFragmentShadingRateEnumStateCreateInfoNV";
+      case StructureType::eAccelerationStructureGeometryMotionTrianglesDataNV:
+        return "AccelerationStructureGeometryMotionTrianglesDataNV";
+      case StructureType::ePhysicalDeviceRayTracingMotionBlurFeaturesNV:
+        return "PhysicalDeviceRayTracingMotionBlurFeaturesNV";
+      case StructureType::eAccelerationStructureMotionInfoNV: return "AccelerationStructureMotionInfoNV";
       case StructureType::ePhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT:
         return "PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT";
       case StructureType::ePhysicalDeviceFragmentDensityMap2FeaturesEXT:
@@ -1682,6 +1698,7 @@ namespace VULKAN_HPP_NAMESPACE
         return "PhysicalDeviceVertexInputDynamicStateFeaturesEXT";
       case StructureType::eVertexInputBindingDescription2EXT: return "VertexInputBindingDescription2EXT";
       case StructureType::eVertexInputAttributeDescription2EXT: return "VertexInputAttributeDescription2EXT";
+      case StructureType::ePhysicalDeviceDrmPropertiesEXT: return "PhysicalDeviceDrmPropertiesEXT";
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       case StructureType::eImportMemoryZirconHandleInfoFUCHSIA: return "ImportMemoryZirconHandleInfoFUCHSIA";
       case StructureType::eMemoryZirconHandlePropertiesFUCHSIA: return "MemoryZirconHandlePropertiesFUCHSIA";
@@ -1689,6 +1706,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImportSemaphoreZirconHandleInfoFUCHSIA: return "ImportSemaphoreZirconHandleInfoFUCHSIA";
       case StructureType::eSemaphoreGetZirconHandleInfoFUCHSIA: return "SemaphoreGetZirconHandleInfoFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+      case StructureType::eSubpasssShadingPipelineCreateInfoHUAWEI: return "SubpasssShadingPipelineCreateInfoHUAWEI";
+      case StructureType::ePhysicalDeviceSubpassShadingFeaturesHUAWEI:
+        return "PhysicalDeviceSubpassShadingFeaturesHUAWEI";
+      case StructureType::ePhysicalDeviceSubpassShadingPropertiesHUAWEI:
+        return "PhysicalDeviceSubpassShadingPropertiesHUAWEI";
       case StructureType::ePhysicalDeviceExtendedDynamicState2FeaturesEXT:
         return "PhysicalDeviceExtendedDynamicState2FeaturesEXT";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -1700,6 +1722,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceGlobalPriorityQueryFeaturesEXT:
         return "PhysicalDeviceGlobalPriorityQueryFeaturesEXT";
       case StructureType::eQueueFamilyGlobalPriorityPropertiesEXT: return "QueueFamilyGlobalPriorityPropertiesEXT";
+      case StructureType::ePhysicalDeviceMultiDrawFeaturesEXT: return "PhysicalDeviceMultiDrawFeaturesEXT";
+      case StructureType::ePhysicalDeviceMultiDrawPropertiesEXT: return "PhysicalDeviceMultiDrawPropertiesEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3750,6 +3774,7 @@ namespace VULKAN_HPP_NAMESPACE
     eLibraryKHR                        = VK_PIPELINE_CREATE_LIBRARY_BIT_KHR,
     eFailOnPipelineCompileRequiredEXT  = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT_EXT,
     eEarlyReturnOnFailureEXT           = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT,
+    eRayTracingAllowMotionNV           = VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV,
     eDispatchBaseKHR                   = VK_PIPELINE_CREATE_DISPATCH_BASE_KHR,
     eViewIndexFromDeviceIndexKHR       = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR
   };
@@ -3779,6 +3804,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits::eLibraryKHR: return "LibraryKHR";
       case PipelineCreateFlagBits::eFailOnPipelineCompileRequiredEXT: return "FailOnPipelineCompileRequiredEXT";
       case PipelineCreateFlagBits::eEarlyReturnOnFailureEXT: return "EarlyReturnOnFailureEXT";
+      case PipelineCreateFlagBits::eRayTracingAllowMotionNV: return "RayTracingAllowMotionNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3871,6 +3897,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCallableKHR            = VK_SHADER_STAGE_CALLABLE_BIT_KHR,
     eTaskNV                 = VK_SHADER_STAGE_TASK_BIT_NV,
     eMeshNV                 = VK_SHADER_STAGE_MESH_BIT_NV,
+    eSubpassShadingHUAWEI   = VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI,
     eAnyHitNV               = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
     eCallableNV             = VK_SHADER_STAGE_CALLABLE_BIT_NV,
     eClosestHitNV           = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
@@ -3899,6 +3926,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ShaderStageFlagBits::eCallableKHR: return "CallableKHR";
       case ShaderStageFlagBits::eTaskNV: return "TaskNV";
       case ShaderStageFlagBits::eMeshNV: return "MeshNV";
+      case ShaderStageFlagBits::eSubpassShadingHUAWEI: return "SubpassShadingHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4289,10 +4317,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineBindPoint
   {
-    eGraphics      = VK_PIPELINE_BIND_POINT_GRAPHICS,
-    eCompute       = VK_PIPELINE_BIND_POINT_COMPUTE,
-    eRayTracingKHR = VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR,
-    eRayTracingNV  = VK_PIPELINE_BIND_POINT_RAY_TRACING_NV
+    eGraphics             = VK_PIPELINE_BIND_POINT_GRAPHICS,
+    eCompute              = VK_PIPELINE_BIND_POINT_COMPUTE,
+    eRayTracingKHR        = VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR,
+    eSubpassShadingHUAWEI = VK_PIPELINE_BIND_POINT_SUBPASS_SHADING_HUAWEI,
+    eRayTracingNV         = VK_PIPELINE_BIND_POINT_RAY_TRACING_NV
   };
 
   VULKAN_HPP_INLINE std::string to_string( PipelineBindPoint value )
@@ -4302,6 +4331,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineBindPoint::eGraphics: return "Graphics";
       case PipelineBindPoint::eCompute: return "Compute";
       case PipelineBindPoint::eRayTracingKHR: return "RayTracingKHR";
+      case PipelineBindPoint::eSubpassShadingHUAWEI: return "SubpassShadingHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6522,7 +6552,8 @@ namespace VULKAN_HPP_NAMESPACE
     eAllowCompaction = VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR,
     ePreferFastTrace = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR,
     ePreferFastBuild = VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR,
-    eLowMemory       = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR
+    eLowMemory       = VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR,
+    eMotionNV        = VK_BUILD_ACCELERATION_STRUCTURE_MOTION_BIT_NV
   };
   using BuildAccelerationStructureFlagBitsNV = BuildAccelerationStructureFlagBitsKHR;
 
@@ -6535,6 +6566,7 @@ namespace VULKAN_HPP_NAMESPACE
       case BuildAccelerationStructureFlagBitsKHR::ePreferFastTrace: return "PreferFastTrace";
       case BuildAccelerationStructureFlagBitsKHR::ePreferFastBuild: return "PreferFastBuild";
       case BuildAccelerationStructureFlagBitsKHR::eLowMemory: return "LowMemory";
+      case BuildAccelerationStructureFlagBitsKHR::eMotionNV: return "MotionNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6597,7 +6629,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class AccelerationStructureCreateFlagBitsKHR : VkAccelerationStructureCreateFlagsKHR
   {
-    eDeviceAddressCaptureReplay = VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR
+    eDeviceAddressCaptureReplay = VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
+    eMotionNV                   = VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV
   };
 
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCreateFlagBitsKHR value )
@@ -6605,6 +6638,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay: return "DeviceAddressCaptureReplay";
+      case AccelerationStructureCreateFlagBitsKHR::eMotionNV: return "MotionNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7496,6 +7530,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFragmentDensityProcessEXT     = VK_PIPELINE_STAGE_2_FRAGMENT_DENSITY_PROCESS_BIT_EXT,
     eTaskShaderNV                  = VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_NV,
     eMeshShaderNV                  = VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_NV,
+    eSubpassShadingHUAWEI          = VK_PIPELINE_STAGE_2_SUBPASS_SHADING_BIT_HUAWEI,
     eAccelerationStructureBuildNV  = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
     eRayTracingShaderNV            = VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_NV,
     eShadingRateImageNV            = VK_PIPELINE_STAGE_2_SHADING_RATE_IMAGE_BIT_NV,
@@ -7544,6 +7579,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2KHR::eFragmentDensityProcessEXT: return "FragmentDensityProcessEXT";
       case PipelineStageFlagBits2KHR::eTaskShaderNV: return "TaskShaderNV";
       case PipelineStageFlagBits2KHR::eMeshShaderNV: return "MeshShaderNV";
+      case PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI: return "SubpassShadingHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7705,6 +7741,44 @@ namespace VULKAN_HPP_NAMESPACE
       case FragmentShadingRateTypeNV::eEnums: return "Enums";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
+  }
+
+  //=== VK_NV_ray_tracing_motion_blur ===
+
+  enum class AccelerationStructureMotionInstanceTypeNV
+  {
+    eStatic       = VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_STATIC_NV,
+    eMatrixMotion = VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_MATRIX_MOTION_NV,
+    eSrtMotion    = VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_SRT_MOTION_NV
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceTypeNV value )
+  {
+    switch ( value )
+    {
+      case AccelerationStructureMotionInstanceTypeNV::eStatic: return "Static";
+      case AccelerationStructureMotionInstanceTypeNV::eMatrixMotion: return "MatrixMotion";
+      case AccelerationStructureMotionInstanceTypeNV::eSrtMotion: return "SrtMotion";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  enum class AccelerationStructureMotionInfoFlagBitsNV : VkAccelerationStructureMotionInfoFlagsNV
+  {
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagBitsNV )
+  {
+    return "(void)";
+  }
+
+  enum class AccelerationStructureMotionInstanceFlagBitsNV : VkAccelerationStructureMotionInstanceFlagsNV
+  {
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagBitsNV )
+  {
+    return "(void)";
   }
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
@@ -9369,7 +9443,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( PipelineCreateFlagBits::eCaptureInternalRepresentationsKHR ) |
         VkFlags( PipelineCreateFlagBits::eIndirectBindableNV ) | VkFlags( PipelineCreateFlagBits::eLibraryKHR ) |
         VkFlags( PipelineCreateFlagBits::eFailOnPipelineCompileRequiredEXT ) |
-        VkFlags( PipelineCreateFlagBits::eEarlyReturnOnFailureEXT )
+        VkFlags( PipelineCreateFlagBits::eEarlyReturnOnFailureEXT ) |
+        VkFlags( PipelineCreateFlagBits::eRayTracingAllowMotionNV )
     };
   };
 
@@ -9441,6 +9516,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FailOnPipelineCompileRequiredEXT | ";
     if ( value & PipelineCreateFlagBits::eEarlyReturnOnFailureEXT )
       result += "EarlyReturnOnFailureEXT | ";
+    if ( value & PipelineCreateFlagBits::eRayTracingAllowMotionNV )
+      result += "RayTracingAllowMotionNV | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9570,7 +9647,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ShaderStageFlagBits::eRaygenKHR ) | VkFlags( ShaderStageFlagBits::eAnyHitKHR ) |
                  VkFlags( ShaderStageFlagBits::eClosestHitKHR ) | VkFlags( ShaderStageFlagBits::eMissKHR ) |
                  VkFlags( ShaderStageFlagBits::eIntersectionKHR ) | VkFlags( ShaderStageFlagBits::eCallableKHR ) |
-                 VkFlags( ShaderStageFlagBits::eTaskNV ) | VkFlags( ShaderStageFlagBits::eMeshNV )
+                 VkFlags( ShaderStageFlagBits::eTaskNV ) | VkFlags( ShaderStageFlagBits::eMeshNV ) |
+                 VkFlags( ShaderStageFlagBits::eSubpassShadingHUAWEI )
     };
   };
 
@@ -9631,6 +9709,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "TaskNV | ";
     if ( value & ShaderStageFlagBits::eMeshNV )
       result += "MeshNV | ";
+    if ( value & ShaderStageFlagBits::eSubpassShadingHUAWEI )
+      result += "SubpassShadingHUAWEI | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13006,7 +13086,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BuildAccelerationStructureFlagBitsKHR::eAllowCompaction ) |
                  VkFlags( BuildAccelerationStructureFlagBitsKHR::ePreferFastTrace ) |
                  VkFlags( BuildAccelerationStructureFlagBitsKHR::ePreferFastBuild ) |
-                 VkFlags( BuildAccelerationStructureFlagBitsKHR::eLowMemory )
+                 VkFlags( BuildAccelerationStructureFlagBitsKHR::eLowMemory ) |
+                 VkFlags( BuildAccelerationStructureFlagBitsKHR::eMotionNV )
     };
   };
 
@@ -13052,6 +13133,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PreferFastBuild | ";
     if ( value & BuildAccelerationStructureFlagBitsKHR::eLowMemory )
       result += "LowMemory | ";
+    if ( value & BuildAccelerationStructureFlagBitsKHR::eMotionNV )
+      result += "MotionNV | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13062,7 +13145,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum : VkFlags
     {
-      allFlags = VkFlags( AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay )
+      allFlags = VkFlags( AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay ) |
+                 VkFlags( AccelerationStructureCreateFlagBitsKHR::eMotionNV )
     };
   };
 
@@ -13098,6 +13182,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay )
       result += "DeviceAddressCaptureReplay | ";
+    if ( value & AccelerationStructureCreateFlagBitsKHR::eMotionNV )
+      result += "MotionNV | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13658,7 +13744,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags64( PipelineStageFlagBits2KHR::eAccelerationStructureBuild ) |
         VkFlags64( PipelineStageFlagBits2KHR::eRayTracingShader ) |
         VkFlags64( PipelineStageFlagBits2KHR::eFragmentDensityProcessEXT ) |
-        VkFlags64( PipelineStageFlagBits2KHR::eTaskShaderNV ) | VkFlags64( PipelineStageFlagBits2KHR::eMeshShaderNV )
+        VkFlags64( PipelineStageFlagBits2KHR::eTaskShaderNV ) | VkFlags64( PipelineStageFlagBits2KHR::eMeshShaderNV ) |
+        VkFlags64( PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI )
     };
   };
 
@@ -13766,6 +13853,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "TaskShaderNV | ";
     if ( value & PipelineStageFlagBits2KHR::eMeshShaderNV )
       result += "MeshShaderNV | ";
+    if ( value & PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI )
+      result += "SubpassShadingHUAWEI | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13959,6 +14048,22 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & SubmitFlagBitsKHR::eProtected )
       result += "Protected | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  //=== VK_NV_ray_tracing_motion_blur ===
+
+  using AccelerationStructureMotionInfoFlagsNV = Flags<AccelerationStructureMotionInfoFlagBitsNV>;
+
+  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagsNV )
+  {
+    return "{}";
+  }
+
+  using AccelerationStructureMotionInstanceFlagsNV = Flags<AccelerationStructureMotionInstanceFlagBitsNV>;
+
+  VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagsNV )
+  {
+    return "{}";
   }
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )

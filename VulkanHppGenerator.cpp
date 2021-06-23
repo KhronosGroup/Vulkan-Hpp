@@ -1884,6 +1884,12 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
       {
         auto aliasIt = enumData.second.aliases.find( alias.second.name );
         assert( aliasIt != enumData.second.aliases.end() );
+        auto nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
+        while ( nextAliasIt != enumData.second.aliases.end() )
+        {
+          aliasIt = nextAliasIt;
+          nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
+        }
         enumIt = std::find_if( enumData.second.values.begin(),
                                enumData.second.values.end(),
                                [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.name == evd.name; } );
@@ -10483,7 +10489,7 @@ void VulkanHppGenerator::checkCorrectness()
                              { return evd.name == alias.second.name; } ) != e.second.values.end() ) ||
                ( e.second.aliases.find( alias.second.name ) != e.second.aliases.end() ),
              alias.second.xmlLine,
-             "unknown enum alias <" + alias.second.name + ">" );
+             "enum <" + alias.first+ "> uses unknown alias <" + alias.second.name + ">" );
     }
   }
 

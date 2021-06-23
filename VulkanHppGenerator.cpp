@@ -9567,7 +9567,7 @@ ${prefix}{}
     // gather the arguments
     listedArgument = appendStructConstructorArgument( arguments, listedArgument, member, true );
 
-    // gather the initializers; skip member 'pNext' and constant members
+    // gather the initializers; skip member 'pNext' and members with exactly one legal value
     if ( ( member.name != "pNext" ) && ( member.values.size() != 1 ) )
     {
       initializers += ( firstArgument ? ":" : "," ) + std::string( " " ) + member.name + "( " + member.name + "_ )";
@@ -9750,16 +9750,22 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
     if ( !member.values.empty() )
     {
       // special handling for members with legal value: arbitrarily use the first one as the default
-      auto enumIt = m_enums.find( member.type.type );
-      assert( enumIt != m_enums.end() );
+      str += " = ";
+      if ( member.type.type == "uint32_t" )
       {
+        str += member.values.front();
+      }
+      else
+      {
+        auto enumIt = m_enums.find( member.type.type );
+        assert( enumIt != m_enums.end() );
         std::string enumValue = member.values.front();
         auto        valueIt   = std::find_if( enumIt->second.values.begin(),
                                      enumIt->second.values.end(),
                                      [&enumValue]( EnumValueData const & evd ) { return enumValue == evd.name; } );
         assert( valueIt != enumIt->second.values.end() );
         std::string valueName = generateEnumValueName( enumIt->first, valueIt->name, enumIt->second.isBitmask, m_tags );
-        str += " = " + stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
+        str += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
         {
           sTypeValue = valueName;

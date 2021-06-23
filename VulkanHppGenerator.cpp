@@ -2988,7 +2988,6 @@ ${moveAssignmentInstructions}
       }
       return *this;
     }
-${memberFunctionsDeclarations}
 
     VULKAN_HPP_NAMESPACE::${handleType} const & operator*() const VULKAN_HPP_NOEXCEPT
     {
@@ -3000,6 +2999,19 @@ ${getConstructorSuccessCode}
     {
       return ${getDispatcherReturn}m_dispatcher;
     }
+
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${handleName}.operator bool();
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${handleName}.operator!();
+    }
+#endif
+${memberFunctionsDeclarations}
 
   private:
     ${memberVariables}

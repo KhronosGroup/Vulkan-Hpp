@@ -1805,6 +1805,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_instance;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
+      {
+        return &m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_instance.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_instance.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       VULKAN_HPP_NODISCARD PFN_vkVoidFunction getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT;
@@ -1835,16 +1857,6 @@ namespace VULKAN_HPP_NAMESPACE
         submitDebugUtilsMessageEXT( VULKAN_HPP_NAMESPACE::DebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                                     VULKAN_HPP_NAMESPACE::DebugUtilsMessageTypeFlagsEXT        messageTypes,
                                     const DebugUtilsMessengerCallbackDataEXT & callbackData ) const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NAMESPACE::Instance const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_instance;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
-      {
-        return &m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::Instance                                      m_instance;
@@ -1893,6 +1905,28 @@ namespace VULKAN_HPP_NAMESPACE
         }
         return *this;
       }
+
+      VULKAN_HPP_NAMESPACE::PhysicalDevice const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_physicalDevice;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_physicalDevice.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_physicalDevice.operator!();
+      }
+#  endif
 
       //=== VK_VERSION_1_0 ===
 
@@ -2213,16 +2247,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                             struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-      VULKAN_HPP_NAMESPACE::PhysicalDevice const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_physicalDevice;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
-
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice;
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher;
@@ -2350,6 +2374,28 @@ namespace VULKAN_HPP_NAMESPACE
         }
         return *this;
       }
+
+      VULKAN_HPP_NAMESPACE::Device const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return &m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_device.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_device.operator!();
+      }
+#  endif
 
       //=== VK_VERSION_1_0 ===
 
@@ -2746,16 +2792,6 @@ namespace VULKAN_HPP_NAMESPACE
         getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-      VULKAN_HPP_NAMESPACE::Device const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_device;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return &m_dispatcher;
-      }
-
     private:
       VULKAN_HPP_NAMESPACE::Device                                      m_device;
       const VkAllocationCallbacks *                                     m_allocator;
@@ -2856,6 +2892,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureKHR.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::AccelerationStructureKHR                            m_accelerationStructureKHR;
       VkDevice                                                                  m_device;
@@ -2947,14 +2995,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_NV_ray_tracing ===
-
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T> getHandle( size_t dataSize ) const;
-
-      template <typename T>
-      VULKAN_HPP_NODISCARD T getHandle() const;
-
       VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructureNV;
@@ -2964,6 +3004,26 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureNV.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructureNV.operator!();
+      }
+#  endif
+
+      //=== VK_NV_ray_tracing ===
+
+      template <typename T>
+      VULKAN_HPP_NODISCARD std::vector<T> getHandle( size_t dataSize ) const;
+
+      template <typename T>
+      VULKAN_HPP_NODISCARD T getHandle() const;
 
     private:
       VULKAN_HPP_NAMESPACE::AccelerationStructureNV                             m_accelerationStructureNV;
@@ -3049,12 +3109,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      void bindMemory( VULKAN_HPP_NAMESPACE::DeviceMemory memory, VULKAN_HPP_NAMESPACE::DeviceSize memoryOffset ) const;
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements getMemoryRequirements() const VULKAN_HPP_NOEXCEPT;
-
       VULKAN_HPP_NAMESPACE::Buffer const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_buffer;
@@ -3064,6 +3118,24 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_buffer.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_buffer.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      void bindMemory( VULKAN_HPP_NAMESPACE::DeviceMemory memory, VULKAN_HPP_NAMESPACE::DeviceSize memoryOffset ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements getMemoryRequirements() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Buffer                                              m_buffer;
@@ -3159,6 +3231,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferView.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferView.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::BufferView                                          m_bufferView;
       VkDevice                                                                  m_device;
@@ -3243,6 +3327,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandPool.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandPool.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       void reset( VULKAN_HPP_NAMESPACE::CommandPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const;
@@ -3256,16 +3362,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       void trimKHR( VULKAN_HPP_NAMESPACE::CommandPoolTrimFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const
         VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_commandPool;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::CommandPool                                         m_commandPool;
@@ -3339,6 +3435,28 @@ namespace VULKAN_HPP_NAMESPACE
         }
         return *this;
       }
+
+      VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandBuffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandBuffer.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandBuffer.operator!();
+      }
+#  endif
 
       //=== VK_VERSION_1_0 ===
 
@@ -4030,16 +4148,6 @@ namespace VULKAN_HPP_NAMESPACE
                                 Optional<const int32_t> vertexOffset
                                   VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-      VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_commandBuffer;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
-
     private:
       VULKAN_HPP_NAMESPACE::CommandBuffer                                       m_commandBuffer;
       VkDevice                                                                  m_device;
@@ -4178,6 +4286,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuFunctionNVX.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuFunctionNVX.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::CuFunctionNVX                                       m_cuFunctionNVX;
       VkDevice                                                                  m_device;
@@ -4271,6 +4391,18 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuModuleNVX.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_cuModuleNVX.operator!();
+      }
+#  endif
 
     private:
       VULKAN_HPP_NAMESPACE::CuModuleNVX                                         m_cuModuleNVX;
@@ -4373,6 +4505,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugReportCallbackEXT.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugReportCallbackEXT.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT                                m_debugReportCallbackEXT;
       VkInstance                                                                  m_instance;
@@ -4474,6 +4618,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugUtilsMessengerEXT.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_debugUtilsMessengerEXT.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT                                m_debugUtilsMessengerEXT;
       VkInstance                                                                  m_instance;
@@ -4563,14 +4719,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_KHR_deferred_host_operations ===
-
-      VULKAN_HPP_NODISCARD uint32_t getMaxConcurrency() const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getResult() const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result join() const;
-
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_deferredOperationKHR;
@@ -4580,6 +4728,26 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_deferredOperationKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_deferredOperationKHR.operator!();
+      }
+#  endif
+
+      //=== VK_KHR_deferred_host_operations ===
+
+      VULKAN_HPP_NODISCARD uint32_t getMaxConcurrency() const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getResult() const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result join() const;
 
     private:
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                m_deferredOperationKHR;
@@ -4669,11 +4837,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      void reset( VULKAN_HPP_NAMESPACE::DescriptorPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const
-        VULKAN_HPP_NOEXCEPT;
-
       VULKAN_HPP_NAMESPACE::DescriptorPool const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorPool;
@@ -4683,6 +4846,23 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorPool.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorPool.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      void reset( VULKAN_HPP_NAMESPACE::DescriptorPoolResetFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const
+        VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::DescriptorPool                                      m_descriptorPool;
@@ -4760,16 +4940,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_1 ===
-
-      void updateWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                               const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
-
-      //=== VK_KHR_descriptor_update_template ===
-
-      void updateWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                                  const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
-
       VULKAN_HPP_NAMESPACE::DescriptorSet const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSet;
@@ -4779,6 +4949,28 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSet.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSet.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_1 ===
+
+      void updateWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                               const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_descriptor_update_template ===
+
+      void updateWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                                  const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::DescriptorSet                                       m_descriptorSet;
@@ -4921,6 +5113,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSetLayout.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSetLayout.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::DescriptorSetLayout                                 m_descriptorSetLayout;
       VkDevice                                                                  m_device;
@@ -5022,6 +5226,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorUpdateTemplate.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorUpdateTemplate.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate                            m_descriptorUpdateTemplate;
       VkDevice                                                                  m_device;
@@ -5108,6 +5324,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_deviceMemory;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_deviceMemory.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_deviceMemory.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       VULKAN_HPP_NODISCARD void *
@@ -5125,16 +5363,6 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD HANDLE
         getMemoryWin32HandleNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleType ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
-
-      VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_deviceMemory;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::DeviceMemory                                        m_deviceMemory;
@@ -5252,6 +5480,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::DisplayKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayKHR.operator!();
+      }
+#  endif
+
       //=== VK_KHR_display ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR> getModeProperties() const;
@@ -5265,16 +5515,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       void acquireWinrtNV() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
-
-      VULKAN_HPP_NAMESPACE::DisplayKHR const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_displayKHR;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::DisplayKHR                                            m_displayKHR;
@@ -5390,11 +5630,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_KHR_display ===
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR
-                           getDisplayPlaneCapabilities( uint32_t planeIndex ) const;
-
       VULKAN_HPP_NAMESPACE::DisplayModeKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_displayModeKHR;
@@ -5404,6 +5639,23 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayModeKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayModeKHR.operator!();
+      }
+#  endif
+
+      //=== VK_KHR_display ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR
+                           getDisplayPlaneCapabilities( uint32_t planeIndex ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::DisplayModeKHR                                        m_displayModeKHR;
@@ -5488,14 +5740,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getStatus() const;
-
-      void set() const;
-
-      void reset() const;
-
       VULKAN_HPP_NAMESPACE::Event const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_event;
@@ -5505,6 +5749,26 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_event.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_event.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getStatus() const;
+
+      void set() const;
+
+      void reset() const;
 
     private:
       VULKAN_HPP_NAMESPACE::Event                                               m_event;
@@ -5631,10 +5895,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getStatus() const;
-
       VULKAN_HPP_NAMESPACE::Fence const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_fence;
@@ -5644,6 +5904,22 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_fence.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_fence.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result getStatus() const;
 
     private:
       VULKAN_HPP_NAMESPACE::Fence                                               m_fence;
@@ -5739,6 +6015,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_framebuffer.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_framebuffer.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::Framebuffer                                         m_framebuffer;
       VkDevice                                                                  m_device;
@@ -5823,6 +6111,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::Image const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_image;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_image.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_image.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       void bindMemory( VULKAN_HPP_NAMESPACE::DeviceMemory memory, VULKAN_HPP_NAMESPACE::DeviceSize memoryOffset ) const;
@@ -5839,16 +6149,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT
                            getDrmFormatModifierPropertiesEXT() const;
-
-      VULKAN_HPP_NAMESPACE::Image const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_image;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::Image                                               m_image;
@@ -5934,10 +6234,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_NVX_image_view_handle ===
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX getAddressNVX() const;
-
       VULKAN_HPP_NAMESPACE::ImageView const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_imageView;
@@ -5947,6 +6243,22 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_imageView.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_imageView.operator!();
+      }
+#  endif
+
+      //=== VK_NVX_image_view_handle ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageViewAddressPropertiesNVX getAddressNVX() const;
 
     private:
       VULKAN_HPP_NAMESPACE::ImageView                                           m_imageView;
@@ -6049,6 +6361,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectCommandsLayoutNV.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectCommandsLayoutNV.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV                            m_indirectCommandsLayoutNV;
       VkDevice                                                                  m_device;
@@ -6139,6 +6463,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_performanceConfigurationINTEL.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_performanceConfigurationINTEL.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL                       m_performanceConfigurationINTEL;
       VkDevice                                                                  m_device;
@@ -6226,12 +6562,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      VULKAN_HPP_NODISCARD std::vector<uint8_t> getData() const;
-
-      void merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::PipelineCache> const & srcCaches ) const;
-
       VULKAN_HPP_NAMESPACE::PipelineCache const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineCache;
@@ -6241,6 +6571,24 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineCache.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineCache.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      VULKAN_HPP_NODISCARD std::vector<uint8_t> getData() const;
+
+      void merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::PipelineCache> const & srcCaches ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::PipelineCache                                       m_pipelineCache;
@@ -6427,6 +6775,33 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::Pipeline const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipeline;
+      }
+
+      VULKAN_HPP_NAMESPACE::Result getConstructorSuccessCode() const
+      {
+        return m_constructorSuccessCode;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipeline.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipeline.operator!();
+      }
+#  endif
+
       //=== VK_AMD_shader_info ===
 
       VULKAN_HPP_NODISCARD std::vector<uint8_t>
@@ -6464,21 +6839,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceSize getRayTracingShaderGroupStackSizeKHR(
         uint32_t group, VULKAN_HPP_NAMESPACE::ShaderGroupShaderKHR groupShader ) const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NAMESPACE::Pipeline const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_pipeline;
-      }
-
-      VULKAN_HPP_NAMESPACE::Result getConstructorSuccessCode() const
-      {
-        return m_constructorSuccessCode;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::Pipeline                                            m_pipeline;
@@ -6750,6 +7110,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineLayout.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineLayout.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::PipelineLayout                                      m_pipelineLayout;
       VkDevice                                                                  m_device;
@@ -6851,6 +7223,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_privateDataSlotEXT.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_privateDataSlotEXT.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::PrivateDataSlotEXT                                  m_privateDataSlotEXT;
       VkDevice                                                                  m_device;
@@ -6935,6 +7319,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queryPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queryPool.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queryPool.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       template <typename T>
@@ -6959,16 +7365,6 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_host_query_reset ===
 
       void resetEXT( uint32_t firstQuery, uint32_t queryCount ) const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_queryPool;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::QueryPool                                           m_queryPool;
@@ -7031,6 +7427,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::Queue const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queue;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queue.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queue.operator!();
+      }
+#  endif
+
       //=== VK_VERSION_1_0 ===
 
       void submit( ArrayProxy<const VULKAN_HPP_NAMESPACE::SubmitInfo> const & submits,
@@ -7069,16 +7487,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV>
                            getCheckpointData2NV() const VULKAN_HPP_NOEXCEPT;
-
-      VULKAN_HPP_NAMESPACE::Queue const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_queue;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::Queue                                               m_queue;
@@ -7181,15 +7589,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_0 ===
-
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Extent2D getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT;
-
-      //=== VK_HUAWEI_subpass_shading ===
-
-      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
-                           getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
-
       VULKAN_HPP_NAMESPACE::RenderPass const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_renderPass;
@@ -7199,6 +7598,27 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_renderPass.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_renderPass.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_0 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Extent2D getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_HUAWEI_subpass_shading ===
+
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
+                           getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
 
     private:
       VULKAN_HPP_NAMESPACE::RenderPass                                          m_renderPass;
@@ -7293,6 +7713,18 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_sampler.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_sampler.operator!();
+      }
+#  endif
 
     private:
       VULKAN_HPP_NAMESPACE::Sampler                                             m_sampler;
@@ -7395,6 +7827,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_samplerYcbcrConversion.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_samplerYcbcrConversion.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion                              m_samplerYcbcrConversion;
       VkDevice                                                                  m_device;
@@ -7479,14 +7923,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_VERSION_1_2 ===
-
-      VULKAN_HPP_NODISCARD uint64_t getCounterValue() const;
-
-      //=== VK_KHR_timeline_semaphore ===
-
-      VULKAN_HPP_NODISCARD uint64_t getCounterValueKHR() const;
-
       VULKAN_HPP_NAMESPACE::Semaphore const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_semaphore;
@@ -7496,6 +7932,26 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_semaphore.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_semaphore.operator!();
+      }
+#  endif
+
+      //=== VK_VERSION_1_2 ===
+
+      VULKAN_HPP_NODISCARD uint64_t getCounterValue() const;
+
+      //=== VK_KHR_timeline_semaphore ===
+
+      VULKAN_HPP_NODISCARD uint64_t getCounterValueKHR() const;
 
     private:
       VULKAN_HPP_NAMESPACE::Semaphore                                           m_semaphore;
@@ -7594,6 +8050,18 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_shaderModule.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_shaderModule.operator!();
+      }
+#  endif
 
     private:
       VULKAN_HPP_NAMESPACE::ShaderModule                                        m_shaderModule;
@@ -7992,6 +8460,18 @@ namespace VULKAN_HPP_NAMESPACE
         return m_dispatcher;
       }
 
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_surfaceKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_surfaceKHR.operator!();
+      }
+#  endif
+
     private:
       VULKAN_HPP_NAMESPACE::SurfaceKHR                                            m_surfaceKHR;
       VkInstance                                                                  m_instance;
@@ -8087,6 +8567,28 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
+      VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_swapchainKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        return m_dispatcher;
+      }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_swapchainKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_swapchainKHR.operator!();
+      }
+#  endif
+
       //=== VK_KHR_swapchain ===
 
       VULKAN_HPP_NODISCARD std::vector<VkImage> getImages() const;
@@ -8122,16 +8624,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       void releaseFullScreenExclusiveModeEXT() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
-
-      VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const VULKAN_HPP_NOEXCEPT
-      {
-        return m_swapchainKHR;
-      }
-
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
-      {
-        return m_dispatcher;
-      }
 
     private:
       VULKAN_HPP_NAMESPACE::SwapchainKHR                                        m_swapchainKHR;
@@ -8271,12 +8763,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_EXT_validation_cache ===
-
-      void merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::ValidationCacheEXT> const & srcCaches ) const;
-
-      VULKAN_HPP_NODISCARD std::vector<uint8_t> getData() const;
-
       VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_validationCacheEXT;
@@ -8286,6 +8772,24 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_validationCacheEXT.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_validationCacheEXT.operator!();
+      }
+#  endif
+
+      //=== VK_EXT_validation_cache ===
+
+      void merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::ValidationCacheEXT> const & srcCaches ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<uint8_t> getData() const;
 
     private:
       VULKAN_HPP_NAMESPACE::ValidationCacheEXT                                  m_validationCacheEXT;
@@ -8377,13 +8881,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_KHR_video_queue ===
-
-      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR> getMemoryRequirements() const;
-
-      void
-        bindMemory( ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories ) const;
-
       VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionKHR;
@@ -8393,6 +8890,25 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#    if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionKHR.operator!();
+      }
+#    endif
+
+      //=== VK_KHR_video_queue ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR> getMemoryRequirements() const;
+
+      void
+        bindMemory( ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::VideoSessionKHR                                     m_videoSessionKHR;
@@ -8487,10 +9003,6 @@ namespace VULKAN_HPP_NAMESPACE
         return *this;
       }
 
-      //=== VK_KHR_video_queue ===
-
-      void update( const VideoSessionParametersUpdateInfoKHR & updateInfo ) const;
-
       VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionParametersKHR;
@@ -8500,6 +9012,22 @@ namespace VULKAN_HPP_NAMESPACE
       {
         return m_dispatcher;
       }
+
+#    if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionParametersKHR.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionParametersKHR.operator!();
+      }
+#    endif
+
+      //=== VK_KHR_video_queue ===
+
+      void update( const VideoSessionParametersUpdateInfoKHR & updateInfo ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR                           m_videoSessionParametersKHR;

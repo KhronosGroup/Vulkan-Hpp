@@ -39,18 +39,17 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    uint32_t                                  graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -66,24 +65,22 @@ int main( int /*argc*/, char ** /*argv*/ )
     // clang-format on
     glm::mat4x4 mvpc = clip * projection * view * model;
 
-    vk::BufferCreateInfo              bufferCreateInfo( {}, sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer );
-    std::unique_ptr<vk::raii::Buffer> uniformDataBuffer =
-      vk::raii::su::make_unique<vk::raii::Buffer>( *device, bufferCreateInfo );
-    vk::MemoryRequirements memoryRequirements = uniformDataBuffer->getMemoryRequirements();
+    vk::BufferCreateInfo   bufferCreateInfo( {}, sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer );
+    vk::raii::Buffer       uniformDataBuffer( device, bufferCreateInfo );
+    vk::MemoryRequirements memoryRequirements = uniformDataBuffer.getMemoryRequirements();
 
     uint32_t typeIndex =
-      vk::su::findMemoryType( physicalDevice->getMemoryProperties(),
+      vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                               memoryRequirements.memoryTypeBits,
                               vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
-    vk::MemoryAllocateInfo                  memoryAllocateInfo( memoryRequirements.size, typeIndex );
-    std::unique_ptr<vk::raii::DeviceMemory> uniformDataMemory =
-      vk::raii::su::make_unique<vk::raii::DeviceMemory>( *device, memoryAllocateInfo );
+    vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, typeIndex );
+    vk::raii::DeviceMemory uniformDataMemory( device, memoryAllocateInfo );
 
-    uint8_t * pData = static_cast<uint8_t *>( uniformDataMemory->mapMemory( 0, memoryRequirements.size ) );
+    uint8_t * pData = static_cast<uint8_t *>( uniformDataMemory.mapMemory( 0, memoryRequirements.size ) );
     memcpy( pData, &mvpc, sizeof( mvpc ) );
-    uniformDataMemory->unmapMemory();
+    uniformDataMemory.unmapMemory();
 
-    uniformDataBuffer->bindMemory( **uniformDataMemory, 0 );
+    uniformDataBuffer.bindMemory( *uniformDataMemory, 0 );
 
     /* VULKAN_HPP_KEY_END */
   }

@@ -92,15 +92,16 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
     /* VULKAN_KEY_START */
 
-    std::vector<vk::ExtensionProperties> props = context->enumerateInstanceExtensionProperties();
+    std::vector<vk::ExtensionProperties> props = context.enumerateInstanceExtensionProperties();
 
-    auto propsIterator = std::find_if( props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) {
-      return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0;
-    } );
+    auto propsIterator = std::find_if( props.begin(),
+                                       props.end(),
+                                       []( vk::ExtensionProperties const & ep )
+                                       { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
     if ( propsIterator == props.end() )
     {
       std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension"
@@ -108,10 +109,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       exit( 1 );
     }
 
-    vk::ApplicationInfo                 applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    const char *                        extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
-    vk::InstanceCreateInfo              instanceCreateInfo( {}, &applicationInfo, {}, extensionName );
-    std::unique_ptr<vk::raii::Instance> instance = vk::raii::su::make_unique<vk::raii::Instance>( *context, instanceCreateInfo );
+    vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+    const char *           extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+    vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, {}, extensionName );
+    vk::raii::Instance     instance( context, instanceCreateInfo );
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                          vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
@@ -120,8 +121,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
     vk::DebugUtilsMessengerCreateInfoEXT  debugUtilsMessengerCreateInfoEXT(
       {}, severityFlags, messageTypeFlags, &debugMessageFunc );
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::make_unique<vk::raii::DebugUtilsMessengerEXT>( *instance, debugUtilsMessengerCreateInfoEXT );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
 
     /* VULKAN_KEY_END */
   }

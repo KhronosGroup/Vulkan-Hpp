@@ -26,26 +26,25 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 500, 500 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( *physicalDevice, *surfaceData.surface );
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::makeUniqueDevice(
-      *physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+    vk::raii::Device device = vk::raii::su::makeDevice(
+      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     /* VULKAN_HPP_KEY_START */
 
     const vk::Format     depthFormat      = vk::Format::eD16Unorm;
-    vk::FormatProperties formatProperties = physicalDevice->getFormatProperties( depthFormat );
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( depthFormat );
 
     vk::ImageTiling tiling;
     if ( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment )
@@ -60,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       throw std::runtime_error( "DepthStencilAttachment is not supported for D16Unorm depth format." );
     }
-    vk::ImageCreateInfo              imageCreateInfo( {},
+    vk::ImageCreateInfo imageCreateInfo( {},
                                          vk::ImageType::e2D,
                                          depthFormat,
                                          vk::Extent3D( surfaceData.extent, 1 ),
@@ -69,10 +68,10 @@ int main( int /*argc*/, char ** /*argv*/ )
                                          vk::SampleCountFlagBits::e1,
                                          tiling,
                                          vk::ImageUsageFlagBits::eDepthStencilAttachment );
-    std::unique_ptr<vk::raii::Image> depthImage = vk::raii::su::make_unique<vk::raii::Image>( *device, imageCreateInfo );
+    vk::raii::Image     depthImage( device, imageCreateInfo );
 
-    vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice->getMemoryProperties();
-    vk::MemoryRequirements             memoryRequirements = depthImage->getMemoryRequirements();
+    vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
+    vk::MemoryRequirements             memoryRequirements = depthImage.getMemoryRequirements();
 
     uint32_t typeBits  = memoryRequirements.memoryTypeBits;
     uint32_t typeIndex = uint32_t( ~0 );
@@ -89,18 +88,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
     assert( typeIndex != uint32_t( ~0 ) );
 
-    vk::MemoryAllocateInfo                  memoryAllocateInfo( memoryRequirements.size, typeIndex );
-    std::unique_ptr<vk::raii::DeviceMemory> depthMemory =
-      vk::raii::su::make_unique<vk::raii::DeviceMemory>( *device, memoryAllocateInfo );
-    depthImage->bindMemory( **depthMemory, 0 );
+    vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, typeIndex );
+    vk::raii::DeviceMemory depthMemory( device, memoryAllocateInfo );
+    depthImage.bindMemory( *depthMemory, 0 );
 
     vk::ComponentMapping componentMapping(
       vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
     vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 );
     vk::ImageViewCreateInfo   imageViewCreateInfo(
-      {}, **depthImage, vk::ImageViewType::e2D, depthFormat, componentMapping, subResourceRange );
-    std::unique_ptr<vk::raii::ImageView> depthView =
-      vk::raii::su::make_unique<vk::raii::ImageView>( *device, imageViewCreateInfo );
+      {}, *depthImage, vk::ImageViewType::e2D, depthFormat, componentMapping, subResourceRange );
+    vk::raii::ImageView depthView( device, imageViewCreateInfo );
 
     /* VULKAN_HPP_KEY_END */
   }

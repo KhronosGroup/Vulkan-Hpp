@@ -26,32 +26,29 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    uint32_t                                  graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a DescriptorSetLayout
     vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(
       0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex );
-    vk::DescriptorSetLayoutCreateInfo              descriptorSetLayoutCreateInfo( {}, descriptorSetLayoutBinding );
-    std::unique_ptr<vk::raii::DescriptorSetLayout> descriptorSetLayout =
-      vk::raii::su::make_unique<vk::raii::DescriptorSetLayout>( *device, descriptorSetLayoutCreateInfo );
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo( {}, descriptorSetLayoutBinding );
+    vk::raii::DescriptorSetLayout     descriptorSetLayout( device, descriptorSetLayoutCreateInfo );
 
     // create a PipelineLayout using that DescriptorSetLayout
-    vk::PipelineLayoutCreateInfo              pipelineLayoutCreateInfo( {}, **descriptorSetLayout );
-    std::unique_ptr<vk::raii::PipelineLayout> pipelineLayout =
-      vk::raii::su::make_unique<vk::raii::PipelineLayout>( *device, pipelineLayoutCreateInfo );
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo( {}, *descriptorSetLayout );
+    vk::raii::PipelineLayout     pipelineLayout( device, pipelineLayoutCreateInfo );
 
     /* VULKAN_HPP_KEY_END */
   }

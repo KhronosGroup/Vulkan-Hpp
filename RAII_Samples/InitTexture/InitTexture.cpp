@@ -41,36 +41,32 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 50, 50 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 50, 50 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( *physicalDevice, *surfaceData.surface );
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::makeUniqueDevice(
-      *physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+    vk::raii::Device device = vk::raii::su::makeDevice(
+      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    std::unique_ptr<vk::raii::CommandPool> commandPool =
-      vk::raii::su::makeUniqueCommandPool( *device, graphicsAndPresentQueueFamilyIndex.first );
-    std::unique_ptr<vk::raii::CommandBuffer> commandBuffer =
-      vk::raii::su::makeUniqueCommandBuffer( *device, *commandPool );
+    vk::raii::CommandPool commandPool = vk::raii::CommandPool(
+      device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } );
+    vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
-    std::unique_ptr<vk::raii::Queue> graphicsQueue =
-      vk::raii::su::make_unique<vk::raii::Queue>( *device, graphicsAndPresentQueueFamilyIndex.first, 0 );
-    std::unique_ptr<vk::raii::Queue> presentQueue =
-      vk::raii::su::make_unique<vk::raii::Queue>( *device, graphicsAndPresentQueueFamilyIndex.second, 0 );
+    vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
+    vk::raii::Queue presentQueue( device, graphicsAndPresentQueueFamilyIndex.second, 0 );
 
     /* VULKAN_KEY_START */
 
     vk::Format           format           = vk::Format::eR8G8B8A8Unorm;
-    vk::FormatProperties formatProperties = physicalDevice->getFormatProperties( format );
+    vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( format );
 
     // See if we can use a linear tiled image for a texture, if not, we will need a staging buffer for the texture data
     bool needsStaging = !( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage );
@@ -89,53 +85,52 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::SharingMode::eExclusive,
       {},
       needsStaging ? vk::ImageLayout::eUndefined : vk::ImageLayout::ePreinitialized );
-    std::unique_ptr<vk::raii::Image> image = vk::raii::su::make_unique<vk::raii::Image>( *device, imageCreateInfo );
+    vk::raii::Image image( device, imageCreateInfo );
 
-    vk::MemoryRequirements memoryRequirements = image->getMemoryRequirements();
+    vk::MemoryRequirements memoryRequirements = image.getMemoryRequirements();
     uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
-      physicalDevice->getMemoryProperties(),
+      physicalDevice.getMemoryProperties(),
       memoryRequirements.memoryTypeBits,
       needsStaging ? vk::MemoryPropertyFlags()
                                     : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
 
     // allocate memory
-    vk::MemoryAllocateInfo                  memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    std::unique_ptr<vk::raii::DeviceMemory> imageMemory =
-      vk::raii::su::make_unique<vk::raii::DeviceMemory>( *device, memoryAllocateInfo );
+    vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
+    vk::raii::DeviceMemory imageMemory( device, memoryAllocateInfo );
 
     // bind memory
-    image->bindMemory( **imageMemory, 0 );
+    image.bindMemory( *imageMemory, 0 );
 
-    std::unique_ptr<vk::raii::Buffer>       textureBuffer;
-    std::unique_ptr<vk::raii::DeviceMemory> textureBufferMemory;
+    std::unique_ptr<vk::raii::Buffer>       pTextureBuffer;
+    std::unique_ptr<vk::raii::DeviceMemory> pTextureBufferMemory;
     if ( needsStaging )
     {
       // Need a staging buffer to map and copy texture into
       vk::BufferCreateInfo bufferCreateInfo(
         {}, surfaceData.extent.width * surfaceData.extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc );
-      textureBuffer = vk::raii::su::make_unique<vk::raii::Buffer>( *device, bufferCreateInfo );
+      pTextureBuffer = vk::raii::su::make_unique<vk::raii::Buffer>( device, bufferCreateInfo );
 
-      memoryRequirements = textureBuffer->getMemoryRequirements();
+      memoryRequirements = pTextureBuffer->getMemoryRequirements();
       memoryTypeIndex =
-        vk::su::findMemoryType( physicalDevice->getMemoryProperties(),
+        vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
                                 memoryRequirements.memoryTypeBits,
                                 vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
       // allocate memory
-      memoryAllocateInfo  = vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-      textureBufferMemory = vk::raii::su::make_unique<vk::raii::DeviceMemory>( *device, memoryAllocateInfo );
+      memoryAllocateInfo   = vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
+      pTextureBufferMemory = vk::raii::su::make_unique<vk::raii::DeviceMemory>( device, memoryAllocateInfo );
 
       // bind memory
-      textureBuffer->bindMemory( **textureBufferMemory, 0 );
+      pTextureBuffer->bindMemory( **pTextureBufferMemory, 0 );
     }
     else
     {
       vk::SubresourceLayout subresourceLayout =
-        image->getSubresourceLayout( vk::ImageSubresource( vk::ImageAspectFlagBits::eColor ) );
+        image.getSubresourceLayout( vk::ImageSubresource( vk::ImageAspectFlagBits::eColor ) );
     }
 
-    void * data = needsStaging ? textureBufferMemory->mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() )
-                               : imageMemory->mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() );
+    void * data = needsStaging ? pTextureBufferMemory->mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() )
+                               : imageMemory.mapMemory( 0, memoryRequirements.size, vk::MemoryMapFlags() );
 
     // Checkerboard of 16x16 pixel squares
     unsigned char * pImageMemory = static_cast<unsigned char *>( data );
@@ -152,39 +147,36 @@ int main( int /*argc*/, char ** /*argv*/ )
       }
     }
 
-    needsStaging ? textureBufferMemory->unmapMemory() : imageMemory->unmapMemory();
+    needsStaging ? pTextureBufferMemory->unmapMemory() : imageMemory.unmapMemory();
 
-    commandBuffer->begin( vk::CommandBufferBeginInfo() );
+    commandBuffer.begin( vk::CommandBufferBeginInfo() );
     if ( needsStaging )
     {
       // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
       vk::raii::su::setImageLayout(
-        *commandBuffer, **image, format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
+        commandBuffer, *image, format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
       vk::BufferImageCopy copyRegion( 0,
                                       surfaceData.extent.width,
                                       surfaceData.extent.height,
                                       vk::ImageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 ),
                                       vk::Offset3D( 0, 0, 0 ),
                                       vk::Extent3D( surfaceData.extent, 1 ) );
-      commandBuffer->copyBufferToImage( **textureBuffer, **image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
+      commandBuffer.copyBufferToImage( **pTextureBuffer, *image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
       // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-      vk::raii::su::setImageLayout( *commandBuffer,
-                                    **image,
-                                    format,
-                                    vk::ImageLayout::eTransferDstOptimal,
-                                    vk::ImageLayout::eShaderReadOnlyOptimal );
+      vk::raii::su::setImageLayout(
+        commandBuffer, *image, format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
     }
     else
     {
       // If we can use the linear tiled image as a texture, just do it
       vk::raii::su::setImageLayout(
-        *commandBuffer, **image, format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal );
+        commandBuffer, *image, format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal );
     }
 
-    commandBuffer->end();
-    vk::raii::su::submitAndWait( *device, *graphicsQueue, *commandBuffer );
+    commandBuffer.end();
+    vk::raii::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
-    vk::SamplerCreateInfo              samplerCreateInfo( {},
+    vk::SamplerCreateInfo samplerCreateInfo( {},
                                              vk::Filter::eNearest,
                                              vk::Filter::eNearest,
                                              vk::SamplerMipmapMode::eNearest,
@@ -199,15 +191,14 @@ int main( int /*argc*/, char ** /*argv*/ )
                                              0.0f,
                                              0.0f,
                                              vk::BorderColor::eFloatOpaqueWhite );
-    std::unique_ptr<vk::raii::Sampler> sampler = vk::raii::su::make_unique<vk::raii::Sampler>( *device, samplerCreateInfo );
+    vk::raii::Sampler     sampler( device, samplerCreateInfo );
 
     vk::ComponentMapping componentMapping(
       vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
     vk::ImageSubresourceRange imageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
     vk::ImageViewCreateInfo   imageViewCreateInfo(
-      {}, **image, vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange );
-    std::unique_ptr<vk::raii::ImageView> imageView =
-      vk::raii::su::make_unique<vk::raii::ImageView>( *device, imageViewCreateInfo );
+      {}, *image, vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange );
+    vk::raii::ImageView imageView( device, imageViewCreateInfo );
 
     /* VULKAN_KEY_END */
   }

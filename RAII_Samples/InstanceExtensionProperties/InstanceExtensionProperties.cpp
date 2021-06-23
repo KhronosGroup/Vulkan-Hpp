@@ -25,19 +25,18 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context> context = vk::raii::su::make_unique<vk::raii::Context>();
+    vk::raii::Context context;
 
     /* VULKAN_KEY_START */
 
-    std::vector<vk::ExtensionProperties> extensionProperties = context->enumerateInstanceExtensionProperties();
+    std::vector<vk::ExtensionProperties> extensionProperties = context.enumerateInstanceExtensionProperties();
 
     // sort the extensions alphabetically
 
     std::sort( extensionProperties.begin(),
                extensionProperties.end(),
-               []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) {
-                 return strcmp( a.extensionName, b.extensionName ) < 0;
-               } );
+               []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b )
+               { return strcmp( a.extensionName, b.extensionName ) < 0; } );
 
     std::cout << "Instance Extensions:" << std::endl;
     for ( auto const & ep : extensionProperties )

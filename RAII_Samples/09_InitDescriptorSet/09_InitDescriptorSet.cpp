@@ -39,26 +39,25 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
-    uint32_t                                  graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice, graphicsQueueFamilyIndex );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    uint32_t graphicsQueueFamilyIndex =
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     vk::raii::su::BufferData uniformBufferData(
-      *physicalDevice, *device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
+      physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
     glm::mat4x4 mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
-    vk::raii::su::copyToDevice( *uniformBufferData.deviceMemory, mvpcMatrix );
+    vk::raii::su::copyToDevice( uniformBufferData.deviceMemory, mvpcMatrix );
 
-    std::unique_ptr<vk::raii::DescriptorSetLayout> descriptorSetLayout = vk::raii::su::makeUniqueDescriptorSetLayout(
-      *device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
+    vk::raii::DescriptorSetLayout descriptorSetLayout = vk::raii::su::makeDescriptorSetLayout(
+      device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -66,18 +65,17 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorPoolSize       poolSize( vk::DescriptorType::eUniformBuffer, 1 );
     vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
       vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize );
-    std::unique_ptr<vk::raii::DescriptorPool> descriptorPool =
-      vk::raii::su::make_unique<vk::raii::DescriptorPool>( *device, descriptorPoolCreateInfo );
+    vk::raii::DescriptorPool descriptorPool( device, descriptorPoolCreateInfo );
 
     // allocate a descriptor set
-    vk::DescriptorSetAllocateInfo            descriptorSetAllocateInfo( **descriptorPool, **descriptorSetLayout );
-    std::unique_ptr<vk::raii::DescriptorSet> descriptorSet = vk::raii::su::make_unique<vk::raii::DescriptorSet>(
-      std::move( vk::raii::DescriptorSets( *device, descriptorSetAllocateInfo ).front() ) );
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
+    vk::raii::DescriptorSet       descriptorSet =
+      std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
 
-    vk::DescriptorBufferInfo descriptorBufferInfo( **uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
+    vk::DescriptorBufferInfo descriptorBufferInfo( *uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
     vk::WriteDescriptorSet   writeDescriptorSet(
-      **descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
-    device->updateDescriptorSets( writeDescriptorSet, nullptr );
+      *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
+    device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     /* VULKAN_HPP_KEY_END */
   }

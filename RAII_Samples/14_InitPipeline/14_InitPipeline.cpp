@@ -40,44 +40,41 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
-    vk::raii::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 500, 500 ) );
+    vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( *physicalDevice, *surfaceData.surface );
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::makeUniqueDevice(
-      *physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+    vk::raii::Device device = vk::raii::su::makeDevice(
+      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::Format colorFormat =
-      vk::su::pickSurfaceFormat( physicalDevice->getSurfaceFormatsKHR( **surfaceData.surface ) ).format;
-    std::unique_ptr<vk::raii::RenderPass> renderPass =
-      vk::raii::su::makeUniqueRenderPass( *device, colorFormat, vk::Format::eD16Unorm );
+      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( **surfaceData.pSurface ) ).format;
+    vk::raii::RenderPass renderPass = vk::raii::su::makeRenderPass( device, colorFormat, vk::Format::eD16Unorm );
 
-    std::unique_ptr<vk::raii::DescriptorSetLayout> descriptorSetLayout = vk::raii::su::makeUniqueDescriptorSetLayout(
-      *device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
-    std::unique_ptr<vk::raii::PipelineLayout> pipelineLayout =
-      vk::raii::su::makeUniquePipelineLayout( *device, *descriptorSetLayout );
+    vk::raii::DescriptorSetLayout descriptorSetLayout = vk::raii::su::makeDescriptorSetLayout(
+      device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
+    vk::raii::PipelineLayout pipelineLayout( device, { {}, *descriptorSetLayout } );
 
     glslang::InitializeProcess();
-    std::unique_ptr<vk::raii::ShaderModule> vertexShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C );
-    std::unique_ptr<vk::raii::ShaderModule> fragmentShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C );
+    vk::raii::ShaderModule vertexShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C );
+    vk::raii::ShaderModule fragmentShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C );
     glslang::FinalizeProcess();
 
     /* VULKAN_KEY_START */
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
-      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eVertex, **vertexShaderModule, "main" ),
-      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eFragment, **fragmentShaderModule, "main" )
+      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eVertex, *vertexShaderModule, "main" ),
+      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eFragment, *fragmentShaderModule, "main" )
     };
 
     vk::VertexInputBindingDescription                  vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
@@ -164,13 +161,12 @@ int main( int /*argc*/, char ** /*argv*/ )
       &pipelineDepthStencilStateCreateInfo,   // pDepthStencilState
       &pipelineColorBlendStateCreateInfo,     // pColorBlendState
       &pipelineDynamicStateCreateInfo,        // pDynamicState
-      **pipelineLayout,                       // layout
-      **renderPass                            // renderPass
+      *pipelineLayout,                        // layout
+      *renderPass                             // renderPass
     );
 
-    std::shared_ptr<vk::raii::Pipeline> pipeline =
-      vk::raii::su::make_unique<vk::raii::Pipeline>( *device, nullptr, graphicsPipelineCreateInfo );
-    switch ( pipeline->getConstructorSuccessCode() )
+    vk::raii::Pipeline pipeline( device, nullptr, graphicsPipelineCreateInfo );
+    switch ( pipeline.getConstructorSuccessCode() )
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:

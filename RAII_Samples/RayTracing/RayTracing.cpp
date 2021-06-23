@@ -81,10 +81,10 @@ static_assert( sizeof( GeometryInstanceData ) == 64, "GeometryInstanceData struc
 
 struct AccelerationStructureData
 {
-  std::shared_ptr<vk::raii::AccelerationStructureNV> acclerationStructure;
-  std::unique_ptr<vk::raii::su::BufferData>          scratchBufferData;
-  std::unique_ptr<vk::raii::su::BufferData>          resultBufferData;
-  std::unique_ptr<vk::raii::su::BufferData>          instanceBufferData;
+  std::shared_ptr<vk::raii::AccelerationStructureNV> pAcclerationStructure;
+  std::unique_ptr<vk::raii::su::BufferData>          pScratchBufferData;
+  std::unique_ptr<vk::raii::su::BufferData>          pResultBufferData;
+  std::unique_ptr<vk::raii::su::BufferData>          pInstanceBufferData;
 };
 
 AccelerationStructureData createAccelerationStructureData(
@@ -103,46 +103,46 @@ AccelerationStructureData createAccelerationStructureData(
   vk::AccelerationStructureInfoNV accelerationStructureInfo(
     accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
   vk::AccelerationStructureCreateInfoNV accelerationStructureCreateInfoNV( 0, accelerationStructureInfo );
-  accelerationStructureData.acclerationStructure =
+  accelerationStructureData.pAcclerationStructure =
     std::make_shared<vk::raii::AccelerationStructureNV>( device, accelerationStructureCreateInfoNV );
 
   vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(
-    vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, **accelerationStructureData.acclerationStructure );
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, **accelerationStructureData.pAcclerationStructure );
   vk::DeviceSize resultSizeInBytes =
     device.getAccelerationStructureMemoryRequirementsNV( objectRequirements ).memoryRequirements.size;
   assert( 0 < resultSizeInBytes );
-  accelerationStructureData.resultBufferData =
+  accelerationStructureData.pResultBufferData =
     vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                device,
-                                                resultSizeInBytes,
-                                                vk::BufferUsageFlagBits::eRayTracingNV,
-                                                vk::MemoryPropertyFlagBits::eDeviceLocal );
+                                                         device,
+                                                         resultSizeInBytes,
+                                                         vk::BufferUsageFlagBits::eRayTracingNV,
+                                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
 
   vk::AccelerationStructureMemoryRequirementsInfoNV buildScratchRequirements(
     vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch,
-    **accelerationStructureData.acclerationStructure );
+    **accelerationStructureData.pAcclerationStructure );
   vk::AccelerationStructureMemoryRequirementsInfoNV updateScratchRequirements(
     vk::AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch,
-    **accelerationStructureData.acclerationStructure );
+    **accelerationStructureData.pAcclerationStructure );
   vk::DeviceSize scratchSizeInBytes = std::max(
     device.getAccelerationStructureMemoryRequirementsNV( buildScratchRequirements ).memoryRequirements.size,
     device.getAccelerationStructureMemoryRequirementsNV( updateScratchRequirements ).memoryRequirements.size );
   assert( 0 < scratchSizeInBytes );
 
-  accelerationStructureData.scratchBufferData =
+  accelerationStructureData.pScratchBufferData =
     vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                device,
-                                                scratchSizeInBytes,
-                                                vk::BufferUsageFlagBits::eRayTracingNV,
-                                                vk::MemoryPropertyFlagBits::eDeviceLocal );
+                                                         device,
+                                                         scratchSizeInBytes,
+                                                         vk::BufferUsageFlagBits::eRayTracingNV,
+                                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
 
   if ( !instances.empty() )
   {
-    accelerationStructureData.instanceBufferData =
+    accelerationStructureData.pInstanceBufferData =
       vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                  device,
-                                                  instances.size() * sizeof( GeometryInstanceData ),
-                                                  vk::BufferUsageFlagBits::eRayTracingNV );
+                                                           device,
+                                                           instances.size() * sizeof( GeometryInstanceData ),
+                                                           vk::BufferUsageFlagBits::eRayTracingNV );
 
     std::vector<GeometryInstanceData> geometryInstanceData;
     for ( size_t i = 0; i < instances.size(); i++ )
@@ -161,16 +161,16 @@ AccelerationStructureData createAccelerationStructureData(
                                          static_cast<uint8_t>( vk::GeometryInstanceFlagBitsNV::eTriangleCullDisable ),
                                          accelerationStructureHandle );
     }
-    accelerationStructureData.instanceBufferData->upload( geometryInstanceData );
+    accelerationStructureData.pInstanceBufferData->upload( geometryInstanceData );
   }
 
   device.bindAccelerationStructureMemoryNV( vk::BindAccelerationStructureMemoryInfoNV(
-    **accelerationStructureData.acclerationStructure, **accelerationStructureData.resultBufferData->deviceMemory ) );
+    **accelerationStructureData.pAcclerationStructure, *accelerationStructureData.pResultBufferData->deviceMemory ) );
 
   vk::Buffer instanceData;
-  if ( accelerationStructureData.instanceBufferData )
+  if ( accelerationStructureData.pInstanceBufferData )
   {
-    instanceData = **accelerationStructureData.instanceBufferData->buffer;
+    instanceData = *accelerationStructureData.pInstanceBufferData->buffer;
   }
   vk::AccelerationStructureInfoNV accelerationStructureInfoNV(
     accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
@@ -178,9 +178,9 @@ AccelerationStructureData createAccelerationStructureData(
                                               instanceData,
                                               0,
                                               false,
-                                              **accelerationStructureData.acclerationStructure,
+                                              **accelerationStructureData.pAcclerationStructure,
                                               nullptr,
-                                              **accelerationStructureData.scratchBufferData->buffer,
+                                              *accelerationStructureData.pScratchBufferData->buffer,
                                               0 );
 
   vk::MemoryBarrier memoryBarrier(
@@ -198,11 +198,19 @@ AccelerationStructureData createAccelerationStructureData(
 
 struct PerFrameData
 {
-  std::unique_ptr<vk::raii::CommandPool>   commandPool;
-  std::unique_ptr<vk::raii::CommandBuffer> commandBuffer;
-  std::unique_ptr<vk::raii::Fence>         fence;
-  std::unique_ptr<vk::raii::Semaphore>     presentCompleteSemaphore;
-  std::unique_ptr<vk::raii::Semaphore>     renderCompleteSemaphore;
+  PerFrameData( vk::raii::Device const & device, uint32_t queueFamilyIndex )
+    : commandPool( device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, queueFamilyIndex } )
+    , commandBuffer( vk::raii::su::makeCommandBuffer( device, commandPool ) )
+    , fence( device, vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) )
+    , presentCompleteSemaphore( device, vk::SemaphoreCreateInfo() )
+    , renderCompleteSemaphore( device, vk::SemaphoreCreateInfo() )
+  {}
+
+  vk::raii::CommandPool   commandPool;
+  vk::raii::CommandBuffer commandBuffer;
+  vk::raii::Fence         fence;
+  vk::raii::Semaphore     presentCompleteSemaphore;
+  vk::raii::Semaphore     renderCompleteSemaphore;
 };
 
 struct UniformBufferObject
@@ -608,11 +616,11 @@ static void keyCallback( GLFWwindow * window, int key, int /*scancode*/, int act
       case GLFW_KEY_ESCAPE:
       case 'Q': glfwSetWindowShouldClose( window, 1 ); break;
       case 'R':
-      {
-        AppInfo * appInfo        = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) );
-        appInfo->useRasterRender = !appInfo->useRasterRender;
-      }
-      break;
+        {
+          AppInfo * appInfo        = reinterpret_cast<AppInfo *>( glfwGetWindowUserPointer( window ) );
+          appInfo->useRasterRender = !appInfo->useRasterRender;
+        }
+        break;
     }
   }
 }
@@ -715,55 +723,44 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
     instanceExtensions.push_back( VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME );
 
-    std::unique_ptr<vk::raii::Context>  context = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance =
-      vk::raii::su::makeUniqueInstance( *context, AppName, EngineName, {}, instanceExtensions );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, instanceExtensions, VK_API_VERSION_1_2 );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
     // Create Window Surface (using glfw)
     VkSurfaceKHR glfwSurface;
-    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( **instance ), window, nullptr, &glfwSurface );
+    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window, nullptr, &glfwSurface );
     check_vk_result( err );
-    std::unique_ptr<vk::raii::SurfaceKHR> surface = vk::raii::su::make_unique<vk::raii::SurfaceKHR>( *instance, glfwSurface );
+    vk::raii::SurfaceKHR surface( instance, glfwSurface );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( *physicalDevice, *surface );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surface );
 
     // Create a Device with ray tracing support (besides some other extensions needed) and needed features
     auto supportedFeatures =
-      physicalDevice->getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
-    std::unique_ptr<vk::raii::Device> device =
-      vk::raii::su::makeUniqueDevice( *physicalDevice,
-                                      graphicsAndPresentQueueFamilyIndex.first,
-                                      { VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-                                        VK_NV_RAY_TRACING_EXTENSION_NAME,
-                                        VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME },
-                                      &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
-                                      &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
+      physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
+    vk::raii::Device device =
+      vk::raii::su::makeDevice( physicalDevice,
+                                graphicsAndPresentQueueFamilyIndex.first,
+                                { VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                  VK_NV_RAY_TRACING_EXTENSION_NAME,
+                                  VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME },
+                                &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
+                                &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
 
     // setup stuff per frame
-    std::array<PerFrameData, IMGUI_VK_QUEUED_FRAMES> perFrameData;
+    std::vector<PerFrameData> perFrameData;
     for ( int i = 0; i < IMGUI_VK_QUEUED_FRAMES; i++ )
     {
-      perFrameData[i].commandPool =
-        vk::raii::su::makeUniqueCommandPool( *device, graphicsAndPresentQueueFamilyIndex.first );
-      perFrameData[i].commandBuffer = vk::raii::su::makeUniqueCommandBuffer( *device, *perFrameData[i].commandPool );
-      perFrameData[i].fence =
-        vk::raii::su::make_unique<vk::raii::Fence>( *device, vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) );
-      perFrameData[i].presentCompleteSemaphore =
-        vk::raii::su::make_unique<vk::raii::Semaphore>( *device, vk::SemaphoreCreateInfo() );
-      perFrameData[i].renderCompleteSemaphore =
-        vk::raii::su::make_unique<vk::raii::Semaphore>( *device, vk::SemaphoreCreateInfo() );
+      perFrameData.push_back( PerFrameData( device, graphicsAndPresentQueueFamilyIndex.first ) );
     }
 
-    std::unique_ptr<vk::raii::Queue> graphicsQueue =
-      vk::raii::su::make_unique<vk::raii::Queue>( *device, graphicsAndPresentQueueFamilyIndex.first, 0 );
-    std::unique_ptr<vk::raii::Queue> presentQueue =
-      vk::raii::su::make_unique<vk::raii::Queue>( *device, graphicsAndPresentQueueFamilyIndex.second, 0 );
+    vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
+    vk::raii::Queue presentQueue( device, graphicsAndPresentQueueFamilyIndex.second, 0 );
 
     // create a descriptor pool with a number of available descriptors
     std::vector<vk::DescriptorPoolSize> poolSizes = {
@@ -771,29 +768,27 @@ int main( int /*argc*/, char ** /*argv*/ )
       { vk::DescriptorType::eUniformBuffer, 1000 },
       { vk::DescriptorType::eStorageBuffer, 1000 },
     };
-    std::unique_ptr<vk::raii::DescriptorPool> descriptorPool =
-      vk::raii::su::makeUniqueDescriptorPool( *device, poolSizes );
+    vk::raii::DescriptorPool descriptorPool = vk::raii::su::makeDescriptorPool( device, poolSizes );
 
     // setup swap chain, render pass, depth buffer and the frame buffers
-    vk::raii::su::SwapChainData swapChainData( *physicalDevice,
-                                               *device,
-                                               *surface,
+    vk::raii::su::SwapChainData swapChainData( physicalDevice,
+                                               device,
+                                               surface,
                                                windowExtent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eStorage,
                                                {},
                                                graphicsAndPresentQueueFamilyIndex.first,
                                                graphicsAndPresentQueueFamilyIndex.second );
-    vk::SurfaceFormatKHR surfaceFormat = vk::su::pickSurfaceFormat( physicalDevice->getSurfaceFormatsKHR( **surface ) );
-    vk::Format           depthFormat   = vk::raii::su::pickDepthFormat( *physicalDevice );
+    vk::SurfaceFormatKHR surfaceFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( *surface ) );
+    vk::Format           depthFormat   = vk::raii::su::pickDepthFormat( physicalDevice );
 
     // setup a render pass
-    std::unique_ptr<vk::raii::RenderPass> renderPass =
-      vk::raii::su::makeUniqueRenderPass( *device, surfaceFormat.format, depthFormat );
+    vk::raii::RenderPass renderPass = vk::raii::su::makeRenderPass( device, surfaceFormat.format, depthFormat );
 
-    vk::raii::su::DepthBufferData depthBufferData( *physicalDevice, *device, depthFormat, windowExtent );
-    std::vector<std::unique_ptr<vk::raii::Framebuffer>> framebuffers = vk::raii::su::makeUniqueFramebuffers(
-      *device, *renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent );
+    vk::raii::su::DepthBufferData      depthBufferData( physicalDevice, device, depthFormat, windowExtent );
+    std::vector<vk::raii::Framebuffer> framebuffers = vk::raii::su::makeFramebuffers(
+      device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, windowExtent );
 
     bool samplerAnisotropy = !!supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features.samplerAnisotropy;
 
@@ -803,24 +798,27 @@ int main( int /*argc*/, char ** /*argv*/ )
     textures.reserve( textureCount );
     for ( size_t i = 0; i < textureCount; i++ )
     {
-      textures.emplace_back( *physicalDevice,
-                             *device,
+      textures.emplace_back( physicalDevice,
+                             device,
                              vk::Extent2D( random<uint32_t>( 2, 8 ) * 16, random<uint32_t>( 2, 8 ) * 16 ),
                              vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
                              vk::FormatFeatureFlags(),
                              samplerAnisotropy,
                              true );
     }
-    vk::raii::su::oneTimeSubmit(
-      *device, *perFrameData[0].commandPool, *graphicsQueue, [&]( vk::raii::CommandBuffer const & commandBuffer ) {
-        for ( auto & t : textures )
-        {
-          t.setImage(
-            commandBuffer,
-            vk::su::CheckerboardImageGenerator( { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() },
-                                                { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() } ) );
-        }
-      } );
+    vk::raii::su::oneTimeSubmit( device,
+                                 perFrameData[0].commandPool,
+                                 graphicsQueue,
+                                 [&]( vk::raii::CommandBuffer const & commandBuffer )
+                                 {
+                                   for ( auto & t : textures )
+                                   {
+                                     t.setImage( commandBuffer,
+                                                 vk::su::CheckerboardImageGenerator(
+                                                   { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() },
+                                                   { random<uint8_t>(), random<uint8_t>(), random<uint8_t>() } ) );
+                                   }
+                                 } );
 
     // create some materials with a random diffuse color, referencing one of the above textures
     const size_t materialCount = 10;
@@ -832,7 +830,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       materials[i].textureID = vk::su::checked_cast<uint32_t>( i );
     }
     vk::raii::su::BufferData materialBufferData(
-      *physicalDevice, *device, materialCount * MaterialStride, vk::BufferUsageFlagBits::eStorageBuffer );
+      physicalDevice, device, materialCount * MaterialStride, vk::BufferUsageFlagBits::eStorageBuffer );
     materialBufferData.upload( materials, MaterialStride );
 
     // create a a 3D-array of cubes, randomly jittered, using a random material
@@ -865,23 +863,23 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::BufferUsageFlags bufferUsageFlags = vk::BufferUsageFlagBits::eTransferDst |
                                             vk::BufferUsageFlagBits::eVertexBuffer |
                                             vk::BufferUsageFlagBits::eStorageBuffer;
-    vk::raii::su::BufferData vertexBufferData( *physicalDevice,
-                                               *device,
+    vk::raii::su::BufferData vertexBufferData( physicalDevice,
+                                               device,
                                                vertices.size() * VertexStride,
                                                bufferUsageFlags,
                                                vk::MemoryPropertyFlagBits::eDeviceLocal );
     vertexBufferData.upload(
-      *physicalDevice, *device, *perFrameData[0].commandPool, *graphicsQueue, vertices, VertexStride );
+      physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, vertices, VertexStride );
 
     bufferUsageFlags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer |
                        vk::BufferUsageFlagBits::eStorageBuffer;
-    vk::raii::su::BufferData indexBufferData( *physicalDevice,
-                                              *device,
+    vk::raii::su::BufferData indexBufferData( physicalDevice,
+                                              device,
                                               indices.size() * sizeof( uint32_t ),
                                               bufferUsageFlags,
                                               vk::MemoryPropertyFlagBits::eDeviceLocal );
     indexBufferData.upload(
-      *physicalDevice, *device, *perFrameData[0].commandPool, *graphicsQueue, indices, sizeof( uint32_t ) );
+      physicalDevice, device, perFrameData[0].commandPool, graphicsQueue, indices, sizeof( uint32_t ) );
 
     // clang-format off
     glm::mat4x4 transform( glm::mat4x4( 1.0f, 0.0f, 0.0f, 0.0f,
@@ -890,8 +888,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                         0.0f, 0.0f, 0.0f, 1.0f ) );
     // clang-format on
 
-    std::unique_ptr<vk::raii::DescriptorSetLayout> descriptorSetLayout = vk::raii::su::makeUniqueDescriptorSetLayout(
-      *device,
+    vk::raii::DescriptorSetLayout descriptorSetLayout = vk::raii::su::makeDescriptorSetLayout(
+      device,
       { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
         { vk::DescriptorType::eStorageBuffer,
           1,
@@ -899,24 +897,22 @@ int main( int /*argc*/, char ** /*argv*/ )
         { vk::DescriptorType::eCombinedImageSampler,
           static_cast<uint32_t>( textures.size() ),
           vk::ShaderStageFlagBits::eFragment } } );
-    std::unique_ptr<vk::raii::PipelineLayout> pipelineLayout =
-      vk::raii::su::makeUniquePipelineLayout( *device, *descriptorSetLayout );
+    vk::raii::PipelineLayout pipelineLayout( device, { {}, *descriptorSetLayout } );
 
     glslang::InitializeProcess();
-    std::unique_ptr<vk::raii::ShaderModule> vertexShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eVertex, vertexShaderText );
-    std::unique_ptr<vk::raii::ShaderModule> fragmentShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText );
+    vk::raii::ShaderModule vertexShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText );
+    vk::raii::ShaderModule fragmentShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText );
     glslang::FinalizeProcess();
 
-    std::unique_ptr<vk::raii::PipelineCache> pipelineCache =
-      vk::raii::su::make_unique<vk::raii::PipelineCache>( *device, vk::PipelineCacheCreateInfo() );
-    std::unique_ptr<vk::raii::Pipeline> graphicsPipeline = vk::raii::su::makeUniqueGraphicsPipeline(
-      *device,
-      *pipelineCache,
-      *vertexShaderModule,
+    vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
+    vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline(
+      device,
+      pipelineCache,
+      vertexShaderModule,
       nullptr,
-      *fragmentShaderModule,
+      fragmentShaderModule,
       nullptr,
       VertexStride,
       { { vk::Format::eR32G32B32Sfloat, vk::su::checked_cast<uint32_t>( offsetof( Vertex, pos ) ) },
@@ -925,18 +921,18 @@ int main( int /*argc*/, char ** /*argv*/ )
         { vk::Format::eR32Sint, vk::su::checked_cast<uint32_t>( offsetof( Vertex, matID ) ) } },
       vk::FrontFace::eCounterClockwise,
       true,
-      *pipelineLayout,
-      *renderPass );
+      pipelineLayout,
+      renderPass );
 
     vk::raii::su::BufferData uniformBufferData(
-      *physicalDevice, *device, sizeof( UniformBufferObject ), vk::BufferUsageFlagBits::eUniformBuffer );
+      physicalDevice, device, sizeof( UniformBufferObject ), vk::BufferUsageFlagBits::eUniformBuffer );
 
-    std::unique_ptr<vk::raii::DescriptorSet> descriptorSet =
-      vk::raii::su::makeUniqueDescriptorSet( *device, *descriptorPool, *descriptorSetLayout );
-    vk::raii::su::updateDescriptorSets( *device,
-                                        *descriptorSet,
-                                        { { vk::DescriptorType::eUniformBuffer, *uniformBufferData.buffer, {} },
-                                          { vk::DescriptorType::eStorageBuffer, *materialBufferData.buffer, {} } },
+    vk::raii::DescriptorSet descriptorSet =
+      std::move( vk::raii::DescriptorSets( device, { *descriptorPool, *descriptorSetLayout } ).front() );
+    vk::raii::su::updateDescriptorSets( device,
+                                        descriptorSet,
+                                        { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} },
+                                          { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
                                         textures );
 
     // RayTracing specific stuff
@@ -944,57 +940,64 @@ int main( int /*argc*/, char ** /*argv*/ )
     // create acceleration structures: one top-level, and just one bottom-level
     AccelerationStructureData topLevelAS, bottomLevelAS;
     vk::raii::su::oneTimeSubmit(
-      *device, *perFrameData[0].commandPool, *graphicsQueue, [&]( vk::raii::CommandBuffer const & commandBuffer ) {
-        vk::GeometryDataNV geometryDataNV( vk::GeometryTrianglesNV( **vertexBufferData.buffer,
+      device,
+      perFrameData[0].commandPool,
+      graphicsQueue,
+      [&]( vk::raii::CommandBuffer const & commandBuffer )
+      {
+        vk::GeometryDataNV geometryDataNV( vk::GeometryTrianglesNV( *vertexBufferData.buffer,
                                                                     0,
                                                                     vk::su::checked_cast<uint32_t>( vertices.size() ),
                                                                     VertexStride,
                                                                     vk::Format::eR32G32B32Sfloat,
-                                                                    **indexBufferData.buffer,
+                                                                    *indexBufferData.buffer,
                                                                     0,
                                                                     vk::su::checked_cast<uint32_t>( indices.size() ),
                                                                     vk::IndexType::eUint32 ),
                                            {} );
         bottomLevelAS =
-          createAccelerationStructureData( *physicalDevice,
-                                           *device,
+          createAccelerationStructureData( physicalDevice,
+                                           device,
                                            commandBuffer,
                                            {},
                                            { vk::GeometryNV( vk::GeometryTypeNV::eTriangles, geometryDataNV ) } );
 
         topLevelAS =
-          createAccelerationStructureData( *physicalDevice,
-                                           *device,
+          createAccelerationStructureData( physicalDevice,
+                                           device,
                                            commandBuffer,
-                                           { std::make_pair( bottomLevelAS.acclerationStructure, transform ) },
+                                           { std::make_pair( bottomLevelAS.pAcclerationStructure, transform ) },
                                            std::vector<vk::GeometryNV>() );
       } );
 
     // create raytracing descriptor set
-    vk::raii::su::oneTimeSubmit(
-      *device, *perFrameData[0].commandPool, *graphicsQueue, [&]( vk::raii::CommandBuffer const & commandBuffer ) {
-        vk::BufferMemoryBarrier bufferMemoryBarrier( {},
-                                                     vk::AccessFlagBits::eShaderRead,
-                                                     VK_QUEUE_FAMILY_IGNORED,
-                                                     VK_QUEUE_FAMILY_IGNORED,
-                                                     **vertexBufferData.buffer,
-                                                     0,
-                                                     VK_WHOLE_SIZE );
-        commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
-                                       vk::PipelineStageFlagBits::eAllCommands,
-                                       {},
-                                       nullptr,
-                                       bufferMemoryBarrier,
-                                       nullptr );
+    vk::raii::su::oneTimeSubmit( device,
+                                 perFrameData[0].commandPool,
+                                 graphicsQueue,
+                                 [&]( vk::raii::CommandBuffer const & commandBuffer )
+                                 {
+                                   vk::BufferMemoryBarrier bufferMemoryBarrier( {},
+                                                                                vk::AccessFlagBits::eShaderRead,
+                                                                                VK_QUEUE_FAMILY_IGNORED,
+                                                                                VK_QUEUE_FAMILY_IGNORED,
+                                                                                *vertexBufferData.buffer,
+                                                                                0,
+                                                                                VK_WHOLE_SIZE );
+                                   commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
+                                                                  vk::PipelineStageFlagBits::eAllCommands,
+                                                                  {},
+                                                                  nullptr,
+                                                                  bufferMemoryBarrier,
+                                                                  nullptr );
 
-        bufferMemoryBarrier.buffer = **indexBufferData.buffer;
-        commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
-                                       vk::PipelineStageFlagBits::eAllCommands,
-                                       {},
-                                       nullptr,
-                                       bufferMemoryBarrier,
-                                       nullptr );
-      } );
+                                   bufferMemoryBarrier.buffer = *indexBufferData.buffer;
+                                   commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands,
+                                                                  vk::PipelineStageFlagBits::eAllCommands,
+                                                                  {},
+                                                                  nullptr,
+                                                                  bufferMemoryBarrier,
+                                                                  nullptr );
+                                 } );
 
     std::vector<vk::DescriptorSetLayoutBinding> bindings;
     bindings.emplace_back( 0,
@@ -1027,54 +1030,52 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet,
       vk::su::checked_cast<uint32_t>( swapChainData.images.size() ),
       descriptorPoolSizes );
-    std::unique_ptr<vk::raii::DescriptorPool> rayTracingDescriptorPool =
-      vk::raii::su::make_unique<vk::raii::DescriptorPool>( *device, descriptorPoolCreateInfo );
-    vk::DescriptorSetLayoutCreateInfo              descriptorSetLayoutCreateInfo( {}, bindings );
-    std::unique_ptr<vk::raii::DescriptorSetLayout> rayTracingDescriptorSetLayout =
-      vk::raii::su::make_unique<vk::raii::DescriptorSetLayout>( *device, descriptorSetLayoutCreateInfo );
+    vk::raii::DescriptorPool             rayTracingDescriptorPool( device, descriptorPoolCreateInfo );
+    vk::DescriptorSetLayoutCreateInfo    descriptorSetLayoutCreateInfo( {}, bindings );
+    vk::raii::DescriptorSetLayout        rayTracingDescriptorSetLayout( device, descriptorSetLayoutCreateInfo );
     std::vector<vk::DescriptorSetLayout> layouts;
     for ( size_t i = 0; i < swapChainData.images.size(); i++ )
     {
-      layouts.push_back( **rayTracingDescriptorSetLayout );
+      layouts.push_back( *rayTracingDescriptorSetLayout );
     }
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( **rayTracingDescriptorPool, layouts );
-    vk::raii::DescriptorSets      rayTracingDescriptorSets( *device, descriptorSetAllocateInfo );
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *rayTracingDescriptorPool, layouts );
+    vk::raii::DescriptorSets      rayTracingDescriptorSets( device, descriptorSetAllocateInfo );
 
     // Bind ray tracing specific descriptor sets into pNext of a vk::WriteDescriptorSet
     vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration( 1,
-                                                                                  &**topLevelAS.acclerationStructure );
+                                                                                  &**topLevelAS.pAcclerationStructure );
     std::vector<vk::WriteDescriptorSet>           accelerationDescriptionSets;
     for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
       accelerationDescriptionSets.emplace_back( *rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType );
       accelerationDescriptionSets.back().pNext = &writeDescriptorSetAcceleration;
     }
-    device->updateDescriptorSets( accelerationDescriptionSets, nullptr );
+    device.updateDescriptorSets( accelerationDescriptionSets, nullptr );
 
     // Bind all the other buffers and images, starting with dstBinding == 2 (dstBinding == 1 is used by the backBuffer
     // view)
     for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
-      vk::raii::su::updateDescriptorSets( *device,
+      vk::raii::su::updateDescriptorSets( device,
                                           rayTracingDescriptorSets[i],
-                                          { { bindings[2].descriptorType, *uniformBufferData.buffer, {} },
-                                            { bindings[3].descriptorType, *vertexBufferData.buffer, {} },
-                                            { bindings[4].descriptorType, *indexBufferData.buffer, {} },
-                                            { bindings[5].descriptorType, *materialBufferData.buffer, {} } },
+                                          { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
+                                            { bindings[3].descriptorType, vertexBufferData.buffer, {} },
+                                            { bindings[4].descriptorType, indexBufferData.buffer, {} },
+                                            { bindings[5].descriptorType, materialBufferData.buffer, {} } },
                                           textures,
                                           2 );
     }
 
     // create the ray-tracing shader modules
     glslang::InitializeProcess();
-    std::unique_ptr<vk::raii::ShaderModule> raygenShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eRaygenNV, raygenShaderText );
-    std::unique_ptr<vk::raii::ShaderModule> missShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eMissNV, missShaderText );
-    std::unique_ptr<vk::raii::ShaderModule> shadowMissShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eMissNV, shadowMissShaderText );
-    std::unique_ptr<vk::raii::ShaderModule> closestHitShaderModule =
-      vk::raii::su::makeUniqueShaderModule( *device, vk::ShaderStageFlagBits::eClosestHitNV, closestHitShaderText );
+    vk::raii::ShaderModule raygenShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eRaygenNV, raygenShaderText );
+    vk::raii::ShaderModule missShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eMissNV, missShaderText );
+    vk::raii::ShaderModule shadowMissShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eMissNV, shadowMissShaderText );
+    vk::raii::ShaderModule closestHitShaderModule =
+      vk::raii::su::makeShaderModule( device, vk::ShaderStageFlagBits::eClosestHitNV, closestHitShaderText );
     glslang::FinalizeProcess();
 
     // create the ray tracing pipeline
@@ -1083,20 +1084,20 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // We use only one ray generation, that will implement the camera model
     shaderStages.emplace_back(
-      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eRaygenNV, **raygenShaderModule, "main" );
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eRaygenNV, *raygenShaderModule, "main" );
     shaderGroups.emplace_back(
       vk::RayTracingShaderGroupTypeNV::eGeneral, 0, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
     // The first miss shader is used to look-up the environment in case the rays from the camera miss the geometry
     shaderStages.emplace_back(
-      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, **missShaderModule, "main" );
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, *missShaderModule, "main" );
     shaderGroups.emplace_back(
       vk::RayTracingShaderGroupTypeNV::eGeneral, 1, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
     // The second miss shader is invoked when a shadow ray misses the geometry. It simply indicates that no occlusion
     // has been found
     shaderStages.emplace_back(
-      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, **shadowMissShaderModule, "main" );
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eMissNV, *shadowMissShaderModule, "main" );
     shaderGroups.emplace_back(
       vk::RayTracingShaderGroupTypeNV::eGeneral, 2, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV, VK_SHADER_UNUSED_NV );
 
@@ -1104,7 +1105,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // only specify the closest hit shader, and rely on the build-in triangle intersection and pass-through any-hit
     // shader. However, explicit intersection and any hit shaders could be added as well.
     shaderStages.emplace_back(
-      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eClosestHitNV, **closestHitShaderModule, "main" );
+      vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eClosestHitNV, *closestHitShaderModule, "main" );
     shaderGroups.emplace_back( vk::RayTracingShaderGroupTypeNV::eTrianglesHitGroup,
                                VK_SHADER_UNUSED_NV,
                                3,
@@ -1120,8 +1121,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                VK_SHADER_UNUSED_NV );
 
     // Create the layout of the pipeline following the provided descriptor set layout
-    std::unique_ptr<vk::raii::PipelineLayout> rayTracingPipelineLayout =
-      vk::raii::su::makeUniquePipelineLayout( *device, *rayTracingDescriptorSetLayout );
+    vk::raii::PipelineLayout rayTracingPipelineLayout( device, { {}, *rayTracingDescriptorSetLayout } );
 
     // Assemble the shader stages and recursion depth info into the raytracing pipeline
     // The ray tracing process can shoot rays from the camera, and a shadow ray can be shot from the
@@ -1130,10 +1130,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     // in the ray generation to avoid deep recursion.
     uint32_t                           maxRecursionDepth = 2;
     vk::RayTracingPipelineCreateInfoNV rayTracingPipelineCreateInfo(
-      {}, shaderStages, shaderGroups, maxRecursionDepth, **rayTracingPipelineLayout );
-    std::unique_ptr<vk::raii::Pipeline> rayTracingPipeline =
-      vk::raii::su::make_unique<vk::raii::Pipeline>( *device, nullptr, rayTracingPipelineCreateInfo );
-    switch ( rayTracingPipeline->getConstructorSuccessCode() )
+      {}, shaderStages, shaderGroups, maxRecursionDepth, *rayTracingPipelineLayout );
+    vk::raii::Pipeline rayTracingPipeline( device, nullptr, rayTracingPipelineCreateInfo );
+    switch ( rayTracingPipeline.getConstructorSuccessCode() )
     {
       case vk::Result::eSuccess: break;
       case vk::Result::ePipelineCompileRequiredEXT:
@@ -1143,7 +1142,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV> propertiesChain =
-      physicalDevice->getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>();
+      physicalDevice.getProperties2<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceRayTracingPropertiesNV>();
     uint32_t shaderGroupBaseAlignment =
       propertiesChain.get<vk::PhysicalDeviceRayTracingPropertiesNV>().shaderGroupBaseAlignment;
     uint32_t shaderGroupHandleSize =
@@ -1163,18 +1162,18 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t             shaderBindingTableSize = hitShaderBindingOffset + hitShaderTableSize;
     std::vector<uint8_t> shaderHandleStorage( shaderBindingTableSize );
     memcpy( &shaderHandleStorage[raygenShaderBindingOffset],
-            rayTracingPipeline->getRayTracingShaderGroupHandlesKHR<uint8_t>( 0, 1, raygenShaderTableSize ).data(),
+            rayTracingPipeline.getRayTracingShaderGroupHandlesKHR<uint8_t>( 0, 1, raygenShaderTableSize ).data(),
             raygenShaderTableSize );
     memcpy( &shaderHandleStorage[missShaderBindingOffset],
-            rayTracingPipeline->getRayTracingShaderGroupHandlesKHR<uint8_t>( 1, 2, missShaderTableSize ).data(),
+            rayTracingPipeline.getRayTracingShaderGroupHandlesKHR<uint8_t>( 1, 2, missShaderTableSize ).data(),
             missShaderTableSize );
     memcpy( &shaderHandleStorage[hitShaderBindingOffset],
-            rayTracingPipeline->getRayTracingShaderGroupHandlesKHR<uint8_t>( 3, 2, hitShaderTableSize ).data(),
+            rayTracingPipeline.getRayTracingShaderGroupHandlesKHR<uint8_t>( 3, 2, hitShaderTableSize ).data(),
             hitShaderTableSize );
     assert( shaderHandleStorage.size() == shaderBindingTableSize );
 
-    vk::raii::su::BufferData shaderBindingTableBufferData( *physicalDevice,
-                                                           *device,
+    vk::raii::su::BufferData shaderBindingTableBufferData( physicalDevice,
+                                                           device,
                                                            shaderBindingTableSize,
                                                            vk::BufferUsageFlagBits::eTransferDst,
                                                            vk::MemoryPropertyFlagBits::eHostVisible );
@@ -1197,7 +1196,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       double startTime = glfwGetTime();
       glfwPollEvents();
 
-      vk::raii::CommandBuffer const & commandBuffer = *perFrameData[frameIndex].commandBuffer;
+      vk::raii::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
 
       int w, h;
       glfwGetWindowSize( window, &w, &h );
@@ -1205,30 +1204,32 @@ int main( int /*argc*/, char ** /*argv*/ )
       {
         windowExtent.width  = w;
         windowExtent.height = h;
-        device->waitIdle();
+        device.waitIdle();
         swapChainData =
-          vk::raii::su::SwapChainData( *physicalDevice,
-                                       *device,
-                                       *surface,
+          vk::raii::su::SwapChainData( physicalDevice,
+                                       device,
+                                       surface,
                                        windowExtent,
                                        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage,
-                                       swapChainData.swapChain,
+                                       &*swapChainData.pSwapChain,
                                        graphicsAndPresentQueueFamilyIndex.first,
                                        graphicsAndPresentQueueFamilyIndex.second );
         depthBufferData = vk::raii::su::DepthBufferData(
-          *physicalDevice, *device, vk::su::pickDepthFormat( **physicalDevice ), windowExtent );
+          physicalDevice, device, vk::su::pickDepthFormat( *physicalDevice ), windowExtent );
 
-        vk::raii::su::oneTimeSubmit(
-          commandBuffer, *graphicsQueue, [&]( vk::raii::CommandBuffer const & commandBuffer ) {
-            vk::raii::su::setImageLayout( commandBuffer,
-                                          **depthBufferData.image,
-                                          depthFormat,
-                                          vk::ImageLayout::eUndefined,
-                                          vk::ImageLayout::eDepthStencilAttachmentOptimal );
-          } );
+        vk::raii::su::oneTimeSubmit( commandBuffer,
+                                     graphicsQueue,
+                                     [&]( vk::raii::CommandBuffer const & commandBuffer )
+                                     {
+                                       vk::raii::su::setImageLayout( commandBuffer,
+                                                                     *depthBufferData.image,
+                                                                     depthFormat,
+                                                                     vk::ImageLayout::eUndefined,
+                                                                     vk::ImageLayout::eDepthStencilAttachmentOptimal );
+                                     } );
 
-        framebuffers = vk::raii::su::makeUniqueFramebuffers(
-          *device, *renderPass, swapChainData.imageViews, depthBufferData.imageView, windowExtent );
+        framebuffers = vk::raii::su::makeFramebuffers(
+          device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, windowExtent );
       }
 
       // update the uniformBufferObject
@@ -1244,28 +1245,26 @@ int main( int /*argc*/, char ** /*argv*/ )
       // frame begin
       vk::Result result;
       uint32_t   backBufferIndex;
-      std::tie( result, backBufferIndex ) = swapChainData.swapChain->acquireNextImage(
-        vk::su::FenceTimeout, **perFrameData[frameIndex].presentCompleteSemaphore );
+      std::tie( result, backBufferIndex ) = swapChainData.pSwapChain->acquireNextImage(
+        vk::su::FenceTimeout, *perFrameData[frameIndex].presentCompleteSemaphore );
       assert( result == vk::Result::eSuccess );
 
       while ( vk::Result::eTimeout ==
-              device->waitForFences( { **perFrameData[frameIndex].fence }, VK_TRUE, vk::su::FenceTimeout ) )
+              device.waitForFences( { *perFrameData[frameIndex].fence }, VK_TRUE, vk::su::FenceTimeout ) )
         ;
-      device->resetFences( { **perFrameData[frameIndex].fence } );
+      device.resetFences( { *perFrameData[frameIndex].fence } );
 
       commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
 
       if ( appInfo.useRasterRender )
       {
-        vk::RenderPassBeginInfo renderPassBeginInfo( **renderPass,
-                                                     **framebuffers[backBufferIndex],
-                                                     vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ),
-                                                     clearValues );
+        vk::RenderPassBeginInfo renderPassBeginInfo(
+          *renderPass, *framebuffers[backBufferIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ), clearValues );
         commandBuffer.beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
 
-        commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, **graphicsPipeline );
+        commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, *graphicsPipeline );
         commandBuffer.bindDescriptorSets(
-          vk::PipelineBindPoint::eGraphics, **pipelineLayout, 0, { **descriptorSet }, nullptr );
+          vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { *descriptorSet }, nullptr );
 
         commandBuffer.setViewport( 0,
                                    vk::Viewport( 0.0f,
@@ -1276,8 +1275,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                  1.0f ) );
         commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), windowExtent ) );
 
-        commandBuffer.bindVertexBuffers( 0, { **vertexBufferData.buffer }, { 0 } );
-        commandBuffer.bindIndexBuffer( **indexBufferData.buffer, 0, vk::IndexType::eUint32 );
+        commandBuffer.bindVertexBuffers( 0, { *vertexBufferData.buffer }, { 0 } );
+        commandBuffer.bindIndexBuffer( *indexBufferData.buffer, 0, vk::IndexType::eUint32 );
         commandBuffer.drawIndexed( vk::su::checked_cast<uint32_t>( indices.size() ), 1, 0, 0, 0 );
 
         commandBuffer.endRenderPass();
@@ -1288,7 +1287,7 @@ int main( int /*argc*/, char ** /*argv*/ )
           nullptr, *swapChainData.imageViews[backBufferIndex], vk::ImageLayout::eGeneral );
         vk::WriteDescriptorSet writeDescriptorSet(
           *rayTracingDescriptorSets[backBufferIndex], 1, 0, bindings[1].descriptorType, imageInfo );
-        device->updateDescriptorSets( writeDescriptorSet, nullptr );
+        device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
         vk::raii::su::setImageLayout( commandBuffer,
                                       static_cast<vk::Image>( swapChainData.images[backBufferIndex] ),
@@ -1296,20 +1295,20 @@ int main( int /*argc*/, char ** /*argv*/ )
                                       vk::ImageLayout::eUndefined,
                                       vk::ImageLayout::eGeneral );
 
-        commandBuffer.bindPipeline( vk::PipelineBindPoint::eRayTracingNV, **rayTracingPipeline );
+        commandBuffer.bindPipeline( vk::PipelineBindPoint::eRayTracingNV, *rayTracingPipeline );
 
         commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eRayTracingNV,
-                                          **rayTracingPipelineLayout,
+                                          *rayTracingPipelineLayout,
                                           0,
                                           { *rayTracingDescriptorSets[backBufferIndex] },
                                           nullptr );
 
-        commandBuffer.traceRaysNV( **shaderBindingTableBufferData.buffer,
+        commandBuffer.traceRaysNV( *shaderBindingTableBufferData.buffer,
                                    raygenShaderBindingOffset,
-                                   **shaderBindingTableBufferData.buffer,
+                                   *shaderBindingTableBufferData.buffer,
                                    missShaderBindingOffset,
                                    missShaderBindingStride,
-                                   **shaderBindingTableBufferData.buffer,
+                                   *shaderBindingTableBufferData.buffer,
                                    hitShaderBindingOffset,
                                    hitShaderBindingStride,
                                    nullptr,
@@ -1329,14 +1328,17 @@ int main( int /*argc*/, char ** /*argv*/ )
       // frame end
       commandBuffer.end();
       const vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-      vk::SubmitInfo               submitInfo( **perFrameData[frameIndex].presentCompleteSemaphore,
-                                 waitDestinationStageMask,
-                                 *commandBuffer,
-                                 **perFrameData[frameIndex].renderCompleteSemaphore );
-      graphicsQueue->submit( submitInfo, **perFrameData[frameIndex].fence );
+      vk::SubmitInfo               submitInfo( 1,
+                                 &*perFrameData[frameIndex].presentCompleteSemaphore,
+                                 &waitDestinationStageMask,
+                                 1,
+                                 &*commandBuffer,
+                                 1,
+                                 &*perFrameData[frameIndex].renderCompleteSemaphore );
+      graphicsQueue.submit( submitInfo, *perFrameData[frameIndex].fence );
       vk::PresentInfoKHR presentInfoKHR(
-        **perFrameData[frameIndex].renderCompleteSemaphore, **swapChainData.swapChain, backBufferIndex );
-      result = presentQueue->presentKHR( presentInfoKHR );
+        *perFrameData[frameIndex].renderCompleteSemaphore, **swapChainData.pSwapChain, backBufferIndex );
+      result = presentQueue.presentKHR( presentInfoKHR );
       switch ( result )
       {
         case vk::Result::eSuccess: break;
@@ -1366,7 +1368,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     // Cleanup
-    device->waitIdle();
+    device.waitIdle();
 
     glfwDestroyWindow( window );
     glfwTerminate();

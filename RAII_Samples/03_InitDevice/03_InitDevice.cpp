@@ -26,26 +26,25 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::raii::Context>  context  = vk::raii::su::make_unique<vk::raii::Context>();
-    std::unique_ptr<vk::raii::Instance> instance = vk::raii::su::makeUniqueInstance( *context, AppName, EngineName );
+    vk::raii::Context  context;
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::raii::DebugUtilsMessengerEXT> debugUtilsMessenger =
-      vk::raii::su::makeUniqueDebugUtilsMessengerEXT( *instance );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    std::unique_ptr<vk::raii::PhysicalDevice> physicalDevice = vk::raii::su::makeUniquePhysicalDevice( *instance );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
     /* VULKAN_HPP_KEY_START */
 
     // find the index of the first queue family that supports graphics
     uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice->getQueueFamilyProperties() );
+      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     // create a Device
     float                     queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, graphicsQueueFamilyIndex, 1, &queuePriority );
     vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo );
 
-    std::unique_ptr<vk::raii::Device> device = vk::raii::su::make_unique<vk::raii::Device>( *physicalDevice, deviceCreateInfo );
+    vk::raii::Device device( physicalDevice, deviceCreateInfo );
 
     /* VULKAN_HPP_KEY_END */
   }

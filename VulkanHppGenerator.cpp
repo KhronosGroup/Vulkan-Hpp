@@ -9631,10 +9631,6 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
                             { return !md.len.empty() && ( ignoreLens.find( md.len.front() ) == ignoreLens.end() ); } );
   if ( !memberIts.empty() )
   {
-    // maximal one member to be handled by an ArrayProxyNoTemporaries is of type void
-    assert( std::count_if( memberIts.begin(), memberIts.end(), []( auto it ) { return it->type.type == "void"; } ) <=
-            1 );
-
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
     for ( auto const & mit : memberIts )
@@ -9672,9 +9668,11 @@ void VulkanHppGenerator::appendStructConstructorsEnhanced( std::string &        
           std::string argumentName = startLowerCase( stripPrefix( mit->name, "p" ) ) + "_";
 
           assert( endsWith( mit->type.postfix, "*" ) );
-          std::string argumentType = stripPostfix( mit->type.compose(), "*" );
-          if ( mit->type.type == "void" )
+          std::string argumentType = trimEnd( stripPostfix( mit->type.compose(), "*" ) );
+          if ( ( mit->type.type == "void" ) && ( argumentType.find( '*' ) == std::string::npos ) )
           {
+            // the argument after stripping one pointer is just void
+            assert( templateHeader.empty() );
             templateHeader = prefix + "template <typename T>\n";
 
             size_t pos = argumentType.find( "void" );
@@ -9909,11 +9907,12 @@ void VulkanHppGenerator::appendStructSetter( std::string &                   str
       }
 
       assert( memberType.back() == '*' );
-      memberType.pop_back();
+      memberType = trimEnd( stripPostfix( memberType, "*" ) );
 
       std::string templateHeader;
-      if ( member.type.type == "void" )
+      if ( ( member.type.type == "void" ) && ( memberType.find( '*' ) == std::string::npos ) )
       {
+        assert( templateHeader.empty() );
         templateHeader = "template <typename T>\n    ";
 
         size_t pos = memberType.find( "void" );
@@ -12055,7 +12054,9 @@ std::string VulkanHppGenerator::generateLenInitializer(
     {
       initializer += " * 4";
     }
-    if ( arrayIt->type.type == "void" )
+    if ( ( arrayIt->type.type == "void" ) &&
+         ( std::count_if(
+             arrayIt->type.postfix.begin(), arrayIt->type.postfix.end(), []( char c ) { return c == '*'; } ) < 2 ) )
     {
       initializer += " * sizeof(T)";
     }

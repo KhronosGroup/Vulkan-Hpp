@@ -156,8 +156,8 @@ private:
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
     void addEnumValue( int line, std::string const & valueName, bool bitpos, std::string const & extension );
 
-    std::string                          alias;  // alias for this enum
-    std::map<std::string, EnumAliasData> aliases;
+    std::string                          alias;    // alias for this enum
+    std::map<std::string, EnumAliasData> aliases;  // aliases for the values
     std::string                          bitwidth;
     bool                                 isBitmask = false;
     std::vector<EnumValueData>           values;
@@ -996,52 +996,53 @@ private:
   std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
-  std::string              generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
-  std::string              generateCommand( std::string const & name,
+  std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
+  std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string generateCommand( std::string const & name,
+                               CommandData const & commandData,
+                               size_t              initialSkipCount,
+                               bool                definition ) const;
+  std::string generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
+  std::string generateCommandResult( std::string const & name,
+                                     CommandData const & commandData,
+                                     size_t              initialSkipCount,
+                                     bool                definition ) const;
+  std::string generateCommandResult0Return( std::string const & name,
                                             CommandData const & commandData,
                                             size_t              initialSkipCount,
                                             bool                definition ) const;
-  std::string              generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
-  std::string              generateCommandResult( std::string const & name,
-                                                  CommandData const & commandData,
-                                                  size_t              initialSkipCount,
-                                                  bool                definition ) const;
-  std::string              generateCommandResult0Return( std::string const & name,
-                                                         CommandData const & commandData,
-                                                         size_t              initialSkipCount,
-                                                         bool                definition ) const;
-  std::string              generateCommandResult1Return( std::string const & name,
-                                                         CommandData const & commandData,
-                                                         size_t              initialSkipCount,
-                                                         bool                definition,
-                                                         size_t              returnParamIndex ) const;
-  std::string              generateCommandResult2Return( std::string const &         name,
-                                                         CommandData const &         commandData,
-                                                         size_t                      initialSkipCount,
-                                                         bool                        definition,
-                                                         std::vector<size_t> const & returnParamIndices ) const;
-  std::string              generateCommandResult3Return( std::string const &         name,
-                                                         CommandData const &         commandData,
-                                                         size_t                      initialSkipCount,
-                                                         bool                        definition,
-                                                         std::vector<size_t> const & returnParamIndices ) const;
-  std::string              generateCommandSetStandard( std::string const & name,
-                                                       CommandData const & commandData,
-                                                       size_t              initialSkipCount,
-                                                       bool                definition ) const;
-  std::string              generateCommandSetStandardAndEnhanced( std::string const &              name,
-                                                                  CommandData const &              commandData,
-                                                                  size_t                           initialSkipCount,
-                                                                  bool                             definition,
-                                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                                  std::vector<size_t> const & nonConstPointerParamIndices ) const;
-  std::string              generateCommandSetStandardEnhancedDeprecatedAllocator(
-                 std::string const &              name,
-                 CommandData const &              commandData,
-                 size_t                           initialSkipCount,
-                 bool                             definition,
-                 std::map<size_t, size_t> const & vectorParamIndices,
-                 std::vector<size_t> const &      nonConstPointerParamIndices ) const;
+  std::string generateCommandResult1Return( std::string const & name,
+                                            CommandData const & commandData,
+                                            size_t              initialSkipCount,
+                                            bool                definition,
+                                            size_t              returnParamIndex ) const;
+  std::string generateCommandResult2Return( std::string const &         name,
+                                            CommandData const &         commandData,
+                                            size_t                      initialSkipCount,
+                                            bool                        definition,
+                                            std::vector<size_t> const & returnParamIndices ) const;
+  std::string generateCommandResult3Return( std::string const &         name,
+                                            CommandData const &         commandData,
+                                            size_t                      initialSkipCount,
+                                            bool                        definition,
+                                            std::vector<size_t> const & returnParamIndices ) const;
+  std::string generateCommandSetStandard( std::string const & name,
+                                          CommandData const & commandData,
+                                          size_t              initialSkipCount,
+                                          bool                definition ) const;
+  std::string generateCommandSetStandardAndEnhanced( std::string const &              name,
+                                                     CommandData const &              commandData,
+                                                     size_t                           initialSkipCount,
+                                                     bool                             definition,
+                                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                                     std::vector<size_t> const & nonConstPointerParamIndices ) const;
+  std::string generateCommandSetStandardEnhancedDeprecatedAllocator(
+    std::string const &              name,
+    CommandData const &              commandData,
+    size_t                           initialSkipCount,
+    bool                             definition,
+    std::map<size_t, size_t> const & vectorParamIndices,
+    std::vector<size_t> const &      nonConstPointerParamIndices ) const;
   std::string generateCommandSetStandardOrEnhanced( std::string const & name,
                                                     CommandData const & commandData,
                                                     size_t              initialSkipCount,

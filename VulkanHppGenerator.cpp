@@ -1843,8 +1843,8 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     str += " : " + bitmaskIt->first;
   }
 
-  std::string           enumList, previousEnter, previousLeave;
-  std::set<std::string> valueNames;
+  std::string                        enumList, previousEnter, previousLeave;
+  std::map<std::string, std::string> valueToNameMap;
   for ( auto const & value : enumData.second.values )
   {
     std::string enter, leave;
@@ -1855,8 +1855,8 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
     }
     std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask, m_tags );
     enumList += "    " + valueName + " = " + value.name + ",\n";
-    assert( valueNames.find( valueName ) == valueNames.end() );
-    valueNames.insert( valueName );
+    assert( valueToNameMap.find( valueName ) == valueToNameMap.end() );
+    valueToNameMap[valueName] = value.name;
 
     previousEnter = enter;
     previousLeave = leave;
@@ -1870,11 +1870,9 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
                              alias.first,
                              enumData.second.isBitmask,
                              m_tags );
-    // make sure to only list alias values that differ from all non-alias values
-    if ( std::find_if( valueNames.begin(),
-                       valueNames.end(),
-                       [&aliasName]( std::string const & valueName )
-                       { return aliasName == valueName; } ) == valueNames.end() )
+    // make sure to only list alias values that differ from all previous values
+    auto valueToNameIt = valueToNameMap.find( aliasName );
+    if ( valueToNameIt == valueToNameMap.end() )
     {
 #if !defined( NDEBUG )
       auto enumIt = std::find_if( enumData.second.values.begin(),
@@ -1887,7 +1885,7 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
         auto nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
         while ( nextAliasIt != enumData.second.aliases.end() )
         {
-          aliasIt = nextAliasIt;
+          aliasIt     = nextAliasIt;
           nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
         }
         enumIt = std::find_if( enumData.second.values.begin(),
@@ -1898,7 +1896,27 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
       assert( enumIt->extension.empty() || generateProtection( enumIt->extension ).first.empty() );
 #endif
       enumList += "    " + aliasName + " = " + alias.first + ",\n";
+
+      // map the aliasName to the name of the base
+      std::string baseName = findBaseName( alias.second.name, enumData.second.aliases );
+      assert( std::find_if( enumData.second.values.begin(),
+                            enumData.second.values.end(),
+                            [&baseName]( EnumValueData const & evd )
+                            { return evd.name == baseName; } ) != enumData.second.values.end() );
+      valueToNameMap[aliasName] = baseName;
     }
+#if !defined( NDEBUG )
+    else
+    {
+      // verify, that the identical value represents the identical name
+      std::string baseName = findBaseName( alias.second.name, enumData.second.aliases );
+      assert( std::find_if( enumData.second.values.begin(),
+                            enumData.second.values.end(),
+                            [&baseName]( EnumValueData const & evd )
+                            { return evd.name == baseName; } ) != enumData.second.values.end() );
+      assert( baseName == valueToNameIt->second );
+    }
+#endif
   }
   if ( enumList.empty() )
   {
@@ -10489,7 +10507,7 @@ void VulkanHppGenerator::checkCorrectness()
                              { return evd.name == alias.second.name; } ) != e.second.values.end() ) ||
                ( e.second.aliases.find( alias.second.name ) != e.second.aliases.end() ),
              alias.second.xmlLine,
-             "enum <" + alias.first+ "> uses unknown alias <" + alias.second.name + ">" );
+             "enum <" + alias.first + "> uses unknown alias <" + alias.second.name + ">" );
     }
   }
 
@@ -11229,6 +11247,19 @@ std::string const & VulkanHppGenerator::getVersion() const
 std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
 {
   return m_vulkanLicenseHeader;
+}
+
+std::string VulkanHppGenerator::findBaseName( std::string                                  aliasName,
+                                              std::map<std::string, EnumAliasData> const & aliases ) const
+{
+  std::string baseName = aliasName;
+  auto        aliasIt  = aliases.find( baseName );
+  while ( aliasIt != aliases.end() )
+  {
+    baseName = aliasIt->second.name;
+    aliasIt  = aliases.find( baseName );
+  }
+  return baseName;
 }
 
 std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const

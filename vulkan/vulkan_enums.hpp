@@ -815,7 +815,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImportSemaphoreZirconHandleInfoFUCHSIA = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
     eSemaphoreGetZirconHandleInfoFUCHSIA    = VK_STRUCTURE_TYPE_SEMAPHORE_GET_ZIRCON_HANDLE_INFO_FUCHSIA,
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-    eSubpasssShadingPipelineCreateInfoHUAWEI      = VK_STRUCTURE_TYPE_SUBPASSS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
+    eSubpassShadingPipelineCreateInfoHUAWEI       = VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
     ePhysicalDeviceSubpassShadingFeaturesHUAWEI   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
     ePhysicalDeviceSubpassShadingPropertiesHUAWEI = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
     ePhysicalDeviceExtendedDynamicState2FeaturesEXT =
@@ -1706,7 +1706,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImportSemaphoreZirconHandleInfoFUCHSIA: return "ImportSemaphoreZirconHandleInfoFUCHSIA";
       case StructureType::eSemaphoreGetZirconHandleInfoFUCHSIA: return "SemaphoreGetZirconHandleInfoFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-      case StructureType::eSubpasssShadingPipelineCreateInfoHUAWEI: return "SubpasssShadingPipelineCreateInfoHUAWEI";
+      case StructureType::eSubpassShadingPipelineCreateInfoHUAWEI: return "SubpassShadingPipelineCreateInfoHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingFeaturesHUAWEI:
         return "PhysicalDeviceSubpassShadingFeaturesHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingPropertiesHUAWEI:

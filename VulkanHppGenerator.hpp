@@ -47,32 +47,6 @@ public:
   std::string const &   getVulkanLicenseHeader() const;
 
 private:
-  struct BaseTypeData
-  {
-    BaseTypeData( std::string const & type_, int line ) : type( type_ ), xmlLine( line ) {}
-
-    std::string type;
-    int         xmlLine;
-  };
-
-  struct BitmaskData
-  {
-    BitmaskData( std::string const & r, std::string const & t, int line )
-      : requirements( r ), type( t ), xmlLine( line )
-    {}
-
-    std::string requirements;
-    std::string type;
-    std::string alias;
-    int         xmlLine;
-  };
-
-  struct NameData
-  {
-    std::string              name;
-    std::vector<std::string> arraySizes;
-  };
-
   struct TypeInfo
   {
     std::string compose( bool inNamespace = true ) const;
@@ -100,6 +74,32 @@ private:
     std::string prefix;
     std::string type;
     std::string postfix;
+  };
+
+  struct BaseTypeData
+  {
+    BaseTypeData( TypeInfo const & typeInfo_, int line ) : typeInfo( typeInfo_ ), xmlLine( line ) {}
+
+    TypeInfo typeInfo;
+    int         xmlLine;
+  };
+
+  struct BitmaskData
+  {
+    BitmaskData( std::string const & r, std::string const & t, int line )
+      : requirements( r ), type( t ), xmlLine( line )
+    {}
+
+    std::string requirements;
+    std::string type;
+    std::string alias;
+    int         xmlLine;
+  };
+
+  struct NameData
+  {
+    std::string              name;
+    std::vector<std::string> arraySizes;
   };
 
   struct ParamData

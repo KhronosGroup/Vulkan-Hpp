@@ -1065,7 +1065,7 @@ private:
                                                               std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
                                                               bool mutualExclusiveLens ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn, std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
   std::string generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                  std::string const &                                          structName,

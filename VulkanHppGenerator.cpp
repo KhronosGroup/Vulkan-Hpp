@@ -1249,7 +1249,16 @@ void VulkanHppGenerator::appendEnumToString( std::string &                      
     for ( auto const & value : enumData.second.values )
     {
       std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( value.extension );
+      if ( !value.extension.empty() )
+      {
+        assert( value.protect.empty() );
+        std::tie( enter, leave ) = generateProtection( value.extension );
+      }
+      else if ( !value.protect.empty() )
+      {
+        enter = "#if defined( " + value.protect + " )\n";
+        leave = "#endif /*" + value.protect + "*/\n";
+      }
       if ( previousEnter != enter )
       {
         str += previousLeave + enter;

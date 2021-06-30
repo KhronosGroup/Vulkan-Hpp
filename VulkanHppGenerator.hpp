@@ -138,12 +138,17 @@ private:
 
   struct EnumValueData
   {
-    EnumValueData( int line, std::string const & name_, std::string const & extension_, bool singleBit_ )
-      : name( name_ ), extension( extension_ ), singleBit( singleBit_ ), xmlLine( line )
+    EnumValueData( int                 line,
+                   std::string const & name_,
+                   std::string const & protect_,
+                   std::string const & extension_,
+                   bool                singleBit_ )
+      : name( name_ ), extension( extension_ ), protect( protect_ ), singleBit( singleBit_ ), xmlLine( line )
     {}
 
     std::string name;
     std::string extension;
+    std::string protect;
     bool        singleBit;
     int         xmlLine;
   };
@@ -152,7 +157,11 @@ private:
   {
     EnumData( int line ) : xmlLine( line ) {}
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
-    void addEnumValue( int line, std::string const & valueName, bool bitpos, std::string const & extension );
+    void addEnumValue( int                 line,
+                       std::string const & valueName,
+                       std::string const & protect,
+                       bool                bitpos,
+                       std::string const & extension );
 
     std::string                          alias;    // alias for this enum
     std::map<std::string, EnumAliasData> aliases;  // aliases for the values

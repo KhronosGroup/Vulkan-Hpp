@@ -1023,7 +1023,16 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
   for ( auto const & value : enumData.second.values )
   {
     std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( value.extension );
+    if ( !value.extension.empty() )
+    {
+      assert( value.protect.empty() );
+      std::tie( enter, leave ) = generateProtection( value.extension );
+    }
+    else if ( !value.protect.empty() )
+    {
+      enter = "#if defined( " + value.protect + " )\n";
+      leave = "#endif /*" + value.protect + "*/\n";
+    }
     if ( previousEnter != enter )
     {
       enumList += previousLeave + enter;
@@ -9580,16 +9589,14 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
   aliases.insert( std::make_pair( name, EnumAliasData( aliasName, line ) ) );
 }
 
-void VulkanHppGenerator::EnumData::addEnumValue( int                 line,
-                                                 std::string const & valueName,
-                                                 bool                bitpos,
-                                                 std::string const & extension )
+void VulkanHppGenerator::EnumData::addEnumValue(
+  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension )
 {
   auto valueIt = std::find_if(
     values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
   if ( valueIt == values.end() )
   {
-    values.emplace_back( line, valueName, extension, bitpos );
+    values.emplace_back( line, valueName, protect, extension, bitpos );
   }
 }
 
@@ -12715,10 +12722,14 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
                                    std::map<std::string, EnumData>::iterator  enumIt )
 {
   int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "name", {} } }, { { "bitpos", {} }, { "comment", {} }, { "value", {} } } );
+  checkAttributes(
+    line,
+    attributes,
+    { { "name", {} } },
+    { { "bitpos", {} }, { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } }, { "value", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
-  std::string alias, bitpos, name, value;
+  std::string alias, bitpos, name, protect, value;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "bitpos" )
@@ -12728,6 +12739,10 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
     else if ( attribute.first == "name" )
     {
       name = attribute.second;
+    }
+    else if ( attribute.first == "protect" )
+    {
+      protect = attribute.second;
     }
     else if ( attribute.first == "value" )
     {
@@ -12741,7 +12756,7 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
         "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
   check( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
-  enumIt->second.addEnumValue( line, name, !bitpos.empty(), "" );
+  enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "" );
 }
 
 void VulkanHppGenerator::readEnumAlias( tinyxml2::XMLElement const *               element,
@@ -13685,7 +13700,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
            line,
            "exactly one out of bitpos = <" + bitpos + ">, offset = <" + offset + ">, and value = <" + value +
              "> are supposed to be empty" );
-    enumIt->second.addEnumValue( element->GetLineNum(), name, !bitpos.empty(), extension );
+    enumIt->second.addEnumValue( element->GetLineNum(), name, "", !bitpos.empty(), extension );
   }
   else if ( value.empty() )
   {

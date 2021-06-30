@@ -12310,7 +12310,8 @@ void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *             
   check( typeInfo.prefix.empty() || ( typeInfo.prefix == "typedef" ),
          line,
          "unexpected type prefix <" + typeInfo.prefix + ">" );
-  check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
+  check( typeInfo.postfix.empty() || (typeInfo.postfix == "*"), line,
+         "unexpected type postfix <" + typeInfo.postfix + ">" );
 
   if ( !typeInfo.type.empty() )
   {

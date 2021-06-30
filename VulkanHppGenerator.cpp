@@ -766,7 +766,7 @@ std::string VulkanHppGenerator::generateBaseTypes() const
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class
     if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) )
     {
-      str += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.type + ";\n";
+      str += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose() + ";\n";
     }
   }
   return str;
@@ -9600,9 +9600,9 @@ void VulkanHppGenerator::checkCorrectness()
   // baseType checks
   for ( auto const & baseType : m_baseTypes )
   {
-    check( m_types.find( baseType.second.type ) != m_types.end(),
+    check( m_types.find( baseType.second.typeInfo.type ) != m_types.end(),
            baseType.second.xmlLine,
-           "basetype type <" + baseType.second.type + "> not specified" );
+           "basetype type <" + baseType.second.typeInfo.type + "> not specified" );
   }
 
   // bitmask checks
@@ -12303,18 +12303,21 @@ void VulkanHppGenerator::readBaseType( tinyxml2::XMLElement const *             
   TypeInfo typeInfo;
   std::tie( nameData, typeInfo ) = readNameAndType( element );
 
+  if ( typeInfo.prefix == "typedef" )
+  {
+    // remove redundant typeInfo.prefix "typedef"
+    typeInfo.prefix.clear();
+  }
+
   check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
-  check( typeInfo.type.empty() || ( typeInfo.prefix == "typedef" ),
+  check( typeInfo.prefix.empty(), line, "unexpected type prefix <" + typeInfo.prefix + ">" );
+  check( typeInfo.postfix.empty() || ( typeInfo.postfix == "*" ),
          line,
-         "unexpected type prefix <" + typeInfo.prefix + ">" );
-  check( typeInfo.prefix.empty() || ( typeInfo.prefix == "typedef" ),
-         line,
-         "unexpected type prefix <" + typeInfo.prefix + ">" );
-  check( typeInfo.postfix.empty(), line, "unexpected type postfix <" + typeInfo.postfix + ">" );
+         "unexpected type postfix <" + typeInfo.postfix + ">" );
 
   if ( !typeInfo.type.empty() )
   {
-    check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeInfo.type, line ) ) ).second,
+    check( m_baseTypes.insert( std::make_pair( nameData.name, BaseTypeData( typeInfo, line ) ) ).second,
            line,
            "basetype <" + nameData.name + "> already specified" );
   }

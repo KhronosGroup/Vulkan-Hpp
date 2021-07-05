@@ -25,9 +25,6 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document );
 
-  void                  appendEnums( std::string & str ) const;
-  void                  appendHandles( std::string & str );
-  void                  appendHandlesCommandDefinitions( std::string & str ) const;
   void                  appendHashStructures( std::string & str ) const;
   void                  appendRAIICommands( std::string & str, std::set<std::string> const & specialFunctions ) const;
   void                  appendRAIIDispatchers( std::string & str ) const;
@@ -40,8 +37,11 @@ public:
   std::set<std::string> determineSpecialFunctions();
   std::string           generateBaseTypes() const;
   std::string           generateBitmasks() const;
+  std::string           generateCommandDefinitions() const;
   std::string           generateDispatchLoaderDynamic();  // uses vkGet*ProcAddress to get function pointers
   std::string           generateDispatchLoaderStatic();   // uses exported symbols from loader
+  std::string           generateEnums() const;
+  std::string           generateHandles();
   std::string const &   getTypesafeCheck() const;
   std::string const &   getVersion() const;
   std::string const &   getVulkanLicenseHeader() const;
@@ -81,7 +81,7 @@ private:
     BaseTypeData( TypeInfo const & typeInfo_, int line ) : typeInfo( typeInfo_ ), xmlLine( line ) {}
 
     TypeInfo typeInfo;
-    int         xmlLine;
+    int      xmlLine;
   };
 
   struct BitmaskData
@@ -1065,7 +1065,8 @@ private:
                                                               std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
                                                               bool mutualExclusiveLens ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn, std::string const & protect ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn,
+                                                          std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
   std::string generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                  std::string const &                                          structName,

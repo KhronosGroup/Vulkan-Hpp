@@ -1112,77 +1112,6 @@ void VulkanHppGenerator::appendEnum( std::string & str, std::pair<std::string, E
   }
 }
 
-void VulkanHppGenerator::appendEnums( std::string & str ) const
-{
-  // start with toHexString, which is used in all the to_string functions here!
-  str += R"(
-  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
-  {
-    std::stringstream stream;
-    stream << std::hex << value;
-    return stream.str();
-  }
-
-  //=============
-  //=== ENUMs ===
-  //=============
-)";
-
-  std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & type : feature.second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      if ( enumIt != m_enums.end() )
-      {
-        assert( listedEnums.find( type ) == listedEnums.end() );
-        listedEnums.insert( type );
-
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-    }
-  }
-
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    std::vector<std::map<std::string, EnumData>::const_iterator> enumIts;
-    for ( auto const & type : extIt.second->second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
-      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
-      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
-      {
-        enumIts.push_back( enumIt );
-      }
-    }
-
-    if ( !enumIts.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto enumIt : enumIts )
-      {
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-      str += leave;
-    }
-  }
-
-  str += R"(
-  template<ObjectType value>
-  struct cpp_type
-  {};
-)";
-}
-
 void VulkanHppGenerator::appendEnumInitializer( std::string &                      str,
                                                 TypeInfo const &                   type,
                                                 std::vector<std::string> const &   arraySizes,
@@ -1782,76 +1711,6 @@ ${usingAlias}${leave})";
 
   m_listingTypes.erase( handleData.first );
   m_listedTypes.insert( handleData.first );
-}
-
-void VulkanHppGenerator::appendHandles( std::string & str )
-{
-  // Note reordering structs or handles by features and extensions is not possible!
-  // first, forward declare all the structs!
-  for ( auto const & structure : m_structures )
-  {
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
-    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
-           ";\n" + leave;
-    for ( auto const & alias : structure.second.aliases )
-    {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
-    }
-  }
-  for ( auto const & handle : m_handles )
-  {
-    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
-    {
-      assert( m_listingTypes.empty() );
-      appendHandle( str, handle );
-      assert( m_listingTypes.empty() );
-    }
-  }
-}
-
-void VulkanHppGenerator::appendHandlesCommandDefinitions( std::string & str ) const
-{
-  str += R"(
-  //===========================
-  //=== COMMAND Definitions ===
-  //===========================
-)";
-
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      assert( listedCommands.find( command ) == listedCommands.end() );
-      listedCommands.insert( command );
-
-      auto commandIt = m_commands.find( command );
-      assert( commandIt != m_commands.end() );
-      str += generateCommandDefinitions( command, commandIt->second.handle );
-    }
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto const & command : extIt.second->second.commands )
-      {
-        if ( listedCommands.find( command ) == listedCommands.end() )
-        {
-          listedCommands.insert( command );
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-          str += generateCommandDefinitions( command, commandIt->second.handle );
-        }
-      }
-      str += leave;
-    }
-  }
 }
 
 void VulkanHppGenerator::appendHashStructures( std::string & str ) const
@@ -10407,6 +10266,51 @@ std::set<std::string> VulkanHppGenerator::determineSpecialFunctions()
   return specialFunctions;
 }
 
+std::string VulkanHppGenerator::generateCommandDefinitions() const
+{
+  std::string str = R"(
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+)";
+
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & command : feature.second.commands )
+    {
+      assert( listedCommands.find( command ) == listedCommands.end() );
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+      str += generateCommandDefinitions( command, commandIt->second.handle );
+    }
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    if ( !extIt.second->second.commands.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto const & command : extIt.second->second.commands )
+      {
+        if ( listedCommands.find( command ) == listedCommands.end() )
+        {
+          listedCommands.insert( command );
+          auto commandIt = m_commands.find( command );
+          assert( commandIt != m_commands.end() );
+          str += generateCommandDefinitions( command, commandIt->second.handle );
+        }
+      }
+      str += leave;
+    }
+  }
+  return str;
+}
+
 std::string VulkanHppGenerator::generateDispatchLoaderDynamic()
 {
   std::string str = R"(
@@ -10672,6 +10576,106 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic()
   return str;
 }
 
+std::string VulkanHppGenerator::generateEnums() const
+{
+  // start with toHexString, which is used in all the to_string functions here!
+  std::string str = R"(
+  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
+  {
+    std::stringstream stream;
+    stream << std::hex << value;
+    return stream.str();
+  }
+
+  //=============
+  //=== ENUMs ===
+  //=============
+)";
+
+  std::set<std::string> listedEnums;
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & type : feature.second.types )
+    {
+      auto enumIt = m_enums.find( type );
+      if ( enumIt != m_enums.end() )
+      {
+        assert( listedEnums.find( type ) == listedEnums.end() );
+        listedEnums.insert( type );
+
+        str += "\n";
+        appendEnum( str, *enumIt );
+        appendEnumToString( str, *enumIt );
+      }
+    }
+  }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    std::vector<std::map<std::string, EnumData>::const_iterator> enumIts;
+    for ( auto const & type : extIt.second->second.types )
+    {
+      auto enumIt = m_enums.find( type );
+      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
+      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
+      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
+      {
+        enumIts.push_back( enumIt );
+      }
+    }
+
+    if ( !enumIts.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto enumIt : enumIts )
+      {
+        str += "\n";
+        appendEnum( str, *enumIt );
+        appendEnumToString( str, *enumIt );
+      }
+      str += leave;
+    }
+  }
+
+  str += R"(
+  template<ObjectType value>
+  struct cpp_type
+  {};
+)";
+  return str;
+}
+
+std::string VulkanHppGenerator::generateHandles()
+{
+  // Note: reordering structs or handles by features and extensions is not possible!
+  // first, forward declare all the structs!
+  std::string str;
+  for ( auto const & structure : m_structures )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
+           ";\n" + leave;
+    for ( auto const & alias : structure.second.aliases )
+    {
+      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+    }
+  }
+  for ( auto const & handle : m_handles )
+  {
+    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
+    {
+      assert( m_listingTypes.empty() );
+      appendHandle( str, handle );
+      assert( m_listingTypes.empty() );
+    }
+  }
+  return str;
+}
+
 std::string const & VulkanHppGenerator::getTypesafeCheck() const
 {
   return m_typesafeCheck;
@@ -10730,7 +10734,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
                   "::" + valueName + " )";
       encounteredFlag = true;
       previousEnter   = enter;
-      previousLeave = leave;
+      previousLeave   = leave;
     }
     if ( !previousLeave.empty() )
     {
@@ -16643,7 +16647,7 @@ namespace VULKAN_HPP_NAMESPACE
 {
 )";
     str += typeTraits;
-    generator.appendEnums( str );
+    str += generator.generateEnums();
     generator.appendIndexTypeTraits( str );
     str += generator.generateBitmasks();
     str += R"(
@@ -16662,7 +16666,7 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
-    generator.appendHandles( str );
+    str += generator.generateHandles();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
 #endif
@@ -16696,7 +16700,7 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
-    generator.appendHandlesCommandDefinitions( str );
+    str += generator.generateCommandDefinitions();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
 #endif

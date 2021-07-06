@@ -381,6 +381,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct MemoryGetAndroidHardwareBufferInfoANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
   struct MemoryGetFdInfoKHR;
+  struct MemoryGetRemoteAddressInfoNV;
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   struct MemoryGetWin32HandleInfoKHR;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -474,6 +475,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceExternalImageFormatInfo;
   using PhysicalDeviceExternalImageFormatInfoKHR = PhysicalDeviceExternalImageFormatInfo;
   struct PhysicalDeviceExternalMemoryHostPropertiesEXT;
+  struct PhysicalDeviceExternalMemoryRDMAFeaturesNV;
   struct PhysicalDeviceExternalSemaphoreInfo;
   using PhysicalDeviceExternalSemaphoreInfoKHR = PhysicalDeviceExternalSemaphoreInfo;
   struct PhysicalDeviceFeatures;
@@ -635,6 +637,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceYcbcrImageArraysFeaturesEXT;
   struct PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR;
   struct PipelineCacheCreateInfo;
+  struct PipelineCacheHeaderVersionOne;
   struct PipelineColorBlendAdvancedStateCreateInfoEXT;
   struct PipelineColorBlendAttachmentState;
   struct PipelineColorBlendStateCreateInfo;
@@ -5776,18 +5779,6 @@ namespace VULKAN_HPP_NAMESPACE
       return m_renderPass < rhs.m_renderPass;
     }
 #endif
-
-    //=== VK_HUAWEI_subpass_shading ===
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result getSubpassShadingMaxWorkgroupSizeHUAWEI(
-      VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize,
-      Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
-      getSubpassShadingMaxWorkgroupSizeHUAWEI( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkRenderPass() const VULKAN_HPP_NOEXCEPT
     {
@@ -11098,6 +11089,34 @@ namespace VULKAN_HPP_NAMESPACE
                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_FUCHSIA*/
+
+    //=== VK_HUAWEI_subpass_shading ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getSubpassShadingMaxWorkgroupSizeHUAWEI(
+      VULKAN_HPP_NAMESPACE::RenderPass renderpass,
+      VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize,
+      Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
+                         getSubpassShadingMaxWorkgroupSizeHUAWEI( VULKAN_HPP_NAMESPACE::RenderPass renderpass,
+                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_NV_external_memory_rdma ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      getMemoryRemoteAddressNV( const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * getMemoryRemoteAddressInfo,
+                                VULKAN_HPP_NAMESPACE::RemoteAddressNV *                    pAddress,
+                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::RemoteAddressNV>::type
+      getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo,
+                                Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {

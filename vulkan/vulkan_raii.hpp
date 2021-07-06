@@ -1020,9 +1020,11 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetDeviceProcAddr( device, "vkGetDeviceProcAddr" ) );
         vkGetDeviceQueue    = PFN_vkGetDeviceQueue( vkGetDeviceProcAddr( device, "vkGetDeviceQueue" ) );
         vkGetDeviceQueue2   = PFN_vkGetDeviceQueue2( vkGetDeviceProcAddr( device, "vkGetDeviceQueue2" ) );
-        vkGetEventStatus    = PFN_vkGetEventStatus( vkGetDeviceProcAddr( device, "vkGetEventStatus" ) );
-        vkGetFenceFdKHR     = PFN_vkGetFenceFdKHR( vkGetDeviceProcAddr( device, "vkGetFenceFdKHR" ) );
-        vkGetFenceStatus    = PFN_vkGetFenceStatus( vkGetDeviceProcAddr( device, "vkGetFenceStatus" ) );
+        vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
+          vkGetDeviceProcAddr( device, "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
+        vkGetEventStatus = PFN_vkGetEventStatus( vkGetDeviceProcAddr( device, "vkGetEventStatus" ) );
+        vkGetFenceFdKHR  = PFN_vkGetFenceFdKHR( vkGetDeviceProcAddr( device, "vkGetFenceFdKHR" ) );
+        vkGetFenceStatus = PFN_vkGetFenceStatus( vkGetDeviceProcAddr( device, "vkGetFenceStatus" ) );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
         vkGetFenceWin32HandleKHR =
           PFN_vkGetFenceWin32HandleKHR( vkGetDeviceProcAddr( device, "vkGetFenceWin32HandleKHR" ) );
@@ -1062,6 +1064,8 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetMemoryFdPropertiesKHR( vkGetDeviceProcAddr( device, "vkGetMemoryFdPropertiesKHR" ) );
         vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT(
           vkGetDeviceProcAddr( device, "vkGetMemoryHostPointerPropertiesEXT" ) );
+        vkGetMemoryRemoteAddressNV =
+          PFN_vkGetMemoryRemoteAddressNV( vkGetDeviceProcAddr( device, "vkGetMemoryRemoteAddressNV" ) );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
         vkGetMemoryWin32HandleKHR =
           PFN_vkGetMemoryWin32HandleKHR( vkGetDeviceProcAddr( device, "vkGetMemoryWin32HandleKHR" ) );
@@ -1129,8 +1133,6 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetDeviceProcAddr( device, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
         vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetDeviceProcAddr( device, "vkGetShaderInfoAMD" ) );
-        vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
-          vkGetDeviceProcAddr( device, "vkGetSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
         vkGetSwapchainCounterEXT =
           PFN_vkGetSwapchainCounterEXT( vkGetDeviceProcAddr( device, "vkGetSwapchainCounterEXT" ) );
         vkGetSwapchainImagesKHR =
@@ -1543,16 +1545,17 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetDeviceGroupSurfacePresentModes2EXT vkGetDeviceGroupSurfacePresentModes2EXT = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
-      PFN_vkGetDeviceGroupSurfacePresentModesKHR   vkGetDeviceGroupSurfacePresentModesKHR   = 0;
-      PFN_vkGetDeviceMemoryCommitment              vkGetDeviceMemoryCommitment              = 0;
-      PFN_vkGetDeviceMemoryOpaqueCaptureAddress    vkGetDeviceMemoryOpaqueCaptureAddress    = 0;
-      PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR vkGetDeviceMemoryOpaqueCaptureAddressKHR = 0;
-      PFN_vkGetDeviceProcAddr                      vkGetDeviceProcAddr                      = 0;
-      PFN_vkGetDeviceQueue                         vkGetDeviceQueue                         = 0;
-      PFN_vkGetDeviceQueue2                        vkGetDeviceQueue2                        = 0;
-      PFN_vkGetEventStatus                         vkGetEventStatus                         = 0;
-      PFN_vkGetFenceFdKHR                          vkGetFenceFdKHR                          = 0;
-      PFN_vkGetFenceStatus                         vkGetFenceStatus                         = 0;
+      PFN_vkGetDeviceGroupSurfacePresentModesKHR          vkGetDeviceGroupSurfacePresentModesKHR          = 0;
+      PFN_vkGetDeviceMemoryCommitment                     vkGetDeviceMemoryCommitment                     = 0;
+      PFN_vkGetDeviceMemoryOpaqueCaptureAddress           vkGetDeviceMemoryOpaqueCaptureAddress           = 0;
+      PFN_vkGetDeviceMemoryOpaqueCaptureAddressKHR        vkGetDeviceMemoryOpaqueCaptureAddressKHR        = 0;
+      PFN_vkGetDeviceProcAddr                             vkGetDeviceProcAddr                             = 0;
+      PFN_vkGetDeviceQueue                                vkGetDeviceQueue                                = 0;
+      PFN_vkGetDeviceQueue2                               vkGetDeviceQueue2                               = 0;
+      PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = 0;
+      PFN_vkGetEventStatus                                vkGetEventStatus                                = 0;
+      PFN_vkGetFenceFdKHR                                 vkGetFenceFdKHR                                 = 0;
+      PFN_vkGetFenceStatus                                vkGetFenceStatus                                = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetFenceWin32HandleKHR vkGetFenceWin32HandleKHR = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -1573,6 +1576,7 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetMemoryFdKHR                    vkGetMemoryFdKHR                    = 0;
       PFN_vkGetMemoryFdPropertiesKHR          vkGetMemoryFdPropertiesKHR          = 0;
       PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesEXT = 0;
+      PFN_vkGetMemoryRemoteAddressNV          vkGetMemoryRemoteAddressNV          = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -1613,12 +1617,11 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkGetSemaphoreZirconHandleFUCHSIA vkGetSemaphoreZirconHandleFUCHSIA = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
-      PFN_vkGetShaderInfoAMD                        vkGetShaderInfoAMD                        = 0;
-      PFN_vkGetSubpassShadingMaxWorkgroupSizeHUAWEI vkGetSubpassShadingMaxWorkgroupSizeHUAWEI = 0;
-      PFN_vkGetSwapchainCounterEXT                  vkGetSwapchainCounterEXT                  = 0;
-      PFN_vkGetSwapchainImagesKHR                   vkGetSwapchainImagesKHR                   = 0;
-      PFN_vkGetSwapchainStatusKHR                   vkGetSwapchainStatusKHR                   = 0;
-      PFN_vkGetValidationCacheDataEXT               vkGetValidationCacheDataEXT               = 0;
+      PFN_vkGetShaderInfoAMD          vkGetShaderInfoAMD          = 0;
+      PFN_vkGetSwapchainCounterEXT    vkGetSwapchainCounterEXT    = 0;
+      PFN_vkGetSwapchainImagesKHR     vkGetSwapchainImagesKHR     = 0;
+      PFN_vkGetSwapchainStatusKHR     vkGetSwapchainStatusKHR     = 0;
+      PFN_vkGetValidationCacheDataEXT vkGetValidationCacheDataEXT = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkGetVideoSessionMemoryRequirementsKHR vkGetVideoSessionMemoryRequirementsKHR = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -2791,6 +2794,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD zx_handle_t
         getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+      //=== VK_NV_external_memory_rdma ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::RemoteAddressNV
+        getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                      m_device;
@@ -7618,7 +7626,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_HUAWEI_subpass_shading ===
 
       VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
-                           getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
+                           getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI() const;
 
     private:
       VULKAN_HPP_NAMESPACE::RenderPass                                          m_renderPass;
@@ -15972,21 +15980,23 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_HUAWEI_subpass_shading ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
-                                           RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI() const
+                                           RenderPass::getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI() const
     {
       VULKAN_HPP_ASSERT(
-        getDispatcher()->vkGetSubpassShadingMaxWorkgroupSizeHUAWEI &&
-        "Function <vkGetSubpassShadingMaxWorkgroupSizeHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
+        getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI &&
+        "Function <vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
 
       VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
       VULKAN_HPP_NAMESPACE::Result   result =
-        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
-          static_cast<VkRenderPass>( m_renderPass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkRenderPass>( m_renderPass ),
+          reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
       if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
            ( result != VULKAN_HPP_NAMESPACE::Result::eIncomplete ) )
       {
-        throwResultException( result,
-                              VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI" );
+        throwResultException(
+          result, VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" );
       }
       return std::make_pair( result, maxWorkgroupSize );
     }
@@ -15997,6 +16007,28 @@ namespace VULKAN_HPP_NAMESPACE
                          "Function <vkCmdSubpassShadingHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
 
       getDispatcher()->vkCmdSubpassShadingHUAWEI( static_cast<VkCommandBuffer>( m_commandBuffer ) );
+    }
+
+    //=== VK_NV_external_memory_rdma ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::RemoteAddressNV
+      Device::getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetMemoryRemoteAddressNV &&
+        "Function <vkGetMemoryRemoteAddressNV> needs extension <VK_NV_external_memory_rdma> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::RemoteAddressNV address;
+      VULKAN_HPP_NAMESPACE::Result          result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetMemoryRemoteAddressNV(
+          static_cast<VkDevice>( m_device ),
+          reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( &getMemoryRemoteAddressInfo ),
+          reinterpret_cast<VkRemoteAddressNV *>( &address ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryRemoteAddressNV" );
+      }
+      return address;
     }
 
     //=== VK_EXT_extended_dynamic_state2 ===

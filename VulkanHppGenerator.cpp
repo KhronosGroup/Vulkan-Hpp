@@ -9049,10 +9049,12 @@ void VulkanHppGenerator::appendStructure( std::string &                         
   if ( !structure.second.returnedOnly )
   {
     // only structs that are not returnedOnly get setters!
+    constructorAndSetters += "\n#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
     for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
       appendStructSetter( constructorAndSetters, stripPrefix( structure.first, "Vk" ), structure.second.members, i );
     }
+    constructorAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/\n";
   }
 
   // operator==() and operator!=()
@@ -9286,8 +9288,8 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
   str += "  union " + unionName +
          "\n"
          "  {\n"
-         "    " +
-         unionName + "( VULKAN_HPP_NAMESPACE::" + unionName +
+         "#if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )\n"
+         "    " + unionName + "( VULKAN_HPP_NAMESPACE::" + unionName +
          " const & rhs ) VULKAN_HPP_NOEXCEPT\n"
          "    {\n"
          "      memcpy( static_cast<void*>( this ), &rhs, sizeof( VULKAN_HPP_NAMESPACE::" +
@@ -9329,12 +9331,15 @@ void VulkanHppGenerator::appendUnion( std::string & str, std::pair<std::string, 
                              { "unionName", stripPrefix( structure.first, "Vk" ) } } );
     firstMember = false;
   }
+  str += "#endif /*VULKAN_HPP_NO_UNION_CONSTRUCTORS*/\n";
 
+  str += "\n#if !defined( VULKAN_HPP_NO_UNION_SETTERS )";
   // one setter per union element
   for ( size_t i = 0; i < structure.second.members.size(); i++ )
   {
     appendStructSetter( str, stripPrefix( structure.first, "Vk" ), structure.second.members, i );
   }
+  str += "#endif /*VULKAN_HPP_NO_UNION_SETTERS*/\n";
 
   // assignment operator
   static const std::string operatorsTemplate = R"(
@@ -16281,6 +16286,24 @@ int main( int argc, char ** argv )
 #else
 #  include <memory>
 #  include <vector>
+#endif
+
+#if defined( VULKAN_HPP_NO_CONSTRUCTORS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+#    define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
+#  endif
+#  if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )
+#    define VULKAN_HPP_NO_UNION_CONSTRUCTORS
+#  endif
+#endif
+
+#if defined( VULKAN_HPP_NO_SETTERS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+#    define VULKAN_HPP_NO_STRUCT_SETTERS
+#  endif
+#  if !defined( VULKAN_HPP_NO_UNION_SETTERS )
+#    define VULKAN_HPP_NO_UNION_SETTERS
+#  endif
 #endif
 
 #if !defined( VULKAN_HPP_ASSERT )

@@ -818,6 +818,8 @@ namespace VULKAN_HPP_NAMESPACE
     eSubpassShadingPipelineCreateInfoHUAWEI       = VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
     ePhysicalDeviceSubpassShadingFeaturesHUAWEI   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
     ePhysicalDeviceSubpassShadingPropertiesHUAWEI = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
+    eMemoryGetRemoteAddressInfoNV                 = VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV,
+    ePhysicalDeviceExternalMemoryRdmaFeaturesNV   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV,
     ePhysicalDeviceExtendedDynamicState2FeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_2_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -1711,6 +1713,9 @@ namespace VULKAN_HPP_NAMESPACE
         return "PhysicalDeviceSubpassShadingFeaturesHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingPropertiesHUAWEI:
         return "PhysicalDeviceSubpassShadingPropertiesHUAWEI";
+      case StructureType::eMemoryGetRemoteAddressInfoNV: return "MemoryGetRemoteAddressInfoNV";
+      case StructureType::ePhysicalDeviceExternalMemoryRdmaFeaturesNV:
+        return "PhysicalDeviceExternalMemoryRdmaFeaturesNV";
       case StructureType::ePhysicalDeviceExtendedDynamicState2FeaturesEXT:
         return "PhysicalDeviceExtendedDynamicState2FeaturesEXT";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -2695,7 +2700,8 @@ namespace VULKAN_HPP_NAMESPACE
     eLazilyAllocated   = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT,
     eProtected         = VK_MEMORY_PROPERTY_PROTECTED_BIT,
     eDeviceCoherentAMD = VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD,
-    eDeviceUncachedAMD = VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD
+    eDeviceUncachedAMD = VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD,
+    eRdmaCapableNV     = VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV
   };
 
   VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlagBits value )
@@ -2710,6 +2716,7 @@ namespace VULKAN_HPP_NAMESPACE
       case MemoryPropertyFlagBits::eProtected: return "Protected";
       case MemoryPropertyFlagBits::eDeviceCoherentAMD: return "DeviceCoherentAMD";
       case MemoryPropertyFlagBits::eDeviceUncachedAMD: return "DeviceUncachedAMD";
+      case MemoryPropertyFlagBits::eRdmaCapableNV: return "RdmaCapableNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4869,8 +4876,9 @@ namespace VULKAN_HPP_NAMESPACE
     eHostAllocationEXT          = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
     eHostMappedForeignMemoryEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT,
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-    eZirconVmoFUCHSIA = VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA
+    eZirconVmoFUCHSIA = VK_EXTERNAL_MEMORY_HANDLE_TYPE_ZIRCON_VMO_BIT_FUCHSIA,
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+    eRdmaAddressNV = VK_EXTERNAL_MEMORY_HANDLE_TYPE_RDMA_ADDRESS_BIT_NV
   };
   using ExternalMemoryHandleTypeFlagBitsKHR = ExternalMemoryHandleTypeFlagBits;
 
@@ -4894,6 +4902,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       case ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA: return "ZirconVmoFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+      case ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV: return "RdmaAddressNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8272,7 +8281,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( MemoryPropertyFlagBits::eHostCoherent ) | VkFlags( MemoryPropertyFlagBits::eHostCached ) |
                  VkFlags( MemoryPropertyFlagBits::eLazilyAllocated ) | VkFlags( MemoryPropertyFlagBits::eProtected ) |
                  VkFlags( MemoryPropertyFlagBits::eDeviceCoherentAMD ) |
-                 VkFlags( MemoryPropertyFlagBits::eDeviceUncachedAMD )
+                 VkFlags( MemoryPropertyFlagBits::eDeviceUncachedAMD ) |
+                 VkFlags( MemoryPropertyFlagBits::eRdmaCapableNV )
     };
   };
 
@@ -8322,6 +8332,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceCoherentAMD | ";
     if ( value & MemoryPropertyFlagBits::eDeviceUncachedAMD )
       result += "DeviceUncachedAMD | ";
+    if ( value & MemoryPropertyFlagBits::eRdmaCapableNV )
+      result += "RdmaCapableNV | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10722,6 +10734,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
                  | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
 
@@ -10785,6 +10798,8 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
       result += "ZirconVmoFUCHSIA | ";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+    if ( value & ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
+      result += "RdmaAddressNV | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 

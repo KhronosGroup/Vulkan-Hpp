@@ -17966,24 +17966,27 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_HUAWEI_subpass_shading ===
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI(
-    VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::getSubpassShadingMaxWorkgroupSizeHUAWEI( VULKAN_HPP_NAMESPACE::RenderPass renderpass,
+                                                     VULKAN_HPP_NAMESPACE::Extent2D * pMaxWorkgroupSize,
+                                                     Dispatch const &                 d ) const VULKAN_HPP_NOEXCEPT
   {
-    return static_cast<Result>( d.vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
-      m_renderPass, reinterpret_cast<VkExtent2D *>( pMaxWorkgroupSize ) ) );
+    return static_cast<Result>( d.vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
+      m_device, static_cast<VkRenderPass>( renderpass ), reinterpret_cast<VkExtent2D *>( pMaxWorkgroupSize ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
-                                         RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI( Dispatch const & d ) const
+    Device::getSubpassShadingMaxWorkgroupSizeHUAWEI( VULKAN_HPP_NAMESPACE::RenderPass renderpass,
+                                                     Dispatch const &                 d ) const
   {
     VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
-    Result                         result = static_cast<Result>( d.vkGetSubpassShadingMaxWorkgroupSizeHUAWEI(
-      m_renderPass, reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
+    Result                         result = static_cast<Result>( d.vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
+      m_device, static_cast<VkRenderPass>( renderpass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
     return createResultValue( result,
                               maxWorkgroupSize,
-                              VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI",
+                              VULKAN_HPP_NAMESPACE_STRING "::Device::getSubpassShadingMaxWorkgroupSizeHUAWEI",
                               { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17993,6 +17996,35 @@ namespace VULKAN_HPP_NAMESPACE
   {
     d.vkCmdSubpassShadingHUAWEI( m_commandBuffer );
   }
+
+  //=== VK_NV_external_memory_rdma ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getMemoryRemoteAddressNV(
+    const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * getMemoryRemoteAddressInfo,
+    VULKAN_HPP_NAMESPACE::RemoteAddressNV *                    pAddress,
+    Dispatch const &                                           d ) const VULKAN_HPP_NOEXCEPT
+  {
+    return static_cast<Result>( d.vkGetMemoryRemoteAddressNV(
+      m_device,
+      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( getMemoryRemoteAddressInfo ),
+      reinterpret_cast<VkRemoteAddressNV *>( pAddress ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::RemoteAddressNV>::type
+    Device::getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo,
+                                      Dispatch const &                     d ) const
+  {
+    VULKAN_HPP_NAMESPACE::RemoteAddressNV address;
+    Result                                result = static_cast<Result>( d.vkGetMemoryRemoteAddressNV(
+      m_device,
+      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( &getMemoryRemoteAddressInfo ),
+      reinterpret_cast<VkRemoteAddressNV *>( &address ) ) );
+    return createResultValue( result, address, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryRemoteAddressNV" );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   //=== VK_EXT_extended_dynamic_state2 ===
 

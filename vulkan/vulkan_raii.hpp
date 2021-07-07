@@ -7626,7 +7626,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_HUAWEI_subpass_shading ===
 
       VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
-                           getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI() const;
+                           getSubpassShadingMaxWorkgroupSizeHUAWEI() const;
 
     private:
       VULKAN_HPP_NAMESPACE::RenderPass                                          m_renderPass;
@@ -15980,7 +15980,7 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_HUAWEI_subpass_shading ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, VULKAN_HPP_NAMESPACE::Extent2D>
-                                           RenderPass::getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI() const
+                                           RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI() const
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI &&
@@ -15995,8 +15995,8 @@ namespace VULKAN_HPP_NAMESPACE
       if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
            ( result != VULKAN_HPP_NAMESPACE::Result::eIncomplete ) )
       {
-        throwResultException(
-          result, VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" );
+        throwResultException( result,
+                              VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI" );
       }
       return std::make_pair( result, maxWorkgroupSize );
     }

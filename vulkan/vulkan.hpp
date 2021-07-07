@@ -53,6 +53,24 @@
 #  include <vector>
 #endif
 
+#if defined( VULKAN_HPP_NO_CONSTRUCTORS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+#    define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
+#  endif
+#  if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )
+#    define VULKAN_HPP_NO_UNION_CONSTRUCTORS
+#  endif
+#endif
+
+#if defined( VULKAN_HPP_NO_SETTERS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+#    define VULKAN_HPP_NO_STRUCT_SETTERS
+#  endif
+#  if !defined( VULKAN_HPP_NO_UNION_SETTERS )
+#    define VULKAN_HPP_NO_UNION_SETTERS
+#  endif
+#endif
+
 #if !defined( VULKAN_HPP_ASSERT )
 #  include <cassert>
 #  define VULKAN_HPP_ASSERT assert

@@ -3580,12 +3580,18 @@ std::string VulkanHppGenerator::constructCommandResultGetValue( std::string cons
   std::string returnBaseType = commandData.params[nonConstPointerIndex].type.compose();
   assert( endsWith( returnBaseType, "*" ) );
   returnBaseType.pop_back();
+  std::string typenameT;
+  if ( returnBaseType == "void" )
+  {
+    returnBaseType = "T";
+    typenameT      = "typename T, ";
+  }
   std::string returnType = constructReturnType( commandData, returnBaseType );
 
   if ( definition )
   {
     std::string const functionTemplate =
-      R"(  template <typename Dispatch>
+      R"(  template <${typenameT}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
     ${returnBaseType} ${returnValueName};
@@ -3609,12 +3615,13 @@ std::string VulkanHppGenerator::constructCommandResultGetValue( std::string cons
         { "nodiscard", nodiscard },
         { "returnType", returnType },
         { "successCodeList", constructSuccessCodeList( commandData.successCodes ) },
+        { "typenameT", typenameT },
         { "vkCommand", name } } );
   }
   else
   {
     std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+      R"(    template <${typenameT}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ${nodiscard}${returnType} ${commandName}( ${argumentList} )${const};)";
 
     return replaceWithMap( functionTemplate,
@@ -3622,7 +3629,8 @@ std::string VulkanHppGenerator::constructCommandResultGetValue( std::string cons
                              { "commandName", commandName },
                              { "const", commandData.handle.empty() ? "" : " const" },
                              { "nodiscard", nodiscard },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "typenameT", typenameT } } );
   }
 }
 
@@ -7150,12 +7158,18 @@ std::string VulkanHppGenerator::constructRAIIHandleMemberFunctionResultSingleGet
     constructArgumentListEnhanced( commandIt->second.params, skippedParameters, {}, definition, false, false, false );
   std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
   std::string returnType = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
+  std::string typenameT;
+  if ( returnType == "void" )
+  {
+    returnType = "T";
+    typenameT  = "template <typename T> ";
+  }
 
   if ( definition )
   {
     std::string const definitionTemplate =
       R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
+  ${typenameT}VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const
   {${functionPointerCheck}
     ${returnType} ${valueName};
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
@@ -7184,21 +7198,21 @@ std::string VulkanHppGenerator::constructRAIIHandleMemberFunctionResultSingleGet
         { "functionPointerCheck", constructFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
         { "valueName", valueName },
         { "returnType", returnType },
+        { "typenameT", typenameT },
         { "vkCommand", commandIt->first } } );
   }
   else
   {
     std::string const declarationTemplate =
       R"(
-  VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const;
+  ${typenameT}VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const;
 )";
 
     return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
+                           { { "argumentList", argumentList },
                              { "commandName", commandName },
                              { "returnType", returnType },
-                           } );
+                             { "typenameT", typenameT } } );
   }
 }
 

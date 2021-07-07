@@ -930,6 +930,10 @@ private:
                                size_t              initialSkipCount,
                                bool                definition ) const;
   std::string generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
+  std::string generateCommandName( std::string const &            vulkanCommandName,
+                                   std::vector<ParamData> const & params,
+                                   size_t                         initialSkipCount,
+                                   std::set<std::string> const &  tags ) const;
   std::string generateCommandResult( std::string const & name,
                                      CommandData const & commandData,
                                      size_t              initialSkipCount,

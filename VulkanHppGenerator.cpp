@@ -365,61 +365,36 @@ ${deviceCommandAssignments}
 
 std::string VulkanHppGenerator::generateDispatchLoaderStatic()
 {
-  std::string str = R"(
+  const std::string dispatchLoaderStaticTemplate = R"(
 #if !defined( VK_NO_PROTOTYPES )
   class DispatchLoaderStatic
   {
-  public:)";
+  public:
+${commands}
+  };
+#endif
+)";
 
+  std::string           commands;
   std::set<std::string> listedCommands;
   for ( auto const & feature : m_features )
   {
-    str += "\n    //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      assert( listedCommands.find( command ) == listedCommands.end() );
-      listedCommands.insert( command );
-
-      auto commandIt = m_commands.find( command );
-      assert( commandIt != m_commands.end() );
-      str += "\n";
-      appendStaticCommand( str, *commandIt );
-    }
+    std::string header = "\n    //=== " + feature.first + " ===\n";
+    commands += generateDispatchLoaderStaticCommands( feature.second.commands, listedCommands, header, "" );
   }
 
   for ( auto const & extIt : m_extensionsByNumber )
   {
     if ( !extIt.second->second.commands.empty() )
     {
-      std::string firstCommandName = *extIt.second->second.commands.begin();
-      auto        commandIt        = m_commands.find( firstCommandName );
-      assert( commandIt != m_commands.end() );
-      std::string referencedIn = commandIt->second.referencedIn;
-
       std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( referencedIn, std::string() );
-      str += "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
-      for ( auto const & commandName : extIt.second->second.commands )
-      {
-        // some commands are listed for multiple extensions !
-        if ( listedCommands.find( commandName ) == listedCommands.end() )
-        {
-          listedCommands.insert( commandName );
-
-          commandIt = m_commands.find( commandName );
-          assert( commandIt != m_commands.end() );
-          assert( commandIt->second.referencedIn == referencedIn );
-
-          str += "\n";
-          appendStaticCommand( str, *commandIt );
-        }
-      }
-      str += leave;
+      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+      std::string header       = "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
+      commands += generateDispatchLoaderStaticCommands( extIt.second->second.commands, listedCommands, header, leave );
     }
   }
 
-  str += "  };\n#endif\n";
-  return str;
+  return replaceWithMap( dispatchLoaderStaticTemplate, { { "commands", commands } } );
 }
 
 std::string VulkanHppGenerator::generateEnums() const
@@ -2692,35 +2667,6 @@ ${memberFunctionDeclarations}
   str += replaceWithMap(
     contextTemplate,
     { { "memberFunctionDeclarations", constructRAIIHandleMemberFunctionDeclarations( handle, specialFunctions ) } } );
-}
-
-std::pair<std::string, std::string>
-  VulkanHppGenerator::appendStaticCommand( std::string & str, std::pair<std::string, CommandData> const & command )
-{
-  std::string parameterList, parameters;
-  bool        firstParam = true;
-  for ( auto param : command.second.params )
-  {
-    if ( !firstParam )
-    {
-      parameterList += ", ";
-      parameters += ", ";
-    }
-    parameterList += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + param.type.type +
-                     param.type.postfix + " " + param.name + generateCArraySizes( param.arraySizes );
-    parameters += param.name;
-    firstParam = false;
-  }
-  std::string commandName = stripPrefix( command.first, "vk" );
-
-  str += "    " + command.second.returnType + " vk" + commandName + "( " + parameterList +
-         " ) const VULKAN_HPP_NOEXCEPT\n"
-         "    {\n"
-         "      return ::vk" +
-         commandName + "( " + parameters +
-         " );\n"
-         "    }\n";
-  return std::make_pair( parameterList, parameters );
 }
 
 void VulkanHppGenerator::appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure )
@@ -11777,6 +11723,53 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
     str += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
   }
   return str;
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
+                                                                      std::set<std::string> &          listedCommands,
+                                                                      std::string const &              header,
+                                                                      std::string const &              leave ) const
+{
+  std::string str;
+  for ( auto const & command : commands )
+  {
+    // some commands are listed for multiple extensions !
+    if ( listedCommands.find( command ) == listedCommands.end() )
+    {
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+
+      str += "\n";
+      std::string parameterList, parameters;
+      assert( !commandIt->second.params.empty() );
+      for ( auto param : commandIt->second.params )
+      {
+        parameterList += param.type.prefix + ( param.type.prefix.empty() ? "" : " " ) + param.type.type +
+                         param.type.postfix + " " + param.name + generateCArraySizes( param.arraySizes ) + ", ";
+        parameters += param.name + ", ";
+      }
+      assert( endsWith( parameterList, ", " ) && endsWith( parameters, ", " ) );
+      parameterList.resize( parameterList.size() - 2 );
+      parameters.resize( parameters.size() - 2 );
+
+      const std::string commandTemplate = R"(
+    ${returnType} ${commandName}( ${parameterList} ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::${commandName}( ${parameters} );
+    }
+)";
+
+      str += replaceWithMap( commandTemplate,
+                             { { "commandName", commandIt->first },
+                               { "parameterList", parameterList },
+                               { "parameters", parameters },
+                               { "returnType", commandIt->second.returnType } } );
+    }
+  }
+  assert( !str.empty() );
+  return header + str + leave;
 }
 
 std::string VulkanHppGenerator::generateFunctionCall( std::string const &              name,

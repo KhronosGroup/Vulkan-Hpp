@@ -381,8 +381,6 @@ private:
   void        appendRAIIHandleContext( std::string &                              str,
                                        std::pair<std::string, HandleData> const & handle,
                                        std::set<std::string> const &              specialFunctions ) const;
-  std::pair<std::string, std::string> appendStaticCommand( std::string &                               str,
-                                                           std::pair<std::string, CommandData> const & command );
   void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
   void appendStructAssignmentOperators( std::string &                                 str,
                                         std::pair<std::string, StructureData> const & structure,
@@ -1061,6 +1059,10 @@ private:
   std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
                                                               CommandData const & commandData,
                                                               std::string const & firstArg ) const;
+  std::string generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
+                                                    std::set<std::string> &          listedCommands,
+                                                    std::string const &              header,
+                                                    std::string const &              leave ) const;
   std::string generateFunctionCall( std::string const &              name,
                                     CommandData const &              commandData,
                                     size_t                           returnParamIndex,

@@ -75,6 +75,933 @@ const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
 
+//
+// VulkanHppGenerator public interface
+//
+
+VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
+{
+  // insert the default "handle" without class (for createInstance, and such)
+  m_handles.insert( std::make_pair( "", HandleData( {}, "", 0 ) ) );
+
+  // read the document and check its correctness
+  int                                       line     = document.GetLineNum();
+  std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
+  checkElements( line, elements, { { "registry", true } } );
+  check( elements.size() == 1,
+         line,
+         "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
+  readRegistry( elements[0] );
+  checkCorrectness();
+
+  // some "FlagBits" enums are not specified, but needed for our "Flags" handling -> add them here
+  for ( auto & feature : m_features )
+  {
+    addMissingFlagBits( feature.second.types, feature.first );
+  }
+  for ( auto & ext : m_extensions )
+  {
+    addMissingFlagBits( ext.second.types, ext.first );
+  }
+
+  // determine the extensionsByNumber map
+  for ( auto extensionIt = m_extensions.begin(); extensionIt != m_extensions.end(); ++extensionIt )
+  {
+    int number = atoi( extensionIt->second.number.c_str() );
+    assert( m_extensionsByNumber.find( number ) == m_extensionsByNumber.end() );
+    m_extensionsByNumber[number] = extensionIt;
+  }
+}
+
+std::string VulkanHppGenerator::generateBaseTypes() const
+{
+  assert( !m_baseTypes.empty() );
+  std::string str = R"(
+  //==================
+  //=== BASE TYPEs ===
+  //==================
+
+)";
+
+  for ( auto const & baseType : m_baseTypes )
+  {
+    // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class
+    if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) )
+    {
+      str += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose() + ";\n";
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateBitmasks() const
+{
+  std::string str = R"(
+  //================
+  //=== BITMASKs ===
+  //================
+)";
+
+  std::set<std::string> listedBitmasks;
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & type : feature.second.types )
+    {
+      auto bitmaskIt = m_bitmasks.find( type );
+      if ( bitmaskIt != m_bitmasks.end() )
+      {
+        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
+        listedBitmasks.insert( type );
+        str += generateBitmask( bitmaskIt );
+      }
+    }
+  }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    std::vector<std::map<std::string, BitmaskData>::const_iterator> bitmaskIts;
+    for ( auto const & type : extIt.second->second.types )
+    {
+      auto bitmaskIt = m_bitmasks.find( type );
+      if ( bitmaskIt != m_bitmasks.end() )
+      {
+        bitmaskIts.push_back( bitmaskIt );
+      }
+    }
+
+    if ( !bitmaskIts.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) =
+        generateProtection( bitmaskIts.front()->first, !bitmaskIts.front()->second.alias.empty() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto bitmaskIt : bitmaskIts )
+      {
+        assert( listedBitmasks.find( bitmaskIt->first ) == listedBitmasks.end() );
+        listedBitmasks.insert( bitmaskIt->first );
+        str += generateBitmask( bitmaskIt );
+      }
+      str += leave;
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateCommandDefinitions() const
+{
+  std::string str = R"(
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+)";
+
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & command : feature.second.commands )
+    {
+      assert( listedCommands.find( command ) == listedCommands.end() );
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+      str += generateCommandDefinitions( command, commandIt->second.handle );
+    }
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    if ( !extIt.second->second.commands.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto const & command : extIt.second->second.commands )
+      {
+        if ( listedCommands.find( command ) == listedCommands.end() )
+        {
+          listedCommands.insert( command );
+          auto commandIt = m_commands.find( command );
+          assert( commandIt != m_commands.end() );
+          str += generateCommandDefinitions( command, commandIt->second.handle );
+        }
+      }
+      str += leave;
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderDynamic()
+{
+  const std::string dispatchLoaderDynamicTemplate = R"(
+  class DispatchLoaderDynamic
+  {
+  public:
+    using PFN_dummy = void ( * )();
+
+${commandMembers}
+
+  public:
+    DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT = default;
+    DispatchLoaderDynamic( DispatchLoaderDynamic const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+#if !defined( VK_NO_PROTOTYPES )
+    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
+    template <typename DynamicLoader>
+    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device, DynamicLoader const & dl) VULKAN_HPP_NOEXCEPT
+    {
+      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
+      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
+    }
+
+    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
+    template <typename DynamicLoader
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+      = VULKAN_HPP_NAMESPACE::DynamicLoader
+#endif
+    >
+    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device) VULKAN_HPP_NOEXCEPT
+    {
+      static DynamicLoader dl;
+      init(instance, device, dl);
+    }
+#endif // !defined( VK_NO_PROTOTYPES )
+
+    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
+    {
+      init(getInstanceProcAddr);
+    }
+
+    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(getInstanceProcAddr);
+
+      vkGetInstanceProcAddr = getInstanceProcAddr;
+
+${initialCommandAssignments}
+    }
+
+    // This interface does not require a linked vulkan library.
+    DispatchLoaderDynamic( VkInstance                instance,
+                           PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+                           VkDevice                  device            = {},
+                           PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
+    {
+      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
+    }
+
+    // This interface does not require a linked vulkan library.
+    void init( VkInstance                instance,
+               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
+               VkDevice                  device              = {},
+               PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
+      vkGetInstanceProcAddr = getInstanceProcAddr;
+      init( VULKAN_HPP_NAMESPACE::Instance(instance) );
+      if (device) {
+        init( VULKAN_HPP_NAMESPACE::Device(device) );
+      }
+    }
+
+    void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
+    {
+      VkInstance instance = static_cast<VkInstance>(instanceCpp);
+
+${instanceCommandAssignments}
+    }
+
+    void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
+    {
+      VkDevice device = static_cast<VkDevice>(deviceCpp);
+
+${deviceCommandAssignments}
+    }
+  };
+)";
+
+  std::string           commandMembers, deviceCommandAssignments, initialCommandAssignments, instanceCommandAssignments;
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    std::string header = "\n  //=== " + feature.first + " ===\n";
+    appendDispatchLoaderDynamicCommands( feature.second.commands,
+                                         listedCommands,
+                                         header,
+                                         "",
+                                         commandMembers,
+                                         initialCommandAssignments,
+                                         instanceCommandAssignments,
+                                         deviceCommandAssignments );
+  }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    if ( !extIt.second->second.commands.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+      std::string header       = "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      appendDispatchLoaderDynamicCommands( extIt.second->second.commands,
+                                           listedCommands,
+                                           header,
+                                           leave,
+                                           commandMembers,
+                                           initialCommandAssignments,
+                                           instanceCommandAssignments,
+                                           deviceCommandAssignments );
+    }
+  }
+
+  return replaceWithMap( dispatchLoaderDynamicTemplate,
+                         { { "commandMembers", commandMembers },
+                           { "deviceCommandAssignments", deviceCommandAssignments },
+                           { "initialCommandAssignments", initialCommandAssignments },
+                           { "instanceCommandAssignments", instanceCommandAssignments } } );
+}
+
+std::string VulkanHppGenerator::generateDispatchLoaderStatic()
+{
+  std::string str = R"(
+#if !defined( VK_NO_PROTOTYPES )
+  class DispatchLoaderStatic
+  {
+  public:)";
+
+  std::set<std::string> listedCommands;
+  for ( auto const & feature : m_features )
+  {
+    str += "\n    //=== " + feature.first + " ===\n";
+    for ( auto const & command : feature.second.commands )
+    {
+      assert( listedCommands.find( command ) == listedCommands.end() );
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+      str += "\n";
+      appendStaticCommand( str, *commandIt );
+    }
+  }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    if ( !extIt.second->second.commands.empty() )
+    {
+      std::string firstCommandName = *extIt.second->second.commands.begin();
+      auto        commandIt        = m_commands.find( firstCommandName );
+      assert( commandIt != m_commands.end() );
+      std::string referencedIn = commandIt->second.referencedIn;
+
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( referencedIn, std::string() );
+      str += "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
+      for ( auto const & commandName : extIt.second->second.commands )
+      {
+        // some commands are listed for multiple extensions !
+        if ( listedCommands.find( commandName ) == listedCommands.end() )
+        {
+          listedCommands.insert( commandName );
+
+          commandIt = m_commands.find( commandName );
+          assert( commandIt != m_commands.end() );
+          assert( commandIt->second.referencedIn == referencedIn );
+
+          str += "\n";
+          appendStaticCommand( str, *commandIt );
+        }
+      }
+      str += leave;
+    }
+  }
+
+  str += "  };\n#endif\n";
+  return str;
+}
+
+std::string VulkanHppGenerator::generateEnums() const
+{
+  // start with toHexString, which is used in all the to_string functions here!
+  std::string str = R"(
+  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
+  {
+    std::stringstream stream;
+    stream << std::hex << value;
+    return stream.str();
+  }
+
+  //=============
+  //=== ENUMs ===
+  //=============
+)";
+
+  std::set<std::string> listedEnums;
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & type : feature.second.types )
+    {
+      auto enumIt = m_enums.find( type );
+      if ( enumIt != m_enums.end() )
+      {
+        assert( listedEnums.find( type ) == listedEnums.end() );
+        listedEnums.insert( type );
+
+        str += "\n";
+        appendEnum( str, *enumIt );
+        appendEnumToString( str, *enumIt );
+      }
+    }
+  }
+
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    std::vector<std::map<std::string, EnumData>::const_iterator> enumIts;
+    for ( auto const & type : extIt.second->second.types )
+    {
+      auto enumIt = m_enums.find( type );
+      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
+      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
+      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
+      {
+        enumIts.push_back( enumIt );
+      }
+    }
+
+    if ( !enumIts.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto enumIt : enumIts )
+      {
+        str += "\n";
+        appendEnum( str, *enumIt );
+        appendEnumToString( str, *enumIt );
+      }
+      str += leave;
+    }
+  }
+
+  str += R"(
+  template<ObjectType value>
+  struct cpp_type
+  {};
+)";
+  return str;
+}
+
+std::string VulkanHppGenerator::generateHandles()
+{
+  // Note: reordering structs or handles by features and extensions is not possible!
+  // first, forward declare all the structs!
+  std::string str;
+  for ( auto const & structure : m_structures )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
+           ";\n" + leave;
+    for ( auto const & alias : structure.second.aliases )
+    {
+      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+    }
+  }
+  for ( auto const & handle : m_handles )
+  {
+    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
+    {
+      assert( m_listingTypes.empty() );
+      appendHandle( str, handle );
+      assert( m_listingTypes.empty() );
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateHashStructures() const
+{
+  const std::string hashTemplate = R"(
+${enter}  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
+  {
+    std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const & ${name}) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
+    }
+  };
+${leave})";
+
+  std::string str;
+  for ( auto handle : m_handles )
+  {
+    if ( !handle.first.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( handle.first, !handle.second.alias.empty() );
+
+      std::string type = stripPrefix( handle.first, "Vk" );
+      std::string name = startLowerCase( type );
+      str +=
+        replaceWithMap( hashTemplate, { { "enter", enter }, { "leave", leave }, { "name", name }, { "type", type } } );
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateIndexTypeTraits() const
+{
+  auto indexType = m_enums.find( "VkIndexType" );
+  assert( indexType != m_enums.end() );
+
+  std::string str = R"(
+  template<typename T>
+  struct IndexTypeValue
+  {};
+)";
+
+  std::set<std::string> seenCppTypes;
+  for ( auto const & value : indexType->second.values )
+  {
+    std::string valueName = generateEnumValueName( indexType->first, value.name, false, m_tags );
+    std::string cppType;
+    if ( beginsWith( valueName, "eUint8" ) )
+    {
+      cppType = "uint8_t";
+    }
+    else if ( beginsWith( valueName, "eUint16" ) )
+    {
+      cppType = "uint16_t";
+    }
+    else if ( beginsWith( valueName, "eUint32" ) )
+    {
+      cppType = "uint32_t";
+    }
+    else if ( beginsWith( valueName, "eUint64" ) )
+    {
+      cppType = "uint64_t";  // No extension for this currently
+    }
+    else
+    {
+      assert( beginsWith( valueName, "eNone" ) );
+    }
+
+    if ( !cppType.empty() )
+    {
+      if ( seenCppTypes.insert( cppType ).second )
+      {
+        // IndexType traits aren't necessarily invertible.
+        // The Type -> Enum translation will only occur for the first prefixed enum value.
+        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
+        str +=
+          "\n"
+          "  template <>\n"
+          "  struct IndexTypeValue<" +
+          cppType +
+          ">\n"
+          "  {\n"
+          "    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::" +
+          valueName +
+          ";\n"
+          "  };\n";
+      }
+      // Enum -> Type translations are always able to occur.
+      str +=
+        "\n"
+        "  template <>\n"
+        "  struct CppType<IndexType, IndexType::" +
+        valueName +
+        ">\n"
+        "  {\n"
+        "    using Type = " +
+        cppType +
+        ";\n"
+        "  };\n";
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
+{
+  std::string str = R"(
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+)";
+
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    str += "\n  //=== " + feature.first + " ===\n";
+    for ( auto const & command : feature.second.commands )
+    {
+      if ( m_RAIISpecialFunctions.find( command ) == m_RAIISpecialFunctions.end() )
+      {
+        assert( listedCommands.find( command ) == listedCommands.end() );
+        listedCommands.insert( command );
+        str += constructRAIIHandleMemberFunction(
+          command, determineInitialSkipCount( command ), m_RAIISpecialFunctions, true );
+      }
+    }
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    std::vector<std::string> commands;
+    for ( auto const & command : extIt.second->second.commands )
+    {
+      if ( ( m_RAIISpecialFunctions.find( command ) == m_RAIISpecialFunctions.end() ) &&
+           ( listedCommands.find( command ) == listedCommands.end() ) )
+      {
+        listedCommands.insert( command );
+        commands.push_back( command );
+      }
+    }
+    if ( !commands.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+      for ( auto const & command : commands )
+      {
+        str += constructRAIIHandleMemberFunction(
+          command, determineInitialSkipCount( command ), m_RAIISpecialFunctions, true );
+      }
+      str += leave;
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatchers() const
+{
+  std::string contextInitializerList, deviceInitAssignments, instanceInitAssignments;
+  std::string contextMembers, deviceMembers, instanceMembers;
+  std::string previousEnter;
+  for ( auto const & command : m_commands )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( command.second.referencedIn, std::string() );
+
+    if ( command.second.handle.empty() )
+    {
+      assert( enter.empty() );
+      assert( command.second.alias.empty() );
+      contextInitializerList +=
+        ", " + command.first + "( PFN_" + command.first + "( getProcAddr( NULL, \"" + command.first + "\" ) ) )";
+      contextMembers += "      PFN_" + command.first + " " + command.first + " = 0;\n";
+    }
+    else if ( ( command.second.handle == "VkDevice" ) || hasParentHandle( command.second.handle, "VkDevice" ) )
+    {
+      deviceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
+                               "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
+      // if this is an alias'ed function, use it as a fallback for the original one
+      if ( !command.second.alias.empty() )
+      {
+        deviceInitAssignments +=
+          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
+      }
+      deviceInitAssignments += leave;
+
+      deviceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
+    }
+    else
+    {
+      assert( ( command.second.handle == "VkInstance" ) || hasParentHandle( command.second.handle, "VkInstance" ) );
+
+      instanceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
+                                 "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
+      // if this is an alias'ed function, use it as a fallback for the original one
+      if ( !command.second.alias.empty() )
+      {
+        instanceInitAssignments +=
+          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
+      }
+      instanceInitAssignments += leave;
+
+      instanceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
+    }
+    previousEnter = enter;
+  }
+
+  std::string contextDispatcherTemplate = R"(
+    class ContextDispatcher
+    {
+    public:
+      ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
+        : vkGetInstanceProcAddr( getProcAddr )${initializerList}
+      {}
+
+    public:
+      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
+${members}
+    };
+)";
+
+  std::string str = replaceWithMap( contextDispatcherTemplate,
+                                    { { "initializerList", contextInitializerList }, { "members", contextMembers } } );
+
+  std::string instanceDispatcherTemplate = R"(
+    class InstanceDispatcher
+    {
+    public:
+      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
+        : vkGetInstanceProcAddr( getProcAddr )
+      {}
+
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      InstanceDispatcher() = default;
+#endif
+
+      void init( VkInstance instance )
+      {
+${initAssignments}
+        vkGetDeviceProcAddr =
+          PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
+      }
+
+    public:
+${members}
+      PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
+    };
+)";
+
+  str += replaceWithMap( instanceDispatcherTemplate,
+                         { { "initAssignments", instanceInitAssignments }, { "members", instanceMembers } } );
+
+  std::string deviceDispatcherTemplate = R"(
+    class DeviceDispatcher
+    {
+      public:
+        DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr )
+          : vkGetDeviceProcAddr( getProcAddr )
+        {}
+
+#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+        DeviceDispatcher() = default;
+#endif
+
+        void init( VkDevice device )
+        {
+${initAssignments}
+        }
+
+      public:
+${members}
+    };
+)";
+
+  str += replaceWithMap( deviceDispatcherTemplate,
+                         { { "initAssignments", deviceInitAssignments }, { "members", deviceMembers } } );
+  return str;
+}
+
+std::string VulkanHppGenerator::generateRAIIHandles() const
+{
+  std::string str = "\n";
+
+  std::set<std::string> listedHandles;
+  auto                  handleIt = m_handles.begin();
+  assert( handleIt->first.empty() );
+  appendRAIIHandleContext( str, *handleIt, m_RAIISpecialFunctions );
+  for ( ++handleIt; handleIt != m_handles.end(); ++handleIt )
+  {
+    appendRAIIHandle( str, *handleIt, listedHandles, m_RAIISpecialFunctions );
+  }
+  return str;
+}
+
+// Intended only for `enum class Result`!
+std::string VulkanHppGenerator::generateResultExceptions() const
+{
+  std::string templateString = R"(
+${enter}  class ${className} : public SystemError
+  {
+  public:
+    ${className}( std::string const & message )
+      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
+    ${className}( char const * message )
+      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
+  };
+${leave})";
+
+  std::string str;
+  auto        enumIt = m_enums.find( "VkResult" );
+  for ( auto const & value : enumIt->second.values )
+  {
+    if ( beginsWith( value.name, "VK_ERROR" ) )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( value.extension, value.protect );
+      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
+      str += replaceWithMap( templateString,
+                             { { "className", stripPrefix( valueName, "eError" ) + "Error" },
+                               { "enter", enter },
+                               { "enumName", stripPrefix( enumIt->first, "Vk" ) },
+                               { "enumMemberName", valueName },
+                               { "leave", leave } } );
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateStructs()
+{
+  // Note reordering structs or handles by features and extensions is not possible!
+  std::string str;
+  for ( auto const & structure : m_structures )
+  {
+    if ( m_listedTypes.find( structure.first ) == m_listedTypes.end() )
+    {
+      assert( m_listingTypes.empty() );
+      appendStruct( str, structure );
+      assert( m_listingTypes.empty() );
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateStructureChainValidation()
+{
+  // append all template functions for the structure pointer chain validation
+  std::string str;
+  for ( auto const & structure : m_structures )
+  {
+    if ( !structure.second.structExtends.empty() )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+
+      str += enter;
+      // append out allowed structure chains
+      for ( auto extendName : structure.second.structExtends )
+      {
+        std::map<std::string, StructureData>::const_iterator itExtend = m_structures.find( extendName );
+        if ( itExtend == m_structures.end() )
+        {
+          // look if the extendName acutally is an alias of some other structure
+          itExtend = std::find_if( m_structures.begin(),
+                                   m_structures.end(),
+                                   [extendName]( auto const & sd )
+                                   { return sd.second.aliases.find( extendName ) != sd.second.aliases.end(); } );
+        }
+        if ( itExtend == m_structures.end() )
+        {
+          std::string errorString;
+          errorString = "<" + extendName + "> does not specify a struct in structextends field.";
+
+          // check if symbol name is an alias to a struct
+          auto itAlias =
+            std::find_if( m_structures.begin(),
+                          m_structures.end(),
+                          [&extendName]( std::pair<std::string, StructureData> const & it ) -> bool {
+                            return std::find( it.second.aliases.begin(), it.second.aliases.end(), extendName ) !=
+                                   it.second.aliases.end();
+                          } );
+          if ( itAlias != m_structures.end() )
+          {
+            errorString += " The symbol is an alias and maps to <" + itAlias->first + ">.";
+          }
+          check( false, structure.second.xmlLine, errorString );
+        }
+
+        std::string subEnter, subLeave;
+        std::tie( subEnter, subLeave ) = generateProtection( itExtend->first, !itExtend->second.aliases.empty() );
+
+        if ( enter != subEnter )
+        {
+          str += subEnter;
+        }
+
+        str += "  template <> struct StructExtends<" + stripPrefix( structure.first, "Vk" ) + ", " +
+               stripPrefix( extendName, "Vk" ) + ">{ enum { value = true }; };\n";
+
+        if ( leave != subLeave )
+        {
+          str += subLeave;
+        }
+      }
+      str += leave;
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateThrowResultException() const
+{
+  auto enumIt = m_enums.find( "VkResult" );
+
+  std::string str =
+    "\n"
+    "  [[noreturn]] static void throwResultException( Result result, char const * message )\n"
+    "  {\n"
+    "    switch ( result )\n"
+    "    {\n";
+  for ( auto const & value : enumIt->second.values )
+  {
+    if ( beginsWith( value.name, "VK_ERROR" ) )
+    {
+      std::string enter, leave;
+      std::tie( enter, leave ) = generateProtection( value.extension, value.protect );
+      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
+      str += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) +
+             "Error( message );\n" + leave;
+    }
+  }
+  str +=
+    "      default: throw SystemError( make_error_code( result ) );\n"
+    "    }\n"
+    "  }\n";
+  return str;
+}
+
+std::string const & VulkanHppGenerator::getTypesafeCheck() const
+{
+  return m_typesafeCheck;
+}
+
+std::string const & VulkanHppGenerator::getVersion() const
+{
+  return m_version;
+}
+
+std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
+{
+  return m_vulkanLicenseHeader;
+}
+
+void VulkanHppGenerator::prepareRAIIHandles()
+{
+  // filter out functions that are not usefull on this level of abstraction (like vkGetInstanceProcAddr)
+  // and all the construction and destruction functions, as they are used differently
+  for ( auto & handle : m_handles )
+  {
+    if ( !handle.first.empty() )
+    {
+      handle.second.destructorIt = determineRAIIHandleDestructor( handle.first );
+      if ( handle.second.destructorIt != m_commands.end() )
+      {
+        m_RAIISpecialFunctions.insert( handle.second.destructorIt->first );
+      }
+      handle.second.constructorIts =
+        determineRAIIHandleConstructors( handle.first, handle.second.destructorIt, m_RAIISpecialFunctions );
+    }
+  }
+
+  distributeSecondLevelCommands( m_RAIISpecialFunctions );
+  renameFunctionParameters();
+}
+
+//
+// VulkanHppGenerator private interface
+//
+
+//
+// VulkanHppGenerator local functions
+//
+
 bool beginsWith( std::string const & text, std::string const & prefix )
 {
   return prefix.empty() || text.substr( 0, prefix.length() ) == prefix;
@@ -671,113 +1598,6 @@ void writeToFile( std::string const & str, std::string const & fileName )
 #endif
 }
 
-VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
-{
-  // insert the default "handle" without class (for createInstance, and such)
-  m_handles.insert( std::make_pair( "", HandleData( {}, "", 0 ) ) );
-
-  // read the document and check its correctness
-  int                                       line     = document.GetLineNum();
-  std::vector<tinyxml2::XMLElement const *> elements = getChildElements( &document );
-  checkElements( line, elements, { { "registry", true } } );
-  check( elements.size() == 1,
-         line,
-         "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
-  readRegistry( elements[0] );
-  checkCorrectness();
-
-  // some "FlagBits" enums are not specified, but needed for our "Flags" handling -> add them here
-  for ( auto & feature : m_features )
-  {
-    addMissingFlagBits( feature.second.types, feature.first );
-  }
-  for ( auto & ext : m_extensions )
-  {
-    addMissingFlagBits( ext.second.types, ext.first );
-  }
-
-  // determine the extensionsByNumber map
-  for ( auto extensionIt = m_extensions.begin(); extensionIt != m_extensions.end(); ++extensionIt )
-  {
-    int number = atoi( extensionIt->second.number.c_str() );
-    assert( m_extensionsByNumber.find( number ) == m_extensionsByNumber.end() );
-    m_extensionsByNumber[number] = extensionIt;
-  }
-}
-
-//  public interface
-
-std::string VulkanHppGenerator::generateBaseTypes() const
-{
-  assert( !m_baseTypes.empty() );
-  std::string str;
-  for ( auto const & baseType : m_baseTypes )
-  {
-    // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class
-    if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) )
-    {
-      str += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose() + ";\n";
-    }
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::generateBitmasks() const
-{
-  std::string str = R"(
-  //================
-  //=== BITMASKs ===
-  //================
-)";
-
-  std::set<std::string> listedBitmasks;
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & type : feature.second.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type );
-      if ( bitmaskIt != m_bitmasks.end() )
-      {
-        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
-        listedBitmasks.insert( type );
-        str += generateBitmask( bitmaskIt );
-      }
-    }
-  }
-
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    std::vector<std::map<std::string, BitmaskData>::const_iterator> bitmaskIts;
-    for ( auto const & type : extIt.second->second.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type );
-      if ( bitmaskIt != m_bitmasks.end() )
-      {
-        bitmaskIts.push_back( bitmaskIt );
-      }
-    }
-
-    if ( !bitmaskIts.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) =
-        generateProtection( bitmaskIts.front()->first, !bitmaskIts.front()->second.alias.empty() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto bitmaskIt : bitmaskIts )
-      {
-        assert( listedBitmasks.find( bitmaskIt->first ) == listedBitmasks.end() );
-        listedBitmasks.insert( bitmaskIt->first );
-        str += generateBitmask( bitmaskIt );
-      }
-      str += leave;
-    }
-  }
-  return str;
-}
-
-// private functions
-
 void VulkanHppGenerator::addCommand( std::string const & name, CommandData & commandData )
 {
   // find the handle this command is going to be associated to
@@ -841,6 +1661,58 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<std::string> & types, s
   types.insert( types.end(), newTypes.begin(), newTypes.end() );
 }
 
+void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
+                                                              std::set<std::string> &          listedCommands,
+                                                              std::string const &              enter,
+                                                              std::string const &              leave,
+                                                              std::string &                    commandMembers,
+                                                              std::string & initialCommandAssignments,
+                                                              std::string & instanceCommandAssignments,
+                                                              std::string & deviceCommandAssignments ) const
+{
+  std::string members, initial, instance, device;
+  for ( auto const & command : commands )
+  {
+    if ( listedCommands.find( command ) == listedCommands.end() )
+    {
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+
+      members += "    PFN_" + commandIt->first + " " + commandIt->first + " = 0;\n";
+      if ( commandIt->second.handle.empty() )
+      {
+        initial += generateDispatchLoaderDynamicCommandAssignment( commandIt->first, commandIt->second, "NULL" );
+      }
+      else
+      {
+        instance += generateDispatchLoaderDynamicCommandAssignment( commandIt->first, commandIt->second, "instance" );
+        if ( isDeviceCommand( commandIt->second ) )
+        {
+          device += generateDispatchLoaderDynamicCommandAssignment( commandIt->first, commandIt->second, "device" );
+        }
+      }
+    }
+  }
+  if ( !members.empty() )
+  {
+    commandMembers += enter + members + leave;
+  }
+  if ( !initial.empty() )
+  {
+    initialCommandAssignments += enter + initial + leave;
+  }
+  if ( !instance.empty() )
+  {
+    instanceCommandAssignments += enter + instance + leave;
+  }
+  if ( !device.empty() )
+  {
+    deviceCommandAssignments += enter + device + leave;
+  }
+}
+
 void VulkanHppGenerator::appendDestroyCommand( std::string &       str,
                                                std::string const & name,
                                                CommandData const & commandData
@@ -895,63 +1767,6 @@ void VulkanHppGenerator::appendDestroyCommand( std::string &       str,
       destroyCommandString.erase( pos, strlen( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" ) );
     }
     str += "\n" + destroyCommandString;
-  }
-}
-
-void VulkanHppGenerator::appendDispatchLoaderDynamicCommand( std::string &       str,
-                                                             std::string &       emptyFunctions,
-                                                             std::string &       deviceFunctions,
-                                                             std::string &       deviceFunctionsInstance,
-                                                             std::string &       instanceFunctions,
-                                                             std::string const & commandName,
-                                                             CommandData const & commandData )
-{
-  std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( commandData.referencedIn, std::string() );
-  std::string command      = "    PFN_" + commandName + " " + commandName + " = 0;\n";
-  if ( !enter.empty() )
-  {
-    command = enter + command + "#else\n    PFN_dummy placeholder_dont_call_" + commandName + " = 0;\n" + leave;
-  }
-  str += command;
-
-  bool isDeviceFunction = !commandData.handle.empty() && !commandData.params.empty() &&
-                          ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&
-                          ( commandData.params[0].type.type != "VkInstance" ) &&
-                          ( commandData.params[0].type.type != "VkPhysicalDevice" );
-
-  if ( commandData.handle.empty() )
-  {
-    assert( commandData.alias.empty() );
-    emptyFunctions += enter + "      " + commandName + " = PFN_" + commandName + "( vkGetInstanceProcAddr( NULL, \"" +
-                      commandName + "\" ) );\n" + leave;
-  }
-  else if ( isDeviceFunction )
-  {
-    deviceFunctions += enter + "      " + commandName + " = PFN_" + commandName + "( vkGetDeviceProcAddr( device, \"" +
-                       commandName + "\" ) );\n";
-    deviceFunctionsInstance += enter + "      " + commandName + " = PFN_" + commandName +
-                               "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n";
-    // if this is an alias'ed function, use it as a fallback for the original one
-    if ( !commandData.alias.empty() )
-    {
-      deviceFunctions += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
-      deviceFunctionsInstance +=
-        "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
-    }
-    deviceFunctions += leave;
-    deviceFunctionsInstance += leave;
-  }
-  else
-  {
-    instanceFunctions += enter + "      " + commandName + " = PFN_" + commandName +
-                         "( vkGetInstanceProcAddr( instance, \"" + commandName + "\" ) );\n";
-    // if this is an alias'ed function, use it as a fallback for the original one
-    if ( !commandData.alias.empty() )
-    {
-      instanceFunctions += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
-    }
-    instanceFunctions += leave;
   }
 }
 
@@ -1660,251 +2475,6 @@ ${usingAlias}${leave})";
 
   m_listingTypes.erase( handleData.first );
   m_listedTypes.insert( handleData.first );
-}
-
-void VulkanHppGenerator::appendHashStructures( std::string & str ) const
-{
-  const std::string hashTemplate = R"(
-${enter}  template <> struct hash<VULKAN_HPP_NAMESPACE::${type}>
-  {
-    std::size_t operator()(VULKAN_HPP_NAMESPACE::${type} const & ${name}) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<Vk${type}>{}(static_cast<Vk${type}>(${name}));
-    }
-  };
-${leave})";
-
-  for ( auto handle : m_handles )
-  {
-    if ( !handle.first.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( handle.first, !handle.second.alias.empty() );
-
-      std::string type = stripPrefix( handle.first, "Vk" );
-      std::string name = startLowerCase( type );
-      str +=
-        replaceWithMap( hashTemplate, { { "enter", enter }, { "leave", leave }, { "name", name }, { "type", type } } );
-    }
-  }
-}
-
-void VulkanHppGenerator::appendRAIICommands( std::string & str, std::set<std::string> const & specialFunctions ) const
-{
-  str += R"(
-  //===========================
-  //=== COMMAND Definitions ===
-  //===========================
-)";
-
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      if ( specialFunctions.find( command ) == specialFunctions.end() )
-      {
-        assert( listedCommands.find( command ) == listedCommands.end() );
-        listedCommands.insert( command );
-        str +=
-          constructRAIIHandleMemberFunction( command, determineInitialSkipCount( command ), specialFunctions, true );
-      }
-    }
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    std::vector<std::string> commands;
-    for ( auto const & command : extIt.second->second.commands )
-    {
-      if ( ( specialFunctions.find( command ) == specialFunctions.end() ) &&
-           ( listedCommands.find( command ) == listedCommands.end() ) )
-      {
-        listedCommands.insert( command );
-        commands.push_back( command );
-      }
-    }
-    if ( !commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto const & command : commands )
-      {
-        str +=
-          constructRAIIHandleMemberFunction( command, determineInitialSkipCount( command ), specialFunctions, true );
-      }
-      str += leave;
-    }
-  }
-}
-
-void VulkanHppGenerator::appendRAIIDispatchers( std::string & str ) const
-{
-  std::string contextInitializerList, deviceInitAssignments, instanceInitAssignments;
-  std::string contextMembers, deviceMembers, instanceMembers;
-  std::string previousEnter;
-  for ( auto const & command : m_commands )
-  {
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( command.second.referencedIn, std::string() );
-
-    if ( command.second.handle.empty() )
-    {
-      assert( enter.empty() );
-      assert( command.second.alias.empty() );
-      contextInitializerList +=
-        ", " + command.first + "( PFN_" + command.first + "( getProcAddr( NULL, \"" + command.first + "\" ) ) )";
-      contextMembers += "      PFN_" + command.first + " " + command.first + " = 0;\n";
-    }
-    else if ( ( command.second.handle == "VkDevice" ) || hasParentHandle( command.second.handle, "VkDevice" ) )
-    {
-      deviceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
-                               "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
-      // if this is an alias'ed function, use it as a fallback for the original one
-      if ( !command.second.alias.empty() )
-      {
-        deviceInitAssignments +=
-          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
-      }
-      deviceInitAssignments += leave;
-
-      deviceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
-    }
-    else
-    {
-      assert( ( command.second.handle == "VkInstance" ) || hasParentHandle( command.second.handle, "VkInstance" ) );
-
-      instanceInitAssignments += enter + "        " + command.first + " = PFN_" + command.first +
-                                 "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
-      // if this is an alias'ed function, use it as a fallback for the original one
-      if ( !command.second.alias.empty() )
-      {
-        instanceInitAssignments +=
-          "        if ( !" + command.second.alias + " ) " + command.second.alias + " = " + command.first + ";\n";
-      }
-      instanceInitAssignments += leave;
-
-      instanceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
-    }
-    previousEnter = enter;
-  }
-
-  std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher
-    {
-    public:
-      ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
-        : vkGetInstanceProcAddr( getProcAddr )${initializerList}
-      {}
-
-    public:
-      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
-${members}
-    };
-)";
-
-  str += replaceWithMap( contextDispatcherTemplate,
-                         { { "initializerList", contextInitializerList }, { "members", contextMembers } } );
-
-  std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher
-    {
-    public:
-      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
-        : vkGetInstanceProcAddr( getProcAddr )
-      {}
-
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-      InstanceDispatcher() = default;
-#endif
-
-      void init( VkInstance instance )
-      {
-${initAssignments}
-        vkGetDeviceProcAddr =
-          PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
-      }
-
-    public:
-${members}
-      PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
-    };
-)";
-
-  str += replaceWithMap( instanceDispatcherTemplate,
-                         { { "initAssignments", instanceInitAssignments }, { "members", instanceMembers } } );
-
-  std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher
-    {
-      public:
-        DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr )
-          : vkGetDeviceProcAddr( getProcAddr )
-        {}
-
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-        DeviceDispatcher() = default;
-#endif
-
-        void init( VkDevice device )
-        {
-${initAssignments}
-        }
-
-      public:
-${members}
-    };
-)";
-
-  str += replaceWithMap( deviceDispatcherTemplate,
-                         { { "initAssignments", deviceInitAssignments }, { "members", deviceMembers } } );
-}
-
-void VulkanHppGenerator::appendRAIIHandles( std::string & str, std::set<std::string> const & specialFunctions ) const
-{
-  str += "\n";
-
-  std::set<std::string> listedHandles;
-  auto                  handleIt = m_handles.begin();
-  assert( handleIt->first.empty() );
-  appendRAIIHandleContext( str, *handleIt, specialFunctions );
-  for ( ++handleIt; handleIt != m_handles.end(); ++handleIt )
-  {
-    appendRAIIHandle( str, *handleIt, listedHandles, specialFunctions );
-  }
-}
-
-// Intended only for `enum class Result`!
-void VulkanHppGenerator::appendResultExceptions( std::string & str ) const
-{
-  std::string templateString = R"(
-${enter}  class ${className} : public SystemError
-  {
-  public:
-    ${className}( std::string const & message )
-      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
-    ${className}( char const * message )
-      : SystemError( make_error_code( ${enumName}::${enumMemberName} ), message ) {}
-  };
-${leave})";
-
-  auto enumIt = m_enums.find( "VkResult" );
-  for ( auto const & value : enumIt->second.values )
-  {
-    if ( beginsWith( value.name, "VK_ERROR" ) )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( value.extension, value.protect );
-      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
-      str += replaceWithMap( templateString,
-                             { { "className", stripPrefix( valueName, "eError" ) + "Error" },
-                               { "enter", enter },
-                               { "enumName", stripPrefix( enumIt->first, "Vk" ) },
-                               { "enumMemberName", valueName },
-                               { "leave", leave } } );
-    }
-  }
 }
 
 void VulkanHppGenerator::appendRAIIHandle( std::string &                              str,
@@ -8801,20 +9371,6 @@ std::string VulkanHppGenerator::appendStructMembers( std::string &              
   return sTypeValue;
 }
 
-void VulkanHppGenerator::appendStructs( std::string & str )
-{
-  // Note reordering structs or handles by features and extensions is not possible!
-  for ( auto const & structure : m_structures )
-  {
-    if ( m_listedTypes.find( structure.first ) == m_listedTypes.end() )
-    {
-      assert( m_listingTypes.empty() );
-      appendStruct( str, structure );
-      assert( m_listingTypes.empty() );
-    }
-  }
-}
-
 void VulkanHppGenerator::appendStructSetter( std::string &                   str,
                                              std::string const &             structureName,
                                              std::vector<MemberData> const & memberData,
@@ -9061,97 +9617,6 @@ ${members}
   }
 
   str += leave;
-}
-
-void VulkanHppGenerator::appendStructureChainValidation( std::string & str )
-{
-  // append all template functions for the structure pointer chain validation
-  for ( auto const & structure : m_structures )
-  {
-    if ( !structure.second.structExtends.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
-
-      str += enter;
-      // append out allowed structure chains
-      for ( auto extendName : structure.second.structExtends )
-      {
-        std::map<std::string, StructureData>::const_iterator itExtend = m_structures.find( extendName );
-        if ( itExtend == m_structures.end() )
-        {
-          // look if the extendName acutally is an alias of some other structure
-          itExtend = std::find_if( m_structures.begin(),
-                                   m_structures.end(),
-                                   [extendName]( auto const & sd )
-                                   { return sd.second.aliases.find( extendName ) != sd.second.aliases.end(); } );
-        }
-        if ( itExtend == m_structures.end() )
-        {
-          std::string errorString;
-          errorString = "<" + extendName + "> does not specify a struct in structextends field.";
-
-          // check if symbol name is an alias to a struct
-          auto itAlias =
-            std::find_if( m_structures.begin(),
-                          m_structures.end(),
-                          [&extendName]( std::pair<std::string, StructureData> const & it ) -> bool {
-                            return std::find( it.second.aliases.begin(), it.second.aliases.end(), extendName ) !=
-                                   it.second.aliases.end();
-                          } );
-          if ( itAlias != m_structures.end() )
-          {
-            errorString += " The symbol is an alias and maps to <" + itAlias->first + ">.";
-          }
-          check( false, structure.second.xmlLine, errorString );
-        }
-
-        std::string subEnter, subLeave;
-        std::tie( subEnter, subLeave ) = generateProtection( itExtend->first, !itExtend->second.aliases.empty() );
-
-        if ( enter != subEnter )
-        {
-          str += subEnter;
-        }
-
-        str += "  template <> struct StructExtends<" + stripPrefix( structure.first, "Vk" ) + ", " +
-               stripPrefix( extendName, "Vk" ) + ">{ enum { value = true }; };\n";
-
-        if ( leave != subLeave )
-        {
-          str += subLeave;
-        }
-      }
-      str += leave;
-    }
-  }
-}
-
-void VulkanHppGenerator::appendThrowExceptions( std::string & str ) const
-{
-  auto enumIt = m_enums.find( "VkResult" );
-
-  str +=
-    "\n"
-    "  [[noreturn]] static void throwResultException( Result result, char const * message )\n"
-    "  {\n"
-    "    switch ( result )\n"
-    "    {\n";
-  for ( auto const & value : enumIt->second.values )
-  {
-    if ( beginsWith( value.name, "VK_ERROR" ) )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( value.extension, value.protect );
-      std::string valueName    = generateEnumValueName( enumIt->first, value.name, false, m_tags );
-      str += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) +
-             "Error( message );\n" + leave;
-    }
-  }
-  str +=
-    "      default: throw SystemError( make_error_code( result ) );\n"
-    "    }\n"
-    "  }\n";
 }
 
 void VulkanHppGenerator::appendType( std::string & str, std::string const & typeName )
@@ -10066,78 +10531,6 @@ std::map<size_t, size_t>
   return vectorParamIndices;
 }
 
-void VulkanHppGenerator::appendIndexTypeTraits( std::string & str ) const
-{
-  auto indexType = m_enums.find( "VkIndexType" );
-  assert( indexType != m_enums.end() );
-
-  str += R"(
-  template<typename T>
-  struct IndexTypeValue
-  {};
-)";
-
-  std::set<std::string> seenCppTypes;
-  for ( auto const & value : indexType->second.values )
-  {
-    std::string valueName = generateEnumValueName( indexType->first, value.name, false, m_tags );
-    std::string cppType;
-    if ( beginsWith( valueName, "eUint8" ) )
-    {
-      cppType = "uint8_t";
-    }
-    else if ( beginsWith( valueName, "eUint16" ) )
-    {
-      cppType = "uint16_t";
-    }
-    else if ( beginsWith( valueName, "eUint32" ) )
-    {
-      cppType = "uint32_t";
-    }
-    else if ( beginsWith( valueName, "eUint64" ) )
-    {
-      cppType = "uint64_t";  // No extension for this currently
-    }
-    else
-    {
-      assert( beginsWith( valueName, "eNone" ) );
-    }
-
-    if ( !cppType.empty() )
-    {
-      if ( seenCppTypes.insert( cppType ).second )
-      {
-        // IndexType traits aren't necessarily invertible.
-        // The Type -> Enum translation will only occur for the first prefixed enum value.
-        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
-        str +=
-          "\n"
-          "  template <>\n"
-          "  struct IndexTypeValue<" +
-          cppType +
-          ">\n"
-          "  {\n"
-          "    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::" +
-          valueName +
-          ";\n"
-          "  };\n";
-      }
-      // Enum -> Type translations are always able to occur.
-      str +=
-        "\n"
-        "  template <>\n"
-        "  struct CppType<IndexType, IndexType::" +
-        valueName +
-        ">\n"
-        "  {\n"
-        "    using Type = " +
-        cppType +
-        ";\n"
-        "  };\n";
-    }
-  }
-}
-
 void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> const & specialFunctions )
 {
   for ( auto & handle : m_handles )
@@ -10178,455 +10571,6 @@ void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> co
       }
     }
   }
-}
-
-std::set<std::string> VulkanHppGenerator::determineSpecialFunctions()
-{
-  // filter out functions that are not usefull on this level of abstraction (like vkGetInstanceProcAddr)
-  // and all the construction and destruction functions, as they are used differently
-  std::set<std::string> specialFunctions;
-  for ( auto & handle : m_handles )
-  {
-    if ( !handle.first.empty() )
-    {
-      handle.second.destructorIt = determineRAIIHandleDestructor( handle.first );
-      if ( handle.second.destructorIt != m_commands.end() )
-      {
-        specialFunctions.insert( handle.second.destructorIt->first );
-      }
-      handle.second.constructorIts =
-        determineRAIIHandleConstructors( handle.first, handle.second.destructorIt, specialFunctions );
-    }
-  }
-
-  distributeSecondLevelCommands( specialFunctions );
-  renameFunctionParameters();
-  return specialFunctions;
-}
-
-std::string VulkanHppGenerator::generateCommandDefinitions() const
-{
-  std::string str = R"(
-  //===========================
-  //=== COMMAND Definitions ===
-  //===========================
-)";
-
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      assert( listedCommands.find( command ) == listedCommands.end() );
-      listedCommands.insert( command );
-
-      auto commandIt = m_commands.find( command );
-      assert( commandIt != m_commands.end() );
-      str += generateCommandDefinitions( command, commandIt->second.handle );
-    }
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto const & command : extIt.second->second.commands )
-      {
-        if ( listedCommands.find( command ) == listedCommands.end() )
-        {
-          listedCommands.insert( command );
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-          str += generateCommandDefinitions( command, commandIt->second.handle );
-        }
-      }
-      str += leave;
-    }
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::generateDispatchLoaderDynamic()
-{
-  std::string str = R"(
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-  class DynamicLoader
-  {
-  public:
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    DynamicLoader( std::string const & vulkanLibraryName = {} ) VULKAN_HPP_NOEXCEPT
-#  else
-    DynamicLoader( std::string const & vulkanLibraryName = {} )
-#  endif
-    {
-      if ( !vulkanLibraryName.empty() )
-      {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
-        m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
-#  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( vulkanLibraryName.c_str() );
-#  else
-#    error unsupported platform
-#  endif
-      }
-      else
-      {
-#  if defined( __unix__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
-        m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
-        if ( m_library == nullptr )
-        {
-          m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
-        }
-#  elif defined( __APPLE__ )
-        m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
-#  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
-#  else
-#    error unsupported platform
-#  endif
-      }
-
-#ifndef VULKAN_HPP_NO_EXCEPTIONS
-      if ( m_library == nullptr )
-      {
-        // NOTE there should be an InitializationFailedError, but msvc insists on the symbol does not exist within the scope of this function.
-        throw std::runtime_error( "Failed to load vulkan library!" );
-      }
-#endif
-    }
-
-    DynamicLoader( DynamicLoader const & ) = delete;
-
-    DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT : m_library(other.m_library)
-    {
-      other.m_library = nullptr;
-    }
-
-    DynamicLoader &operator=( DynamicLoader const & ) = delete;
-
-    DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
-    {
-      std::swap(m_library, other.m_library);
-      return *this;
-    }
-
-    ~DynamicLoader() VULKAN_HPP_NOEXCEPT
-    {
-      if ( m_library )
-      {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
-        dlclose( m_library );
-#  elif defined( _WIN32 )
-        ::FreeLibrary( m_library );
-#  else
-#    error unsupported platform
-#  endif
-      }
-    }
-
-    template <typename T>
-    T getProcAddress( const char* function ) const VULKAN_HPP_NOEXCEPT
-    {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
-      return (T)dlsym( m_library, function );
-#  elif defined( _WIN32 )
-      return (T)::GetProcAddress( m_library, function );
-#  else
-#    error unsupported platform
-#  endif
-    }
-
-    bool success() const VULKAN_HPP_NOEXCEPT { return m_library != nullptr; }
-
-  private:
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
-    void * m_library;
-#  elif defined( _WIN32 )
-    ::HINSTANCE m_library;
-#  else
-#    error unsupported platform
-#  endif
-  };
-#endif
-
-  class DispatchLoaderDynamic
-  {
-  public:
-    using PFN_dummy = void ( * )();
-
-)";
-
-  std::string emptyFunctions;
-  std::string deviceFunctions;
-  std::string deviceFunctionsInstance;
-  std::string instanceFunctions;
-  for ( auto const & command : m_commands )
-  {
-    appendDispatchLoaderDynamicCommand(
-      str, emptyFunctions, deviceFunctions, deviceFunctionsInstance, instanceFunctions, command.first, command.second );
-  }
-
-  // append initialization function to fetch function pointers
-  str += R"(
-  public:
-    DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT = default;
-    DispatchLoaderDynamic( DispatchLoaderDynamic const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-#if !defined( VK_NO_PROTOTYPES )
-    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    template <typename DynamicLoader>
-    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device, DynamicLoader const & dl) VULKAN_HPP_NOEXCEPT
-    {
-      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-      PFN_vkGetDeviceProcAddr getDeviceProcAddr = dl.template getProcAddress<PFN_vkGetDeviceProcAddr>("vkGetDeviceProcAddr");
-      init(static_cast<VkInstance>(instance), getInstanceProcAddr, static_cast<VkDevice>(device), device ? getDeviceProcAddr : nullptr);
-    }
-
-    // This interface is designed to be used for per-device function pointers in combination with a linked vulkan library.
-    template <typename DynamicLoader
-#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = VULKAN_HPP_NAMESPACE::DynamicLoader
-#endif
-    >
-    void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device) VULKAN_HPP_NOEXCEPT
-    {
-      static DynamicLoader dl;
-      init(instance, device, dl);
-    }
-#endif // !defined( VK_NO_PROTOTYPES )
-
-    DispatchLoaderDynamic(PFN_vkGetInstanceProcAddr getInstanceProcAddr) VULKAN_HPP_NOEXCEPT
-    {
-      init(getInstanceProcAddr);
-    }
-
-    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT(getInstanceProcAddr);
-
-      vkGetInstanceProcAddr = getInstanceProcAddr;
-)";
-
-  str += emptyFunctions;
-
-  str += R"(    }
-
-    // This interface does not require a linked vulkan library.
-    DispatchLoaderDynamic( VkInstance                instance,
-                           PFN_vkGetInstanceProcAddr getInstanceProcAddr,
-                           VkDevice                  device            = {},
-                           PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
-    {
-      init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
-    }
-
-    // This interface does not require a linked vulkan library.
-    void init( VkInstance                instance,
-               PFN_vkGetInstanceProcAddr getInstanceProcAddr,
-               VkDevice                  device              = {},
-               PFN_vkGetDeviceProcAddr /*getDeviceProcAddr*/ = nullptr ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
-      vkGetInstanceProcAddr = getInstanceProcAddr;
-      init( VULKAN_HPP_NAMESPACE::Instance(instance) );
-      if (device) {
-        init( VULKAN_HPP_NAMESPACE::Device(device) );
-      }
-    }
-
-    void init( VULKAN_HPP_NAMESPACE::Instance instanceCpp ) VULKAN_HPP_NOEXCEPT
-    {
-      VkInstance instance = static_cast<VkInstance>(instanceCpp);
-)";
-
-  str += instanceFunctions;
-  str += deviceFunctionsInstance;
-  str += "    }\n\n";
-  str += "    void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT\n    {\n";
-  str += "      VkDevice device = static_cast<VkDevice>(deviceCpp);\n";
-  str += deviceFunctions;
-  str += R"(    }
-  };
-
-)";
-  return str;
-}
-
-std::string VulkanHppGenerator::generateDispatchLoaderStatic()
-{
-  std::string str = R"(
-#if !defined( VK_NO_PROTOTYPES )
-  class DispatchLoaderStatic
-  {
-  public:)";
-
-  std::set<std::string> listedCommands;
-  for ( auto const & feature : m_features )
-  {
-    str += "\n    //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      assert( listedCommands.find( command ) == listedCommands.end() );
-      listedCommands.insert( command );
-
-      auto commandIt = m_commands.find( command );
-      assert( commandIt != m_commands.end() );
-      str += "\n";
-      appendStaticCommand( str, *commandIt );
-    }
-  }
-
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string firstCommandName = *extIt.second->second.commands.begin();
-      auto        commandIt        = m_commands.find( firstCommandName );
-      assert( commandIt != m_commands.end() );
-      std::string referencedIn = commandIt->second.referencedIn;
-
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( referencedIn, std::string() );
-      str += "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
-      for ( auto const & commandName : extIt.second->second.commands )
-      {
-        // some commands are listed for multiple extensions !
-        if ( listedCommands.find( commandName ) == listedCommands.end() )
-        {
-          listedCommands.insert( commandName );
-
-          commandIt = m_commands.find( commandName );
-          assert( commandIt != m_commands.end() );
-          assert( commandIt->second.referencedIn == referencedIn );
-
-          str += "\n";
-          appendStaticCommand( str, *commandIt );
-        }
-      }
-      str += leave;
-    }
-  }
-
-  str += "  };\n#endif\n";
-  return str;
-}
-
-std::string VulkanHppGenerator::generateEnums() const
-{
-  // start with toHexString, which is used in all the to_string functions here!
-  std::string str = R"(
-  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
-  {
-    std::stringstream stream;
-    stream << std::hex << value;
-    return stream.str();
-  }
-
-  //=============
-  //=== ENUMs ===
-  //=============
-)";
-
-  std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & type : feature.second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      if ( enumIt != m_enums.end() )
-      {
-        assert( listedEnums.find( type ) == listedEnums.end() );
-        listedEnums.insert( type );
-
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-    }
-  }
-
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    std::vector<std::map<std::string, EnumData>::const_iterator> enumIts;
-    for ( auto const & type : extIt.second->second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
-      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
-      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
-      {
-        enumIts.push_back( enumIt );
-      }
-    }
-
-    if ( !enumIts.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto enumIt : enumIts )
-      {
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-      str += leave;
-    }
-  }
-
-  str += R"(
-  template<ObjectType value>
-  struct cpp_type
-  {};
-)";
-  return str;
-}
-
-std::string VulkanHppGenerator::generateHandles()
-{
-  // Note: reordering structs or handles by features and extensions is not possible!
-  // first, forward declare all the structs!
-  std::string str;
-  for ( auto const & structure : m_structures )
-  {
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
-    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
-           ";\n" + leave;
-    for ( auto const & alias : structure.second.aliases )
-    {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
-    }
-  }
-  for ( auto const & handle : m_handles )
-  {
-    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
-    {
-      assert( m_listingTypes.empty() );
-      appendHandle( str, handle );
-      assert( m_listingTypes.empty() );
-    }
-  }
-  return str;
-}
-
-std::string const & VulkanHppGenerator::getTypesafeCheck() const
-{
-  return m_typesafeCheck;
-}
-
-std::string const & VulkanHppGenerator::getVersion() const
-{
-  return m_version;
-}
-
-std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
-{
-  return m_vulkanLicenseHeader;
 }
 
 std::string VulkanHppGenerator::findBaseName( std::string                                  aliasName,
@@ -11820,6 +11764,21 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
   return "";
 }
 
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
+                                                                                CommandData const & commandData,
+                                                                                std::string const & firstArg ) const
+{
+  std::string str = "      " + commandName + " = PFN_" + commandName + "( vkGet" +
+                    ( ( firstArg == "device" ) ? "Device" : "Instance" ) + "ProcAddr( " + firstArg + ", \"" +
+                    commandName + "\" ) );\n";
+  // if this is an alias'ed function, use it as a fallback for the original one
+  if ( !commandData.alias.empty() )
+  {
+    str += "      if ( !" + commandData.alias + " ) " + commandData.alias + " = " + commandName + ";\n";
+  }
+  return str;
+}
+
 std::string VulkanHppGenerator::generateFunctionCall( std::string const &              name,
                                                       CommandData const &              commandData,
                                                       size_t                           returnParamIndex,
@@ -12184,6 +12143,14 @@ bool VulkanHppGenerator::isHandleType( std::string const & type ) const
     return ( it != m_handles.end() );
   }
   return false;
+}
+
+bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) const
+{
+  return !commandData.handle.empty() && !commandData.params.empty() &&
+         ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&
+         ( commandData.params[0].type.type != "VkInstance" ) &&
+         ( commandData.params[0].type.type != "VkPhysicalDevice" );
 }
 
 bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const
@@ -16156,6 +16123,108 @@ int main( int argc, char ** argv )
 #endif
 )";
 
+  static const std::string dynamicLoader = R"(
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+  class DynamicLoader
+  {
+  public:
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    DynamicLoader( std::string const & vulkanLibraryName = {} ) VULKAN_HPP_NOEXCEPT
+#  else
+    DynamicLoader( std::string const & vulkanLibraryName = {} )
+#  endif
+    {
+      if ( !vulkanLibraryName.empty() )
+      {
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+        m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
+#  elif defined( _WIN32 )
+        m_library = ::LoadLibraryA( vulkanLibraryName.c_str() );
+#  else
+#    error unsupported platform
+#  endif
+      }
+      else
+      {
+#  if defined( __unix__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+        m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
+        if ( m_library == nullptr )
+        {
+          m_library = dlopen( "libvulkan.so.1", RTLD_NOW | RTLD_LOCAL );
+        }
+#  elif defined( __APPLE__ )
+        m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
+#  elif defined( _WIN32 )
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+#  else
+#    error unsupported platform
+#  endif
+      }
+
+#ifndef VULKAN_HPP_NO_EXCEPTIONS
+      if ( m_library == nullptr )
+      {
+        // NOTE there should be an InitializationFailedError, but msvc insists on the symbol does not exist within the scope of this function.
+        throw std::runtime_error( "Failed to load vulkan library!" );
+      }
+#endif
+    }
+
+    DynamicLoader( DynamicLoader const & ) = delete;
+
+    DynamicLoader( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT : m_library(other.m_library)
+    {
+      other.m_library = nullptr;
+    }
+
+    DynamicLoader &operator=( DynamicLoader const & ) = delete;
+
+    DynamicLoader &operator=( DynamicLoader && other ) VULKAN_HPP_NOEXCEPT
+    {
+      std::swap(m_library, other.m_library);
+      return *this;
+    }
+
+    ~DynamicLoader() VULKAN_HPP_NOEXCEPT
+    {
+      if ( m_library )
+      {
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+        dlclose( m_library );
+#  elif defined( _WIN32 )
+        ::FreeLibrary( m_library );
+#  else
+#    error unsupported platform
+#  endif
+      }
+    }
+
+    template <typename T>
+    T getProcAddress( const char* function ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+      return (T)dlsym( m_library, function );
+#  elif defined( _WIN32 )
+      return (T)::GetProcAddress( m_library, function );
+#  else
+#    error unsupported platform
+#  endif
+    }
+
+    bool success() const VULKAN_HPP_NOEXCEPT { return m_library != nullptr; }
+
+  private:
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+    void * m_library;
+#  elif defined( _WIN32 )
+    ::HINSTANCE m_library;
+#  else
+#    error unsupported platform
+#  endif
+  };
+#endif
+)";
+
   static const std::string exceptions = R"(
   class ErrorCategoryImpl : public std::error_category
   {
@@ -16653,7 +16722,7 @@ namespace VULKAN_HPP_NAMESPACE
 )";
     str += typeTraits;
     str += generator.generateEnums();
-    generator.appendIndexTypeTraits( str );
+    str += generator.generateIndexTypeTraits();
     str += generator.generateBitmasks();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
@@ -16688,7 +16757,7 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
-    generator.appendStructs( str );
+    str += generator.generateStructs();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
 #endif
@@ -16751,8 +16820,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
 )";
     str += exceptions;
-    generator.appendResultExceptions( str );
-    generator.appendThrowExceptions( str );
+    str += generator.generateResultExceptions();
+    str += generator.generateThrowResultException();
     str += "#endif\n" + structResultValue;
     str += R"(} // namespace VULKAN_HPP_NAMESPACE
 
@@ -16765,14 +16834,15 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
-    generator.appendStructureChainValidation( str );
+    str += generator.generateStructureChainValidation();
+    str += dynamicLoader;
     str += generator.generateDispatchLoaderDynamic();
     str +=
       "} // namespace VULKAN_HPP_NAMESPACE\n"
       "\n"
       "namespace std\n"
       "{\n";
-    generator.appendHashStructures( str );
+    str += generator.generateHashStructures();
     str +=
       "} // namespace std\n"
       "#endif\n";
@@ -16811,11 +16881,10 @@ namespace VULKAN_HPP_NAMESPACE
 
 )";
 
-    generator.appendRAIIDispatchers( str );
-
-    std::set<std::string> specialFunctions = generator.determineSpecialFunctions();
-    generator.appendRAIIHandles( str, specialFunctions );
-    generator.appendRAIICommands( str, specialFunctions );
+    generator.prepareRAIIHandles();
+    str += generator.generateRAIIDispatchers();
+    str += generator.generateRAIIHandles();
+    str += generator.generateRAIICommandDefinitions();
     str += R"(
 #endif
   } // namespace VULKAN_HPP_RAII_NAMESPACE

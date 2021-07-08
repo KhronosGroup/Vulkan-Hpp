@@ -25,26 +25,26 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document );
 
-  void                  appendHashStructures( std::string & str ) const;
-  void                  appendRAIICommands( std::string & str, std::set<std::string> const & specialFunctions ) const;
-  void                  appendRAIIDispatchers( std::string & str ) const;
-  void                  appendRAIIHandles( std::string & str, std::set<std::string> const & specialFunctions ) const;
-  void                  appendResultExceptions( std::string & str ) const;
-  void                  appendStructs( std::string & str );
-  void                  appendStructureChainValidation( std::string & str );
-  void                  appendThrowExceptions( std::string & str ) const;
-  void                  appendIndexTypeTraits( std::string & str ) const;
-  std::set<std::string> determineSpecialFunctions();
-  std::string           generateBaseTypes() const;
-  std::string           generateBitmasks() const;
-  std::string           generateCommandDefinitions() const;
-  std::string           generateDispatchLoaderDynamic();  // uses vkGet*ProcAddress to get function pointers
-  std::string           generateDispatchLoaderStatic();   // uses exported symbols from loader
-  std::string           generateEnums() const;
-  std::string           generateHandles();
-  std::string const &   getTypesafeCheck() const;
-  std::string const &   getVersion() const;
-  std::string const &   getVulkanLicenseHeader() const;
+  std::string         generateBaseTypes() const;
+  std::string         generateBitmasks() const;
+  std::string         generateCommandDefinitions() const;
+  std::string         generateDispatchLoaderDynamic();  // uses vkGet*ProcAddress to get function pointers
+  std::string         generateDispatchLoaderStatic();   // uses exported symbols from loader
+  std::string         generateEnums() const;
+  std::string         generateHandles();
+  std::string         generateHashStructures() const;
+  std::string         generateIndexTypeTraits() const;
+  std::string         generateRAIICommandDefinitions() const;
+  std::string         generateRAIIDispatchers() const;
+  std::string         generateRAIIHandles() const;
+  std::string         generateResultExceptions() const;
+  std::string         generateStructs();
+  std::string         generateStructureChainValidation();
+  std::string         generateThrowResultException() const;
+  std::string const & getTypesafeCheck() const;
+  std::string const & getVersion() const;
+  std::string const & getVulkanLicenseHeader() const;
+  void                prepareRAIIHandles();
 
 private:
   struct TypeInfo
@@ -309,6 +309,14 @@ private:
 private:
   void addCommand( std::string const & name, CommandData & commandData );
   void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
+  void appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
+                                            std::set<std::string> &          listedCommands,
+                                            std::string const &              enter,
+                                            std::string const &              leave,
+                                            std::string &                    commandMembers,
+                                            std::string &                    initialCommandAssignments,
+                                            std::string &                    instanceCommandAssignments,
+                                            std::string &                    deviceCommandAssignments ) const;
   void appendDestroyCommand( std::string &       str,
                              std::string const & name,
                              CommandData const & commandData
@@ -317,13 +325,6 @@ private:
                              std::string const & handleName
 #endif
   ) const;
-  void        appendDispatchLoaderDynamicCommand( std::string &       str,
-                                                  std::string &       emptyFunctions,
-                                                  std::string &       deviceFunctions,
-                                                  std::string &       deviceFunctionsInstance,
-                                                  std::string &       instanceFunctions,
-                                                  std::string const & commandName,
-                                                  CommandData const & commandData );
   void        appendEnum( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
   void        appendEnumInitializer( std::string &                      str,
                                      TypeInfo const &                   type,
@@ -1057,6 +1058,9 @@ private:
                                           size_t                      initialSkipCount,
                                           bool                        definition,
                                           std::vector<size_t> const & returnParamIndices ) const;
+  std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
+                                                              CommandData const & commandData,
+                                                              std::string const & firstArg ) const;
   std::string generateFunctionCall( std::string const &              name,
                                     CommandData const &              commandData,
                                     size_t                           returnParamIndex,
@@ -1082,6 +1086,7 @@ private:
                                                      std::map<size_t, size_t> const & vectorParamIndices,
                                                      size_t                           returnParamIndex ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
+  bool                                isDeviceCommand( CommandData const & commandData ) const;
   bool                                isHandleType( std::string const & type ) const;
   bool isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isLenByStructMember( std::string const & name, ParamData const & param ) const;
@@ -1195,6 +1200,7 @@ private:
   std::set<std::string>                                               m_listedTypes;
   std::set<std::string>                                               m_listingTypes;
   std::map<std::string, PlatformData>                                 m_platforms;
+  std::set<std::string>                                               m_RAIISpecialFunctions;
   std::map<std::string, StructureAliasData>                           m_structureAliases;
   std::map<std::string, StructureData>                                m_structures;
   std::set<std::string>                                               m_tags;

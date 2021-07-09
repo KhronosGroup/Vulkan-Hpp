@@ -5732,6 +5732,7 @@ namespace VULKAN_HPP_NAMESPACE
   using DeviceSize      = uint64_t;
   using RemoteAddressNV = void *;
   using SampleMask      = uint32_t;
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #include <vulkan/vulkan_enums.hpp>

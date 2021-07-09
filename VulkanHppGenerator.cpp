@@ -116,124 +116,78 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
 std::string VulkanHppGenerator::generateBaseTypes() const
 {
   assert( !m_baseTypes.empty() );
-  std::string str = R"(
+  const std::string basetypesTemplate = R"(
   //==================
   //=== BASE TYPEs ===
   //==================
 
+${basetypes}
 )";
 
+  std::string basetypes;
   for ( auto const & baseType : m_baseTypes )
   {
     // filter out VkFlags and VkFlags64, as they are mapped to our own Flags class
     if ( ( baseType.first != "VkFlags" ) && ( baseType.first != "VkFlags64" ) )
     {
-      str += "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose() + ";\n";
+      basetypes +=
+        "  using " + stripPrefix( baseType.first, "Vk" ) + " = " + baseType.second.typeInfo.compose() + ";\n";
     }
   }
-  return str;
+
+  return replaceWithMap( basetypesTemplate, { { "basetypes", basetypes } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasks() const
 {
-  std::string str = R"(
+  const std::string bitmasksTemplate = R"(
   //================
   //=== BITMASKs ===
   //================
+
+${bitmasks}
 )";
 
+  std::string           bitmasks;
   std::set<std::string> listedBitmasks;
   for ( auto const & feature : m_features )
   {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & type : feature.second.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type );
-      if ( bitmaskIt != m_bitmasks.end() )
-      {
-        assert( listedBitmasks.find( type ) == listedBitmasks.end() );
-        listedBitmasks.insert( type );
-        str += generateBitmask( bitmaskIt );
-      }
-    }
+    bitmasks += generateBitmasks( feature.second.types, listedBitmasks, feature.first );
   }
-
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    std::vector<std::map<std::string, BitmaskData>::const_iterator> bitmaskIts;
-    for ( auto const & type : extIt.second->second.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type );
-      if ( bitmaskIt != m_bitmasks.end() )
-      {
-        bitmaskIts.push_back( bitmaskIt );
-      }
-    }
-
-    if ( !bitmaskIts.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) =
-        generateProtection( bitmaskIts.front()->first, !bitmaskIts.front()->second.alias.empty() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto bitmaskIt : bitmaskIts )
-      {
-        assert( listedBitmasks.find( bitmaskIt->first ) == listedBitmasks.end() );
-        listedBitmasks.insert( bitmaskIt->first );
-        str += generateBitmask( bitmaskIt );
-      }
-      str += leave;
-    }
+    bitmasks += generateBitmasks( extIt.second->second.types, listedBitmasks, extIt.second->first );
   }
-  return str;
+
+  return replaceWithMap( bitmasksTemplate, { { "bitmasks", bitmasks } } );
 }
 
 std::string VulkanHppGenerator::generateCommandDefinitions() const
 {
-  std::string str = R"(
+  const std::string commandDefinitionsTemplate = R"(
   //===========================
   //=== COMMAND Definitions ===
   //===========================
+
+${commandDefinitions}
 )";
 
+  std::string           commandDefinitions;
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & command : feature.second.commands )
-    {
-      assert( listedCommands.find( command ) == listedCommands.end() );
-      listedCommands.insert( command );
-
-      auto commandIt = m_commands.find( command );
-      assert( commandIt != m_commands.end() );
-      str += generateCommandDefinitions( command, commandIt->second.handle );
-    }
+    commandDefinitions += generateCommandDefinitions( feature.second.commands, listedCommands, feature.first );
   }
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto const & command : extIt.second->second.commands )
-      {
-        if ( listedCommands.find( command ) == listedCommands.end() )
-        {
-          listedCommands.insert( command );
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-          str += generateCommandDefinitions( command, commandIt->second.handle );
-        }
-      }
-      str += leave;
-    }
+    commandDefinitions +=
+      generateCommandDefinitions( extIt.second->second.commands, listedCommands, extIt.second->first );
   }
-  return str;
+
+  return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamic()
+std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
 {
   const std::string dispatchLoaderDynamicTemplate = R"(
   class DispatchLoaderDynamic
@@ -327,33 +281,23 @@ ${deviceCommandAssignments}
   std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
   for ( auto const & feature : m_features )
   {
-    std::string header = "\n  //=== " + feature.first + " ===\n";
     appendDispatchLoaderDynamicCommands( feature.second.commands,
                                          listedCommands,
-                                         header,
-                                         "",
+                                         feature.first,
                                          commandMembers,
                                          initialCommandAssignments,
                                          instanceCommandAssignments,
                                          deviceCommandAssignments );
   }
-
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      std::string header       = "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      appendDispatchLoaderDynamicCommands( extIt.second->second.commands,
-                                           listedCommands,
-                                           header,
-                                           leave,
-                                           commandMembers,
-                                           initialCommandAssignments,
-                                           instanceCommandAssignments,
-                                           deviceCommandAssignments );
-    }
+    appendDispatchLoaderDynamicCommands( extIt.second->second.commands,
+                                         listedCommands,
+                                         extIt.second->first,
+                                         commandMembers,
+                                         initialCommandAssignments,
+                                         instanceCommandAssignments,
+                                         deviceCommandAssignments );
   }
 
   return replaceWithMap( dispatchLoaderDynamicTemplate,
@@ -363,7 +307,7 @@ ${deviceCommandAssignments}
                            { "instanceCommandAssignments", instanceCommandAssignments } } );
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderStatic()
+std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
 {
   const std::string dispatchLoaderStaticTemplate = R"(
 #if !defined( VK_NO_PROTOTYPES )
@@ -379,19 +323,12 @@ ${commands}
   std::set<std::string> listedCommands;
   for ( auto const & feature : m_features )
   {
-    std::string header = "\n    //=== " + feature.first + " ===\n";
-    commands += generateDispatchLoaderStaticCommands( feature.second.commands, listedCommands, header, "" );
+    commands += generateDispatchLoaderStaticCommands( feature.second.commands, listedCommands, feature.first );
   }
-
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    if ( !extIt.second->second.commands.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-      std::string header       = "\n" + enter + "    //=== " + extIt.second->first + " ===\n";
-      commands += generateDispatchLoaderStaticCommands( extIt.second->second.commands, listedCommands, header, leave );
-    }
+    commands +=
+      generateDispatchLoaderStaticCommands( extIt.second->second.commands, listedCommands, extIt.second->first );
   }
 
   return replaceWithMap( dispatchLoaderStaticTemplate, { { "commands", commands } } );
@@ -400,7 +337,7 @@ ${commands}
 std::string VulkanHppGenerator::generateEnums() const
 {
   // start with toHexString, which is used in all the to_string functions here!
-  std::string str = R"(
+  const std::string enumsTemplate = R"(
   VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
   {
     std::stringstream stream;
@@ -411,62 +348,26 @@ std::string VulkanHppGenerator::generateEnums() const
   //=============
   //=== ENUMs ===
   //=============
-)";
 
-  std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
-  {
-    str += "\n  //=== " + feature.first + " ===\n";
-    for ( auto const & type : feature.second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      if ( enumIt != m_enums.end() )
-      {
-        assert( listedEnums.find( type ) == listedEnums.end() );
-        listedEnums.insert( type );
+${enums}
 
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-    }
-  }
-
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    std::vector<std::map<std::string, EnumData>::const_iterator> enumIts;
-    for ( auto const & type : extIt.second->second.types )
-    {
-      auto enumIt = m_enums.find( type );
-      // some "FlagBits"-enums are implicitly added to a feature, as the corresponding "Flags"-enum needs it !!
-      // => it can happen that a "FlagBits"-enum explicitly listed for an extension is already listed with a feature!
-      if ( enumIt != m_enums.end() && listedEnums.insert( type ).second )
-      {
-        enumIts.push_back( enumIt );
-      }
-    }
-
-    if ( !enumIts.empty() )
-    {
-      std::string enter, leave;
-      std::tie( enter, leave ) = generateProtection( enumIts.front()->first, !enumIts.front()->second.alias.empty() );
-      str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-      for ( auto enumIt : enumIts )
-      {
-        str += "\n";
-        appendEnum( str, *enumIt );
-        appendEnumToString( str, *enumIt );
-      }
-      str += leave;
-    }
-  }
-
-  str += R"(
   template<ObjectType value>
   struct cpp_type
   {};
 )";
-  return str;
+
+  std::string           enums;
+  std::set<std::string> listedEnums;
+  for ( auto const & feature : m_features )
+  {
+    enums += generateEnums( feature.second.types, listedEnums, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    enums += generateEnums( extIt.second->second.types, listedEnums, extIt.second->first );
+  }
+
+  return replaceWithMap( enumsTemplate, { { "enums", enums } } );
 }
 
 std::string VulkanHppGenerator::generateHandles()
@@ -485,13 +386,13 @@ std::string VulkanHppGenerator::generateHandles()
       str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
     }
   }
+
+  // then list all the handles
   for ( auto const & handle : m_handles )
   {
     if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
     {
-      assert( m_listingTypes.empty() );
-      appendHandle( str, handle );
-      assert( m_listingTypes.empty() );
+      str += generateHandle( handle );
     }
   }
   return str;
@@ -830,9 +731,7 @@ std::string VulkanHppGenerator::generateStructs()
   {
     if ( m_listedTypes.find( structure.first ) == m_listedTypes.end() )
     {
-      assert( m_listingTypes.empty() );
       appendStruct( str, structure );
-      assert( m_listingTypes.empty() );
     }
   }
   return str;
@@ -1638,8 +1537,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<std::string> & types, s
 
 void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
                                                               std::set<std::string> &          listedCommands,
-                                                              std::string const &              enter,
-                                                              std::string const &              leave,
+                                                              std::string const &              title,
                                                               std::string &                    commandMembers,
                                                               std::string & initialCommandAssignments,
                                                               std::string & instanceCommandAssignments,
@@ -1670,21 +1568,24 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<std::s
       }
     }
   }
+  std::string enter, leave;
+  std::tie( enter, leave ) = generateProtection( title, std::string() );
+  std::string header       = "\n" + enter + "  //=== " + title + " ===\n";
   if ( !members.empty() )
   {
-    commandMembers += enter + members + leave;
+    commandMembers += header + members + leave;
   }
   if ( !initial.empty() )
   {
-    initialCommandAssignments += enter + initial + leave;
+    initialCommandAssignments += header + initial + leave;
   }
   if ( !instance.empty() )
   {
-    instanceCommandAssignments += enter + instance + leave;
+    instanceCommandAssignments += header + instance + leave;
   }
   if ( !device.empty() )
   {
-    deviceCommandAssignments += enter + device + leave;
+    deviceCommandAssignments += header + device + leave;
   }
 }
 
@@ -2167,291 +2068,6 @@ void VulkanHppGenerator::appendFunctionHeaderArgumentEnhancedVector( std::string
          optionalEnd + strippedParameterName;
 }
 
-void VulkanHppGenerator::appendHandle( std::string & str, std::pair<std::string, HandleData> const & handleData )
-{
-  assert( m_listingTypes.find( handleData.first ) == m_listingTypes.end() );
-  m_listingTypes.insert( handleData.first );
-
-  assert( m_listedTypes.find( handleData.first ) == m_listedTypes.end() );
-
-  // first check for any handle that needs to be listed before this one
-  for ( auto const & command : handleData.second.commands )
-  {
-    auto commandIt = m_commands.find( command );
-    assert( commandIt != m_commands.end() );
-    for ( auto const & parameter : commandIt->second.params )
-    {
-      if ( isHandleType( parameter.type.type ) &&
-           ( handleData.first != parameter.type.type ) )  // the commands use this handleData type !
-      {
-        appendType( str, parameter.type.type );
-      }
-    }
-  }
-
-  // list the commands of this handle
-  if ( handleData.first.empty() )
-  {
-    // first, the free functions, not bound to any handle
-    std::set<std::string> listedCommands;  // some commands are listed with more than one extension !
-    for ( auto const & feature : m_features )
-    {
-      std::vector<std::string> commands =
-        selectCommandsByHandle( feature.second.commands, handleData.second.commands, listedCommands );
-      if ( !commands.empty() )
-      {
-        str += "\n  //=== " + feature.first + " ===\n";
-        for ( auto const & command : commands )
-        {
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-          if ( commandIt->first == "vkCreateInstance" )
-          {
-            // special handling for createInstance, as we need to explicitly place the forward declarations and the
-            // deleter classes here
-#if !defined( NDEBUG )
-            auto handleIt = m_handles.find( "" );
-            assert( ( handleIt != m_handles.end() ) && ( handleIt->second.childrenHandles.size() == 2 ) );
-            assert( handleIt->second.childrenHandles.find( "VkInstance" ) != handleIt->second.childrenHandles.end() );
-#endif
-
-            appendUniqueTypes( str, "", { "VkInstance" } );
-          }
-          str += "\n";
-
-          str += generateCommand( commandIt->first, commandIt->second, 0, false );
-        }
-      }
-    }
-#if !defined( NDEBUG )
-    for ( auto const & extIt : m_extensionsByNumber )
-    {
-      assert(
-        selectCommandsByHandle( extIt.second->second.commands, handleData.second.commands, listedCommands ).empty() );
-    }
-#endif
-  }
-  else
-  {
-    // then append any forward declaration of Deleters used by this handle
-    if ( !handleData.second.childrenHandles.empty() )
-    {
-      appendUniqueTypes( str, handleData.first, handleData.second.childrenHandles );
-    }
-    else if ( handleData.first == "VkPhysicalDevice" )
-    {
-      // special handling for class Device, as it's created from PhysicalDevice, but destroys itself
-      appendUniqueTypes( str, "", { "VkDevice" } );
-    }
-
-    // list all the commands that are mapped to members of this class
-    std::string           commands;
-    std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-    for ( auto const & feature : m_features )
-    {
-      std::vector<std::string> commandNames =
-        selectCommandsByHandle( feature.second.commands, handleData.second.commands, listedCommands );
-      if ( !commandNames.empty() )
-      {
-        commands += "\n  //=== " + feature.first + " ===\n";
-        for ( auto const & command : commandNames )
-        {
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-
-          commands += "\n";
-          commands += generateCommand( commandIt->first, commandIt->second, 1, false );
-          appendDestroyCommand( commands,
-                                commandIt->first,
-                                commandIt->second
-#if !defined( NDEBUG )
-                                ,
-                                handleData.first
-#endif
-          );
-        }
-      }
-    }
-    for ( auto const & extIt : m_extensionsByNumber )
-    {
-      std::vector<std::string> commandNames =
-        selectCommandsByHandle( extIt.second->second.commands, handleData.second.commands, listedCommands );
-      if ( !commandNames.empty() )
-      {
-        std::string enter, leave;
-        std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
-        commands += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
-        for ( auto const & command : commandNames )
-        {
-          auto commandIt = m_commands.find( command );
-          assert( commandIt != m_commands.end() );
-
-          std::string commandString;
-          std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, 1, m_tags );
-          commands += "\n";
-          commands += generateCommand( commandIt->first, commandIt->second, 1, false );
-          appendDestroyCommand( commands,
-                                commandIt->first,
-                                commandIt->second
-#if !defined( NDEBUG )
-                                ,
-                                handleData.first
-#endif
-          );
-        }
-        commands += leave;
-      }
-    }
-
-    static const std::string templateString = R"(
-${enter}  class ${className}
-  {
-  public:
-    using CType = Vk${className};
-
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
-
-  public:
-    VULKAN_HPP_CONSTEXPR ${className}() = default;
-    VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-    {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
-      : m_${memberName}( ${memberName} )
-    {}
-
-#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
-    ${className} & operator=(Vk${className} ${memberName}) VULKAN_HPP_NOEXCEPT
-    {
-      m_${memberName} = ${memberName};
-      return *this;
-    }
-#endif
-
-    ${className} & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-    {
-      m_${memberName} = {};
-      return *this;
-    }
-
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${className} const & ) const = default;
-#else
-    bool operator==( ${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} == rhs.m_${memberName};
-    }
-
-    bool operator!=(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} != rhs.m_${memberName};
-    }
-
-    bool operator<(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} < rhs.m_${memberName};
-    }
-#endif
-${commands}
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk${className}() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName};
-    }
-
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} != VK_NULL_HANDLE;
-    }
-
-    bool operator!() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} == VK_NULL_HANDLE;
-    }
-
-  private:
-    Vk${className} m_${memberName} = {};
-  };
-  static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::${objTypeEnum}>
-  {
-    using type = VULKAN_HPP_NAMESPACE::${className};
-  };
-
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::${className};
-  };
-
-${CppTypeFromDebugReportObjectTypeEXT}
-
-  template <>
-  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
-  };
-${usingAlias}${leave})";
-
-    std::string className = stripPrefix( handleData.first, "Vk" );
-    std::string valueName = handleData.second.objTypeEnum;
-    valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
-
-    auto enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
-    assert( enumIt != m_enums.end() );
-    auto                     valueIt                                     = std::find_if( enumIt->second.values.begin(),
-                                 enumIt->second.values.end(),
-                                 [&valueName]( EnumValueData const & evd ) { return valueName == evd.name; } );
-    static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::e${className}>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::${className};
-  };
-)";
-    std::string              cppTypeFromDebugReportObjectTypeEXT =
-      ( valueIt != enumIt->second.values.end() )
-                     ? replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } )
-                     : "";
-    std::string debugReportObjectType = ( valueIt != enumIt->second.values.end() )
-                                          ? generateEnumValueName( enumIt->first, valueIt->name, false, m_tags )
-                                          : "eUnknown";
-
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
-
-    assert( !handleData.second.objTypeEnum.empty() );
-    enumIt = m_enums.find( "VkObjectType" );
-    assert( enumIt != m_enums.end() );
-    valueIt =
-      std::find_if( enumIt->second.values.begin(),
-                    enumIt->second.values.end(),
-                    [&handleData]( EnumValueData const & evd ) { return evd.name == handleData.second.objTypeEnum; } );
-    assert( valueIt != enumIt->second.values.end() );
-    std::string usingAlias;
-    if ( !handleData.second.alias.empty() )
-    {
-      usingAlias += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " +
-                    stripPrefix( handleData.first, "Vk" ) + ";\n";
-    }
-
-    str += replaceWithMap( templateString,
-                           { { "className", className },
-                             { "commands", commands },
-                             { "CppTypeFromDebugReportObjectTypeEXT", cppTypeFromDebugReportObjectTypeEXT },
-                             { "debugReportObjectType", debugReportObjectType },
-                             { "enter", enter },
-                             { "leave", leave },
-                             { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
-                             { "objTypeEnum", generateEnumValueName( enumIt->first, valueIt->name, false, m_tags ) },
-                             { "usingAlias", usingAlias } } );
-  }
-
-  m_listingTypes.erase( handleData.first );
-  m_listedTypes.insert( handleData.first );
-}
-
 void VulkanHppGenerator::appendRAIIHandle( std::string &                              str,
                                            std::pair<std::string, HandleData> const & handle,
                                            std::set<std::string> &                    listedHandles,
@@ -2671,9 +2287,6 @@ ${memberFunctionDeclarations}
 
 void VulkanHppGenerator::appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure )
 {
-  assert( m_listingTypes.find( structure.first ) == m_listingTypes.end() );
-  m_listingTypes.insert( structure.first );
-
   assert( m_listedTypes.find( structure.first ) == m_listedTypes.end() );
 
   for ( auto const & member : structure.second.members )
@@ -2702,7 +2315,6 @@ void VulkanHppGenerator::appendStruct( std::string & str, std::pair<std::string,
     appendStructure( str, structure );
   }
 
-  m_listingTypes.erase( structure.first );
   m_listedTypes.insert( structure.first );
 }
 
@@ -9585,12 +9197,12 @@ void VulkanHppGenerator::appendType( std::string & str, std::string const & type
             assert( handleIt != m_handles.end() );
             if ( m_listedTypes.find( handleIt->first ) == m_listedTypes.end() )
             {
-              appendHandle( str, *handleIt );
+              str += generateHandle( *handleIt );
             }
           }
           else
           {
-            appendHandle( str, *handleIt );
+            str += generateHandle( *handleIt );
           }
         }
         break;
@@ -10666,6 +10278,29 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   return str;
 }
 
+std::string VulkanHppGenerator::generateBitmasks( std::vector<std::string> const & types,
+                                                  std::set<std::string> &          listedBitmasks,
+                                                  std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & type : types )
+  {
+    auto bitmaskIt = m_bitmasks.find( type );
+    if ( ( bitmaskIt != m_bitmasks.end() ) && ( listedBitmasks.find( type ) == listedBitmasks.end() ) )
+    {
+      listedBitmasks.insert( type );
+      str += generateBitmask( bitmaskIt );
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                                                 = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
+}
+
 std::string VulkanHppGenerator::generateCommand( std::string const & name,
                                                  CommandData const & commandData,
                                                  size_t              initialSkipCount,
@@ -10692,6 +10327,31 @@ std::string VulkanHppGenerator::generateCommand( std::string const & name,
   if ( str.empty() )
   {
     throw std::runtime_error( "Never encountered a function like <" + name + "> !" );
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<std::string> const & commands,
+                                                            std::set<std::string> &          listedCommands,
+                                                            std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & command : commands )
+  {
+    if ( listedCommands.find( command ) == listedCommands.end() )
+    {
+      listedCommands.insert( command );
+
+      auto commandIt = m_commands.find( command );
+      assert( commandIt != m_commands.end() );
+      str += generateCommandDefinitions( command, commandIt->second.handle );
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
   }
   return str;
 }
@@ -11727,8 +11387,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
 
 std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
                                                                       std::set<std::string> &          listedCommands,
-                                                                      std::string const &              header,
-                                                                      std::string const &              leave ) const
+                                                                      std::string const &              title ) const
 {
   std::string str;
   for ( auto const & command : commands )
@@ -11768,8 +11427,39 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
                                { "returnType", commandIt->second.returnType } } );
     }
   }
-  assert( !str.empty() );
-  return header + str + leave;
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "    //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateEnums( std::vector<std::string> const & enums,
+                                               std::set<std::string> &          listedEnums,
+                                               std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & type : enums )
+  {
+    auto enumIt = m_enums.find( type );
+    if ( ( enumIt != m_enums.end() ) && ( listedEnums.find( type ) == listedEnums.end() ) )
+    {
+      listedEnums.insert( type );
+
+      str += "\n";
+      appendEnum( str, *enumIt );
+      appendEnumToString( str, *enumIt );
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
 }
 
 std::string VulkanHppGenerator::generateFunctionCall( std::string const &              name,
@@ -11887,6 +11577,289 @@ std::string VulkanHppGenerator::generateFunctionCall( std::string const &       
   }
 
   str += " )";
+  return str;
+}
+
+std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleData> const & handleData )
+{
+  assert( m_listedTypes.find( handleData.first ) == m_listedTypes.end() );
+
+  std::string str;
+  // first check for any handle that needs to be listed before this one
+  for ( auto const & command : handleData.second.commands )
+  {
+    auto commandIt = m_commands.find( command );
+    assert( commandIt != m_commands.end() );
+    for ( auto const & parameter : commandIt->second.params )
+    {
+      if ( isHandleType( parameter.type.type ) &&
+           ( handleData.first != parameter.type.type ) )  // the commands use this handleData type !
+      {
+        appendType( str, parameter.type.type );
+      }
+    }
+  }
+
+  // list the commands of this handle
+  if ( handleData.first.empty() )
+  {
+    // first, the free functions, not bound to any handle
+    std::set<std::string> listedCommands;  // some commands are listed with more than one extension !
+    for ( auto const & feature : m_features )
+    {
+      std::vector<std::string> commands =
+        selectCommandsByHandle( feature.second.commands, handleData.second.commands, listedCommands );
+      if ( !commands.empty() )
+      {
+        str += "\n  //=== " + feature.first + " ===\n";
+        for ( auto const & command : commands )
+        {
+          auto commandIt = m_commands.find( command );
+          assert( commandIt != m_commands.end() );
+          if ( commandIt->first == "vkCreateInstance" )
+          {
+            // special handling for createInstance, as we need to explicitly place the forward declarations and the
+            // deleter classes here
+#if !defined( NDEBUG )
+            auto handleIt = m_handles.find( "" );
+            assert( ( handleIt != m_handles.end() ) && ( handleIt->second.childrenHandles.size() == 2 ) );
+            assert( handleIt->second.childrenHandles.find( "VkInstance" ) != handleIt->second.childrenHandles.end() );
+#endif
+
+            appendUniqueTypes( str, "", { "VkInstance" } );
+          }
+          str += "\n";
+
+          str += generateCommand( commandIt->first, commandIt->second, 0, false );
+        }
+      }
+    }
+#if !defined( NDEBUG )
+    for ( auto const & extIt : m_extensionsByNumber )
+    {
+      assert(
+        selectCommandsByHandle( extIt.second->second.commands, handleData.second.commands, listedCommands ).empty() );
+    }
+#endif
+  }
+  else
+  {
+    // then append any forward declaration of Deleters used by this handle
+    if ( !handleData.second.childrenHandles.empty() )
+    {
+      appendUniqueTypes( str, handleData.first, handleData.second.childrenHandles );
+    }
+    else if ( handleData.first == "VkPhysicalDevice" )
+    {
+      // special handling for class Device, as it's created from PhysicalDevice, but destroys itself
+      appendUniqueTypes( str, "", { "VkDevice" } );
+    }
+
+    // list all the commands that are mapped to members of this class
+    std::string           commands;
+    std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+    for ( auto const & feature : m_features )
+    {
+      std::vector<std::string> commandNames =
+        selectCommandsByHandle( feature.second.commands, handleData.second.commands, listedCommands );
+      if ( !commandNames.empty() )
+      {
+        commands += "\n  //=== " + feature.first + " ===\n";
+        for ( auto const & command : commandNames )
+        {
+          auto commandIt = m_commands.find( command );
+          assert( commandIt != m_commands.end() );
+
+          commands += "\n";
+          commands += generateCommand( commandIt->first, commandIt->second, 1, false );
+          appendDestroyCommand( commands,
+                                commandIt->first,
+                                commandIt->second
+#if !defined( NDEBUG )
+                                ,
+                                handleData.first
+#endif
+          );
+        }
+      }
+    }
+    for ( auto const & extIt : m_extensionsByNumber )
+    {
+      std::vector<std::string> commandNames =
+        selectCommandsByHandle( extIt.second->second.commands, handleData.second.commands, listedCommands );
+      if ( !commandNames.empty() )
+      {
+        std::string enter, leave;
+        std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+        commands += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
+        for ( auto const & command : commandNames )
+        {
+          auto commandIt = m_commands.find( command );
+          assert( commandIt != m_commands.end() );
+
+          std::string commandString;
+          std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, 1, m_tags );
+          commands += "\n";
+          commands += generateCommand( commandIt->first, commandIt->second, 1, false );
+          appendDestroyCommand( commands,
+                                commandIt->first,
+                                commandIt->second
+#if !defined( NDEBUG )
+                                ,
+                                handleData.first
+#endif
+          );
+        }
+        commands += leave;
+      }
+    }
+
+    static const std::string templateString = R"(
+${enter}  class ${className}
+  {
+  public:
+    using CType = Vk${className};
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
+
+  public:
+    VULKAN_HPP_CONSTEXPR ${className}() = default;
+    VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {}
+    VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
+      : m_${memberName}( ${memberName} )
+    {}
+
+#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
+    ${className} & operator=(Vk${className} ${memberName}) VULKAN_HPP_NOEXCEPT
+    {
+      m_${memberName} = ${memberName};
+      return *this;
+    }
+#endif
+
+    ${className} & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_${memberName} = {};
+      return *this;
+    }
+
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ${className} const & ) const = default;
+#else
+    bool operator==( ${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName} == rhs.m_${memberName};
+    }
+
+    bool operator!=(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName} != rhs.m_${memberName};
+    }
+
+    bool operator<(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName} < rhs.m_${memberName};
+    }
+#endif
+${commands}
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk${className}() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName};
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName} != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${memberName} == VK_NULL_HANDLE;
+    }
+
+  private:
+    Vk${className} m_${memberName} = {};
+  };
+  static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+
+  template <>
+  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::${objTypeEnum}>
+  {
+    using type = VULKAN_HPP_NAMESPACE::${className};
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::${className};
+  };
+
+${CppTypeFromDebugReportObjectTypeEXT}
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+${usingAlias}${leave})";
+
+    std::string className = stripPrefix( handleData.first, "Vk" );
+    std::string valueName = handleData.second.objTypeEnum;
+    valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
+
+    auto enumIt = m_enums.find( "VkDebugReportObjectTypeEXT" );
+    assert( enumIt != m_enums.end() );
+    auto                     valueIt                                     = std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&valueName]( EnumValueData const & evd ) { return valueName == evd.name; } );
+    static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::e${className}>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::${className};
+  };
+)";
+    std::string              cppTypeFromDebugReportObjectTypeEXT =
+      ( valueIt != enumIt->second.values.end() )
+                     ? replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } )
+                     : "";
+    std::string debugReportObjectType = ( valueIt != enumIt->second.values.end() )
+                                          ? generateEnumValueName( enumIt->first, valueIt->name, false, m_tags )
+                                          : "eUnknown";
+
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( handleData.first, !handleData.second.alias.empty() );
+
+    assert( !handleData.second.objTypeEnum.empty() );
+    enumIt = m_enums.find( "VkObjectType" );
+    assert( enumIt != m_enums.end() );
+    valueIt =
+      std::find_if( enumIt->second.values.begin(),
+                    enumIt->second.values.end(),
+                    [&handleData]( EnumValueData const & evd ) { return evd.name == handleData.second.objTypeEnum; } );
+    assert( valueIt != enumIt->second.values.end() );
+    std::string usingAlias;
+    if ( !handleData.second.alias.empty() )
+    {
+      usingAlias += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " +
+                    stripPrefix( handleData.first, "Vk" ) + ";\n";
+    }
+
+    str += replaceWithMap( templateString,
+                           { { "className", className },
+                             { "commands", commands },
+                             { "CppTypeFromDebugReportObjectTypeEXT", cppTypeFromDebugReportObjectTypeEXT },
+                             { "debugReportObjectType", debugReportObjectType },
+                             { "enter", enter },
+                             { "leave", leave },
+                             { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
+                             { "objTypeEnum", generateEnumValueName( enumIt->first, valueIt->name, false, m_tags ) },
+                             { "usingAlias", usingAlias } } );
+  }
+
+  m_listedTypes.insert( handleData.first );
   return str;
 }
 

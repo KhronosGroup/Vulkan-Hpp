@@ -28,8 +28,8 @@ public:
   std::string         generateBaseTypes() const;
   std::string         generateBitmasks() const;
   std::string         generateCommandDefinitions() const;
-  std::string         generateDispatchLoaderDynamic();  // uses vkGet*ProcAddress to get function pointers
-  std::string         generateDispatchLoaderStatic();   // uses exported symbols from loader
+  std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
+  std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
   std::string         generateHandles();
   std::string         generateHashStructures() const;
@@ -311,8 +311,7 @@ private:
   void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
   void appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
                                             std::set<std::string> &          listedCommands,
-                                            std::string const &              enter,
-                                            std::string const &              leave,
+                                            std::string const &              title,
                                             std::string &                    commandMembers,
                                             std::string &                    initialCommandAssignments,
                                             std::string &                    instanceCommandAssignments,
@@ -373,7 +372,6 @@ private:
                                                           std::string const & strippedParameterName,
                                                           bool                hasSizeParam,
                                                           bool                isTemplateParam ) const;
-  void        appendHandle( std::string & str, std::pair<std::string, HandleData> const & handle );
   void        appendRAIIHandle( std::string &                              str,
                                 std::pair<std::string, HandleData> const & handle,
                                 std::set<std::string> &                    listedHandles,
@@ -381,12 +379,10 @@ private:
   void        appendRAIIHandleContext( std::string &                              str,
                                        std::pair<std::string, HandleData> const & handle,
                                        std::set<std::string> const &              specialFunctions ) const;
-  std::pair<std::string, std::string> appendStaticCommand( std::string &                               str,
-                                                           std::pair<std::string, CommandData> const & command );
-  void appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
-  void appendStructAssignmentOperators( std::string &                                 str,
-                                        std::pair<std::string, StructureData> const & structure,
-                                        std::string const &                           prefix ) const;
+  void        appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
+  void        appendStructAssignmentOperators( std::string &                                 str,
+                                               std::pair<std::string, StructureData> const & structure,
+                                               std::string const &                           prefix ) const;
   void appendStructCompareOperators( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
   void appendStructConstructors( std::string &                                 str,
                                  std::pair<std::string, StructureData> const & structData,
@@ -926,10 +922,16 @@ private:
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string generateBitmasks( std::vector<std::string> const & types,
+                                std::set<std::string> &          listedBitmasks,
+                                std::string const &              title ) const;
   std::string generateCommand( std::string const & name,
                                CommandData const & commandData,
                                size_t              initialSkipCount,
                                bool                definition ) const;
+  std::string generateCommandDefinitions( std::vector<std::string> const & commands,
+                                          std::set<std::string> &          listedCommands,
+                                          std::string const &              title ) const;
   std::string generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
   std::string generateCommandName( std::string const &            vulkanCommandName,
                                    std::vector<ParamData> const & params,
@@ -1061,6 +1063,12 @@ private:
   std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
                                                               CommandData const & commandData,
                                                               std::string const & firstArg ) const;
+  std::string generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
+                                                    std::set<std::string> &          listedCommands,
+                                                    std::string const &              title ) const;
+  std::string generateEnums( std::vector<std::string> const & enums,
+                             std::set<std::string> &          listedEnums,
+                             std::string const &              title ) const;
   std::string generateFunctionCall( std::string const &              name,
                                     CommandData const &              commandData,
                                     size_t                           returnParamIndex,
@@ -1068,6 +1076,7 @@ private:
                                     std::map<size_t, size_t> const & vectorParamIndices,
                                     bool                             twoStep,
                                     bool                             firstCall ) const;
+  std::string generateHandle( std::pair<std::string, HandleData> const & handle );
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,
@@ -1198,7 +1207,6 @@ private:
   std::map<std::string, HandleData>                                   m_handles;
   std::set<std::string>                                               m_includes;
   std::set<std::string>                                               m_listedTypes;
-  std::set<std::string>                                               m_listingTypes;
   std::map<std::string, PlatformData>                                 m_platforms;
   std::set<std::string>                                               m_RAIISpecialFunctions;
   std::map<std::string, StructureAliasData>                           m_structureAliases;

@@ -162,6 +162,24 @@ ${bitmasks}
   return replaceWithMap( bitmasksTemplate, { { "bitmasks", bitmasks } } );
 }
 
+std::string VulkanHppGenerator::generateCommandDeclarations()
+{
+  const std::string commandDeclarationsTemplate = R"(
+  //============================
+  //=== COMMAND Declarations ===
+  //============================
+
+${commandDeclarations}
+)";
+
+  // functions not bound to any handle are listed with the empty handle
+  auto handleIt = m_handles.find( "" );
+  assert( handleIt != m_handles.end() );
+  std::string commandDeclarations = generateHandle( *handleIt );
+
+  return replaceWithMap( commandDeclarationsTemplate, { { "commandDeclarations", commandDeclarations } } );
+}
+
 std::string VulkanHppGenerator::generateCommandDefinitions() const
 {
   const std::string commandDefinitionsTemplate = R"(
@@ -370,32 +388,50 @@ ${enums}
   return replaceWithMap( enumsTemplate, { { "enums", enums } } );
 }
 
-std::string VulkanHppGenerator::generateHandles()
+std::string VulkanHppGenerator::generateHandleForwardDeclarations() const
 {
-  // Note: reordering structs or handles by features and extensions is not possible!
-  // first, forward declare all the structs!
-  std::string str;
-  for ( auto const & structure : m_structures )
+  const std::string handleForwardDeclarationsTemplate = R"(
+  //===================================
+  //=== HANDLE forward declarations ===
+  //===================================
+
+${handles}
+)";
+
+  std::string handles;
+  for ( auto const & feature : m_features )
   {
-    std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
-    str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
-           ";\n" + leave;
-    for ( auto const & alias : structure.second.aliases )
-    {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
-    }
+    handles += generateHandleForwardDeclarations( feature.second.types, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    handles += generateHandleForwardDeclarations( extIt.second->second.types, extIt.second->first );
   }
 
-  // then list all the handles
-  for ( auto const & handle : m_handles )
+  return replaceWithMap( handleForwardDeclarationsTemplate, { { "handles", handles } } );
+}
+
+std::string VulkanHppGenerator::generateHandles()
+{
+  const std::string handlesTemplate = R"(
+  //===============
+  //=== HANDLEs ===
+  //===============
+
+${handles}
+)";
+
+  std::string handles;
+  for ( auto const & feature : m_features )
   {
-    if ( m_listedTypes.find( handle.first ) == m_listedTypes.end() )
-    {
-      str += generateHandle( handle );
-    }
+    handles += generateHandles( feature.second.types, feature.first );
   }
-  return str;
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    handles += generateHandles( extIt.second->second.types, extIt.second->first );
+  }
+
+  return replaceWithMap( handlesTemplate, { { "handles", handles } } );
 }
 
 std::string VulkanHppGenerator::generateHashStructures() const
@@ -721,6 +757,29 @@ ${leave})";
     }
   }
   return str;
+}
+
+std::string VulkanHppGenerator::generateStructForwardDeclarations() const
+{
+  const std::string stuctForwardDeclarationsTemplate = R"(
+  //===================================
+  //=== STRUCT forward declarations ===
+  //===================================
+
+${structs}
+)";
+
+  std::string structs;
+  for ( auto const & feature : m_features )
+  {
+    structs += generateStructForwardDeclarations( feature.second.types, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    structs += generateStructForwardDeclarations( extIt.second->second.types, extIt.second->first );
+  }
+
+  return replaceWithMap( stuctForwardDeclarationsTemplate, { { "structs", structs } } );
 }
 
 std::string VulkanHppGenerator::generateStructs()
@@ -2468,7 +2527,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
           {
             argumentList +=
               "Optional<const " + stripPrefix( params[i].type.type, "Vk" ) + "> " + name +
-              ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+              ( ( !definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
             hasDefaultAssignment = true;
           }
           else
@@ -2488,7 +2547,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
             {
               argumentList +=
                 "Optional<const std::string> " + name +
-                ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+                ( ( !definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
               hasDefaultAssignment = true;
             }
             else
@@ -2507,7 +2566,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
               type.replace( pos, 4, "T" );
             }
             argumentList += "ArrayProxy<" + type + "> const & " + name;
-            if ( params[i].optional && !definition )
+            if ( params[i].optional && definition )
             {
               argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
               hasDefaultAssignment = true;
@@ -2530,7 +2589,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
         assert( params[i].type.isValue() );
         argumentList += params[i].type.compose() + " " + params[i].name + generateCArraySizes( params[i].arraySizes );
       }
-      argumentList += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment
+      argumentList += std::string( definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment
                                      ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
                                      : "" );
       encounteredArgument = true;
@@ -2573,7 +2632,7 @@ std::string VulkanHppGenerator::constructArgumentListEnhanced( std::vector<Param
       argumentList += ", ";
     }
     argumentList +=
-      std::string( "Dispatch const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" );
+      std::string( "Dispatch const & d" ) + ( definition ? " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" : "" );
   }
   return argumentList;
 }
@@ -11436,12 +11495,12 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
   return str;
 }
 
-std::string VulkanHppGenerator::generateEnums( std::vector<std::string> const & enums,
+std::string VulkanHppGenerator::generateEnums( std::vector<std::string> const & types,
                                                std::set<std::string> &          listedEnums,
                                                std::string const &              title ) const
 {
   std::string str;
-  for ( auto const & type : enums )
+  for ( auto const & type : types )
   {
     auto enumIt = m_enums.find( type );
     if ( ( enumIt != m_enums.end() ) && ( listedEnums.find( type ) == listedEnums.end() ) )
@@ -11585,21 +11644,6 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
   assert( m_listedTypes.find( handleData.first ) == m_listedTypes.end() );
 
   std::string str;
-  // first check for any handle that needs to be listed before this one
-  for ( auto const & command : handleData.second.commands )
-  {
-    auto commandIt = m_commands.find( command );
-    assert( commandIt != m_commands.end() );
-    for ( auto const & parameter : commandIt->second.params )
-    {
-      if ( isHandleType( parameter.type.type ) &&
-           ( handleData.first != parameter.type.type ) )  // the commands use this handleData type !
-      {
-        appendType( str, parameter.type.type );
-      }
-    }
-  }
-
   // list the commands of this handle
   if ( handleData.first.empty() )
   {
@@ -11863,6 +11907,47 @@ ${usingAlias}${leave})";
   return str;
 }
 
+std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<std::string> const & types,
+                                                                   std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & type : types )
+  {
+    auto handleIt = m_handles.find( type );
+    if ( handleIt != m_handles.end() )
+    {
+      str += "  class " + stripPrefix( type, "Vk" ) + ";\n";
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateHandles( std::vector<std::string> const & types, std::string const & title )
+{
+  std::string str;
+  for ( auto const & type : types )
+  {
+    auto handleIt = m_handles.find( type );
+    if ( handleIt != m_handles.end() )
+    {
+      str += generateHandle( *handleIt );
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
+}
+
 std::string VulkanHppGenerator::generateLenInitializer(
   std::vector<MemberData>::const_iterator                                        mit,
   std::map<std::vector<MemberData>::const_iterator,
@@ -12024,6 +12109,32 @@ std::string
                  "#endif /*VULKAN_HPP_NO_EXCEPTIONS*/\n" + prefix;
   }
   return sizeCheck;
+}
+
+std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<std::string> const & types,
+                                                                   std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & type : types )
+  {
+    auto structIt = m_structures.find( type );
+    if ( structIt != m_structures.end() )
+    {
+      std::string structName = stripPrefix( type, "Vk" );
+      str += std::string( "  " ) + ( structIt->second.isUnion ? "union" : "struct" ) + " " + structName + ";\n";
+      for ( auto alias : structIt->second.aliases )
+      {
+        str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structName + ";\n";
+      }
+    }
+  }
+  if ( !str.empty() )
+  {
+    std::string enter, leave;
+    std::tie( enter, leave ) = generateProtection( title, std::string() );
+    str                      = "\n" + enter + "  //=== " + title + " ===\n" + str + leave;
+  }
+  return str;
 }
 
 std::string VulkanHppGenerator::getPlatform( std::string const & extension ) const
@@ -16706,6 +16817,8 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
+    str += generator.generateHandleForwardDeclarations();
+    str += generator.generateStructForwardDeclarations();
     str += generator.generateHandles();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
@@ -16740,6 +16853,7 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
+    str += generator.generateCommandDeclarations();
     str += generator.generateCommandDefinitions();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE

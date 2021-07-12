@@ -27,10 +27,12 @@ public:
 
   std::string         generateBaseTypes() const;
   std::string         generateBitmasks() const;
+  std::string         generateCommandDeclarations();
   std::string         generateCommandDefinitions() const;
   std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
+  std::string         generateHandleForwardDeclarations() const;
   std::string         generateHandles();
   std::string         generateHashStructures() const;
   std::string         generateIndexTypeTraits() const;
@@ -38,6 +40,7 @@ public:
   std::string         generateRAIIDispatchers() const;
   std::string         generateRAIIHandles() const;
   std::string         generateResultExceptions() const;
+  std::string         generateStructForwardDeclarations() const;
   std::string         generateStructs();
   std::string         generateStructureChainValidation();
   std::string         generateThrowResultException() const;
@@ -1066,7 +1069,7 @@ private:
   std::string generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
-  std::string generateEnums( std::vector<std::string> const & enums,
+  std::string generateEnums( std::vector<std::string> const & types,
                              std::set<std::string> &          listedEnums,
                              std::string const &              title ) const;
   std::string generateFunctionCall( std::string const &              name,
@@ -1077,6 +1080,9 @@ private:
                                     bool                             twoStep,
                                     bool                             firstCall ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle );
+  std::string generateHandleForwardDeclarations( std::vector<std::string> const & types,
+                                                 std::string const &              title ) const;
+  std::string generateHandles( std::vector<std::string> const & types, std::string const & title );
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,
@@ -1089,6 +1095,8 @@ private:
                                  std::string const &                                          structName,
                                  std::string const &                                          prefix,
                                  bool mutualExclusiveLens ) const;
+  std::string generateStructForwardDeclarations( std::vector<std::string> const & types,
+                                                 std::string const &              title ) const;
   std::string getPlatform( std::string const & extension ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,

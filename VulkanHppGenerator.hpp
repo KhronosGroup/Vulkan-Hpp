@@ -31,15 +31,15 @@ public:
   std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
-  std::string         generateHandles();
+  std::string         generateHandles() const;
   std::string         generateHashStructures() const;
   std::string         generateIndexTypeTraits() const;
   std::string         generateRAIICommandDefinitions() const;
   std::string         generateRAIIDispatchers() const;
   std::string         generateRAIIHandles() const;
   std::string         generateResultExceptions() const;
-  std::string         generateStructs();
-  std::string         generateStructureChainValidation();
+  std::string         generateStructExtendsStructs() const;
+  std::string         generateStructs() const;
   std::string         generateThrowResultException() const;
   std::string const & getTypesafeCheck() const;
   std::string const & getVersion() const;
@@ -307,66 +307,16 @@ private:
   };
 
 private:
-  void addCommand( std::string const & name, CommandData & commandData );
-  void addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
-  void appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
-                                            std::set<std::string> &          listedCommands,
-                                            std::string const &              title,
-                                            std::string &                    commandMembers,
-                                            std::string &                    initialCommandAssignments,
-                                            std::string &                    instanceCommandAssignments,
-                                            std::string &                    deviceCommandAssignments ) const;
-  void appendDestroyCommand( std::string &       str,
-                             std::string const & name,
-                             CommandData const & commandData
-#if !defined( NDEBUG )
-                             ,
-                             std::string const & handleName
-#endif
-  ) const;
-  void        appendEnum( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
-  void        appendEnumInitializer( std::string &                      str,
-                                     TypeInfo const &                   type,
-                                     std::vector<std::string> const &   arraySizes,
-                                     std::vector<EnumValueData> const & values,
-                                     bool                               bitmask ) const;
-  void        appendEnumToString( std::string & str, std::pair<std::string, EnumData> const & enumData ) const;
-  std::string appendFunctionBodyEnhancedLocalReturnVariable( std::string &       str,
-                                                             std::string const & indentation,
-                                                             CommandData const & commandData,
-                                                             size_t              returnParamIndex,
-                                                             std::string const & enhancedReturnType,
-                                                             bool                withAllocator ) const;
-  void        appendFunctionBodyEnhancedMultiVectorSizeCheck( std::string &                    str,
-                                                              std::string const &              indentation,
-                                                              std::string const &              name,
-                                                              CommandData const &              commandData,
-                                                              size_t                           initialSkipCount,
-                                                              size_t                           returnParamIndex,
-                                                              std::map<size_t, size_t> const & vectorParamIndices ) const;
-  void        appendFunctionBodyEnhancedReturnResultValue( std::string &       str,
-                                                           std::string const & indentation,
-                                                           std::string const & returnName,
-                                                           std::string const & name,
-                                                           CommandData const & commandData,
-                                                           size_t              initialSkipCount,
-                                                           size_t              returnParamIndex,
-                                                           bool                twoStep ) const;
-  void        appendFunctionBodyEnhancedTwoStep( std::string &                    str,
-                                                 std::string const &              indentation,
-                                                 std::string const &              name,
-                                                 CommandData const &              commandData,
-                                                 size_t                           returnParamIndex,
-                                                 size_t                           templateParamIndex,
-                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                 std::string const &              returnName ) const;
-  bool        appendFunctionHeaderArgumentEnhanced( std::string &                    str,
-                                                    ParamData const &                param,
-                                                    size_t                           paramIndex,
-                                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                                    bool                             skip,
-                                                    bool                             argEncountered,
-                                                    bool                             isTemplateParam ) const;
+  void        addCommand( std::string const & name, CommandData & commandData );
+  void        addMissingFlagBits( std::vector<std::string> & types, std::string const & referencedIn );
+  std::string addTitleAndProtection( std::string const & str, std::string const & title ) const;
+  void        appendDispatchLoaderDynamicCommands( std::vector<std::string> const & commands,
+                                                   std::set<std::string> &          listedCommands,
+                                                   std::string const &              title,
+                                                   std::string &                    commandMembers,
+                                                   std::string &                    initialCommandAssignments,
+                                                   std::string &                    instanceCommandAssignments,
+                                                   std::string &                    deviceCommandAssignments ) const;
   void        appendFunctionHeaderArgumentEnhancedVector( std::string &       str,
                                                           ParamData const &   param,
                                                           std::string const & strippedParameterName,
@@ -379,7 +329,9 @@ private:
   void        appendRAIIHandleContext( std::string &                              str,
                                        std::pair<std::string, HandleData> const & handle,
                                        std::set<std::string> const &              specialFunctions ) const;
-  void        appendStruct( std::string & str, std::pair<std::string, StructureData> const & structure );
+  void        appendStruct( std::string &                                 str,
+                            std::pair<std::string, StructureData> const & structure,
+                            std::set<std::string> &                       listedStructs ) const;
   void        appendStructAssignmentOperators( std::string &                                 str,
                                                std::pair<std::string, StructureData> const & structure,
                                                std::string const &                           prefix ) const;
@@ -405,7 +357,7 @@ private:
                                           std::pair<std::string, StructureData> const & structData,
                                           std::string const &                           prefix ) const;
   void        appendStructure( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
-  void        appendType( std::string & str, std::string const & typeName );
+  void        appendType( std::string & str, std::string const & typeName, std::set<std::string> & listedTypes ) const;
   void        appendUnion( std::string & str, std::pair<std::string, StructureData> const & structure ) const;
   void        appendUniqueTypes( std::string &                 str,
                                  std::string const &           parentType,
@@ -1060,15 +1012,48 @@ private:
                                           size_t                      initialSkipCount,
                                           bool                        definition,
                                           std::vector<size_t> const & returnParamIndices ) const;
+  std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
                                                               CommandData const & commandData,
                                                               std::string const & firstArg ) const;
   std::string generateDispatchLoaderStaticCommands( std::vector<std::string> const & commands,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
+  std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateEnumInitializer( TypeInfo const &                   type,
+                                       std::vector<std::string> const &   arraySizes,
+                                       std::vector<EnumValueData> const & values,
+                                       bool                               bitmask ) const;
   std::string generateEnums( std::vector<std::string> const & enums,
                              std::set<std::string> &          listedEnums,
                              std::string const &              title ) const;
+  std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateFunctionBodyEnhancedLocalReturnVariable( std::string const & indentation,
+                                                               CommandData const & commandData,
+                                                               size_t              returnParamIndex,
+                                                               std::string const & enhancedReturnType,
+                                                               bool                withAllocator ) const;
+  std::string
+              generateFunctionBodyEnhancedMultiVectorSizeCheck( std::string const &              indentation,
+                                                                std::string const &              name,
+                                                                CommandData const &              commandData,
+                                                                size_t                           initialSkipCount,
+                                                                size_t                           returnParamIndex,
+                                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::string generateFunctionBodyEnhancedReturnResultValue( std::string const & indentation,
+                                                             std::string const & returnName,
+                                                             std::string const & name,
+                                                             CommandData const & commandData,
+                                                             size_t              initialSkipCount,
+                                                             size_t              returnParamIndex,
+                                                             bool                twoStep ) const;
+  std::string generateFunctionBodyEnhancedTwoStep( std::string const &              indentation,
+                                                   std::string const &              name,
+                                                   CommandData const &              commandData,
+                                                   size_t                           returnParamIndex,
+                                                   size_t                           templateParamIndex,
+                                                   std::map<size_t, size_t> const & vectorParamIndices,
+                                                   std::string const &              returnName ) const;
   std::string generateFunctionCall( std::string const &              name,
                                     CommandData const &              commandData,
                                     size_t                           returnParamIndex,
@@ -1076,7 +1061,14 @@ private:
                                     std::map<size_t, size_t> const & vectorParamIndices,
                                     bool                             twoStep,
                                     bool                             firstCall ) const;
-  std::string generateHandle( std::pair<std::string, HandleData> const & handle );
+  std::string generateFunctionHeaderArgumentEnhanced( ParamData const &                param,
+                                                      size_t                           paramIndex,
+                                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                                      bool                             skip,
+                                                      bool                             isTemplateParam ) const;
+  std::string generateHandle( std::pair<std::string, HandleData> const & handle,
+                              std::set<std::string> &                    listedHandles ) const;
+  std::string generateHashStructures( std::vector<std::string> const & types, std::string const & title ) const;
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,
@@ -1085,10 +1077,16 @@ private:
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn,
                                                           std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
+  std::string                         generateRAIICommandDefinitions( std::vector<std::string> const & commands,
+                                                                      std::set<std::string> &          listedCommands,
+                                                                      std::string const &              title ) const;
   std::string generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                  std::string const &                                          structName,
                                  std::string const &                                          prefix,
                                  bool mutualExclusiveLens ) const;
+  std::string generateStructExtendsStructs( std::vector<std::string> const & types,
+                                            std::set<std::string> &          listedStructs,
+                                            std::string const &              title ) const;
   std::string getPlatform( std::string const & extension ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
@@ -1206,7 +1204,6 @@ private:
   std::map<std::string, FuncPointerData>                              m_funcPointers;
   std::map<std::string, HandleData>                                   m_handles;
   std::set<std::string>                                               m_includes;
-  std::set<std::string>                                               m_listedTypes;
   std::map<std::string, PlatformData>                                 m_platforms;
   std::set<std::string>                                               m_RAIISpecialFunctions;
   std::map<std::string, StructureAliasData>                           m_structureAliases;

@@ -10,6 +10,10 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+  //===============
+  //=== STRUCTS ===
+  //===============
+
   struct AabbPositionsKHR
   {
 #if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )

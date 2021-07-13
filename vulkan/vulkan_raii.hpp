@@ -1688,6 +1688,10 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkWriteAccelerationStructuresPropertiesKHR vkWriteAccelerationStructuresPropertiesKHR = 0;
     };
 
+    //====================
+    //=== RAII HANDLES ===
+    //====================
+
     class Context
     {
     public:

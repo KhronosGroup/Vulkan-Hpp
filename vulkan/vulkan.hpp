@@ -6442,721 +6442,13 @@ namespace VULKAN_HPP_NAMESPACE
 
 namespace VULKAN_HPP_NAMESPACE
 {
-  template <>
-  struct StructExtends<AccelerationStructureGeometryMotionTrianglesDataNV,
-                       AccelerationStructureGeometryTrianglesDataKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<AccelerationStructureMotionInfoNV, AccelerationStructureCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-  template <>
-  struct StructExtends<AndroidHardwareBufferFormatPropertiesANDROID, AndroidHardwareBufferPropertiesANDROID>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-  template <>
-  struct StructExtends<AndroidHardwareBufferUsageANDROID, ImageFormatProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-  template <>
-  struct StructExtends<AttachmentDescriptionStencilLayout, AttachmentDescription2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<AttachmentReferenceStencilLayout, AttachmentReference2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BindBufferMemoryDeviceGroupInfo, BindBufferMemoryInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BindImageMemoryDeviceGroupInfo, BindImageMemoryInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BindImageMemorySwapchainInfoKHR, BindImageMemoryInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BindImagePlaneMemoryInfo, BindImageMemoryInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BufferDeviceAddressCreateInfoEXT, BufferCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<BufferOpaqueCaptureAddressCreateInfo, BufferCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<CommandBufferInheritanceConditionalRenderingInfoEXT, CommandBufferInheritanceInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<CommandBufferInheritanceRenderPassTransformInfoQCOM, CommandBufferInheritanceInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<CommandBufferInheritanceViewportScissorInfoNV, CommandBufferInheritanceInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<CopyCommandTransformInfoQCOM, BufferImageCopy2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<CopyCommandTransformInfoQCOM, ImageBlit2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<D3D12FenceSubmitInfoKHR, SubmitInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <>
-  struct StructExtends<DebugReportCallbackCreateInfoEXT, InstanceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DebugUtilsMessengerCreateInfoEXT, InstanceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DedicatedAllocationBufferCreateInfoNV, BufferCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DedicatedAllocationImageCreateInfoNV, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DedicatedAllocationMemoryAllocateInfoNV, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DescriptorPoolInlineUniformBlockCreateInfoEXT, DescriptorPoolCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DescriptorSetLayoutBindingFlagsCreateInfo, DescriptorSetLayoutCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DescriptorSetVariableDescriptorCountAllocateInfo, DescriptorSetAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DescriptorSetVariableDescriptorCountLayoutSupport, DescriptorSetLayoutSupport>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceDeviceMemoryReportCreateInfoEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceDiagnosticsConfigCreateInfoNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupBindSparseInfo, BindSparseInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupCommandBufferBeginInfo, CommandBufferBeginInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupDeviceCreateInfo, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupPresentInfoKHR, PresentInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupRenderPassBeginInfo, RenderPassBeginInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupSubmitInfo, SubmitInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceGroupSwapchainCreateInfoKHR, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceMemoryOverallocationCreateInfoAMD, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DevicePrivateDataCreateInfoEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DeviceQueueGlobalPriorityCreateInfoEXT, DeviceQueueCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DisplayNativeHdrSurfaceCapabilitiesAMD, SurfaceCapabilities2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DisplayPresentInfoKHR, PresentInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<DrmFormatModifierPropertiesListEXT, FormatProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExportFenceCreateInfo, FenceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ExportFenceWin32HandleInfoKHR, FenceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <>
-  struct StructExtends<ExportMemoryAllocateInfo, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExportMemoryAllocateInfoNV, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ExportMemoryWin32HandleInfoKHR, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ExportMemoryWin32HandleInfoNV, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <>
-  struct StructExtends<ExportSemaphoreCreateInfo, SemaphoreCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ExportSemaphoreWin32HandleInfoKHR, SemaphoreCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-  template <>
-  struct StructExtends<ExternalFormatANDROID, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExternalFormatANDROID, SamplerYcbcrConversionCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-  template <>
-  struct StructExtends<ExternalImageFormatProperties, ImageFormatProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExternalMemoryBufferCreateInfo, BufferCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExternalMemoryImageCreateInfo, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ExternalMemoryImageCreateInfoNV, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<FilterCubicImageViewImageFormatPropertiesEXT, ImageFormatProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<FragmentShadingRateAttachmentInfoKHR, SubpassDescription2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<FramebufferAttachmentsCreateInfo, FramebufferCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<GraphicsPipelineShaderGroupsCreateInfoNV, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageDrmFormatModifierExplicitCreateInfoEXT, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageDrmFormatModifierListCreateInfoEXT, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageFormatListCreateInfo, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageFormatListCreateInfo, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageFormatListCreateInfo, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImagePlaneMemoryRequirementsInfo, ImageMemoryRequirementsInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageStencilUsageCreateInfo, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageStencilUsageCreateInfo, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageSwapchainCreateInfoKHR, ImageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageViewASTCDecodeModeEXT, ImageViewCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImageViewUsageCreateInfo, ImageViewCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
-  template <>
-  struct StructExtends<ImportAndroidHardwareBufferInfoANDROID, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-  template <>
-  struct StructExtends<ImportMemoryFdInfoKHR, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ImportMemoryHostPointerInfoEXT, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ImportMemoryWin32HandleInfoKHR, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<ImportMemoryWin32HandleInfoNV, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_FUCHSIA )
-  template <>
-  struct StructExtends<ImportMemoryZirconHandleInfoFUCHSIA, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
-  template <>
-  struct StructExtends<MemoryAllocateFlagsInfo, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MemoryBarrier2KHR, SubpassDependency2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MemoryDedicatedAllocateInfo, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MemoryDedicatedRequirements, MemoryRequirements2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MemoryOpaqueCaptureAddressAllocateInfo, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MemoryPriorityAllocateInfoEXT, MemoryAllocateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorSetLayoutCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorPoolCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo2KHR>
+  //=======================
+  //=== STRUCTS EXTENDS ===
+  //=======================
+
+  //=== VK_VERSION_1_1 ===
+  template <>
+  struct StructExtends<PhysicalDeviceSubgroupProperties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -7180,7 +6472,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<MemoryDedicatedRequirements, MemoryRequirements2>
   {
     enum
     {
@@ -7188,7 +6480,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<MemoryDedicatedAllocateInfo, MemoryAllocateInfo>
   {
     enum
     {
@@ -7196,7 +6488,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDevice8BitStorageFeatures, PhysicalDeviceFeatures2>
+  struct StructExtends<MemoryAllocateFlagsInfo, MemoryAllocateInfo>
   {
     enum
     {
@@ -7204,7 +6496,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDevice8BitStorageFeatures, DeviceCreateInfo>
+  struct StructExtends<DeviceGroupRenderPassBeginInfo, RenderPassBeginInfo>
   {
     enum
     {
@@ -7212,7 +6504,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<DeviceGroupCommandBufferBeginInfo, CommandBufferBeginInfo>
   {
     enum
     {
@@ -7220,7 +6512,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<DeviceGroupSubmitInfo, SubmitInfo>
   {
     enum
     {
@@ -7228,7 +6520,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, PhysicalDeviceFeatures2>
+  struct StructExtends<DeviceGroupBindSparseInfo, BindSparseInfo>
   {
     enum
     {
@@ -7236,7 +6528,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, DeviceCreateInfo>
+  struct StructExtends<BindBufferMemoryDeviceGroupInfo, BindBufferMemoryInfo>
   {
     enum
     {
@@ -7244,7 +6536,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceAccelerationStructurePropertiesKHR, PhysicalDeviceProperties2>
+  struct StructExtends<BindImageMemoryDeviceGroupInfo, BindImageMemoryInfo>
   {
     enum
     {
@@ -7252,431 +6544,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceBlendOperationAdvancedFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBlendOperationAdvancedFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBlendOperationAdvancedPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceColorWriteEnableFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceColorWriteEnableFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceComputeShaderDerivativesFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceComputeShaderDerivativesFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceConditionalRenderingFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceConditionalRenderingFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceConservativeRasterizationPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCooperativeMatrixPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCoverageReductionModeFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCoverageReductionModeFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceCustomBorderColorPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDepthClipEnableFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDepthClipEnableFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDepthStencilResolveProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDescriptorIndexingProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDiagnosticsConfigFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDiagnosticsConfigFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDiscardRectanglePropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDriverProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceDrmPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExtendedDynamicState2FeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExtendedDynamicState2FeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExtendedDynamicStateFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExtendedDynamicStateFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExternalImageFormatInfo, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExternalMemoryHostPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExternalMemoryRDMAFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceExternalMemoryRDMAFeaturesNV, DeviceCreateInfo>
+  struct StructExtends<DeviceGroupDeviceCreateInfo, DeviceCreateInfo>
   {
     enum
     {
@@ -7692,7 +6560,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceFloatControlsProperties, PhysicalDeviceProperties2>
+  struct StructExtends<PhysicalDevicePointClippingProperties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -7700,7 +6568,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMap2FeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<RenderPassInputAttachmentAspectCreateInfo, RenderPassCreateInfo>
   {
     enum
     {
@@ -7708,7 +6576,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMap2FeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<ImageViewUsageCreateInfo, ImageViewCreateInfo>
   {
     enum
     {
@@ -7716,7 +6584,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMap2PropertiesEXT, PhysicalDeviceProperties2>
+  struct StructExtends<PipelineTessellationDomainOriginStateCreateInfo, PipelineTessellationStateCreateInfo>
   {
     enum
     {
@@ -7724,351 +6592,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMapFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMapFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentDensityMapPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShadingRatePropertiesKHR, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceHostQueryResetFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceHostQueryResetFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceIDProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImageDrmFormatModifierInfoEXT, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImageRobustnessFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImageRobustnessFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImageViewImageFormatInfoEXT, PhysicalDeviceImageFormatInfo2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceIndexTypeUint8FeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceIndexTypeUint8FeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceInheritedViewportScissorFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceInheritedViewportScissorFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceInlineUniformBlockFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceInlineUniformBlockFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceInlineUniformBlockPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceLineRasterizationFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceLineRasterizationFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceLineRasterizationPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMaintenance3Properties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMemoryBudgetPropertiesEXT, PhysicalDeviceMemoryProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMemoryPriorityFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMemoryPriorityFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMeshShaderFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMeshShaderFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMeshShaderPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMultiDrawPropertiesEXT, PhysicalDeviceProperties2>
+  struct StructExtends<RenderPassMultiviewCreateInfo, RenderPassCreateInfo>
   {
     enum
     {
@@ -8092,14 +6616,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
   struct StructExtends<PhysicalDeviceMultiviewProperties, PhysicalDeviceProperties2>
   {
     enum
@@ -8108,7 +6624,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, PhysicalDeviceFeatures2>
+  struct StructExtends<PhysicalDeviceVariablePointersFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -8116,123 +6632,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePCIBusInfoPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePerformanceQueryFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePerformanceQueryFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePerformanceQueryPropertiesKHR, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePointClippingProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<PhysicalDevicePortabilitySubsetFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePortabilitySubsetFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<PhysicalDevicePortabilitySubsetPropertiesKHR, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-  template <>
-  struct StructExtends<PhysicalDevicePrivateDataFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDevicePrivateDataFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceVariablePointersFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -8264,7 +6664,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceProvokingVertexFeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<ProtectedSubmitInfo, SubmitInfo>
   {
     enum
     {
@@ -8272,7 +6672,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceProvokingVertexFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<SamplerYcbcrConversionInfo, SamplerCreateInfo>
   {
     enum
     {
@@ -8280,7 +6680,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceProvokingVertexPropertiesEXT, PhysicalDeviceProperties2>
+  struct StructExtends<SamplerYcbcrConversionInfo, ImageViewCreateInfo>
   {
     enum
     {
@@ -8288,7 +6688,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDevicePushDescriptorPropertiesKHR, PhysicalDeviceProperties2>
+  struct StructExtends<BindImagePlaneMemoryInfo, BindImageMemoryInfo>
   {
     enum
     {
@@ -8296,119 +6696,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingPipelinePropertiesKHR, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRayTracingPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRepresentativeFragmentTestFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRepresentativeFragmentTestFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRobustness2FeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRobustness2FeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRobustness2PropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSampleLocationsPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSamplerFilterMinmaxProperties, PhysicalDeviceProperties2>
+  struct StructExtends<ImagePlaneMemoryRequirementsInfo, ImageMemoryRequirementsInfo2>
   {
     enum
     {
@@ -8432,7 +6720,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, PhysicalDeviceFeatures2>
+  struct StructExtends<SamplerYcbcrConversionImageFormatProperties, ImageFormatProperties2>
   {
     enum
     {
@@ -8440,7 +6728,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceExternalImageFormatInfo, PhysicalDeviceImageFormatInfo2>
   {
     enum
     {
@@ -8448,7 +6736,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, PhysicalDeviceFeatures2>
+  struct StructExtends<ExternalImageFormatProperties, ImageFormatProperties2>
   {
     enum
     {
@@ -8456,7 +6744,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceIDProperties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -8464,7 +6752,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderAtomicFloatFeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<ExternalMemoryImageCreateInfo, ImageCreateInfo>
   {
     enum
     {
@@ -8472,7 +6760,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderAtomicFloatFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<ExternalMemoryBufferCreateInfo, BufferCreateInfo>
   {
     enum
     {
@@ -8480,7 +6768,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, PhysicalDeviceFeatures2>
+  struct StructExtends<ExportMemoryAllocateInfo, MemoryAllocateInfo>
   {
     enum
     {
@@ -8488,7 +6776,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, DeviceCreateInfo>
+  struct StructExtends<ExportFenceCreateInfo, FenceCreateInfo>
   {
     enum
     {
@@ -8496,7 +6784,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderClockFeaturesKHR, PhysicalDeviceFeatures2>
+  struct StructExtends<ExportSemaphoreCreateInfo, SemaphoreCreateInfo>
   {
     enum
     {
@@ -8504,39 +6792,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderClockFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderCoreProperties2AMD, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderCorePropertiesAMD, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceMaintenance3Properties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -8559,398 +6815,8 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSMBuiltinsPropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceShadingRateImagePropertiesNV, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubgroupProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubgroupSizeControlFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubgroupSizeControlFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubgroupSizeControlPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSubpassShadingPropertiesHUAWEI, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSynchronization2FeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceSynchronization2FeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTexelBufferAlignmentFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTexelBufferAlignmentFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTexelBufferAlignmentPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTimelineSemaphoreProperties, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTransformFeedbackFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTransformFeedbackFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceTransformFeedbackPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVariablePointersFeatures, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVariablePointersFeatures, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVertexAttributeDivisorPropertiesEXT, PhysicalDeviceProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
+
+  //=== VK_VERSION_1_2 ===
   template <>
   struct StructExtends<PhysicalDeviceVulkan11Features, PhysicalDeviceFeatures2>
   {
@@ -9000,6 +6866,206 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<ImageFormatListCreateInfo, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageFormatListCreateInfo, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageFormatListCreateInfo, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevice8BitStorageFeatures, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevice8BitStorageFeatures, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDriverProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFloatControlsProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DescriptorSetLayoutBindingFlagsCreateInfo, DescriptorSetLayoutCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDescriptorIndexingProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DescriptorSetVariableDescriptorCountAllocateInfo, DescriptorSetAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DescriptorSetVariableDescriptorCountLayoutSupport, DescriptorSetLayoutSupport>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SubpassDescriptionDepthStencilResolve, SubpassDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDepthStencilResolveProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageStencilUsageCreateInfo, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageStencilUsageCreateInfo, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SamplerReductionModeCreateInfo, SamplerCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSamplerFilterMinmaxProperties, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
   struct StructExtends<PhysicalDeviceVulkanMemoryModelFeatures, PhysicalDeviceFeatures2>
   {
     enum
@@ -9016,7 +7082,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR, PhysicalDeviceFeatures2>
+  struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9024,7 +7090,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9032,361 +7098,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceYcbcrImageArraysFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceYcbcrImageArraysFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineColorBlendAdvancedStateCreateInfoEXT, PipelineColorBlendStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineColorWriteCreateInfoEXT, PipelineColorBlendStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCompilerControlCreateInfoAMD, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCompilerControlCreateInfoAMD, ComputePipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCoverageModulationStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCoverageReductionStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCoverageToColorStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, ComputePipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, RayTracingPipelineCreateInfoNV>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, RayTracingPipelineCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineDiscardRectangleStateCreateInfoEXT, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineFragmentShadingRateEnumStateCreateInfoNV, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineFragmentShadingRateStateCreateInfoKHR, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationConservativeStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationDepthClipStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationLineStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationProvokingVertexStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationStateRasterizationOrderAMD, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRasterizationStateStreamCreateInfoEXT, PipelineRasterizationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineRepresentativeFragmentTestStateCreateInfoNV, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineSampleLocationsStateCreateInfoEXT, PipelineMultisampleStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT, PipelineShaderStageCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineTessellationDomainOriginStateCreateInfo, PipelineTessellationStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineVertexInputDivisorStateCreateInfoEXT, PipelineVertexInputStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineViewportCoarseSampleOrderStateCreateInfoNV, PipelineViewportStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineViewportExclusiveScissorStateCreateInfoNV, PipelineViewportStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineViewportShadingRateImageStateCreateInfoNV, PipelineViewportStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineViewportSwizzleStateCreateInfoNV, PipelineViewportStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PipelineViewportWScalingStateCreateInfoNV, PipelineViewportStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_GGP )
-  template <>
-  struct StructExtends<PresentFrameTokenGGP, PresentInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_GGP*/
-  template <>
-  struct StructExtends<PresentRegionsKHR, PresentInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PresentTimesInfoGOOGLE, PresentInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<ProtectedSubmitInfo, SubmitInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<QueryPoolPerformanceCreateInfoKHR, QueryPoolCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<QueryPoolPerformanceQueryCreateInfoINTEL, QueryPoolCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<QueueFamilyCheckpointPropertiesNV, QueueFamilyProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<QueueFamilyGlobalPriorityPropertiesEXT, QueueFamilyProperties2>
+  struct StructExtends<FramebufferAttachmentsCreateInfo, FramebufferCreateInfo>
   {
     enum
     {
@@ -9402,7 +7114,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo>
+  struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9410,7 +7122,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo2>
+  struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9418,7 +7130,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassInputAttachmentAspectCreateInfo, RenderPassCreateInfo>
+  struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9426,7 +7138,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassMultiviewCreateInfo, RenderPassCreateInfo>
+  struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9434,7 +7146,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassSampleLocationsBeginInfoEXT, RenderPassBeginInfo>
+  struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9442,7 +7154,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassTransformBeginInfoQCOM, RenderPassBeginInfo>
+  struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9450,7 +7162,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier>
+  struct StructExtends<AttachmentReferenceStencilLayout, AttachmentReference2>
   {
     enum
     {
@@ -9458,7 +7170,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier2KHR>
+  struct StructExtends<AttachmentDescriptionStencilLayout, AttachmentDescription2>
   {
     enum
     {
@@ -9466,7 +7178,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SamplerCustomBorderColorCreateInfoEXT, SamplerCreateInfo>
+  struct StructExtends<PhysicalDeviceHostQueryResetFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9474,7 +7186,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SamplerReductionModeCreateInfo, SamplerCreateInfo>
+  struct StructExtends<PhysicalDeviceHostQueryResetFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9482,7 +7194,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SamplerYcbcrConversionImageFormatProperties, ImageFormatProperties2>
+  struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9490,7 +7202,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SamplerYcbcrConversionInfo, SamplerCreateInfo>
+  struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, DeviceCreateInfo>
   {
     enum
     {
@@ -9498,7 +7210,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SamplerYcbcrConversionInfo, ImageViewCreateInfo>
+  struct StructExtends<PhysicalDeviceTimelineSemaphoreProperties, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -9522,116 +7234,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<ShaderModuleValidationCacheCreateInfoEXT, ShaderModuleCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SharedPresentSurfaceCapabilitiesKHR, SurfaceCapabilities2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SubpassDescriptionDepthStencilResolve, SubpassDescription2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SubpassShadingPipelineCreateInfoHUAWEI, ComputePipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<SurfaceCapabilitiesFullScreenExclusiveEXT, SurfaceCapabilities2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<SurfaceFullScreenExclusiveInfoEXT, PhysicalDeviceSurfaceInfo2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SurfaceFullScreenExclusiveInfoEXT, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
-  template <>
-  struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, PhysicalDeviceSurfaceInfo2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
-  template <>
-  struct StructExtends<SurfaceProtectedCapabilitiesKHR, SurfaceCapabilities2KHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SwapchainCounterCreateInfoEXT, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<SwapchainDisplayNativeHdrCreateInfoAMD, SwapchainCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<TextureLODGatherFormatPropertiesAMD, ImageFormatProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
   struct StructExtends<TimelineSemaphoreSubmitInfo, SubmitInfo>
   {
     enum
@@ -9648,7 +7250,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<ValidationFeaturesEXT, InstanceCreateInfo>
+  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -9656,244 +7258,104 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<ValidationFlagsEXT, InstanceCreateInfo>
+  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, DeviceCreateInfo>
   {
     enum
     {
       value = true
     };
   };
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct StructExtends<VideoDecodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<BufferOpaqueCaptureAddressCreateInfo, BufferCreateInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  struct StructExtends<MemoryOpaqueCaptureAddressAllocateInfo, MemoryAllocateInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+
+  //=== VK_KHR_swapchain ===
   template <>
-  struct StructExtends<VideoDecodeH264MvcEXT, VideoDecodeH264PictureInfoEXT>
+  struct StructExtends<ImageSwapchainCreateInfoKHR, ImageCreateInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct StructExtends<VideoDecodeH264PictureInfoEXT, VideoDecodeInfoKHR>
+  struct StructExtends<BindImageMemorySwapchainInfoKHR, BindImageMemoryInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct StructExtends<VideoDecodeH264ProfileEXT, VideoProfileKHR>
+  struct StructExtends<DeviceGroupPresentInfoKHR, PresentInfoKHR>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct StructExtends<VideoDecodeH264SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
+  struct StructExtends<DeviceGroupSwapchainCreateInfoKHR, SwapchainCreateInfoKHR>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+
+  //=== VK_KHR_display_swapchain ===
   template <>
-  struct StructExtends<VideoDecodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  struct StructExtends<DisplayPresentInfoKHR, PresentInfoKHR>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+
+  //=== VK_EXT_debug_report ===
   template <>
-  struct StructExtends<VideoDecodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  struct StructExtends<DebugReportCallbackCreateInfoEXT, InstanceCreateInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+
+  //=== VK_AMD_rasterization_order ===
   template <>
-  struct StructExtends<VideoDecodeH265CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<PipelineRasterizationStateRasterizationOrderAMD, PipelineRasterizationStateCreateInfo>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_KHR_video_queue ===
   template <>
-  struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  struct StructExtends<VideoQueueFamilyProperties2KHR, QueueFamilyProperties2>
   {
     enum
     {
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoDecodeH265PictureInfoEXT, VideoDecodeInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoDecodeH265ProfileEXT, VideoProfileKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoDecodeH265SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoDecodeH265SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoDecodeH265SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264EmitPictureParametersEXT, VideoEncodeInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264ProfileEXT, VideoProfileKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeH264VclFrameInfoEXT, VideoEncodeInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct StructExtends<VideoEncodeRateControlInfoKHR, VideoCodingControlInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
   struct StructExtends<VideoProfileKHR, QueryPoolCreateInfo>
   {
@@ -9934,8 +7396,6 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
   struct StructExtends<VideoProfilesKHR, FormatProperties2>
   {
@@ -9969,9 +7429,119 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+
+  //=== VK_NV_dedicated_allocation ===
   template <>
-  struct StructExtends<VideoQueueFamilyProperties2KHR, QueueFamilyProperties2>
+  struct StructExtends<DedicatedAllocationImageCreateInfoNV, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DedicatedAllocationBufferCreateInfoNV, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DedicatedAllocationMemoryAllocateInfoNV, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_transform_feedback ===
+  template <>
+  struct StructExtends<PhysicalDeviceTransformFeedbackFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTransformFeedbackFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTransformFeedbackPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRasterizationStateStreamCreateInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_EXT_video_encode_h264 ===
+  template <>
+  struct StructExtends<VideoEncodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264VclFrameInfoEXT, VideoEncodeInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264EmitPictureParametersEXT, VideoEncodeInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, VideoProfileKHR>
   {
     enum
     {
@@ -9979,9 +7549,11 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_EXT_video_decode_h264 ===
   template <>
-  struct StructExtends<Win32KeyedMutexAcquireReleaseInfoKHR, SubmitInfo>
+  struct StructExtends<VideoDecodeH264ProfileEXT, VideoProfileKHR>
   {
     enum
     {
@@ -9989,7 +7561,121 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<Win32KeyedMutexAcquireReleaseInfoKHR, SubmitInfo2KHR>
+  struct StructExtends<VideoDecodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264PictureInfoEXT, VideoDecodeInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264MvcEXT, VideoDecodeH264PictureInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_AMD_texture_gather_bias_lod ===
+  template <>
+  struct StructExtends<TextureLODGatherFormatPropertiesAMD, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_corner_sampled_image ===
+  template <>
+  struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_external_memory ===
+  template <>
+  struct StructExtends<ExternalMemoryImageCreateInfoNV, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ExportMemoryAllocateInfoNV, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_NV_external_memory_win32 ===
+  template <>
+  struct StructExtends<ImportMemoryWin32HandleInfoNV, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ExportMemoryWin32HandleInfoNV, MemoryAllocateInfo>
   {
     enum
     {
@@ -9997,7 +7683,9 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_NV_win32_keyed_mutex ===
   template <>
   struct StructExtends<Win32KeyedMutexAcquireReleaseInfoNV, SubmitInfo>
   {
@@ -10015,6 +7703,544 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  //=== VK_EXT_validation_flags ===
+  template <>
+  struct StructExtends<ValidationFlagsEXT, InstanceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_texture_compression_astc_hdr ===
+  template <>
+  struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_astc_decode_mode ===
+  template <>
+  struct StructExtends<ImageViewASTCDecodeModeEXT, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_KHR_external_memory_win32 ===
+  template <>
+  struct StructExtends<ImportMemoryWin32HandleInfoKHR, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ExportMemoryWin32HandleInfoKHR, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  //=== VK_KHR_external_memory_fd ===
+  template <>
+  struct StructExtends<ImportMemoryFdInfoKHR, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_KHR_win32_keyed_mutex ===
+  template <>
+  struct StructExtends<Win32KeyedMutexAcquireReleaseInfoKHR, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<Win32KeyedMutexAcquireReleaseInfoKHR, SubmitInfo2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_KHR_external_semaphore_win32 ===
+  template <>
+  struct StructExtends<ExportSemaphoreWin32HandleInfoKHR, SemaphoreCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<D3D12FenceSubmitInfoKHR, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  //=== VK_KHR_push_descriptor ===
+  template <>
+  struct StructExtends<PhysicalDevicePushDescriptorPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_conditional_rendering ===
+  template <>
+  struct StructExtends<PhysicalDeviceConditionalRenderingFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceConditionalRenderingFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<CommandBufferInheritanceConditionalRenderingInfoEXT, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_incremental_present ===
+  template <>
+  struct StructExtends<PresentRegionsKHR, PresentInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_clip_space_w_scaling ===
+  template <>
+  struct StructExtends<PipelineViewportWScalingStateCreateInfoNV, PipelineViewportStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_display_control ===
+  template <>
+  struct StructExtends<SwapchainCounterCreateInfoEXT, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_GOOGLE_display_timing ===
+  template <>
+  struct StructExtends<PresentTimesInfoGOOGLE, PresentInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NVX_multiview_per_view_attributes ===
+  template <>
+  struct StructExtends<PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_viewport_swizzle ===
+  template <>
+  struct StructExtends<PipelineViewportSwizzleStateCreateInfoNV, PipelineViewportStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_discard_rectangles ===
+  template <>
+  struct StructExtends<PhysicalDeviceDiscardRectanglePropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineDiscardRectangleStateCreateInfoEXT, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_conservative_rasterization ===
+  template <>
+  struct StructExtends<PhysicalDeviceConservativeRasterizationPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRasterizationConservativeStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_depth_clip_enable ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClipEnableFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClipEnableFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRasterizationDepthClipStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shared_presentable_image ===
+  template <>
+  struct StructExtends<SharedPresentSurfaceCapabilitiesKHR, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_KHR_external_fence_win32 ===
+  template <>
+  struct StructExtends<ExportFenceWin32HandleInfoKHR, FenceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  //=== VK_KHR_performance_query ===
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceQueryFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceQueryFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePerformanceQueryPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<QueryPoolPerformanceCreateInfoKHR, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_debug_utils ===
+  template <>
+  struct StructExtends<DebugUtilsMessengerCreateInfoEXT, InstanceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+  //=== VK_ANDROID_external_memory_android_hardware_buffer ===
+  template <>
+  struct StructExtends<AndroidHardwareBufferUsageANDROID, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AndroidHardwareBufferFormatPropertiesANDROID, AndroidHardwareBufferPropertiesANDROID>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImportAndroidHardwareBufferInfoANDROID, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ExternalFormatANDROID, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ExternalFormatANDROID, SamplerYcbcrConversionCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+  //=== VK_EXT_inline_uniform_block ===
+  template <>
+  struct StructExtends<PhysicalDeviceInlineUniformBlockFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceInlineUniformBlockFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceInlineUniformBlockPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<WriteDescriptorSetInlineUniformBlockEXT, WriteDescriptorSet>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DescriptorPoolInlineUniformBlockCreateInfoEXT, DescriptorPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_sample_locations ===
+  template <>
+  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<RenderPassSampleLocationsBeginInfoEXT, RenderPassBeginInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineSampleLocationsStateCreateInfoEXT, PipelineMultisampleStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSampleLocationsPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_blend_operation_advanced ===
+  template <>
+  struct StructExtends<PhysicalDeviceBlendOperationAdvancedFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceBlendOperationAdvancedFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceBlendOperationAdvancedPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineColorBlendAdvancedStateCreateInfoEXT, PipelineColorBlendStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_fragment_coverage_to_color ===
+  template <>
+  struct StructExtends<PipelineCoverageToColorStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_acceleration_structure ===
   template <>
   struct StructExtends<WriteDescriptorSetAccelerationStructureKHR, WriteDescriptorSet>
   {
@@ -10024,6 +8250,182 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceAccelerationStructurePropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_framebuffer_mixed_samples ===
+  template <>
+  struct StructExtends<PipelineCoverageModulationStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_shader_sm_builtins ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSMBuiltinsPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_image_drm_format_modifier ===
+  template <>
+  struct StructExtends<DrmFormatModifierPropertiesListEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceImageDrmFormatModifierInfoEXT, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageDrmFormatModifierListCreateInfoEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<ImageDrmFormatModifierExplicitCreateInfoEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_validation_cache ===
+  template <>
+  struct StructExtends<ShaderModuleValidationCacheCreateInfoEXT, ShaderModuleCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_KHR_portability_subset ===
+  template <>
+  struct StructExtends<PhysicalDevicePortabilitySubsetFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePortabilitySubsetFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePortabilitySubsetPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_NV_shading_rate_image ===
+  template <>
+  struct StructExtends<PipelineViewportShadingRateImageStateCreateInfoNV, PipelineViewportStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShadingRateImagePropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineViewportCoarseSampleOrderStateCreateInfoNV, PipelineViewportStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_ray_tracing ===
+  template <>
   struct StructExtends<WriteDescriptorSetAccelerationStructureNV, WriteDescriptorSet>
   {
     enum
@@ -10032,7 +8434,1812 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<WriteDescriptorSetInlineUniformBlockEXT, WriteDescriptorSet>
+  struct StructExtends<PhysicalDeviceRayTracingPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_representative_fragment_test ===
+  template <>
+  struct StructExtends<PhysicalDeviceRepresentativeFragmentTestFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRepresentativeFragmentTestFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRepresentativeFragmentTestStateCreateInfoNV, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_filter_cubic ===
+  template <>
+  struct StructExtends<PhysicalDeviceImageViewImageFormatInfoEXT, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<FilterCubicImageViewImageFormatPropertiesEXT, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_global_priority ===
+  template <>
+  struct StructExtends<DeviceQueueGlobalPriorityCreateInfoEXT, DeviceQueueCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_external_memory_host ===
+  template <>
+  struct StructExtends<ImportMemoryHostPointerInfoEXT, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryHostPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shader_clock ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderClockFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderClockFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_AMD_pipeline_compiler_control ===
+  template <>
+  struct StructExtends<PipelineCompilerControlCreateInfoAMD, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineCompilerControlCreateInfoAMD, ComputePipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_AMD_shader_core_properties ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderCorePropertiesAMD, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_EXT_video_decode_h265 ===
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, VideoProfileKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265CapabilitiesEXT, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265SessionCreateInfoEXT, VideoSessionCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265PictureInfoEXT, VideoDecodeInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_AMD_memory_overallocation_behavior ===
+  template <>
+  struct StructExtends<DeviceMemoryOverallocationCreateInfoAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_vertex_attribute_divisor ===
+  template <>
+  struct StructExtends<PhysicalDeviceVertexAttributeDivisorPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineVertexInputDivisorStateCreateInfoEXT, PipelineVertexInputStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_GGP )
+  //=== VK_GGP_frame_token ===
+  template <>
+  struct StructExtends<PresentFrameTokenGGP, PresentInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_GGP*/
+
+  //=== VK_EXT_pipeline_creation_feedback ===
+  template <>
+  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, ComputePipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, RayTracingPipelineCreateInfoNV>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineCreationFeedbackCreateInfoEXT, RayTracingPipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_compute_shader_derivatives ===
+  template <>
+  struct StructExtends<PhysicalDeviceComputeShaderDerivativesFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceComputeShaderDerivativesFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_mesh_shader ===
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_fragment_shader_barycentric ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_shader_image_footprint ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_scissor_exclusive ===
+  template <>
+  struct StructExtends<PipelineViewportExclusiveScissorStateCreateInfoNV, PipelineViewportStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_device_diagnostic_checkpoints ===
+  template <>
+  struct StructExtends<QueueFamilyCheckpointPropertiesNV, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_INTEL_shader_integer_functions2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_INTEL_performance_query ===
+  template <>
+  struct StructExtends<QueryPoolPerformanceQueryCreateInfoINTEL, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_pci_bus_info ===
+  template <>
+  struct StructExtends<PhysicalDevicePCIBusInfoPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_AMD_display_native_hdr ===
+  template <>
+  struct StructExtends<DisplayNativeHdrSurfaceCapabilitiesAMD, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SwapchainDisplayNativeHdrCreateInfoAMD, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shader_terminate_invocation ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_fragment_density_map ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMapFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMapFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMapPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_subgroup_size_control ===
+  template <>
+  struct StructExtends<PhysicalDeviceSubgroupSizeControlFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubgroupSizeControlFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubgroupSizeControlPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT, PipelineShaderStageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_fragment_shading_rate ===
+  template <>
+  struct StructExtends<FragmentShadingRateAttachmentInfoKHR, SubpassDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineFragmentShadingRateStateCreateInfoKHR, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRatePropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_AMD_shader_core_properties2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderCoreProperties2AMD, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_AMD_device_coherent_memory ===
+  template <>
+  struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_image_atomic_int64 ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_memory_budget ===
+  template <>
+  struct StructExtends<PhysicalDeviceMemoryBudgetPropertiesEXT, PhysicalDeviceMemoryProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_memory_priority ===
+  template <>
+  struct StructExtends<PhysicalDeviceMemoryPriorityFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMemoryPriorityFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MemoryPriorityAllocateInfoEXT, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_surface_protected_capabilities ===
+  template <>
+  struct StructExtends<SurfaceProtectedCapabilitiesKHR, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_dedicated_allocation_image_aliasing ===
+  template <>
+  struct StructExtends<PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_buffer_device_address ===
+  template <>
+  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceBufferDeviceAddressFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<BufferDeviceAddressCreateInfoEXT, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_validation_features ===
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, InstanceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_cooperative_matrix ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_coverage_reduction_mode ===
+  template <>
+  struct StructExtends<PhysicalDeviceCoverageReductionModeFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCoverageReductionModeFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineCoverageReductionStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_fragment_shader_interlock ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_ycbcr_image_arrays ===
+  template <>
+  struct StructExtends<PhysicalDeviceYcbcrImageArraysFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceYcbcrImageArraysFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_provoking_vertex ===
+  template <>
+  struct StructExtends<PhysicalDeviceProvokingVertexFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceProvokingVertexFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceProvokingVertexPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRasterizationProvokingVertexStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_EXT_full_screen_exclusive ===
+  template <>
+  struct StructExtends<SurfaceFullScreenExclusiveInfoEXT, PhysicalDeviceSurfaceInfo2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SurfaceFullScreenExclusiveInfoEXT, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SurfaceCapabilitiesFullScreenExclusiveEXT, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, PhysicalDeviceSurfaceInfo2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+  //=== VK_EXT_line_rasterization ===
+  template <>
+  struct StructExtends<PhysicalDeviceLineRasterizationFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceLineRasterizationFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceLineRasterizationPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineRasterizationLineStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_atomic_float ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloatFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloatFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_index_type_uint8 ===
+  template <>
+  struct StructExtends<PhysicalDeviceIndexTypeUint8FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceIndexTypeUint8FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_extended_dynamic_state ===
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicStateFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicStateFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_pipeline_executable_properties ===
+  template <>
+  struct StructExtends<PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_demote_to_helper_invocation ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_device_generated_commands ===
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<GraphicsPipelineShaderGroupsCreateInfoNV, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_inherited_viewport_scissor ===
+  template <>
+  struct StructExtends<PhysicalDeviceInheritedViewportScissorFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceInheritedViewportScissorFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<CommandBufferInheritanceViewportScissorInfoNV, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_texel_buffer_alignment ===
+  template <>
+  struct StructExtends<PhysicalDeviceTexelBufferAlignmentFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTexelBufferAlignmentFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTexelBufferAlignmentPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_render_pass_transform ===
+  template <>
+  struct StructExtends<RenderPassTransformBeginInfoQCOM, RenderPassBeginInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<CommandBufferInheritanceRenderPassTransformInfoQCOM, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_device_memory_report ===
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DeviceDeviceMemoryReportCreateInfoEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_robustness2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceRobustness2FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRobustness2FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRobustness2PropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_custom_border_color ===
+  template <>
+  struct StructExtends<SamplerCustomBorderColorCreateInfoEXT, SamplerCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCustomBorderColorPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_private_data ===
+  template <>
+  struct StructExtends<PhysicalDevicePrivateDataFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePrivateDataFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DevicePrivateDataCreateInfoEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_pipeline_creation_cache_control ===
+  template <>
+  struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_KHR_video_encode_queue ===
+  template <>
+  struct StructExtends<VideoEncodeRateControlInfoKHR, VideoCodingControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_NV_device_diagnostics_config ===
+  template <>
+  struct StructExtends<PhysicalDeviceDiagnosticsConfigFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDiagnosticsConfigFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DeviceDiagnosticsConfigCreateInfoNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_synchronization2 ===
+  template <>
+  struct StructExtends<MemoryBarrier2KHR, SubpassDependency2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSynchronization2FeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSynchronization2FeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_shader_subgroup_uniform_control_flow ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_zero_initialize_workgroup_memory ===
+  template <>
+  struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_fragment_shading_rate_enums ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineFragmentShadingRateEnumStateCreateInfoNV, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_ray_tracing_motion_blur ===
+  template <>
+  struct StructExtends<AccelerationStructureGeometryMotionTrianglesDataNV,
+                       AccelerationStructureGeometryTrianglesDataKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AccelerationStructureMotionInfoNV, AccelerationStructureCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_ycbcr_2plane_444_formats ===
+  template <>
+  struct StructExtends<PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_fragment_density_map2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMap2FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMap2FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentDensityMap2PropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_rotated_copy_commands ===
+  template <>
+  struct StructExtends<CopyCommandTransformInfoQCOM, BufferImageCopy2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<CopyCommandTransformInfoQCOM, ImageBlit2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_image_robustness ===
+  template <>
+  struct StructExtends<PhysicalDeviceImageRobustnessFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceImageRobustnessFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_workgroup_memory_explicit_layout ===
+  template <>
+  struct StructExtends<PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_4444_formats ===
+  template <>
+  struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_ray_tracing_pipeline ===
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayTracingPipelinePropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_ray_query ===
+  template <>
+  struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_VALVE_mutable_descriptor_type ===
+  template <>
+  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorSetLayoutCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_vertex_input_dynamic_state ===
+  template <>
+  struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_physical_device_drm ===
+  template <>
+  struct StructExtends<PhysicalDeviceDrmPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_external_memory ===
+  template <>
+  struct StructExtends<ImportMemoryZirconHandleInfoFUCHSIA, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+  //=== VK_HUAWEI_subpass_shading ===
+  template <>
+  struct StructExtends<SubpassShadingPipelineCreateInfoHUAWEI, ComputePipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceSubpassShadingPropertiesHUAWEI, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_external_memory_rdma ===
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryRDMAFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryRDMAFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_extended_dynamic_state2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicState2FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicState2FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_color_write_enable ===
+  template <>
+  struct StructExtends<PhysicalDeviceColorWriteEnableFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceColorWriteEnableFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineColorWriteCreateInfoEXT, PipelineColorBlendStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_global_priority_query ===
+  template <>
+  struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<QueueFamilyGlobalPriorityPropertiesEXT, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_multi_draw ===
+  template <>
+  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMultiDrawPropertiesEXT, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -13052,25 +13259,90 @@ namespace VULKAN_HPP_NAMESPACE
 
 namespace std
 {
+  //=======================
+  //=== HASH structures ===
+  //=======================
+
+  //=== VK_VERSION_1_0 ===
+
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR>
+  struct hash<VULKAN_HPP_NAMESPACE::Instance>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const & accelerationStructureKHR ) const
-      VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Instance const & instance ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkAccelerationStructureKHR>{}(
-        static_cast<VkAccelerationStructureKHR>( accelerationStructureKHR ) );
+      return std::hash<VkInstance>{}( static_cast<VkInstance>( instance ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::AccelerationStructureNV>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevice>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & accelerationStructureNV ) const
-      VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDevice const & physicalDevice ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkAccelerationStructureNV>{}(
-        static_cast<VkAccelerationStructureNV>( accelerationStructureNV ) );
+      return std::hash<VkPhysicalDevice>{}( static_cast<VkPhysicalDevice>( physicalDevice ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Device>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Device const & device ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDevice>{}( static_cast<VkDevice>( device ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Queue>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DeviceMemory>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DeviceMemory const & deviceMemory ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDeviceMemory>{}( static_cast<VkDeviceMemory>( deviceMemory ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Fence>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Fence const & fence ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkFence>{}( static_cast<VkFence>( fence ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Semaphore>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Event>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Event const & event ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkEvent>{}( static_cast<VkEvent>( event ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::QueryPool>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::QueryPool const & queryPool ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkQueryPool>{}( static_cast<VkQueryPool>( queryPool ) );
     }
   };
 
@@ -13093,68 +13365,65 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CommandBuffer>
+  struct hash<VULKAN_HPP_NAMESPACE::Image>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandBuffer const & commandBuffer ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Image const & image ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkCommandBuffer>{}( static_cast<VkCommandBuffer>( commandBuffer ) );
+      return std::hash<VkImage>{}( static_cast<VkImage>( image ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CommandPool>
+  struct hash<VULKAN_HPP_NAMESPACE::ImageView>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ImageView const & imageView ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
+      return std::hash<VkImageView>{}( static_cast<VkImageView>( imageView ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CuFunctionNVX>
+  struct hash<VULKAN_HPP_NAMESPACE::ShaderModule>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CuFunctionNVX const & cuFunctionNVX ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ShaderModule const & shaderModule ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkCuFunctionNVX>{}( static_cast<VkCuFunctionNVX>( cuFunctionNVX ) );
+      return std::hash<VkShaderModule>{}( static_cast<VkShaderModule>( shaderModule ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CuModuleNVX>
+  struct hash<VULKAN_HPP_NAMESPACE::PipelineCache>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CuModuleNVX const & cuModuleNVX ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PipelineCache const & pipelineCache ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkCuModuleNVX>{}( static_cast<VkCuModuleNVX>( cuModuleNVX ) );
+      return std::hash<VkPipelineCache>{}( static_cast<VkPipelineCache>( pipelineCache ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT>
+  struct hash<VULKAN_HPP_NAMESPACE::Pipeline>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT const & debugReportCallbackEXT ) const
-      VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Pipeline const & pipeline ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkDebugReportCallbackEXT>{}( static_cast<VkDebugReportCallbackEXT>( debugReportCallbackEXT ) );
+      return std::hash<VkPipeline>{}( static_cast<VkPipeline>( pipeline ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT>
+  struct hash<VULKAN_HPP_NAMESPACE::PipelineLayout>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT const & debugUtilsMessengerEXT ) const
-      VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PipelineLayout const & pipelineLayout ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkDebugUtilsMessengerEXT>{}( static_cast<VkDebugUtilsMessengerEXT>( debugUtilsMessengerEXT ) );
+      return std::hash<VkPipelineLayout>{}( static_cast<VkPipelineLayout>( pipelineLayout ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::DeferredOperationKHR>
+  struct hash<VULKAN_HPP_NAMESPACE::Sampler>
   {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & deferredOperationKHR ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Sampler const & sampler ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkDeferredOperationKHR>{}( static_cast<VkDeferredOperationKHR>( deferredOperationKHR ) );
+      return std::hash<VkSampler>{}( static_cast<VkSampler>( sampler ) );
     }
   };
 
@@ -13187,6 +13456,54 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::Framebuffer>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Framebuffer const & framebuffer ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkFramebuffer>{}( static_cast<VkFramebuffer>( framebuffer ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderPass>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::RenderPass const & renderPass ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkRenderPass>{}( static_cast<VkRenderPass>( renderPass ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CommandPool>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandPool const & commandPool ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCommandPool>{}( static_cast<VkCommandPool>( commandPool ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CommandBuffer>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CommandBuffer const & commandBuffer ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCommandBuffer>{}( static_cast<VkCommandBuffer>( commandBuffer ) );
+    }
+  };
+
+  //=== VK_VERSION_1_1 ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion const & samplerYcbcrConversion ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkSamplerYcbcrConversion>{}( static_cast<VkSamplerYcbcrConversion>( samplerYcbcrConversion ) );
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate const & descriptorUpdateTemplate ) const
@@ -13197,23 +13514,29 @@ namespace std
     }
   };
 
+  //=== VK_KHR_surface ===
+
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Device>
+  struct hash<VULKAN_HPP_NAMESPACE::SurfaceKHR>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Device const & device ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::SurfaceKHR const & surfaceKHR ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkDevice>{}( static_cast<VkDevice>( device ) );
+      return std::hash<VkSurfaceKHR>{}( static_cast<VkSurfaceKHR>( surfaceKHR ) );
     }
   };
 
+  //=== VK_KHR_swapchain ===
+
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::DeviceMemory>
+  struct hash<VULKAN_HPP_NAMESPACE::SwapchainKHR>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::DeviceMemory const & deviceMemory ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::SwapchainKHR const & swapchainKHR ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkDeviceMemory>{}( static_cast<VkDeviceMemory>( deviceMemory ) );
+      return std::hash<VkSwapchainKHR>{}( static_cast<VkSwapchainKHR>( swapchainKHR ) );
     }
   };
+
+  //=== VK_KHR_display ===
 
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::DisplayKHR>
@@ -13233,70 +13556,113 @@ namespace std
     }
   };
 
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Event>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Event const & event ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkEvent>{}( static_cast<VkEvent>( event ) );
-    }
-  };
+  //=== VK_EXT_debug_report ===
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Fence>
+  struct hash<VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Fence const & fence ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkFence>{}( static_cast<VkFence>( fence ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Framebuffer>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Framebuffer const & framebuffer ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkFramebuffer>{}( static_cast<VkFramebuffer>( framebuffer ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Image>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Image const & image ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkImage>{}( static_cast<VkImage>( image ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::ImageView>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::ImageView const & imageView ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkImageView>{}( static_cast<VkImageView>( imageView ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV const & indirectCommandsLayoutNV ) const
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT const & debugReportCallbackEXT ) const
       VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkIndirectCommandsLayoutNV>{}(
-        static_cast<VkIndirectCommandsLayoutNV>( indirectCommandsLayoutNV ) );
+      return std::hash<VkDebugReportCallbackEXT>{}( static_cast<VkDebugReportCallbackEXT>( debugReportCallbackEXT ) );
+    }
+  };
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_KHR_video_queue ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoSessionKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoSessionKHR const & videoSessionKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkVideoSessionKHR>{}( static_cast<VkVideoSessionKHR>( videoSessionKHR ) );
     }
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Instance>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Instance const & instance ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & videoSessionParametersKHR ) const
+      VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkInstance>{}( static_cast<VkInstance>( instance ) );
+      return std::hash<VkVideoSessionParametersKHR>{}(
+        static_cast<VkVideoSessionParametersKHR>( videoSessionParametersKHR ) );
     }
   };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_NVX_binary_import ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CuModuleNVX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CuModuleNVX const & cuModuleNVX ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCuModuleNVX>{}( static_cast<VkCuModuleNVX>( cuModuleNVX ) );
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::CuFunctionNVX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::CuFunctionNVX const & cuFunctionNVX ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkCuFunctionNVX>{}( static_cast<VkCuFunctionNVX>( cuFunctionNVX ) );
+    }
+  };
+
+  //=== VK_EXT_debug_utils ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT const & debugUtilsMessengerEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkDebugUtilsMessengerEXT>{}( static_cast<VkDebugUtilsMessengerEXT>( debugUtilsMessengerEXT ) );
+    }
+  };
+
+  //=== VK_KHR_acceleration_structure ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const & accelerationStructureKHR ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkAccelerationStructureKHR>{}(
+        static_cast<VkAccelerationStructureKHR>( accelerationStructureKHR ) );
+    }
+  };
+
+  //=== VK_EXT_validation_cache ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ValidationCacheEXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & validationCacheEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkValidationCacheEXT>{}( static_cast<VkValidationCacheEXT>( validationCacheEXT ) );
+    }
+  };
+
+  //=== VK_NV_ray_tracing ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AccelerationStructureNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & accelerationStructureNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkAccelerationStructureNV>{}(
+        static_cast<VkAccelerationStructureNV>( accelerationStructureNV ) );
+    }
+  };
+
+  //=== VK_INTEL_performance_query ===
 
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL>
@@ -13309,41 +13675,32 @@ namespace std
     }
   };
 
+  //=== VK_KHR_deferred_host_operations ===
+
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDevice>
+  struct hash<VULKAN_HPP_NAMESPACE::DeferredOperationKHR>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDevice const & physicalDevice ) const VULKAN_HPP_NOEXCEPT
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & deferredOperationKHR ) const VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkPhysicalDevice>{}( static_cast<VkPhysicalDevice>( physicalDevice ) );
+      return std::hash<VkDeferredOperationKHR>{}( static_cast<VkDeferredOperationKHR>( deferredOperationKHR ) );
     }
   };
 
+  //=== VK_NV_device_generated_commands ===
+
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Pipeline>
+  struct hash<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV>
   {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Pipeline const & pipeline ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV const & indirectCommandsLayoutNV ) const
+      VULKAN_HPP_NOEXCEPT
     {
-      return std::hash<VkPipeline>{}( static_cast<VkPipeline>( pipeline ) );
+      return std::hash<VkIndirectCommandsLayoutNV>{}(
+        static_cast<VkIndirectCommandsLayoutNV>( indirectCommandsLayoutNV ) );
     }
   };
 
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PipelineCache>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::PipelineCache const & pipelineCache ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkPipelineCache>{}( static_cast<VkPipelineCache>( pipelineCache ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PipelineLayout>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::PipelineLayout const & pipelineLayout ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkPipelineLayout>{}( static_cast<VkPipelineLayout>( pipelineLayout ) );
-    }
-  };
+  //=== VK_EXT_private_data ===
 
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PrivateDataSlotEXT>
@@ -13355,120 +13712,5 @@ namespace std
     }
   };
 
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::QueryPool>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::QueryPool const & queryPool ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkQueryPool>{}( static_cast<VkQueryPool>( queryPool ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Queue>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Queue const & queue ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkQueue>{}( static_cast<VkQueue>( queue ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::RenderPass>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::RenderPass const & renderPass ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkRenderPass>{}( static_cast<VkRenderPass>( renderPass ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Sampler>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Sampler const & sampler ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkSampler>{}( static_cast<VkSampler>( sampler ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion const & samplerYcbcrConversion ) const
-      VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkSamplerYcbcrConversion>{}( static_cast<VkSamplerYcbcrConversion>( samplerYcbcrConversion ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::Semaphore>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Semaphore const & semaphore ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkSemaphore>{}( static_cast<VkSemaphore>( semaphore ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::ShaderModule>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::ShaderModule const & shaderModule ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkShaderModule>{}( static_cast<VkShaderModule>( shaderModule ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::SurfaceKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::SurfaceKHR const & surfaceKHR ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkSurfaceKHR>{}( static_cast<VkSurfaceKHR>( surfaceKHR ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::SwapchainKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::SwapchainKHR const & swapchainKHR ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkSwapchainKHR>{}( static_cast<VkSwapchainKHR>( swapchainKHR ) );
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::ValidationCacheEXT>
-  {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & validationCacheEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkValidationCacheEXT>{}( static_cast<VkValidationCacheEXT>( validationCacheEXT ) );
-    }
-  };
-
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VideoSessionKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoSessionKHR const & videoSessionKHR ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkVideoSessionKHR>{}( static_cast<VkVideoSessionKHR>( videoSessionKHR ) );
-    }
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & videoSessionParametersKHR ) const
-      VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<VkVideoSessionParametersKHR>{}(
-        static_cast<VkVideoSessionParametersKHR>( videoSessionParametersKHR ) );
-    }
-  };
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 }  // namespace std
 #endif

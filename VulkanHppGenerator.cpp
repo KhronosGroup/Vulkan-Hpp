@@ -409,7 +409,17 @@ std::string VulkanHppGenerator::generateHashStructures() const
 ${hashes}
 )";
 
-  std::string hashes;
+  // start with the hash on Flags<BitType>
+  std::string hashes = R"(
+  template <typename BitType> struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
+  {
+    std::size_t operator()(VULKAN_HPP_NAMESPACE::Flags<BitType> const& flags) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<typename std::underlying_type<BitType>::type>{}(static_cast<typename std::underlying_type<BitType>::type>(flags));
+    }
+  };
+)";
+
   for ( auto const & feature : m_features )
   {
     hashes += generateHashStructures( feature.second.types, feature.first );

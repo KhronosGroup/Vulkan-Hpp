@@ -672,6 +672,7 @@ namespace VULKAN_HPP_NAMESPACE
     eBufferDeviceAddressCreateInfoEXT            = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_CREATE_INFO_EXT,
     ePhysicalDeviceToolPropertiesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TOOL_PROPERTIES_EXT,
     eValidationFeaturesEXT                       = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT,
+    ePhysicalDevicePresentWaitFeaturesKHR        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_WAIT_FEATURES_KHR,
     ePhysicalDeviceCooperativeMatrixFeaturesNV   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_FEATURES_NV,
     eCooperativeMatrixPropertiesNV               = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_PROPERTIES_NV,
     ePhysicalDeviceCooperativeMatrixPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_NV,
@@ -706,6 +707,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineExecutableInfoKHR                   = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INFO_KHR,
     ePipelineExecutableStatisticKHR              = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_STATISTIC_KHR,
     ePipelineExecutableInternalRepresentationKHR = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR,
+    ePhysicalDeviceShaderAtomicFloat2FeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT,
     ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_DEMOTE_TO_HELPER_INVOCATION_FEATURES_EXT,
     ePhysicalDeviceDeviceGeneratedCommandsPropertiesNV =
@@ -739,6 +741,8 @@ namespace VULKAN_HPP_NAMESPACE
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT,
     ePhysicalDeviceCustomBorderColorFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
     ePipelineLibraryCreateInfoKHR               = VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR,
+    ePresentIdKHR                               = VK_STRUCTURE_TYPE_PRESENT_ID_KHR,
+    ePhysicalDevicePresentIdFeaturesKHR         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRESENT_ID_FEATURES_KHR,
     ePhysicalDevicePrivateDataFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIVATE_DATA_FEATURES_EXT,
     eDevicePrivateDataCreateInfoEXT             = VK_STRUCTURE_TYPE_DEVICE_PRIVATE_DATA_CREATE_INFO_EXT,
     ePrivateDataSlotCreateInfoEXT               = VK_STRUCTURE_TYPE_PRIVATE_DATA_SLOT_CREATE_INFO_EXT,
@@ -818,6 +822,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSubpassShadingPipelineCreateInfoHUAWEI       = VK_STRUCTURE_TYPE_SUBPASS_SHADING_PIPELINE_CREATE_INFO_HUAWEI,
     ePhysicalDeviceSubpassShadingFeaturesHUAWEI   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_FEATURES_HUAWEI,
     ePhysicalDeviceSubpassShadingPropertiesHUAWEI = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_SHADING_PROPERTIES_HUAWEI,
+    ePhysicalDeviceInvocationMaskFeaturesHUAWEI   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INVOCATION_MASK_FEATURES_HUAWEI,
     eMemoryGetRemoteAddressInfoNV                 = VK_STRUCTURE_TYPE_MEMORY_GET_REMOTE_ADDRESS_INFO_NV,
     ePhysicalDeviceExternalMemoryRdmaFeaturesNV   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_RDMA_FEATURES_NV,
     ePhysicalDeviceExtendedDynamicState2FeaturesEXT =
@@ -1549,6 +1554,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eBufferDeviceAddressCreateInfoEXT: return "BufferDeviceAddressCreateInfoEXT";
       case StructureType::ePhysicalDeviceToolPropertiesEXT: return "PhysicalDeviceToolPropertiesEXT";
       case StructureType::eValidationFeaturesEXT: return "ValidationFeaturesEXT";
+      case StructureType::ePhysicalDevicePresentWaitFeaturesKHR: return "PhysicalDevicePresentWaitFeaturesKHR";
       case StructureType::ePhysicalDeviceCooperativeMatrixFeaturesNV:
         return "PhysicalDeviceCooperativeMatrixFeaturesNV";
       case StructureType::eCooperativeMatrixPropertiesNV: return "CooperativeMatrixPropertiesNV";
@@ -1594,6 +1600,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineExecutableStatisticKHR: return "PipelineExecutableStatisticKHR";
       case StructureType::ePipelineExecutableInternalRepresentationKHR:
         return "PipelineExecutableInternalRepresentationKHR";
+      case StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT:
+        return "PhysicalDeviceShaderAtomicFloat2FeaturesEXT";
       case StructureType::ePhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT:
         return "PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT";
       case StructureType::ePhysicalDeviceDeviceGeneratedCommandsPropertiesNV:
@@ -1630,6 +1638,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCustomBorderColorFeaturesEXT:
         return "PhysicalDeviceCustomBorderColorFeaturesEXT";
       case StructureType::ePipelineLibraryCreateInfoKHR: return "PipelineLibraryCreateInfoKHR";
+      case StructureType::ePresentIdKHR: return "PresentIdKHR";
+      case StructureType::ePhysicalDevicePresentIdFeaturesKHR: return "PhysicalDevicePresentIdFeaturesKHR";
       case StructureType::ePhysicalDevicePrivateDataFeaturesEXT: return "PhysicalDevicePrivateDataFeaturesEXT";
       case StructureType::eDevicePrivateDataCreateInfoEXT: return "DevicePrivateDataCreateInfoEXT";
       case StructureType::ePrivateDataSlotCreateInfoEXT: return "PrivateDataSlotCreateInfoEXT";
@@ -1713,6 +1723,8 @@ namespace VULKAN_HPP_NAMESPACE
         return "PhysicalDeviceSubpassShadingFeaturesHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingPropertiesHUAWEI:
         return "PhysicalDeviceSubpassShadingPropertiesHUAWEI";
+      case StructureType::ePhysicalDeviceInvocationMaskFeaturesHUAWEI:
+        return "PhysicalDeviceInvocationMaskFeaturesHUAWEI";
       case StructureType::eMemoryGetRemoteAddressInfoNV: return "MemoryGetRemoteAddressInfoNV";
       case StructureType::ePhysicalDeviceExternalMemoryRdmaFeaturesNV:
         return "PhysicalDeviceExternalMemoryRdmaFeaturesNV";
@@ -2629,7 +2641,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeSrcKHR = VK_IMAGE_USAGE_VIDEO_ENCODE_SRC_BIT_KHR,
     eVideoEncodeDpbKHR = VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eShadingRateImageNV = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV
+    eInvocationMaskHUAWEI = VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI,
+    eShadingRateImageNV   = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV
   };
 
   VULKAN_HPP_INLINE std::string to_string( ImageUsageFlagBits value )
@@ -2656,6 +2669,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
       case ImageUsageFlagBits::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case ImageUsageFlagBits::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7540,6 +7554,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTaskShaderNV                  = VK_PIPELINE_STAGE_2_TASK_SHADER_BIT_NV,
     eMeshShaderNV                  = VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_NV,
     eSubpassShadingHUAWEI          = VK_PIPELINE_STAGE_2_SUBPASS_SHADING_BIT_HUAWEI,
+    eInvocationMaskHUAWEI          = VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI,
     eAccelerationStructureBuildNV  = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
     eRayTracingShaderNV            = VK_PIPELINE_STAGE_2_RAY_TRACING_SHADER_BIT_NV,
     eShadingRateImageNV            = VK_PIPELINE_STAGE_2_SHADING_RATE_IMAGE_BIT_NV,
@@ -7589,6 +7604,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2KHR::eTaskShaderNV: return "TaskShaderNV";
       case PipelineStageFlagBits2KHR::eMeshShaderNV: return "MeshShaderNV";
       case PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI: return "SubpassShadingHUAWEI";
+      case PipelineStageFlagBits2KHR::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7633,6 +7649,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureWrite        = VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR,
     eFragmentDensityMapReadEXT         = VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT,
     eColorAttachmentReadNoncoherentEXT = VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
+    eInvocationMaskReadHUAWEI          = VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI,
     eAccelerationStructureReadNV       = VK_ACCESS_2_ACCELERATION_STRUCTURE_READ_BIT_NV,
     eAccelerationStructureWriteNV      = VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_NV,
     eShadingRateImageReadNV            = VK_ACCESS_2_SHADING_RATE_IMAGE_READ_BIT_NV
@@ -7680,6 +7697,7 @@ namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits2KHR::eAccelerationStructureWrite: return "AccelerationStructureWrite";
       case AccessFlagBits2KHR::eFragmentDensityMapReadEXT: return "FragmentDensityMapReadEXT";
       case AccessFlagBits2KHR::eColorAttachmentReadNoncoherentEXT: return "ColorAttachmentReadNoncoherentEXT";
+      case AccessFlagBits2KHR::eInvocationMaskReadHUAWEI: return "InvocationMaskReadHUAWEI";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8145,6 +8163,7 @@ namespace VULKAN_HPP_NAMESPACE
                  | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+                 | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
     };
   };
 
@@ -8213,6 +8232,8 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ImageUsageFlagBits::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & ImageUsageFlagBits::eInvocationMaskHUAWEI )
+      result += "InvocationMaskHUAWEI | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13738,7 +13759,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags64( PipelineStageFlagBits2KHR::eRayTracingShader ) |
         VkFlags64( PipelineStageFlagBits2KHR::eFragmentDensityProcessEXT ) |
         VkFlags64( PipelineStageFlagBits2KHR::eTaskShaderNV ) | VkFlags64( PipelineStageFlagBits2KHR::eMeshShaderNV ) |
-        VkFlags64( PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI )
+        VkFlags64( PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI ) |
+        VkFlags64( PipelineStageFlagBits2KHR::eInvocationMaskHUAWEI )
     };
   };
 
@@ -13846,6 +13868,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "MeshShaderNV | ";
     if ( value & PipelineStageFlagBits2KHR::eSubpassShadingHUAWEI )
       result += "SubpassShadingHUAWEI | ";
+    if ( value & PipelineStageFlagBits2KHR::eInvocationMaskHUAWEI )
+      result += "InvocationMaskHUAWEI | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13882,7 +13906,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags64( AccessFlagBits2KHR::eAccelerationStructureRead ) |
         VkFlags64( AccessFlagBits2KHR::eAccelerationStructureWrite ) |
         VkFlags64( AccessFlagBits2KHR::eFragmentDensityMapReadEXT ) |
-        VkFlags64( AccessFlagBits2KHR::eColorAttachmentReadNoncoherentEXT )
+        VkFlags64( AccessFlagBits2KHR::eColorAttachmentReadNoncoherentEXT ) |
+        VkFlags64( AccessFlagBits2KHR::eInvocationMaskReadHUAWEI )
     };
   };
 
@@ -13987,6 +14012,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentDensityMapReadEXT | ";
     if ( value & AccessFlagBits2KHR::eColorAttachmentReadNoncoherentEXT )
       result += "ColorAttachmentReadNoncoherentEXT | ";
+    if ( value & AccessFlagBits2KHR::eInvocationMaskReadHUAWEI )
+      result += "InvocationMaskReadHUAWEI | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 

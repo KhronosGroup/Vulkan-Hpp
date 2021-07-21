@@ -111,7 +111,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <compare>
 #endif
 
-static_assert( VK_HEADER_VERSION == 184, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 185, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -4747,6 +4747,16 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetPhysicalDeviceToolPropertiesEXT( physicalDevice, pToolCount, pToolProperties );
     }
 
+    //=== VK_KHR_present_wait ===
+
+    VkResult vkWaitForPresentKHR( VkDevice       device,
+                                  VkSwapchainKHR swapchain,
+                                  uint64_t       presentId,
+                                  uint64_t       timeout ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkWaitForPresentKHR( device, swapchain, presentId, timeout );
+    }
+
     //=== VK_NV_cooperative_matrix ===
 
     VkResult vkGetPhysicalDeviceCooperativeMatrixPropertiesNV( VkPhysicalDevice                  physicalDevice,
@@ -5404,13 +5414,22 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdSubpassShadingHUAWEI( commandBuffer );
     }
 
+    //=== VK_HUAWEI_invocation_mask ===
+
+    void vkCmdBindInvocationMaskHUAWEI( VkCommandBuffer commandBuffer,
+                                        VkImageView     imageView,
+                                        VkImageLayout   imageLayout ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdBindInvocationMaskHUAWEI( commandBuffer, imageView, imageLayout );
+    }
+
     //=== VK_NV_external_memory_rdma ===
 
     VkResult vkGetMemoryRemoteAddressNV( VkDevice                               device,
-                                         const VkMemoryGetRemoteAddressInfoNV * getMemoryRemoteAddressInfo,
+                                         const VkMemoryGetRemoteAddressInfoNV * pMemoryGetRemoteAddressInfo,
                                          VkRemoteAddressNV *                    pAddress ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkGetMemoryRemoteAddressNV( device, getMemoryRemoteAddressInfo, pAddress );
+      return ::vkGetMemoryRemoteAddressNV( device, pMemoryGetRemoteAddressInfo, pAddress );
     }
 
     //=== VK_EXT_extended_dynamic_state2 ===
@@ -9178,6 +9197,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_present_wait ===
+  template <>
+  struct StructExtends<PhysicalDevicePresentWaitFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePresentWaitFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_NV_cooperative_matrix ===
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, PhysicalDeviceFeatures2>
@@ -9450,6 +9487,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_shader_atomic_float2 ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloat2FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloat2FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_demote_to_helper_invocation ===
   template <>
   struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeaturesEXT, PhysicalDeviceFeatures2>
@@ -9651,6 +9706,32 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_present_id ===
+  template <>
+  struct StructExtends<PresentIdKHR, PresentInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePresentIdFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePresentIdFeaturesKHR, DeviceCreateInfo>
   {
     enum
     {
@@ -10140,6 +10221,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceSubpassShadingPropertiesHUAWEI, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_HUAWEI_invocation_mask ===
+  template <>
+  struct StructExtends<PhysicalDeviceInvocationMaskFeaturesHUAWEI, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceInvocationMaskFeaturesHUAWEI, DeviceCreateInfo>
   {
     enum
     {
@@ -10980,6 +11079,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_tooling_info ===
     PFN_vkGetPhysicalDeviceToolPropertiesEXT vkGetPhysicalDeviceToolPropertiesEXT = 0;
 
+    //=== VK_KHR_present_wait ===
+    PFN_vkWaitForPresentKHR vkWaitForPresentKHR = 0;
+
     //=== VK_NV_cooperative_matrix ===
     PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV = 0;
 
@@ -11118,6 +11220,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_HUAWEI_subpass_shading ===
     PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = 0;
     PFN_vkCmdSubpassShadingHUAWEI                       vkCmdSubpassShadingHUAWEI                       = 0;
+
+    //=== VK_HUAWEI_invocation_mask ===
+    PFN_vkCmdBindInvocationMaskHUAWEI vkCmdBindInvocationMaskHUAWEI = 0;
 
     //=== VK_NV_external_memory_rdma ===
     PFN_vkGetMemoryRemoteAddressNV vkGetMemoryRemoteAddressNV = 0;
@@ -12178,6 +12283,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetPhysicalDeviceToolPropertiesEXT = PFN_vkGetPhysicalDeviceToolPropertiesEXT(
         vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceToolPropertiesEXT" ) );
 
+      //=== VK_KHR_present_wait ===
+      vkWaitForPresentKHR = PFN_vkWaitForPresentKHR( vkGetInstanceProcAddr( instance, "vkWaitForPresentKHR" ) );
+
       //=== VK_NV_cooperative_matrix ===
       vkGetPhysicalDeviceCooperativeMatrixPropertiesNV = PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV(
         vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesNV" ) );
@@ -12384,6 +12492,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetInstanceProcAddr( instance, "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
       vkCmdSubpassShadingHUAWEI =
         PFN_vkCmdSubpassShadingHUAWEI( vkGetInstanceProcAddr( instance, "vkCmdSubpassShadingHUAWEI" ) );
+
+      //=== VK_HUAWEI_invocation_mask ===
+      vkCmdBindInvocationMaskHUAWEI =
+        PFN_vkCmdBindInvocationMaskHUAWEI( vkGetInstanceProcAddr( instance, "vkCmdBindInvocationMaskHUAWEI" ) );
 
       //=== VK_NV_external_memory_rdma ===
       vkGetMemoryRemoteAddressNV =
@@ -13075,6 +13187,9 @@ namespace VULKAN_HPP_NAMESPACE
       if ( !vkGetBufferDeviceAddress )
         vkGetBufferDeviceAddress = vkGetBufferDeviceAddressEXT;
 
+      //=== VK_KHR_present_wait ===
+      vkWaitForPresentKHR = PFN_vkWaitForPresentKHR( vkGetDeviceProcAddr( device, "vkWaitForPresentKHR" ) );
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_EXT_full_screen_exclusive ===
       vkAcquireFullScreenExclusiveModeEXT =
@@ -13243,6 +13358,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDeviceProcAddr( device, "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
       vkCmdSubpassShadingHUAWEI =
         PFN_vkCmdSubpassShadingHUAWEI( vkGetDeviceProcAddr( device, "vkCmdSubpassShadingHUAWEI" ) );
+
+      //=== VK_HUAWEI_invocation_mask ===
+      vkCmdBindInvocationMaskHUAWEI =
+        PFN_vkCmdBindInvocationMaskHUAWEI( vkGetDeviceProcAddr( device, "vkCmdBindInvocationMaskHUAWEI" ) );
 
       //=== VK_NV_external_memory_rdma ===
       vkGetMemoryRemoteAddressNV =

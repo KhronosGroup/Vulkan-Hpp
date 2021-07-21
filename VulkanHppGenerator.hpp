@@ -1147,10 +1147,11 @@ private:
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension );
-  void                          readRequireEnum( tinyxml2::XMLElement const *               element,
-                                                 std::map<std::string, std::string> const & attributes,
-                                                 std::string const &                        extension );
+  void                          readRequireEnum( tinyxml2::XMLElement const *                   element,
+                                                 std::map<std::string, ExtensionData>::iterator extensionIt );
+  void                          readRequireEnum( tinyxml2::XMLElement const *                   element,
+                                                 std::map<std::string, std::string> const &     attributes,
+                                                 std::map<std::string, ExtensionData>::iterator extensionIt );
   void                          readRequireEnumAlias( tinyxml2::XMLElement const *               element,
                                                       std::map<std::string, std::string> const & attributes );
   void readRequires( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

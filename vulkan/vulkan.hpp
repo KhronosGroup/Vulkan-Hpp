@@ -1314,8 +1314,22 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif
 
+  class DispatchLoaderBase
+  {
+#if !defined( NDEBUG )
+  public:
+    size_t getVkHeaderVersion() const
+    {
+      return vkHeaderVersion;
+    }
+
+  private:
+    size_t vkHeaderVersion = VK_HEADER_VERSION;
+#endif
+  };
+
 #if !defined( VK_NO_PROTOTYPES )
-  class DispatchLoaderStatic
+  class DispatchLoaderStatic : public DispatchLoaderBase
   {
   public:
     //=== VK_VERSION_1_0 ===
@@ -10351,7 +10365,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif
 
-  class DispatchLoaderDynamic
+  class DispatchLoaderDynamic : public DispatchLoaderBase
   {
   public:
     using PFN_dummy = void ( * )();

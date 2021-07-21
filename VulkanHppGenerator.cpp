@@ -190,7 +190,7 @@ ${commandDefinitions}
 std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
 {
   const std::string dispatchLoaderDynamicTemplate = R"(
-  class DispatchLoaderDynamic
+  class DispatchLoaderDynamic : public DispatchLoaderBase
   {
   public:
     using PFN_dummy = void ( * )();
@@ -311,7 +311,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
 {
   const std::string dispatchLoaderStaticTemplate = R"(
 #if !defined( VK_NO_PROTOTYPES )
-  class DispatchLoaderStatic
+  class DispatchLoaderStatic : public DispatchLoaderBase
   {
   public:
 ${commands}
@@ -580,7 +580,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   }
 
   std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher
+    class ContextDispatcher : public DispatchLoaderBase
     {
     public:
       ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -597,7 +597,7 @@ ${members}
                                     { { "initializerList", contextInitializerList }, { "members", contextMembers } } );
 
   std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher
+    class InstanceDispatcher : public DispatchLoaderBase
     {
     public:
       InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -625,7 +625,7 @@ ${members}
                          { { "initAssignments", instanceInitAssignments }, { "members", instanceMembers } } );
 
   std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher
+    class DeviceDispatcher : public DispatchLoaderBase
     {
       public:
         DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr )
@@ -1669,6 +1669,7 @@ ${moveAssignmentInstructions}
 ${getConstructorSuccessCode}
     ${dispatcherType} const * getDispatcher() const
     {
+      VULKAN_HPP_ASSERT( m_dispatcher${dispatcherAccess}getVkHeaderVersion() == VK_HEADER_VERSION );
       return ${getDispatcherReturn}m_dispatcher;
     }
 
@@ -1694,6 +1695,7 @@ ${leave})";
       handleTemplate,
       { { "debugReportObjectType", debugReportObjectType },
         { "destructor", destructor },
+        { "dispatcherAccess", ( handleType == "Device" ) || ( handleType == "Instance" ) ? "." : "->" },
         { "dispatcherType", dispatcherType },
         { "enter", enter },
         { "getConstructorSuccessCode", getConstructorSuccessCode },
@@ -1774,6 +1776,7 @@ ${memberFunctionDeclarations}
 
     VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
     {
+      VULKAN_HPP_ASSERT( m_dispatcher.getVkHeaderVersion() == VK_HEADER_VERSION );
       return &m_dispatcher;
     }
 
@@ -2410,6 +2413,7 @@ std::string VulkanHppGenerator::constructCommandBoolGetValue( std::string const 
       R"(  template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<Bool32,${returnType}> ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::pair<Bool32,${returnType}> result;
     ${returnType} & ${returnValueName} = result.second;
     result.first = static_cast<Bool32>( d.${vkCommand}( ${callArguments} ) );
@@ -2468,6 +2472,7 @@ std::string VulkanHppGenerator::constructCommandResult( std::string const &     
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
   })";
@@ -2532,6 +2537,7 @@ std::string VulkanHppGenerator::constructCommandResultEnumerate( std::string con
       R"(  template <typename ${allocatorType}, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::vector<${vectorElementType}, ${allocatorType}>>::type ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<${vectorElementType}, ${allocatorType}> ${vectorName}${vectorAllocator};
     ${counterType} ${counterName};
     Result result;
@@ -2632,6 +2638,7 @@ std::string
       R"(  template <typename StructureChain, typename StructureChainAllocator, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<StructureChain, StructureChainAllocator> returnVector${structureChainAllocator};
     std::vector<${vectorElementType}> ${vectorName};
     ${counterType} ${counterName};
@@ -2745,6 +2752,7 @@ std::string
       R"(  template <typename ${templateTypeFirst}Allocator, typename ${templateTypeSecond}Allocator, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<${templateTypeFirst}, ${templateTypeFirst}Allocator>, std::vector<${templateTypeSecond}, ${templateTypeSecond}Allocator>>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::pair<std::vector<${templateTypeFirst}, ${templateTypeFirst}Allocator>, std::vector<${templateTypeSecond}, ${templateTypeSecond}Allocator>> data${pairConstructor};
     std::vector<${templateTypeFirst}, ${templateTypeFirst}Allocator> & ${firstVectorName} = data.first;
     std::vector<${templateTypeSecond}, ${templateTypeSecond}Allocator> & ${secondVectorName} = data.second;
@@ -2855,6 +2863,7 @@ std::string VulkanHppGenerator::constructCommandResultEnumerateTwoVectorsDepreca
   VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it.")
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<${returnType}>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${functionBody}
   })";
 
@@ -2931,6 +2940,7 @@ std::string VulkanHppGenerator::constructCommandResultGetChain( std::string cons
       R"(  template <typename X, typename Y, typename... Z, typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     StructureChain<X, Y, Z...> structureChain;
     ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
@@ -2987,6 +2997,7 @@ std::string VulkanHppGenerator::constructCommandResultGetHandleUnique( std::stri
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<${returnBaseType}, Dispatch>>::type ${className}${classSeparator}${commandName}Unique( ${argumentList} )${const}
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${returnBaseType} ${returnValueName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     ${ObjectDeleter}<${parentName}, Dispatch> deleter( ${this}${allocator}d );
@@ -3090,6 +3101,7 @@ std::string VulkanHppGenerator::constructCommandResultGetTwoValues(
       R"(  template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::pair<${firstType}, ${secondType}> returnValues;
     ${firstType} & ${firstValueName} = returnValues.first;
     ${secondType} & ${secondValueName} = returnValues.second;
@@ -3160,7 +3172,8 @@ std::string
     const std::string functionTemplate =
       R"(  template <typename Dispatch>
   VULKAN_HPP_INLINE Result ${className}${classSeparator}${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
   })";
@@ -3229,6 +3242,7 @@ std::string VulkanHppGenerator::constructCommandResultGetValue( std::string cons
       R"(  template <${typenameT}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${returnBaseType} ${returnValueName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${returnValueName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -3295,6 +3309,7 @@ std::string
   VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it.")
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<${returnType}>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${functionBody}
   })";
 
@@ -3357,6 +3372,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVector( std::string con
       R"(  template <typename T, typename Allocator, typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     VULKAN_HPP_ASSERT( ${dataSize} % sizeof( T ) == 0 );
     std::vector<T,Allocator> ${dataName}( ${dataSize} / sizeof( T ) );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
@@ -3426,6 +3442,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVector( std::string con
       R"(  template <typename ${allocatorType}, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::vector<${vectorElementType}, ${allocatorType}>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<${vectorElementType}, ${allocatorType}> ${vectorName}( ${vectorSize}${allocateInitializer} );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${vectorName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -3516,6 +3533,7 @@ std::string
       R"(  template <typename ${allocatorType}, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<${vectorElementType}, ${allocatorType}>, ${valueType}>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::pair<std::vector<${vectorElementType}, ${allocatorType}>,${valueType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
     std::vector<${vectorElementType}, ${allocatorType}> & ${vectorName} = data.first;
     ${valueType} & ${valueName} = data.second;
@@ -3597,6 +3615,7 @@ std::string
   VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it.")
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${functionBody}
   })";
 
@@ -3665,6 +3684,7 @@ std::string
       R"(  template <typename ${handleType}Allocator, typename Dispatch${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<${handleType}, ${handleType}Allocator> ${vectorName}( ${vectorSize}${vectorAllocator} );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${vectorName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -3749,6 +3769,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesSingular
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${handleType} ${handleName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${handleName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -3817,6 +3838,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUnique(
       R"(  template <typename Dispatch, typename ${handleType}Allocator${typenameCheck}>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}Unique( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<UniqueHandle<${handleType}, Dispatch>, ${handleType}Allocator> ${uniqueVectorName}${vectorAllocator};
     std::vector<${handleType}> ${vectorName}( ${vectorSize} );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
@@ -3937,6 +3959,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfHandlesUniqueSi
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}Unique( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${handleType} ${handleName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     ObjectDestroy<${className}, Dispatch> deleter( *this, allocator, d );
@@ -4004,6 +4027,7 @@ std::string VulkanHppGenerator::constructCommandResultGetVectorOfVoidSingular(
       R"(  template <typename T, typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     T ${dataName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -4066,6 +4090,7 @@ std::string
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${dataType} ${dataName};
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
@@ -4131,6 +4156,7 @@ std::string VulkanHppGenerator::constructCommandStandard( std::string const & na
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const} VULKAN_HPP_NOEXCEPT
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${functionBody};
   })";
 
@@ -4183,6 +4209,7 @@ std::string VulkanHppGenerator::constructCommandType( std::string const & name,
       R"(  template <typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return d.${vkCommand}( ${callArguments} );
   })";
 
@@ -4239,7 +4266,8 @@ std::string VulkanHppGenerator::constructCommandVoid( std::string const &       
     std::string const functionTemplate =
       R"(  template <${typenameT}typename Dispatch>
   VULKAN_HPP_INLINE void ${className}${classSeparator}${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
     d.${vkCommand}( ${callArguments} );
   })";
 
@@ -4299,6 +4327,7 @@ std::string VulkanHppGenerator::constructCommandVoidEnumerate( std::string const
       R"(  template <typename ${vectorElementType}Allocator, typename Dispatch${typenameCheck}>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${vectorName}${vectorAllocator};
     ${counterType} ${counterName};
     d.${vkCommand}( ${firstCallArguments} );
@@ -4386,6 +4415,7 @@ std::string
       R"(  template <typename StructureChain, typename StructureChainAllocator, typename Dispatch${typenameCheck}>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator> ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     ${counterType} ${counterName};
     d.${vkCommand}( ${firstCallArguments} );
     std::vector<StructureChain, StructureChainAllocator> returnVector( ${counterName}${structureChainAllocator} );
@@ -4472,6 +4502,7 @@ std::string VulkanHppGenerator::constructCommandVoidGetChain( std::string const 
       R"(  template <typename X, typename Y, typename... Z, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> ${className}${classSeparator}${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     StructureChain<X, Y, Z...> structureChain;
     ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
     d.${vkCommand}( ${callArguments} );
@@ -4563,7 +4594,8 @@ std::string VulkanHppGenerator::constructCommandVoidGetValue( std::string const 
     std::string const functionTemplate =
       R"(  template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const ${noexcept}
-  {${vectorSizeCheck}
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
     ${returnType} ${returnVariable};
     d.${vkCommand}( ${callArguments} );
     return ${returnVariable};
@@ -16068,6 +16100,22 @@ int main( int argc, char ** argv )
 #define VULKAN_HPP_NAMESPACE_STRING   VULKAN_HPP_STRINGIFY( VULKAN_HPP_NAMESPACE )
 )";
 
+  static const std::string dispatchLoaderBase = R"(
+  class DispatchLoaderBase
+  {
+#if !defined(NDEBUG)
+  public:
+    size_t getVkHeaderVersion() const
+    {
+      return vkHeaderVersion;
+    }
+
+  private:
+    size_t vkHeaderVersion = VK_HEADER_VERSION;
+#endif
+  };
+)";
+
   static const std::string dispatchLoaderDefault = R"(
   class DispatchLoaderDynamic;
 #if !defined(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC)
@@ -16806,6 +16854,7 @@ namespace VULKAN_HPP_NAMESPACE
       "#endif\n";
     str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{" + classArrayProxy + classArrayWrapper +
            classFlags + classOptional + classStructureChain + classUniqueHandle;
+    str += dispatchLoaderBase;
     str += generator.generateDispatchLoaderStatic();
     str += dispatchLoaderDefault;
     str += classObjectDestroy + classObjectFree + classObjectRelease + classPoolFree + "\n";

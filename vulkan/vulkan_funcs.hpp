@@ -16356,6 +16356,36 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_KHR_present_wait ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::waitForPresentKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
+                               uint64_t                           presentId,
+                               uint64_t                           timeout,
+                               Dispatch const &                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkWaitForPresentKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), presentId, timeout ) );
+  }
+#else
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::waitForPresentKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
+                                                                           uint64_t                           presentId,
+                                                                           uint64_t                           timeout,
+                                                                           Dispatch const &                   d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    Result result = static_cast<Result>(
+      d.vkWaitForPresentKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), presentId, timeout ) );
+    return createResultValue( result,
+                              VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresentKHR",
+                              { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout } );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   //=== VK_NV_cooperative_matrix ===
 
   template <typename Dispatch>
@@ -19134,32 +19164,44 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdSubpassShadingHUAWEI( m_commandBuffer );
   }
 
+  //=== VK_HUAWEI_invocation_mask ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindInvocationMaskHUAWEI( VULKAN_HPP_NAMESPACE::ImageView   imageView,
+                                                                  VULKAN_HPP_NAMESPACE::ImageLayout imageLayout,
+                                                                  Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBindInvocationMaskHUAWEI(
+      m_commandBuffer, static_cast<VkImageView>( imageView ), static_cast<VkImageLayout>( imageLayout ) );
+  }
+
   //=== VK_NV_external_memory_rdma ===
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getMemoryRemoteAddressNV(
-    const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * getMemoryRemoteAddressInfo,
+    const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * pMemoryGetRemoteAddressInfo,
     VULKAN_HPP_NAMESPACE::RemoteAddressNV *                    pAddress,
     Dispatch const &                                           d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkGetMemoryRemoteAddressNV(
       m_device,
-      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( getMemoryRemoteAddressInfo ),
+      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( pMemoryGetRemoteAddressInfo ),
       reinterpret_cast<VkRemoteAddressNV *>( pAddress ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::RemoteAddressNV>::type
-    Device::getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo,
+    Device::getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo,
                                       Dispatch const &                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     VULKAN_HPP_NAMESPACE::RemoteAddressNV address;
     Result                                result = static_cast<Result>( d.vkGetMemoryRemoteAddressNV(
       m_device,
-      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( &getMemoryRemoteAddressInfo ),
+      reinterpret_cast<const VkMemoryGetRemoteAddressInfoNV *>( &memoryGetRemoteAddressInfo ),
       reinterpret_cast<VkRemoteAddressNV *>( &address ) ) );
     return createResultValue( result, address, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryRemoteAddressNV" );
   }

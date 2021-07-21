@@ -41422,6 +41422,93 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceInlineUniformBlockPropertiesEXT;
   };
 
+  struct PhysicalDeviceInvocationMaskFeaturesHUAWEI
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceInvocationMaskFeaturesHUAWEI;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceInvocationMaskFeaturesHUAWEI( VULKAN_HPP_NAMESPACE::Bool32 invocationMask_ = {} )
+      VULKAN_HPP_NOEXCEPT : invocationMask( invocationMask_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceInvocationMaskFeaturesHUAWEI(
+      PhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceInvocationMaskFeaturesHUAWEI( VkPhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceInvocationMaskFeaturesHUAWEI(
+          *reinterpret_cast<PhysicalDeviceInvocationMaskFeaturesHUAWEI const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceInvocationMaskFeaturesHUAWEI &
+      operator=( PhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceInvocationMaskFeaturesHUAWEI &
+      operator=( VkPhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceInvocationMaskFeaturesHUAWEI const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceInvocationMaskFeaturesHUAWEI & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceInvocationMaskFeaturesHUAWEI &
+      setInvocationMask( VULKAN_HPP_NAMESPACE::Bool32 invocationMask_ ) VULKAN_HPP_NOEXCEPT
+    {
+      invocationMask = invocationMask_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceInvocationMaskFeaturesHUAWEI const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceInvocationMaskFeaturesHUAWEI *>( this );
+    }
+
+    operator VkPhysicalDeviceInvocationMaskFeaturesHUAWEI &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceInvocationMaskFeaturesHUAWEI *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceInvocationMaskFeaturesHUAWEI const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( invocationMask == rhs.invocationMask );
+    }
+
+    bool operator!=( PhysicalDeviceInvocationMaskFeaturesHUAWEI const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType          = StructureType::ePhysicalDeviceInvocationMaskFeaturesHUAWEI;
+    void *                              pNext          = {};
+    VULKAN_HPP_NAMESPACE::Bool32        invocationMask = {};
+  };
+  static_assert( sizeof( PhysicalDeviceInvocationMaskFeaturesHUAWEI ) ==
+                   sizeof( VkPhysicalDeviceInvocationMaskFeaturesHUAWEI ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceInvocationMaskFeaturesHUAWEI>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceInvocationMaskFeaturesHUAWEI>
+  {
+    using Type = PhysicalDeviceInvocationMaskFeaturesHUAWEI;
+  };
+
   struct PhysicalDeviceLimits
   {
 #if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
@@ -44029,6 +44116,175 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  struct PhysicalDevicePresentIdFeaturesKHR
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDevicePresentIdFeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDevicePresentIdFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 presentId_ = {} ) VULKAN_HPP_NOEXCEPT
+      : presentId( presentId_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePresentIdFeaturesKHR( PhysicalDevicePresentIdFeaturesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePresentIdFeaturesKHR( VkPhysicalDevicePresentIdFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDevicePresentIdFeaturesKHR( *reinterpret_cast<PhysicalDevicePresentIdFeaturesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePresentIdFeaturesKHR &
+                            operator=( PhysicalDevicePresentIdFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePresentIdFeaturesKHR &
+      operator=( VkPhysicalDevicePresentIdFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentIdFeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDevicePresentIdFeaturesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePresentIdFeaturesKHR & setPresentId( VULKAN_HPP_NAMESPACE::Bool32 presentId_ ) VULKAN_HPP_NOEXCEPT
+    {
+      presentId = presentId_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDevicePresentIdFeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePresentIdFeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDevicePresentIdFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePresentIdFeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDevicePresentIdFeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDevicePresentIdFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( presentId == rhs.presentId );
+    }
+
+    bool operator!=( PhysicalDevicePresentIdFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType     = StructureType::ePhysicalDevicePresentIdFeaturesKHR;
+    void *                              pNext     = {};
+    VULKAN_HPP_NAMESPACE::Bool32        presentId = {};
+  };
+  static_assert( sizeof( PhysicalDevicePresentIdFeaturesKHR ) == sizeof( VkPhysicalDevicePresentIdFeaturesKHR ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePresentIdFeaturesKHR>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDevicePresentIdFeaturesKHR>
+  {
+    using Type = PhysicalDevicePresentIdFeaturesKHR;
+  };
+
+  struct PhysicalDevicePresentWaitFeaturesKHR
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDevicePresentWaitFeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDevicePresentWaitFeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 presentWait_ = {} ) VULKAN_HPP_NOEXCEPT
+      : presentWait( presentWait_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePresentWaitFeaturesKHR( PhysicalDevicePresentWaitFeaturesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePresentWaitFeaturesKHR( VkPhysicalDevicePresentWaitFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDevicePresentWaitFeaturesKHR( *reinterpret_cast<PhysicalDevicePresentWaitFeaturesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePresentWaitFeaturesKHR &
+                            operator=( PhysicalDevicePresentWaitFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePresentWaitFeaturesKHR &
+      operator=( VkPhysicalDevicePresentWaitFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePresentWaitFeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDevicePresentWaitFeaturesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePresentWaitFeaturesKHR &
+      setPresentWait( VULKAN_HPP_NAMESPACE::Bool32 presentWait_ ) VULKAN_HPP_NOEXCEPT
+    {
+      presentWait = presentWait_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDevicePresentWaitFeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePresentWaitFeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDevicePresentWaitFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePresentWaitFeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDevicePresentWaitFeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDevicePresentWaitFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( presentWait == rhs.presentWait );
+    }
+
+    bool operator!=( PhysicalDevicePresentWaitFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType       = StructureType::ePhysicalDevicePresentWaitFeaturesKHR;
+    void *                              pNext       = {};
+    VULKAN_HPP_NAMESPACE::Bool32        presentWait = {};
+  };
+  static_assert( sizeof( PhysicalDevicePresentWaitFeaturesKHR ) == sizeof( VkPhysicalDevicePresentWaitFeaturesKHR ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePresentWaitFeaturesKHR>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDevicePresentWaitFeaturesKHR>
+  {
+    using Type = PhysicalDevicePresentWaitFeaturesKHR;
+  };
+
   struct PhysicalDevicePrivateDataFeaturesEXT
   {
     static const bool                                  allowDuplicate = false;
@@ -45971,6 +46227,216 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
   };
   using PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR = PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
+
+  struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderAtomicFloat2FeaturesEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16Atomics_      = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16AtomicAdd_    = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat32AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat64AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16Atomics_      = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16AtomicAdd_    = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat32AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat64AtomicMinMax_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 shaderImageFloat32AtomicMinMax_  = {},
+      VULKAN_HPP_NAMESPACE::Bool32 sparseImageFloat32AtomicMinMax_  = {} ) VULKAN_HPP_NOEXCEPT
+      : shaderBufferFloat16Atomics( shaderBufferFloat16Atomics_ )
+      , shaderBufferFloat16AtomicAdd( shaderBufferFloat16AtomicAdd_ )
+      , shaderBufferFloat16AtomicMinMax( shaderBufferFloat16AtomicMinMax_ )
+      , shaderBufferFloat32AtomicMinMax( shaderBufferFloat32AtomicMinMax_ )
+      , shaderBufferFloat64AtomicMinMax( shaderBufferFloat64AtomicMinMax_ )
+      , shaderSharedFloat16Atomics( shaderSharedFloat16Atomics_ )
+      , shaderSharedFloat16AtomicAdd( shaderSharedFloat16AtomicAdd_ )
+      , shaderSharedFloat16AtomicMinMax( shaderSharedFloat16AtomicMinMax_ )
+      , shaderSharedFloat32AtomicMinMax( shaderSharedFloat32AtomicMinMax_ )
+      , shaderSharedFloat64AtomicMinMax( shaderSharedFloat64AtomicMinMax_ )
+      , shaderImageFloat32AtomicMinMax( shaderImageFloat32AtomicMinMax_ )
+      , sparseImageFloat32AtomicMinMax( sparseImageFloat32AtomicMinMax_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderAtomicFloat2FeaturesEXT(
+      PhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT( VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceShaderAtomicFloat2FeaturesEXT(
+          *reinterpret_cast<PhysicalDeviceShaderAtomicFloat2FeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      operator=( PhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      operator=( VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicFloat2FeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      setShaderBufferFloat16Atomics( VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16Atomics_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderBufferFloat16Atomics = shaderBufferFloat16Atomics_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      setShaderBufferFloat16AtomicAdd( VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16AtomicAdd_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderBufferFloat16AtomicAdd = shaderBufferFloat16AtomicAdd_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderBufferFloat16AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat16AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderBufferFloat16AtomicMinMax = shaderBufferFloat16AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderBufferFloat32AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat32AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderBufferFloat32AtomicMinMax = shaderBufferFloat32AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderBufferFloat64AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderBufferFloat64AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderBufferFloat64AtomicMinMax = shaderBufferFloat64AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      setShaderSharedFloat16Atomics( VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16Atomics_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSharedFloat16Atomics = shaderSharedFloat16Atomics_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT &
+      setShaderSharedFloat16AtomicAdd( VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16AtomicAdd_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSharedFloat16AtomicAdd = shaderSharedFloat16AtomicAdd_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderSharedFloat16AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat16AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSharedFloat16AtomicMinMax = shaderSharedFloat16AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderSharedFloat32AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat32AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSharedFloat32AtomicMinMax = shaderSharedFloat32AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderSharedFloat64AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderSharedFloat64AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderSharedFloat64AtomicMinMax = shaderSharedFloat64AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setShaderImageFloat32AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderImageFloat32AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderImageFloat32AtomicMinMax = shaderImageFloat32AtomicMinMax_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderAtomicFloat2FeaturesEXT & setSparseImageFloat32AtomicMinMax(
+      VULKAN_HPP_NAMESPACE::Bool32 sparseImageFloat32AtomicMinMax_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sparseImageFloat32AtomicMinMax = sparseImageFloat32AtomicMinMax_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceShaderAtomicFloat2FeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( shaderBufferFloat16Atomics == rhs.shaderBufferFloat16Atomics ) &&
+             ( shaderBufferFloat16AtomicAdd == rhs.shaderBufferFloat16AtomicAdd ) &&
+             ( shaderBufferFloat16AtomicMinMax == rhs.shaderBufferFloat16AtomicMinMax ) &&
+             ( shaderBufferFloat32AtomicMinMax == rhs.shaderBufferFloat32AtomicMinMax ) &&
+             ( shaderBufferFloat64AtomicMinMax == rhs.shaderBufferFloat64AtomicMinMax ) &&
+             ( shaderSharedFloat16Atomics == rhs.shaderSharedFloat16Atomics ) &&
+             ( shaderSharedFloat16AtomicAdd == rhs.shaderSharedFloat16AtomicAdd ) &&
+             ( shaderSharedFloat16AtomicMinMax == rhs.shaderSharedFloat16AtomicMinMax ) &&
+             ( shaderSharedFloat32AtomicMinMax == rhs.shaderSharedFloat32AtomicMinMax ) &&
+             ( shaderSharedFloat64AtomicMinMax == rhs.shaderSharedFloat64AtomicMinMax ) &&
+             ( shaderImageFloat32AtomicMinMax == rhs.shaderImageFloat32AtomicMinMax ) &&
+             ( sparseImageFloat32AtomicMinMax == rhs.sparseImageFloat32AtomicMinMax );
+    }
+
+    bool operator!=( PhysicalDeviceShaderAtomicFloat2FeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderBufferFloat16Atomics      = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderBufferFloat16AtomicAdd    = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderBufferFloat16AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderBufferFloat32AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderBufferFloat64AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderSharedFloat16Atomics      = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderSharedFloat16AtomicAdd    = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderSharedFloat16AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderSharedFloat32AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderSharedFloat64AtomicMinMax = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderImageFloat32AtomicMinMax  = {};
+    VULKAN_HPP_NAMESPACE::Bool32        sparseImageFloat32AtomicMinMax  = {};
+  };
+  static_assert( sizeof( PhysicalDeviceShaderAtomicFloat2FeaturesEXT ) ==
+                   sizeof( VkPhysicalDeviceShaderAtomicFloat2FeaturesEXT ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderAtomicFloat2FeaturesEXT>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT>
+  {
+    using Type = PhysicalDeviceShaderAtomicFloat2FeaturesEXT;
+  };
 
   struct PhysicalDeviceShaderAtomicFloatFeaturesEXT
   {
@@ -56049,6 +56515,109 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PresentFrameTokenGGP;
   };
 #endif /*VK_USE_PLATFORM_GGP*/
+
+  struct PresentIdKHR
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePresentIdKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PresentIdKHR( uint32_t         swapchainCount_ = {},
+                                       const uint64_t * pPresentIds_    = {} ) VULKAN_HPP_NOEXCEPT
+      : swapchainCount( swapchainCount_ )
+      , pPresentIds( pPresentIds_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PresentIdKHR( PresentIdKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PresentIdKHR( VkPresentIdKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PresentIdKHR( *reinterpret_cast<PresentIdKHR const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PresentIdKHR( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint64_t> const & presentIds_ )
+      : swapchainCount( static_cast<uint32_t>( presentIds_.size() ) ), pPresentIds( presentIds_.data() )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PresentIdKHR & operator=( PresentIdKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PresentIdKHR & operator=( VkPresentIdKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PresentIdKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PresentIdKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PresentIdKHR & setSwapchainCount( uint32_t swapchainCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      swapchainCount = swapchainCount_;
+      return *this;
+    }
+
+    PresentIdKHR & setPPresentIds( const uint64_t * pPresentIds_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pPresentIds = pPresentIds_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PresentIdKHR & setPresentIds( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint64_t> const & presentIds_ )
+      VULKAN_HPP_NOEXCEPT
+    {
+      swapchainCount = static_cast<uint32_t>( presentIds_.size() );
+      pPresentIds    = presentIds_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPresentIdKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPresentIdKHR *>( this );
+    }
+
+    operator VkPresentIdKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPresentIdKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PresentIdKHR const & ) const = default;
+#else
+    bool operator==( PresentIdKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( swapchainCount == rhs.swapchainCount ) &&
+             ( pPresentIds == rhs.pPresentIds );
+    }
+
+    bool operator!=( PresentIdKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType          = StructureType::ePresentIdKHR;
+    const void *                        pNext          = {};
+    uint32_t                            swapchainCount = {};
+    const uint64_t *                    pPresentIds    = {};
+  };
+  static_assert( sizeof( PresentIdKHR ) == sizeof( VkPresentIdKHR ), "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PresentIdKHR>::value, "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePresentIdKHR>
+  {
+    using Type = PresentIdKHR;
+  };
 
   struct PresentInfoKHR
   {

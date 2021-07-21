@@ -512,6 +512,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceInheritedViewportScissorFeaturesNV;
   struct PhysicalDeviceInlineUniformBlockFeaturesEXT;
   struct PhysicalDeviceInlineUniformBlockPropertiesEXT;
+  struct PhysicalDeviceInvocationMaskFeaturesHUAWEI;
   struct PhysicalDeviceLimits;
   struct PhysicalDeviceLineRasterizationFeaturesEXT;
   struct PhysicalDeviceLineRasterizationPropertiesEXT;
@@ -545,6 +546,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   struct PhysicalDevicePortabilitySubsetPropertiesKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+  struct PhysicalDevicePresentIdFeaturesKHR;
+  struct PhysicalDevicePresentWaitFeaturesKHR;
   struct PhysicalDevicePrivateDataFeaturesEXT;
   struct PhysicalDeviceProperties;
   struct PhysicalDeviceProperties2;
@@ -571,6 +574,7 @@ namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceScalarBlockLayoutFeaturesEXT = PhysicalDeviceScalarBlockLayoutFeatures;
   struct PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
   using PhysicalDeviceSeparateDepthStencilLayoutsFeaturesKHR = PhysicalDeviceSeparateDepthStencilLayoutsFeatures;
+  struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT;
   struct PhysicalDeviceShaderAtomicFloatFeaturesEXT;
   struct PhysicalDeviceShaderAtomicInt64Features;
   using PhysicalDeviceShaderAtomicInt64FeaturesKHR = PhysicalDeviceShaderAtomicInt64Features;
@@ -688,6 +692,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_GGP )
   struct PresentFrameTokenGGP;
 #endif /*VK_USE_PLATFORM_GGP*/
+  struct PresentIdKHR;
   struct PresentInfoKHR;
   struct PresentRegionKHR;
   struct PresentRegionsKHR;
@@ -2131,100 +2136,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
-  class Pipeline
-  {
-  public:
-    using CType = VkPipeline;
-
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
-      VULKAN_HPP_NAMESPACE::ObjectType::ePipeline;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
-      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
-
-  public:
-    VULKAN_HPP_CONSTEXPR         Pipeline() = default;
-    VULKAN_HPP_CONSTEXPR         Pipeline( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT Pipeline( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT : m_pipeline( pipeline ) {}
-
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
-    Pipeline & operator=( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT
-    {
-      m_pipeline = pipeline;
-      return *this;
-    }
-#endif
-
-    Pipeline & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-    {
-      m_pipeline = {};
-      return *this;
-    }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Pipeline const & ) const = default;
-#else
-    bool operator==( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline == rhs.m_pipeline;
-    }
-
-    bool operator!=( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline != rhs.m_pipeline;
-    }
-
-    bool operator<( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline < rhs.m_pipeline;
-    }
-#endif
-
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipeline() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline;
-    }
-
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline != VK_NULL_HANDLE;
-    }
-
-    bool operator!() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline == VK_NULL_HANDLE;
-    }
-
-  private:
-    VkPipeline m_pipeline = {};
-  };
-  static_assert( sizeof( VULKAN_HPP_NAMESPACE::Pipeline ) == sizeof( VkPipeline ),
-                 "handle and wrapper have different size!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePipeline>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Pipeline;
-  };
-
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePipeline>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::Pipeline;
-  };
-
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT,
-                 VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::Pipeline;
-  };
-
-  template <>
-  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Pipeline>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
-  };
-
   class ImageView
   {
   public:
@@ -2316,6 +2227,100 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::ImageView>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  class Pipeline
+  {
+  public:
+    using CType = VkPipeline;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+      VULKAN_HPP_NAMESPACE::ObjectType::ePipeline;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
+
+  public:
+    VULKAN_HPP_CONSTEXPR         Pipeline() = default;
+    VULKAN_HPP_CONSTEXPR         Pipeline( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_TYPESAFE_EXPLICIT Pipeline( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT : m_pipeline( pipeline ) {}
+
+#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+    Pipeline & operator=( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT
+    {
+      m_pipeline = pipeline;
+      return *this;
+    }
+#endif
+
+    Pipeline & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_pipeline = {};
+      return *this;
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( Pipeline const & ) const = default;
+#else
+    bool operator==( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline == rhs.m_pipeline;
+    }
+
+    bool operator!=( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline != rhs.m_pipeline;
+    }
+
+    bool operator<( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline < rhs.m_pipeline;
+    }
+#endif
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipeline() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_pipeline == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkPipeline m_pipeline = {};
+  };
+  static_assert( sizeof( VULKAN_HPP_NAMESPACE::Pipeline ) == sizeof( VkPipeline ),
+                 "handle and wrapper have different size!" );
+
+  template <>
+  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePipeline>
+  {
+    using type = VULKAN_HPP_NAMESPACE::Pipeline;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePipeline>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Pipeline;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT,
+                 VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Pipeline;
+  };
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Pipeline>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -4373,6 +4378,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void subpassShadingHUAWEI( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_HUAWEI_invocation_mask ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void
+      bindInvocationMaskHUAWEI( VULKAN_HPP_NAMESPACE::ImageView   imageView,
+                                VULKAN_HPP_NAMESPACE::ImageLayout imageLayout,
+                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_EXT_extended_dynamic_state2 ===
 
@@ -10494,6 +10507,23 @@ namespace VULKAN_HPP_NAMESPACE
                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    //=== VK_KHR_present_wait ===
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      waitForPresentKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
+                         uint64_t                           presentId,
+                         uint64_t                           timeout,
+                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result waitForPresentKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
+                                                   uint64_t                           presentId,
+                                                   uint64_t                           timeout,
+                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_EXT_full_screen_exclusive ===
 
@@ -11108,13 +11138,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD Result
-      getMemoryRemoteAddressNV( const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * getMemoryRemoteAddressInfo,
+      getMemoryRemoteAddressNV( const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV * pMemoryGetRemoteAddressInfo,
                                 VULKAN_HPP_NAMESPACE::RemoteAddressNV *                    pAddress,
                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     typename ResultValueType<VULKAN_HPP_NAMESPACE::RemoteAddressNV>::type
-      getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & getMemoryRemoteAddressInfo,
+      getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo,
                                 Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 

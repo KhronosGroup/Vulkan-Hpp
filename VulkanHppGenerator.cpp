@@ -13144,6 +13144,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
+  std::map<std::string, ExtensionData>::iterator requireExtensionIt = m_extensions.end();
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "extension" )
@@ -13151,6 +13152,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
       check( extensionIt->second.requirements.insert( std::make_pair( attribute.second, line ) ).second,
              line,
              "required extension <" + attribute.second + "> already listed" );
+      requireExtensionIt = m_extensions.find( attribute.second );
     }
     else
     {
@@ -13173,7 +13175,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionIt->first );
+      readRequireEnum( child, requireExtensionIt == m_extensions.end() ? extensionIt : requireExtensionIt );
     }
     else if ( value == "type" )
     {
@@ -13331,7 +13333,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const *       
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, "" );
+      readRequireEnum( child, m_extensions.end() );
     }
     else if ( value == "type" )
     {
@@ -13637,7 +13639,8 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   }
 }
 
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extension )
+void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *                   element,
+                                          std::map<std::string, ExtensionData>::iterator extensionIt )
 {
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
@@ -13646,13 +13649,13 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
   }
   else
   {
-    readRequireEnum( element, attributes, extension );
+    readRequireEnum( element, attributes, extensionIt );
   }
 }
 
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *               element,
-                                          std::map<std::string, std::string> const & attributes,
-                                          std::string const &                        extension )
+void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *                   element,
+                                          std::map<std::string, std::string> const &     attributes,
+                                          std::map<std::string, ExtensionData>::iterator extensionIt )
 {
   int line = element->GetLineNum();
   checkAttributes( line,
@@ -13691,13 +13694,12 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
     {
       // for now, attribute "protect" is, if set at all, set to "VK_ENABLE_BETA_EXTENSIONS"
       // and it's redundant with the platform set for this extension!
-      auto extIt = m_extensions.find( extension );
-      assert( extIt != m_extensions.end() );
+      assert( extensionIt != m_extensions.end() );
       check(
-        extIt->second.platform == "provisional",
+        extensionIt->second.platform == "provisional",
         line,
         "attribute <protect> is \"VK_ENABLE_BETA_EXTENSIONS\", but the extensions platform is not \"provisional\" but \"" +
-          extIt->second.platform + "\"" );
+          extensionIt->second.platform + "\"" );
     }
     else if ( attribute.first == "value" )
     {
@@ -13715,7 +13717,11 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *          
            line,
            "exactly one out of bitpos = <" + bitpos + ">, offset = <" + offset + ">, and value = <" + value +
              "> are supposed to be empty" );
-    enumIt->second.addEnumValue( element->GetLineNum(), name, "", !bitpos.empty(), extension );
+    enumIt->second.addEnumValue( element->GetLineNum(),
+                                 name,
+                                 "",
+                                 !bitpos.empty(),
+                                 ( extensionIt != m_extensions.end() ) ? extensionIt->first : "" );
   }
   else if ( value.empty() )
   {

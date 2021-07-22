@@ -10464,11 +10464,11 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif
 
+  using PFN_dummy = void ( * )();
+
   class DispatchLoaderDynamic : public DispatchLoaderBase
   {
   public:
-    using PFN_dummy = void ( * )();
-
     //=== VK_VERSION_1_0 ===
     PFN_vkCreateInstance                               vkCreateInstance                               = 0;
     PFN_vkDestroyInstance                              vkDestroyInstance                              = 0;
@@ -10687,29 +10687,43 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_xlib_surface ===
     PFN_vkCreateXlibSurfaceKHR                        vkCreateXlibSurfaceKHR                        = 0;
     PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR vkGetPhysicalDeviceXlibPresentationSupportKHR = 0;
+#else
+    PFN_dummy vkCreateXlibSurfaceKHR_placeholder                            = 0;
+    PFN_dummy vkGetPhysicalDeviceXlibPresentationSupportKHR_placeholder     = 0;
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
     //=== VK_KHR_xcb_surface ===
     PFN_vkCreateXcbSurfaceKHR                        vkCreateXcbSurfaceKHR                        = 0;
     PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR vkGetPhysicalDeviceXcbPresentationSupportKHR = 0;
+#else
+    PFN_dummy vkCreateXcbSurfaceKHR_placeholder                             = 0;
+    PFN_dummy vkGetPhysicalDeviceXcbPresentationSupportKHR_placeholder      = 0;
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
     //=== VK_KHR_wayland_surface ===
     PFN_vkCreateWaylandSurfaceKHR                        vkCreateWaylandSurfaceKHR                        = 0;
     PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR vkGetPhysicalDeviceWaylandPresentationSupportKHR = 0;
+#else
+    PFN_dummy vkCreateWaylandSurfaceKHR_placeholder                         = 0;
+    PFN_dummy vkGetPhysicalDeviceWaylandPresentationSupportKHR_placeholder  = 0;
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
     //=== VK_KHR_android_surface ===
     PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
+#else
+    PFN_dummy vkCreateAndroidSurfaceKHR_placeholder                         = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_KHR_win32_surface ===
     PFN_vkCreateWin32SurfaceKHR                        vkCreateWin32SurfaceKHR                        = 0;
     PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR vkGetPhysicalDeviceWin32PresentationSupportKHR = 0;
+#else
+    PFN_dummy vkCreateWin32SurfaceKHR_placeholder                           = 0;
+    PFN_dummy vkGetPhysicalDeviceWin32PresentationSupportKHR_placeholder    = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_EXT_debug_report ===
@@ -10738,11 +10752,26 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdBeginVideoCodingKHR                    vkCmdBeginVideoCodingKHR                    = 0;
     PFN_vkCmdEndVideoCodingKHR                      vkCmdEndVideoCodingKHR                      = 0;
     PFN_vkCmdControlVideoCodingKHR                  vkCmdControlVideoCodingKHR                  = 0;
+#else
+    PFN_dummy vkGetPhysicalDeviceVideoCapabilitiesKHR_placeholder           = 0;
+    PFN_dummy vkGetPhysicalDeviceVideoFormatPropertiesKHR_placeholder       = 0;
+    PFN_dummy vkCreateVideoSessionKHR_placeholder                           = 0;
+    PFN_dummy vkDestroyVideoSessionKHR_placeholder                          = 0;
+    PFN_dummy vkGetVideoSessionMemoryRequirementsKHR_placeholder            = 0;
+    PFN_dummy vkBindVideoSessionMemoryKHR_placeholder                       = 0;
+    PFN_dummy vkCreateVideoSessionParametersKHR_placeholder                 = 0;
+    PFN_dummy vkUpdateVideoSessionParametersKHR_placeholder                 = 0;
+    PFN_dummy vkDestroyVideoSessionParametersKHR_placeholder                = 0;
+    PFN_dummy vkCmdBeginVideoCodingKHR_placeholder                          = 0;
+    PFN_dummy vkCmdEndVideoCodingKHR_placeholder                            = 0;
+    PFN_dummy vkCmdControlVideoCodingKHR_placeholder                        = 0;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_decode_queue ===
     PFN_vkCmdDecodeVideoKHR vkCmdDecodeVideoKHR = 0;
+#else
+    PFN_dummy vkCmdDecodeVideoKHR_placeholder                               = 0;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     //=== VK_EXT_transform_feedback ===
@@ -10774,6 +10803,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_GGP )
     //=== VK_GGP_stream_descriptor_surface ===
     PFN_vkCreateStreamDescriptorSurfaceGGP vkCreateStreamDescriptorSurfaceGGP = 0;
+#else
+    PFN_dummy vkCreateStreamDescriptorSurfaceGGP_placeholder                = 0;
 #endif /*VK_USE_PLATFORM_GGP*/
 
     //=== VK_NV_external_memory_capabilities ===
@@ -10782,6 +10813,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_external_memory_win32 ===
     PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV = 0;
+#else
+    PFN_dummy vkGetMemoryWin32HandleNV_placeholder                          = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_KHR_get_physical_device_properties2 ===
@@ -10801,6 +10834,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_VI_NN )
     //=== VK_NN_vi_surface ===
     PFN_vkCreateViSurfaceNN vkCreateViSurfaceNN = 0;
+#else
+    PFN_dummy vkCreateViSurfaceNN_placeholder                               = 0;
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
     //=== VK_KHR_maintenance1 ===
@@ -10816,6 +10851,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_external_memory_win32 ===
     PFN_vkGetMemoryWin32HandleKHR           vkGetMemoryWin32HandleKHR           = 0;
     PFN_vkGetMemoryWin32HandlePropertiesKHR vkGetMemoryWin32HandlePropertiesKHR = 0;
+#else
+    PFN_dummy vkGetMemoryWin32HandleKHR_placeholder                         = 0;
+    PFN_dummy vkGetMemoryWin32HandlePropertiesKHR_placeholder               = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_KHR_external_memory_fd ===
@@ -10829,6 +10867,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_external_semaphore_win32 ===
     PFN_vkImportSemaphoreWin32HandleKHR vkImportSemaphoreWin32HandleKHR = 0;
     PFN_vkGetSemaphoreWin32HandleKHR    vkGetSemaphoreWin32HandleKHR    = 0;
+#else
+    PFN_dummy vkImportSemaphoreWin32HandleKHR_placeholder                   = 0;
+    PFN_dummy vkGetSemaphoreWin32HandleKHR_placeholder                      = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_KHR_external_semaphore_fd ===
@@ -10858,6 +10899,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_acquire_xlib_display ===
     PFN_vkAcquireXlibDisplayEXT    vkAcquireXlibDisplayEXT    = 0;
     PFN_vkGetRandROutputDisplayEXT vkGetRandROutputDisplayEXT = 0;
+#else
+    PFN_dummy vkAcquireXlibDisplayEXT_placeholder                           = 0;
+    PFN_dummy vkGetRandROutputDisplayEXT_placeholder                        = 0;
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
     //=== VK_EXT_display_surface_counter ===
@@ -10895,6 +10939,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_external_fence_win32 ===
     PFN_vkImportFenceWin32HandleKHR vkImportFenceWin32HandleKHR = 0;
     PFN_vkGetFenceWin32HandleKHR    vkGetFenceWin32HandleKHR    = 0;
+#else
+    PFN_dummy vkImportFenceWin32HandleKHR_placeholder                       = 0;
+    PFN_dummy vkGetFenceWin32HandleKHR_placeholder                          = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_KHR_external_fence_fd ===
@@ -10922,11 +10969,15 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_IOS_MVK )
     //=== VK_MVK_ios_surface ===
     PFN_vkCreateIOSSurfaceMVK vkCreateIOSSurfaceMVK = 0;
+#else
+    PFN_dummy vkCreateIOSSurfaceMVK_placeholder                             = 0;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
     //=== VK_MVK_macos_surface ===
     PFN_vkCreateMacOSSurfaceMVK vkCreateMacOSSurfaceMVK = 0;
+#else
+    PFN_dummy vkCreateMacOSSurfaceMVK_placeholder                           = 0;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
     //=== VK_EXT_debug_utils ===
@@ -10946,6 +10997,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_ANDROID_external_memory_android_hardware_buffer ===
     PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID = 0;
     PFN_vkGetMemoryAndroidHardwareBufferANDROID     vkGetMemoryAndroidHardwareBufferANDROID     = 0;
+#else
+    PFN_dummy vkGetAndroidHardwareBufferPropertiesANDROID_placeholder       = 0;
+    PFN_dummy vkGetMemoryAndroidHardwareBufferANDROID_placeholder           = 0;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
     //=== VK_EXT_sample_locations ===
@@ -11062,11 +11116,15 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_imagepipe_surface ===
     PFN_vkCreateImagePipeSurfaceFUCHSIA vkCreateImagePipeSurfaceFUCHSIA = 0;
+#else
+    PFN_dummy vkCreateImagePipeSurfaceFUCHSIA_placeholder                   = 0;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
     //=== VK_EXT_metal_surface ===
     PFN_vkCreateMetalSurfaceEXT vkCreateMetalSurfaceEXT = 0;
+#else
+    PFN_dummy vkCreateMetalSurfaceEXT_placeholder                           = 0;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
     //=== VK_KHR_fragment_shading_rate ===
@@ -11095,6 +11153,11 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkAcquireFullScreenExclusiveModeEXT        vkAcquireFullScreenExclusiveModeEXT        = 0;
     PFN_vkReleaseFullScreenExclusiveModeEXT        vkReleaseFullScreenExclusiveModeEXT        = 0;
     PFN_vkGetDeviceGroupSurfacePresentModes2EXT    vkGetDeviceGroupSurfacePresentModes2EXT    = 0;
+#else
+    PFN_dummy vkGetPhysicalDeviceSurfacePresentModes2EXT_placeholder        = 0;
+    PFN_dummy vkAcquireFullScreenExclusiveModeEXT_placeholder               = 0;
+    PFN_dummy vkReleaseFullScreenExclusiveModeEXT_placeholder               = 0;
+    PFN_dummy vkGetDeviceGroupSurfacePresentModes2EXT_placeholder           = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_EXT_headless_surface ===
@@ -11158,6 +11221,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_encode_queue ===
     PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR = 0;
+#else
+    PFN_dummy vkCmdEncodeVideoKHR_placeholder                               = 0;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     //=== VK_KHR_synchronization2 ===
@@ -11185,12 +11250,18 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_NV_acquire_winrt_display ===
     PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV = 0;
     PFN_vkGetWinrtDisplayNV     vkGetWinrtDisplayNV     = 0;
+#else
+    PFN_dummy vkAcquireWinrtDisplayNV_placeholder                           = 0;
+    PFN_dummy vkGetWinrtDisplayNV_placeholder                               = 0;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
     //=== VK_EXT_directfb_surface ===
     PFN_vkCreateDirectFBSurfaceEXT                        vkCreateDirectFBSurfaceEXT                        = 0;
     PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT vkGetPhysicalDeviceDirectFBPresentationSupportEXT = 0;
+#else
+    PFN_dummy vkCreateDirectFBSurfaceEXT_placeholder                        = 0;
+    PFN_dummy vkGetPhysicalDeviceDirectFBPresentationSupportEXT_placeholder = 0;
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
     //=== VK_KHR_ray_tracing_pipeline ===
@@ -11209,12 +11280,18 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_FUCHSIA_external_memory ===
     PFN_vkGetMemoryZirconHandleFUCHSIA           vkGetMemoryZirconHandleFUCHSIA           = 0;
     PFN_vkGetMemoryZirconHandlePropertiesFUCHSIA vkGetMemoryZirconHandlePropertiesFUCHSIA = 0;
+#else
+    PFN_dummy vkGetMemoryZirconHandleFUCHSIA_placeholder                    = 0;
+    PFN_dummy vkGetMemoryZirconHandlePropertiesFUCHSIA_placeholder          = 0;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_external_semaphore ===
     PFN_vkImportSemaphoreZirconHandleFUCHSIA vkImportSemaphoreZirconHandleFUCHSIA = 0;
     PFN_vkGetSemaphoreZirconHandleFUCHSIA    vkGetSemaphoreZirconHandleFUCHSIA    = 0;
+#else
+    PFN_dummy vkImportSemaphoreZirconHandleFUCHSIA_placeholder              = 0;
+    PFN_dummy vkGetSemaphoreZirconHandleFUCHSIA_placeholder                 = 0;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     //=== VK_HUAWEI_subpass_shading ===
@@ -11238,6 +11315,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_QNX_screen_surface ===
     PFN_vkCreateScreenSurfaceQNX                        vkCreateScreenSurfaceQNX                        = 0;
     PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX = 0;
+#else
+    PFN_dummy vkCreateScreenSurfaceQNX_placeholder                          = 0;
+    PFN_dummy vkGetPhysicalDeviceScreenPresentationSupportQNX_placeholder   = 0;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     //=== VK_EXT_color_write_enable ===

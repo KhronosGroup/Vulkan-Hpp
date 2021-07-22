@@ -187,11 +187,11 @@ ${commandDefinitions}
 std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
 {
   const std::string dispatchLoaderDynamicTemplate = R"(
+  using PFN_dummy = void ( * )();
+
   class DispatchLoaderDynamic : public DispatchLoaderBase
   {
   public:
-    using PFN_dummy = void ( * )();
-
 ${commandMembers}
 
   public:
@@ -530,6 +530,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   std::string contextInitializerList, deviceInitAssignments, instanceInitAssignments;
   std::string contextMembers, deviceMembers, instanceMembers;
   std::string previousEnter;
+
   for ( auto const & command : m_commands )
   {
     std::string enter, leave;
@@ -555,7 +556,12 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
       }
       deviceInitAssignments += leave;
 
-      deviceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
+      deviceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n";
+      if ( !enter.empty() )
+      {
+        deviceMembers += "#else\n      PFN_dummy " + command.first + "_placeholder = 0;\n";
+      }
+      deviceMembers += leave;
     }
     else
     {
@@ -571,7 +577,12 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
       }
       instanceInitAssignments += leave;
 
-      instanceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n" + leave;
+      instanceMembers += enter + "      PFN_" + command.first + " " + command.first + " = 0;\n";
+      if ( !enter.empty() )
+      {
+        instanceMembers += "#else\n      PFN_dummy " + command.first + "_placeholder = 0;\n";
+      }
+      instanceMembers += leave;
     }
     previousEnter = enter;
   }
@@ -908,7 +919,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
                                                               std::string & instanceCommandAssignments,
                                                               std::string & deviceCommandAssignments ) const
 {
-  std::string members, initial, instance, device;
+  std::string members, initial, instance, device, placeholders;
   for ( auto const & require : requireData )
   {
     for ( auto const & command : require.commands )
@@ -921,6 +932,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
         assert( commandIt != m_commands.end() );
 
         members += "    PFN_" + commandIt->first + " " + commandIt->first + " = 0;\n";
+        placeholders += "    PFN_dummy " + commandIt->first + "_placeholder = 0;\n";
         if ( commandIt->second.handle.empty() )
         {
           initial += generateDispatchLoaderDynamicCommandAssignment( commandIt->first, commandIt->second, "NULL" );
@@ -941,7 +953,12 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
   std::string header       = "\n" + enter + "  //=== " + title + " ===\n";
   if ( !members.empty() )
   {
-    commandMembers += header + members + leave;
+    commandMembers += header + members;
+    if ( !enter.empty() )
+    {
+      commandMembers += "#else\n" + placeholders;
+    }
+    commandMembers += leave;
   }
   if ( !initial.empty() )
   {

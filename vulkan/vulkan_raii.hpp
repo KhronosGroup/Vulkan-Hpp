@@ -340,54 +340,84 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV = 0;
+#  else
+      PFN_dummy vkAcquireWinrtDisplayNV_placeholder                           = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       PFN_vkAcquireXlibDisplayEXT vkAcquireXlibDisplayEXT = 0;
+#  else
+      PFN_dummy vkAcquireXlibDisplayEXT_placeholder                           = 0;
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       PFN_vkCreateAndroidSurfaceKHR vkCreateAndroidSurfaceKHR = 0;
+#  else
+      PFN_dummy vkCreateAndroidSurfaceKHR_placeholder                         = 0;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT = 0;
       PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = 0;
       PFN_vkCreateDevice                 vkCreateDevice                 = 0;
 #  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       PFN_vkCreateDirectFBSurfaceEXT vkCreateDirectFBSurfaceEXT = 0;
+#  else
+      PFN_dummy vkCreateDirectFBSurfaceEXT_placeholder                        = 0;
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
       PFN_vkCreateDisplayModeKHR         vkCreateDisplayModeKHR         = 0;
       PFN_vkCreateDisplayPlaneSurfaceKHR vkCreateDisplayPlaneSurfaceKHR = 0;
       PFN_vkCreateHeadlessSurfaceEXT     vkCreateHeadlessSurfaceEXT     = 0;
 #  if defined( VK_USE_PLATFORM_IOS_MVK )
       PFN_vkCreateIOSSurfaceMVK vkCreateIOSSurfaceMVK = 0;
+#  else
+      PFN_dummy vkCreateIOSSurfaceMVK_placeholder                             = 0;
 #  endif /*VK_USE_PLATFORM_IOS_MVK*/
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkCreateImagePipeSurfaceFUCHSIA vkCreateImagePipeSurfaceFUCHSIA = 0;
+#  else
+      PFN_dummy vkCreateImagePipeSurfaceFUCHSIA_placeholder                   = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 #  if defined( VK_USE_PLATFORM_MACOS_MVK )
       PFN_vkCreateMacOSSurfaceMVK vkCreateMacOSSurfaceMVK = 0;
+#  else
+      PFN_dummy vkCreateMacOSSurfaceMVK_placeholder                           = 0;
 #  endif /*VK_USE_PLATFORM_MACOS_MVK*/
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
       PFN_vkCreateMetalSurfaceEXT vkCreateMetalSurfaceEXT = 0;
+#  else
+      PFN_dummy vkCreateMetalSurfaceEXT_placeholder                           = 0;
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       PFN_vkCreateScreenSurfaceQNX vkCreateScreenSurfaceQNX = 0;
+#  else
+      PFN_dummy vkCreateScreenSurfaceQNX_placeholder                          = 0;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 #  if defined( VK_USE_PLATFORM_GGP )
       PFN_vkCreateStreamDescriptorSurfaceGGP vkCreateStreamDescriptorSurfaceGGP = 0;
+#  else
+      PFN_dummy vkCreateStreamDescriptorSurfaceGGP_placeholder                = 0;
 #  endif /*VK_USE_PLATFORM_GGP*/
 #  if defined( VK_USE_PLATFORM_VI_NN )
       PFN_vkCreateViSurfaceNN vkCreateViSurfaceNN = 0;
+#  else
+      PFN_dummy vkCreateViSurfaceNN_placeholder                               = 0;
 #  endif /*VK_USE_PLATFORM_VI_NN*/
 #  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       PFN_vkCreateWaylandSurfaceKHR vkCreateWaylandSurfaceKHR = 0;
+#  else
+      PFN_dummy vkCreateWaylandSurfaceKHR_placeholder                         = 0;
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkCreateWin32SurfaceKHR vkCreateWin32SurfaceKHR = 0;
+#  else
+      PFN_dummy vkCreateWin32SurfaceKHR_placeholder                           = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_XCB_KHR )
       PFN_vkCreateXcbSurfaceKHR vkCreateXcbSurfaceKHR = 0;
+#  else
+      PFN_dummy vkCreateXcbSurfaceKHR_placeholder                             = 0;
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 #  if defined( VK_USE_PLATFORM_XLIB_KHR )
       PFN_vkCreateXlibSurfaceKHR vkCreateXlibSurfaceKHR = 0;
+#  else
+      PFN_dummy vkCreateXlibSurfaceKHR_placeholder                            = 0;
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
       PFN_vkDebugReportMessageEXT              vkDebugReportMessageEXT              = 0;
       PFN_vkDestroyDebugReportCallbackEXT      vkDestroyDebugReportCallbackEXT      = 0;
@@ -412,6 +442,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV vkGetPhysicalDeviceCooperativeMatrixPropertiesNV     = 0;
 #  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       PFN_vkGetPhysicalDeviceDirectFBPresentationSupportEXT vkGetPhysicalDeviceDirectFBPresentationSupportEXT = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceDirectFBPresentationSupportEXT_placeholder = 0;
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
       PFN_vkGetPhysicalDeviceDisplayPlaneProperties2KHR      vkGetPhysicalDeviceDisplayPlaneProperties2KHR      = 0;
       PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR       vkGetPhysicalDeviceDisplayPlanePropertiesKHR       = 0;
@@ -449,6 +481,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetPhysicalDeviceQueueFamilyProperties2KHR vkGetPhysicalDeviceQueueFamilyProperties2KHR            = 0;
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       PFN_vkGetPhysicalDeviceScreenPresentationSupportQNX vkGetPhysicalDeviceScreenPresentationSupportQNX = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceScreenPresentationSupportQNX_placeholder   = 0;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       PFN_vkGetPhysicalDeviceSparseImageFormatProperties     vkGetPhysicalDeviceSparseImageFormatProperties     = 0;
       PFN_vkGetPhysicalDeviceSparseImageFormatProperties2    vkGetPhysicalDeviceSparseImageFormatProperties2    = 0;
@@ -462,33 +496,51 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetPhysicalDeviceSurfaceFormatsKHR       vkGetPhysicalDeviceSurfaceFormatsKHR       = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetPhysicalDeviceSurfacePresentModes2EXT vkGetPhysicalDeviceSurfacePresentModes2EXT = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceSurfacePresentModes2EXT_placeholder        = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkGetPhysicalDeviceSurfacePresentModesKHR vkGetPhysicalDeviceSurfacePresentModesKHR = 0;
       PFN_vkGetPhysicalDeviceSurfaceSupportKHR      vkGetPhysicalDeviceSurfaceSupportKHR      = 0;
       PFN_vkGetPhysicalDeviceToolPropertiesEXT      vkGetPhysicalDeviceToolPropertiesEXT      = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR vkGetPhysicalDeviceVideoCapabilitiesKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceVideoCapabilitiesKHR_placeholder           = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR vkGetPhysicalDeviceVideoFormatPropertiesKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceVideoFormatPropertiesKHR_placeholder       = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR vkGetPhysicalDeviceWaylandPresentationSupportKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceWaylandPresentationSupportKHR_placeholder  = 0;
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR vkGetPhysicalDeviceWin32PresentationSupportKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceWin32PresentationSupportKHR_placeholder    = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_XCB_KHR )
       PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR vkGetPhysicalDeviceXcbPresentationSupportKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceXcbPresentationSupportKHR_placeholder      = 0;
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 #  if defined( VK_USE_PLATFORM_XLIB_KHR )
       PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR vkGetPhysicalDeviceXlibPresentationSupportKHR = 0;
+#  else
+      PFN_dummy vkGetPhysicalDeviceXlibPresentationSupportKHR_placeholder     = 0;
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
 #  if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
       PFN_vkGetRandROutputDisplayEXT vkGetRandROutputDisplayEXT = 0;
+#  else
+      PFN_dummy vkGetRandROutputDisplayEXT_placeholder                        = 0;
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV = 0;
+#  else
+      PFN_dummy vkGetWinrtDisplayNV_placeholder                               = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkReleaseDisplayEXT          vkReleaseDisplayEXT          = 0;
       PFN_vkSubmitDebugUtilsMessageEXT vkSubmitDebugUtilsMessageEXT = 0;
@@ -1246,6 +1298,8 @@ namespace VULKAN_HPP_NAMESPACE
     public:
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkAcquireFullScreenExclusiveModeEXT vkAcquireFullScreenExclusiveModeEXT = 0;
+#  else
+      PFN_dummy vkAcquireFullScreenExclusiveModeEXT_placeholder               = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkAcquireNextImage2KHR                 vkAcquireNextImage2KHR                 = 0;
       PFN_vkAcquireNextImageKHR                  vkAcquireNextImageKHR                  = 0;
@@ -1264,6 +1318,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkBindImageMemory2KHR                  vkBindImageMemory2KHR                  = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkBindVideoSessionMemoryKHR vkBindVideoSessionMemoryKHR = 0;
+#  else
+      PFN_dummy vkBindVideoSessionMemoryKHR_placeholder                       = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkBuildAccelerationStructuresKHR  vkBuildAccelerationStructuresKHR  = 0;
       PFN_vkCmdBeginConditionalRenderingEXT vkCmdBeginConditionalRenderingEXT = 0;
@@ -1276,6 +1332,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdBeginTransformFeedbackEXT    vkCmdBeginTransformFeedbackEXT    = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdBeginVideoCodingKHR vkCmdBeginVideoCodingKHR = 0;
+#  else
+      PFN_dummy vkCmdBeginVideoCodingKHR_placeholder                          = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkCmdBindDescriptorSets                     vkCmdBindDescriptorSets                     = 0;
       PFN_vkCmdBindIndexBuffer                        vkCmdBindIndexBuffer                        = 0;
@@ -1296,6 +1354,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdClearDepthStencilImage                 vkCmdClearDepthStencilImage                 = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdControlVideoCodingKHR vkCmdControlVideoCodingKHR = 0;
+#  else
+      PFN_dummy vkCmdControlVideoCodingKHR_placeholder                        = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkCmdCopyAccelerationStructureKHR         vkCmdCopyAccelerationStructureKHR         = 0;
       PFN_vkCmdCopyAccelerationStructureNV          vkCmdCopyAccelerationStructureNV          = 0;
@@ -1316,6 +1376,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdDebugMarkerInsertEXT                 vkCmdDebugMarkerInsertEXT                 = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdDecodeVideoKHR vkCmdDecodeVideoKHR = 0;
+#  else
+      PFN_dummy vkCmdDecodeVideoKHR_placeholder                               = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkCmdDispatch                     vkCmdDispatch                     = 0;
       PFN_vkCmdDispatchBase                 vkCmdDispatchBase                 = 0;
@@ -1339,6 +1401,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdDrawMultiIndexedEXT          vkCmdDrawMultiIndexedEXT          = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdEncodeVideoKHR vkCmdEncodeVideoKHR = 0;
+#  else
+      PFN_dummy vkCmdEncodeVideoKHR_placeholder                               = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkCmdEndConditionalRenderingEXT vkCmdEndConditionalRenderingEXT = 0;
       PFN_vkCmdEndDebugUtilsLabelEXT      vkCmdEndDebugUtilsLabelEXT      = 0;
@@ -1350,6 +1414,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdEndTransformFeedbackEXT    vkCmdEndTransformFeedbackEXT    = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCmdEndVideoCodingKHR vkCmdEndVideoCodingKHR = 0;
+#  else
+      PFN_dummy vkCmdEndVideoCodingKHR_placeholder                            = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkCmdExecuteCommands                          vkCmdExecuteCommands                          = 0;
       PFN_vkCmdExecuteGeneratedCommandsNV               vkCmdExecuteGeneratedCommandsNV               = 0;
@@ -1470,9 +1536,13 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCreateValidationCacheEXT                    vkCreateValidationCacheEXT                    = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCreateVideoSessionKHR vkCreateVideoSessionKHR = 0;
+#  else
+      PFN_dummy vkCreateVideoSessionKHR_placeholder                           = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkCreateVideoSessionParametersKHR vkCreateVideoSessionParametersKHR = 0;
+#  else
+      PFN_dummy vkCreateVideoSessionParametersKHR_placeholder                 = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkDebugMarkerSetObjectNameEXT        vkDebugMarkerSetObjectNameEXT        = 0;
       PFN_vkDebugMarkerSetObjectTagEXT         vkDebugMarkerSetObjectTagEXT         = 0;
@@ -1511,9 +1581,13 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkDestroyValidationCacheEXT          vkDestroyValidationCacheEXT          = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkDestroyVideoSessionKHR vkDestroyVideoSessionKHR = 0;
+#  else
+      PFN_dummy vkDestroyVideoSessionKHR_placeholder                          = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkDestroyVideoSessionParametersKHR vkDestroyVideoSessionParametersKHR = 0;
+#  else
+      PFN_dummy vkDestroyVideoSessionParametersKHR_placeholder                = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkDeviceWaitIdle                               vkDeviceWaitIdle                               = 0;
       PFN_vkDisplayPowerControlEXT                       vkDisplayPowerControlEXT                       = 0;
@@ -1528,6 +1602,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetAccelerationStructureMemoryRequirementsNV vkGetAccelerationStructureMemoryRequirementsNV = 0;
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       PFN_vkGetAndroidHardwareBufferPropertiesANDROID vkGetAndroidHardwareBufferPropertiesANDROID = 0;
+#  else
+      PFN_dummy vkGetAndroidHardwareBufferPropertiesANDROID_placeholder       = 0;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       PFN_vkGetBufferDeviceAddress                         vkGetBufferDeviceAddress                         = 0;
       PFN_vkGetBufferDeviceAddressEXT                      vkGetBufferDeviceAddressEXT                      = 0;
@@ -1548,6 +1624,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetDeviceGroupPresentCapabilitiesKHR           vkGetDeviceGroupPresentCapabilitiesKHR           = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetDeviceGroupSurfacePresentModes2EXT vkGetDeviceGroupSurfacePresentModes2EXT = 0;
+#  else
+      PFN_dummy vkGetDeviceGroupSurfacePresentModes2EXT_placeholder           = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkGetDeviceGroupSurfacePresentModesKHR          vkGetDeviceGroupSurfacePresentModesKHR          = 0;
       PFN_vkGetDeviceMemoryCommitment                     vkGetDeviceMemoryCommitment                     = 0;
@@ -1562,6 +1640,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetFenceStatus                                vkGetFenceStatus                                = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetFenceWin32HandleKHR vkGetFenceWin32HandleKHR = 0;
+#  else
+      PFN_dummy vkGetFenceWin32HandleKHR_placeholder                          = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkGetGeneratedCommandsMemoryRequirementsNV vkGetGeneratedCommandsMemoryRequirementsNV = 0;
       PFN_vkGetImageDrmFormatModifierPropertiesEXT   vkGetImageDrmFormatModifierPropertiesEXT   = 0;
@@ -1576,6 +1656,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetImageViewHandleNVX                    vkGetImageViewHandleNVX                    = 0;
 #  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       PFN_vkGetMemoryAndroidHardwareBufferANDROID vkGetMemoryAndroidHardwareBufferANDROID = 0;
+#  else
+      PFN_dummy vkGetMemoryAndroidHardwareBufferANDROID_placeholder           = 0;
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       PFN_vkGetMemoryFdKHR                    vkGetMemoryFdKHR                    = 0;
       PFN_vkGetMemoryFdPropertiesKHR          vkGetMemoryFdPropertiesKHR          = 0;
@@ -1583,18 +1665,28 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetMemoryRemoteAddressNV          vkGetMemoryRemoteAddressNV          = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = 0;
+#  else
+      PFN_dummy vkGetMemoryWin32HandleKHR_placeholder                         = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetMemoryWin32HandleNV vkGetMemoryWin32HandleNV = 0;
+#  else
+      PFN_dummy vkGetMemoryWin32HandleNV_placeholder                          = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetMemoryWin32HandlePropertiesKHR vkGetMemoryWin32HandlePropertiesKHR = 0;
+#  else
+      PFN_dummy vkGetMemoryWin32HandlePropertiesKHR_placeholder               = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkGetMemoryZirconHandleFUCHSIA vkGetMemoryZirconHandleFUCHSIA = 0;
+#  else
+      PFN_dummy vkGetMemoryZirconHandleFUCHSIA_placeholder                    = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkGetMemoryZirconHandlePropertiesFUCHSIA vkGetMemoryZirconHandlePropertiesFUCHSIA = 0;
+#  else
+      PFN_dummy vkGetMemoryZirconHandlePropertiesFUCHSIA_placeholder          = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
       PFN_vkGetPastPresentationTimingGOOGLE                 vkGetPastPresentationTimingGOOGLE                 = 0;
       PFN_vkGetPerformanceParameterINTEL                    vkGetPerformanceParameterINTEL                    = 0;
@@ -1617,9 +1709,13 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetSemaphoreFdKHR                               vkGetSemaphoreFdKHR                               = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkGetSemaphoreWin32HandleKHR vkGetSemaphoreWin32HandleKHR = 0;
+#  else
+      PFN_dummy vkGetSemaphoreWin32HandleKHR_placeholder                      = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkGetSemaphoreZirconHandleFUCHSIA vkGetSemaphoreZirconHandleFUCHSIA = 0;
+#  else
+      PFN_dummy vkGetSemaphoreZirconHandleFUCHSIA_placeholder                 = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
       PFN_vkGetShaderInfoAMD          vkGetShaderInfoAMD          = 0;
       PFN_vkGetSwapchainCounterEXT    vkGetSwapchainCounterEXT    = 0;
@@ -1628,17 +1724,25 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetValidationCacheDataEXT vkGetValidationCacheDataEXT = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkGetVideoSessionMemoryRequirementsKHR vkGetVideoSessionMemoryRequirementsKHR = 0;
+#  else
+      PFN_dummy vkGetVideoSessionMemoryRequirementsKHR_placeholder            = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkImportFenceFdKHR vkImportFenceFdKHR = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkImportFenceWin32HandleKHR vkImportFenceWin32HandleKHR = 0;
+#  else
+      PFN_dummy vkImportFenceWin32HandleKHR_placeholder                       = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkImportSemaphoreFdKHR vkImportSemaphoreFdKHR = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkImportSemaphoreWin32HandleKHR vkImportSemaphoreWin32HandleKHR = 0;
+#  else
+      PFN_dummy vkImportSemaphoreWin32HandleKHR_placeholder                   = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       PFN_vkImportSemaphoreZirconHandleFUCHSIA vkImportSemaphoreZirconHandleFUCHSIA = 0;
+#  else
+      PFN_dummy vkImportSemaphoreZirconHandleFUCHSIA_placeholder              = 0;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
       PFN_vkInitializePerformanceApiINTEL         vkInitializePerformanceApiINTEL         = 0;
       PFN_vkInvalidateMappedMemoryRanges          vkInvalidateMappedMemoryRanges          = 0;
@@ -1658,6 +1762,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkRegisterDisplayEventEXT               vkRegisterDisplayEventEXT               = 0;
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       PFN_vkReleaseFullScreenExclusiveModeEXT vkReleaseFullScreenExclusiveModeEXT = 0;
+#  else
+      PFN_dummy vkReleaseFullScreenExclusiveModeEXT_placeholder               = 0;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       PFN_vkReleasePerformanceConfigurationINTEL vkReleasePerformanceConfigurationINTEL = 0;
       PFN_vkReleaseProfilingLockKHR              vkReleaseProfilingLockKHR              = 0;
@@ -1685,6 +1791,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkUpdateDescriptorSets                 vkUpdateDescriptorSets                 = 0;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       PFN_vkUpdateVideoSessionParametersKHR vkUpdateVideoSessionParametersKHR = 0;
+#  else
+      PFN_dummy vkUpdateVideoSessionParametersKHR_placeholder                 = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       PFN_vkWaitForFences                            vkWaitForFences                            = 0;
       PFN_vkWaitForPresentKHR                        vkWaitForPresentKHR                        = 0;
@@ -1794,7 +1902,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Instance() = default;
 #  else
-      Instance()                      = delete;
+      Instance()                                                              = delete;
 #  endif
       Instance( Instance const & ) = delete;
       Instance( Instance && rhs ) VULKAN_HPP_NOEXCEPT
@@ -1902,7 +2010,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PhysicalDevice() = default;
 #  else
-      PhysicalDevice()                = delete;
+      PhysicalDevice()                                                        = delete;
 #  endif
       PhysicalDevice( PhysicalDevice const & ) = delete;
       PhysicalDevice( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
@@ -2306,7 +2414,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PhysicalDevices() = default;
 #  else
-      PhysicalDevices()               = delete;
+      PhysicalDevices()                                                       = delete;
 #  endif
       PhysicalDevices( PhysicalDevices const & ) = delete;
       PhysicalDevices( PhysicalDevices && rhs )  = default;
@@ -2366,7 +2474,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Device() = default;
 #  else
-      Device()                        = delete;
+      Device()                                                                = delete;
 #  endif
       Device( Device const & ) = delete;
       Device( Device && rhs ) VULKAN_HPP_NOEXCEPT
@@ -2874,7 +2982,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       AccelerationStructureKHR() = default;
 #  else
-      AccelerationStructureKHR()      = delete;
+      AccelerationStructureKHR()                                              = delete;
 #  endif
       AccelerationStructureKHR( AccelerationStructureKHR const & ) = delete;
       AccelerationStructureKHR( AccelerationStructureKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -2988,7 +3096,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       AccelerationStructureNV() = default;
 #  else
-      AccelerationStructureNV()       = delete;
+      AccelerationStructureNV()                                               = delete;
 #  endif
       AccelerationStructureNV( AccelerationStructureNV const & ) = delete;
       AccelerationStructureNV( AccelerationStructureNV && rhs ) VULKAN_HPP_NOEXCEPT
@@ -3106,7 +3214,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Buffer() = default;
 #  else
-      Buffer()                        = delete;
+      Buffer()                                                                = delete;
 #  endif
       Buffer( Buffer const & ) = delete;
       Buffer( Buffer && rhs ) VULKAN_HPP_NOEXCEPT
@@ -3219,7 +3327,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       BufferView() = default;
 #  else
-      BufferView()                    = delete;
+      BufferView()                                                            = delete;
 #  endif
       BufferView( BufferView const & ) = delete;
       BufferView( BufferView && rhs ) VULKAN_HPP_NOEXCEPT
@@ -3326,7 +3434,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       CommandPool() = default;
 #  else
-      CommandPool()                   = delete;
+      CommandPool()                                                           = delete;
 #  endif
       CommandPool( CommandPool const & ) = delete;
       CommandPool( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT
@@ -3435,7 +3543,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       CommandBuffer() = default;
 #  else
-      CommandBuffer()                 = delete;
+      CommandBuffer()                                                         = delete;
 #  endif
       CommandBuffer( CommandBuffer const & ) = delete;
       CommandBuffer( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4221,7 +4329,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       CommandBuffers() = default;
 #  else
-      CommandBuffers()                = delete;
+      CommandBuffers()                                                        = delete;
 #  endif
       CommandBuffers( CommandBuffers const & ) = delete;
       CommandBuffers( CommandBuffers && rhs )  = default;
@@ -4283,7 +4391,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       CuFunctionNVX() = default;
 #  else
-      CuFunctionNVX()                 = delete;
+      CuFunctionNVX()                                                         = delete;
 #  endif
       CuFunctionNVX( CuFunctionNVX const & ) = delete;
       CuFunctionNVX( CuFunctionNVX && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4391,7 +4499,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       CuModuleNVX() = default;
 #  else
-      CuModuleNVX()                   = delete;
+      CuModuleNVX()                                                           = delete;
 #  endif
       CuModuleNVX( CuModuleNVX const & ) = delete;
       CuModuleNVX( CuModuleNVX && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4502,7 +4610,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DebugReportCallbackEXT() = default;
 #  else
-      DebugReportCallbackEXT()        = delete;
+      DebugReportCallbackEXT()                                                = delete;
 #  endif
       DebugReportCallbackEXT( DebugReportCallbackEXT const & ) = delete;
       DebugReportCallbackEXT( DebugReportCallbackEXT && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4616,7 +4724,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DebugUtilsMessengerEXT() = default;
 #  else
-      DebugUtilsMessengerEXT()        = delete;
+      DebugUtilsMessengerEXT()                                                = delete;
 #  endif
       DebugUtilsMessengerEXT( DebugUtilsMessengerEXT const & ) = delete;
       DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4728,7 +4836,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DeferredOperationKHR() = default;
 #  else
-      DeferredOperationKHR()          = delete;
+      DeferredOperationKHR()                                                  = delete;
 #  endif
       DeferredOperationKHR( DeferredOperationKHR const & ) = delete;
       DeferredOperationKHR( DeferredOperationKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4849,7 +4957,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DescriptorPool() = default;
 #  else
-      DescriptorPool()                = delete;
+      DescriptorPool()                                                        = delete;
 #  endif
       DescriptorPool( DescriptorPool const & ) = delete;
       DescriptorPool( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT
@@ -4953,7 +5061,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DescriptorSet() = default;
 #  else
-      DescriptorSet()                 = delete;
+      DescriptorSet()                                                         = delete;
 #  endif
       DescriptorSet( DescriptorSet const & ) = delete;
       DescriptorSet( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5052,7 +5160,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DescriptorSets() = default;
 #  else
-      DescriptorSets()                = delete;
+      DescriptorSets()                                                        = delete;
 #  endif
       DescriptorSets( DescriptorSets const & ) = delete;
       DescriptorSets( DescriptorSets && rhs )  = default;
@@ -5115,7 +5223,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DescriptorSetLayout() = default;
 #  else
-      DescriptorSetLayout()           = delete;
+      DescriptorSetLayout()                                                   = delete;
 #  endif
       DescriptorSetLayout( DescriptorSetLayout const & ) = delete;
       DescriptorSetLayout( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5229,7 +5337,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DescriptorUpdateTemplate() = default;
 #  else
-      DescriptorUpdateTemplate()      = delete;
+      DescriptorUpdateTemplate()                                              = delete;
 #  endif
       DescriptorUpdateTemplate( DescriptorUpdateTemplate const & ) = delete;
       DescriptorUpdateTemplate( DescriptorUpdateTemplate && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5341,7 +5449,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DeviceMemory() = default;
 #  else
-      DeviceMemory()                  = delete;
+      DeviceMemory()                                                          = delete;
 #  endif
       DeviceMemory( DeviceMemory const & ) = delete;
       DeviceMemory( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5500,7 +5608,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DisplayKHR() = default;
 #  else
-      DisplayKHR()                    = delete;
+      DisplayKHR()                                                            = delete;
 #  endif
       DisplayKHR( DisplayKHR const & ) = delete;
       DisplayKHR( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5607,7 +5715,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DisplayKHRs() = default;
 #  else
-      DisplayKHRs()                   = delete;
+      DisplayKHRs()                                                           = delete;
 #  endif
       DisplayKHRs( DisplayKHRs const & ) = delete;
       DisplayKHRs( DisplayKHRs && rhs )  = default;
@@ -5657,7 +5765,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       DisplayModeKHR() = default;
 #  else
-      DisplayModeKHR()                = delete;
+      DisplayModeKHR()                                                        = delete;
 #  endif
       DisplayModeKHR( DisplayModeKHR const & ) = delete;
       DisplayModeKHR( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5760,7 +5868,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Event() = default;
 #  else
-      Event()                         = delete;
+      Event()                                                                 = delete;
 #  endif
       Event( Event const & ) = delete;
       Event( Event && rhs ) VULKAN_HPP_NOEXCEPT
@@ -5916,7 +6024,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Fence() = default;
 #  else
-      Fence()                         = delete;
+      Fence()                                                                 = delete;
 #  endif
       Fence( Fence const & ) = delete;
       Fence( Fence && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6027,7 +6135,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Framebuffer() = default;
 #  else
-      Framebuffer()                   = delete;
+      Framebuffer()                                                           = delete;
 #  endif
       Framebuffer( Framebuffer const & ) = delete;
       Framebuffer( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6134,7 +6242,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Image() = default;
 #  else
-      Image()                         = delete;
+      Image()                                                                 = delete;
 #  endif
       Image( Image const & ) = delete;
       Image( Image && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6258,7 +6366,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       ImageView() = default;
 #  else
-      ImageView()                     = delete;
+      ImageView()                                                             = delete;
 #  endif
       ImageView( ImageView const & ) = delete;
       ImageView( ImageView && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6373,7 +6481,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       IndirectCommandsLayoutNV() = default;
 #  else
-      IndirectCommandsLayoutNV()      = delete;
+      IndirectCommandsLayoutNV()                                              = delete;
 #  endif
       IndirectCommandsLayoutNV( IndirectCommandsLayoutNV const & ) = delete;
       IndirectCommandsLayoutNV( IndirectCommandsLayoutNV && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6478,7 +6586,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PerformanceConfigurationINTEL() = default;
 #  else
-      PerformanceConfigurationINTEL() = delete;
+      PerformanceConfigurationINTEL()                                         = delete;
 #  endif
       PerformanceConfigurationINTEL( PerformanceConfigurationINTEL const & ) = delete;
       PerformanceConfigurationINTEL( PerformanceConfigurationINTEL && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6588,7 +6696,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PipelineCache() = default;
 #  else
-      PipelineCache()                 = delete;
+      PipelineCache()                                                         = delete;
 #  endif
       PipelineCache( PipelineCache const & ) = delete;
       PipelineCache( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT
@@ -6803,7 +6911,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Pipeline() = default;
 #  else
-      Pipeline()                      = delete;
+      Pipeline()                                                              = delete;
 #  endif
       Pipeline( Pipeline const & ) = delete;
       Pipeline( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7066,7 +7174,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Pipelines() = default;
 #  else
-      Pipelines()                     = delete;
+      Pipelines()                                                             = delete;
 #  endif
       Pipelines( Pipelines const & ) = delete;
       Pipelines( Pipelines && rhs )  = default;
@@ -7128,7 +7236,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PipelineLayout() = default;
 #  else
-      PipelineLayout()                = delete;
+      PipelineLayout()                                                        = delete;
 #  endif
       PipelineLayout( PipelineLayout const & ) = delete;
       PipelineLayout( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7240,7 +7348,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       PrivateDataSlotEXT() = default;
 #  else
-      PrivateDataSlotEXT()            = delete;
+      PrivateDataSlotEXT()                                                    = delete;
 #  endif
       PrivateDataSlotEXT( PrivateDataSlotEXT const & ) = delete;
       PrivateDataSlotEXT( PrivateDataSlotEXT && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7350,7 +7458,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       QueryPool() = default;
 #  else
-      QueryPool()                     = delete;
+      QueryPool()                                                             = delete;
 #  endif
       QueryPool( QueryPool const & ) = delete;
       QueryPool( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7467,7 +7575,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Queue() = default;
 #  else
-      Queue()                         = delete;
+      Queue()                                                                 = delete;
 #  endif
       Queue( Queue const & ) = delete;
       Queue( Queue && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7622,7 +7730,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       RenderPass() = default;
 #  else
-      RenderPass()                    = delete;
+      RenderPass()                                                            = delete;
 #  endif
       RenderPass( RenderPass const & ) = delete;
       RenderPass( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7738,7 +7846,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Sampler() = default;
 #  else
-      Sampler()                       = delete;
+      Sampler()                                                               = delete;
 #  endif
       Sampler( Sampler const & ) = delete;
       Sampler( Sampler && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7849,7 +7957,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       SamplerYcbcrConversion() = default;
 #  else
-      SamplerYcbcrConversion()        = delete;
+      SamplerYcbcrConversion()                                                = delete;
 #  endif
       SamplerYcbcrConversion( SamplerYcbcrConversion const & ) = delete;
       SamplerYcbcrConversion( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
@@ -7959,7 +8067,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       Semaphore() = default;
 #  else
-      Semaphore()                     = delete;
+      Semaphore()                                                             = delete;
 #  endif
       Semaphore( Semaphore const & ) = delete;
       Semaphore( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT
@@ -8077,7 +8185,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       ShaderModule() = default;
 #  else
-      ShaderModule()                  = delete;
+      ShaderModule()                                                          = delete;
 #  endif
       ShaderModule( ShaderModule const & ) = delete;
       ShaderModule( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT
@@ -8488,7 +8596,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       SurfaceKHR() = default;
 #  else
-      SurfaceKHR()                    = delete;
+      SurfaceKHR()                                                            = delete;
 #  endif
       SurfaceKHR( SurfaceKHR const & ) = delete;
       SurfaceKHR( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -8605,7 +8713,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       SwapchainKHR() = default;
 #  else
-      SwapchainKHR()                  = delete;
+      SwapchainKHR()                                                          = delete;
 #  endif
       SwapchainKHR( SwapchainKHR const & ) = delete;
       SwapchainKHR( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT
@@ -8741,7 +8849,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       SwapchainKHRs() = default;
 #  else
-      SwapchainKHRs()                 = delete;
+      SwapchainKHRs()                                                         = delete;
 #  endif
       SwapchainKHRs( SwapchainKHRs const & ) = delete;
       SwapchainKHRs( SwapchainKHRs && rhs )  = default;
@@ -8804,7 +8912,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
       ValidationCacheEXT() = default;
 #  else
-      ValidationCacheEXT()            = delete;
+      ValidationCacheEXT()                                                    = delete;
 #  endif
       ValidationCacheEXT( ValidationCacheEXT const & ) = delete;
       ValidationCacheEXT( ValidationCacheEXT && rhs ) VULKAN_HPP_NOEXCEPT

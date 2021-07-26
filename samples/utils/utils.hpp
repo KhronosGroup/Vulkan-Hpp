@@ -21,6 +21,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <map>
+#include <limits>
 
 namespace vk
 {

@@ -15684,8 +15684,8 @@ int main( int argc, char ** argv )
 
     ObjectDestroy( OwnerType owner,
                    Optional<const AllocationCallbacks> allocationCallbacks
-                                    VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                   Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+                                             VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                   Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
@@ -15717,7 +15717,7 @@ int main( int argc, char ** argv )
     ObjectDestroy() = default;
 
     ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
-                   Dispatch const &                    dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+                   Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
     {}
@@ -15747,7 +15747,7 @@ int main( int argc, char ** argv )
 
     ObjectFree( OwnerType                                               owner,
                 Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+                Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
@@ -15785,7 +15785,8 @@ int main( int argc, char ** argv )
   public:
     ObjectRelease() = default;
 
-    ObjectRelease( OwnerType owner, Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+    ObjectRelease( OwnerType                 owner,
+                   Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_dispatch( &dispatch )
     {}
@@ -15852,9 +15853,9 @@ int main( int argc, char ** argv )
     public:
       PoolFree() = default;
 
-      PoolFree( OwnerType        owner,
-                PoolType         pool,
-                Dispatch const & dispatch = VULKAN_HPP_DEFAULT_DISPATCHER ) VULKAN_HPP_NOEXCEPT
+    PoolFree( OwnerType                 owner,
+              PoolType                  pool,
+              Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
         : m_owner( owner )
         , m_pool( pool )
         , m_dispatch( &dispatch )

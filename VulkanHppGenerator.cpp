@@ -4347,7 +4347,8 @@ std::string VulkanHppGenerator::constructRAIIHandleMemberFunctionResultMultiGetT
   std::string argumentList =
     generateArgumentListEnhanced( commandIt->second.params, skippedParameters, {}, definition, false, false, false );
   std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
-  std::string returnType0 = stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
+  std::string returnType0 =
+    stripPostfix( commandIt->second.params[nonConstPointerParamIndices[0]].type.compose(), "*" );
   std::string returnType1 =
     stripPostfix( commandIt->second.params[nonConstPointerParamIndices[1]].type.compose(), "*" );
 
@@ -4397,12 +4398,10 @@ std::string VulkanHppGenerator::constructRAIIHandleMemberFunctionResultMultiGetT
 )";
 
     return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
+                           { { "argumentList", argumentList },
                              { "commandName", commandName },
                              { "returnType0", returnType0 },
-                             { "returnType1", returnType1 }
-                           } );
+                             { "returnType1", returnType1 } } );
   }
 }
 
@@ -6942,21 +6941,66 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
   {
     for ( auto const & type : require.types )
     {
-      auto enumIt = m_enums.find( type );
-      if ( ( enumIt != m_enums.end() ) && enumIt->second.isBitmask )
+      auto typeIt = m_types.find( type );
+      assert( typeIt != m_types.end() );
+      if ( !typeIt->second.referencedIn.empty() )
       {
-        auto bitmaskIt =
-          std::find_if( m_bitmasks.begin(),
-                        m_bitmasks.end(),
-                        [&enumIt]( auto const & bitmask ) { return bitmask.second.requirements == enumIt->first; } );
-        check( bitmaskIt != m_bitmasks.end(),
-               enumIt->second.xmlLine,
-               "enum <" + enumIt->first +
-                 "> is not listed as an requires or bitvalues for any bitmask in the types section" );
-        check( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
-               enumIt->second.xmlLine,
-               "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" +
-                 bitmaskIt->first + "> is not of type <VkFlags64>" );
+        switch ( typeIt->second.category )
+        {
+          case TypeCategory::Bitmask:
+            {
+              auto bitmaskIt = m_bitmasks.find( type );
+              if ( bitmaskIt != m_bitmasks.end() )
+              {
+                if ( !bitmaskIt->second.requirements.empty() )
+                {
+                  auto requireTypeIt = m_types.find( bitmaskIt->second.requirements );
+                  assert( requireTypeIt != m_types.end() );
+                  check( !requireTypeIt->second.referencedIn.empty(),
+                         bitmaskIt->second.xmlLine,
+                         "bitmask <" + bitmaskIt->first + ">, listed for <" + typeIt->second.referencedIn +
+                           ">, requires <" + bitmaskIt->second.requirements + "> which is not listed for any feature or extension!" );
+                }
+              }
+              else
+              {
+                assert( std::find_if( m_bitmasks.begin(),
+                                      m_bitmasks.end(),
+                                      [&type]( std::pair<const std::string, BitmaskData> const & bd )
+                                      { return bd.second.alias == type; } ) != m_bitmasks.end() );
+              }
+            }
+            break;
+          case TypeCategory::Enum:
+            {
+              auto enumIt = m_enums.find( type );
+              if ( enumIt == m_enums.end() )
+              {
+                enumIt = std::find_if( m_enums.begin(),
+                                       m_enums.end(),
+                                       [&type]( std::pair<const std::string, EnumData> const & ed )
+                                       { return ed.second.alias == type; } );
+              }
+              assert( enumIt != m_enums.end() );
+              if ( enumIt->second.isBitmask )
+              {
+                auto bitmaskIt = std::find_if( m_bitmasks.begin(),
+                                               m_bitmasks.end(),
+                                               [&enumIt]( auto const & bitmask )
+                                               { return bitmask.second.requirements == enumIt->first; } );
+                check( bitmaskIt != m_bitmasks.end(),
+                       enumIt->second.xmlLine,
+                       "enum <" + enumIt->first +
+                         "> is not listed as an requires or bitvalues for any bitmask in the types section" );
+                check( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+                       enumIt->second.xmlLine,
+                       "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" +
+                         bitmaskIt->first + "> is not of type <VkFlags64>" );
+              }
+            }
+            break;
+          default: break;
+        }
       }
     }
   }

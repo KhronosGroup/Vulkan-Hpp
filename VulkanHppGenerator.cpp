@@ -6959,7 +6959,8 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
                   check( !requireTypeIt->second.referencedIn.empty(),
                          bitmaskIt->second.xmlLine,
                          "bitmask <" + bitmaskIt->first + ">, listed for <" + typeIt->second.referencedIn +
-                           ">, requires <" + bitmaskIt->second.requirements + "> which is not listed for any feature or extension!" );
+                           ">, requires <" + bitmaskIt->second.requirements +
+                           "> which is not listed for any feature or extension!" );
                 }
               }
               else
@@ -11063,6 +11064,22 @@ std::string VulkanHppGenerator::generateLenInitializer(
   return initializer;
 }
 
+std::string VulkanHppGenerator::generateName( TypeInfo const & typeInfo ) const
+{
+  std::string name = stripPrefix( typeInfo.type, "Vk" );
+  assert( typeInfo.prefix.find( '*' ) == std::string::npos );
+  if ( typeInfo.postfix.find( '*' ) != std::string::npos )
+  {
+    assert( typeInfo.postfix.find_first_of( '*' ) == typeInfo.postfix.find_last_of( '*' ) );
+    name = "p" + name;
+  }
+  else
+  {
+    name = startLowerCase( name );
+  }
+  return name;
+}
+
 std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & referencedIn,
                                                                             std::string const & protect ) const
 {
@@ -12191,39 +12208,51 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
          " ) );\n"
          "    }\n";
 
-  bool firstMember = true;
-  for ( auto const & member : structure.second.members )
+  bool               firstMember = true;
+  std::set<TypeInfo> listedTypes;  // create just one constructor per different type !
+  for (auto memberIt = structure.second.members.begin(); memberIt != structure.second.members.end(); ++memberIt )
   {
-    // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t
-    // constructor.
-    auto compareBool32Alias = []( MemberData const & member )
+    if ( listedTypes.insert( memberIt->type ).second )
     {
-      return member.type.type == std::string( "uint32_t" );
-    };
-    if ( member.type.type == "VkBool32" )
-    {
-      if ( std::find_if( structure.second.members.begin(), structure.second.members.end(), compareBool32Alias ) !=
-           structure.second.members.end() )
+      // VkBool32 is aliased to uint32_t. Don't create a VkBool32 constructor if the union also contains a uint32_t
+      // constructor.
+      if ( memberIt->type.type == "VkBool32" )
       {
-        continue;
+        if ( std::find_if( structure.second.members.begin(),
+                           structure.second.members.end(),
+                           []( MemberData const & member ) {
+                             return member.type.type == std::string( "uint32_t" );
+                           } ) !=
+             structure.second.members.end() )
+        {
+          continue;
+        }
       }
-    }
 
-    static const std::string constructorTemplate = R"(
-    ${unionName}( ${memberType} ${memberName}_${defaultAssignment} )
-      : ${memberName}( ${memberName}_ )
+      bool multipleType = ( std::find_if( std::next( memberIt ),
+                                          structure.second.members.end(),
+                                          [memberIt]( MemberData const & member ) {
+                                            return member.type == memberIt->type;
+                                          } ) != structure.second.members.end() );
+
+      static const std::string constructorTemplate = R"(
+    ${unionName}( ${memberType} ${argumentName}_${defaultAssignment} )
+      : ${memberName}( ${argumentName}_ )
     {}
 )";
 
-    std::string memberType = ( member.arraySizes.empty() )
-                               ? member.type.compose()
-                               : ( "const " + generateStandardArray( member.type.compose(), member.arraySizes ) + "&" );
-    str += replaceWithMap( constructorTemplate,
-                           { { "defaultAssignment", firstMember ? " = {}" : "" },
-                             { "memberName", member.name },
-                             { "memberType", memberType },
-                             { "unionName", stripPrefix( structure.first, "Vk" ) } } );
-    firstMember = false;
+      std::string memberType =
+        ( memberIt->arraySizes.empty() )
+          ? memberIt->type.compose()
+          : ( "const " + generateStandardArray( memberIt->type.compose(), memberIt->arraySizes ) + "&" );
+      str += replaceWithMap( constructorTemplate,
+                             { { "argumentName", multipleType ? generateName( memberIt->type ) : memberIt->name },
+                               { "defaultAssignment", firstMember ? " = {}" : "" },
+                               { "memberName", memberIt->name },
+                               { "memberType", memberType },
+                               { "unionName", stripPrefix( structure.first, "Vk" ) } } );
+      firstMember = false;
+    }
   }
   str += "#endif /*VULKAN_HPP_NO_UNION_CONSTRUCTORS*/\n";
 

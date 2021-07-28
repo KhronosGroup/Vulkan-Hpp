@@ -56,6 +56,13 @@ private:
       return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
     }
 
+    bool operator<( TypeInfo const & rhs ) const
+    {
+      return ( prefix < rhs.prefix ) ||
+             ( ( prefix == rhs.prefix ) &&
+               ( ( type < rhs.type ) || ( ( type == rhs.type ) && ( postfix < rhs.postfix ) ) ) );
+    }
+
     bool isConstPointer() const
     {
       return ( prefix.find( "const" ) != std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
@@ -1058,6 +1065,7 @@ private:
                                                               std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
                                                               bool mutualExclusiveLens ) const;
+  std::string                         generateName( TypeInfo const & typeInfo ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn,
                                                           std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;

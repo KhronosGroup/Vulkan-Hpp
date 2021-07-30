@@ -343,25 +343,22 @@ private:
                                             std::string &                    deviceMembers,
                                             std::string &                    instanceAssignments,
                                             std::string &                    instanceMembers ) const;
-  void        checkCorrectness();
+  void        checkCorrectness() const;
+  void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor(
            std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
            std::map<std::string, CommandData>::const_iterator                      constructorIt,
            std::vector<ParamData>::const_iterator                                  lenIt ) const;
-
-  void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
-  bool        containsArray( std::string const & type ) const;
-  bool        containsUnion( std::string const & type ) const;
-  size_t      determineDefaultStartIndex( std::vector<ParamData> const & params,
-                                          std::set<size_t> const &       skippedParams ) const;
-  std::string determineEnhancedReturnType( CommandData const & commandData,
-                                           size_t              returnParamIndex,
-                                           bool                isStructureChain ) const;
-  size_t      determineInitialSkipCount( std::string const & command ) const;
+  bool   containsArray( std::string const & type ) const;
+  bool   containsUnion( std::string const & type ) const;
+  size_t determineDefaultStartIndex( std::vector<ParamData> const & params,
+                                     std::set<size_t> const &       skippedParams ) const;
+  size_t determineInitialSkipCount( std::string const & command ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
                                      std::map<std::string, CommandData>::const_iterator destructorIt,
                                      std::set<std::string> &                            specialFunctions ) const;
+
   std::map<std::string, CommandData>::const_iterator
                            determineRAIIHandleDestructor( std::string const & handleType ) const;
   size_t                   determineReturnParamIndex( CommandData const &              commandData,
@@ -718,6 +715,8 @@ private:
   std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
+  std::string
+    generateEnhancedReturnType( CommandData const & commandData, size_t returnParamIndex, bool isStructureChain ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,
                                        std::vector<std::string> const &   arraySizes,

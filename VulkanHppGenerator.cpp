@@ -1021,7 +1021,7 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
   instanceMembers += addTitleAndProtection( title, im, imp );
 }
 
-void VulkanHppGenerator::checkCorrectness()
+void VulkanHppGenerator::checkCorrectness() const
 {
   check( !m_vulkanLicenseHeader.empty(), -1, "missing license header" );
 
@@ -1374,6 +1374,83 @@ void VulkanHppGenerator::checkCorrectness()
   assert( sTypeValues.empty() );
 }
 
+void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & requireData ) const
+{
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto typeIt = m_types.find( type );
+      assert( typeIt != m_types.end() );
+      switch ( typeIt->second.category )
+      {
+        case TypeCategory::Bitmask:
+          {
+            // check that reach "require" listed for a bitmask is listed for a feature or an extension
+            auto bitmaskIt = m_bitmasks.find( type );
+            if ( bitmaskIt != m_bitmasks.end() )
+            {
+              // not for every bitmask is a "require" listed
+              if ( !bitmaskIt->second.requirements.empty() )
+              {
+                auto requireTypeIt = m_types.find( bitmaskIt->second.requirements );
+                assert( requireTypeIt != m_types.end() );
+                check( !requireTypeIt->second.referencedIn.empty(),
+                       bitmaskIt->second.xmlLine,
+                       "bitmask <" + bitmaskIt->first + "> requires <" + bitmaskIt->second.requirements +
+                         "> which is not listed for any feature or extension!" );
+              }
+            }
+            else
+            {
+              // every bitmask not listed in the m_bitmasks, should be an alias of such a thing
+              assert( std::find_if( m_bitmasks.begin(),
+                                    m_bitmasks.end(),
+                                    [&type]( std::pair<const std::string, BitmaskData> const & bd )
+                                    { return bd.second.alias == type; } ) != m_bitmasks.end() );
+            }
+          }
+          break;
+        case TypeCategory::Enum:
+          {
+            auto enumIt = m_enums.find( type );
+            if ( enumIt != m_enums.end() )
+            {
+              if ( enumIt->second.isBitmask )
+              {
+                // check that any enum of a bitmask is listed as "require" or "bitvalues" for a bitmask
+                auto bitmaskIt = std::find_if( m_bitmasks.begin(),
+                                               m_bitmasks.end(),
+                                               [&enumIt]( auto const & bitmask )
+                                               { return bitmask.second.requirements == enumIt->first; } );
+                check( bitmaskIt != m_bitmasks.end(),
+                       enumIt->second.xmlLine,
+                       "enum <" + enumIt->first +
+                         "> is not listed as an requires or bitvalues for any bitmask in the types section" );
+
+                // check that bitwidth of the enum and type of the corresponding bitmask are equal
+                check( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
+                       enumIt->second.xmlLine,
+                       "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" +
+                         bitmaskIt->first + "> is not of type <VkFlags64>" );
+              }
+            }
+            else
+            {
+              // every enum not listed in the m_enums, should be an alias of such a thing
+              assert( std::find_if( m_enums.begin(),
+                                    m_enums.end(),
+                                    [&type]( std::pair<const std::string, EnumData> const & ed )
+                                    { return ed.second.alias == type; } ) != m_enums.end() );
+            }
+          }
+          break;
+        default: break;
+      }
+    }
+  }
+}
+
 bool VulkanHppGenerator::checkEquivalentSingularConstructor(
   std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
   std::map<std::string, CommandData>::const_iterator                      constructorIt,
@@ -1406,6 +1483,155 @@ bool VulkanHppGenerator::checkEquivalentSingularConstructor(
                     return true;
                   } );
   return ( singularCommandIt != constructorIts.end() );
+}
+
+bool VulkanHppGenerator::containsArray( std::string const & type ) const
+{
+  // a simple recursive check if a type is or contains an array
+  auto structureIt = m_structures.find( type );
+  bool found       = false;
+  if ( structureIt != m_structures.end() )
+  {
+    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found;
+          ++memberIt )
+    {
+      found = !memberIt->arraySizes.empty() || containsArray( memberIt->type.type );
+    }
+  }
+  return found;
+}
+
+bool VulkanHppGenerator::containsUnion( std::string const & type ) const
+{
+  // a simple recursive check if a type is or contains a union
+  auto structureIt = m_structures.find( type );
+  bool found       = ( structureIt != m_structures.end() );
+  if ( found )
+  {
+    found = structureIt->second.isUnion;
+    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found;
+          ++memberIt )
+    {
+      found = memberIt->type.prefix.empty() && memberIt->type.postfix.empty() && containsUnion( memberIt->type.type );
+    }
+  }
+  return found;
+}
+
+size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> const & params,
+                                                       std::set<size_t> const &       skippedParams ) const
+{
+  // determine the index where the arguments start to have defaults
+  size_t defaultStartIndex = INVALID_INDEX;
+  for ( int i = static_cast<int>( params.size() ) - 1;
+        ( 0 <= i ) && ( params[i].optional || ( skippedParams.find( i ) != skippedParams.end() ) );
+        --i )
+  {
+    defaultStartIndex = i;
+  }
+  return defaultStartIndex;
+}
+
+size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & command ) const
+{
+  // determine the number of arguments to skip for a function
+  // -> 0: the command is not bound to an instance or a device (the corresponding handle has no name)
+  // -> 1: the command bound to an instance or a device (the corresponding handle has a name
+  // -> 2: the command has been moved to a second handle
+  auto commandIt = m_commands.find( command );
+  assert( commandIt != m_commands.end() );
+  auto handleIt = m_handles.find( commandIt->second.handle );
+  assert( handleIt != m_handles.end() );
+  if ( handleIt->second.commands.find( command ) == handleIt->second.commands.end() )
+  {
+    assert( 1 < commandIt->second.params.size() );
+    handleIt = m_handles.find( commandIt->second.params[1].type.type );
+    assert( handleIt != m_handles.end() );
+    return 2;
+  }
+  else
+  {
+    return handleIt->first.empty() ? 0 : 1;
+  }
+}
+
+std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator>
+  VulkanHppGenerator::determineRAIIHandleConstructors( std::string const &                                handleType,
+                                                       std::map<std::string, CommandData>::const_iterator destructorIt,
+                                                       std::set<std::string> & specialFunctions ) const
+{
+  std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts;
+  for ( auto commandIt = m_commands.begin(); commandIt != m_commands.end(); )
+  {
+    // find the commands that get a non-const pointer to the handleType, that is, return a handle type
+    commandIt =
+      std::find_if( commandIt,
+                    m_commands.end(),
+                    [&handleType]( std::pair<std::string, CommandData> const & cd )
+                    {
+                      return std::find_if( cd.second.params.begin(),
+                                           cd.second.params.end(),
+                                           [&handleType]( ParamData const & pd ) {
+                                             return ( pd.type.type == handleType ) && pd.type.isNonConstPointer();
+                                           } ) != cd.second.params.end();
+                    } );
+    if ( commandIt != m_commands.end() )
+    {
+      // only commands that provide all information needed for the destructor can be considered a constructor!
+      bool valid = true;
+      if ( destructorIt != m_commands.end() )
+      {
+        // get the destructors parameter to the handleType
+        auto desctructorHandleParamIt =
+          std::find_if( destructorIt->second.params.begin(),
+                        destructorIt->second.params.end(),
+                        [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
+        assert( desctructorHandleParamIt != destructorIt->second.params.end() );
+        // check that all destructor parameters are part of the constructor command candidate
+        // this commandIt is a valid candidate, if the outer find_if runs to the end of the destructor params
+        valid =
+          ( std::find_if( destructorIt->second.params.begin(),
+                          destructorIt->second.params.end(),
+                          [&desctructorHandleParamIt, &commandIt, this]( ParamData const & destructorParam )
+                          {
+                            // return true if the destructorParam could _not_ be identified in the constructor candidate
+                            // params, that is, if the destructorParam is not the len in the destructor, and the type
+                            // can not be found in the constructor candidate argument list (the find_if runs to the end
+                            // of the constructor candidate params)
+                            return ( destructorParam.name != desctructorHandleParamIt->len ) &&
+                                   ( std::find_if( commandIt->second.params.begin(),
+                                                   commandIt->second.params.end(),
+                                                   [&destructorParam, this]( ParamData const & pd )
+                                                   {
+                                                     if ( pd.type.type != destructorParam.type.type )
+                                                     {
+                                                       auto structureIt = m_structures.find( pd.type.type );
+                                                       return ( structureIt != m_structures.end() ) &&
+                                                              ( std::find_if(
+                                                                  structureIt->second.members.begin(),
+                                                                  structureIt->second.members.end(),
+                                                                  [&destructorParam]( MemberData const & md ) {
+                                                                    return md.type.type == destructorParam.type.type;
+                                                                  } ) != structureIt->second.members.end() );
+                                                     }
+                                                     return true;
+                                                   } ) == commandIt->second.params.end() );
+                          } ) == destructorIt->second.params.end() );
+      }
+      if ( valid )
+      {
+        specialFunctions.insert( commandIt->first );
+        // filter out alias functions
+        if ( commandIt->second.alias.empty() )
+        {
+          constructorIts.push_back( commandIt );
+        }
+      }
+      ++commandIt;
+    }
+  }
+  assert( !constructorIts.empty() );
+  return constructorIts;
 }
 
 //
@@ -2055,228 +2281,6 @@ void VulkanHppGenerator::EnumData::addEnumValue(
   {
     values.emplace_back( line, valueName, protect, extension, bitpos );
   }
-}
-
-void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & requireData ) const
-{
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto typeIt = m_types.find( type );
-      assert( typeIt != m_types.end() );
-      if ( !typeIt->second.referencedIn.empty() )
-      {
-        switch ( typeIt->second.category )
-        {
-          case TypeCategory::Bitmask:
-            {
-              auto bitmaskIt = m_bitmasks.find( type );
-              if ( bitmaskIt != m_bitmasks.end() )
-              {
-                if ( !bitmaskIt->second.requirements.empty() )
-                {
-                  auto requireTypeIt = m_types.find( bitmaskIt->second.requirements );
-                  assert( requireTypeIt != m_types.end() );
-                  check( !requireTypeIt->second.referencedIn.empty(),
-                         bitmaskIt->second.xmlLine,
-                         "bitmask <" + bitmaskIt->first + ">, listed for <" + typeIt->second.referencedIn +
-                           ">, requires <" + bitmaskIt->second.requirements +
-                           "> which is not listed for any feature or extension!" );
-                }
-              }
-              else
-              {
-                assert( std::find_if( m_bitmasks.begin(),
-                                      m_bitmasks.end(),
-                                      [&type]( std::pair<const std::string, BitmaskData> const & bd )
-                                      { return bd.second.alias == type; } ) != m_bitmasks.end() );
-              }
-            }
-            break;
-          case TypeCategory::Enum:
-            {
-              auto enumIt = m_enums.find( type );
-              if ( enumIt == m_enums.end() )
-              {
-                enumIt = std::find_if( m_enums.begin(),
-                                       m_enums.end(),
-                                       [&type]( std::pair<const std::string, EnumData> const & ed )
-                                       { return ed.second.alias == type; } );
-              }
-              assert( enumIt != m_enums.end() );
-              if ( enumIt->second.isBitmask )
-              {
-                auto bitmaskIt = std::find_if( m_bitmasks.begin(),
-                                               m_bitmasks.end(),
-                                               [&enumIt]( auto const & bitmask )
-                                               { return bitmask.second.requirements == enumIt->first; } );
-                check( bitmaskIt != m_bitmasks.end(),
-                       enumIt->second.xmlLine,
-                       "enum <" + enumIt->first +
-                         "> is not listed as an requires or bitvalues for any bitmask in the types section" );
-                check( ( enumIt->second.bitwidth != "64" ) || ( bitmaskIt->second.type == "VkFlags64" ),
-                       enumIt->second.xmlLine,
-                       "enum <" + enumIt->first + "> is marked with bitwidth <64> but corresponding bitmask <" +
-                         bitmaskIt->first + "> is not of type <VkFlags64>" );
-              }
-            }
-            break;
-          default: break;
-        }
-      }
-    }
-  }
-}
-
-bool VulkanHppGenerator::containsArray( std::string const & type ) const
-{
-  // a simple recursive check if a type is or contains an array
-  auto structureIt = m_structures.find( type );
-  bool found       = false;
-  if ( structureIt != m_structures.end() )
-  {
-    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found;
-          ++memberIt )
-    {
-      found = !memberIt->arraySizes.empty() || containsArray( memberIt->type.type );
-    }
-  }
-  return found;
-}
-
-bool VulkanHppGenerator::containsUnion( std::string const & type ) const
-{
-  // a simple recursive check if a type is or contains a union
-  auto structureIt = m_structures.find( type );
-  bool found       = ( structureIt != m_structures.end() );
-  if ( found )
-  {
-    found = structureIt->second.isUnion;
-    for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found;
-          ++memberIt )
-    {
-      found = memberIt->type.prefix.empty() && memberIt->type.postfix.empty() && containsUnion( memberIt->type.type );
-    }
-  }
-  return found;
-}
-
-size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> const & params,
-                                                       std::set<size_t> const &       skippedParams ) const
-{
-  size_t defaultStartIndex = INVALID_INDEX;
-  for ( int i = static_cast<int>( params.size() ) - 1;
-        ( 0 <= i ) && ( params[i].optional || ( skippedParams.find( i ) != skippedParams.end() ) );
-        --i )
-  {
-    defaultStartIndex = i;
-  }
-  return defaultStartIndex;
-}
-
-std::string VulkanHppGenerator::determineEnhancedReturnType( CommandData const & commandData,
-                                                             size_t              returnParamIndex,
-                                                             bool                isStructureChain ) const
-{
-  assert( ( returnParamIndex == INVALID_INDEX ) || ( returnParamIndex < commandData.params.size() ) );
-
-  std::string enhancedReturnType;
-  assert( returnParamIndex != INVALID_INDEX );
-  // if there is a return parameter, we think returnType is always "void" or "VkResult"
-  // -> we can return that parameter
-  assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
-  assert( commandData.successCodes.empty() || ( commandData.successCodes[0] == "VK_SUCCESS" ) );
-  return ( commandData.params[returnParamIndex].type.type == "void" )
-           ? "std::vector<uint8_t,Allocator>"  // the return parameter is a vector-type parameter
-         : isStructureChain ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
-                                                                       // a vector of StrutureChains
-                            : "std::vector<" + stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" ) +
-                                ",Allocator>";  // for the other parameters, we use a vector of the pure type
-}
-
-size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & command ) const
-{
-  auto commandIt = m_commands.find( command );
-  assert( commandIt != m_commands.end() );
-  auto handleIt = m_handles.find( commandIt->second.handle );
-  assert( handleIt != m_handles.end() );
-  if ( handleIt->second.commands.find( command ) == handleIt->second.commands.end() )
-  {
-    assert( 1 < commandIt->second.params.size() );
-    handleIt = m_handles.find( commandIt->second.params[1].type.type );
-    assert( handleIt != m_handles.end() );
-    return 2;
-  }
-  else
-  {
-    return handleIt->first.empty() ? 0 : 1;
-  }
-}
-
-std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator>
-  VulkanHppGenerator::determineRAIIHandleConstructors( std::string const &                                handleType,
-                                                       std::map<std::string, CommandData>::const_iterator destructorIt,
-                                                       std::set<std::string> & specialFunctions ) const
-{
-  std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts;
-  for ( auto commandIt = m_commands.begin(); commandIt != m_commands.end(); )
-  {
-    commandIt =
-      std::find_if( commandIt,
-                    m_commands.end(),
-                    [&handleType]( std::pair<std::string, CommandData> const & cd )
-                    {
-                      return std::find_if( cd.second.params.begin(),
-                                           cd.second.params.end(),
-                                           [&handleType]( ParamData const & pd ) {
-                                             return ( pd.type.type == handleType ) && pd.type.isNonConstPointer();
-                                           } ) != cd.second.params.end();
-                    } );
-    if ( commandIt != m_commands.end() )
-    {
-      // only commands that provide all information needed for the destructor can be considered a constructor!
-      bool valid = true;
-      if ( destructorIt != m_commands.end() )
-      {
-        auto paramIt = std::find_if( destructorIt->second.params.begin(),
-                                     destructorIt->second.params.end(),
-                                     [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
-        assert( paramIt != destructorIt->second.params.end() );
-        for ( auto pit = destructorIt->second.params.begin(); valid && pit != destructorIt->second.params.end(); ++pit )
-        {
-          valid = ( pit->name == paramIt->len ) || ( std::find_if( commandIt->second.params.begin(),
-                                                                   commandIt->second.params.end(),
-                                                                   [&pit]( ParamData const & pd ) {
-                                                                     return pd.type.type == pit->type.type;
-                                                                   } ) != commandIt->second.params.end() );
-          for ( auto cit = commandIt->second.params.begin(); !valid && cit != commandIt->second.params.end(); ++cit )
-          {
-            auto structureIt = m_structures.find( cit->type.type );
-            if ( structureIt != m_structures.end() )
-            {
-              valid = std::find_if( structureIt->second.members.begin(),
-                                    structureIt->second.members.end(),
-                                    [&pit]( MemberData const & md )
-                                    { return md.type.type == pit->type.type; } ) != structureIt->second.members.end();
-            }
-          }
-        }
-      }
-      if ( valid )
-      {
-        specialFunctions.insert( commandIt->first );
-        // filter out alias functions
-        if ( commandIt->second.alias.empty() )
-        {
-          constructorIts.push_back( commandIt );
-        }
-      }
-      ++commandIt;
-    }
-  }
-  assert( !constructorIts.empty() );
-  return constructorIts;
 }
 
 std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator
@@ -3971,7 +3975,7 @@ std::string VulkanHppGenerator::generateCommandResultEnumerateTwoVectorsDeprecat
     commandData, returnParamIndex, returnParamIndex, vectorParamIndices, !definition, withAllocators );
   std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
   std::string nodiscard   = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string returnType  = determineEnhancedReturnType( commandData, returnParamIndex, false );
+  std::string returnType  = generateEnhancedReturnType( commandData, returnParamIndex, false );
   std::string templateType = stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" );
 
   if ( definition )
@@ -6563,6 +6567,26 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateEnhancedReturnType( CommandData const & commandData,
+                                                            size_t              returnParamIndex,
+                                                            bool                isStructureChain ) const
+{
+  assert( ( returnParamIndex == INVALID_INDEX ) || ( returnParamIndex < commandData.params.size() ) );
+
+  std::string enhancedReturnType;
+  assert( returnParamIndex != INVALID_INDEX );
+  // if there is a return parameter, we think returnType is always "void" or "VkResult"
+  // -> we can return that parameter
+  assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
+  assert( commandData.successCodes.empty() || ( commandData.successCodes[0] == "VK_SUCCESS" ) );
+  return ( commandData.params[returnParamIndex].type.type == "void" )
+           ? "std::vector<uint8_t,Allocator>"  // the return parameter is a vector-type parameter
+         : isStructureChain ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
+                                                                       // a vector of StrutureChains
+                            : "std::vector<" + stripPrefix( commandData.params[returnParamIndex].type.type, "Vk" ) +
+                                ",Allocator>";  // for the other parameters, we use a vector of the pure type
 }
 
 std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const

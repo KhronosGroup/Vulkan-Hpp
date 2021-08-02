@@ -8038,6 +8038,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & FormatFeatureFlagBits::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8120,6 +8121,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "SampleLocationsCompatibleDepthEXT | ";
     if ( value & ImageCreateFlagBits::eSubsampledEXT )
       result += "SubsampledEXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8216,6 +8218,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & ImageUsageFlagBits::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8270,6 +8273,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceLocal | ";
     if ( value & MemoryHeapFlagBits::eMultiInstance )
       result += "MultiInstance | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8337,6 +8341,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceUncachedAMD | ";
     if ( value & MemoryPropertyFlagBits::eRdmaCapableNV )
       result += "RdmaCapableNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8401,6 +8406,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & QueueFlagBits::eVideoEncodeKHR )
       result += "VideoEncodeKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8461,6 +8467,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "32 | ";
     if ( value & SampleCountFlagBits::e64 )
       result += "64 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8514,6 +8521,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & DeviceQueueCreateFlagBits::eProtected )
       result += "Protected | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8625,6 +8633,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentShadingRateAttachmentKHR | ";
     if ( value & PipelineStageFlagBits::eCommandPreprocessNV )
       result += "CommandPreprocessNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8702,6 +8711,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "MemoryPlane2EXT | ";
     if ( value & ImageAspectFlagBits::eMemoryPlane3EXT )
       result += "MemoryPlane3EXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8754,6 +8764,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AlignedMipSize | ";
     if ( value & SparseImageFormatFlagBits::eNonstandardBlockSize )
       result += "NonstandardBlockSize | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8800,6 +8811,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & SparseMemoryBindFlagBits::eMetadata )
       result += "Metadata | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8845,6 +8857,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & FenceCreateFlagBits::eSignaled )
       result += "Signaled | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8897,6 +8910,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & EventCreateFlagBits::eDeviceOnlyKHR )
       result += "DeviceOnlyKHR | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -8973,6 +8987,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "TessellationEvaluationShaderInvocations | ";
     if ( value & QueryPipelineStatisticFlagBits::eComputeShaderInvocations )
       result += "ComputeShaderInvocations | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9039,6 +9054,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & QueryResultFlagBits::eWithStatusKHR )
       result += "WithStatusKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9094,6 +9110,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Protected | ";
     if ( value & BufferCreateFlagBits::eDeviceAddressCaptureReplay )
       result += "DeviceAddressCaptureReplay | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9198,6 +9215,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferUsageFlagBits::eVideoEncodeSrcKHR )
       result += "VideoEncodeSrcKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9254,6 +9272,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentDensityMapDynamicEXT | ";
     if ( value & ImageViewCreateFlagBits::eFragmentDensityMapDeferredEXT )
       result += "FragmentDensityMapDeferredEXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9307,6 +9326,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & PipelineCacheCreateFlagBits::eExternallySynchronizedEXT )
       result += "ExternallySynchronizedEXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9360,6 +9380,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "B | ";
     if ( value & ColorComponentFlagBits::eA )
       result += "A | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9408,6 +9429,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Front | ";
     if ( value & CullModeFlagBits::eBack )
       result += "Back | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9515,6 +9537,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "EarlyReturnOnFailureEXT | ";
     if ( value & PipelineCreateFlagBits::eRayTracingAllowMotionNV )
       result += "RayTracingAllowMotionNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9606,6 +9629,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AllowVaryingSubgroupSizeEXT | ";
     if ( value & PipelineShaderStageCreateFlagBits::eRequireFullSubgroupsEXT )
       result += "RequireFullSubgroupsEXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9708,6 +9732,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "MeshNV | ";
     if ( value & ShaderStageFlagBits::eSubpassShadingHUAWEI )
       result += "SubpassShadingHUAWEI | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9756,6 +9781,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "SubsampledEXT | ";
     if ( value & SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT )
       result += "SubsampledCoarseReconstructionEXT | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9808,6 +9834,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "UpdateAfterBind | ";
     if ( value & DescriptorPoolCreateFlagBits::eHostOnlyVALVE )
       result += "HostOnlyVALVE | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9867,6 +9894,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PushDescriptorKHR | ";
     if ( value & DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolVALVE )
       result += "HostOnlyPoolVALVE | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -9985,6 +10013,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "CommandPreprocessReadNV | ";
     if ( value & AccessFlagBits::eCommandPreprocessWriteNV )
       result += "CommandPreprocessWriteNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10031,6 +10060,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & AttachmentDescriptionFlagBits::eMayAlias )
       result += "MayAlias | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10081,6 +10111,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceGroup | ";
     if ( value & DependencyFlagBits::eViewLocal )
       result += "ViewLocal | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10127,6 +10158,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & FramebufferCreateFlagBits::eImageless )
       result += "Imageless | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10173,6 +10205,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & RenderPassCreateFlagBits::eTransformQCOM )
       result += "TransformQCOM | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10228,6 +10261,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentRegionQCOM | ";
     if ( value & SubpassDescriptionFlagBits::eShaderResolveQCOM )
       result += "ShaderResolveQCOM | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10280,6 +10314,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ResetCommandBuffer | ";
     if ( value & CommandPoolCreateFlagBits::eProtected )
       result += "Protected | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10326,6 +10361,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & CommandPoolResetFlagBits::eReleaseResources )
       result += "ReleaseResources | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10372,6 +10408,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & CommandBufferResetFlagBits::eReleaseResources )
       result += "ReleaseResources | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10424,6 +10461,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "RenderPassContinue | ";
     if ( value & CommandBufferUsageFlagBits::eSimultaneousUse )
       result += "SimultaneousUse | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10469,6 +10507,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & QueryControlFlagBits::ePrecise )
       result += "Precise | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10517,6 +10556,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Front | ";
     if ( value & StencilFaceFlagBits::eBack )
       result += "Back | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10585,6 +10625,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Quad | ";
     if ( value & SubgroupFeatureFlagBits::ePartitionedNV )
       result += "PartitionedNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10640,6 +10681,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "GenericSrc | ";
     if ( value & PeerMemoryFeatureFlagBits::eGenericDst )
       result += "GenericDst | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10693,6 +10735,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceAddress | ";
     if ( value & MemoryAllocateFlagBits::eDeviceAddressCaptureReplay )
       result += "DeviceAddressCaptureReplay | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10803,6 +10846,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     if ( value & ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
       result += "RdmaAddressNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10857,6 +10901,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Exportable | ";
     if ( value & ExternalMemoryFeatureFlagBits::eImportable )
       result += "Importable | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10914,6 +10959,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "OpaqueWin32Kmt | ";
     if ( value & ExternalFenceHandleTypeFlagBits::eSyncFd )
       result += "SyncFd | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -10965,6 +11011,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Exportable | ";
     if ( value & ExternalFenceFeatureFlagBits::eImportable )
       result += "Importable | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11012,6 +11059,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & FenceImportFlagBits::eTemporary )
       result += "Temporary | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11060,6 +11108,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & SemaphoreImportFlagBits::eTemporary )
       result += "Temporary | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11127,6 +11176,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
       result += "ZirconEventFUCHSIA | ";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11178,6 +11228,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Exportable | ";
     if ( value & ExternalSemaphoreFeatureFlagBits::eImportable )
       result += "Importable | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11237,6 +11288,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PartiallyBound | ";
     if ( value & DescriptorBindingFlagBits::eVariableDescriptorCount )
       result += "VariableDescriptorCount | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11292,6 +11344,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Min | ";
     if ( value & ResolveModeFlagBits::eMax )
       result += "Max | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11339,6 +11392,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & SemaphoreWaitFlagBits::eAny )
       result += "Any | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11394,6 +11448,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PostMultiplied | ";
     if ( value & CompositeAlphaFlagBitsKHR::eInherit )
       result += "Inherit | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11448,6 +11503,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Protected | ";
     if ( value & SwapchainCreateFlagBitsKHR::eMutableFormat )
       result += "MutableFormat | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11503,6 +11559,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Sum | ";
     if ( value & DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice )
       result += "LocalMultiDevice | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11566,6 +11623,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PerPixel | ";
     if ( value & DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied )
       result += "PerPixelPremultiplied | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11642,6 +11700,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "HorizontalMirrorRotate270 | ";
     if ( value & SurfaceTransformFlagBitsKHR::eInherit )
       result += "Inherit | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11755,6 +11814,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Error | ";
     if ( value & DebugReportFlagBitsEXT::eDebug )
       result += "Debug | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11815,6 +11875,7 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
       result += "DecodeH265EXT | ";
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11870,6 +11931,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "422 | ";
     if ( value & VideoChromaSubsamplingFlagBitsKHR::e444 )
       result += "444 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11922,6 +11984,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "10 | ";
     if ( value & VideoComponentBitDepthFlagBitsKHR::e12 )
       result += "12 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -11971,6 +12034,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ProtectedContent | ";
     if ( value & VideoCapabilityFlagBitsKHR::eSeparateReferenceImages )
       result += "SeparateReferenceImages | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12018,6 +12082,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoSessionCreateFlagBitsKHR::eProtectedContent )
       result += "ProtectedContent | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12078,6 +12143,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoCodingControlFlagBitsKHR::eReset )
       result += "Reset | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12131,6 +12197,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Power | ";
     if ( value & VideoCodingQualityPresetFlagBitsKHR::eQuality )
       result += "Quality | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -12181,6 +12248,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoDecodeFlagBitsKHR::eReserved0 )
       result += "Reserved0 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -12270,6 +12338,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "MultipleSlicePerFrame | ";
     if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
       result += "EvenlyDistributedSliceSize | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12322,6 +12391,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Slice | ";
     if ( value & VideoEncodeH264InputModeFlagBitsEXT::eNonVcl )
       result += "NonVcl | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12374,6 +12444,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Slice | ";
     if ( value & VideoEncodeH264OutputModeFlagBitsEXT::eNonVcl )
       result += "NonVcl | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12421,6 +12492,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeH264CreateFlagBitsEXT::eReserved0 )
       result += "Reserved0 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -12475,6 +12547,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "InterlacedInterleavedLines | ";
     if ( value & VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes )
       result += "InterlacedSeparatePlanes | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12551,6 +12624,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "D3D11Image | ";
     if ( value & ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt )
       result += "D3D11ImageKmt | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12603,6 +12677,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Exportable | ";
     if ( value & ExternalMemoryFeatureFlagBitsNV::eImportable )
       result += "Importable | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12662,6 +12737,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & ConditionalRenderingFlagBitsEXT::eInverted )
       result += "Inverted | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12710,6 +12786,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & SurfaceCounterFlagBitsEXT::eVblank )
       result += "Vblank | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12798,6 +12875,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "PerformanceImpacting | ";
     if ( value & PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted )
       result += "ConcurrentlyImpacted | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12884,6 +12962,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Warning | ";
     if ( value & DebugUtilsMessageSeverityFlagBitsEXT::eError )
       result += "Error | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12936,6 +13015,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Validation | ";
     if ( value & DebugUtilsMessageTypeFlagBitsEXT::ePerformance )
       result += "Performance | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13010,6 +13090,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Opaque | ";
     if ( value & GeometryFlagBitsKHR::eNoDuplicateAnyHitInvocation )
       result += "NoDuplicateAnyHitInvocation | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13067,6 +13148,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ForceOpaque | ";
     if ( value & GeometryInstanceFlagBitsKHR::eForceNoOpaque )
       result += "ForceNoOpaque | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13130,6 +13212,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "LowMemory | ";
     if ( value & BuildAccelerationStructureFlagBitsKHR::eMotionNV )
       result += "MotionNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13179,6 +13262,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceAddressCaptureReplay | ";
     if ( value & AccelerationStructureCreateFlagBitsKHR::eMotionNV )
       result += "MotionNV | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13271,6 +13355,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ApplicationPipelineCacheHit | ";
     if ( value & PipelineCreationFeedbackFlagBitsEXT::eBasePipelineAcceleration )
       result += "BasePipelineAcceleration | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13365,6 +13450,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DebugReporting | ";
     if ( value & ToolPurposeFlagBitsEXT::eDebugMarkers )
       result += "DebugMarkers | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13431,6 +13517,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & IndirectStateFlagBitsNV::eFlagFrontface )
       result += "FlagFrontface | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13483,6 +13570,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "IndexedSequences | ";
     if ( value & IndirectCommandsLayoutUsageFlagBitsNV::eUnorderedSequences )
       result += "UnorderedSequences | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13550,6 +13638,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeFlagBitsKHR::eReserved0 )
       result += "Reserved0 | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13597,6 +13686,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeRateControlFlagBitsKHR::eReset )
       result += "Reset | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13643,6 +13733,7 @@ namespace VULKAN_HPP_NAMESPACE
       return "{}";
 
     std::string result;
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -13698,6 +13789,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "EnableResourceTracking | ";
     if ( value & DeviceDiagnosticsConfigFlagBitsNV::eEnableAutomaticCheckpoints )
       result += "EnableAutomaticCheckpoints | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13851,6 +13943,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "SubpassShadingHUAWEI | ";
     if ( value & PipelineStageFlagBits2KHR::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -13995,6 +14088,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ColorAttachmentReadNoncoherentEXT | ";
     if ( value & AccessFlagBits2KHR::eInvocationMaskReadHUAWEI )
       result += "InvocationMaskReadHUAWEI | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -14040,6 +14134,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & SubmitFlagBitsKHR::eProtected )
       result += "Protected | ";
+
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 

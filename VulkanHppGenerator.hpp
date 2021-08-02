@@ -56,6 +56,11 @@ private:
       return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
     }
 
+    bool operator!=( TypeInfo const & rhs ) const
+    {
+      return !operator==( rhs );
+    }
+
     bool operator<( TypeInfo const & rhs ) const
     {
       return ( prefix < rhs.prefix ) ||
@@ -343,38 +348,51 @@ private:
                                             std::string &                    deviceMembers,
                                             std::string &                    instanceAssignments,
                                             std::string &                    instanceMembers ) const;
+  void        checkBitmaskCorrectness() const;
+  void        checkCommandCorrectness() const;
   void        checkCorrectness() const;
+  void        checkEnumCorrectness() const;
   void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor(
            std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
            std::map<std::string, CommandData>::const_iterator                      constructorIt,
            std::vector<ParamData>::const_iterator                                  lenIt ) const;
-  bool   containsArray( std::string const & type ) const;
-  bool   containsUnion( std::string const & type ) const;
-  size_t determineDefaultStartIndex( std::vector<ParamData> const & params,
-                                     std::set<size_t> const &       skippedParams ) const;
-  size_t determineInitialSkipCount( std::string const & command ) const;
+  void                checkExtensionCorrectness() const;
+  void                checkFuncPointerCorrectness() const;
+  void                checkHandleCorrectness() const;
+  void                checkStructCorrectness() const;
+  void                checkStructMemberCorrectness( std::string const &             structureName,
+                                                    std::vector<MemberData> const & members,
+                                                    std::set<std::string> &         sTypeValues ) const;
+  bool                containsArray( std::string const & type ) const;
+  bool                containsUnion( std::string const & type ) const;
+  std::vector<size_t> determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
+  size_t              determineDefaultStartIndex( std::vector<ParamData> const & params,
+                                                  std::set<size_t> const &       skippedParams ) const;
+  size_t              determineInitialSkipCount( std::string const & command ) const;
+  std::vector<size_t> determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
                                      std::map<std::string, CommandData>::const_iterator destructorIt,
                                      std::set<std::string> &                            specialFunctions ) const;
-
   std::map<std::string, CommandData>::const_iterator
                            determineRAIIHandleDestructor( std::string const & handleType ) const;
-  size_t                   determineReturnParamIndex( CommandData const &              commandData,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      bool                             twoStep ) const;
   std::set<size_t>         determineSkippedParams( std::vector<ParamData> const &   params,
                                                    size_t                           initialSkipCount,
                                                    std::map<size_t, size_t> const & vectorParamIndices,
                                                    std::vector<size_t> const &      returnParamIndex,
                                                    bool                             singular ) const;
   std::string              determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
-  std::vector<size_t>      determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
-  std::vector<size_t>      determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
-  std::map<size_t, size_t> determineVectorParamIndicesNew( std::vector<ParamData> const & params ) const;
+  std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
+  std::string generateArgumentEnhancedConstPointer( ParamData const & param,
+                                                    bool              definition,
+                                                    bool              withAllocators,
+#if !defined( NDEBUG )
+                                                    bool withDispatcher,
+#endif
+                                                    bool & hasDefaultAssignment ) const;
   std::string generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                             std::set<size_t> const &       skippedParams,
                                             std::set<size_t> const &       singularParams,
@@ -385,6 +403,9 @@ private:
   std::string generateArgumentListStandard( std::vector<ParamData> const & params,
                                             std::set<size_t> const &       skippedParams ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::pair<std::string, std::string> generateBitmaskValues( std::map<std::string, BitmaskData>::const_iterator bitmaskIt,
+                                             std::map<std::string, EnumData>::const_iterator    bitmaskBitsIt ) const;
+
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
                                 std::string const &              title ) const;
@@ -772,6 +793,7 @@ private:
   std::string generateFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
                                                        size_t                           returnParamIndex,
                                                        size_t                           templateParamIndex,
+                                                       size_t                           initialSkipCount,
                                                        std::map<size_t, size_t> const & vectorParamIndices,
                                                        bool                             withDefaults,
                                                        bool                             withAllocator ) const;

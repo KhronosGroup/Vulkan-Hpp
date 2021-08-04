@@ -67259,7 +67259,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eVideoCapabilitiesKHR;
 
 #  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR VideoCapabilitiesKHR( VULKAN_HPP_NAMESPACE::VideoCapabilitiesFlagsKHR capabilityFlags_    = {},
+    VULKAN_HPP_CONSTEXPR VideoCapabilitiesKHR( VULKAN_HPP_NAMESPACE::VideoCapabilityFlagsKHR capabilityFlags_      = {},
                                                VULKAN_HPP_NAMESPACE::DeviceSize minBitstreamBufferOffsetAlignment_ = {},
                                                VULKAN_HPP_NAMESPACE::DeviceSize minBitstreamBufferSizeAlignment_   = {},
                                                VULKAN_HPP_NAMESPACE::Extent2D   videoPictureExtentGranularity_     = {},
@@ -67324,16 +67324,16 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
   public:
-    VULKAN_HPP_NAMESPACE::StructureType             sType           = StructureType::eVideoCapabilitiesKHR;
-    void *                                          pNext           = {};
-    VULKAN_HPP_NAMESPACE::VideoCapabilitiesFlagsKHR capabilityFlags = {};
-    VULKAN_HPP_NAMESPACE::DeviceSize                minBitstreamBufferOffsetAlignment = {};
-    VULKAN_HPP_NAMESPACE::DeviceSize                minBitstreamBufferSizeAlignment   = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                  videoPictureExtentGranularity     = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                  minExtent                         = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                  maxExtent                         = {};
-    uint32_t                                        maxReferencePicturesSlotsCount    = {};
-    uint32_t                                        maxReferencePicturesActiveCount   = {};
+    VULKAN_HPP_NAMESPACE::StructureType           sType           = StructureType::eVideoCapabilitiesKHR;
+    void *                                        pNext           = {};
+    VULKAN_HPP_NAMESPACE::VideoCapabilityFlagsKHR capabilityFlags = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize              minBitstreamBufferOffsetAlignment = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize              minBitstreamBufferSizeAlignment   = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                videoPictureExtentGranularity     = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                minExtent                         = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                maxExtent                         = {};
+    uint32_t                                      maxReferencePicturesSlotsCount    = {};
+    uint32_t                                      maxReferencePicturesActiveCount   = {};
   };
   static_assert( sizeof( VideoCapabilitiesKHR ) == sizeof( VkVideoCapabilitiesKHR ),
                  "struct and wrapper have different size!" );
@@ -67805,10 +67805,10 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR VideoDecodeH264ProfileEXT(
-      StdVideoH264ProfileIdc                                   stdProfileIdc_ = {},
-      VULKAN_HPP_NAMESPACE::VideoDecodeH264FieldLayoutFlagsEXT fieldLayout_   = {} ) VULKAN_HPP_NOEXCEPT
+      StdVideoH264ProfileIdc                                     stdProfileIdc_ = {},
+      VULKAN_HPP_NAMESPACE::VideoDecodeH264PictureLayoutFlagsEXT pictureLayout_ = {} ) VULKAN_HPP_NOEXCEPT
       : stdProfileIdc( stdProfileIdc_ )
-      , fieldLayout( fieldLayout_ )
+      , pictureLayout( pictureLayout_ )
     {}
 
     VULKAN_HPP_CONSTEXPR
@@ -67842,9 +67842,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     VideoDecodeH264ProfileEXT &
-      setFieldLayout( VULKAN_HPP_NAMESPACE::VideoDecodeH264FieldLayoutFlagsEXT fieldLayout_ ) VULKAN_HPP_NOEXCEPT
+      setPictureLayout( VULKAN_HPP_NAMESPACE::VideoDecodeH264PictureLayoutFlagsEXT pictureLayout_ ) VULKAN_HPP_NOEXCEPT
     {
-      fieldLayout = fieldLayout_;
+      pictureLayout = pictureLayout_;
       return *this;
     }
 #  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
@@ -67866,7 +67866,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
              ( memcmp( &stdProfileIdc, &rhs.stdProfileIdc, sizeof( StdVideoH264ProfileIdc ) ) == 0 ) &&
-             ( fieldLayout == rhs.fieldLayout );
+             ( pictureLayout == rhs.pictureLayout );
     }
 
     bool operator!=( VideoDecodeH264ProfileEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
@@ -67876,10 +67876,10 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
   public:
-    VULKAN_HPP_NAMESPACE::StructureType                      sType         = StructureType::eVideoDecodeH264ProfileEXT;
-    const void *                                             pNext         = {};
-    StdVideoH264ProfileIdc                                   stdProfileIdc = {};
-    VULKAN_HPP_NAMESPACE::VideoDecodeH264FieldLayoutFlagsEXT fieldLayout   = {};
+    VULKAN_HPP_NAMESPACE::StructureType                        sType = StructureType::eVideoDecodeH264ProfileEXT;
+    const void *                                               pNext = {};
+    StdVideoH264ProfileIdc                                     stdProfileIdc = {};
+    VULKAN_HPP_NAMESPACE::VideoDecodeH264PictureLayoutFlagsEXT pictureLayout = {};
   };
   static_assert( sizeof( VideoDecodeH264ProfileEXT ) == sizeof( VkVideoDecodeH264ProfileEXT ),
                  "struct and wrapper have different size!" );
@@ -69193,17 +69193,17 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR_14 VideoEncodeH264CapabilitiesEXT(
-      VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilitiesFlagsEXT flags_                   = {},
-      VULKAN_HPP_NAMESPACE::VideoEncodeH264InputModeFlagsEXT    inputModeFlags_          = {},
-      VULKAN_HPP_NAMESPACE::VideoEncodeH264OutputModeFlagsEXT   outputModeFlags_         = {},
-      VULKAN_HPP_NAMESPACE::Extent2D                            minPictureSizeInMbs_     = {},
-      VULKAN_HPP_NAMESPACE::Extent2D                            maxPictureSizeInMbs_     = {},
-      VULKAN_HPP_NAMESPACE::Extent2D                            inputImageDataAlignment_ = {},
-      uint8_t                                                   maxNumL0ReferenceForP_   = {},
-      uint8_t                                                   maxNumL0ReferenceForB_   = {},
-      uint8_t                                                   maxNumL1Reference_       = {},
-      uint8_t                                                   qualityLevelCount_       = {},
-      VULKAN_HPP_NAMESPACE::ExtensionProperties                 stdExtensionVersion_     = {} ) VULKAN_HPP_NOEXCEPT
+      VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilityFlagsEXT flags_                   = {},
+      VULKAN_HPP_NAMESPACE::VideoEncodeH264InputModeFlagsEXT  inputModeFlags_          = {},
+      VULKAN_HPP_NAMESPACE::VideoEncodeH264OutputModeFlagsEXT outputModeFlags_         = {},
+      VULKAN_HPP_NAMESPACE::Extent2D                          minPictureSizeInMbs_     = {},
+      VULKAN_HPP_NAMESPACE::Extent2D                          maxPictureSizeInMbs_     = {},
+      VULKAN_HPP_NAMESPACE::Extent2D                          inputImageDataAlignment_ = {},
+      uint8_t                                                 maxNumL0ReferenceForP_   = {},
+      uint8_t                                                 maxNumL0ReferenceForB_   = {},
+      uint8_t                                                 maxNumL1Reference_       = {},
+      uint8_t                                                 qualityLevelCount_       = {},
+      VULKAN_HPP_NAMESPACE::ExtensionProperties               stdExtensionVersion_     = {} ) VULKAN_HPP_NOEXCEPT
       : flags( flags_ )
       , inputModeFlags( inputModeFlags_ )
       , outputModeFlags( outputModeFlags_ )
@@ -69242,7 +69242,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     VideoEncodeH264CapabilitiesEXT &
-      setFlags( VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilitiesFlagsEXT flags_ ) VULKAN_HPP_NOEXCEPT
+      setFlags( VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilityFlagsEXT flags_ ) VULKAN_HPP_NOEXCEPT
     {
       flags = flags_;
       return *this;
@@ -69346,19 +69346,19 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
   public:
-    VULKAN_HPP_NAMESPACE::StructureType                       sType = StructureType::eVideoEncodeH264CapabilitiesEXT;
-    const void *                                              pNext = {};
-    VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilitiesFlagsEXT flags = {};
-    VULKAN_HPP_NAMESPACE::VideoEncodeH264InputModeFlagsEXT    inputModeFlags          = {};
-    VULKAN_HPP_NAMESPACE::VideoEncodeH264OutputModeFlagsEXT   outputModeFlags         = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                            minPictureSizeInMbs     = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                            maxPictureSizeInMbs     = {};
-    VULKAN_HPP_NAMESPACE::Extent2D                            inputImageDataAlignment = {};
-    uint8_t                                                   maxNumL0ReferenceForP   = {};
-    uint8_t                                                   maxNumL0ReferenceForB   = {};
-    uint8_t                                                   maxNumL1Reference       = {};
-    uint8_t                                                   qualityLevelCount       = {};
-    VULKAN_HPP_NAMESPACE::ExtensionProperties                 stdExtensionVersion     = {};
+    VULKAN_HPP_NAMESPACE::StructureType                     sType = StructureType::eVideoEncodeH264CapabilitiesEXT;
+    const void *                                            pNext = {};
+    VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilityFlagsEXT flags = {};
+    VULKAN_HPP_NAMESPACE::VideoEncodeH264InputModeFlagsEXT  inputModeFlags          = {};
+    VULKAN_HPP_NAMESPACE::VideoEncodeH264OutputModeFlagsEXT outputModeFlags         = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                          minPictureSizeInMbs     = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                          maxPictureSizeInMbs     = {};
+    VULKAN_HPP_NAMESPACE::Extent2D                          inputImageDataAlignment = {};
+    uint8_t                                                 maxNumL0ReferenceForP   = {};
+    uint8_t                                                 maxNumL0ReferenceForB   = {};
+    uint8_t                                                 maxNumL1Reference       = {};
+    uint8_t                                                 qualityLevelCount       = {};
+    VULKAN_HPP_NAMESPACE::ExtensionProperties               stdExtensionVersion     = {};
   };
   static_assert( sizeof( VideoEncodeH264CapabilitiesEXT ) == sizeof( VkVideoEncodeH264CapabilitiesEXT ),
                  "struct and wrapper have different size!" );

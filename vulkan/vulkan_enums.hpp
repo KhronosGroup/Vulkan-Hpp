@@ -5704,18 +5704,18 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class VideoCapabilitiesFlagBitsKHR : VkVideoCapabilitiesFlagsKHR
+  enum class VideoCapabilityFlagBitsKHR : VkVideoCapabilityFlagsKHR
   {
-    eProtectedContent        = VK_VIDEO_CAPABILITIES_PROTECTED_CONTENT_BIT_KHR,
-    eSeparateReferenceImages = VK_VIDEO_CAPABILITIES_SEPARATE_REFERENCE_IMAGES_BIT_KHR
+    eProtectedContent        = VK_VIDEO_CAPABILITY_PROTECTED_CONTENT_BIT_KHR,
+    eSeparateReferenceImages = VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR
   };
 
-  VULKAN_HPP_INLINE std::string to_string( VideoCapabilitiesFlagBitsKHR value )
+  VULKAN_HPP_INLINE std::string to_string( VideoCapabilityFlagBitsKHR value )
   {
     switch ( value )
     {
-      case VideoCapabilitiesFlagBitsKHR::eProtectedContent: return "ProtectedContent";
-      case VideoCapabilitiesFlagBitsKHR::eSeparateReferenceImages: return "SeparateReferenceImages";
+      case VideoCapabilityFlagBitsKHR::eProtectedContent: return "ProtectedContent";
+      case VideoCapabilityFlagBitsKHR::eSeparateReferenceImages: return "SeparateReferenceImages";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5843,53 +5843,36 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
 
-  enum class VideoEncodeH264CapabilitiesFlagBitsEXT : VkVideoEncodeH264CapabilitiesFlagsEXT
+  enum class VideoEncodeH264CapabilityFlagBitsEXT : VkVideoEncodeH264CapabilityFlagsEXT
   {
-    eVkVideoEncodeH264CapabilityCabac = VK_VIDEO_ENCODE_H264_CAPABILITY_CABAC_BIT_EXT,
-    eVkVideoEncodeH264CapabilityCavlc = VK_VIDEO_ENCODE_H264_CAPABILITY_CAVLC_BIT_EXT,
-    eVkVideoEncodeH264CapabilityWeightedBiPredImplicit =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_BI_PRED_IMPLICIT_BIT_EXT,
-    eVkVideoEncodeH264CapabilityTransform8X8         = VK_VIDEO_ENCODE_H264_CAPABILITY_TRANSFORM_8X8_BIT_EXT,
-    eVkVideoEncodeH264CapabilityChromaQpOffset       = VK_VIDEO_ENCODE_H264_CAPABILITY_CHROMA_QP_OFFSET_BIT_EXT,
-    eVkVideoEncodeH264CapabilitySecondChromaQpOffset = VK_VIDEO_ENCODE_H264_CAPABILITY_SECOND_CHROMA_QP_OFFSET_BIT_EXT,
-    eVkVideoEncodeH264CapabilityDeblockingFilterDisabled =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_DISABLED_BIT_EXT,
-    eVkVideoEncodeH264CapabilityDeblockingFilterEnabled =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_ENABLED_BIT_EXT,
-    eVkVideoEncodeH264CapabilityDeblockingFilterPartial =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_PARTIAL_BIT_EXT,
-    eVkVideoEncodeH264CapabilityMultipleSlicePerFrame =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT,
-    eVkVideoEncodeH264CapabilityEvenlyDistributedSliceSize =
-      VK_VIDEO_ENCODE_H264_CAPABILITY_EVENLY_DISTRIBUTED_SLICE_SIZE_BIT_EXT
+    eCabac                      = VK_VIDEO_ENCODE_H264_CAPABILITY_CABAC_BIT_EXT,
+    eCavlc                      = VK_VIDEO_ENCODE_H264_CAPABILITY_CAVLC_BIT_EXT,
+    eWeightedBiPredImplicit     = VK_VIDEO_ENCODE_H264_CAPABILITY_WEIGHTED_BI_PRED_IMPLICIT_BIT_EXT,
+    eTransform8X8               = VK_VIDEO_ENCODE_H264_CAPABILITY_TRANSFORM_8X8_BIT_EXT,
+    eChromaQpOffset             = VK_VIDEO_ENCODE_H264_CAPABILITY_CHROMA_QP_OFFSET_BIT_EXT,
+    eSecondChromaQpOffset       = VK_VIDEO_ENCODE_H264_CAPABILITY_SECOND_CHROMA_QP_OFFSET_BIT_EXT,
+    eDeblockingFilterDisabled   = VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_DISABLED_BIT_EXT,
+    eDeblockingFilterEnabled    = VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_ENABLED_BIT_EXT,
+    eDeblockingFilterPartial    = VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_PARTIAL_BIT_EXT,
+    eMultipleSlicePerFrame      = VK_VIDEO_ENCODE_H264_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT,
+    eEvenlyDistributedSliceSize = VK_VIDEO_ENCODE_H264_CAPABILITY_EVENLY_DISTRIBUTED_SLICE_SIZE_BIT_EXT
   };
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilitiesFlagBitsEXT value )
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagBitsEXT value )
   {
     switch ( value )
     {
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCabac:
-        return "VkVideoEncodeH264CapabilityCabac";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCavlc:
-        return "VkVideoEncodeH264CapabilityCavlc";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityWeightedBiPredImplicit:
-        return "VkVideoEncodeH264CapabilityWeightedBiPredImplicit";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityTransform8X8:
-        return "VkVideoEncodeH264CapabilityTransform8X8";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityChromaQpOffset:
-        return "VkVideoEncodeH264CapabilityChromaQpOffset";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilitySecondChromaQpOffset:
-        return "VkVideoEncodeH264CapabilitySecondChromaQpOffset";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterDisabled:
-        return "VkVideoEncodeH264CapabilityDeblockingFilterDisabled";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterEnabled:
-        return "VkVideoEncodeH264CapabilityDeblockingFilterEnabled";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterPartial:
-        return "VkVideoEncodeH264CapabilityDeblockingFilterPartial";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityMultipleSlicePerFrame:
-        return "VkVideoEncodeH264CapabilityMultipleSlicePerFrame";
-      case VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityEvenlyDistributedSliceSize:
-        return "VkVideoEncodeH264CapabilityEvenlyDistributedSliceSize";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eCabac: return "Cabac";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eCavlc: return "Cavlc";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eWeightedBiPredImplicit: return "WeightedBiPredImplicit";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eTransform8X8: return "Transform8X8";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eChromaQpOffset: return "ChromaQpOffset";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eSecondChromaQpOffset: return "SecondChromaQpOffset";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterDisabled: return "DeblockingFilterDisabled";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterEnabled: return "DeblockingFilterEnabled";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial: return "DeblockingFilterPartial";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame: return "MultipleSlicePerFrame";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize: return "EvenlyDistributedSliceSize";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5950,21 +5933,20 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
 
-  enum class VideoDecodeH264FieldLayoutFlagBitsEXT : VkVideoDecodeH264FieldLayoutFlagsEXT
+  enum class VideoDecodeH264PictureLayoutFlagBitsEXT : VkVideoDecodeH264PictureLayoutFlagsEXT
   {
-    eVkVideoDecodeH264ProgressivePicturesOnly = VK_VIDEO_DECODE_H264_PROGRESSIVE_PICTURES_ONLY_EXT,
-    eLineInterlacedPlane                      = VK_VIDEO_DECODE_H264_FIELD_LAYOUT_LINE_INTERLACED_PLANE_BIT_EXT,
-    eSeparateInterlacedPlane                  = VK_VIDEO_DECODE_H264_FIELD_LAYOUT_SEPARATE_INTERLACED_PLANE_BIT_EXT
+    eProgressive                = VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_PROGRESSIVE_EXT,
+    eInterlacedInterleavedLines = VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_INTERLEAVED_LINES_BIT_EXT,
+    eInterlacedSeparatePlanes   = VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_EXT
   };
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264FieldLayoutFlagBitsEXT value )
+  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagBitsEXT value )
   {
     switch ( value )
     {
-      case VideoDecodeH264FieldLayoutFlagBitsEXT::eVkVideoDecodeH264ProgressivePicturesOnly:
-        return "VkVideoDecodeH264ProgressivePicturesOnly";
-      case VideoDecodeH264FieldLayoutFlagBitsEXT::eLineInterlacedPlane: return "LineInterlacedPlane";
-      case VideoDecodeH264FieldLayoutFlagBitsEXT::eSeparateInterlacedPlane: return "SeparateInterlacedPlane";
+      case VideoDecodeH264PictureLayoutFlagBitsEXT::eProgressive: return "Progressive";
+      case VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedInterleavedLines: return "InterlacedInterleavedLines";
+      case VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes: return "InterlacedSeparatePlanes";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -11943,51 +11925,51 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
-  using VideoCapabilitiesFlagsKHR = Flags<VideoCapabilitiesFlagBitsKHR>;
+  using VideoCapabilityFlagsKHR = Flags<VideoCapabilityFlagBitsKHR>;
 
   template <>
-  struct FlagTraits<VideoCapabilitiesFlagBitsKHR>
+  struct FlagTraits<VideoCapabilityFlagBitsKHR>
   {
     enum : VkFlags
     {
-      allFlags = VkFlags( VideoCapabilitiesFlagBitsKHR::eProtectedContent ) |
-                 VkFlags( VideoCapabilitiesFlagBitsKHR::eSeparateReferenceImages )
+      allFlags = VkFlags( VideoCapabilityFlagBitsKHR::eProtectedContent ) |
+                 VkFlags( VideoCapabilityFlagBitsKHR::eSeparateReferenceImages )
     };
   };
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilitiesFlagsKHR
-    operator|( VideoCapabilitiesFlagBitsKHR bit0, VideoCapabilitiesFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR
+    operator|( VideoCapabilityFlagBitsKHR bit0, VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoCapabilitiesFlagsKHR( bit0 ) | bit1;
+    return VideoCapabilityFlagsKHR( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilitiesFlagsKHR
-    operator&( VideoCapabilitiesFlagBitsKHR bit0, VideoCapabilitiesFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR
+    operator&( VideoCapabilityFlagBitsKHR bit0, VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoCapabilitiesFlagsKHR( bit0 ) & bit1;
+    return VideoCapabilityFlagsKHR( bit0 ) & bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilitiesFlagsKHR
-    operator^( VideoCapabilitiesFlagBitsKHR bit0, VideoCapabilitiesFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR
+    operator^( VideoCapabilityFlagBitsKHR bit0, VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoCapabilitiesFlagsKHR( bit0 ) ^ bit1;
+    return VideoCapabilityFlagsKHR( bit0 ) ^ bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilitiesFlagsKHR operator~( VideoCapabilitiesFlagBitsKHR bits )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR operator~( VideoCapabilityFlagBitsKHR bits )
     VULKAN_HPP_NOEXCEPT
   {
-    return ~( VideoCapabilitiesFlagsKHR( bits ) );
+    return ~( VideoCapabilityFlagsKHR( bits ) );
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoCapabilitiesFlagsKHR value )
+  VULKAN_HPP_INLINE std::string to_string( VideoCapabilityFlagsKHR value )
   {
     if ( !value )
       return "{}";
 
     std::string result;
-    if ( value & VideoCapabilitiesFlagBitsKHR::eProtectedContent )
+    if ( value & VideoCapabilityFlagBitsKHR::eProtectedContent )
       result += "ProtectedContent | ";
-    if ( value & VideoCapabilitiesFlagBitsKHR::eSeparateReferenceImages )
+    if ( value & VideoCapabilityFlagBitsKHR::eSeparateReferenceImages )
       result += "SeparateReferenceImages | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -12215,80 +12197,79 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
 
-  using VideoEncodeH264CapabilitiesFlagsEXT = Flags<VideoEncodeH264CapabilitiesFlagBitsEXT>;
+  using VideoEncodeH264CapabilityFlagsEXT = Flags<VideoEncodeH264CapabilityFlagBitsEXT>;
 
   template <>
-  struct FlagTraits<VideoEncodeH264CapabilitiesFlagBitsEXT>
+  struct FlagTraits<VideoEncodeH264CapabilityFlagBitsEXT>
   {
     enum : VkFlags
     {
-      allFlags =
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCabac ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCavlc ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityWeightedBiPredImplicit ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityTransform8X8 ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityChromaQpOffset ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilitySecondChromaQpOffset ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterDisabled ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterEnabled ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterPartial ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityMultipleSlicePerFrame ) |
-        VkFlags( VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityEvenlyDistributedSliceSize )
+      allFlags = VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eCabac ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eCavlc ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eWeightedBiPredImplicit ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eTransform8X8 ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eChromaQpOffset ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eSecondChromaQpOffset ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterDisabled ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterEnabled ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
     };
   };
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilitiesFlagsEXT operator|(
-    VideoEncodeH264CapabilitiesFlagBitsEXT bit0, VideoEncodeH264CapabilitiesFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator|(
+    VideoEncodeH264CapabilityFlagBitsEXT bit0, VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoEncodeH264CapabilitiesFlagsEXT( bit0 ) | bit1;
+    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilitiesFlagsEXT operator&(
-    VideoEncodeH264CapabilitiesFlagBitsEXT bit0, VideoEncodeH264CapabilitiesFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator&(
+    VideoEncodeH264CapabilityFlagBitsEXT bit0, VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoEncodeH264CapabilitiesFlagsEXT( bit0 ) & bit1;
+    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) & bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilitiesFlagsEXT operator^(
-    VideoEncodeH264CapabilitiesFlagBitsEXT bit0, VideoEncodeH264CapabilitiesFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator^(
+    VideoEncodeH264CapabilityFlagBitsEXT bit0, VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoEncodeH264CapabilitiesFlagsEXT( bit0 ) ^ bit1;
+    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) ^ bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilitiesFlagsEXT
-    operator~( VideoEncodeH264CapabilitiesFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT
+    operator~( VideoEncodeH264CapabilityFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
-    return ~( VideoEncodeH264CapabilitiesFlagsEXT( bits ) );
+    return ~( VideoEncodeH264CapabilityFlagsEXT( bits ) );
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilitiesFlagsEXT value )
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagsEXT value )
   {
     if ( !value )
       return "{}";
 
     std::string result;
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCabac )
-      result += "VkVideoEncodeH264CapabilityCabac | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityCavlc )
-      result += "VkVideoEncodeH264CapabilityCavlc | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityWeightedBiPredImplicit )
-      result += "VkVideoEncodeH264CapabilityWeightedBiPredImplicit | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityTransform8X8 )
-      result += "VkVideoEncodeH264CapabilityTransform8X8 | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityChromaQpOffset )
-      result += "VkVideoEncodeH264CapabilityChromaQpOffset | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilitySecondChromaQpOffset )
-      result += "VkVideoEncodeH264CapabilitySecondChromaQpOffset | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterDisabled )
-      result += "VkVideoEncodeH264CapabilityDeblockingFilterDisabled | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterEnabled )
-      result += "VkVideoEncodeH264CapabilityDeblockingFilterEnabled | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityDeblockingFilterPartial )
-      result += "VkVideoEncodeH264CapabilityDeblockingFilterPartial | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityMultipleSlicePerFrame )
-      result += "VkVideoEncodeH264CapabilityMultipleSlicePerFrame | ";
-    if ( value & VideoEncodeH264CapabilitiesFlagBitsEXT::eVkVideoEncodeH264CapabilityEvenlyDistributedSliceSize )
-      result += "VkVideoEncodeH264CapabilityEvenlyDistributedSliceSize | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eCabac )
+      result += "Cabac | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eCavlc )
+      result += "Cavlc | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eWeightedBiPredImplicit )
+      result += "WeightedBiPredImplicit | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eTransform8X8 )
+      result += "Transform8X8 | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eChromaQpOffset )
+      result += "ChromaQpOffset | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eSecondChromaQpOffset )
+      result += "SecondChromaQpOffset | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterDisabled )
+      result += "DeblockingFilterDisabled | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterEnabled )
+      result += "DeblockingFilterEnabled | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial )
+      result += "DeblockingFilterPartial | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame )
+      result += "MultipleSlicePerFrame | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
+      result += "EvenlyDistributedSliceSize | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
@@ -12447,53 +12428,53 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
 
-  using VideoDecodeH264FieldLayoutFlagsEXT = Flags<VideoDecodeH264FieldLayoutFlagBitsEXT>;
+  using VideoDecodeH264PictureLayoutFlagsEXT = Flags<VideoDecodeH264PictureLayoutFlagBitsEXT>;
 
   template <>
-  struct FlagTraits<VideoDecodeH264FieldLayoutFlagBitsEXT>
+  struct FlagTraits<VideoDecodeH264PictureLayoutFlagBitsEXT>
   {
     enum : VkFlags
     {
-      allFlags = VkFlags( VideoDecodeH264FieldLayoutFlagBitsEXT::eVkVideoDecodeH264ProgressivePicturesOnly ) |
-                 VkFlags( VideoDecodeH264FieldLayoutFlagBitsEXT::eLineInterlacedPlane ) |
-                 VkFlags( VideoDecodeH264FieldLayoutFlagBitsEXT::eSeparateInterlacedPlane )
+      allFlags = VkFlags( VideoDecodeH264PictureLayoutFlagBitsEXT::eProgressive ) |
+                 VkFlags( VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedInterleavedLines ) |
+                 VkFlags( VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes )
     };
   };
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264FieldLayoutFlagsEXT operator|(
-    VideoDecodeH264FieldLayoutFlagBitsEXT bit0, VideoDecodeH264FieldLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator|(
+    VideoDecodeH264PictureLayoutFlagBitsEXT bit0, VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoDecodeH264FieldLayoutFlagsEXT( bit0 ) | bit1;
+    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) | bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264FieldLayoutFlagsEXT operator&(
-    VideoDecodeH264FieldLayoutFlagBitsEXT bit0, VideoDecodeH264FieldLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator&(
+    VideoDecodeH264PictureLayoutFlagBitsEXT bit0, VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoDecodeH264FieldLayoutFlagsEXT( bit0 ) & bit1;
+    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) & bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264FieldLayoutFlagsEXT operator^(
-    VideoDecodeH264FieldLayoutFlagBitsEXT bit0, VideoDecodeH264FieldLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator^(
+    VideoDecodeH264PictureLayoutFlagBitsEXT bit0, VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
   {
-    return VideoDecodeH264FieldLayoutFlagsEXT( bit0 ) ^ bit1;
+    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) ^ bit1;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264FieldLayoutFlagsEXT
-    operator~( VideoDecodeH264FieldLayoutFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT
+    operator~( VideoDecodeH264PictureLayoutFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
   {
-    return ~( VideoDecodeH264FieldLayoutFlagsEXT( bits ) );
+    return ~( VideoDecodeH264PictureLayoutFlagsEXT( bits ) );
   }
 
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264FieldLayoutFlagsEXT value )
+  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagsEXT value )
   {
     if ( !value )
       return "{}";
 
     std::string result;
-    if ( value & VideoDecodeH264FieldLayoutFlagBitsEXT::eLineInterlacedPlane )
-      result += "LineInterlacedPlane | ";
-    if ( value & VideoDecodeH264FieldLayoutFlagBitsEXT::eSeparateInterlacedPlane )
-      result += "SeparateInterlacedPlane | ";
+    if ( value & VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedInterleavedLines )
+      result += "InterlacedInterleavedLines | ";
+    if ( value & VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes )
+      result += "InterlacedSeparatePlanes | ";
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 

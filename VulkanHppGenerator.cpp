@@ -13003,7 +13003,7 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
   }
 
   std::string prefix = generateEnumSuffixes( enumIt->first, enumIt->second.isBitmask, m_tags ).first;
-  warn( beginsWith( name, prefix ),
+  check( beginsWith( name, prefix ),
         line,
         "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 

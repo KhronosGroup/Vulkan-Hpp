@@ -375,13 +375,17 @@ std::string VulkanHppGenerator::generateHandles() const
   std::string str;
   for ( auto const & structure : m_structures )
   {
+    auto        inverseIt = m_structureAliasesInverse.find( structure.first );
     std::string enter, leave;
-    std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+    std::tie( enter, leave ) = generateProtection( structure.first, inverseIt != m_structureAliasesInverse.end() );
     str += enter + ( structure.second.isUnion ? "  union " : "  struct " ) + stripPrefix( structure.first, "Vk" ) +
            ";\n" + leave;
-    for ( auto const & alias : structure.second.aliases )
+    if ( inverseIt != m_structureAliasesInverse.end() )
     {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+      for ( auto alias : inverseIt->second )
+      {
+        str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+      }
     }
   }
 
@@ -1098,7 +1102,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkCorrectness()
+void VulkanHppGenerator::checkCorrectness() const
 {
   check( !m_vulkanLicenseHeader.empty(), -1, "missing license header" );
   checkBitmaskCorrectness();
@@ -1366,7 +1370,7 @@ void VulkanHppGenerator::checkHandleCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkStructCorrectness()
+void VulkanHppGenerator::checkStructCorrectness() const
 {
   for ( auto const & structAlias : m_structureAliases )
   {
@@ -1374,9 +1378,20 @@ void VulkanHppGenerator::checkStructCorrectness()
     check( structIt != m_structures.end(),
            structAlias.second.xmlLine,
            "unknown struct alias <" + structAlias.second.alias + ">" );
-    check( structIt->second.aliases.insert( structAlias.first ).second,
-           structIt->second.xmlLine,
-           "struct <" + structIt->first + "> already uses alias <" + structAlias.first + ">" );
+  }
+
+  for ( auto const & structAliasInverse : m_structureAliasesInverse )
+  {
+    auto structIt = m_structures.find( structAliasInverse.first );
+    if ( structIt == m_structures.end() )
+    {
+      assert( !structAliasInverse.second.empty() );
+      auto aliasIt = m_structureAliases.find( *structAliasInverse.second.begin() );
+      assert( aliasIt != m_structureAliases.end() );
+      check( false,
+             aliasIt->second.xmlLine,
+             "struct <" + aliasIt->first + "> uses unknown alias <" + aliasIt->second.alias + ">" );
+    }
   }
 
   std::set<std::string> sTypeValues;
@@ -1393,12 +1408,8 @@ void VulkanHppGenerator::checkStructCorrectness()
     // check for existence of all structs that are extended by this struct
     for ( auto const & extend : structure.second.structExtends )
     {
-      check( m_structures.find( extend ) != m_structures.end() ||
-               ( std::find_if( m_structures.begin(),
-                               m_structures.end(),
-                               [&extend]( std::pair<std::string, StructureData> const & sd ) {
-                                 return sd.second.aliases.find( extend ) != sd.second.aliases.end();
-                               } ) != m_structures.end() ),
+      check( ( m_structures.find( extend ) != m_structures.end() ) ||
+               ( m_structureAliases.find( extend ) != m_structureAliases.end() ),
              structure.second.xmlLine,
              "struct <" + structure.first + "> extends unknown <" + extend + ">" );
     }
@@ -11638,33 +11649,17 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
           if ( itExtend == m_structures.end() )
           {
             // look if the extendName acutally is an alias of some other structure
-            itExtend = std::find_if( m_structures.begin(),
-                                     m_structures.end(),
-                                     [extendName]( auto const & sd )
-                                     { return sd.second.aliases.find( extendName ) != sd.second.aliases.end(); } );
-          }
-          if ( itExtend == m_structures.end() )
-          {
-            std::string errorString;
-            errorString = "<" + extendName + "> does not specify a struct in structextends field.";
-
-            // check if symbol name is an alias to a struct
-            auto itAlias =
-              std::find_if( m_structures.begin(),
-                            m_structures.end(),
-                            [&extendName]( std::pair<std::string, StructureData> const & it ) -> bool {
-                              return std::find( it.second.aliases.begin(), it.second.aliases.end(), extendName ) !=
-                                     it.second.aliases.end();
-                            } );
-            if ( itAlias != m_structures.end() )
+            auto aliasIt = m_structureAliases.find( extendName );
+            if ( aliasIt != m_structureAliases.end() )
             {
-              errorString += " The symbol is an alias and maps to <" + itAlias->first + ">.";
+              itExtend = m_structures.find( aliasIt->second.alias );
+              assert( itExtend != m_structures.end() );
             }
-            check( false, structIt->second.xmlLine, errorString );
           }
 
           std::string subEnter, subLeave;
-          std::tie( subEnter, subLeave ) = generateProtection( itExtend->first, !itExtend->second.aliases.empty() );
+          std::tie( subEnter, subLeave ) = generateProtection(
+            itExtend->first, m_structureAliasesInverse.find( itExtend->first ) != m_structureAliasesInverse.end() );
 
           if ( enter != subEnter )
           {
@@ -11918,7 +11913,8 @@ std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::str
 std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
 {
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+  std::tie( enter, leave ) = generateProtection(
+    structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
 
   std::string str = "\n" + enter;
 
@@ -12007,9 +12003,13 @@ ${members}
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureName", structureName } } );
   }
 
-  for ( std::string const & alias : structure.second.aliases )
+  auto aliasIt = m_structureAliasesInverse.find( structure.first );
+  if ( aliasIt != m_structureAliasesInverse.end() )
   {
-    str += "  using " + stripPrefix( alias, "Vk" ) + " = " + stripPrefix( structure.first, "Vk" ) + ";\n";
+    for ( std::string const & alias : aliasIt->second )
+    {
+      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureName + ";\n";
+    }
   }
 
   str += leave;
@@ -12082,10 +12082,9 @@ std::string VulkanHppGenerator::generateType( std::string const & typeName, std:
           auto structIt = m_structures.find( typeName );
           if ( structIt == m_structures.end() )
           {
-            structIt = std::find_if( m_structures.begin(),
-                                     m_structures.end(),
-                                     [&typeName]( std::pair<std::string, StructureData> const & sd )
-                                     { return sd.second.aliases.find( typeName ) != sd.second.aliases.end(); } );
+            auto aliasIt = m_structureAliases.find( typeName );
+            assert( aliasIt != m_structureAliases.end() );
+            structIt = m_structures.find( aliasIt->second.alias );
             assert( structIt != m_structures.end() );
             if ( listedTypes.find( structIt->first ) == listedTypes.end() )
             {
@@ -12107,7 +12106,8 @@ std::string VulkanHppGenerator::generateType( std::string const & typeName, std:
 std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureData> const & structure ) const
 {
   std::string enter, leave;
-  std::tie( enter, leave ) = generateProtection( structure.first, !structure.second.aliases.empty() );
+  std::tie( enter, leave ) = generateProtection(
+    structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
 
   std::string str       = "\n" + enter;
   std::string unionName = stripPrefix( structure.first, "Vk" );
@@ -12524,10 +12524,11 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
     auto it = m_structures.find( type );
     if ( it == m_structures.end() )
     {
-      it = std::find_if( m_structures.begin(),
-                         m_structures.end(),
-                         [&type]( std::pair<std::string, StructureData> const & sd )
-                         { return sd.second.aliases.find( type ) != sd.second.aliases.end(); } );
+      auto aliasIt = m_structureAliases.find( type );
+      if ( aliasIt != m_structureAliases.end() )
+      {
+        it = m_structures.find( aliasIt->second.alias );
+      }
     }
     if ( it != m_structures.end() )
     {
@@ -13362,10 +13363,14 @@ void VulkanHppGenerator::readExtensionDisabledType( tinyxml2::XMLElement const *
         {
           auto structIt = m_structures.find( name );
           check( structIt != m_structures.end(), line, "trying to remove unknown struct <" + name + ">" );
-          check( structIt->second.aliases.empty(),
-                 line,
-                 "trying to remove disabled structure <" + name + "> which has " +
-                   std::to_string( structIt->second.aliases.size() ) + "aliases" );
+          auto inverseAliasIt = m_structureAliasesInverse.find( name );
+          if ( inverseAliasIt != m_structureAliasesInverse.end() )
+          {
+            check( false,
+                   line,
+                   "trying to remove disabled structure <" + name + "> which has " +
+                     std::to_string( inverseAliasIt->second.size() ) + "aliases" );
+          }
           m_structures.erase( structIt );
         }
         break;
@@ -14458,6 +14463,9 @@ void VulkanHppGenerator::readStructAlias( tinyxml2::XMLElement const *          
   check( m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second,
          line,
          "structure alias <" + name + "> already used" );
+  check( m_structureAliasesInverse[alias].insert( name ).second,
+         line,
+         "structure alias <" + name + "> already used with structure <" + alias + ">" );
   check( m_types.insert( std::make_pair( name, TypeCategory::Struct ) ).second,
          line,
          "struct <" + name + "> already specified as a type" );

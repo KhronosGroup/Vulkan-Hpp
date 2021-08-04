@@ -299,7 +299,6 @@ private:
     bool                     mutualExclusiveLens = false;
     std::vector<MemberData>  members;
     std::vector<std::string> structExtends;
-    std::set<std::string>    aliases;
     std::string              subStruct;
     int                      xmlLine;
   };
@@ -350,7 +349,7 @@ private:
                                             std::string &                    instanceMembers ) const;
   void        checkBitmaskCorrectness() const;
   void        checkCommandCorrectness() const;
-  void        checkCorrectness();
+  void        checkCorrectness() const;
   void        checkEnumCorrectness() const;
   void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor(
@@ -360,7 +359,7 @@ private:
   void                checkExtensionCorrectness() const;
   void                checkFuncPointerCorrectness() const;
   void                checkHandleCorrectness() const;
-  void                checkStructCorrectness();
+  void                checkStructCorrectness() const;
   void                checkStructMemberCorrectness( std::string const &             structureName,
                                                     std::vector<MemberData> const & members,
                                                     std::set<std::string> &         sTypeValues ) const;
@@ -1247,8 +1246,9 @@ private:
   std::set<std::string>                                               m_includes;
   std::map<std::string, PlatformData>                                 m_platforms;
   std::set<std::string>                                               m_RAIISpecialFunctions;
-  std::map<std::string, StructureAliasData>                           m_structureAliases;
   std::map<std::string, StructureData>                                m_structures;
+  std::map<std::string, StructureAliasData>                           m_structureAliases;
+  std::map<std::string, std::set<std::string>>                        m_structureAliasesInverse;
   std::set<std::string>                                               m_tags;
   std::map<std::string, TypeData>                                     m_types;
   std::string                                                         m_typesafeCheck;

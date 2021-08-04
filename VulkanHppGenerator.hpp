@@ -350,7 +350,7 @@ private:
                                             std::string &                    instanceMembers ) const;
   void        checkBitmaskCorrectness() const;
   void        checkCommandCorrectness() const;
-  void        checkCorrectness() const;
+  void        checkCorrectness();
   void        checkEnumCorrectness() const;
   void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor(
@@ -360,7 +360,7 @@ private:
   void                checkExtensionCorrectness() const;
   void                checkFuncPointerCorrectness() const;
   void                checkHandleCorrectness() const;
-  void                checkStructCorrectness() const;
+  void                checkStructCorrectness();
   void                checkStructMemberCorrectness( std::string const &             structureName,
                                                     std::vector<MemberData> const & members,
                                                     std::set<std::string> &         sTypeValues ) const;

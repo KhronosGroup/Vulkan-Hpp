@@ -1098,7 +1098,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkCorrectness() const
+void VulkanHppGenerator::checkCorrectness()
 {
   check( !m_vulkanLicenseHeader.empty(), -1, "missing license header" );
   checkBitmaskCorrectness();
@@ -1366,7 +1366,7 @@ void VulkanHppGenerator::checkHandleCorrectness() const
   }
 }
 
-void VulkanHppGenerator::checkStructCorrectness() const
+void VulkanHppGenerator::checkStructCorrectness()
 {
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
@@ -1382,7 +1382,12 @@ void VulkanHppGenerator::checkStructCorrectness() const
     // check for existence of all structs that are extended by this struct
     for ( auto const & extend : structure.second.structExtends )
     {
-      check( m_structures.find( extend ) != m_structures.end(),
+      check( m_structures.find( extend ) != m_structures.end() ||
+               ( std::find_if( m_structures.begin(),
+                               m_structures.end(),
+                               [&extend]( std::pair<std::string, StructureData> const & sd ) {
+                                 return sd.second.aliases.find( extend ) != sd.second.aliases.end();
+                               } ) != m_structures.end() ),
              structure.second.xmlLine,
              "struct <" + structure.first + "> extends unknown <" + extend + ">" );
     }
@@ -1411,6 +1416,15 @@ void VulkanHppGenerator::checkStructCorrectness() const
     }
   }
   assert( sTypeValues.empty() );
+
+  for ( auto const & structAlias : m_structureAliases )
+  {
+    auto structIt = m_structures.find( structAlias.second.alias );
+    check( structIt != m_structures.end(), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.alias + ">" );
+    check( structIt->second.aliases.insert( structAlias.first ).second,
+           structIt->second.xmlLine,
+           "struct <" + structIt->first + "> already uses alias <" + structAlias.first + ">" );
+  }
 }
 
 void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &             structureName,
@@ -1451,7 +1465,7 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
                              unionIt->second.members.end(),
                              [selectorValue]( MemberData const & md )
                              { return md.selection == selectorValue.name; } ) != unionIt->second.members.end(),
-               selectorEnumIt->second.xmlLine,
+               selectorValue.xmlLine,
                "enum <" + selectorEnumIt->first + "> has value <" + selectorValue.name +
                  "> that is not used by corresponding union <" + unionIt->first + ">" );
       }
@@ -12994,8 +13008,8 @@ void VulkanHppGenerator::readEnum( tinyxml2::XMLElement const *               el
 
   std::string prefix = generateEnumSuffixes( enumIt->first, enumIt->second.isBitmask, m_tags ).first;
   check( beginsWith( name, prefix ),
-        line,
-        "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
+         line,
+         "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
   check( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
   enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "" );
@@ -14442,11 +14456,6 @@ void VulkanHppGenerator::readStructAlias( tinyxml2::XMLElement const *          
   check( m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second,
          line,
          "structure alias <" + name + "> already used" );
-  auto structIt = m_structures.find( alias );
-  check( structIt != m_structures.end(), line, "unknown struct alias <" + alias + ">" );
-  check( structIt->second.aliases.insert( name ).second,
-         structIt->second.xmlLine,
-         "struct <" + alias + "> already uses alias <" + name + ">" );
   check( m_types.insert( std::make_pair( name, TypeCategory::Struct ) ).second,
          line,
          "struct <" + name + "> already specified as a type" );

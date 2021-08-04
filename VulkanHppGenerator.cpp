@@ -1368,6 +1368,17 @@ void VulkanHppGenerator::checkHandleCorrectness() const
 
 void VulkanHppGenerator::checkStructCorrectness()
 {
+  for ( auto const & structAlias : m_structureAliases )
+  {
+    auto structIt = m_structures.find( structAlias.second.alias );
+    check( structIt != m_structures.end(),
+           structAlias.second.xmlLine,
+           "unknown struct alias <" + structAlias.second.alias + ">" );
+    check( structIt->second.aliases.insert( structAlias.first ).second,
+           structIt->second.xmlLine,
+           "struct <" + structIt->first + "> already uses alias <" + structAlias.first + ">" );
+  }
+
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structures )
   {
@@ -1416,15 +1427,6 @@ void VulkanHppGenerator::checkStructCorrectness()
     }
   }
   assert( sTypeValues.empty() );
-
-  for ( auto const & structAlias : m_structureAliases )
-  {
-    auto structIt = m_structures.find( structAlias.second.alias );
-    check( structIt != m_structures.end(), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.alias + ">" );
-    check( structIt->second.aliases.insert( structAlias.first ).second,
-           structIt->second.xmlLine,
-           "struct <" + structIt->first + "> already uses alias <" + structAlias.first + ">" );
-  }
 }
 
 void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &             structureName,
@@ -17045,7 +17047,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
     VulkanHppGenerator generator( doc );
 
-    std::cout << "VulkanHppGenerator: Generating" << VULKAN_ENUMS_HPP_FILE << " ..." << std::endl;
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_ENUMS_HPP_FILE << " ..." << std::endl;
     std::string str;
     str = generator.getVulkanLicenseHeader();
     str += +R"(

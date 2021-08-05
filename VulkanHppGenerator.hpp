@@ -39,6 +39,7 @@ public:
   std::string         generateRAIIHandles() const;
   std::string         generateResultExceptions() const;
   std::string         generateStructExtendsStructs() const;
+  std::string         generateStructForwardDeclarations() const;
   std::string         generateStructs() const;
   std::string         generateThrowResultException() const;
   std::string const & getTypesafeCheck() const;
@@ -402,18 +403,12 @@ private:
   std::string generateArgumentListStandard( std::vector<ParamData> const & params,
                                             std::set<size_t> const &       skippedParams ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
-  std::pair<std::string, std::string> generateBitmaskValues( std::map<std::string, BitmaskData>::const_iterator bitmaskIt,
-                                             std::map<std::string, EnumData>::const_iterator    bitmaskBitsIt ) const;
-
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
                                 std::string const &              title ) const;
-  std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
-                                            size_t                         paramIndex,
-                                            bool                           nonConstPointerAsNullptr,
-                                            std::set<size_t> const &       singularParams,
-                                            std::vector<size_t> const &    returnParamIndices,
-                                            bool                           raiiHandleMemberFunction ) const;
+  std::pair<std::string, std::string>
+              generateBitmaskValues( std::map<std::string, BitmaskData>::const_iterator bitmaskIt,
+                                     std::map<std::string, EnumData>::const_iterator    bitmaskBitsIt ) const;
   std::string generateCallArgumentsEnhanced( std::vector<ParamData> const & params,
                                              size_t                         initialSkipCount,
                                              bool                           nonConstPointerAsNullptr,
@@ -421,10 +416,31 @@ private:
                                              std::vector<size_t> const &    returnParamIndices,
                                              bool                           raiiHandleMemberFunction ) const;
   std::string generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
+  std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
+                                            size_t                         paramIndex,
+                                            bool                           nonConstPointerAsNullptr,
+                                            std::set<size_t> const &       singularParams,
+                                            std::vector<size_t> const &    returnParamIndices,
+                                            bool                           raiiHandleMemberFunction ) const;
+  std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
+                                                        size_t                   paramIndex,
+                                                        std::set<size_t> const & singularParams ) const;
+  std::string generateCallArgumentEnhancedNonConstPointer( ParamData const &        param,
+                                                           size_t                   paramIndex,
+                                                           bool                     nonConstPointerAsNullptr,
+                                                           std::set<size_t> const & singularParams,
+                                                           bool                     raiiHandleMemberFunction ) const;
+  std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params,
+                                                 size_t                         paramIndex,
+                                                 std::set<size_t> const &       singularParams,
+                                                 std::vector<size_t> const &    returnParamIndices ) const;
   std::string generateCommand( std::string const & name,
                                CommandData const & commandData,
                                size_t              initialSkipCount,
                                bool                definition ) const;
+  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                 std::string const &              title ) const;
+
   std::string generateCommandBoolGetValue( std::string const & name,
                                            CommandData const & commandData,
                                            size_t              initialSkipCount,
@@ -1112,7 +1128,6 @@ private:
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateSuccessCodeList( std::vector<std::string> const & successCodes ) const;
-  std::string generateType( std::string const & typeName, std::set<std::string> & listedTypes ) const;
   std::string generateUnion( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
   std::string generateVectorSizeCheck( std::string const &                           name,

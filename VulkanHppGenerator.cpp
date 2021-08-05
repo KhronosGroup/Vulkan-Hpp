@@ -15124,6 +15124,32 @@ int main( int argc, char ** argv )
       , m_ptr( data.data() )
     {}
 
+#if defined( VULKAN_HPP_SUPPORT_SPAN )
+    template <size_t N = std::dynamic_extent>
+    ArrayProxy( std::span<T, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::span<typename std::remove_const<T>::type, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent>
+    ArrayProxy( std::span<T, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( std::span<typename std::remove_const<T>::type, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+#endif
+
     const T * begin() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
@@ -15320,6 +15346,32 @@ int main( int argc, char ** argv )
               typename B      = T,
               typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( std::vector<typename std::remove_const<T>::type, Allocator> && data ) = delete;
+
+#if defined( VULKAN_HPP_SUPPORT_SPAN )
+    template <size_t N = std::dynamic_extent>
+    ArrayProxyNoTemporaries( std::span<T, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::span<typename std::remove_const<T>::type, N> const & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent>
+    ArrayProxyNoTemporaries( std::span<T, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+
+    template <size_t N = std::dynamic_extent, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( std::span<typename std::remove_const<T>::type, N> & data ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( data.size() ) )
+      , m_ptr( data.data() )
+    {}
+#endif
 
     const T * begin() const VULKAN_HPP_NOEXCEPT
     {
@@ -16670,7 +16722,6 @@ int main( int argc, char ** argv )
 #include <tuple>
 #include <type_traits>
 #include <vulkan/vulkan.h>
-
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>
 #endif
@@ -16740,6 +16791,11 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #endif
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
 #  include <compare>
+#endif
+
+#if ( 201803 <= __cpp_lib_span )
+#  define VULKAN_HPP_SUPPORT_SPAN
+#  include <span>
 #endif
 
 )";

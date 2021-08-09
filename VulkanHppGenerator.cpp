@@ -65,10 +65,7 @@ std::string trimStars( std::string const & input );
 void        warn( bool condition, int line, std::string const & message );
 void        writeToFile( std::string const & str, std::string const & fileName );
 
-const std::set<std::string> ignoreLens          = { "null-terminated",
-                                           R"(latexmath:[\lceil{\mathit{rasterizationSamples} \over 32}\rceil])",
-                                           "2*VK_UUID_SIZE",
-                                           "2*ename:VK_UUID_SIZE" };
+const std::set<std::string> altLens = { "codeSize / 4", "(rasterizationSamples + 31) / 32", "2*VK_UUID_SIZE" };
 const std::set<std::string> specialPointerTypes = {
   "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window"
 };
@@ -7704,15 +7701,14 @@ std::string VulkanHppGenerator::generateLenInitializer(
   {
     auto arrayIt = litit->second.front();
     assert( ( arrayIt->len.front() == litit->first->name ) ||
-            ( ( arrayIt->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" ) &&
-              ( litit->first->name == "codeSize" ) ) );
+            ( ( arrayIt->len.front() == "codeSize / 4" ) && ( litit->first->name == "codeSize" ) ) );
 
     assert( beginsWith( arrayIt->name, "p" ) );
     std::string argumentName = startLowerCase( stripPrefix( arrayIt->name, "p" ) ) + "_";
 
     assert( mit->type.prefix.empty() && mit->type.postfix.empty() );
     initializer = argumentName + ".size()";
-    if ( arrayIt->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" )
+    if ( arrayIt->len.front() == "codeSize / 4" )
     {
       initializer += " * 4";
     }
@@ -11597,19 +11593,22 @@ std::string
   VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData,
                                                           std::string const &                           prefix ) const
 {
-  auto memberIts = findAll( structData.second.members.begin(),
-                            structData.second.members.end(),
-                            []( MemberData const & md )
-                            { return !md.len.empty() && ( ignoreLens.find( md.len.front() ) == ignoreLens.end() ); } );
+  auto memberIts =
+    findAll( structData.second.members.begin(),
+             structData.second.members.end(),
+             []( MemberData const & md )
+             {
+               return !md.len.empty() && !( md.len[0] == "null-terminated" ) &&
+                      ( ( altLens.find( md.len[0] ) == altLens.end() ) || ( md.len[0] == "codeSize / 4" ) );
+             } );
   if ( !memberIts.empty() )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
     for ( auto const & mit : memberIts )
     {
-      std::string lenName =
-        ( mit->len.front() == R"(latexmath:[\textrm{codeSize} \over 4])" ) ? "codeSize" : mit->len.front();
-      auto lenIt = std::find_if(
+      std::string lenName = ( mit->len.front() == "codeSize / 4" ) ? "codeSize" : mit->len.front();
+      auto        lenIt   = std::find_if(
         structData.second.members.begin(), mit, [&lenName]( MemberData const & md ) { return md.name == lenName; } );
       assert( lenIt != mit );
       lenIts[lenIt].push_back( mit );
@@ -11869,13 +11868,14 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const &       
             : "" },
         { "structureName", structureName } } );
 
-    if ( !member.len.empty() && ( ignoreLens.find( member.len[0] ) == ignoreLens.end() ) )
+    if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) &&
+         ( ( altLens.find( member.len[0] ) == altLens.end() ) || ( member.len[0] == "codeSize / 4" ) ) )
     {
       assert( member.name.front() == 'p' );
       std::string arrayName = startLowerCase( stripPrefix( member.name, "p" ) );
 
       std::string lenName, lenValue;
-      if ( member.len[0] == R"(latexmath:[\textrm{codeSize} \over 4])" )
+      if ( member.len[0] == "codeSize / 4" )
       {
         lenName  = "codeSize";
         lenValue = arrayName + "_.size() * 4";
@@ -14528,30 +14528,44 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
 
   for ( auto const & attribute : attributes )
   {
+    if ( attribute.first == "altlen" )
+    {
+      assert( memberData.len.empty() );
+      memberData.len = tokenize( attribute.second, "," );
+      check( memberData.len.size() == 1,
+             line,
+             "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
+      check( altLens.find( memberData.len[0] ) != altLens.end(),
+             line,
+             "member attribute <altlen> holds unknown value <" + memberData.len[0] + ">" );
+    }
     if ( attribute.first == "len" )
     {
-      memberData.len = tokenize( attribute.second, "," );
-      check( !memberData.len.empty() && ( memberData.len.size() <= 2 ),
-             line,
-             "member attribute <len> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
-      std::string const & len = memberData.len[0];
-      auto                lenMember =
-        std::find_if( members.begin(), members.end(), [&len]( MemberData const & md ) { return ( md.name == len ); } );
-      check( ( lenMember != members.end() ) || ( ignoreLens.find( len ) != ignoreLens.end() ) ||
-               ( len == R"(latexmath:[\textrm{codeSize} \over 4])" ),
-             line,
-             "member attribute <len> holds unknown value <" + len + ">" );
-      if ( lenMember != members.end() )
+      if ( memberData.len.empty() )
       {
-        check( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
+        memberData.len = tokenize( attribute.second, "," );
+        check( !memberData.len.empty() && ( memberData.len.size() <= 2 ),
                line,
-               "member attribute <len> references a member of unexpected type <" + lenMember->type.compose() + ">" );
-      }
-      if ( 1 < memberData.len.size() )
-      {
-        check( ( memberData.len[1] == "1" ) || ( memberData.len[1] == "null-terminated" ),
+               "member attribute <len> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
+        auto lenMember =
+          std::find_if( members.begin(),
+                        members.end(),
+                        [&memberData]( MemberData const & md ) { return ( md.name == memberData.len[0] ); } );
+        check( lenMember != members.end() || ( memberData.len[0] == "null-terminated" ),
                line,
-               "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
+               "member attribute <len> holds unknown value <" + memberData.len[0] + ">" );
+        if ( lenMember != members.end() )
+        {
+          check( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
+                 line,
+                 "member attribute <len> references a member of unexpected type <" + lenMember->type.compose() + ">" );
+        }
+        if ( 1 < memberData.len.size() )
+        {
+          check( ( memberData.len[1] == "1" ) || ( memberData.len[1] == "null-terminated" ),
+                 line,
+                 "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
+        }
       }
     }
     else if ( attribute.first == "noautovalidity" )

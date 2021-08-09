@@ -8097,11 +8097,13 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::str
            ( specialPointerTypes.find( param.type.type ) == specialPointerTypes.end() ) )
       {
         // this is supposed to be the returned size on an enumeration function!
+#if !defined(NDEBUG)
         assert( param.type.type == "uint32_t" );
         auto typeIt = std::find_if(
           params.begin(), params.end(), [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
         assert( typeIt != params.end() );
         assert( typeIt->len == param.name );
+#endif
         continue;
       }
       else if ( std::find_if( params.begin(),
@@ -8550,6 +8552,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVector(
     lenIt = std::find_if( constructorIt->second.params.begin(),
                           constructorIt->second.params.end(),
                           [&lenParts]( ParamData const & pd ) { return pd.name == lenParts[0]; } );
+#if !defined(NDEBUG)
     assert( lenIt != constructorIt->second.params.end() );
     auto structureIt = m_structures.find( lenIt->type.type );
     assert( structureIt != m_structures.end() );
@@ -8558,6 +8561,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVector(
                           [&lenParts]( MemberData const & md )
                           { return md.name == lenParts[1]; } ) != structureIt->second.members.end() );
     assert( constructorIt->second.successCodes.size() == 1 );
+#endif
     vectorSize = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
   }
   else

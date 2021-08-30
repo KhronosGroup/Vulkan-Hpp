@@ -13512,7 +13512,7 @@ void VulkanHppGenerator::readExtensionRequireType( tinyxml2::XMLElement const * 
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
   std::string name;

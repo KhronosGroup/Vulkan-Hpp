@@ -44285,6 +44285,107 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDevicePresentWaitFeaturesKHR;
   };
 
+  struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 primitiveTopologyListRestart_      = {},
+      VULKAN_HPP_NAMESPACE::Bool32 primitiveTopologyPatchListRestart_ = {} ) VULKAN_HPP_NOEXCEPT
+      : primitiveTopologyListRestart( primitiveTopologyListRestart_ )
+      , primitiveTopologyPatchListRestart( primitiveTopologyPatchListRestart_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT(
+      PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT(
+      VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT(
+          *reinterpret_cast<PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &
+      operator=( PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &
+      operator=( VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &
+      setPrimitiveTopologyListRestart( VULKAN_HPP_NAMESPACE::Bool32 primitiveTopologyListRestart_ ) VULKAN_HPP_NOEXCEPT
+    {
+      primitiveTopologyListRestart = primitiveTopologyListRestart_;
+      return *this;
+    }
+
+    PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT & setPrimitiveTopologyPatchListRestart(
+      VULKAN_HPP_NAMESPACE::Bool32 primitiveTopologyPatchListRestart_ ) VULKAN_HPP_NOEXCEPT
+    {
+      primitiveTopologyPatchListRestart = primitiveTopologyPatchListRestart_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( primitiveTopologyListRestart == rhs.primitiveTopologyListRestart ) &&
+             ( primitiveTopologyPatchListRestart == rhs.primitiveTopologyPatchListRestart );
+    }
+
+    bool operator!=( PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        primitiveTopologyListRestart      = {};
+    VULKAN_HPP_NAMESPACE::Bool32        primitiveTopologyPatchListRestart = {};
+  };
+  static_assert( sizeof( PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT ) ==
+                   sizeof( VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT>
+  {
+    using Type = PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
+  };
+
   struct PhysicalDevicePrivateDataFeaturesEXT
   {
     static const bool                                  allowDuplicate = false;
@@ -47501,6 +47602,587 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceShaderImageFootprintFeaturesNV>
   {
     using Type = PhysicalDeviceShaderImageFootprintFeaturesNV;
+  };
+
+  struct PhysicalDeviceShaderIntegerDotProductFeaturesKHR
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceShaderIntegerDotProductFeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerDotProductFeaturesKHR(
+      VULKAN_HPP_NAMESPACE::Bool32 shaderIntegerDotProduct_ = {} ) VULKAN_HPP_NOEXCEPT
+      : shaderIntegerDotProduct( shaderIntegerDotProduct_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerDotProductFeaturesKHR(
+      PhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderIntegerDotProductFeaturesKHR( VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceShaderIntegerDotProductFeaturesKHR(
+          *reinterpret_cast<PhysicalDeviceShaderIntegerDotProductFeaturesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceShaderIntegerDotProductFeaturesKHR &
+      operator=( PhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderIntegerDotProductFeaturesKHR &
+      operator=( VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderIntegerDotProductFeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceShaderIntegerDotProductFeaturesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductFeaturesKHR &
+      setShaderIntegerDotProduct( VULKAN_HPP_NAMESPACE::Bool32 shaderIntegerDotProduct_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shaderIntegerDotProduct = shaderIntegerDotProduct_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceShaderIntegerDotProductFeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( shaderIntegerDotProduct == rhs.shaderIntegerDotProduct );
+    }
+
+    bool operator!=( PhysicalDeviceShaderIntegerDotProductFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderIntegerDotProductFeaturesKHR;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        shaderIntegerDotProduct = {};
+  };
+  static_assert( sizeof( PhysicalDeviceShaderIntegerDotProductFeaturesKHR ) ==
+                   sizeof( VkPhysicalDeviceShaderIntegerDotProductFeaturesKHR ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderIntegerDotProductFeaturesKHR>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceShaderIntegerDotProductFeaturesKHR>
+  {
+    using Type = PhysicalDeviceShaderIntegerDotProductFeaturesKHR;
+  };
+
+  struct PhysicalDeviceShaderIntegerDotProductPropertiesKHR
+  {
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceShaderIntegerDotProductPropertiesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerDotProductPropertiesKHR(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitUnsignedAccelerated_                                      = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitSignedAccelerated_                                        = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitMixedSignednessAccelerated_                               = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedUnsignedAccelerated_                              = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedSignedAccelerated_                                = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedMixedSignednessAccelerated_                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitUnsignedAccelerated_                                     = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitSignedAccelerated_                                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitMixedSignednessAccelerated_                              = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitUnsignedAccelerated_                                     = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitSignedAccelerated_                                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitMixedSignednessAccelerated_                              = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitUnsignedAccelerated_                                     = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitSignedAccelerated_                                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitMixedSignednessAccelerated_                              = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitUnsignedAccelerated_                = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitSignedAccelerated_                  = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated_         = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated_        = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated_          = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated_ = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitUnsignedAccelerated_               = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitSignedAccelerated_                 = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated_        = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitUnsignedAccelerated_               = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitSignedAccelerated_                 = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated_        = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitUnsignedAccelerated_               = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitSignedAccelerated_                 = {},
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated_        = {} )
+      VULKAN_HPP_NOEXCEPT
+      : integerDotProduct8BitUnsignedAccelerated( integerDotProduct8BitUnsignedAccelerated_ )
+      , integerDotProduct8BitSignedAccelerated( integerDotProduct8BitSignedAccelerated_ )
+      , integerDotProduct8BitMixedSignednessAccelerated( integerDotProduct8BitMixedSignednessAccelerated_ )
+      , integerDotProduct4x8BitPackedUnsignedAccelerated( integerDotProduct4x8BitPackedUnsignedAccelerated_ )
+      , integerDotProduct4x8BitPackedSignedAccelerated( integerDotProduct4x8BitPackedSignedAccelerated_ )
+      , integerDotProduct4x8BitPackedMixedSignednessAccelerated(
+          integerDotProduct4x8BitPackedMixedSignednessAccelerated_ )
+      , integerDotProduct16BitUnsignedAccelerated( integerDotProduct16BitUnsignedAccelerated_ )
+      , integerDotProduct16BitSignedAccelerated( integerDotProduct16BitSignedAccelerated_ )
+      , integerDotProduct16BitMixedSignednessAccelerated( integerDotProduct16BitMixedSignednessAccelerated_ )
+      , integerDotProduct32BitUnsignedAccelerated( integerDotProduct32BitUnsignedAccelerated_ )
+      , integerDotProduct32BitSignedAccelerated( integerDotProduct32BitSignedAccelerated_ )
+      , integerDotProduct32BitMixedSignednessAccelerated( integerDotProduct32BitMixedSignednessAccelerated_ )
+      , integerDotProduct64BitUnsignedAccelerated( integerDotProduct64BitUnsignedAccelerated_ )
+      , integerDotProduct64BitSignedAccelerated( integerDotProduct64BitSignedAccelerated_ )
+      , integerDotProduct64BitMixedSignednessAccelerated( integerDotProduct64BitMixedSignednessAccelerated_ )
+      , integerDotProductAccumulatingSaturating8BitUnsignedAccelerated(
+          integerDotProductAccumulatingSaturating8BitUnsignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating8BitSignedAccelerated(
+          integerDotProductAccumulatingSaturating8BitSignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated(
+          integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated_ )
+      , integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated(
+          integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated(
+          integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated(
+          integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated_ )
+      , integerDotProductAccumulatingSaturating16BitUnsignedAccelerated(
+          integerDotProductAccumulatingSaturating16BitUnsignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating16BitSignedAccelerated(
+          integerDotProductAccumulatingSaturating16BitSignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated(
+          integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated_ )
+      , integerDotProductAccumulatingSaturating32BitUnsignedAccelerated(
+          integerDotProductAccumulatingSaturating32BitUnsignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating32BitSignedAccelerated(
+          integerDotProductAccumulatingSaturating32BitSignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated(
+          integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated_ )
+      , integerDotProductAccumulatingSaturating64BitUnsignedAccelerated(
+          integerDotProductAccumulatingSaturating64BitUnsignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating64BitSignedAccelerated(
+          integerDotProductAccumulatingSaturating64BitSignedAccelerated_ )
+      , integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated(
+          integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceShaderIntegerDotProductPropertiesKHR(
+      PhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR(
+      VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceShaderIntegerDotProductPropertiesKHR(
+          *reinterpret_cast<PhysicalDeviceShaderIntegerDotProductPropertiesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      operator=( PhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      operator=( VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderIntegerDotProductPropertiesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct8BitUnsignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitUnsignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct8BitUnsignedAccelerated = integerDotProduct8BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct8BitSignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct8BitSignedAccelerated = integerDotProduct8BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct8BitMixedSignednessAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct8BitMixedSignednessAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct8BitMixedSignednessAccelerated = integerDotProduct8BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct4x8BitPackedUnsignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedUnsignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct4x8BitPackedUnsignedAccelerated = integerDotProduct4x8BitPackedUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct4x8BitPackedSignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct4x8BitPackedSignedAccelerated = integerDotProduct4x8BitPackedSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct4x8BitPackedMixedSignednessAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct4x8BitPackedMixedSignednessAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct4x8BitPackedMixedSignednessAccelerated =
+        integerDotProduct4x8BitPackedMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct16BitUnsignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitUnsignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct16BitUnsignedAccelerated = integerDotProduct16BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct16BitSignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct16BitSignedAccelerated = integerDotProduct16BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct16BitMixedSignednessAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct16BitMixedSignednessAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct16BitMixedSignednessAccelerated = integerDotProduct16BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct32BitUnsignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitUnsignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct32BitUnsignedAccelerated = integerDotProduct32BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct32BitSignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct32BitSignedAccelerated = integerDotProduct32BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct32BitMixedSignednessAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct32BitMixedSignednessAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct32BitMixedSignednessAccelerated = integerDotProduct32BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct64BitUnsignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitUnsignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct64BitUnsignedAccelerated = integerDotProduct64BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct64BitSignedAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct64BitSignedAccelerated = integerDotProduct64BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR & setIntegerDotProduct64BitMixedSignednessAccelerated(
+      VULKAN_HPP_NAMESPACE::Bool32 integerDotProduct64BitMixedSignednessAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProduct64BitMixedSignednessAccelerated = integerDotProduct64BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating8BitUnsignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitUnsignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating8BitUnsignedAccelerated =
+        integerDotProductAccumulatingSaturating8BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating8BitSignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitSignedAccelerated_ ) VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating8BitSignedAccelerated =
+        integerDotProductAccumulatingSaturating8BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated =
+        integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated =
+        integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated =
+        integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated =
+        integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating16BitUnsignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitUnsignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating16BitUnsignedAccelerated =
+        integerDotProductAccumulatingSaturating16BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating16BitSignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitSignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating16BitSignedAccelerated =
+        integerDotProductAccumulatingSaturating16BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated =
+        integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating32BitUnsignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitUnsignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating32BitUnsignedAccelerated =
+        integerDotProductAccumulatingSaturating32BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating32BitSignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitSignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating32BitSignedAccelerated =
+        integerDotProductAccumulatingSaturating32BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated =
+        integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating64BitUnsignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitUnsignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating64BitUnsignedAccelerated =
+        integerDotProductAccumulatingSaturating64BitUnsignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating64BitSignedAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitSignedAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating64BitSignedAccelerated =
+        integerDotProductAccumulatingSaturating64BitSignedAccelerated_;
+      return *this;
+    }
+
+    PhysicalDeviceShaderIntegerDotProductPropertiesKHR &
+      setIntegerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated(
+        VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated_ )
+        VULKAN_HPP_NOEXCEPT
+    {
+      integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated =
+        integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceShaderIntegerDotProductPropertiesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( integerDotProduct8BitUnsignedAccelerated == rhs.integerDotProduct8BitUnsignedAccelerated ) &&
+             ( integerDotProduct8BitSignedAccelerated == rhs.integerDotProduct8BitSignedAccelerated ) &&
+             ( integerDotProduct8BitMixedSignednessAccelerated ==
+               rhs.integerDotProduct8BitMixedSignednessAccelerated ) &&
+             ( integerDotProduct4x8BitPackedUnsignedAccelerated ==
+               rhs.integerDotProduct4x8BitPackedUnsignedAccelerated ) &&
+             ( integerDotProduct4x8BitPackedSignedAccelerated == rhs.integerDotProduct4x8BitPackedSignedAccelerated ) &&
+             ( integerDotProduct4x8BitPackedMixedSignednessAccelerated ==
+               rhs.integerDotProduct4x8BitPackedMixedSignednessAccelerated ) &&
+             ( integerDotProduct16BitUnsignedAccelerated == rhs.integerDotProduct16BitUnsignedAccelerated ) &&
+             ( integerDotProduct16BitSignedAccelerated == rhs.integerDotProduct16BitSignedAccelerated ) &&
+             ( integerDotProduct16BitMixedSignednessAccelerated ==
+               rhs.integerDotProduct16BitMixedSignednessAccelerated ) &&
+             ( integerDotProduct32BitUnsignedAccelerated == rhs.integerDotProduct32BitUnsignedAccelerated ) &&
+             ( integerDotProduct32BitSignedAccelerated == rhs.integerDotProduct32BitSignedAccelerated ) &&
+             ( integerDotProduct32BitMixedSignednessAccelerated ==
+               rhs.integerDotProduct32BitMixedSignednessAccelerated ) &&
+             ( integerDotProduct64BitUnsignedAccelerated == rhs.integerDotProduct64BitUnsignedAccelerated ) &&
+             ( integerDotProduct64BitSignedAccelerated == rhs.integerDotProduct64BitSignedAccelerated ) &&
+             ( integerDotProduct64BitMixedSignednessAccelerated ==
+               rhs.integerDotProduct64BitMixedSignednessAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating8BitUnsignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating8BitUnsignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating8BitSignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating8BitSignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating16BitUnsignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating16BitUnsignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating16BitSignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating16BitSignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating32BitUnsignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating32BitUnsignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating32BitSignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating32BitSignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating64BitUnsignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating64BitUnsignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating64BitSignedAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating64BitSignedAccelerated ) &&
+             ( integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated ==
+               rhs.integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated );
+    }
+
+    bool operator!=( PhysicalDeviceShaderIntegerDotProductPropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceShaderIntegerDotProductPropertiesKHR;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct8BitUnsignedAccelerated                               = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct8BitSignedAccelerated                                 = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct8BitMixedSignednessAccelerated                        = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct4x8BitPackedUnsignedAccelerated                       = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct4x8BitPackedSignedAccelerated                         = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct4x8BitPackedMixedSignednessAccelerated                = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct16BitUnsignedAccelerated                              = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct16BitSignedAccelerated                                = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct16BitMixedSignednessAccelerated                       = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct32BitUnsignedAccelerated                              = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct32BitSignedAccelerated                                = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct32BitMixedSignednessAccelerated                       = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct64BitUnsignedAccelerated                              = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct64BitSignedAccelerated                                = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProduct64BitMixedSignednessAccelerated                       = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProductAccumulatingSaturating8BitUnsignedAccelerated         = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProductAccumulatingSaturating8BitSignedAccelerated           = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProductAccumulatingSaturating8BitMixedSignednessAccelerated  = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProductAccumulatingSaturating4x8BitPackedUnsignedAccelerated = {};
+    VULKAN_HPP_NAMESPACE::Bool32        integerDotProductAccumulatingSaturating4x8BitPackedSignedAccelerated   = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating4x8BitPackedMixedSignednessAccelerated = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitUnsignedAccelerated               = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitSignedAccelerated                 = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating16BitMixedSignednessAccelerated        = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitUnsignedAccelerated               = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitSignedAccelerated                 = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating32BitMixedSignednessAccelerated        = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitUnsignedAccelerated               = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitSignedAccelerated                 = {};
+    VULKAN_HPP_NAMESPACE::Bool32 integerDotProductAccumulatingSaturating64BitMixedSignednessAccelerated        = {};
+  };
+  static_assert( sizeof( PhysicalDeviceShaderIntegerDotProductPropertiesKHR ) ==
+                   sizeof( VkPhysicalDeviceShaderIntegerDotProductPropertiesKHR ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDeviceShaderIntegerDotProductPropertiesKHR>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceShaderIntegerDotProductPropertiesKHR>
+  {
+    using Type = PhysicalDeviceShaderIntegerDotProductPropertiesKHR;
   };
 
   struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL

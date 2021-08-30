@@ -1034,6 +1034,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceInheritedViewportScissorFeaturesNV;
   struct CommandBufferInheritanceViewportScissorInfoNV;
 
+  //=== VK_KHR_shader_integer_dot_product ===
+  struct PhysicalDeviceShaderIntegerDotProductFeaturesKHR;
+  struct PhysicalDeviceShaderIntegerDotProductPropertiesKHR;
+
   //=== VK_EXT_texel_buffer_alignment ===
   struct PhysicalDeviceTexelBufferAlignmentFeaturesEXT;
   struct PhysicalDeviceTexelBufferAlignmentPropertiesEXT;
@@ -1175,6 +1179,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_physical_device_drm ===
   struct PhysicalDeviceDrmPropertiesEXT;
+
+  //=== VK_EXT_primitive_topology_list_restart ===
+  struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===

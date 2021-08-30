@@ -4422,7 +4422,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eLoad     = VK_ATTACHMENT_LOAD_OP_LOAD,
     eClear    = VK_ATTACHMENT_LOAD_OP_CLEAR,
-    eDontCare = VK_ATTACHMENT_LOAD_OP_DONT_CARE
+    eDontCare = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+    eNoneEXT  = VK_ATTACHMENT_LOAD_OP_NONE_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( AttachmentLoadOp value )
@@ -4432,6 +4433,7 @@ namespace VULKAN_HPP_NAMESPACE
       case AttachmentLoadOp::eLoad: return "Load";
       case AttachmentLoadOp::eClear: return "Clear";
       case AttachmentLoadOp::eDontCare: return "DontCare";
+      case AttachmentLoadOp::eNoneEXT: return "NoneEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4440,6 +4442,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eStore    = VK_ATTACHMENT_STORE_OP_STORE,
     eDontCare = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+    eNoneEXT  = VK_ATTACHMENT_STORE_OP_NONE_EXT,
     eNoneQCOM = VK_ATTACHMENT_STORE_OP_NONE_QCOM
   };
 
@@ -4449,7 +4452,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case AttachmentStoreOp::eStore: return "Store";
       case AttachmentStoreOp::eDontCare: return "DontCare";
-      case AttachmentStoreOp::eNoneQCOM: return "NoneQCOM";
+      case AttachmentStoreOp::eNoneEXT: return "NoneEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5092,7 +5095,8 @@ namespace VULKAN_HPP_NAMESPACE
     eMesaLlvmpipe            = VK_DRIVER_ID_MESA_LLVMPIPE,
     eMoltenvk                = VK_DRIVER_ID_MOLTENVK,
     eCoreaviProprietary      = VK_DRIVER_ID_COREAVI_PROPRIETARY,
-    eJuiceProprietary        = VK_DRIVER_ID_JUICE_PROPRIETARY
+    eJuiceProprietary        = VK_DRIVER_ID_JUICE_PROPRIETARY,
+    eVerisiliconProprietary  = VK_DRIVER_ID_VERISILICON_PROPRIETARY
   };
   using DriverIdKHR = DriverId;
 
@@ -5116,6 +5120,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverId::eMoltenvk: return "Moltenvk";
       case DriverId::eCoreaviProprietary: return "CoreaviProprietary";
       case DriverId::eJuiceProprietary: return "JuiceProprietary";
+      case DriverId::eVerisiliconProprietary: return "VerisiliconProprietary";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6531,11 +6536,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class GeometryInstanceFlagBitsKHR : VkGeometryInstanceFlagsKHR
   {
-    eTriangleFacingCullDisable     = VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR,
-    eTriangleFrontCounterclockwise = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_KHR,
-    eForceOpaque                   = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR,
-    eForceNoOpaque                 = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR,
-    eTriangleCullDisable           = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV
+    eTriangleFacingCullDisable        = VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR,
+    eTriangleFlipFacing               = VK_GEOMETRY_INSTANCE_TRIANGLE_FLIP_FACING_BIT_KHR,
+    eForceOpaque                      = VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR,
+    eForceNoOpaque                    = VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR,
+    eTriangleCullDisable              = VK_GEOMETRY_INSTANCE_TRIANGLE_CULL_DISABLE_BIT_NV,
+    eTriangleFrontCounterclockwiseKHR = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_KHR,
+    eTriangleFrontCounterclockwise    = VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_NV
   };
   using GeometryInstanceFlagBitsNV = GeometryInstanceFlagBitsKHR;
 
@@ -6544,7 +6551,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case GeometryInstanceFlagBitsKHR::eTriangleFacingCullDisable: return "TriangleFacingCullDisable";
-      case GeometryInstanceFlagBitsKHR::eTriangleFrontCounterclockwise: return "TriangleFrontCounterclockwise";
+      case GeometryInstanceFlagBitsKHR::eTriangleFlipFacing: return "TriangleFlipFacing";
       case GeometryInstanceFlagBitsKHR::eForceOpaque: return "ForceOpaque";
       case GeometryInstanceFlagBitsKHR::eForceNoOpaque: return "ForceNoOpaque";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
@@ -13102,7 +13109,7 @@ namespace VULKAN_HPP_NAMESPACE
     enum : VkFlags
     {
       allFlags = VkFlags( GeometryInstanceFlagBitsKHR::eTriangleFacingCullDisable ) |
-                 VkFlags( GeometryInstanceFlagBitsKHR::eTriangleFrontCounterclockwise ) |
+                 VkFlags( GeometryInstanceFlagBitsKHR::eTriangleFlipFacing ) |
                  VkFlags( GeometryInstanceFlagBitsKHR::eForceOpaque ) |
                  VkFlags( GeometryInstanceFlagBitsKHR::eForceNoOpaque )
     };
@@ -13142,8 +13149,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & GeometryInstanceFlagBitsKHR::eTriangleFacingCullDisable )
       result += "TriangleFacingCullDisable | ";
-    if ( value & GeometryInstanceFlagBitsKHR::eTriangleFrontCounterclockwise )
-      result += "TriangleFrontCounterclockwise | ";
+    if ( value & GeometryInstanceFlagBitsKHR::eTriangleFlipFacing )
+      result += "TriangleFlipFacing | ";
     if ( value & GeometryInstanceFlagBitsKHR::eForceOpaque )
       result += "ForceOpaque | ";
     if ( value & GeometryInstanceFlagBitsKHR::eForceNoOpaque )

@@ -13451,7 +13451,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionName );
+      readRequireEnum( child, extensionIt->first );
     }
     else if ( value == "type" )
     {

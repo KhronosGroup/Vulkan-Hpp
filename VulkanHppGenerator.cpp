@@ -13435,7 +13435,6 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
   }
 
   RequireData requireData( line, requireTitle );
-  std::string extensionName    = requireTitle.empty() ? extensionIt->first : requireTitle;
   bool        requireDataEmpty = true;
   for ( auto child : children )
   {
@@ -13455,7 +13454,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const *     
     }
     else if ( value == "type" )
     {
-      readExtensionRequireType( child, extensionName, requireData );
+      readExtensionRequireType( child, extensionIt->first, requireData );
       requireDataEmpty = false;
     }
   }

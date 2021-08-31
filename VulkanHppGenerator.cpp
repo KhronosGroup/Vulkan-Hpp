@@ -7503,6 +7503,7 @@ ${enter}  class ${className}
   {
   public:
     using CType = Vk${className};
+    using NativeType = Vk${className};
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
@@ -8093,7 +8094,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::str
            ( specialPointerTypes.find( param.type.type ) == specialPointerTypes.end() ) )
       {
         // this is supposed to be the returned size on an enumeration function!
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
         assert( param.type.type == "uint32_t" );
         auto typeIt = std::find_if(
           params.begin(), params.end(), [&handleType]( ParamData const & pd ) { return pd.type.type == handleType; } );
@@ -8548,7 +8549,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVector(
     lenIt = std::find_if( constructorIt->second.params.begin(),
                           constructorIt->second.params.end(),
                           [&lenParts]( ParamData const & pd ) { return pd.name == lenParts[0]; } );
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
     assert( lenIt != constructorIt->second.params.end() );
     auto structureIt = m_structures.find( lenIt->type.type );
     assert( structureIt != m_structures.end() );
@@ -12025,6 +12026,8 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
 
   static const std::string structureTemplate = R"(  struct ${structureName}
   {
+    using NativeType = Vk${structureName};
+
 ${allowDuplicate}
 ${structureType}
 ${constructorAndSetters}
@@ -12132,6 +12135,9 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
   str += "  union " + unionName +
          "\n"
          "  {\n"
+         "    using NativeType = " +
+         structure.first +
+         ";\n"
          "#if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )\n"
          "    " +
          unionName + "( VULKAN_HPP_NAMESPACE::" + unionName +

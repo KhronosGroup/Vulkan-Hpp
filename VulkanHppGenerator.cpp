@@ -11442,7 +11442,7 @@ std::string
                                                          std::string const &                           prefix ) const
 {
   static const std::string assignmentFromVulkanType = R"(
-${prefix}${constexpr_assign}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+${prefix}${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
 ${prefix}${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
 ${prefix}{
@@ -11451,9 +11451,7 @@ ${prefix}  return *this;
 ${prefix}}
 )";
   return replaceWithMap( assignmentFromVulkanType,
-                         { { "constexpr_assign", generateConstexprString( structData, true ) },
-                           { "prefix", prefix },
-                           { "structName", stripPrefix( structData.first, "Vk" ) } } );
+                         { { "prefix", prefix }, { "structName", stripPrefix( structData.first, "Vk" ) } } );
 }
 
 std::string

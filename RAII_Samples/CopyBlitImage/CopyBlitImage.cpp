@@ -67,10 +67,11 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                graphicsAndPresentQueueFamilyIndex.second );
 
     /* VULKAN_KEY_START */
-
+#if !defined( NDEBUG )
     vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( swapChainData.colorFormat );
     assert( ( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eBlitSrc ) &&
             "Format cannot be used as transfer source" );
+#endif
 
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
 

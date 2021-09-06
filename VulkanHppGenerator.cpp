@@ -14010,7 +14010,7 @@ void VulkanHppGenerator::readRequireEnumAlias( tinyxml2::XMLElement const *     
                                                std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "alias", {} }, { "extends", {} }, { "name", {} } }, { { "comment", {} } } );
+  checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "comment", {} }, { "extends", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
   std::string alias, bitpos, name, extends, extnumber, offset, value;
@@ -14030,11 +14030,14 @@ void VulkanHppGenerator::readRequireEnumAlias( tinyxml2::XMLElement const *     
     }
   }
 
-  auto enumIt = m_enums.find( extends );
-  check( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
+  if ( !extends.empty() )
+  {
+    auto enumIt = m_enums.find( extends );
+    check( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
 
-  // add this enum name to the list of aliases
-  enumIt->second.addEnumAlias( line, name, alias );
+    // add this enum name to the list of aliases
+    enumIt->second.addEnumAlias( line, name, alias );
+  }
 }
 
 void VulkanHppGenerator::readRequires( tinyxml2::XMLElement const *               element,

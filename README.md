@@ -286,7 +286,7 @@ switch (result.result)
 	case vk::Result::eTimeout:
 	case vk::Result::eNotReady:
 	case vk::Result::eSuboptimalKHR:
-		// do something meaningfull
+		// do something meaningful
 		break;
 	default:
 		// should not happen, as other return codes are considered to be an error and throw an exception

@@ -7457,7 +7457,8 @@ ${commands}
   private:
     Vk${className} m_${memberName} = {};
   };
-  static_assert( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
 
   template <>
   struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::${objTypeEnum}>
@@ -11858,8 +11859,9 @@ ${compareOperators}
     public:
 ${members}
   };
-  static_assert( sizeof( ${structureName} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
-  static_assert( std::is_standard_layout<${structureName}>::value, "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${structureName} ) == sizeof( ${vkName} ), "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::${structureName}>::value, "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${structureName}>::value, "${structureName} is not nothrow_move_constructible!" );
 )";
 
   std::string structureName = stripPrefix( structure.first, "Vk" );
@@ -16611,6 +16613,10 @@ int main( int argc, char ** argv )
 
 #if !defined( VULKAN_HPP_ASSERT_ON_RESULT )
 #  define VULKAN_HPP_ASSERT_ON_RESULT VULKAN_HPP_ASSERT
+#endif
+
+#if !defined( VULKAN_HPP_STATIC_ASSERT )
+# define VULKAN_HPP_STATIC_ASSERT static_assert
 #endif
 
 #if !defined( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )

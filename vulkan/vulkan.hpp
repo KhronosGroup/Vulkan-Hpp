@@ -115,7 +115,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 190, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 191, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5577,6 +5577,14 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdDrawMultiIndexedEXT(
         commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset );
     }
+
+    //=== VK_EXT_pageable_device_local_memory ===
+
+    void
+      vkSetDeviceMemoryPriorityEXT( VkDevice device, VkDeviceMemory memory, float priority ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSetDeviceMemoryPriorityEXT( device, memory, priority );
+    }
   };
 #endif
 
@@ -10469,6 +10477,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_pageable_device_local_memory ===
+  template <>
+  struct StructExtends<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   class DynamicLoader
   {
@@ -11435,6 +11461,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_multi_draw ===
     PFN_vkCmdDrawMultiEXT        vkCmdDrawMultiEXT        = 0;
     PFN_vkCmdDrawMultiIndexedEXT vkCmdDrawMultiIndexedEXT = 0;
+
+    //=== VK_EXT_pageable_device_local_memory ===
+    PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -12717,6 +12746,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMultiEXT = PFN_vkCmdDrawMultiEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiEXT" ) );
       vkCmdDrawMultiIndexedEXT =
         PFN_vkCmdDrawMultiIndexedEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiIndexedEXT" ) );
+
+      //=== VK_EXT_pageable_device_local_memory ===
+      vkSetDeviceMemoryPriorityEXT =
+        PFN_vkSetDeviceMemoryPriorityEXT( vkGetInstanceProcAddr( instance, "vkSetDeviceMemoryPriorityEXT" ) );
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -13575,6 +13608,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMultiEXT = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
       vkCmdDrawMultiIndexedEXT =
         PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
+
+      //=== VK_EXT_pageable_device_local_memory ===
+      vkSetDeviceMemoryPriorityEXT =
+        PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
     }
   };
 }  // namespace VULKAN_HPP_NAMESPACE

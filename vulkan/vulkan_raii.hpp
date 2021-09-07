@@ -1043,6 +1043,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdDrawMultiIndexedEXT =
           PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
 
+        //=== VK_EXT_pageable_device_local_memory ===
+        vkSetDeviceMemoryPriorityEXT =
+          PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
+
         //=== VK_EXT_private_data ===
         vkCreatePrivateDataSlotEXT =
           PFN_vkCreatePrivateDataSlotEXT( vkGetDeviceProcAddr( device, "vkCreatePrivateDataSlotEXT" ) );
@@ -1821,6 +1825,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_multi_draw ===
       PFN_vkCmdDrawMultiEXT        vkCmdDrawMultiEXT        = 0;
       PFN_vkCmdDrawMultiIndexedEXT vkCmdDrawMultiIndexedEXT = 0;
+
+      //=== VK_EXT_pageable_device_local_memory ===
+      PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
 
       //=== VK_EXT_private_data ===
       PFN_vkCreatePrivateDataSlotEXT  vkCreatePrivateDataSlotEXT  = 0;
@@ -5883,6 +5890,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD HANDLE
         getMemoryWin32HandleNV( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagsNV handleType ) const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+      //=== VK_EXT_pageable_device_local_memory ===
+
+      void setPriorityEXT( float priority ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::DeviceMemory                                        m_deviceMemory;
@@ -16730,6 +16741,18 @@ namespace VULKAN_HPP_NAMESPACE
         firstInstance,
         stride,
         static_cast<const int32_t *>( vertexOffset ) );
+    }
+
+    //=== VK_EXT_pageable_device_local_memory ===
+
+    VULKAN_HPP_INLINE void DeviceMemory::setPriorityEXT( float priority ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkSetDeviceMemoryPriorityEXT &&
+        "Function <vkSetDeviceMemoryPriorityEXT> needs extension <VK_EXT_pageable_device_local_memory> enabled!" );
+
+      getDispatcher()->vkSetDeviceMemoryPriorityEXT(
+        static_cast<VkDevice>( m_device ), static_cast<VkDeviceMemory>( m_deviceMemory ), priority );
     }
 
 #endif

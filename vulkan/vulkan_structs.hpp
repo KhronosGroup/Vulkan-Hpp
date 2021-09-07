@@ -44038,6 +44038,98 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDevicePCIBusInfoPropertiesEXT;
   };
 
+  struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT
+  {
+    using NativeType = VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 pageableDeviceLocalMemory_ = {} ) VULKAN_HPP_NOEXCEPT
+      : pageableDeviceLocalMemory( pageableDeviceLocalMemory_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT(
+      PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT(
+      VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT(
+          *reinterpret_cast<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT &
+      operator=( PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT &
+      operator=( VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT &
+      setPageableDeviceLocalMemory( VULKAN_HPP_NAMESPACE::Bool32 pageableDeviceLocalMemory_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pageableDeviceLocalMemory = pageableDeviceLocalMemory_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( pageableDeviceLocalMemory == rhs.pageableDeviceLocalMemory );
+    }
+
+    bool operator!=( PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        pageableDeviceLocalMemory = {};
+  };
+  static_assert( sizeof( PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT ) ==
+                   sizeof( VkPhysicalDevicePageableDeviceLocalMemoryFeaturesEXT ),
+                 "struct and wrapper have different size!" );
+  static_assert( std::is_standard_layout<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT>::value,
+                 "struct wrapper is not a standard layout!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT>
+  {
+    using Type = PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+  };
+
   struct PhysicalDevicePerformanceQueryFeaturesKHR
   {
     using NativeType = VkPhysicalDevicePerformanceQueryFeaturesKHR;

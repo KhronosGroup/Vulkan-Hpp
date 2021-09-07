@@ -1230,6 +1230,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct MultiDrawInfoEXT;
   struct MultiDrawIndexedInfoEXT;
 
+  //=== VK_EXT_pageable_device_local_memory ===
+  struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+
   //===============
   //=== HANDLEs ===
   //===============
@@ -11428,6 +11431,13 @@ namespace VULKAN_HPP_NAMESPACE
       getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo,
                                 Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_EXT_pageable_device_local_memory ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setMemoryPriorityEXT( VULKAN_HPP_NAMESPACE::DeviceMemory memory,
+                               float                              priority,
+                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {

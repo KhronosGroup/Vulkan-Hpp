@@ -19434,5 +19434,16 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_EXT_pageable_device_local_memory ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::setMemoryPriorityEXT( VULKAN_HPP_NAMESPACE::DeviceMemory memory,
+                                                       float                              priority,
+                                                       Dispatch const &                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkSetDeviceMemoryPriorityEXT( m_device, static_cast<VkDeviceMemory>( memory ), priority );
+  }
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

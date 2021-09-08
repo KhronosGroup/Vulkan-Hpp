@@ -66,6 +66,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
+    // to prevent a warning on unreferenced function vk::getDispatchLoaderStatic, use just one arbitrary vk-function
+    vk::enumerateInstanceVersion();
+
     // nullptr_t
     fct(nullptr);
     fctc(nullptr);

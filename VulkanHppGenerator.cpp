@@ -16343,23 +16343,32 @@ int main( int argc, char ** argv )
 #  endif
 #endif
 
-#if !defined(VULKAN_HPP_DEFAULT_DISPATCHER)
-# if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-#  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoaderDynamic
-#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE namespace VULKAN_HPP_NAMESPACE { VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic; }
+#if !defined( VULKAN_HPP_DEFAULT_DISPATCHER )
+#  if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoaderDynamic
+#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE                     \
+      namespace VULKAN_HPP_NAMESPACE                                               \
+      {                                                                            \
+        VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic; \
+      }
   extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
-# else
-#  define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic()
-#  define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
-# endif
+#  else
+  static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  {
+    static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
+    return dls;
+  }
+#    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::getDispatchLoaderStatic()
+#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#  endif
 #endif
 
-#if !defined(VULKAN_HPP_DEFAULT_DISPATCHER_TYPE)
-# if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
-  #define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic
-# else
-#  define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic
-# endif
+#if !defined( VULKAN_HPP_DEFAULT_DISPATCHER_TYPE )
+#  if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+#    define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic
+#  else
+#    define VULKAN_HPP_DEFAULT_DISPATCHER_TYPE ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic
+#  endif
 #endif
 
 #if defined( VULKAN_HPP_NO_DEFAULT_DISPATCHER )

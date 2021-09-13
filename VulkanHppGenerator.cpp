@@ -1478,17 +1478,6 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
                "union member <" + unionMember.name + "> uses selection <" + selection +
                  "> that is not part of the selector type <" + selectorIt->type.type + ">" );
       }
-      for ( auto const & selectorValue : selectorEnumIt->second.values )
-      {
-        // check that each enum value is used as a selection in the corresponding union
-        check( std::find_if( unionIt->second.members.begin(),
-                             unionIt->second.members.end(),
-                             [selectorValue]( MemberData const & md )
-                             { return md.selection == selectorValue.name; } ) != unionIt->second.members.end(),
-               selectorValue.xmlLine,
-               "enum <" + selectorEnumIt->first + "> has value <" + selectorValue.name +
-                 "> that is not used by corresponding union <" + unionIt->first + ">" );
-      }
     }
 
     // check that each member type is known

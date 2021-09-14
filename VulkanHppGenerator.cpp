@@ -5030,13 +5030,10 @@ std::string VulkanHppGenerator::generateCommandSetVoid0Vector( std::string const
       }
       else if ( commandData.params[returnParamIndices[0]].type.type != "void" )
       {
-        if ( beginsWith( name, "vkGet" ) )
-        {
-          return generateCommandSetStandardEnhanced(
-            definition,
-            generateCommandStandard( name, commandData, initialSkipCount, definition ),
-            generateCommandVoidGetValue( name, commandData, initialSkipCount, definition, {}, returnParamIndices[0] ) );
-        }
+        return generateCommandSetStandardEnhanced(
+          definition,
+          generateCommandStandard( name, commandData, initialSkipCount, definition ),
+          generateCommandVoidGetValue( name, commandData, initialSkipCount, definition, {}, returnParamIndices[0] ) );
       }
   }
   return "";

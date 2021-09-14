@@ -477,10 +477,10 @@ private:
                                                     bool                definition,
                                                     size_t              nonConstPointerIndex ) const;
   std::string generateCommandResultGetTwoValues( std::string const & name,
-                                             CommandData const & commandData,
-                                             size_t              initialSkipCount,
-                                             bool                definition,
-                                             std::vector<size_t> returnParamIndices ) const;
+                                                 CommandData const & commandData,
+                                                 size_t              initialSkipCount,
+                                                 bool                definition,
+                                                 std::vector<size_t> returnParamIndices ) const;
   std::string generateCommandResultGetTwoVectors( std::string const &              name,
                                                   CommandData const &              commandData,
                                                   size_t                           initialSkipCount,
@@ -756,21 +756,17 @@ private:
                                                     std::string const &              title ) const;
   std::string
     generateEnhancedReturnType( CommandData const & commandData, size_t returnParamIndex, bool isStructureChain ) const;
-  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
-                                                 std::string const &              title ) const;
-
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateEnums( std::vector<RequireData> const & requireData,
+                             std::set<std::string> &          listedEnums,
+                             std::string const &              title ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,
                                        std::vector<std::string> const &   arraySizes,
                                        std::vector<EnumValueData> const & values,
                                        bool                               bitmask ) const;
-  std::string generateEnums( std::vector<RequireData> const & requireData,
-                             std::set<std::string> &          listedEnums,
-                             std::string const &              title ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
-  std::string generateFunctionBodyEnhanced( std::string const &              indentation,
-                                            std::string const &              name,
+  std::string generateFunctionBodyEnhanced( std::string const &              name,
                                             CommandData const &              commandData,
                                             size_t                           initialSkipCount,
                                             size_t                           returnParamIndex,
@@ -779,33 +775,28 @@ private:
                                             bool                             twoStep,
                                             std::string const &              enhancedReturnType,
                                             bool                             withAllocator ) const;
-  std::string generateFunctionBodyEnhancedLocalReturnVariable( std::string const & indentation,
-                                                               CommandData const & commandData,
+  std::string generateFunctionBodyEnhancedLocalReturnVariable( CommandData const & commandData,
                                                                size_t              returnParamIndex,
                                                                std::string const & enhancedReturnType,
                                                                bool                withAllocator ) const;
   std::string
-              generateFunctionBodyEnhancedMultiVectorSizeCheck( std::string const &              indentation,
-                                                                std::string const &              name,
+              generateFunctionBodyEnhancedMultiVectorSizeCheck( std::string const &              name,
                                                                 CommandData const &              commandData,
                                                                 size_t                           initialSkipCount,
                                                                 size_t                           returnParamIndex,
                                                                 std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateFunctionBodyEnhancedReturnResultValue( std::string const & indentation,
-                                                             std::string const & returnName,
+  std::string generateFunctionBodyEnhancedReturnResultValue( std::string const & returnName,
                                                              std::string const & name,
                                                              CommandData const & commandData,
                                                              size_t              initialSkipCount,
                                                              size_t              returnParamIndex,
                                                              bool                twoStep ) const;
-  std::string generateFunctionBodyEnhancedSingleStep( std::string const &              indentation,
-                                                      std::string const &              name,
+  std::string generateFunctionBodyEnhancedSingleStep( std::string const &              name,
                                                       CommandData const &              commandData,
                                                       size_t                           returnParamIndex,
                                                       size_t                           templateParamIndex,
                                                       std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateFunctionBodyEnhancedTwoStep( std::string const &              indentation,
-                                                   std::string const &              name,
+  std::string generateFunctionBodyEnhancedTwoStep( std::string const &              name,
                                                    CommandData const &              commandData,
                                                    size_t                           returnParamIndex,
                                                    size_t                           templateParamIndex,
@@ -837,14 +828,17 @@ private:
   std::string generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle,
                               std::set<std::string> &                    listedHandles ) const;
+  std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
+  std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle,
+                                          std::set<std::string> &                    listedHandles ) const;
+  std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string
-                                      generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
-                                                              std::map<std::vector<MemberData>::const_iterator,
+              generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
+                                      std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
-                                                              bool mutualExclusiveLens ) const;
-  std::string                         generateName( TypeInfo const & typeInfo ) const;
-  std::string                         generateNoDiscardStandard( CommandData const & commandData ) const;
+                                      bool mutualExclusiveLens ) const;
+  std::string generateName( TypeInfo const & typeInfo ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn,
                                                           std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
@@ -855,10 +849,13 @@ private:
                                                           std::set<std::string> &                    listedHandles,
                                                           std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
-    generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
-                                   std::map<std::string, CommandData>::const_iterator constructorIt,
-                                   std::string const &                                enter,
-                                   std::string const &                                leave ) const;
+              generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
+                                             std::map<std::string, CommandData>::const_iterator constructorIt,
+                                             std::string const &                                enter,
+                                             std::string const &                                leave ) const;
+  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                 std::string const &              title ) const;
+
   std::pair<std::string, std::string>
               generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleConstructorArguments( std::string const &            handleType,

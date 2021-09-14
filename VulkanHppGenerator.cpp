@@ -3227,7 +3227,7 @@ std::string VulkanHppGenerator::generateCommandResultGetTwoValues( std::string c
   {
     std::string const functionTemplate =
       R"(  template <typename Dispatch>
-  ${nodiscard}VULKAN_HPP_INLINE typename ResultValue<std::pair<${firstReturnType}, ${secondReturnType}>> ${className}${classSeparator}${commandName}( ${argumentList} )${const}
+  ${nodiscard}VULKAN_HPP_INLINE ResultValue<std::pair<${firstReturnType}, ${secondReturnType}>> ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     std::pair<${firstReturnType}, ${secondReturnType}> returnValue;
@@ -3259,7 +3259,7 @@ std::string VulkanHppGenerator::generateCommandResultGetTwoValues( std::string c
   {
     std::string const functionTemplate =
       R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}typename ResultValue<std::pair<${firstReturnType}, ${secondReturnType}>> ${commandName}( ${argumentList} )${const};)";
+    ${nodiscard}ResultValue<std::pair<${firstReturnType}, ${secondReturnType}>> ${commandName}( ${argumentList} )${const};)";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },

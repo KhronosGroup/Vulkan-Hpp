@@ -1332,6 +1332,12 @@ void VulkanHppGenerator::checkFuncPointerCorrectness() const
              funcPointer.second.xmlLine,
              "funcpointer requires unknown <" + funcPointer.second.requirements + ">" );
     }
+    for ( auto const & argument : funcPointer.second.arguments )
+    {
+      check( m_types.find( argument.type ) != m_types.end(),
+             argument.xmlLine,
+             "funcpointer argument of unknown type <" + argument.type + ">" );
+    }
   }
 }
 
@@ -7262,7 +7268,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
                     assert( constructorIt->second.successCodes[1] == "VK_INCOMPLETE" );
                     auto lenParamIt    = constructorIt->second.params.begin() + returnParamIndices[0];
                     auto handleParamIt = constructorIt->second.params.begin() + returnParamIndices[1];
-                    arrayConstructor = generateRAIIHandleConstructorEnumerate(
+                    arrayConstructor   = generateRAIIHandleConstructorEnumerate(
                       handle, constructorIt, handleParamIt, lenParamIt, enter, leave );
                   }
                 }
@@ -13595,6 +13601,8 @@ void VulkanHppGenerator::readFuncpointer( tinyxml2::XMLElement const *          
     }
   }
 
+  auto funcPointerIt = m_funcPointers.end();
+  std::set<std::string> argumentNames;
   for ( auto const & child : children )
   {
     std::string value     = child->Value();
@@ -13603,20 +13611,29 @@ void VulkanHppGenerator::readFuncpointer( tinyxml2::XMLElement const *          
     {
       std::string name = child->GetText();
       check( !name.empty(), childLine, "funcpointer with empty name" );
-      check( m_funcPointers.insert( std::make_pair( name, FuncPointerData( requirements, line ) ) ).second,
+      check( m_funcPointers.find( name ) == m_funcPointers.end(),
              childLine,
              "funcpointer <" + name + "> already specified" );
+      funcPointerIt = m_funcPointers.insert( std::make_pair( name, FuncPointerData( requirements, line ) ) ).first;
       check( m_types.insert( std::make_pair( name, TypeCategory::FuncPointer ) ).second,
              childLine,
              "funcpointer <" + name + "> already specified as a type" );
     }
     else if ( value == "type" )
     {
+      assert( funcPointerIt != m_funcPointers.end() );
       std::string type = child->GetText();
-      check( !type.empty(), childLine, "funcpointer argument with empty type" );
-      check( ( m_types.find( type ) != m_types.end() ) || ( type == requirements ),
+      funcPointerIt->second.arguments.push_back( { type, childLine } );
+
+      auto sibling = child->NextSibling();
+      char const * siblingValue = sibling->Value();
+      assert( siblingValue != nullptr );
+      std::string argumentName = siblingValue;
+      argumentName             = argumentName.substr( argumentName.find_first_not_of( "* " ) );
+      argumentName             = argumentName.substr( 0, argumentName.find_first_of( ",)" ) );
+      check( argumentNames.insert( argumentName ).second,
              childLine,
-             "funcpointer argument of unknown type <" + type + ">" );
+             "funcpointer <" + funcPointerIt->first + "> already has an argument named <" + argumentName + ">" );
     }
   }
 }

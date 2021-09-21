@@ -228,12 +228,21 @@ private:
     int                      xmlLine;
   };
 
+  struct FuncPointerArgumentData
+  {
+    FuncPointerArgumentData( std::string const & t, int line ) : type( t ), xmlLine( line ) {}
+
+    std::string type;
+    int         xmlLine;
+  };
+
   struct FuncPointerData
   {
     FuncPointerData( std::string const & r, int line ) : requirements( r ), xmlLine( line ) {}
 
-    std::string requirements;
-    int         xmlLine;
+    std::vector<FuncPointerArgumentData> arguments;
+    std::string                          requirements;
+    int                                  xmlLine;
   };
 
   struct HandleData

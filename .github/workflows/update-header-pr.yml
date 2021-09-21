@@ -1,4 +1,4 @@
-name: CI Ubuntu
+name: Update Vulkan-Headers PR
 
 on:
   schedule:
@@ -56,4 +56,4 @@ jobs:
         branch: update-vulkan-headers-pr
         base: ${{ github.head_ref }}
         body: |
-          Please close and open this PR to trigger the CI!
+          Please close and reopen this PR to trigger the CI!

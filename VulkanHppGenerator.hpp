@@ -834,11 +834,11 @@ private:
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string
-              generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
-                                      std::map<std::vector<MemberData>::const_iterator,
+                                      generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
+                                                              std::map<std::vector<MemberData>::const_iterator,
                                      std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
-                                      bool mutualExclusiveLens ) const;
-  std::string generateName( TypeInfo const & typeInfo ) const;
+                                                              bool mutualExclusiveLens ) const;
+  std::string                         generateName( TypeInfo const & typeInfo ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn,
                                                           std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
@@ -849,10 +849,17 @@ private:
                                                           std::set<std::string> &                    listedHandles,
                                                           std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
-              generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
-                                             std::map<std::string, CommandData>::const_iterator constructorIt,
-                                             std::string const &                                enter,
-                                             std::string const &                                leave ) const;
+    generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
+                                   std::map<std::string, CommandData>::const_iterator constructorIt,
+                                   std::string const &                                enter,
+                                   std::string const &                                leave ) const;
+  std::pair<std::string, std::string>
+              generateRAIIHandleConstructor1Return2Vector( std::pair<std::string, HandleData> const &         handle,
+                                                           std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                           std::string const &                                enter,
+                                                           std::string const &                                leave,
+                                                           size_t                                             returnParamIndex,
+                                                           std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
                                                  std::string const &              title ) const;
 

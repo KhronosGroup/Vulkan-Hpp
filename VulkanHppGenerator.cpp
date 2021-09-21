@@ -5260,7 +5260,7 @@ std::string VulkanHppGenerator::generateCommandStandard( std::string const & nam
   std::string commandName  = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
   std::string nodiscard =
     ( 1 < commandData.successCodes.size() + commandData.errorCodes.size() ) ? "VULKAN_HPP_NODISCARD " : "";
-  std::string returnType   = stripPrefix( commandData.returnType, "Vk" );
+  std::string returnType = stripPrefix( commandData.returnType, "Vk" );
 
   if ( definition )
   {
@@ -7190,65 +7190,158 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
   std::string const &                                                    enter,
   std::string const &                                                    leave ) const
 {
-  auto handleParamIt = std::find_if( constructorIt->second.params.begin(),
-                                     constructorIt->second.params.end(),
-                                     [&handle]( ParamData const & pd ) { return pd.type.type == handle.first; } );
-  assert( handleParamIt != constructorIt->second.params.end() && handleParamIt->type.isNonConstPointer() );
-
-  std::string singularConstructor, arrayConstructor, throwDetail;
-  bool        constructedConstructor = false;
-  if ( handleParamIt->len.empty() )
+  std::string singularConstructor, arrayConstructor;
+  if ( constructorIt->second.returnType == "VkResult" )
   {
-    if ( constructorIt->second.returnType == "void" )
+    assert( !constructorIt->second.successCodes.empty() );
+    assert( constructorIt->second.successCodes[0] == "VK_SUCCESS" );
+    switch ( constructorIt->second.successCodes.size() )
     {
-      singularConstructor    = generateRAIIHandleConstructorVoid( handle, constructorIt, enter, leave );
-      constructedConstructor = true;
+      case 1:
+        if ( !constructorIt->second.errorCodes.empty() )
+        {
+          std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( constructorIt->second.params );
+          if ( returnParamIndices.size() == 1 )
+          {
+            assert( isHandleType( constructorIt->second.params[returnParamIndices[0]].type.type ) );
+            std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( constructorIt->second.params );
+            switch ( vectorParamIndices.size() )
+            {
+              case 0:
+                singularConstructor = generateRAIIHandleConstructorResult( handle, constructorIt, enter, leave );
+                break;
+              case 1:
+                if ( returnParamIndices[0] == vectorParamIndices.begin()->first )
+                {
+                  if ( isLenByStructMember( constructorIt->second.params[vectorParamIndices.begin()->first].len,
+                                            constructorIt->second.params[vectorParamIndices.begin()->second] ) )
+                  {
+                    auto handleParamIt = constructorIt->second.params.begin() + returnParamIndices[0];
+                    arrayConstructor =
+                      generateRAIIHandleConstructorVector( handle, constructorIt, handleParamIt, enter, leave );
+                  }
+                }
+                break;
+              case 2:
+                std::tie( singularConstructor, arrayConstructor ) = generateRAIIHandleConstructor1Return2Vector(
+                  handle, constructorIt, enter, leave, returnParamIndices[0], vectorParamIndices );
+                break;
+            }
+          }
+        }
+        break;
+      case 2:
+        if ( !constructorIt->second.errorCodes.empty() )
+        {
+          std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( constructorIt->second.params );
+          switch ( returnParamIndices.size() )
+          {
+            case 1:
+              assert( isHandleType( constructorIt->second.params[returnParamIndices[0]].type.type ) );
+              {
+                std::map<size_t, size_t> vectorParamIndices =
+                  determineVectorParamIndices( constructorIt->second.params );
+                if ( vectorParamIndices.size() == 2 )
+                {
+                  std::tie( singularConstructor, arrayConstructor ) = generateRAIIHandleConstructor1Return2Vector(
+                    handle, constructorIt, enter, leave, returnParamIndices[0], vectorParamIndices );
+                }
+              }
+              break;
+            case 2:
+              if ( constructorIt->second.params[returnParamIndices[0]].type.type == "uint32_t" )
+              {
+                assert( isHandleType( constructorIt->second.params[returnParamIndices[1]].type.type ) );
+                std::map<size_t, size_t> vectorParamIndices =
+                  determineVectorParamIndices( constructorIt->second.params );
+                if ( vectorParamIndices.size() == 1 )
+                {
+                  if ( returnParamIndices[0] == vectorParamIndices.begin()->second )
+                  {
+                    assert( returnParamIndices[1] == vectorParamIndices.begin()->first );
+                    assert( constructorIt->second.successCodes[1] == "VK_INCOMPLETE" );
+                    auto lenParamIt    = constructorIt->second.params.begin() + returnParamIndices[0];
+                    auto handleParamIt = constructorIt->second.params.begin() + returnParamIndices[1];
+                    arrayConstructor = generateRAIIHandleConstructorEnumerate(
+                      handle, constructorIt, handleParamIt, lenParamIt, enter, leave );
+                  }
+                }
+              }
+              break;
+          }
+        }
+        break;
+      case 4:
+        if ( !constructorIt->second.errorCodes.empty() )
+        {
+          std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( constructorIt->second.params );
+          if ( returnParamIndices.size() == 1 )
+          {
+            assert( isHandleType( constructorIt->second.params[returnParamIndices[0]].type.type ) );
+            std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( constructorIt->second.params );
+            if ( vectorParamIndices.size() == 2 )
+            {
+              std::tie( singularConstructor, arrayConstructor ) = generateRAIIHandleConstructor1Return2Vector(
+                handle, constructorIt, enter, leave, returnParamIndices[0], vectorParamIndices );
+            }
+          }
+        }
+        break;
     }
-    else if ( ( constructorIt->second.returnType == "VkResult" ) && ( constructorIt->second.successCodes.size() == 1 ) )
+  }
+  else if ( constructorIt->second.returnType == "void" )
+  {
+    assert( constructorIt->second.successCodes.empty() && constructorIt->second.errorCodes.empty() );
+    std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( constructorIt->second.params );
+    if ( returnParamIndices.size() == 1 )
     {
-      if ( !constructorIt->second.errorCodes.empty() )
+      assert( isHandleType( constructorIt->second.params[returnParamIndices[0]].type.type ) );
+      std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( constructorIt->second.params );
+      if ( vectorParamIndices.empty() )
       {
-        singularConstructor    = generateRAIIHandleConstructorResult( handle, constructorIt, enter, leave );
-        constructedConstructor = true;
-      }
-      else
-      {
-        throwDetail = "\n\tReason: no errorcodes provided.";
+        singularConstructor = generateRAIIHandleConstructorVoid( handle, constructorIt, enter, leave );
       }
     }
   }
-  else
+  if ( singularConstructor.empty() && arrayConstructor.empty() )
   {
-    auto lenParamIt =
-      std::find_if( constructorIt->second.params.begin(),
-                    constructorIt->second.params.end(),
-                    [&handleParamIt]( ParamData const & pd ) { return pd.name == handleParamIt->len; } );
-    if ( ( lenParamIt != constructorIt->second.params.end() ) && lenParamIt->type.isNonConstPointer() &&
-         ( constructorIt->second.successCodes.size() == 2 ) &&
-         ( constructorIt->second.successCodes[0] == "VK_SUCCESS" ) &&
-         ( constructorIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
-    {
-      arrayConstructor =
-        generateRAIIHandleConstructorEnumerate( handle, constructorIt, handleParamIt, lenParamIt, enter, leave );
-    }
-    else
-    {
-      arrayConstructor = generateRAIIHandleConstructorVector( handle, constructorIt, handleParamIt, enter, leave );
-      if ( ( lenParamIt != constructorIt->second.params.end() ) &&
-           !checkEquivalentSingularConstructor( handle.second.constructorIts, constructorIt, lenParamIt ) )
-      {
-        singularConstructor =
-          generateRAIIHandleConstructorVectorSingular( handle, constructorIt, handleParamIt, enter, leave );
-      }
-    }
-    constructedConstructor = true;
-  }
-  if ( !constructedConstructor )
-  {
-    throw std::runtime_error( "Never encountered a constructor function like " + constructorIt->first + " !" +
-                              throwDetail );
+    throw std::runtime_error( "Never encountered a function like <" + constructorIt->first + "> !" );
   }
   return std::make_pair( singularConstructor, arrayConstructor );
+}
+
+std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstructor1Return2Vector(
+  std::pair<std::string, HandleData> const &         handle,
+  std::map<std::string, CommandData>::const_iterator constructorIt,
+  std::string const &                                enter,
+  std::string const &                                leave,
+  size_t                                             returnParamIndex,
+  std::map<size_t, size_t> const &                   vectorParamIndices ) const
+{
+  if ( returnParamIndex == std::next( vectorParamIndices.begin() )->first )
+  {
+    if ( vectorParamIndices.begin()->second == std::next( vectorParamIndices.begin() )->second )
+    {
+      if ( constructorIt->second.params[vectorParamIndices.begin()->second].type.type == "uint32_t" )
+      {
+        if ( isStructureChainAnchor( constructorIt->second.params[vectorParamIndices.begin()->first].type.type ) )
+        {
+          std::string singularConstructor;
+          auto        lenParamIt = constructorIt->second.params.begin() + vectorParamIndices.begin()->second;
+          auto handleParamIt = constructorIt->second.params.begin() + std::next( vectorParamIndices.begin() )->first;
+          if ( !checkEquivalentSingularConstructor( handle.second.constructorIts, constructorIt, lenParamIt ) )
+          {
+            singularConstructor =
+              generateRAIIHandleConstructorVectorSingular( handle, constructorIt, handleParamIt, enter, leave );
+          }
+          return std::make_pair(
+            singularConstructor,
+            generateRAIIHandleConstructorVector( handle, constructorIt, handleParamIt, enter, leave ) );
+        }
+      }
+    }
+  }
+  return std::make_pair( "", "" );
 }
 
 std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData,

@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 192, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 193, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION

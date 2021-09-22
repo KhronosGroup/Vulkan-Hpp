@@ -5098,7 +5098,10 @@ namespace VULKAN_HPP_NAMESPACE
     eMoltenvk                = VK_DRIVER_ID_MOLTENVK,
     eCoreaviProprietary      = VK_DRIVER_ID_COREAVI_PROPRIETARY,
     eJuiceProprietary        = VK_DRIVER_ID_JUICE_PROPRIETARY,
-    eVerisiliconProprietary  = VK_DRIVER_ID_VERISILICON_PROPRIETARY
+    eVerisiliconProprietary  = VK_DRIVER_ID_VERISILICON_PROPRIETARY,
+    eMesaTurnip              = VK_DRIVER_ID_MESA_TURNIP,
+    eMesaV3Dv                = VK_DRIVER_ID_MESA_V3DV,
+    eMesaPanvk               = VK_DRIVER_ID_MESA_PANVK
   };
   using DriverIdKHR = DriverId;
 
@@ -5123,6 +5126,9 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverId::eCoreaviProprietary: return "CoreaviProprietary";
       case DriverId::eJuiceProprietary: return "JuiceProprietary";
       case DriverId::eVerisiliconProprietary: return "VerisiliconProprietary";
+      case DriverId::eMesaTurnip: return "MesaTurnip";
+      case DriverId::eMesaV3Dv: return "MesaV3Dv";
+      case DriverId::eMesaPanvk: return "MesaPanvk";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

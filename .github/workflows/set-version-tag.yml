@@ -1,0 +1,28 @@
+name: Set Version Tag
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  set-version-tag:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Update Submodules
+      run: |
+        git submodule update --init --recursive
+        cd Vulkan-Headers
+        VK_HEADER_GIT_TAG=$(git tag --points-at HEAD | head -n1)
+        git checkout $VK_HEADER_GIT_TAG
+        echo "VK_HEADER_GIT_TAG=$VK_HEADER_GIT_TAG" >> $GITHUB_ENV
+
+    - name: Set Tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        git tag $VK_HEADER_GIT_TAG || echo "Failed to set tag. Already existing?"
+        git push -u origin $VK_HEADER_GIT_TAG || echo "Failed to push tag. Already existing?"

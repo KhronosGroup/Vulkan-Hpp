@@ -882,9 +882,6 @@ private:
                                                            std::string const &                                leave,
                                                            size_t                                             returnParamIndex,
                                                            std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
-                                                 std::string const &              title ) const;
-
   std::pair<std::string, std::string>
               generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleConstructorArguments( std::string const &            handleType,
@@ -934,6 +931,9 @@ private:
               generateRAIIHandleDestructor( std::string const &                                handleType,
                                             std::map<std::string, CommandData>::const_iterator destructorIt,
                                             std::string const &                                enter ) const;
+  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                 std::string const &              title ) const;
+
   std::string generateRAIIHandleDestructorCallArguments( std::string const &            handleType,
                                                          std::vector<ParamData> const & params ) const;
   std::tuple<std::string, std::string, std::string, std::string>

@@ -7459,689 +7459,6 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
   return std::make_pair( "", "" );
 }
 
-std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
-                                                                   std::string const &              title ) const
-{
-  std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto structIt = m_structures.find( type );
-      if ( structIt != m_structures.end() )
-      {
-        std::string structureType = stripPrefix( structIt->first, "Vk" );
-        str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
-        auto inverseIt = m_structureAliasesInverse.find( type );
-        if ( inverseIt != m_structureAliasesInverse.end() )
-        {
-          for ( auto alias : inverseIt->second )
-          {
-            str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureType + ";\n";
-          }
-        }
-      }
-    }
-  }
-  return addTitleAndProtection( title, str );
-}
-
-//
-// VulkanHppGenerator local functions
-//
-
-bool beginsWith( std::string const & text, std::string const & prefix )
-{
-  return prefix.empty() || text.substr( 0, prefix.length() ) == prefix;
-}
-
-bool endsWith( std::string const & text, std::string const & postfix )
-{
-  return postfix.empty() ||
-         ( ( postfix.length() <= text.length() ) && ( text.substr( text.length() - postfix.length() ) == postfix ) );
-}
-
-void check( bool condition, int line, std::string const & message )
-{
-  if ( !condition )
-  {
-    throw std::runtime_error( "VulkanHppGenerator: Spec error on line " + std::to_string( line ) + ": " + message );
-  }
-}
-
-// check the validity of an attributes map
-// line       : the line in the xml file where the attributes are listed
-// attributes : the map of name/value pairs of the encountered attributes
-// required   : the required attributes, with a set of allowed values per attribute
-// optional   : the optional attributes, with a set of allowed values per attribute
-void checkAttributes( int                                                  line,
-                      std::map<std::string, std::string> const &           attributes,
-                      std::map<std::string, std::set<std::string>> const & required,
-                      std::map<std::string, std::set<std::string>> const & optional )
-{
-  // check if all required attributes are included and if there is a set of allowed values, check if the actual value is
-  // part of that set
-  for ( auto const & r : required )
-  {
-    auto attributesIt = attributes.find( r.first );
-    check( attributesIt != attributes.end(), line, "missing attribute <" + r.first + ">" );
-    check( r.second.empty() || ( r.second.find( attributesIt->second ) != r.second.end() ),
-           line,
-           "unexpected attribute value <" + attributesIt->second + "> in attribute <" + r.first + ">" );
-  }
-  // check if all not required attributes or optional, and if there is a set of allowed values, check if the actual
-  // value is part of that set
-  for ( auto const & a : attributes )
-  {
-    if ( required.find( a.first ) == required.end() )
-    {
-      auto optionalIt = optional.find( a.first );
-      if ( optionalIt == optional.end() )
-      {
-        warn( false, line, "unknown attribute <" + a.first + ">" );
-        continue;
-      }
-      if ( !optionalIt->second.empty() )
-      {
-        std::vector<std::string> values = tokenize( a.second, "," );
-        for ( auto const & v : values )
-        {
-          warn( optionalIt->second.find( v ) != optionalIt->second.end(),
-                line,
-                "unexpected attribute value <" + v + "> in attribute <" + a.first + ">" );
-        }
-      }
-    }
-  }
-}
-
-void checkElements( int                                               line,
-                    std::vector<tinyxml2::XMLElement const *> const & elements,
-                    std::map<std::string, bool> const &               required,
-                    std::set<std::string> const &                     optional )
-{
-  std::map<std::string, size_t> encountered;
-  for ( auto const & e : elements )
-  {
-    std::string value = e->Value();
-    encountered[value]++;
-    warn( ( required.find( value ) != required.end() ) || ( optional.find( value ) != optional.end() ),
-          e->GetLineNum(),
-          "unknown element <" + value + ">" );
-  }
-  for ( auto const & r : required )
-  {
-    auto encounteredIt = encountered.find( r.first );
-    check( encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
-    // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
-    check( !r.second || ( encounteredIt->second == 1 ),
-           line,
-           "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " +
-             std::to_string( encounteredIt->second ) );
-  }
-}
-
-std::set<size_t> determineSingularParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices )
-{
-  auto returnVectorIt = vectorParamIndices.find( returnParamIndex );
-  assert( returnVectorIt != vectorParamIndices.end() );
-  std::set<size_t> singularParams;
-  singularParams.insert( returnVectorIt->second );
-  for ( auto const & vpi : vectorParamIndices )
-  {
-    if ( vpi.second == returnVectorIt->second )
-    {
-      singularParams.insert( vpi.first );
-    }
-  }
-  return singularParams;
-}
-
-std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix )
-{
-  auto tagIt = std::find_if(
-    tags.begin(), tags.end(), [&name, &postfix]( std::string const & t ) { return endsWith( name, t + postfix ); } );
-  return ( tagIt != tags.end() ) ? *tagIt : "";
-}
-
-std::string generateCArraySizes( std::vector<std::string> const & sizes )
-{
-  std::string arraySizes;
-  for ( auto const & s : sizes )
-  {
-    arraySizes += "[" + s + "]";
-  }
-  return arraySizes;
-}
-
-std::pair<std::string, std::string>
-  generateEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags )
-{
-  std::string prefix, postfix;
-  if ( name == "VkResult" )
-  {
-    prefix = "VK_";
-  }
-  else
-  {
-    if ( bitmask )
-    {
-      // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
-      // end that with "Bit"
-      size_t pos = name.find( "FlagBits" );
-      assert( pos != std::string::npos );
-      std::string shortenedName = name;
-      shortenedName.erase( pos, strlen( "FlagBits" ) );
-      std::string tag = findTag( tags, shortenedName );
-      prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
-    }
-    else
-    {
-      // for a non-bitmask enum, convert the name to upper case
-      prefix = toUpperCase( name ) + "_";
-    }
-
-    // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value names.
-    for ( auto const & tag : tags )
-    {
-      if ( endsWith( prefix, tag + "_" ) )
-      {
-        prefix.erase( prefix.length() - tag.length() - 1 );
-        postfix = "_" + tag;
-        break;
-      }
-      else if ( endsWith( name, tag ) )
-      {
-        postfix = "_" + tag;
-        break;
-      }
-    }
-  }
-
-  return std::make_pair( prefix, postfix );
-}
-
-std::string generateEnumValueName( std::string const &           enumName,
-                                   std::string const &           valueName,
-                                   bool                          bitmask,
-                                   std::set<std::string> const & tags )
-{
-  std::string prefix, postfix;
-  std::tie( prefix, postfix ) = generateEnumSuffixes( enumName, bitmask, tags );
-  std::string tag             = findTag( tags, valueName, "" );
-  if ( postfix == "_" + tag )
-  {
-    tag = findTag( tags, valueName, postfix );
-  }
-
-  std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
-  if ( bitmask )
-  {
-    size_t pos = result.find( "Bit" );
-    if ( pos != std::string::npos )
-    {
-      result.erase( pos, 3 );
-    }
-  }
-  if ( !tag.empty() && ( result.substr( result.length() - tag.length() ) == toCamelCase( tag ) ) )
-  {
-    result = result.substr( 0, result.length() - tag.length() ) + tag;
-  }
-  return result;
-}
-
-std::string generateNamespacedType( std::string const & type )
-{
-  return beginsWith( type, "Vk" ) ? ( "VULKAN_HPP_NAMESPACE::" + stripPrefix( type, "Vk" ) ) : type;
-}
-
-std::string generateNoDiscard( bool multiSuccessCodes, bool multiErrorCodes )
-{
-  return ( multiSuccessCodes ) ? "VULKAN_HPP_NODISCARD "
-                               : ( multiErrorCodes ? "VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS " : "" );
-}
-
-std::string generateStandardArray( std::string const & type, std::vector<std::string> const & sizes )
-{
-  std::string arrayString = "std::array<" + type + "," + sizes.back() + ">";
-  for ( size_t i = sizes.size() - 2; i < sizes.size(); i-- )
-  {
-    arrayString = "std::array<" + arrayString + "," + sizes[i] + ">";
-  }
-  return arrayString;
-}
-
-std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
-{
-  std::string arrayString = "VULKAN_HPP_NAMESPACE::ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
-  for ( auto const & size : sizes )
-  {
-    arrayString += ", " + size;
-  }
-  arrayString += ">";
-  return arrayString;
-}
-
-std::string generateSuccessCode( std::string const & code, std::set<std::string> const & tags )
-{
-  std::string tag = findTag( tags, code );
-  // on each success code: prepend 'VULKAN_HPP_NAMESPACE::Result::e', strip "VK_" and a tag, convert it to camel case,
-  // and add the tag again
-  return "VULKAN_HPP_NAMESPACE::Result::e" + toCamelCase( stripPostfix( stripPrefix( code, "VK_" ), tag ) ) + tag;
-}
-
-std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element )
-{
-  std::map<std::string, std::string> attributes;
-  for ( auto attribute = element->FirstAttribute(); attribute; attribute = attribute->Next() )
-  {
-    assert( attributes.find( attribute->Name() ) == attributes.end() );
-    attributes[attribute->Name()] = attribute->Value();
-  }
-  return attributes;
-}
-
-template <typename ElementContainer>
-std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element )
-{
-  std::vector<tinyxml2::XMLElement const *> childElements;
-  for ( tinyxml2::XMLElement const * childElement = element->FirstChildElement(); childElement;
-        childElement                              = childElement->NextSiblingElement() )
-  {
-    childElements.push_back( childElement );
-  }
-  return childElements;
-}
-
-std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )
-{
-  std::vector<std::string> arraySizes;
-  std::string              bitCount;
-  if ( node && node->ToText() )
-  {
-    // following the name there might be some array size
-    std::string value = node->Value();
-    assert( !value.empty() );
-    if ( value[0] == '[' )
-    {
-      std::string::size_type endPos = 0;
-      while ( endPos + 1 != value.length() )
-      {
-        std::string::size_type startPos = value.find( '[', endPos );
-        check( startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
-        endPos = value.find( ']', startPos );
-        check( endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
-        check( startPos + 2 <= endPos, node->GetLineNum(), "missing content between '[' and ']' in <" + value + ">" );
-        arraySizes.push_back( value.substr( startPos + 1, endPos - startPos - 1 ) );
-      }
-    }
-    else if ( value[0] == ':' )
-    {
-      bitCount = value.substr( 1 );
-    }
-    else
-    {
-      check( ( value[0] == ';' ) || ( value[0] == ')' ), node->GetLineNum(), "unknown modifier <" + value + ">" );
-    }
-  }
-  return std::make_pair( arraySizes, bitCount );
-}
-
-void replaceAll( std::string & str, std::string const & from, std::string const & to )
-{
-  size_t pos = 0;
-  while ( ( pos = str.find( from, pos ) ) != std::string::npos )
-  {
-    str.replace( pos, from.length(), to );
-    pos += to.length();  // Handles case where 'to' is a substring of 'from'
-  }
-}
-
-std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements )
-{
-  // This will match ${someVariable} and contain someVariable in match group 1
-  std::regex re( R"(\$\{([^\}]+)\})" );
-  auto       it  = std::sregex_iterator( input.begin(), input.end(), re );
-  auto       end = std::sregex_iterator();
-
-  // No match, just return the original string
-  if ( it == end )
-  {
-    assert( replacements.empty() );
-    return input;
-  }
-
-#if !defined( NDEBUG )
-  std::set<std::string> matchedReplacements;
-#endif
-
-  std::string result = "";
-  while ( it != end )
-  {
-    std::smatch match         = *it;
-    auto        itReplacement = replacements.find( match[1].str() );
-    assert( itReplacement != replacements.end() );
-#if !defined( NDEBUG )
-    matchedReplacements.insert( match[1].str() );
-#endif
-
-    result +=
-      match.prefix().str() + ( ( itReplacement != replacements.end() ) ? itReplacement->second : match[0].str() );
-    ++it;
-
-    // we've passed the last match. Append the rest of the orignal string
-    if ( it == end )
-    {
-      result += match.suffix().str();
-    }
-  }
-#if !defined( NDEBUG )
-  std::set<std::string> missedReplacements;
-  for ( auto r : replacements )
-  {
-    if ( matchedReplacements.find( r.first ) == matchedReplacements.end() )
-    {
-      missedReplacements.insert( r.first );
-    }
-  }
-  assert( missedReplacements.empty() );
-#endif
-  return result;
-}
-
-std::string startLowerCase( std::string const & input )
-{
-  return input.empty() ? "" : static_cast<char>( tolower( input[0] ) ) + input.substr( 1 );
-}
-
-std::string startUpperCase( std::string const & input )
-{
-  return input.empty() ? "" : static_cast<char>( toupper( input[0] ) ) + input.substr( 1 );
-}
-
-std::string stripPostfix( std::string const & value, std::string const & postfix )
-{
-  std::string strippedValue = value;
-  if ( endsWith( strippedValue, postfix ) )
-  {
-    strippedValue.erase( strippedValue.length() - postfix.length() );
-  }
-  return strippedValue;
-}
-
-std::string stripPluralS( std::string const & name )
-{
-  std::string strippedName( name );
-  size_t      pos = strippedName.rfind( 's' );
-  if ( pos != std::string::npos )
-  {
-    if ( ( 2 <= pos ) && ( strippedName.substr( pos - 2, 3 ) == "ies" ) )
-    {
-      strippedName.replace( pos - 2, 3, "y" );
-    }
-    else
-    {
-      strippedName.erase( pos, 1 );
-    }
-  }
-  return strippedName;
-}
-
-std::string stripPrefix( std::string const & value, std::string const & prefix )
-{
-  std::string strippedValue = value;
-  if ( beginsWith( strippedValue, prefix ) )
-  {
-    strippedValue.erase( 0, prefix.length() );
-  }
-  return strippedValue;
-}
-
-std::string toCamelCase( std::string const & value )
-{
-  assert( !value.empty() && ( isupper( value[0] ) || isdigit( value[0] ) ) );
-  std::string result;
-  result.reserve( value.size() );
-  bool keepUpper = true;
-  for ( auto c : value )
-  {
-    if ( c == '_' )
-    {
-      keepUpper = true;
-    }
-    else if ( isdigit( c ) )
-    {
-      keepUpper = true;
-      result.push_back( c );
-    }
-    else if ( keepUpper )
-    {
-      result.push_back( c );
-      keepUpper = false;
-    }
-    else
-    {
-      result.push_back( static_cast<char>( tolower( c ) ) );
-    }
-  }
-  return result;
-}
-
-std::string toUpperCase( std::string const & name )
-{
-  std::string convertedName;
-  bool        previousIsLowerCase = false;
-  bool        previousIsDigit     = false;
-  for ( auto c : name )
-  {
-    if ( ( isupper( c ) && ( previousIsLowerCase || previousIsDigit ) ) || ( isdigit( c ) && previousIsLowerCase ) )
-    {
-      convertedName.push_back( '_' );
-    }
-    convertedName.push_back( static_cast<char>( toupper( c ) ) );
-    previousIsLowerCase = !!islower( c );
-    previousIsDigit     = !!isdigit( c );
-  }
-  return convertedName;
-}
-
-std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )
-{
-  std::vector<std::string> tokens;
-  if ( !tokenString.empty() )
-  {
-    size_t start = 0, end;
-    do
-    {
-      end = tokenString.find( separator, start );
-      if ( start != end )
-      {
-        tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
-      }
-      start = end + separator.length();
-    } while ( end != std::string::npos );
-  }
-  return tokens;
-}
-
-template <typename StringContainer>
-std::string toString( StringContainer const & strings )
-{
-  std::string str;
-  bool        encounteredMember = false;
-  for ( auto s : strings )
-  {
-    if ( encounteredMember )
-    {
-      str += ", ";
-    }
-    str += s;
-    encounteredMember = true;
-  }
-  return str;
-}
-
-std::string trim( std::string const & input )
-{
-  std::string result = input;
-  result.erase( result.begin(),
-                std::find_if( result.begin(), result.end(), []( char c ) { return !std::isspace( c ); } ) );
-  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(),
-                result.end() );
-  return result;
-}
-
-std::string trimEnd( std::string const & input )
-{
-  std::string result = input;
-  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(),
-                result.end() );
-  return result;
-}
-
-std::string trimStars( std::string const & input )
-{
-  std::string result = input;
-  size_t      pos    = result.find( '*' );
-  while ( pos != std::string::npos )
-  {
-    if ( ( 0 < pos ) && ( result[pos - 1] != ' ' ) && ( result[pos - 1] != '*' ) )
-    {
-      result.insert( pos, 1, ' ' );
-      ++pos;
-    }
-    else if ( ( pos < result.length() - 1 ) && ( result[pos + 1] != ' ' ) && ( result[pos + 1] != '*' ) )
-    {
-      result.insert( pos + 1, 1, ' ' );
-    }
-    pos = result.find( '*', pos + 1 );
-  }
-  return result;
-}
-
-void warn( bool condition, int line, std::string const & message )
-{
-  if ( !condition )
-  {
-    std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!"
-              << std::endl;
-  }
-}
-
-void writeToFile( std::string const & str, std::string const & fileName )
-{
-  std::ofstream ofs( fileName );
-  assert( !ofs.fail() );
-  ofs << str;
-  ofs.close();
-
-#if defined( CLANG_FORMAT_EXECUTABLE )
-  std::cout << "VulkanHppGenerator: Formatting " << fileName << " ..." << std::endl;
-  std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
-  int         ret           = std::system( commandString.c_str() );
-  if ( ret != 0 )
-  {
-    std::cout << "VulkanHppGenerator: failed to format file " << fileName << " with error <" << ret << ">\n";
-  }
-#endif
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleMemberFunctionValue(
-  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const
-{
-  // as the return type is not "VkResult", there are no success or error codes allowed
-  assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
-
-  std::string         function;
-  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
-  if ( returnParamIndices.empty() )
-  {
-    function = generateRAIIHandleMemberFunctionValue0Return( commandIt, initialSkipCount, definition );
-  }
-  return function;
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleMemberFunctionValue0Return(
-  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const
-{
-  std::string              function;
-  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandIt->second.params );
-  if ( beginsWith( commandIt->second.returnType, "Vk" ) )
-  {
-    function = generateRAIIHandleMemberFunctionVkType( commandIt, initialSkipCount, vectorParamIndices, definition );
-  }
-  else
-  {
-    function = generateRAIIHandleMemberFunctionType( commandIt, initialSkipCount, vectorParamIndices, definition );
-  }
-  return function;
-}
-
-template <class InputIt, class UnaryPredicate>
-std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
-{
-  std::vector<InputIt> result;
-  while ( first != last )
-  {
-    if ( p( *first ) )
-    {
-      result.push_back( first );
-    }
-    ++first;
-  }
-  return result;
-}
-
-void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & aliasName )
-{
-  auto aliasIt = aliases.find( name );
-  check( ( aliasIt == aliases.end() ) || ( aliasIt->second.name == aliasName ),
-         line,
-         "enum alias <" + name + "> already listed for a different enum value" );
-  aliases.insert( std::make_pair( name, EnumAliasData( aliasName, line ) ) );
-}
-
-void VulkanHppGenerator::EnumData::addEnumValue(
-  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension )
-{
-  auto valueIt = std::find_if(
-    values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
-  if ( valueIt == values.end() )
-  {
-    values.emplace_back( line, valueName, protect, extension, bitpos );
-  }
-}
-
-std::string
-  VulkanHppGenerator::generateFunctionHeaderArgumentEnhanced( ParamData const &                param,
-                                                              size_t                           paramIndex,
-                                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                                              bool                             skip,
-                                                              bool                             isTemplateParam ) const
-{
-  std::string str;
-  if ( !skip )
-  {
-    std::string strippedParameterName = startLowerCase( stripPrefix( param.name, "p" ) );
-
-    std::map<size_t, size_t>::const_iterator it = vectorParamIndices.find( paramIndex );
-    if ( it == vectorParamIndices.end() )
-    {
-      // the argument ist not a vector
-      assert( param.type.postfix.empty() );
-      // and its not a pointer -> just use its type and name here
-      str += param.type.compose() + " " + param.name + generateCArraySizes( param.arraySizes );
-    }
-    else
-    {
-      // the argument is a vector
-      str += generateFunctionHeaderArgumentEnhancedVector(
-        param, strippedParameterName, it->second != INVALID_INDEX, isTemplateParam );
-    }
-  }
-  return str;
-}
-
 std::pair<std::string, std::string>
   VulkanHppGenerator::generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const
 {
@@ -8873,6 +8190,689 @@ ${leave})";
                                              { "handleType", stripPrefix( handleType, "Vk" ) },
                                              { "leave", destructorLeave } } );
   return std::make_pair( destructor, destructorCall );
+}
+
+std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                                   std::string const &              title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto structIt = m_structures.find( type );
+      if ( structIt != m_structures.end() )
+      {
+        std::string structureType = stripPrefix( structIt->first, "Vk" );
+        str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
+        auto inverseIt = m_structureAliasesInverse.find( type );
+        if ( inverseIt != m_structureAliasesInverse.end() )
+        {
+          for ( auto alias : inverseIt->second )
+          {
+            str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureType + ";\n";
+          }
+        }
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
+}
+
+//
+// VulkanHppGenerator local functions
+//
+
+bool beginsWith( std::string const & text, std::string const & prefix )
+{
+  return prefix.empty() || text.substr( 0, prefix.length() ) == prefix;
+}
+
+bool endsWith( std::string const & text, std::string const & postfix )
+{
+  return postfix.empty() ||
+         ( ( postfix.length() <= text.length() ) && ( text.substr( text.length() - postfix.length() ) == postfix ) );
+}
+
+void check( bool condition, int line, std::string const & message )
+{
+  if ( !condition )
+  {
+    throw std::runtime_error( "VulkanHppGenerator: Spec error on line " + std::to_string( line ) + ": " + message );
+  }
+}
+
+// check the validity of an attributes map
+// line       : the line in the xml file where the attributes are listed
+// attributes : the map of name/value pairs of the encountered attributes
+// required   : the required attributes, with a set of allowed values per attribute
+// optional   : the optional attributes, with a set of allowed values per attribute
+void checkAttributes( int                                                  line,
+                      std::map<std::string, std::string> const &           attributes,
+                      std::map<std::string, std::set<std::string>> const & required,
+                      std::map<std::string, std::set<std::string>> const & optional )
+{
+  // check if all required attributes are included and if there is a set of allowed values, check if the actual value is
+  // part of that set
+  for ( auto const & r : required )
+  {
+    auto attributesIt = attributes.find( r.first );
+    check( attributesIt != attributes.end(), line, "missing attribute <" + r.first + ">" );
+    check( r.second.empty() || ( r.second.find( attributesIt->second ) != r.second.end() ),
+           line,
+           "unexpected attribute value <" + attributesIt->second + "> in attribute <" + r.first + ">" );
+  }
+  // check if all not required attributes or optional, and if there is a set of allowed values, check if the actual
+  // value is part of that set
+  for ( auto const & a : attributes )
+  {
+    if ( required.find( a.first ) == required.end() )
+    {
+      auto optionalIt = optional.find( a.first );
+      if ( optionalIt == optional.end() )
+      {
+        warn( false, line, "unknown attribute <" + a.first + ">" );
+        continue;
+      }
+      if ( !optionalIt->second.empty() )
+      {
+        std::vector<std::string> values = tokenize( a.second, "," );
+        for ( auto const & v : values )
+        {
+          warn( optionalIt->second.find( v ) != optionalIt->second.end(),
+                line,
+                "unexpected attribute value <" + v + "> in attribute <" + a.first + ">" );
+        }
+      }
+    }
+  }
+}
+
+void checkElements( int                                               line,
+                    std::vector<tinyxml2::XMLElement const *> const & elements,
+                    std::map<std::string, bool> const &               required,
+                    std::set<std::string> const &                     optional )
+{
+  std::map<std::string, size_t> encountered;
+  for ( auto const & e : elements )
+  {
+    std::string value = e->Value();
+    encountered[value]++;
+    warn( ( required.find( value ) != required.end() ) || ( optional.find( value ) != optional.end() ),
+          e->GetLineNum(),
+          "unknown element <" + value + ">" );
+  }
+  for ( auto const & r : required )
+  {
+    auto encounteredIt = encountered.find( r.first );
+    check( encounteredIt != encountered.end(), line, "missing required element <" + r.first + ">" );
+    // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
+    check( !r.second || ( encounteredIt->second == 1 ),
+           line,
+           "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " +
+             std::to_string( encounteredIt->second ) );
+  }
+}
+
+std::set<size_t> determineSingularParams( size_t returnParamIndex, std::map<size_t, size_t> const & vectorParamIndices )
+{
+  auto returnVectorIt = vectorParamIndices.find( returnParamIndex );
+  assert( returnVectorIt != vectorParamIndices.end() );
+  std::set<size_t> singularParams;
+  singularParams.insert( returnVectorIt->second );
+  for ( auto const & vpi : vectorParamIndices )
+  {
+    if ( vpi.second == returnVectorIt->second )
+    {
+      singularParams.insert( vpi.first );
+    }
+  }
+  return singularParams;
+}
+
+std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix )
+{
+  auto tagIt = std::find_if(
+    tags.begin(), tags.end(), [&name, &postfix]( std::string const & t ) { return endsWith( name, t + postfix ); } );
+  return ( tagIt != tags.end() ) ? *tagIt : "";
+}
+
+std::string generateCArraySizes( std::vector<std::string> const & sizes )
+{
+  std::string arraySizes;
+  for ( auto const & s : sizes )
+  {
+    arraySizes += "[" + s + "]";
+  }
+  return arraySizes;
+}
+
+std::pair<std::string, std::string>
+  generateEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags )
+{
+  std::string prefix, postfix;
+  if ( name == "VkResult" )
+  {
+    prefix = "VK_";
+  }
+  else
+  {
+    if ( bitmask )
+    {
+      // for a bitmask enum, start with "VK", cut off the trailing "FlagBits", and convert that name to upper case
+      // end that with "Bit"
+      size_t pos = name.find( "FlagBits" );
+      assert( pos != std::string::npos );
+      std::string shortenedName = name;
+      shortenedName.erase( pos, strlen( "FlagBits" ) );
+      std::string tag = findTag( tags, shortenedName );
+      prefix          = toUpperCase( stripPostfix( shortenedName, tag ) ) + "_";
+    }
+    else
+    {
+      // for a non-bitmask enum, convert the name to upper case
+      prefix = toUpperCase( name ) + "_";
+    }
+
+    // if the enum name contains a tag move it from the prefix to the postfix to generate correct enum value names.
+    for ( auto const & tag : tags )
+    {
+      if ( endsWith( prefix, tag + "_" ) )
+      {
+        prefix.erase( prefix.length() - tag.length() - 1 );
+        postfix = "_" + tag;
+        break;
+      }
+      else if ( endsWith( name, tag ) )
+      {
+        postfix = "_" + tag;
+        break;
+      }
+    }
+  }
+
+  return std::make_pair( prefix, postfix );
+}
+
+std::string generateEnumValueName( std::string const &           enumName,
+                                   std::string const &           valueName,
+                                   bool                          bitmask,
+                                   std::set<std::string> const & tags )
+{
+  std::string prefix, postfix;
+  std::tie( prefix, postfix ) = generateEnumSuffixes( enumName, bitmask, tags );
+  std::string tag             = findTag( tags, valueName, "" );
+  if ( postfix == "_" + tag )
+  {
+    tag = findTag( tags, valueName, postfix );
+  }
+
+  std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
+  if ( bitmask )
+  {
+    size_t pos = result.find( "Bit" );
+    if ( pos != std::string::npos )
+    {
+      result.erase( pos, 3 );
+    }
+  }
+  if ( !tag.empty() && ( result.substr( result.length() - tag.length() ) == toCamelCase( tag ) ) )
+  {
+    result = result.substr( 0, result.length() - tag.length() ) + tag;
+  }
+  return result;
+}
+
+std::string generateNamespacedType( std::string const & type )
+{
+  return beginsWith( type, "Vk" ) ? ( "VULKAN_HPP_NAMESPACE::" + stripPrefix( type, "Vk" ) ) : type;
+}
+
+std::string generateNoDiscard( bool multiSuccessCodes, bool multiErrorCodes )
+{
+  return ( multiSuccessCodes ) ? "VULKAN_HPP_NODISCARD "
+                               : ( multiErrorCodes ? "VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS " : "" );
+}
+
+std::string generateStandardArray( std::string const & type, std::vector<std::string> const & sizes )
+{
+  std::string arrayString = "std::array<" + type + "," + sizes.back() + ">";
+  for ( size_t i = sizes.size() - 2; i < sizes.size(); i-- )
+  {
+    arrayString = "std::array<" + arrayString + "," + sizes[i] + ">";
+  }
+  return arrayString;
+}
+
+std::string generateStandardArrayWrapper( std::string const & type, std::vector<std::string> const & sizes )
+{
+  std::string arrayString = "VULKAN_HPP_NAMESPACE::ArrayWrapper" + std::to_string( sizes.size() ) + "D<" + type;
+  for ( auto const & size : sizes )
+  {
+    arrayString += ", " + size;
+  }
+  arrayString += ">";
+  return arrayString;
+}
+
+std::string generateSuccessCode( std::string const & code, std::set<std::string> const & tags )
+{
+  std::string tag = findTag( tags, code );
+  // on each success code: prepend 'VULKAN_HPP_NAMESPACE::Result::e', strip "VK_" and a tag, convert it to camel case,
+  // and add the tag again
+  return "VULKAN_HPP_NAMESPACE::Result::e" + toCamelCase( stripPostfix( stripPrefix( code, "VK_" ), tag ) ) + tag;
+}
+
+std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element )
+{
+  std::map<std::string, std::string> attributes;
+  for ( auto attribute = element->FirstAttribute(); attribute; attribute = attribute->Next() )
+  {
+    assert( attributes.find( attribute->Name() ) == attributes.end() );
+    attributes[attribute->Name()] = attribute->Value();
+  }
+  return attributes;
+}
+
+template <typename ElementContainer>
+std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer const * element )
+{
+  std::vector<tinyxml2::XMLElement const *> childElements;
+  for ( tinyxml2::XMLElement const * childElement = element->FirstChildElement(); childElement;
+        childElement                              = childElement->NextSiblingElement() )
+  {
+    childElements.push_back( childElement );
+  }
+  return childElements;
+}
+
+std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )
+{
+  std::vector<std::string> arraySizes;
+  std::string              bitCount;
+  if ( node && node->ToText() )
+  {
+    // following the name there might be some array size
+    std::string value = node->Value();
+    assert( !value.empty() );
+    if ( value[0] == '[' )
+    {
+      std::string::size_type endPos = 0;
+      while ( endPos + 1 != value.length() )
+      {
+        std::string::size_type startPos = value.find( '[', endPos );
+        check( startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
+        endPos = value.find( ']', startPos );
+        check( endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
+        check( startPos + 2 <= endPos, node->GetLineNum(), "missing content between '[' and ']' in <" + value + ">" );
+        arraySizes.push_back( value.substr( startPos + 1, endPos - startPos - 1 ) );
+      }
+    }
+    else if ( value[0] == ':' )
+    {
+      bitCount = value.substr( 1 );
+    }
+    else
+    {
+      check( ( value[0] == ';' ) || ( value[0] == ')' ), node->GetLineNum(), "unknown modifier <" + value + ">" );
+    }
+  }
+  return std::make_pair( arraySizes, bitCount );
+}
+
+void replaceAll( std::string & str, std::string const & from, std::string const & to )
+{
+  size_t pos = 0;
+  while ( ( pos = str.find( from, pos ) ) != std::string::npos )
+  {
+    str.replace( pos, from.length(), to );
+    pos += to.length();  // Handles case where 'to' is a substring of 'from'
+  }
+}
+
+std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements )
+{
+  // This will match ${someVariable} and contain someVariable in match group 1
+  std::regex re( R"(\$\{([^\}]+)\})" );
+  auto       it  = std::sregex_iterator( input.begin(), input.end(), re );
+  auto       end = std::sregex_iterator();
+
+  // No match, just return the original string
+  if ( it == end )
+  {
+    assert( replacements.empty() );
+    return input;
+  }
+
+#if !defined( NDEBUG )
+  std::set<std::string> matchedReplacements;
+#endif
+
+  std::string result = "";
+  while ( it != end )
+  {
+    std::smatch match         = *it;
+    auto        itReplacement = replacements.find( match[1].str() );
+    assert( itReplacement != replacements.end() );
+#if !defined( NDEBUG )
+    matchedReplacements.insert( match[1].str() );
+#endif
+
+    result +=
+      match.prefix().str() + ( ( itReplacement != replacements.end() ) ? itReplacement->second : match[0].str() );
+    ++it;
+
+    // we've passed the last match. Append the rest of the orignal string
+    if ( it == end )
+    {
+      result += match.suffix().str();
+    }
+  }
+#if !defined( NDEBUG )
+  std::set<std::string> missedReplacements;
+  for ( auto r : replacements )
+  {
+    if ( matchedReplacements.find( r.first ) == matchedReplacements.end() )
+    {
+      missedReplacements.insert( r.first );
+    }
+  }
+  assert( missedReplacements.empty() );
+#endif
+  return result;
+}
+
+std::string startLowerCase( std::string const & input )
+{
+  return input.empty() ? "" : static_cast<char>( tolower( input[0] ) ) + input.substr( 1 );
+}
+
+std::string startUpperCase( std::string const & input )
+{
+  return input.empty() ? "" : static_cast<char>( toupper( input[0] ) ) + input.substr( 1 );
+}
+
+std::string stripPostfix( std::string const & value, std::string const & postfix )
+{
+  std::string strippedValue = value;
+  if ( endsWith( strippedValue, postfix ) )
+  {
+    strippedValue.erase( strippedValue.length() - postfix.length() );
+  }
+  return strippedValue;
+}
+
+std::string stripPluralS( std::string const & name )
+{
+  std::string strippedName( name );
+  size_t      pos = strippedName.rfind( 's' );
+  if ( pos != std::string::npos )
+  {
+    if ( ( 2 <= pos ) && ( strippedName.substr( pos - 2, 3 ) == "ies" ) )
+    {
+      strippedName.replace( pos - 2, 3, "y" );
+    }
+    else
+    {
+      strippedName.erase( pos, 1 );
+    }
+  }
+  return strippedName;
+}
+
+std::string stripPrefix( std::string const & value, std::string const & prefix )
+{
+  std::string strippedValue = value;
+  if ( beginsWith( strippedValue, prefix ) )
+  {
+    strippedValue.erase( 0, prefix.length() );
+  }
+  return strippedValue;
+}
+
+std::string toCamelCase( std::string const & value )
+{
+  assert( !value.empty() && ( isupper( value[0] ) || isdigit( value[0] ) ) );
+  std::string result;
+  result.reserve( value.size() );
+  bool keepUpper = true;
+  for ( auto c : value )
+  {
+    if ( c == '_' )
+    {
+      keepUpper = true;
+    }
+    else if ( isdigit( c ) )
+    {
+      keepUpper = true;
+      result.push_back( c );
+    }
+    else if ( keepUpper )
+    {
+      result.push_back( c );
+      keepUpper = false;
+    }
+    else
+    {
+      result.push_back( static_cast<char>( tolower( c ) ) );
+    }
+  }
+  return result;
+}
+
+std::string toUpperCase( std::string const & name )
+{
+  std::string convertedName;
+  bool        previousIsLowerCase = false;
+  bool        previousIsDigit     = false;
+  for ( auto c : name )
+  {
+    if ( ( isupper( c ) && ( previousIsLowerCase || previousIsDigit ) ) || ( isdigit( c ) && previousIsLowerCase ) )
+    {
+      convertedName.push_back( '_' );
+    }
+    convertedName.push_back( static_cast<char>( toupper( c ) ) );
+    previousIsLowerCase = !!islower( c );
+    previousIsDigit     = !!isdigit( c );
+  }
+  return convertedName;
+}
+
+std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )
+{
+  std::vector<std::string> tokens;
+  if ( !tokenString.empty() )
+  {
+    size_t start = 0, end;
+    do
+    {
+      end = tokenString.find( separator, start );
+      if ( start != end )
+      {
+        tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
+      }
+      start = end + separator.length();
+    } while ( end != std::string::npos );
+  }
+  return tokens;
+}
+
+template <typename StringContainer>
+std::string toString( StringContainer const & strings )
+{
+  std::string str;
+  bool        encounteredMember = false;
+  for ( auto s : strings )
+  {
+    if ( encounteredMember )
+    {
+      str += ", ";
+    }
+    str += s;
+    encounteredMember = true;
+  }
+  return str;
+}
+
+std::string trim( std::string const & input )
+{
+  std::string result = input;
+  result.erase( result.begin(),
+                std::find_if( result.begin(), result.end(), []( char c ) { return !std::isspace( c ); } ) );
+  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(),
+                result.end() );
+  return result;
+}
+
+std::string trimEnd( std::string const & input )
+{
+  std::string result = input;
+  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(),
+                result.end() );
+  return result;
+}
+
+std::string trimStars( std::string const & input )
+{
+  std::string result = input;
+  size_t      pos    = result.find( '*' );
+  while ( pos != std::string::npos )
+  {
+    if ( ( 0 < pos ) && ( result[pos - 1] != ' ' ) && ( result[pos - 1] != '*' ) )
+    {
+      result.insert( pos, 1, ' ' );
+      ++pos;
+    }
+    else if ( ( pos < result.length() - 1 ) && ( result[pos + 1] != ' ' ) && ( result[pos + 1] != '*' ) )
+    {
+      result.insert( pos + 1, 1, ' ' );
+    }
+    pos = result.find( '*', pos + 1 );
+  }
+  return result;
+}
+
+void warn( bool condition, int line, std::string const & message )
+{
+  if ( !condition )
+  {
+    std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!"
+              << std::endl;
+  }
+}
+
+void writeToFile( std::string const & str, std::string const & fileName )
+{
+  std::ofstream ofs( fileName );
+  assert( !ofs.fail() );
+  ofs << str;
+  ofs.close();
+
+#if defined( CLANG_FORMAT_EXECUTABLE )
+  std::cout << "VulkanHppGenerator: Formatting " << fileName << " ..." << std::endl;
+  std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
+  int         ret           = std::system( commandString.c_str() );
+  if ( ret != 0 )
+  {
+    std::cout << "VulkanHppGenerator: failed to format file " << fileName << " with error <" << ret << ">\n";
+  }
+#endif
+}
+
+std::string VulkanHppGenerator::generateRAIIHandleMemberFunctionValue(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const
+{
+  // as the return type is not "VkResult", there are no success or error codes allowed
+  assert( commandIt->second.successCodes.empty() && commandIt->second.errorCodes.empty() );
+
+  std::string         function;
+  std::vector<size_t> returnParamIndices = determineNonConstPointerParamIndices( commandIt->second.params );
+  if ( returnParamIndices.empty() )
+  {
+    function = generateRAIIHandleMemberFunctionValue0Return( commandIt, initialSkipCount, definition );
+  }
+  return function;
+}
+
+std::string VulkanHppGenerator::generateRAIIHandleMemberFunctionValue0Return(
+  std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const
+{
+  std::string              function;
+  std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandIt->second.params );
+  if ( beginsWith( commandIt->second.returnType, "Vk" ) )
+  {
+    function = generateRAIIHandleMemberFunctionVkType( commandIt, initialSkipCount, vectorParamIndices, definition );
+  }
+  else
+  {
+    function = generateRAIIHandleMemberFunctionType( commandIt, initialSkipCount, vectorParamIndices, definition );
+  }
+  return function;
+}
+
+template <class InputIt, class UnaryPredicate>
+std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
+{
+  std::vector<InputIt> result;
+  while ( first != last )
+  {
+    if ( p( *first ) )
+    {
+      result.push_back( first );
+    }
+    ++first;
+  }
+  return result;
+}
+
+void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & aliasName )
+{
+  auto aliasIt = aliases.find( name );
+  check( ( aliasIt == aliases.end() ) || ( aliasIt->second.name == aliasName ),
+         line,
+         "enum alias <" + name + "> already listed for a different enum value" );
+  aliases.insert( std::make_pair( name, EnumAliasData( aliasName, line ) ) );
+}
+
+void VulkanHppGenerator::EnumData::addEnumValue(
+  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension )
+{
+  auto valueIt = std::find_if(
+    values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
+  if ( valueIt == values.end() )
+  {
+    values.emplace_back( line, valueName, protect, extension, bitpos );
+  }
+}
+
+std::string
+  VulkanHppGenerator::generateFunctionHeaderArgumentEnhanced( ParamData const &                param,
+                                                              size_t                           paramIndex,
+                                                              std::map<size_t, size_t> const & vectorParamIndices,
+                                                              bool                             skip,
+                                                              bool                             isTemplateParam ) const
+{
+  std::string str;
+  if ( !skip )
+  {
+    std::string strippedParameterName = startLowerCase( stripPrefix( param.name, "p" ) );
+
+    std::map<size_t, size_t>::const_iterator it = vectorParamIndices.find( paramIndex );
+    if ( it == vectorParamIndices.end() )
+    {
+      // the argument ist not a vector
+      assert( param.type.postfix.empty() );
+      // and its not a pointer -> just use its type and name here
+      str += param.type.compose() + " " + param.name + generateCArraySizes( param.arraySizes );
+    }
+    else
+    {
+      // the argument is a vector
+      str += generateFunctionHeaderArgumentEnhancedVector(
+        param, strippedParameterName, it->second != INVALID_INDEX, isTemplateParam );
+    }
+  }
+  return str;
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::string const &            handleType,

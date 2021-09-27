@@ -422,14 +422,12 @@ private:
                                              size_t                         initialSkipCount,
                                              bool                           nonConstPointerAsNullptr,
                                              std::set<size_t> const &       singularParams,
-                                             std::vector<size_t> const &    returnParamIndices,
                                              bool                           raiiHandleMemberFunction ) const;
   std::string generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
                                             std::set<size_t> const &       singularParams,
-                                            std::vector<size_t> const &    returnParamIndices,
                                             bool                           raiiHandleMemberFunction ) const;
   std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
                                                         size_t                   paramIndex,
@@ -441,8 +439,7 @@ private:
                                                            bool                     raiiHandleMemberFunction ) const;
   std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params,
                                                  size_t                         paramIndex,
-                                                 std::set<size_t> const &       singularParams,
-                                                 std::vector<size_t> const &    returnParamIndices ) const;
+                                                 std::set<size_t> const &       singularParams ) const;
   std::string generateCommand( std::string const & name,
                                CommandData const & commandData,
                                size_t              initialSkipCount,
@@ -489,6 +486,12 @@ private:
                                                     size_t              initialSkipCount,
                                                     bool                definition,
                                                     size_t              nonConstPointerIndex ) const;
+  std::string generateCommandResultGetSingularAndValue( std::string const &              name,
+                                                      CommandData const &              commandData,
+                                                      size_t                           initialSkipCount,
+                                                        bool                             definition,
+                                                        std::vector<size_t> const &      returnParamIndices,
+                                                      std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandResultGetTwoValues( std::string const & name,
                                                  CommandData const & commandData,
                                                  size_t              initialSkipCount,
@@ -682,11 +685,12 @@ private:
                                                             std::string const & enhancedChained,
                                                             std::string const & enhancedChainedWithAllocator ) const;
   std::string
-    generateCommandSetStandardEnhancedWithAllocatorDeprecated( bool                definition,
-                                                               std::string const & standard,
-                                                               std::string const & enhancedDeprecated,
-                                                               std::string const & enhanced,
-                                                               std::string const & enhancedWithAllocator ) const;
+    generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated( bool                definition,
+                                                                       std::string const & standard,
+                                                                       std::string const & enhancedDeprecated,
+                                                                       std::string const & enhanced,
+                                                                       std::string const & enhancedWithAllocator,
+                                                                       std::string const & enhancedSingular ) const;
   std::string
     generateCommandSetStandardEnhancedWithAllocatorDeprecated2( bool                definition,
                                                                 std::string const & standard,
@@ -878,7 +882,7 @@ private:
                                                size_t                                             initialSkipCount,
                                                bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessNoErrors(
-                            std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
+    std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessNoErrors0Return(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
@@ -984,6 +988,12 @@ private:
     size_t                                             initialSkipCount,
     bool                                               definition,
     std::vector<size_t> const &                        returnParamIndices ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2ReturnValueSingularValue(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    bool                                               definition,
+    std::vector<size_t> const &                        returnParamIndices,
+    std::map<size_t, size_t> const &                   vectorParamIndices ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2ReturnValueVectorValue(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
@@ -1053,7 +1063,6 @@ private:
                                                           std::vector<ParamData> const & params,
                                                           bool                           nonConstPointerAsNullptr,
                                                           std::set<size_t> const &       singularParams,
-                                                          std::vector<size_t> const &    returnParamIndices,
                                                           bool allocatorIsMemberVariable ) const;
   std::string generateRAIIHandleConstructorEnumerate( std::pair<std::string, HandleData> const &         handle,
                                                       std::map<std::string, CommandData>::const_iterator constructorIt,

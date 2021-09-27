@@ -15558,6 +15558,24 @@ namespace VULKAN_HPP_NAMESPACE
                                       &maxDeviation ) );
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
   }
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<uint64_t, uint64_t>>::type
+    Device::getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT & timestampInfo,
+                                       Dispatch const &                                         d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    std::pair<uint64_t, uint64_t> data;
+    uint64_t &                    timestamp    = data.first;
+    uint64_t &                    maxDeviation = data.second;
+    Result                        result       = static_cast<Result>(
+      d.vkGetCalibratedTimestampsEXT( m_device,
+                                      1,
+                                      reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( &timestampInfo ),
+                                      &timestamp,
+                                      &maxDeviation ) );
+    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
+  }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   //=== VK_NV_mesh_shader ===

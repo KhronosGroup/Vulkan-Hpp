@@ -3199,6 +3199,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::pair<std::vector<uint64_t>, uint64_t> getCalibratedTimestampsEXT(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos ) const;
 
+      VULKAN_HPP_NODISCARD std::pair<uint64_t, uint64_t>
+        getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT & timestampInfo ) const;
+
       //=== VK_KHR_timeline_semaphore ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result waitSemaphoresKHR( const SemaphoreWaitInfo & waitInfo,
@@ -14940,6 +14943,30 @@ namespace VULKAN_HPP_NAMESPACE
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
+      }
+      return data;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint64_t, uint64_t>
+      Device::getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT & timestampInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetCalibratedTimestampsEXT &&
+        "Function <vkGetCalibratedTimestampsEXT> needs extension <VK_EXT_calibrated_timestamps> enabled!" );
+
+      std::pair<uint64_t, uint64_t> data;
+      uint64_t &                    timestamp    = data.first;
+      uint64_t &                    maxDeviation = data.second;
+      VULKAN_HPP_NAMESPACE::Result  result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetCalibratedTimestampsEXT(
+          static_cast<VkDevice>( m_device ),
+          1,
+          reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( &timestampInfo ),
+          &timestamp,
+          &maxDeviation ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
       }
       return data;
     }

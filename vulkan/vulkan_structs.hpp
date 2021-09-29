@@ -8068,6 +8068,998 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = BlitImageInfo2KHR;
   };
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferCollectionBufferCreateInfoFUCHSIA
+  {
+    using NativeType = VkBufferCollectionBufferCreateInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eBufferCollectionBufferCreateInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      BufferCollectionBufferCreateInfoFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ = {},
+                                               uint32_t index_ = {} ) VULKAN_HPP_NOEXCEPT
+      : collection( collection_ )
+      , index( index_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR BufferCollectionBufferCreateInfoFUCHSIA( BufferCollectionBufferCreateInfoFUCHSIA const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionBufferCreateInfoFUCHSIA( VkBufferCollectionBufferCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCollectionBufferCreateInfoFUCHSIA(
+          *reinterpret_cast<BufferCollectionBufferCreateInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCollectionBufferCreateInfoFUCHSIA &
+      operator=( BufferCollectionBufferCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionBufferCreateInfoFUCHSIA &
+      operator=( VkBufferCollectionBufferCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCollectionBufferCreateInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCollectionBufferCreateInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCollectionBufferCreateInfoFUCHSIA &
+      setCollection( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ ) VULKAN_HPP_NOEXCEPT
+    {
+      collection = collection_;
+      return *this;
+    }
+
+    BufferCollectionBufferCreateInfoFUCHSIA & setIndex( uint32_t index_ ) VULKAN_HPP_NOEXCEPT
+    {
+      index = index_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCollectionBufferCreateInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCollectionBufferCreateInfoFUCHSIA *>( this );
+    }
+
+    operator VkBufferCollectionBufferCreateInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCollectionBufferCreateInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionBufferCreateInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionBufferCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( collection == rhs.collection ) &&
+             ( index == rhs.index );
+    }
+
+    bool operator!=( BufferCollectionBufferCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType           sType      = StructureType::eBufferCollectionBufferCreateInfoFUCHSIA;
+    const void *                                  pNext      = {};
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection = {};
+    uint32_t                                      index      = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionBufferCreateInfoFUCHSIA ) ==
+                              sizeof( VkBufferCollectionBufferCreateInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCollectionBufferCreateInfoFUCHSIA>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionBufferCreateInfoFUCHSIA>::value,
+    "BufferCollectionBufferCreateInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCollectionBufferCreateInfoFUCHSIA>
+  {
+    using Type = BufferCollectionBufferCreateInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferCollectionConstraintsInfoFUCHSIA
+  {
+    using NativeType = VkBufferCollectionConstraintsInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eBufferCollectionConstraintsInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      BufferCollectionConstraintsInfoFUCHSIA( uint32_t minBufferCount_                  = {},
+                                              uint32_t maxBufferCount_                  = {},
+                                              uint32_t minBufferCountForCamping_        = {},
+                                              uint32_t minBufferCountForDedicatedSlack_ = {},
+                                              uint32_t minBufferCountForSharedSlack_    = {} ) VULKAN_HPP_NOEXCEPT
+      : minBufferCount( minBufferCount_ )
+      , maxBufferCount( maxBufferCount_ )
+      , minBufferCountForCamping( minBufferCountForCamping_ )
+      , minBufferCountForDedicatedSlack( minBufferCountForDedicatedSlack_ )
+      , minBufferCountForSharedSlack( minBufferCountForSharedSlack_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR BufferCollectionConstraintsInfoFUCHSIA( BufferCollectionConstraintsInfoFUCHSIA const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionConstraintsInfoFUCHSIA( VkBufferCollectionConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCollectionConstraintsInfoFUCHSIA(
+          *reinterpret_cast<BufferCollectionConstraintsInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCollectionConstraintsInfoFUCHSIA &
+      operator=( BufferCollectionConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionConstraintsInfoFUCHSIA &
+      operator=( VkBufferCollectionConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCollectionConstraintsInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCollectionConstraintsInfoFUCHSIA & setMinBufferCount( uint32_t minBufferCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minBufferCount = minBufferCount_;
+      return *this;
+    }
+
+    BufferCollectionConstraintsInfoFUCHSIA & setMaxBufferCount( uint32_t maxBufferCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      maxBufferCount = maxBufferCount_;
+      return *this;
+    }
+
+    BufferCollectionConstraintsInfoFUCHSIA &
+      setMinBufferCountForCamping( uint32_t minBufferCountForCamping_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minBufferCountForCamping = minBufferCountForCamping_;
+      return *this;
+    }
+
+    BufferCollectionConstraintsInfoFUCHSIA &
+      setMinBufferCountForDedicatedSlack( uint32_t minBufferCountForDedicatedSlack_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minBufferCountForDedicatedSlack = minBufferCountForDedicatedSlack_;
+      return *this;
+    }
+
+    BufferCollectionConstraintsInfoFUCHSIA &
+      setMinBufferCountForSharedSlack( uint32_t minBufferCountForSharedSlack_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minBufferCountForSharedSlack = minBufferCountForSharedSlack_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCollectionConstraintsInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCollectionConstraintsInfoFUCHSIA *>( this );
+    }
+
+    operator VkBufferCollectionConstraintsInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCollectionConstraintsInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionConstraintsInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( minBufferCount == rhs.minBufferCount ) &&
+             ( maxBufferCount == rhs.maxBufferCount ) && ( minBufferCountForCamping == rhs.minBufferCountForCamping ) &&
+             ( minBufferCountForDedicatedSlack == rhs.minBufferCountForDedicatedSlack ) &&
+             ( minBufferCountForSharedSlack == rhs.minBufferCountForSharedSlack );
+    }
+
+    bool operator!=( BufferCollectionConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType          = StructureType::eBufferCollectionConstraintsInfoFUCHSIA;
+    const void *                        pNext          = {};
+    uint32_t                            minBufferCount = {};
+    uint32_t                            maxBufferCount = {};
+    uint32_t                            minBufferCountForCamping        = {};
+    uint32_t                            minBufferCountForDedicatedSlack = {};
+    uint32_t                            minBufferCountForSharedSlack    = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA ) ==
+                              sizeof( VkBufferCollectionConstraintsInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA>::value,
+    "BufferCollectionConstraintsInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCollectionConstraintsInfoFUCHSIA>
+  {
+    using Type = BufferCollectionConstraintsInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferCollectionCreateInfoFUCHSIA
+  {
+    using NativeType = VkBufferCollectionCreateInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eBufferCollectionCreateInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR BufferCollectionCreateInfoFUCHSIA( zx_handle_t collectionToken_ = {} ) VULKAN_HPP_NOEXCEPT
+      : collectionToken( collectionToken_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      BufferCollectionCreateInfoFUCHSIA( BufferCollectionCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionCreateInfoFUCHSIA( VkBufferCollectionCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCollectionCreateInfoFUCHSIA( *reinterpret_cast<BufferCollectionCreateInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCollectionCreateInfoFUCHSIA &
+      operator=( BufferCollectionCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionCreateInfoFUCHSIA & operator=( VkBufferCollectionCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCollectionCreateInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCollectionCreateInfoFUCHSIA & setCollectionToken( zx_handle_t collectionToken_ ) VULKAN_HPP_NOEXCEPT
+    {
+      collectionToken = collectionToken_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCollectionCreateInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( this );
+    }
+
+    operator VkBufferCollectionCreateInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCollectionCreateInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionCreateInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( memcmp( &collectionToken, &rhs.collectionToken, sizeof( zx_handle_t ) ) == 0 );
+    }
+
+    bool operator!=( BufferCollectionCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType           = StructureType::eBufferCollectionCreateInfoFUCHSIA;
+    const void *                        pNext           = {};
+    zx_handle_t                         collectionToken = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA ) ==
+                              sizeof( VkBufferCollectionCreateInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA>::value,
+    "BufferCollectionCreateInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCollectionCreateInfoFUCHSIA>
+  {
+    using Type = BufferCollectionCreateInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferCollectionImageCreateInfoFUCHSIA
+  {
+    using NativeType = VkBufferCollectionImageCreateInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eBufferCollectionImageCreateInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      BufferCollectionImageCreateInfoFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ = {},
+                                              uint32_t index_ = {} ) VULKAN_HPP_NOEXCEPT
+      : collection( collection_ )
+      , index( index_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR BufferCollectionImageCreateInfoFUCHSIA( BufferCollectionImageCreateInfoFUCHSIA const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionImageCreateInfoFUCHSIA( VkBufferCollectionImageCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCollectionImageCreateInfoFUCHSIA(
+          *reinterpret_cast<BufferCollectionImageCreateInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCollectionImageCreateInfoFUCHSIA &
+      operator=( BufferCollectionImageCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionImageCreateInfoFUCHSIA &
+      operator=( VkBufferCollectionImageCreateInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCollectionImageCreateInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCollectionImageCreateInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCollectionImageCreateInfoFUCHSIA &
+      setCollection( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ ) VULKAN_HPP_NOEXCEPT
+    {
+      collection = collection_;
+      return *this;
+    }
+
+    BufferCollectionImageCreateInfoFUCHSIA & setIndex( uint32_t index_ ) VULKAN_HPP_NOEXCEPT
+    {
+      index = index_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCollectionImageCreateInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCollectionImageCreateInfoFUCHSIA *>( this );
+    }
+
+    operator VkBufferCollectionImageCreateInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCollectionImageCreateInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionImageCreateInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionImageCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( collection == rhs.collection ) &&
+             ( index == rhs.index );
+    }
+
+    bool operator!=( BufferCollectionImageCreateInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType           sType      = StructureType::eBufferCollectionImageCreateInfoFUCHSIA;
+    const void *                                  pNext      = {};
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection = {};
+    uint32_t                                      index      = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionImageCreateInfoFUCHSIA ) ==
+                              sizeof( VkBufferCollectionImageCreateInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCollectionImageCreateInfoFUCHSIA>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionImageCreateInfoFUCHSIA>::value,
+    "BufferCollectionImageCreateInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCollectionImageCreateInfoFUCHSIA>
+  {
+    using Type = BufferCollectionImageCreateInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct SysmemColorSpaceFUCHSIA
+  {
+    using NativeType = VkSysmemColorSpaceFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eSysmemColorSpaceFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR SysmemColorSpaceFUCHSIA( uint32_t colorSpace_ = {} ) VULKAN_HPP_NOEXCEPT
+      : colorSpace( colorSpace_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR SysmemColorSpaceFUCHSIA( SysmemColorSpaceFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    SysmemColorSpaceFUCHSIA( VkSysmemColorSpaceFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : SysmemColorSpaceFUCHSIA( *reinterpret_cast<SysmemColorSpaceFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    SysmemColorSpaceFUCHSIA & operator=( SysmemColorSpaceFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    SysmemColorSpaceFUCHSIA & operator=( VkSysmemColorSpaceFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    SysmemColorSpaceFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    SysmemColorSpaceFUCHSIA & setColorSpace( uint32_t colorSpace_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorSpace = colorSpace_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkSysmemColorSpaceFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkSysmemColorSpaceFUCHSIA *>( this );
+    }
+
+    operator VkSysmemColorSpaceFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkSysmemColorSpaceFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( SysmemColorSpaceFUCHSIA const & ) const = default;
+#  else
+    bool operator==( SysmemColorSpaceFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( colorSpace == rhs.colorSpace );
+    }
+
+    bool operator!=( SysmemColorSpaceFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType      = StructureType::eSysmemColorSpaceFUCHSIA;
+    const void *                        pNext      = {};
+    uint32_t                            colorSpace = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA ) ==
+                              sizeof( VkSysmemColorSpaceFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA>::value,
+                            "SysmemColorSpaceFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eSysmemColorSpaceFUCHSIA>
+  {
+    using Type = SysmemColorSpaceFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferCollectionPropertiesFUCHSIA
+  {
+    using NativeType = VkBufferCollectionPropertiesFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eBufferCollectionPropertiesFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR BufferCollectionPropertiesFUCHSIA(
+      uint32_t                                          memoryTypeBits_                   = {},
+      uint32_t                                          bufferCount_                      = {},
+      uint32_t                                          createInfoIndex_                  = {},
+      uint64_t                                          sysmemPixelFormat_                = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags          formatFeatures_                   = {},
+      VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA     sysmemColorSpaceIndex_            = {},
+      VULKAN_HPP_NAMESPACE::ComponentMapping            samplerYcbcrConversionComponents_ = {},
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_ =
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity,
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull,
+      VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+      VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset_ =
+        VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven ) VULKAN_HPP_NOEXCEPT
+      : memoryTypeBits( memoryTypeBits_ )
+      , bufferCount( bufferCount_ )
+      , createInfoIndex( createInfoIndex_ )
+      , sysmemPixelFormat( sysmemPixelFormat_ )
+      , formatFeatures( formatFeatures_ )
+      , sysmemColorSpaceIndex( sysmemColorSpaceIndex_ )
+      , samplerYcbcrConversionComponents( samplerYcbcrConversionComponents_ )
+      , suggestedYcbcrModel( suggestedYcbcrModel_ )
+      , suggestedYcbcrRange( suggestedYcbcrRange_ )
+      , suggestedXChromaOffset( suggestedXChromaOffset_ )
+      , suggestedYChromaOffset( suggestedYChromaOffset_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      BufferCollectionPropertiesFUCHSIA( BufferCollectionPropertiesFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionPropertiesFUCHSIA( VkBufferCollectionPropertiesFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCollectionPropertiesFUCHSIA( *reinterpret_cast<BufferCollectionPropertiesFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCollectionPropertiesFUCHSIA &
+      operator=( BufferCollectionPropertiesFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCollectionPropertiesFUCHSIA & operator=( VkBufferCollectionPropertiesFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCollectionPropertiesFUCHSIA & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setMemoryTypeBits( uint32_t memoryTypeBits_ ) VULKAN_HPP_NOEXCEPT
+    {
+      memoryTypeBits = memoryTypeBits_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setBufferCount( uint32_t bufferCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      bufferCount = bufferCount_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setCreateInfoIndex( uint32_t createInfoIndex_ ) VULKAN_HPP_NOEXCEPT
+    {
+      createInfoIndex = createInfoIndex_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setSysmemPixelFormat( uint64_t sysmemPixelFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sysmemPixelFormat = sysmemPixelFormat_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA &
+      setFormatFeatures( VULKAN_HPP_NAMESPACE::FormatFeatureFlags formatFeatures_ ) VULKAN_HPP_NOEXCEPT
+    {
+      formatFeatures = formatFeatures_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setSysmemColorSpaceIndex(
+      VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA const & sysmemColorSpaceIndex_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sysmemColorSpaceIndex = sysmemColorSpaceIndex_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setSamplerYcbcrConversionComponents(
+      VULKAN_HPP_NAMESPACE::ComponentMapping const & samplerYcbcrConversionComponents_ ) VULKAN_HPP_NOEXCEPT
+    {
+      samplerYcbcrConversionComponents = samplerYcbcrConversionComponents_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA & setSuggestedYcbcrModel(
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_ ) VULKAN_HPP_NOEXCEPT
+    {
+      suggestedYcbcrModel = suggestedYcbcrModel_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA &
+      setSuggestedYcbcrRange( VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange_ ) VULKAN_HPP_NOEXCEPT
+    {
+      suggestedYcbcrRange = suggestedYcbcrRange_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA &
+      setSuggestedXChromaOffset( VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset_ ) VULKAN_HPP_NOEXCEPT
+    {
+      suggestedXChromaOffset = suggestedXChromaOffset_;
+      return *this;
+    }
+
+    BufferCollectionPropertiesFUCHSIA &
+      setSuggestedYChromaOffset( VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset_ ) VULKAN_HPP_NOEXCEPT
+    {
+      suggestedYChromaOffset = suggestedYChromaOffset_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCollectionPropertiesFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCollectionPropertiesFUCHSIA *>( this );
+    }
+
+    operator VkBufferCollectionPropertiesFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCollectionPropertiesFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionPropertiesFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionPropertiesFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( memoryTypeBits == rhs.memoryTypeBits ) &&
+             ( bufferCount == rhs.bufferCount ) && ( createInfoIndex == rhs.createInfoIndex ) &&
+             ( sysmemPixelFormat == rhs.sysmemPixelFormat ) && ( formatFeatures == rhs.formatFeatures ) &&
+             ( sysmemColorSpaceIndex == rhs.sysmemColorSpaceIndex ) &&
+             ( samplerYcbcrConversionComponents == rhs.samplerYcbcrConversionComponents ) &&
+             ( suggestedYcbcrModel == rhs.suggestedYcbcrModel ) && ( suggestedYcbcrRange == rhs.suggestedYcbcrRange ) &&
+             ( suggestedXChromaOffset == rhs.suggestedXChromaOffset ) &&
+             ( suggestedYChromaOffset == rhs.suggestedYChromaOffset );
+    }
+
+    bool operator!=( BufferCollectionPropertiesFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType               sType = StructureType::eBufferCollectionPropertiesFUCHSIA;
+    void *                                            pNext = {};
+    uint32_t                                          memoryTypeBits                   = {};
+    uint32_t                                          bufferCount                      = {};
+    uint32_t                                          createInfoIndex                  = {};
+    uint64_t                                          sysmemPixelFormat                = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags          formatFeatures                   = {};
+    VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA     sysmemColorSpaceIndex            = {};
+    VULKAN_HPP_NAMESPACE::ComponentMapping            samplerYcbcrConversionComponents = {};
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel =
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange    = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull;
+    VULKAN_HPP_NAMESPACE::ChromaLocation    suggestedXChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::ChromaLocation    suggestedYChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA ) ==
+                              sizeof( VkBufferCollectionPropertiesFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA>::value,
+    "BufferCollectionPropertiesFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCollectionPropertiesFUCHSIA>
+  {
+    using Type = BufferCollectionPropertiesFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+  struct BufferCreateInfo
+  {
+    using NativeType = VkBufferCreateInfo;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eBufferCreateInfo;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      BufferCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ = {},
+                        VULKAN_HPP_NAMESPACE::DeviceSize        size_  = {},
+                        VULKAN_HPP_NAMESPACE::BufferUsageFlags  usage_ = {},
+                        VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
+                        uint32_t                          queueFamilyIndexCount_ = {},
+                        const uint32_t *                  pQueueFamilyIndices_   = {} ) VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , size( size_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( queueFamilyIndexCount_ )
+      , pQueueFamilyIndices( pQueueFamilyIndices_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR BufferCreateInfo( BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCreateInfo( VkBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferCreateInfo( *reinterpret_cast<BufferCreateInfo const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    BufferCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags                               flags_,
+                      VULKAN_HPP_NAMESPACE::DeviceSize                                      size_,
+                      VULKAN_HPP_NAMESPACE::BufferUsageFlags                                usage_,
+                      VULKAN_HPP_NAMESPACE::SharingMode                                     sharingMode_,
+                      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ )
+      : flags( flags_ )
+      , size( size_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( static_cast<uint32_t>( queueFamilyIndices_.size() ) )
+      , pQueueFamilyIndices( queueFamilyIndices_.data() )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferCreateInfo & operator=( BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferCreateInfo & operator=( VkBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCreateInfo const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferCreateInfo & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferCreateInfo & setFlags( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    BufferCreateInfo & setSize( VULKAN_HPP_NAMESPACE::DeviceSize size_ ) VULKAN_HPP_NOEXCEPT
+    {
+      size = size_;
+      return *this;
+    }
+
+    BufferCreateInfo & setUsage( VULKAN_HPP_NAMESPACE::BufferUsageFlags usage_ ) VULKAN_HPP_NOEXCEPT
+    {
+      usage = usage_;
+      return *this;
+    }
+
+    BufferCreateInfo & setSharingMode( VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sharingMode = sharingMode_;
+      return *this;
+    }
+
+    BufferCreateInfo & setQueueFamilyIndexCount( uint32_t queueFamilyIndexCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      queueFamilyIndexCount = queueFamilyIndexCount_;
+      return *this;
+    }
+
+    BufferCreateInfo & setPQueueFamilyIndices( const uint32_t * pQueueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pQueueFamilyIndices = pQueueFamilyIndices_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    BufferCreateInfo & setQueueFamilyIndices(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
+    {
+      queueFamilyIndexCount = static_cast<uint32_t>( queueFamilyIndices_.size() );
+      pQueueFamilyIndices   = queueFamilyIndices_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferCreateInfo const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferCreateInfo *>( this );
+    }
+
+    operator VkBufferCreateInfo &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferCreateInfo *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCreateInfo const & ) const = default;
+#else
+    bool operator==( BufferCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) && ( size == rhs.size ) &&
+             ( usage == rhs.usage ) && ( sharingMode == rhs.sharingMode ) &&
+             ( queueFamilyIndexCount == rhs.queueFamilyIndexCount ) &&
+             ( pQueueFamilyIndices == rhs.pQueueFamilyIndices );
+    }
+
+    bool operator!=( BufferCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType     sType                 = StructureType::eBufferCreateInfo;
+    const void *                            pNext                 = {};
+    VULKAN_HPP_NAMESPACE::BufferCreateFlags flags                 = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize        size                  = {};
+    VULKAN_HPP_NAMESPACE::BufferUsageFlags  usage                 = {};
+    VULKAN_HPP_NAMESPACE::SharingMode       sharingMode           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
+    uint32_t                                queueFamilyIndexCount = {};
+    const uint32_t *                        pQueueFamilyIndices   = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCreateInfo ) == sizeof( VkBufferCreateInfo ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCreateInfo>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCreateInfo>::value,
+                            "BufferCreateInfo is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferCreateInfo>
+  {
+    using Type = BufferCreateInfo;
+  };
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct BufferConstraintsInfoFUCHSIA
+  {
+    using NativeType = VkBufferConstraintsInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eBufferConstraintsInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR BufferConstraintsInfoFUCHSIA(
+      VULKAN_HPP_NAMESPACE::BufferCreateInfo                       createInfo_                  = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags                     requiredFormatFeatures_      = {},
+      VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA bufferCollectionConstraints_ = {} )
+      VULKAN_HPP_NOEXCEPT
+      : createInfo( createInfo_ )
+      , requiredFormatFeatures( requiredFormatFeatures_ )
+      , bufferCollectionConstraints( bufferCollectionConstraints_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      BufferConstraintsInfoFUCHSIA( BufferConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferConstraintsInfoFUCHSIA( VkBufferConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : BufferConstraintsInfoFUCHSIA( *reinterpret_cast<BufferConstraintsInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    BufferConstraintsInfoFUCHSIA & operator=( BufferConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    BufferConstraintsInfoFUCHSIA & operator=( VkBufferConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    BufferConstraintsInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    BufferConstraintsInfoFUCHSIA &
+      setCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateInfo const & createInfo_ ) VULKAN_HPP_NOEXCEPT
+    {
+      createInfo = createInfo_;
+      return *this;
+    }
+
+    BufferConstraintsInfoFUCHSIA &
+      setRequiredFormatFeatures( VULKAN_HPP_NAMESPACE::FormatFeatureFlags requiredFormatFeatures_ ) VULKAN_HPP_NOEXCEPT
+    {
+      requiredFormatFeatures = requiredFormatFeatures_;
+      return *this;
+    }
+
+    BufferConstraintsInfoFUCHSIA & setBufferCollectionConstraints(
+      VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA const & bufferCollectionConstraints_ )
+      VULKAN_HPP_NOEXCEPT
+    {
+      bufferCollectionConstraints = bufferCollectionConstraints_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkBufferConstraintsInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkBufferConstraintsInfoFUCHSIA *>( this );
+    }
+
+    operator VkBufferConstraintsInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkBufferConstraintsInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferConstraintsInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( createInfo == rhs.createInfo ) &&
+             ( requiredFormatFeatures == rhs.requiredFormatFeatures ) &&
+             ( bufferCollectionConstraints == rhs.bufferCollectionConstraints );
+    }
+
+    bool operator!=( BufferConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType                          sType = StructureType::eBufferConstraintsInfoFUCHSIA;
+    const void *                                                 pNext = {};
+    VULKAN_HPP_NAMESPACE::BufferCreateInfo                       createInfo                  = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags                     requiredFormatFeatures      = {};
+    VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA bufferCollectionConstraints = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA ) ==
+                              sizeof( VkBufferConstraintsInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA>::value,
+    "BufferConstraintsInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eBufferConstraintsInfoFUCHSIA>
+  {
+    using Type = BufferConstraintsInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
   struct BufferCopy
   {
     using NativeType = VkBufferCopy;
@@ -8252,163 +9244,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::eBufferCopy2KHR>
   {
     using Type = BufferCopy2KHR;
-  };
-
-  struct BufferCreateInfo
-  {
-    using NativeType = VkBufferCreateInfo;
-
-    static const bool                                  allowDuplicate = false;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eBufferCreateInfo;
-
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR
-      BufferCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ = {},
-                        VULKAN_HPP_NAMESPACE::DeviceSize        size_  = {},
-                        VULKAN_HPP_NAMESPACE::BufferUsageFlags  usage_ = {},
-                        VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
-                        uint32_t                          queueFamilyIndexCount_ = {},
-                        const uint32_t *                  pQueueFamilyIndices_   = {} ) VULKAN_HPP_NOEXCEPT
-      : flags( flags_ )
-      , size( size_ )
-      , usage( usage_ )
-      , sharingMode( sharingMode_ )
-      , queueFamilyIndexCount( queueFamilyIndexCount_ )
-      , pQueueFamilyIndices( pQueueFamilyIndices_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR BufferCreateInfo( BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    BufferCreateInfo( VkBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-      : BufferCreateInfo( *reinterpret_cast<BufferCreateInfo const *>( &rhs ) )
-    {}
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    BufferCreateInfo( VULKAN_HPP_NAMESPACE::BufferCreateFlags                               flags_,
-                      VULKAN_HPP_NAMESPACE::DeviceSize                                      size_,
-                      VULKAN_HPP_NAMESPACE::BufferUsageFlags                                usage_,
-                      VULKAN_HPP_NAMESPACE::SharingMode                                     sharingMode_,
-                      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ )
-      : flags( flags_ )
-      , size( size_ )
-      , usage( usage_ )
-      , sharingMode( sharingMode_ )
-      , queueFamilyIndexCount( static_cast<uint32_t>( queueFamilyIndices_.size() ) )
-      , pQueueFamilyIndices( queueFamilyIndices_.data() )
-    {}
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
-
-    BufferCreateInfo & operator=( BufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    BufferCreateInfo & operator=( VkBufferCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::BufferCreateInfo const *>( &rhs );
-      return *this;
-    }
-
-#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
-    BufferCreateInfo & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    BufferCreateInfo & setFlags( VULKAN_HPP_NAMESPACE::BufferCreateFlags flags_ ) VULKAN_HPP_NOEXCEPT
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    BufferCreateInfo & setSize( VULKAN_HPP_NAMESPACE::DeviceSize size_ ) VULKAN_HPP_NOEXCEPT
-    {
-      size = size_;
-      return *this;
-    }
-
-    BufferCreateInfo & setUsage( VULKAN_HPP_NAMESPACE::BufferUsageFlags usage_ ) VULKAN_HPP_NOEXCEPT
-    {
-      usage = usage_;
-      return *this;
-    }
-
-    BufferCreateInfo & setSharingMode( VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ ) VULKAN_HPP_NOEXCEPT
-    {
-      sharingMode = sharingMode_;
-      return *this;
-    }
-
-    BufferCreateInfo & setQueueFamilyIndexCount( uint32_t queueFamilyIndexCount_ ) VULKAN_HPP_NOEXCEPT
-    {
-      queueFamilyIndexCount = queueFamilyIndexCount_;
-      return *this;
-    }
-
-    BufferCreateInfo & setPQueueFamilyIndices( const uint32_t * pQueueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pQueueFamilyIndices = pQueueFamilyIndices_;
-      return *this;
-    }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    BufferCreateInfo & setQueueFamilyIndices(
-      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
-    {
-      queueFamilyIndexCount = static_cast<uint32_t>( queueFamilyIndices_.size() );
-      pQueueFamilyIndices   = queueFamilyIndices_.data();
-      return *this;
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
-
-    operator VkBufferCreateInfo const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<const VkBufferCreateInfo *>( this );
-    }
-
-    operator VkBufferCreateInfo &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkBufferCreateInfo *>( this );
-    }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( BufferCreateInfo const & ) const = default;
-#else
-    bool operator==( BufferCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) && ( size == rhs.size ) &&
-             ( usage == rhs.usage ) && ( sharingMode == rhs.sharingMode ) &&
-             ( queueFamilyIndexCount == rhs.queueFamilyIndexCount ) &&
-             ( pQueueFamilyIndices == rhs.pQueueFamilyIndices );
-    }
-
-    bool operator!=( BufferCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-
-  public:
-    VULKAN_HPP_NAMESPACE::StructureType     sType                 = StructureType::eBufferCreateInfo;
-    const void *                            pNext                 = {};
-    VULKAN_HPP_NAMESPACE::BufferCreateFlags flags                 = {};
-    VULKAN_HPP_NAMESPACE::DeviceSize        size                  = {};
-    VULKAN_HPP_NAMESPACE::BufferUsageFlags  usage                 = {};
-    VULKAN_HPP_NAMESPACE::SharingMode       sharingMode           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
-    uint32_t                                queueFamilyIndexCount = {};
-    const uint32_t *                        pQueueFamilyIndices   = {};
-  };
-  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCreateInfo ) == sizeof( VkBufferCreateInfo ),
-                            "struct and wrapper have different size!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BufferCreateInfo>::value,
-                            "struct wrapper is not a standard layout!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCreateInfo>::value,
-                            "BufferCreateInfo is not nothrow_move_constructible!" );
-
-  template <>
-  struct CppType<StructureType, StructureType::eBufferCreateInfo>
-  {
-    using Type = BufferCreateInfo;
   };
 
   struct BufferDeviceAddressCreateInfoEXT
@@ -13601,7 +14436,14 @@ namespace VULKAN_HPP_NAMESPACE
     CuModuleCreateInfoNVX( VkCuModuleCreateInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
       : CuModuleCreateInfoNVX( *reinterpret_cast<CuModuleCreateInfoNVX const *>( &rhs ) )
     {}
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    template <typename T>
+    CuModuleCreateInfoNVX( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> const & data_ )
+      : dataSize( data_.size() * sizeof( T ) ), pData( data_.data() )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
     CuModuleCreateInfoNVX & operator=( CuModuleCreateInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 
@@ -13629,7 +14471,18 @@ namespace VULKAN_HPP_NAMESPACE
       pData = pData_;
       return *this;
     }
-#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    template <typename T>
+    CuModuleCreateInfoNVX &
+      setData( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const T> const & data_ ) VULKAN_HPP_NOEXCEPT
+    {
+      dataSize = data_.size() * sizeof( T );
+      pData    = data_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
 
     operator VkCuModuleCreateInfoNVX const &() const VULKAN_HPP_NOEXCEPT
     {
@@ -28548,110 +29401,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageBlit>::value,
                             "ImageBlit is not nothrow_move_constructible!" );
 
-  struct ImageCopy
-  {
-    using NativeType = VkImageCopy;
-
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR ImageCopy( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource_ = {},
-                                    VULKAN_HPP_NAMESPACE::Offset3D               srcOffset_      = {},
-                                    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ = {},
-                                    VULKAN_HPP_NAMESPACE::Offset3D               dstOffset_      = {},
-                                    VULKAN_HPP_NAMESPACE::Extent3D               extent_ = {} ) VULKAN_HPP_NOEXCEPT
-      : srcSubresource( srcSubresource_ )
-      , srcOffset( srcOffset_ )
-      , dstSubresource( dstSubresource_ )
-      , dstOffset( dstOffset_ )
-      , extent( extent_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageCopy( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    ImageCopy( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT : ImageCopy( *reinterpret_cast<ImageCopy const *>( &rhs ) )
-    {}
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
-
-    ImageCopy & operator=( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    ImageCopy & operator=( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageCopy const *>( &rhs );
-      return *this;
-    }
-
-#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
-    ImageCopy &
-      setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & srcSubresource_ ) VULKAN_HPP_NOEXCEPT
-    {
-      srcSubresource = srcSubresource_;
-      return *this;
-    }
-
-    ImageCopy & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D const & srcOffset_ ) VULKAN_HPP_NOEXCEPT
-    {
-      srcOffset = srcOffset_;
-      return *this;
-    }
-
-    ImageCopy &
-      setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & dstSubresource_ ) VULKAN_HPP_NOEXCEPT
-    {
-      dstSubresource = dstSubresource_;
-      return *this;
-    }
-
-    ImageCopy & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D const & dstOffset_ ) VULKAN_HPP_NOEXCEPT
-    {
-      dstOffset = dstOffset_;
-      return *this;
-    }
-
-    ImageCopy & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
-    {
-      extent = extent_;
-      return *this;
-    }
-#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
-
-    operator VkImageCopy const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<const VkImageCopy *>( this );
-    }
-
-    operator VkImageCopy &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkImageCopy *>( this );
-    }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ImageCopy const & ) const = default;
-#else
-    bool operator==( ImageCopy const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ( srcSubresource == rhs.srcSubresource ) && ( srcOffset == rhs.srcOffset ) &&
-             ( dstSubresource == rhs.dstSubresource ) && ( dstOffset == rhs.dstOffset ) && ( extent == rhs.extent );
-    }
-
-    bool operator!=( ImageCopy const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-
-  public:
-    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
-    VULKAN_HPP_NAMESPACE::Offset3D               srcOffset      = {};
-    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource = {};
-    VULKAN_HPP_NAMESPACE::Offset3D               dstOffset      = {};
-    VULKAN_HPP_NAMESPACE::Extent3D               extent         = {};
-  };
-  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageCopy ) == sizeof( VkImageCopy ),
-                            "struct and wrapper have different size!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCopy>::value,
-                            "struct wrapper is not a standard layout!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageCopy>::value,
-                            "ImageCopy is not nothrow_move_constructible!" );
-
   struct ImageCreateInfo
   {
     using NativeType = VkImageCreateInfo;
@@ -28888,6 +29637,400 @@ namespace VULKAN_HPP_NAMESPACE
   {
     using Type = ImageCreateInfo;
   };
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct ImageFormatConstraintsInfoFUCHSIA
+  {
+    using NativeType = VkImageFormatConstraintsInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eImageFormatConstraintsInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageFormatConstraintsInfoFUCHSIA(
+      VULKAN_HPP_NAMESPACE::ImageCreateInfo                    imageCreateInfo_        = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags                 requiredFormatFeatures_ = {},
+      VULKAN_HPP_NAMESPACE::ImageFormatConstraintsFlagsFUCHSIA flags_                  = {},
+      uint64_t                                                 sysmemPixelFormat_      = {},
+      uint32_t                                                 colorSpaceCount_        = {},
+      const VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA *    pColorSpaces_           = {} ) VULKAN_HPP_NOEXCEPT
+      : imageCreateInfo( imageCreateInfo_ )
+      , requiredFormatFeatures( requiredFormatFeatures_ )
+      , flags( flags_ )
+      , sysmemPixelFormat( sysmemPixelFormat_ )
+      , colorSpaceCount( colorSpaceCount_ )
+      , pColorSpaces( pColorSpaces_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      ImageFormatConstraintsInfoFUCHSIA( ImageFormatConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageFormatConstraintsInfoFUCHSIA( VkImageFormatConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImageFormatConstraintsInfoFUCHSIA( *reinterpret_cast<ImageFormatConstraintsInfoFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImageFormatConstraintsInfoFUCHSIA &
+      operator=( ImageFormatConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageFormatConstraintsInfoFUCHSIA & operator=( VkImageFormatConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    ImageFormatConstraintsInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA &
+      setImageCreateInfo( VULKAN_HPP_NAMESPACE::ImageCreateInfo const & imageCreateInfo_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageCreateInfo = imageCreateInfo_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA &
+      setRequiredFormatFeatures( VULKAN_HPP_NAMESPACE::FormatFeatureFlags requiredFormatFeatures_ ) VULKAN_HPP_NOEXCEPT
+    {
+      requiredFormatFeatures = requiredFormatFeatures_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA &
+      setFlags( VULKAN_HPP_NAMESPACE::ImageFormatConstraintsFlagsFUCHSIA flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA & setSysmemPixelFormat( uint64_t sysmemPixelFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sysmemPixelFormat = sysmemPixelFormat_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA & setColorSpaceCount( uint32_t colorSpaceCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorSpaceCount = colorSpaceCount_;
+      return *this;
+    }
+
+    ImageFormatConstraintsInfoFUCHSIA &
+      setPColorSpaces( const VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA * pColorSpaces_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pColorSpaces = pColorSpaces_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImageFormatConstraintsInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageFormatConstraintsInfoFUCHSIA *>( this );
+    }
+
+    operator VkImageFormatConstraintsInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageFormatConstraintsInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageFormatConstraintsInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( ImageFormatConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( imageCreateInfo == rhs.imageCreateInfo ) &&
+             ( requiredFormatFeatures == rhs.requiredFormatFeatures ) && ( flags == rhs.flags ) &&
+             ( sysmemPixelFormat == rhs.sysmemPixelFormat ) && ( colorSpaceCount == rhs.colorSpaceCount ) &&
+             ( pColorSpaces == rhs.pColorSpaces );
+    }
+
+    bool operator!=( ImageFormatConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType                      sType = StructureType::eImageFormatConstraintsInfoFUCHSIA;
+    const void *                                             pNext = {};
+    VULKAN_HPP_NAMESPACE::ImageCreateInfo                    imageCreateInfo        = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags                 requiredFormatFeatures = {};
+    VULKAN_HPP_NAMESPACE::ImageFormatConstraintsFlagsFUCHSIA flags                  = {};
+    uint64_t                                                 sysmemPixelFormat      = {};
+    uint32_t                                                 colorSpaceCount        = {};
+    const VULKAN_HPP_NAMESPACE::SysmemColorSpaceFUCHSIA *    pColorSpaces           = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA ) ==
+                              sizeof( VkImageFormatConstraintsInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA>::value,
+    "ImageFormatConstraintsInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eImageFormatConstraintsInfoFUCHSIA>
+  {
+    using Type = ImageFormatConstraintsInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct ImageConstraintsInfoFUCHSIA
+  {
+    using NativeType = VkImageConstraintsInfoFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImageConstraintsInfoFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageConstraintsInfoFUCHSIA(
+      uint32_t                                                        formatConstraintsCount_      = {},
+      const VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA * pFormatConstraints_          = {},
+      VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA    bufferCollectionConstraints_ = {},
+      VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFlagsFUCHSIA          flags_ = {} ) VULKAN_HPP_NOEXCEPT
+      : formatConstraintsCount( formatConstraintsCount_ )
+      , pFormatConstraints( pFormatConstraints_ )
+      , bufferCollectionConstraints( bufferCollectionConstraints_ )
+      , flags( flags_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      ImageConstraintsInfoFUCHSIA( ImageConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageConstraintsInfoFUCHSIA( VkImageConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImageConstraintsInfoFUCHSIA( *reinterpret_cast<ImageConstraintsInfoFUCHSIA const *>( &rhs ) )
+    {}
+
+#    if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ImageConstraintsInfoFUCHSIA(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<
+        const VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA> const & formatConstraints_,
+      VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA             bufferCollectionConstraints_ = {},
+      VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFlagsFUCHSIA                   flags_                       = {} )
+      : formatConstraintsCount( static_cast<uint32_t>( formatConstraints_.size() ) )
+      , pFormatConstraints( formatConstraints_.data() )
+      , bufferCollectionConstraints( bufferCollectionConstraints_ )
+      , flags( flags_ )
+    {}
+#    endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImageConstraintsInfoFUCHSIA & operator=( ImageConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageConstraintsInfoFUCHSIA & operator=( VkImageConstraintsInfoFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    ImageConstraintsInfoFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageConstraintsInfoFUCHSIA & setFormatConstraintsCount( uint32_t formatConstraintsCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      formatConstraintsCount = formatConstraintsCount_;
+      return *this;
+    }
+
+    ImageConstraintsInfoFUCHSIA & setPFormatConstraints(
+      const VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA * pFormatConstraints_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pFormatConstraints = pFormatConstraints_;
+      return *this;
+    }
+
+#    if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ImageConstraintsInfoFUCHSIA & setFormatConstraints(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<
+        const VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA> const & formatConstraints_ ) VULKAN_HPP_NOEXCEPT
+    {
+      formatConstraintsCount = static_cast<uint32_t>( formatConstraints_.size() );
+      pFormatConstraints     = formatConstraints_.data();
+      return *this;
+    }
+#    endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    ImageConstraintsInfoFUCHSIA & setBufferCollectionConstraints(
+      VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA const & bufferCollectionConstraints_ )
+      VULKAN_HPP_NOEXCEPT
+    {
+      bufferCollectionConstraints = bufferCollectionConstraints_;
+      return *this;
+    }
+
+    ImageConstraintsInfoFUCHSIA &
+      setFlags( VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFlagsFUCHSIA flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImageConstraintsInfoFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageConstraintsInfoFUCHSIA *>( this );
+    }
+
+    operator VkImageConstraintsInfoFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageConstraintsInfoFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageConstraintsInfoFUCHSIA const & ) const = default;
+#  else
+    bool operator==( ImageConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( formatConstraintsCount == rhs.formatConstraintsCount ) &&
+             ( pFormatConstraints == rhs.pFormatConstraints ) &&
+             ( bufferCollectionConstraints == rhs.bufferCollectionConstraints ) && ( flags == rhs.flags );
+    }
+
+    bool operator!=( ImageConstraintsInfoFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType                             sType = StructureType::eImageConstraintsInfoFUCHSIA;
+    const void *                                                    pNext = {};
+    uint32_t                                                        formatConstraintsCount      = {};
+    const VULKAN_HPP_NAMESPACE::ImageFormatConstraintsInfoFUCHSIA * pFormatConstraints          = {};
+    VULKAN_HPP_NAMESPACE::BufferCollectionConstraintsInfoFUCHSIA    bufferCollectionConstraints = {};
+    VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFlagsFUCHSIA          flags                       = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA ) ==
+                              sizeof( VkImageConstraintsInfoFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA>::value,
+    "ImageConstraintsInfoFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eImageConstraintsInfoFUCHSIA>
+  {
+    using Type = ImageConstraintsInfoFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+  struct ImageCopy
+  {
+    using NativeType = VkImageCopy;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageCopy( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource_ = {},
+                                    VULKAN_HPP_NAMESPACE::Offset3D               srcOffset_      = {},
+                                    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource_ = {},
+                                    VULKAN_HPP_NAMESPACE::Offset3D               dstOffset_      = {},
+                                    VULKAN_HPP_NAMESPACE::Extent3D               extent_ = {} ) VULKAN_HPP_NOEXCEPT
+      : srcSubresource( srcSubresource_ )
+      , srcOffset( srcOffset_ )
+      , dstSubresource( dstSubresource_ )
+      , dstOffset( dstOffset_ )
+      , extent( extent_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR ImageCopy( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageCopy( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT : ImageCopy( *reinterpret_cast<ImageCopy const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImageCopy & operator=( ImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageCopy & operator=( VkImageCopy const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageCopy const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    ImageCopy &
+      setSrcSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & srcSubresource_ ) VULKAN_HPP_NOEXCEPT
+    {
+      srcSubresource = srcSubresource_;
+      return *this;
+    }
+
+    ImageCopy & setSrcOffset( VULKAN_HPP_NAMESPACE::Offset3D const & srcOffset_ ) VULKAN_HPP_NOEXCEPT
+    {
+      srcOffset = srcOffset_;
+      return *this;
+    }
+
+    ImageCopy &
+      setDstSubresource( VULKAN_HPP_NAMESPACE::ImageSubresourceLayers const & dstSubresource_ ) VULKAN_HPP_NOEXCEPT
+    {
+      dstSubresource = dstSubresource_;
+      return *this;
+    }
+
+    ImageCopy & setDstOffset( VULKAN_HPP_NAMESPACE::Offset3D const & dstOffset_ ) VULKAN_HPP_NOEXCEPT
+    {
+      dstOffset = dstOffset_;
+      return *this;
+    }
+
+    ImageCopy & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
+    {
+      extent = extent_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImageCopy const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageCopy *>( this );
+    }
+
+    operator VkImageCopy &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageCopy *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageCopy const & ) const = default;
+#else
+    bool operator==( ImageCopy const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( srcSubresource == rhs.srcSubresource ) && ( srcOffset == rhs.srcOffset ) &&
+             ( dstSubresource == rhs.dstSubresource ) && ( dstOffset == rhs.dstOffset ) && ( extent == rhs.extent );
+    }
+
+    bool operator!=( ImageCopy const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers srcSubresource = {};
+    VULKAN_HPP_NAMESPACE::Offset3D               srcOffset      = {};
+    VULKAN_HPP_NAMESPACE::ImageSubresourceLayers dstSubresource = {};
+    VULKAN_HPP_NAMESPACE::Offset3D               dstOffset      = {};
+    VULKAN_HPP_NAMESPACE::Extent3D               extent         = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageCopy ) == sizeof( VkImageCopy ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCopy>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageCopy>::value,
+                            "ImageCopy is not nothrow_move_constructible!" );
 
   struct SubresourceLayout
   {
@@ -31236,6 +32379,109 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = ImportFenceWin32HandleInfoKHR;
   };
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  struct ImportMemoryBufferCollectionFUCHSIA
+  {
+    using NativeType = VkImportMemoryBufferCollectionFUCHSIA;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eImportMemoryBufferCollectionFUCHSIA;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      ImportMemoryBufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ = {},
+                                           uint32_t index_ = {} ) VULKAN_HPP_NOEXCEPT
+      : collection( collection_ )
+      , index( index_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR ImportMemoryBufferCollectionFUCHSIA( ImportMemoryBufferCollectionFUCHSIA const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    ImportMemoryBufferCollectionFUCHSIA( VkImportMemoryBufferCollectionFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImportMemoryBufferCollectionFUCHSIA( *reinterpret_cast<ImportMemoryBufferCollectionFUCHSIA const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImportMemoryBufferCollectionFUCHSIA &
+      operator=( ImportMemoryBufferCollectionFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImportMemoryBufferCollectionFUCHSIA &
+      operator=( VkImportMemoryBufferCollectionFUCHSIA const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImportMemoryBufferCollectionFUCHSIA const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    ImportMemoryBufferCollectionFUCHSIA & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImportMemoryBufferCollectionFUCHSIA &
+      setCollection( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection_ ) VULKAN_HPP_NOEXCEPT
+    {
+      collection = collection_;
+      return *this;
+    }
+
+    ImportMemoryBufferCollectionFUCHSIA & setIndex( uint32_t index_ ) VULKAN_HPP_NOEXCEPT
+    {
+      index = index_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImportMemoryBufferCollectionFUCHSIA const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImportMemoryBufferCollectionFUCHSIA *>( this );
+    }
+
+    operator VkImportMemoryBufferCollectionFUCHSIA &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImportMemoryBufferCollectionFUCHSIA *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImportMemoryBufferCollectionFUCHSIA const & ) const = default;
+#  else
+    bool operator==( ImportMemoryBufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( collection == rhs.collection ) &&
+             ( index == rhs.index );
+    }
+
+    bool operator!=( ImportMemoryBufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType           sType      = StructureType::eImportMemoryBufferCollectionFUCHSIA;
+    const void *                                  pNext      = {};
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection = {};
+    uint32_t                                      index      = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImportMemoryBufferCollectionFUCHSIA ) ==
+                              sizeof( VkImportMemoryBufferCollectionFUCHSIA ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImportMemoryBufferCollectionFUCHSIA>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImportMemoryBufferCollectionFUCHSIA>::value,
+    "ImportMemoryBufferCollectionFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eImportMemoryBufferCollectionFUCHSIA>
+  {
+    using Type = ImportMemoryBufferCollectionFUCHSIA;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
   struct ImportMemoryFdInfoKHR
   {

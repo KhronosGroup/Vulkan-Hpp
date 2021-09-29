@@ -1196,6 +1196,20 @@ namespace VULKAN_HPP_NAMESPACE
   struct SemaphoreGetZirconHandleInfoFUCHSIA;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+  struct BufferCollectionCreateInfoFUCHSIA;
+  struct ImportMemoryBufferCollectionFUCHSIA;
+  struct BufferCollectionImageCreateInfoFUCHSIA;
+  struct BufferConstraintsInfoFUCHSIA;
+  struct BufferCollectionBufferCreateInfoFUCHSIA;
+  struct BufferCollectionPropertiesFUCHSIA;
+  struct SysmemColorSpaceFUCHSIA;
+  struct ImageConstraintsInfoFUCHSIA;
+  struct ImageFormatConstraintsInfoFUCHSIA;
+  struct BufferCollectionConstraintsInfoFUCHSIA;
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
   //=== VK_HUAWEI_subpass_shading ===
   struct SubpassShadingPipelineCreateInfoHUAWEI;
   struct PhysicalDeviceSubpassShadingFeaturesHUAWEI;
@@ -5106,6 +5120,110 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  class BufferCollectionFUCHSIA
+  {
+  public:
+    using CType      = VkBufferCollectionFUCHSIA;
+    using NativeType = VkBufferCollectionFUCHSIA;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+      VULKAN_HPP_NAMESPACE::ObjectType::eBufferCollectionFUCHSIA;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA;
+
+  public:
+    VULKAN_HPP_CONSTEXPR BufferCollectionFUCHSIA() = default;
+    VULKAN_HPP_CONSTEXPR BufferCollectionFUCHSIA( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_TYPESAFE_EXPLICIT
+      BufferCollectionFUCHSIA( VkBufferCollectionFUCHSIA bufferCollectionFUCHSIA ) VULKAN_HPP_NOEXCEPT
+      : m_bufferCollectionFUCHSIA( bufferCollectionFUCHSIA )
+    {}
+
+#  if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+    BufferCollectionFUCHSIA & operator=( VkBufferCollectionFUCHSIA bufferCollectionFUCHSIA ) VULKAN_HPP_NOEXCEPT
+    {
+      m_bufferCollectionFUCHSIA = bufferCollectionFUCHSIA;
+      return *this;
+    }
+#  endif
+
+    BufferCollectionFUCHSIA & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_bufferCollectionFUCHSIA = {};
+      return *this;
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( BufferCollectionFUCHSIA const & ) const = default;
+#  else
+    bool operator==( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA == rhs.m_bufferCollectionFUCHSIA;
+    }
+
+    bool operator!=( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA != rhs.m_bufferCollectionFUCHSIA;
+    }
+
+    bool operator<( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA < rhs.m_bufferCollectionFUCHSIA;
+    }
+#  endif
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBufferCollectionFUCHSIA() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_bufferCollectionFUCHSIA == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkBufferCollectionFUCHSIA m_bufferCollectionFUCHSIA = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA ) ==
+                              sizeof( VkBufferCollectionFUCHSIA ),
+                            "handle and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>::value,
+                            "BufferCollectionFUCHSIA is not nothrow_move_constructible!" );
+
+  template <>
+  struct VULKAN_HPP_DEPRECATED(
+    "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eBufferCollectionFUCHSIA>
+  {
+    using type = VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eBufferCollectionFUCHSIA>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT,
+                 VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA;
+  };
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
   class BufferView
   {
   public:
@@ -6955,6 +7073,15 @@ namespace VULKAN_HPP_NAMESPACE
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
   using UniqueBuffer = UniqueHandle<Buffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+  template <typename Dispatch>
+  class UniqueHandleTraits<BufferCollectionFUCHSIA, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+  using UniqueBufferCollectionFUCHSIA = UniqueHandle<BufferCollectionFUCHSIA, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
   template <typename Dispatch>
   class UniqueHandleTraits<BufferView, Dispatch>
   {
@@ -11494,6 +11621,98 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<zx_handle_t>::type
       getSemaphoreZirconHandleFUCHSIA( const SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo,
                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_buffer_collection ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result createBufferCollectionFUCHSIA(
+      const VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA * pCreateInfo,
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *               pAllocator,
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA *                 pCollection,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
+      typename ResultValueType<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>::type
+      createBufferCollectionFUCHSIA( const BufferCollectionCreateInfoFUCHSIA & createInfo,
+                                     Optional<const AllocationCallbacks> allocator
+                                                        VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+      typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA, Dispatch>>::type
+      createBufferCollectionFUCHSIAUnique( const BufferCollectionCreateInfoFUCHSIA & createInfo,
+                                           Optional<const AllocationCallbacks> allocator
+                                                              VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result setBufferCollectionImageConstraintsFUCHSIA(
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA             collection,
+      const VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA * pImageConstraintsInfo,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      setBufferCollectionImageConstraintsFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                                  const ImageConstraintsInfoFUCHSIA &           imageConstraintsInfo,
+                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result setBufferCollectionBufferConstraintsFUCHSIA(
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA              collection,
+      const VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA * pBufferConstraintsInfo,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      setBufferCollectionBufferConstraintsFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                                   const BufferConstraintsInfoFUCHSIA &          bufferConstraintsInfo,
+                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyBufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA     collection,
+                                         const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroyBufferCollectionFUCHSIA(
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+      Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA     collection,
+                  const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void destroy( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                  Optional<const AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getBufferCollectionPropertiesFUCHSIA(
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA             collection,
+      VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA * pProperties,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS
+      typename ResultValueType<VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA>::type
+      getBufferCollectionPropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_FUCHSIA*/
 

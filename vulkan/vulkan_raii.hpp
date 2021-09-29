@@ -1087,6 +1087,20 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdSetVertexInputEXT = PFN_vkCmdSetVertexInputEXT( vkGetDeviceProcAddr( device, "vkCmdSetVertexInputEXT" ) );
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
+        //=== VK_FUCHSIA_buffer_collection ===
+        vkCreateBufferCollectionFUCHSIA =
+          PFN_vkCreateBufferCollectionFUCHSIA( vkGetDeviceProcAddr( device, "vkCreateBufferCollectionFUCHSIA" ) );
+        vkSetBufferCollectionImageConstraintsFUCHSIA = PFN_vkSetBufferCollectionImageConstraintsFUCHSIA(
+          vkGetDeviceProcAddr( device, "vkSetBufferCollectionImageConstraintsFUCHSIA" ) );
+        vkSetBufferCollectionBufferConstraintsFUCHSIA = PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA(
+          vkGetDeviceProcAddr( device, "vkSetBufferCollectionBufferConstraintsFUCHSIA" ) );
+        vkDestroyBufferCollectionFUCHSIA =
+          PFN_vkDestroyBufferCollectionFUCHSIA( vkGetDeviceProcAddr( device, "vkDestroyBufferCollectionFUCHSIA" ) );
+        vkGetBufferCollectionPropertiesFUCHSIA = PFN_vkGetBufferCollectionPropertiesFUCHSIA(
+          vkGetDeviceProcAddr( device, "vkGetBufferCollectionPropertiesFUCHSIA" ) );
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
         //=== VK_FUCHSIA_external_memory ===
         vkGetMemoryZirconHandleFUCHSIA =
           PFN_vkGetMemoryZirconHandleFUCHSIA( vkGetDeviceProcAddr( device, "vkGetMemoryZirconHandleFUCHSIA" ) );
@@ -1854,6 +1868,21 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_vertex_input_dynamic_state ===
       PFN_vkCmdSetVertexInputEXT vkCmdSetVertexInputEXT = 0;
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+      //=== VK_FUCHSIA_buffer_collection ===
+      PFN_vkCreateBufferCollectionFUCHSIA               vkCreateBufferCollectionFUCHSIA               = 0;
+      PFN_vkSetBufferCollectionImageConstraintsFUCHSIA  vkSetBufferCollectionImageConstraintsFUCHSIA  = 0;
+      PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA vkSetBufferCollectionBufferConstraintsFUCHSIA = 0;
+      PFN_vkDestroyBufferCollectionFUCHSIA              vkDestroyBufferCollectionFUCHSIA              = 0;
+      PFN_vkGetBufferCollectionPropertiesFUCHSIA        vkGetBufferCollectionPropertiesFUCHSIA        = 0;
+#  else
+      PFN_dummy vkCreateBufferCollectionFUCHSIA_placeholder                   = 0;
+      PFN_dummy vkSetBufferCollectionImageConstraintsFUCHSIA_placeholder      = 0;
+      PFN_dummy vkSetBufferCollectionBufferConstraintsFUCHSIA_placeholder     = 0;
+      PFN_dummy vkDestroyBufferCollectionFUCHSIA_placeholder                  = 0;
+      PFN_dummy vkGetBufferCollectionPropertiesFUCHSIA_placeholder            = 0;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_memory ===
@@ -3653,6 +3682,130 @@ namespace VULKAN_HPP_NAMESPACE
       const VkAllocationCallbacks *                                             m_allocator;
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher;
     };
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+    class BufferCollectionFUCHSIA
+    {
+    public:
+      using CType = VkBufferCollectionFUCHSIA;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType =
+        VULKAN_HPP_NAMESPACE::ObjectType::eBufferCollectionFUCHSIA;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA;
+
+    public:
+      BufferCollectionFUCHSIA(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result =
+          static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateBufferCollectionFUCHSIA(
+            static_cast<VkDevice>( *device ),
+            reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( &createInfo ),
+            m_allocator,
+            reinterpret_cast<VkBufferCollectionFUCHSIA *>( &m_bufferCollectionFUCHSIA ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateBufferCollectionFUCHSIA" );
+        }
+      }
+
+      BufferCollectionFUCHSIA(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+        VkBufferCollectionFUCHSIA                                                       bufferCollectionFUCHSIA,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_bufferCollectionFUCHSIA( bufferCollectionFUCHSIA )
+        , m_device( *device )
+        , m_allocator( reinterpret_cast<const VkAllocationCallbacks *>(
+            static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )
+        , m_dispatcher( device.getDispatcher() )
+      {}
+
+      ~BufferCollectionFUCHSIA()
+      {
+        if ( m_bufferCollectionFUCHSIA )
+        {
+          getDispatcher()->vkDestroyBufferCollectionFUCHSIA(
+            m_device, static_cast<VkBufferCollectionFUCHSIA>( m_bufferCollectionFUCHSIA ), m_allocator );
+        }
+      }
+
+#    if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      BufferCollectionFUCHSIA() = default;
+#    else
+      BufferCollectionFUCHSIA()   = delete;
+#    endif
+      BufferCollectionFUCHSIA( BufferCollectionFUCHSIA const & ) = delete;
+      BufferCollectionFUCHSIA( BufferCollectionFUCHSIA && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_bufferCollectionFUCHSIA(
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_bufferCollectionFUCHSIA, {} ) )
+        , m_device( rhs.m_device )
+        , m_allocator( rhs.m_allocator )
+        , m_dispatcher( rhs.m_dispatcher )
+      {}
+      BufferCollectionFUCHSIA & operator=( BufferCollectionFUCHSIA const & ) = delete;
+      BufferCollectionFUCHSIA & operator=( BufferCollectionFUCHSIA && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          if ( m_bufferCollectionFUCHSIA )
+          {
+            getDispatcher()->vkDestroyBufferCollectionFUCHSIA(
+              m_device, static_cast<VkBufferCollectionFUCHSIA>( m_bufferCollectionFUCHSIA ), m_allocator );
+          }
+          m_bufferCollectionFUCHSIA =
+            VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_bufferCollectionFUCHSIA, {} );
+          m_device     = rhs.m_device;
+          m_allocator  = rhs.m_allocator;
+          m_dispatcher = rhs.m_dispatcher;
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferCollectionFUCHSIA;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+#    if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
+      explicit operator bool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferCollectionFUCHSIA.operator bool();
+      }
+
+      bool operator!() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferCollectionFUCHSIA.operator!();
+      }
+#    endif
+
+      //=== VK_FUCHSIA_buffer_collection ===
+
+      void setImageConstraints( const ImageConstraintsInfoFUCHSIA & imageConstraintsInfo ) const;
+
+      void setBufferConstraints( const BufferConstraintsInfoFUCHSIA & bufferConstraintsInfo ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA getProperties() const;
+
+    private:
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA                             m_bufferCollectionFUCHSIA;
+      VkDevice                                                                  m_device;
+      const VkAllocationCallbacks *                                             m_allocator;
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher;
+    };
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     class BufferView
     {
@@ -16572,6 +16725,66 @@ namespace VULKAN_HPP_NAMESPACE
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreZirconHandleFUCHSIA" );
       }
       return zirconHandle;
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_buffer_collection ===
+
+    VULKAN_HPP_INLINE void
+      BufferCollectionFUCHSIA::setImageConstraints( const ImageConstraintsInfoFUCHSIA & imageConstraintsInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkSetBufferCollectionImageConstraintsFUCHSIA &&
+        "Function <vkSetBufferCollectionImageConstraintsFUCHSIA> needs extension <VK_FUCHSIA_buffer_collection> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkSetBufferCollectionImageConstraintsFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkBufferCollectionFUCHSIA>( m_bufferCollectionFUCHSIA ),
+          reinterpret_cast<const VkImageConstraintsInfoFUCHSIA *>( &imageConstraintsInfo ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::BufferCollectionFUCHSIA::setImageConstraints" );
+      }
+    }
+
+    VULKAN_HPP_INLINE void
+      BufferCollectionFUCHSIA::setBufferConstraints( const BufferConstraintsInfoFUCHSIA & bufferConstraintsInfo ) const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkSetBufferCollectionBufferConstraintsFUCHSIA &&
+        "Function <vkSetBufferCollectionBufferConstraintsFUCHSIA> needs extension <VK_FUCHSIA_buffer_collection> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::Result result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkSetBufferCollectionBufferConstraintsFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkBufferCollectionFUCHSIA>( m_bufferCollectionFUCHSIA ),
+          reinterpret_cast<const VkBufferConstraintsInfoFUCHSIA *>( &bufferConstraintsInfo ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::BufferCollectionFUCHSIA::setBufferConstraints" );
+      }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA
+                                           BufferCollectionFUCHSIA::getProperties() const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetBufferCollectionPropertiesFUCHSIA &&
+        "Function <vkGetBufferCollectionPropertiesFUCHSIA> needs extension <VK_FUCHSIA_buffer_collection> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA properties;
+      VULKAN_HPP_NAMESPACE::Result                            result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetBufferCollectionPropertiesFUCHSIA(
+          static_cast<VkDevice>( m_device ),
+          static_cast<VkBufferCollectionFUCHSIA>( m_bufferCollectionFUCHSIA ),
+          reinterpret_cast<VkBufferCollectionPropertiesFUCHSIA *>( &properties ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::BufferCollectionFUCHSIA::getProperties" );
+      }
+      return properties;
     }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 

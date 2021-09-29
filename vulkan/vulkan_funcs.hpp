@@ -19145,6 +19145,213 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_FUCHSIA*/
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::createBufferCollectionFUCHSIA( const VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA * pCreateInfo,
+                                           const VULKAN_HPP_NAMESPACE::AllocationCallbacks *               pAllocator,
+                                           VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA *                 pCollection,
+                                           Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkCreateBufferCollectionFUCHSIA( m_device,
+                                         reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( pCreateInfo ),
+                                         reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                         reinterpret_cast<VkBufferCollectionFUCHSIA *>( pCollection ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>::type
+    Device::createBufferCollectionFUCHSIA( const BufferCollectionCreateInfoFUCHSIA & createInfo,
+                                           Optional<const AllocationCallbacks>       allocator,
+                                           Dispatch const &                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection;
+    Result                                        result = static_cast<Result>( d.vkCreateBufferCollectionFUCHSIA(
+      m_device,
+      reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>(
+        static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkBufferCollectionFUCHSIA *>( &collection ) ) );
+    return createResultValue(
+      result, collection, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferCollectionFUCHSIA" );
+  }
+
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA, Dispatch>>::type
+    Device::createBufferCollectionFUCHSIAUnique( const BufferCollectionCreateInfoFUCHSIA & createInfo,
+                                                 Optional<const AllocationCallbacks>       allocator,
+                                                 Dispatch const &                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection;
+    Result                                        result = static_cast<Result>( d.vkCreateBufferCollectionFUCHSIA(
+      m_device,
+      reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>(
+        static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkBufferCollectionFUCHSIA *>( &collection ) ) );
+    ObjectDestroy<Device, Dispatch>               deleter( *this, allocator, d );
+    return createResultValue<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA, Dispatch>(
+      result, collection, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferCollectionFUCHSIAUnique", deleter );
+  }
+#    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setBufferCollectionImageConstraintsFUCHSIA(
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA             collection,
+    const VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA * pImageConstraintsInfo,
+    Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkSetBufferCollectionImageConstraintsFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkImageConstraintsInfoFUCHSIA *>( pImageConstraintsInfo ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::setBufferCollectionImageConstraintsFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                                        const ImageConstraintsInfoFUCHSIA & imageConstraintsInfo,
+                                                        Dispatch const &                    d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    Result result = static_cast<Result>( d.vkSetBufferCollectionImageConstraintsFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkImageConstraintsInfoFUCHSIA *>( &imageConstraintsInfo ) ) );
+    return createResultValue( result,
+                              VULKAN_HPP_NAMESPACE_STRING "::Device::setBufferCollectionImageConstraintsFUCHSIA" );
+  }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setBufferCollectionBufferConstraintsFUCHSIA(
+    VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA              collection,
+    const VULKAN_HPP_NAMESPACE::BufferConstraintsInfoFUCHSIA * pBufferConstraintsInfo,
+    Dispatch const &                                           d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkSetBufferCollectionBufferConstraintsFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkBufferConstraintsInfoFUCHSIA *>( pBufferConstraintsInfo ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::setBufferCollectionBufferConstraintsFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                                         const BufferConstraintsInfoFUCHSIA & bufferConstraintsInfo,
+                                                         Dispatch const &                     d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    Result result = static_cast<Result>( d.vkSetBufferCollectionBufferConstraintsFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkBufferConstraintsInfoFUCHSIA *>( &bufferConstraintsInfo ) ) );
+    return createResultValue( result,
+                              VULKAN_HPP_NAMESPACE_STRING "::Device::setBufferCollectionBufferConstraintsFUCHSIA" );
+  }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    Device::destroyBufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA     collection,
+                                            const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                            Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyBufferCollectionFUCHSIA( m_device,
+                                        static_cast<VkBufferCollectionFUCHSIA>( collection ),
+                                        reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    Device::destroyBufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                            Optional<const AllocationCallbacks>           allocator,
+                                            Dispatch const &                              d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyBufferCollectionFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkAllocationCallbacks *>(
+        static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA     collection,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyBufferCollectionFUCHSIA( m_device,
+                                        static_cast<VkBufferCollectionFUCHSIA>( collection ),
+                                        reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                          Optional<const AllocationCallbacks>           allocator,
+                                          Dispatch const &                              d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyBufferCollectionFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<const VkAllocationCallbacks *>(
+        static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::getBufferCollectionPropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA             collection,
+                                                  VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA * pProperties,
+                                                  Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetBufferCollectionPropertiesFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<VkBufferCollectionPropertiesFUCHSIA *>( pProperties ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA>::type
+    Device::getBufferCollectionPropertiesFUCHSIA( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection,
+                                                  Dispatch const &                              d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    VULKAN_HPP_NAMESPACE::BufferCollectionPropertiesFUCHSIA properties;
+    Result result = static_cast<Result>( d.vkGetBufferCollectionPropertiesFUCHSIA(
+      m_device,
+      static_cast<VkBufferCollectionFUCHSIA>( collection ),
+      reinterpret_cast<VkBufferCollectionPropertiesFUCHSIA *>( &properties ) ) );
+    return createResultValue(
+      result, properties, VULKAN_HPP_NAMESPACE_STRING "::Device::getBufferCollectionPropertiesFUCHSIA" );
+  }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VK_USE_PLATFORM_FUCHSIA*/
+
   //=== VK_HUAWEI_subpass_shading ===
 
   template <typename Dispatch>

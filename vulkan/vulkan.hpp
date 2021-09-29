@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 193, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 194, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5468,6 +5468,49 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_buffer_collection ===
+
+    VkResult vkCreateBufferCollectionFUCHSIA( VkDevice                                    device,
+                                              const VkBufferCollectionCreateInfoFUCHSIA * pCreateInfo,
+                                              const VkAllocationCallbacks *               pAllocator,
+                                              VkBufferCollectionFUCHSIA * pCollection ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateBufferCollectionFUCHSIA( device, pCreateInfo, pAllocator, pCollection );
+    }
+
+    VkResult vkSetBufferCollectionImageConstraintsFUCHSIA(
+      VkDevice                              device,
+      VkBufferCollectionFUCHSIA             collection,
+      const VkImageConstraintsInfoFUCHSIA * pImageConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSetBufferCollectionImageConstraintsFUCHSIA( device, collection, pImageConstraintsInfo );
+    }
+
+    VkResult vkSetBufferCollectionBufferConstraintsFUCHSIA(
+      VkDevice                               device,
+      VkBufferCollectionFUCHSIA              collection,
+      const VkBufferConstraintsInfoFUCHSIA * pBufferConstraintsInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSetBufferCollectionBufferConstraintsFUCHSIA( device, collection, pBufferConstraintsInfo );
+    }
+
+    void vkDestroyBufferCollectionFUCHSIA( VkDevice                      device,
+                                           VkBufferCollectionFUCHSIA     collection,
+                                           const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyBufferCollectionFUCHSIA( device, collection, pAllocator );
+    }
+
+    VkResult vkGetBufferCollectionPropertiesFUCHSIA( VkDevice                              device,
+                                                     VkBufferCollectionFUCHSIA             collection,
+                                                     VkBufferCollectionPropertiesFUCHSIA * pProperties ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetBufferCollectionPropertiesFUCHSIA( device, collection, pProperties );
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
     //=== VK_HUAWEI_subpass_shading ===
 
     VkResult vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI( VkDevice     device,
@@ -10320,6 +10363,34 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+  template <>
+  struct StructExtends<ImportMemoryBufferCollectionFUCHSIA, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<BufferCollectionImageCreateInfoFUCHSIA, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<BufferCollectionBufferCreateInfoFUCHSIA, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
   //=== VK_HUAWEI_subpass_shading ===
   template <>
   struct StructExtends<SubpassShadingPipelineCreateInfoHUAWEI, ComputePipelineCreateInfo>
@@ -11436,6 +11507,21 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     PFN_dummy vkImportSemaphoreZirconHandleFUCHSIA_placeholder              = 0;
     PFN_dummy vkGetSemaphoreZirconHandleFUCHSIA_placeholder                 = 0;
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_buffer_collection ===
+    PFN_vkCreateBufferCollectionFUCHSIA               vkCreateBufferCollectionFUCHSIA               = 0;
+    PFN_vkSetBufferCollectionImageConstraintsFUCHSIA  vkSetBufferCollectionImageConstraintsFUCHSIA  = 0;
+    PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA vkSetBufferCollectionBufferConstraintsFUCHSIA = 0;
+    PFN_vkDestroyBufferCollectionFUCHSIA              vkDestroyBufferCollectionFUCHSIA              = 0;
+    PFN_vkGetBufferCollectionPropertiesFUCHSIA        vkGetBufferCollectionPropertiesFUCHSIA        = 0;
+#else
+    PFN_dummy vkCreateBufferCollectionFUCHSIA_placeholder                   = 0;
+    PFN_dummy vkSetBufferCollectionImageConstraintsFUCHSIA_placeholder      = 0;
+    PFN_dummy vkSetBufferCollectionBufferConstraintsFUCHSIA_placeholder     = 0;
+    PFN_dummy vkDestroyBufferCollectionFUCHSIA_placeholder                  = 0;
+    PFN_dummy vkGetBufferCollectionPropertiesFUCHSIA_placeholder            = 0;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     //=== VK_HUAWEI_subpass_shading ===
@@ -12714,6 +12800,20 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetInstanceProcAddr( instance, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+      //=== VK_FUCHSIA_buffer_collection ===
+      vkCreateBufferCollectionFUCHSIA =
+        PFN_vkCreateBufferCollectionFUCHSIA( vkGetInstanceProcAddr( instance, "vkCreateBufferCollectionFUCHSIA" ) );
+      vkSetBufferCollectionImageConstraintsFUCHSIA = PFN_vkSetBufferCollectionImageConstraintsFUCHSIA(
+        vkGetInstanceProcAddr( instance, "vkSetBufferCollectionImageConstraintsFUCHSIA" ) );
+      vkSetBufferCollectionBufferConstraintsFUCHSIA = PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA(
+        vkGetInstanceProcAddr( instance, "vkSetBufferCollectionBufferConstraintsFUCHSIA" ) );
+      vkDestroyBufferCollectionFUCHSIA =
+        PFN_vkDestroyBufferCollectionFUCHSIA( vkGetInstanceProcAddr( instance, "vkDestroyBufferCollectionFUCHSIA" ) );
+      vkGetBufferCollectionPropertiesFUCHSIA = PFN_vkGetBufferCollectionPropertiesFUCHSIA(
+        vkGetInstanceProcAddr( instance, "vkGetBufferCollectionPropertiesFUCHSIA" ) );
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
       //=== VK_HUAWEI_subpass_shading ===
       vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
         vkGetInstanceProcAddr( instance, "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
@@ -13584,6 +13684,20 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetSemaphoreZirconHandleFUCHSIA( vkGetDeviceProcAddr( device, "vkGetSemaphoreZirconHandleFUCHSIA" ) );
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+      //=== VK_FUCHSIA_buffer_collection ===
+      vkCreateBufferCollectionFUCHSIA =
+        PFN_vkCreateBufferCollectionFUCHSIA( vkGetDeviceProcAddr( device, "vkCreateBufferCollectionFUCHSIA" ) );
+      vkSetBufferCollectionImageConstraintsFUCHSIA = PFN_vkSetBufferCollectionImageConstraintsFUCHSIA(
+        vkGetDeviceProcAddr( device, "vkSetBufferCollectionImageConstraintsFUCHSIA" ) );
+      vkSetBufferCollectionBufferConstraintsFUCHSIA = PFN_vkSetBufferCollectionBufferConstraintsFUCHSIA(
+        vkGetDeviceProcAddr( device, "vkSetBufferCollectionBufferConstraintsFUCHSIA" ) );
+      vkDestroyBufferCollectionFUCHSIA =
+        PFN_vkDestroyBufferCollectionFUCHSIA( vkGetDeviceProcAddr( device, "vkDestroyBufferCollectionFUCHSIA" ) );
+      vkGetBufferCollectionPropertiesFUCHSIA = PFN_vkGetBufferCollectionPropertiesFUCHSIA(
+        vkGetDeviceProcAddr( device, "vkGetBufferCollectionPropertiesFUCHSIA" ) );
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
       //=== VK_HUAWEI_subpass_shading ===
       vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI = PFN_vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
         vkGetDeviceProcAddr( device, "vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI" ) );
@@ -14089,6 +14203,21 @@ namespace std
       return std::hash<VkPrivateDataSlotEXT>{}( static_cast<VkPrivateDataSlotEXT>( privateDataSlotEXT ) );
     }
   };
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA const & bufferCollectionFUCHSIA ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<VkBufferCollectionFUCHSIA>{}(
+        static_cast<VkBufferCollectionFUCHSIA>( bufferCollectionFUCHSIA ) );
+    }
+  };
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 }  // namespace std
 #endif

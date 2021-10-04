@@ -669,7 +669,8 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR ArrayWrapper1D( std::array<T, N> const & data ) VULKAN_HPP_NOEXCEPT : std::array<T, N>( data )
     {}
 
-#if defined( _WIN32 ) && !defined( _WIN64 )
+#if ( VK_USE_64_BIT_PTR_DEFINES == 0 )
+    // on 32 bit compiles, needs overloads on index type int to resolve ambiguities
     VULKAN_HPP_CONSTEXPR T const & operator[]( int index ) const VULKAN_HPP_NOEXCEPT
     {
       return std::array<T, N>::operator[]( index );

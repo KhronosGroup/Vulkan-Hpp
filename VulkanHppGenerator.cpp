@@ -61,6 +61,7 @@ std::string              toUpperCase( std::string const & name );
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator );
 template <typename StringContainer>
 std::string toString( StringContainer const & strings );
+std::string toString( tinyxml2::XMLError error );
 std::string trim( std::string const & input );
 std::string trimEnd( std::string const & input );
 std::string trimStars( std::string const & input );
@@ -932,7 +933,19 @@ void VulkanHppGenerator::prepareRAIIHandles()
   }
 
   distributeSecondLevelCommands( m_RAIISpecialFunctions );
-  renameFunctionParameters();
+
+  // we rename a couple of function parameters to prevent this warning, treated as an error:
+  // warning C4458: declaration of 'objectType' hides class member
+  for ( auto & command : m_commands )
+  {
+    for ( auto & param : command.second.params )
+    {
+      if ( param.name == "objectType" )
+      {
+        param.name += "_";
+      }
+    }
+  }
 }
 
 //
@@ -11730,107 +11743,95 @@ void VulkanHppGenerator::readCommands( tinyxml2::XMLElement const * element )
 
 void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const * element )
 {
+  int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
   {
-    readCommandsCommandAlias( element, attributes );
+    // for command aliases, create a copy of the aliased command
+    checkAttributes( line,
+                     attributes,
+                     {},
+                     {
+                       { "alias", {} },
+                       { "name", {} },
+                     } );
+    checkElements( line, getChildElements( element ), {} );
+
+    std::string alias, name;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+        check( beginsWith( name, "vk" ), line, "name <" + name + "> should begin with <vk>" );
+      }
+    }
+
+    auto commandIt = m_commands.find( alias );
+    check( commandIt != m_commands.end(), line, "missing command <" + alias + ">" );
+    CommandData commandData = commandIt->second;
+    commandData.alias       = alias;
+    commandData.xmlLine     = line;
+    addCommand( name, commandData );
   }
   else
   {
-    readCommandsCommand( element, attributes );
+    checkAttributes( line,
+                     attributes,
+                     {},
+                     { { "cmdbufferlevel", { "primary", "secondary" } },
+                       { "comment", {} },
+                       { "errorcodes", {} },
+                       { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
+                       { "renderpass", { "both", "inside", "outside" } },
+                       { "successcodes", {} } } );
+
+    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+    checkElements( line, children, { { "param", false }, { "proto", true } }, { "implicitexternsyncparams" } );
+
+    CommandData commandData( line );
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "errorcodes" )
+      {
+        commandData.errorCodes = tokenize( attribute.second, "," );
+        // errorCodes are checked in checkCorrectness after complete reading
+      }
+      else if ( attribute.first == "successcodes" )
+      {
+        commandData.successCodes = tokenize( attribute.second, "," );
+        // successCodes are checked in checkCorrectness after complete reading
+      }
+    }
+
+    std::string name;
+    for ( auto child : children )
+    {
+      std::string value = child->Value();
+      if ( value == "param" )
+      {
+        commandData.params.push_back( readCommandsCommandParam( child, commandData.params ) );
+      }
+      else if ( value == "proto" )
+      {
+        std::tie( name, commandData.returnType ) = readCommandsCommandProto( child );
+      }
+    }
+    assert( !name.empty() );
+    check( ( commandData.returnType == "VkResult" ) || commandData.errorCodes.empty(),
+           line,
+           "command <" + name + "> does not return a VkResult but specifies errorcodes" );
+    check( ( commandData.returnType == "VkResult" ) || commandData.successCodes.empty(),
+           line,
+           "command <" + name + "> does not return a VkResult but specifies successcodes" );
+
+    registerDeleter( name, std::make_pair( name, commandData ) );
+    addCommand( name, commandData );
   }
-}
-
-void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const *               element,
-                                              std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line,
-                   attributes,
-                   {},
-                   { { "cmdbufferlevel", { "primary", "secondary" } },
-                     { "comment", {} },
-                     { "errorcodes", {} },
-                     { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
-                     { "renderpass", { "both", "inside", "outside" } },
-                     { "successcodes", {} } } );
-
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "param", false }, { "proto", true } }, { "implicitexternsyncparams" } );
-
-  CommandData commandData( line );
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "errorcodes" )
-    {
-      commandData.errorCodes = tokenize( attribute.second, "," );
-      // errorCodes are checked in checkCorrectness after complete reading
-    }
-    else if ( attribute.first == "successcodes" )
-    {
-      commandData.successCodes = tokenize( attribute.second, "," );
-      // successCodes are checked in checkCorrectness after complete reading
-    }
-  }
-
-  std::string name;
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "param" )
-    {
-      commandData.params.push_back( readCommandsCommandParam( child, commandData.params ) );
-    }
-    else if ( value == "proto" )
-    {
-      std::tie( name, commandData.returnType ) = readCommandsCommandProto( child );
-    }
-  }
-  assert( !name.empty() );
-  check( ( commandData.returnType == "VkResult" ) || commandData.errorCodes.empty(),
-         line,
-         "command <" + name + "> does not return a VkResult but specifies errorcodes" );
-  check( ( commandData.returnType == "VkResult" ) || commandData.successCodes.empty(),
-         line,
-         "command <" + name + "> does not return a VkResult but specifies successcodes" );
-
-  registerDeleter( name, std::make_pair( name, commandData ) );
-  addCommand( name, commandData );
-}
-
-void VulkanHppGenerator::readCommandsCommandAlias( tinyxml2::XMLElement const *               element,
-                                                   std::map<std::string, std::string> const & attributes )
-{  // for command aliases, create a copy of the aliased command
-  int line = element->GetLineNum();
-  checkAttributes( line,
-                   attributes,
-                   {},
-                   {
-                     { "alias", {} },
-                     { "name", {} },
-                   } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string alias, name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      alias = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-      check( beginsWith( name, "vk" ), line, "name <" + name + "> should begin with <vk>" );
-    }
-  }
-
-  auto commandIt = m_commands.find( alias );
-  check( commandIt != m_commands.end(), line, "missing command <" + alias + ">" );
-  CommandData commandData = commandIt->second;
-  commandData.alias       = alias;
-  commandData.xmlLine     = line;
-  addCommand( name, commandData );
 }
 
 VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandsCommandParam( tinyxml2::XMLElement const *   element,
@@ -12016,82 +12017,67 @@ void VulkanHppGenerator::readEnumsConstant( tinyxml2::XMLElement const * element
 void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const *              element,
                                         std::map<std::string, EnumData>::iterator enumIt )
 {
+  int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
   {
-    readEnumsEnumAlias( element, enumIt, attributes );
+    checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "comment", {} } } );
+    checkElements( line, getChildElements( element ), {} );
+
+    std::string alias, bitpos, name, value;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+    }
+    assert( !name.empty() );
+
+    enumIt->second.addEnumAlias( line, name, alias );
   }
   else
   {
-    readEnumsEnum( element, enumIt, attributes );
+    checkAttributes(
+      line,
+      attributes,
+      { { "name", {} } },
+      { { "bitpos", {} }, { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } }, { "value", {} } } );
+    checkElements( line, getChildElements( element ), {} );
+
+    std::string alias, bitpos, name, protect, value;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "bitpos" )
+      {
+        bitpos = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+      else if ( attribute.first == "protect" )
+      {
+        protect = attribute.second;
+      }
+      else if ( attribute.first == "value" )
+      {
+        value = attribute.second;
+      }
+    }
+
+    std::string prefix = generateEnumSuffixes( enumIt->first, enumIt->second.isBitmask, m_tags ).first;
+    check( beginsWith( name, prefix ),
+           line,
+           "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
+
+    check( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
+    enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "" );
   }
-}
-
-void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const *               element,
-                                        std::map<std::string, EnumData>::iterator  enumIt,
-                                        std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes(
-    line,
-    attributes,
-    { { "name", {} } },
-    { { "bitpos", {} }, { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } }, { "value", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string alias, bitpos, name, protect, value;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "bitpos" )
-    {
-      bitpos = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "protect" )
-    {
-      protect = attribute.second;
-    }
-    else if ( attribute.first == "value" )
-    {
-      value = attribute.second;
-    }
-  }
-
-  std::string prefix = generateEnumSuffixes( enumIt->first, enumIt->second.isBitmask, m_tags ).first;
-  check( beginsWith( name, prefix ),
-         line,
-         "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
-
-  check( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
-  enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "" );
-}
-
-void VulkanHppGenerator::readEnumsEnumAlias( tinyxml2::XMLElement const *               element,
-                                             std::map<std::string, EnumData>::iterator  enumIt,
-                                             std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string alias, bitpos, name, value;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      alias = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-  assert( !name.empty() );
-
-  enumIt->second.addEnumAlias( line, name, alias );
 }
 
 std::string VulkanHppGenerator::readComment( tinyxml2::XMLElement const * element )
@@ -13119,6 +13105,133 @@ void VulkanHppGenerator::readSPIRVExtensionsExtensionEnable( tinyxml2::XMLElemen
   }
 }
 
+void VulkanHppGenerator::readTags( tinyxml2::XMLElement const * element )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "tag", false } } );
+
+  for ( auto child : children )
+  {
+    readTagsTag( child );
+  }
+}
+
+void VulkanHppGenerator::readTagsTag( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "author", {} }, { "contact", {} }, { "name", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      check( m_tags.find( attribute.second ) == m_tags.end(),
+             line,
+             "tag named <" + attribute.second + "> has already been specified" );
+      m_tags.insert( attribute.second );
+    }
+    else
+    {
+      check( ( attribute.first == "author" ) || ( attribute.first == "contact" ),
+             line,
+             "unknown attribute <" + attribute.first + ">" );
+    }
+  }
+}
+
+void VulkanHppGenerator::readTypes( tinyxml2::XMLElement const * element )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "comment", false }, { "type", false } } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "comment" )
+    {
+      readComment( child );
+    }
+    else
+    {
+      assert( value == "type" );
+      readTypesType( child );
+    }
+  }
+}
+
+void VulkanHppGenerator::readTypesType( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+
+  auto categoryIt = attributes.find( "category" );
+  if ( categoryIt != attributes.end() )
+  {
+    if ( categoryIt->second == "basetype" )
+    {
+      readTypesTypeBasetype( element, attributes );
+    }
+    else if ( categoryIt->second == "bitmask" )
+    {
+      readTypesTypeBitmask( element, attributes );
+    }
+    else if ( categoryIt->second == "define" )
+    {
+      readTypesTypeDefine( element, attributes );
+    }
+    else if ( categoryIt->second == "enum" )
+    {
+      readTypesTypeEnum( element, attributes );
+    }
+    else if ( categoryIt->second == "funcpointer" )
+    {
+      readTypesTypeFuncpointer( element, attributes );
+    }
+    else if ( categoryIt->second == "handle" )
+    {
+      readTypesTypeHandle( element, attributes );
+    }
+    else if ( categoryIt->second == "include" )
+    {
+      readTypesTypeInclude( element, attributes );
+    }
+    else if ( categoryIt->second == "struct" )
+    {
+      readTypesTypeStruct( element, false, attributes );
+    }
+    else
+    {
+      check(
+        categoryIt->second == "union", element->GetLineNum(), "unknown type category <" + categoryIt->second + ">" );
+      readTypesTypeStruct( element, true, attributes );
+    }
+  }
+  else
+  {
+    auto requiresIt = attributes.find( "requires" );
+    if ( requiresIt != attributes.end() )
+    {
+      readTypesTypeRequires( element, attributes );
+    }
+    else
+    {
+      check( ( attributes.size() == 1 ) && ( attributes.begin()->first == "name" ) &&
+               ( attributes.begin()->second == "int" ),
+             line,
+             "unknown type" );
+      check( m_types.insert( std::make_pair( attributes.begin()->second, TypeCategory::Unknown ) ).second,
+             line,
+             "type <" + attributes.begin()->second + "> already specified" );
+    }
+  }
+}
+
 void VulkanHppGenerator::readTypesTypeBasetype( tinyxml2::XMLElement const *               element,
                                                 std::map<std::string, std::string> const & attributes )
 {
@@ -13314,6 +13427,50 @@ void VulkanHppGenerator::readTypesTypeDefine( tinyxml2::XMLElement const *      
   check( m_defines.insert( name ).second, line, "define <" + name + "> has already been specified" );
 }
 
+void VulkanHppGenerator::readTypesTypeEnum( tinyxml2::XMLElement const *               element,
+                                            std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, attributes, { { "category", { "enum" } }, { "name", {} } }, { { "alias", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string alias, name;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "alias" )
+    {
+      alias = attribute.second;
+      check( !alias.empty(), line, "enum with empty alias" );
+    }
+    else if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+      check( !name.empty(), line, "enum with empty name" );
+      check( m_enums.find( name ) == m_enums.end(), line, "enum <" + name + "> already specified" );
+    }
+  }
+  assert( !name.empty() );
+
+  if ( alias.empty() )
+  {
+    check( m_enums.insert( std::make_pair( name, EnumData( line ) ) ).second,
+           line,
+           "enum <" + name + "> already specified" );
+  }
+  else
+  {
+    auto enumIt = m_enums.find( alias );
+    check( enumIt != m_enums.end(), line, "enum with unknown alias <" + alias + ">" );
+    check( enumIt->second.alias.empty(),
+           line,
+           "enum <" + enumIt->first + "> already has an alias <" + enumIt->second.alias + ">" );
+    enumIt->second.alias = name;
+  }
+  check( m_types.insert( std::make_pair( name, TypeCategory::Enum ) ).second,
+         line,
+         "enum <" + name + "> already specified as a type" );
+}
+
 void VulkanHppGenerator::readTypesTypeFuncpointer( tinyxml2::XMLElement const *               element,
                                                    std::map<std::string, std::string> const & attributes )
 {
@@ -13430,6 +13587,17 @@ void VulkanHppGenerator::readTypesTypeHandle( tinyxml2::XMLElement const *      
   }
 }
 
+void VulkanHppGenerator::readTypesTypeInclude( tinyxml2::XMLElement const *               element,
+                                               std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name = attributes.find( "name" )->second;
+  check( m_includes.insert( name ).second, element->GetLineNum(), "include named <" + name + "> already specified" );
+}
+
 void VulkanHppGenerator::readTypesTypeRequires( tinyxml2::XMLElement const *               element,
                                                 std::map<std::string, std::string> const & attributes )
 {
@@ -13452,6 +13620,470 @@ void VulkanHppGenerator::readTypesTypeRequires( tinyxml2::XMLElement const *    
              line,
              "type requires unknown include <" + attribute.second + ">" );
     }
+  }
+}
+
+void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const *               element,
+                                              bool                                       isUnion,
+                                              std::map<std::string, std::string> const & attributes )
+{
+  int line = element->GetLineNum();
+  if ( attributes.find( "alias" ) != attributes.end() )
+  {
+    checkAttributes( line, attributes, { { "alias", {} }, { "category", { "struct" } }, { "name", {} } }, {} );
+    checkElements( line, getChildElements( element ), {}, {} );
+
+    std::string alias, name;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+    }
+
+    check( m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second,
+           line,
+           "structure alias <" + name + "> already used" );
+    check( m_structureAliasesInverse[alias].insert( name ).second,
+           line,
+           "structure alias <" + name + "> already used with structure <" + alias + ">" );
+    check( m_types.insert( std::make_pair( name, TypeCategory::Struct ) ).second,
+           line,
+           "struct <" + name + "> already specified as a type" );
+  }
+  else
+  {
+    checkAttributes( line,
+                     attributes,
+                     { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
+                     { { "allowduplicate", { "true" } },
+                       { "comment", {} },
+                       { "returnedonly", { "true" } },
+                       { "structextends", {} } } );
+    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+    checkElements( line, children, {}, { "member", "comment" } );
+
+    std::string              category, name;
+    std::vector<std::string> structExtends;
+    bool                     allowDuplicate = false;
+    bool                     returnedOnly   = false;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "allowduplicate" )
+      {
+        assert( attribute.second == "true" );
+        allowDuplicate = true;
+      }
+      else if ( attribute.first == "category" )
+      {
+        category = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+      else if ( attribute.first == "returnedonly" )
+      {
+        check(
+          attribute.second == "true", line, "unknown value for attribute returnedonly: <" + attribute.second + ">" );
+        returnedOnly = true;
+      }
+      else if ( attribute.first == "structextends" )
+      {
+        structExtends = tokenize( attribute.second, "," );
+      }
+    }
+    assert( !name.empty() );
+    // make this warn a check, as soon as vk.xml has been fixed on attribute "allowduplicate" !
+    warn( !allowDuplicate || !structExtends.empty(),
+          line,
+          "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
+
+    check( m_structures.find( name ) == m_structures.end(), line, "struct <" + name + "> already specfied" );
+    std::map<std::string, StructureData>::iterator it =
+      m_structures.insert( std::make_pair( name, StructureData( structExtends, line ) ) ).first;
+    it->second.allowDuplicate = allowDuplicate;
+    it->second.isUnion        = isUnion;
+    it->second.returnedOnly   = returnedOnly;
+
+    for ( auto child : children )
+    {
+      std::string value = child->Value();
+      if ( value == "comment" )
+      {
+        readComment( child );
+      }
+      else if ( value == "member" )
+      {
+        readTypesTypeStructMember( child, it->second.members, isUnion );
+      }
+    }
+    it->second.subStruct = determineSubStruct( *it );
+
+    // check if multiple structure members use the very same (not empty) len attribute
+    // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
+    // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
+    // need this external knowledge!
+    static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",
+                                                            "VkWriteDescriptorSet" };
+    static std::set<std::string> multipleLenStructs     = { "VkImageConstraintsInfoFUCHSIA",
+                                                        "VkIndirectCommandsLayoutTokenNV",
+                                                        "VkPresentInfoKHR",
+                                                        "VkSemaphoreWaitInfo",
+                                                        "VkSubmitInfo",
+                                                        "VkSubpassDescription",
+                                                        "VkSubpassDescription2",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
+                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
+    bool                         warned                 = false;
+    for ( auto m0It = it->second.members.begin(); !warned && ( m0It != it->second.members.end() ); ++m0It )
+    {
+      if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )
+      {
+        for ( auto m1It = std::next( m0It ); !warned && ( m1It != it->second.members.end() ); ++m1It )
+        {
+          if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
+          {
+            if ( mutualExclusiveStructs.find( it->first ) != mutualExclusiveStructs.end() )
+            {
+              it->second.mutualExclusiveLens = true;
+            }
+            else
+            {
+              warn(
+                multipleLenStructs.find( it->first ) != multipleLenStructs.end(),
+                line,
+                "Encountered structure <" + it->first +
+                  "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
+              warned = true;
+            }
+          }
+        }
+      }
+    }
+
+    m_extendedStructs.insert( structExtends.begin(), structExtends.end() );
+    check(
+      m_types.insert( std::make_pair( name, ( category == "struct" ) ? TypeCategory::Struct : TypeCategory::Union ) )
+        .second,
+      line,
+      "struct <" + name + "> already specified as a type" );  // log type and alias in m_types
+  }
+}
+
+void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const * element,
+                                                    std::vector<MemberData> &    members,
+                                                    bool                         isUnion )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line,
+                   attributes,
+                   {},
+                   { { "altlen", {} },
+                     { "externsync", { "true" } },
+                     { "len", {} },
+                     { "limittype", { "bitmask", "max", "min", "noauto", "range", "struct" } },
+                     { "noautovalidity", { "true" } },
+                     { "objecttype", { "objectType" } },
+                     { "optional", { "false", "true" } },
+                     { "selection", {} },
+                     { "selector", {} },
+                     { "values", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
+
+  MemberData memberData( line );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "enum" )
+    {
+      readTypesTypeStructMemberEnum( child, memberData );
+    }
+    else if ( value == "name" )
+    {
+      readTypesTypeStructMemberName( child, memberData, members );
+    }
+    else if ( value == "type" )
+    {
+      readTypesTypeStructMemberType( child, memberData );
+    }
+  }
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "altlen" )
+    {
+      assert( memberData.len.empty() );
+      memberData.len = tokenize( attribute.second, "," );
+      check( memberData.len.size() == 1,
+             line,
+             "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
+      check( altLens.find( memberData.len[0] ) != altLens.end(),
+             line,
+             "member attribute <altlen> holds unknown value <" + memberData.len[0] + ">" );
+    }
+    if ( attribute.first == "len" )
+    {
+      if ( memberData.len.empty() )
+      {
+        memberData.len = tokenize( attribute.second, "," );
+        check( !memberData.len.empty() && ( memberData.len.size() <= 2 ),
+               line,
+               "member attribute <len> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
+        auto lenMember =
+          std::find_if( members.begin(),
+                        members.end(),
+                        [&memberData]( MemberData const & md ) { return ( md.name == memberData.len[0] ); } );
+        check( lenMember != members.end() || ( memberData.len[0] == "null-terminated" ),
+               line,
+               "member attribute <len> holds unknown value <" + memberData.len[0] + ">" );
+        if ( lenMember != members.end() )
+        {
+          check( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
+                 line,
+                 "member attribute <len> references a member of unexpected type <" + lenMember->type.compose() + ">" );
+        }
+        if ( 1 < memberData.len.size() )
+        {
+          check( ( memberData.len[1] == "1" ) || ( memberData.len[1] == "null-terminated" ),
+                 line,
+                 "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
+        }
+      }
+    }
+    else if ( attribute.first == "noautovalidity" )
+    {
+      memberData.noAutoValidity = ( attribute.second == "true" );
+    }
+    else if ( attribute.first == "optional" )
+    {
+      std::vector<std::string> optional = tokenize( attribute.second, "," );
+      memberData.optional.reserve( optional.size() );
+      for ( auto const & o : optional )
+      {
+        memberData.optional.push_back( o == "true" );
+      }
+    }
+    else if ( attribute.first == "selection" )
+    {
+      check( isUnion, line, "attribute <selection> is used with a non-union structure." );
+      memberData.selection = attribute.second;
+    }
+    else if ( attribute.first == "selector" )
+    {
+      memberData.selector            = attribute.second;
+      std::string const & selector   = memberData.selector;
+      auto                selectorIt = std::find_if(
+        members.begin(), members.end(), [selector]( MemberData const & md ) { return md.name == selector; } );
+      check( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + selector + ">" );
+      check( m_enums.find( selectorIt->type.type ) != m_enums.end(),
+             line,
+             "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
+    }
+    else if ( attribute.first == "values" )
+    {
+      std::vector<std::string> values = tokenize( attribute.second, "," );
+      check( values.size() == 1,
+             line,
+             "attribute \"values\" holds multiple values <" + attribute.first +
+               ">, but it's expected to hold just one" );
+      memberData.value = values[0];
+    }
+  }
+
+  members.push_back( memberData );
+}
+
+void VulkanHppGenerator::readTypesTypeStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  std::string enumString = element->GetText();
+
+  check( element->PreviousSibling() && ( strcmp( element->PreviousSibling()->Value(), "[" ) == 0 ) &&
+           element->NextSibling() && ( strcmp( element->NextSibling()->Value(), "]" ) == 0 ),
+         line,
+         std::string( "structure member array specifiation is ill-formatted: <" ) + enumString + ">" );
+
+  memberData.arraySizes.push_back( enumString );
+  check( memberData.usedConstant.empty(), line, "struct already holds a constant <" + memberData.usedConstant + ">" );
+  memberData.usedConstant = enumString;
+}
+
+void VulkanHppGenerator::readTypesTypeStructMemberName( tinyxml2::XMLElement const *    element,
+                                                        MemberData &                    memberData,
+                                                        std::vector<MemberData> const & members )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  std::string name = element->GetText();
+  check( std::find_if( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ) ==
+           members.end(),
+         line,
+         "structure member name <" + name + "> already used" );
+
+  memberData.name                                        = name;
+  std::tie( memberData.arraySizes, memberData.bitCount ) = readModifiers( element->NextSibling() );
+}
+
+void VulkanHppGenerator::readTypesTypeStructMemberType( tinyxml2::XMLElement const * element, MemberData & memberData )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, {} );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  memberData.type = readTypeInfo( element );
+}
+
+VulkanHppGenerator::TypeInfo VulkanHppGenerator::readTypeInfo( tinyxml2::XMLElement const * element ) const
+{
+  TypeInfo                  typeInfo;
+  tinyxml2::XMLNode const * previousSibling = element->PreviousSibling();
+  if ( previousSibling && previousSibling->ToText() )
+  {
+    typeInfo.prefix = trim( previousSibling->Value() );
+  }
+  typeInfo.type                         = element->GetText();
+  tinyxml2::XMLNode const * nextSibling = element->NextSibling();
+  if ( nextSibling && nextSibling->ToText() )
+  {
+    typeInfo.postfix = trimStars( trimEnd( nextSibling->Value() ) );
+  }
+  return typeInfo;
+}
+
+void VulkanHppGenerator::registerDeleter( std::string const &                         name,
+                                          std::pair<std::string, CommandData> const & commandData )
+{
+  if ( ( commandData.first.substr( 2, 7 ) == "Destroy" ) || ( commandData.first.substr( 2, 4 ) == "Free" ) )
+  {
+    std::string key;
+    size_t      valueIndex;
+    switch ( commandData.second.params.size() )
+    {
+      case 2:
+      case 3:
+        assert( commandData.second.params.back().type.type == "VkAllocationCallbacks" );
+        key        = ( commandData.second.params.size() == 2 ) ? "" : commandData.second.params[0].type.type;
+        valueIndex = commandData.second.params.size() - 2;
+        break;
+      case 4:
+        key        = commandData.second.params[0].type.type;
+        valueIndex = 3;
+        assert( m_handles.find( commandData.second.params[valueIndex].type.type ) != m_handles.end() );
+        m_handles.find( commandData.second.params[valueIndex].type.type )->second.deletePool =
+          commandData.second.params[1].type.type;
+        break;
+      default: assert( false ); valueIndex = 0;
+    }
+    auto keyHandleIt = m_handles.find( key );
+    assert( ( keyHandleIt != m_handles.end() ) &&
+            ( keyHandleIt->second.childrenHandles.find( commandData.second.params[valueIndex].type.type ) ==
+              keyHandleIt->second.childrenHandles.end() ) );
+    keyHandleIt->second.childrenHandles.insert( commandData.second.params[valueIndex].type.type );
+
+    auto handleIt = m_handles.find( commandData.second.params[valueIndex].type.type );
+    assert( handleIt != m_handles.end() );
+    handleIt->second.deleteCommand = name;
+  }
+}
+
+void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                              str,
+                                               std::pair<std::string, HandleData> const & handle,
+                                               std::set<std::string> &                    listedHandles,
+                                               std::set<std::string> const &              specialFunctions ) const
+{
+  listedHandles.insert( handle.first );
+  if ( !handle.second.parent.empty() && ( listedHandles.find( handle.second.parent ) == listedHandles.end() ) )
+  {
+    auto parentIt = m_handles.find( handle.second.parent );
+    assert( parentIt != m_handles.end() );
+    str += generateRAIIHandle( *parentIt, listedHandles, specialFunctions );
+  }
+
+  for ( auto constructorIt : handle.second.constructorIts )
+  {
+    for ( auto const & param : constructorIt->second.params )
+    {
+      auto handleIt = m_handles.find( param.type.type );
+      if ( handleIt != m_handles.end() && ( listedHandles.find( param.type.type ) == listedHandles.end() ) )
+      {
+        str += generateRAIIHandle( *handleIt, listedHandles, specialFunctions );
+      }
+    }
+  }
+}
+
+std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector<RequireData> const & requireData,
+                                                                     std::set<std::string> const &    handleCommands,
+                                                                     std::set<std::string> & listedCommands ) const
+{
+  std::vector<std::string> selectedCommands;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & command : require.commands )
+    {
+      if ( ( handleCommands.find( command ) != handleCommands.end() ) && listedCommands.insert( command ).second )
+      {
+        selectedCommands.push_back( command );
+      }
+    }
+  }
+  return selectedCommands;
+}
+
+void VulkanHppGenerator::setVulkanLicenseHeader( int line, std::string const & comment )
+{
+  check( m_vulkanLicenseHeader.empty(), line, "second encounter of a Copyright comment" );
+  m_vulkanLicenseHeader = comment;
+
+  // replace any '\n' with "\n// "
+  for ( size_t pos = m_vulkanLicenseHeader.find( '\n' ); pos != std::string::npos;
+        pos        = m_vulkanLicenseHeader.find( '\n', pos + 1 ) )
+  {
+    m_vulkanLicenseHeader.replace( pos, 1, "\n// " );
+  }
+  // replace any " \n" with "\n"
+  for ( size_t pos = m_vulkanLicenseHeader.find( " \n" ); pos != std::string::npos;
+        pos        = m_vulkanLicenseHeader.find( " \n", pos ) )
+  {
+    m_vulkanLicenseHeader.replace( pos, 2, "\n" );
+  }
+  // remove any trailing spaces
+  m_vulkanLicenseHeader = trimEnd( m_vulkanLicenseHeader );
+
+  // and add a little message on our own
+  m_vulkanLicenseHeader += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
+  m_vulkanLicenseHeader = trim( m_vulkanLicenseHeader ) + "\n";
+}
+
+std::string VulkanHppGenerator::toString( TypeCategory category )
+{
+  switch ( category )
+  {
+    case TypeCategory::Bitmask: return "bitmask";
+    case TypeCategory::BaseType: return "basetype";
+    case TypeCategory::Define: return "define";
+    case TypeCategory::Enum: return "enum";
+    case TypeCategory::FuncPointer: return "funcpointer";
+    case TypeCategory::Handle: return "handle";
+    case TypeCategory::Requires: return "requires";
+    case TypeCategory::Struct: return "struct";
+    case TypeCategory::Union: return "union";
+    case TypeCategory::Unknown: return "unkown";
+    default: assert( false ); return "";
   }
 }
 
@@ -14262,677 +14894,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessNoErr
   }
 }
 
-void VulkanHppGenerator::readStruct( tinyxml2::XMLElement const *               element,
-                                     bool                                       isUnion,
-                                     std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-
-  if ( attributes.find( "alias" ) != attributes.end() )
-  {
-    readStructAlias( element, attributes );
-  }
-  else
-  {
-    checkAttributes( line,
-                     attributes,
-                     { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
-                     { { "allowduplicate", { "true" } },
-                       { "comment", {} },
-                       { "returnedonly", { "true" } },
-                       { "structextends", {} } } );
-    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-    checkElements( line, children, {}, { "member", "comment" } );
-
-    std::string              category, name;
-    std::vector<std::string> structExtends;
-    bool                     allowDuplicate = false;
-    bool                     returnedOnly   = false;
-    for ( auto const & attribute : attributes )
-    {
-      if ( attribute.first == "allowduplicate" )
-      {
-        assert( attribute.second == "true" );
-        allowDuplicate = true;
-      }
-      else if ( attribute.first == "category" )
-      {
-        category = attribute.second;
-      }
-      else if ( attribute.first == "name" )
-      {
-        name = attribute.second;
-      }
-      else if ( attribute.first == "returnedonly" )
-      {
-        check(
-          attribute.second == "true", line, "unknown value for attribute returnedonly: <" + attribute.second + ">" );
-        returnedOnly = true;
-      }
-      else if ( attribute.first == "structextends" )
-      {
-        structExtends = tokenize( attribute.second, "," );
-      }
-    }
-    assert( !name.empty() );
-    // make this warn a check, as soon as vk.xml has been fixed on attribute "allowduplicate" !
-    warn( !allowDuplicate || !structExtends.empty(),
-          line,
-          "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
-
-    check( m_structures.find( name ) == m_structures.end(), line, "struct <" + name + "> already specfied" );
-    std::map<std::string, StructureData>::iterator it =
-      m_structures.insert( std::make_pair( name, StructureData( structExtends, line ) ) ).first;
-    it->second.allowDuplicate = allowDuplicate;
-    it->second.isUnion        = isUnion;
-    it->second.returnedOnly   = returnedOnly;
-
-    for ( auto child : children )
-    {
-      std::string value = child->Value();
-      if ( value == "comment" )
-      {
-        readComment( child );
-      }
-      else if ( value == "member" )
-      {
-        readStructMember( child, it->second.members, isUnion );
-      }
-    }
-    it->second.subStruct = determineSubStruct( *it );
-
-    // check if multiple structure members use the very same (not empty) len attribute
-    // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
-    // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
-    // need this external knowledge!
-    static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR",
-                                                            "VkWriteDescriptorSet" };
-    static std::set<std::string> multipleLenStructs     = { "VkImageConstraintsInfoFUCHSIA",
-                                                        "VkIndirectCommandsLayoutTokenNV",
-                                                        "VkPresentInfoKHR",
-                                                        "VkSemaphoreWaitInfo",
-                                                        "VkSubmitInfo",
-                                                        "VkSubpassDescription",
-                                                        "VkSubpassDescription2",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoKHR",
-                                                        "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-    bool                         warned                 = false;
-    for ( auto m0It = it->second.members.begin(); !warned && ( m0It != it->second.members.end() ); ++m0It )
-    {
-      if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )
-      {
-        for ( auto m1It = std::next( m0It ); !warned && ( m1It != it->second.members.end() ); ++m1It )
-        {
-          if ( !m1It->len.empty() && ( m0It->len.front() == m1It->len.front() ) )
-          {
-            if ( mutualExclusiveStructs.find( it->first ) != mutualExclusiveStructs.end() )
-            {
-              it->second.mutualExclusiveLens = true;
-            }
-            else
-            {
-              warn(
-                multipleLenStructs.find( it->first ) != multipleLenStructs.end(),
-                line,
-                "Encountered structure <" + it->first +
-                  "> with multiple members referencing the same member for len. Need to be checked if they are supposed to be mutually exclusive." );
-              warned = true;
-            }
-          }
-        }
-      }
-    }
-
-    m_extendedStructs.insert( structExtends.begin(), structExtends.end() );
-    check(
-      m_types.insert( std::make_pair( name, ( category == "struct" ) ? TypeCategory::Struct : TypeCategory::Union ) )
-        .second,
-      line,
-      "struct <" + name + "> already specified as a type" );  // log type and alias in m_types
-  }
-}
-
-void VulkanHppGenerator::readStructAlias( tinyxml2::XMLElement const *               element,
-                                          std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-
-  checkAttributes( line, attributes, { { "alias", {} }, { "category", { "struct" } }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
-
-  std::string alias, name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      alias = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-
-  check( m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second,
-         line,
-         "structure alias <" + name + "> already used" );
-  check( m_structureAliasesInverse[alias].insert( name ).second,
-         line,
-         "structure alias <" + name + "> already used with structure <" + alias + ">" );
-  check( m_types.insert( std::make_pair( name, TypeCategory::Struct ) ).second,
-         line,
-         "struct <" + name + "> already specified as a type" );
-}
-
-void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
-                                           std::vector<MemberData> &    members,
-                                           bool                         isUnion )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   {},
-                   { { "altlen", {} },
-                     { "externsync", { "true" } },
-                     { "len", {} },
-                     { "limittype", { "bitmask", "max", "min", "noauto", "range", "struct" } },
-                     { "noautovalidity", { "true" } },
-                     { "objecttype", { "objectType" } },
-                     { "optional", { "false", "true" } },
-                     { "selection", {} },
-                     { "selector", {} },
-                     { "values", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", true }, { "type", true } }, { "comment", "enum" } );
-
-  MemberData memberData( line );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "enum" )
-    {
-      readStructMemberEnum( child, memberData );
-    }
-    else if ( value == "name" )
-    {
-      readStructMemberName( child, memberData, members );
-    }
-    else if ( value == "type" )
-    {
-      readStructMemberType( child, memberData );
-    }
-  }
-
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "altlen" )
-    {
-      assert( memberData.len.empty() );
-      memberData.len = tokenize( attribute.second, "," );
-      check( memberData.len.size() == 1,
-             line,
-             "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
-      check( altLens.find( memberData.len[0] ) != altLens.end(),
-             line,
-             "member attribute <altlen> holds unknown value <" + memberData.len[0] + ">" );
-    }
-    if ( attribute.first == "len" )
-    {
-      if ( memberData.len.empty() )
-      {
-        memberData.len = tokenize( attribute.second, "," );
-        check( !memberData.len.empty() && ( memberData.len.size() <= 2 ),
-               line,
-               "member attribute <len> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
-        auto lenMember =
-          std::find_if( members.begin(),
-                        members.end(),
-                        [&memberData]( MemberData const & md ) { return ( md.name == memberData.len[0] ); } );
-        check( lenMember != members.end() || ( memberData.len[0] == "null-terminated" ),
-               line,
-               "member attribute <len> holds unknown value <" + memberData.len[0] + ">" );
-        if ( lenMember != members.end() )
-        {
-          check( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
-                 line,
-                 "member attribute <len> references a member of unexpected type <" + lenMember->type.compose() + ">" );
-        }
-        if ( 1 < memberData.len.size() )
-        {
-          check( ( memberData.len[1] == "1" ) || ( memberData.len[1] == "null-terminated" ),
-                 line,
-                 "member attribute <len> holds unknown second value <" + memberData.len[1] + ">" );
-        }
-      }
-    }
-    else if ( attribute.first == "noautovalidity" )
-    {
-      memberData.noAutoValidity = ( attribute.second == "true" );
-    }
-    else if ( attribute.first == "optional" )
-    {
-      std::vector<std::string> optional = tokenize( attribute.second, "," );
-      memberData.optional.reserve( optional.size() );
-      for ( auto const & o : optional )
-      {
-        memberData.optional.push_back( o == "true" );
-      }
-    }
-    else if ( attribute.first == "selection" )
-    {
-      check( isUnion, line, "attribute <selection> is used with a non-union structure." );
-      memberData.selection = attribute.second;
-    }
-    else if ( attribute.first == "selector" )
-    {
-      memberData.selector            = attribute.second;
-      std::string const & selector   = memberData.selector;
-      auto                selectorIt = std::find_if(
-        members.begin(), members.end(), [selector]( MemberData const & md ) { return md.name == selector; } );
-      check( selectorIt != members.end(), line, "member attribute <selector> holds unknown value <" + selector + ">" );
-      check( m_enums.find( selectorIt->type.type ) != m_enums.end(),
-             line,
-             "member attribute <selector> references unknown enum type <" + selectorIt->type.type + ">" );
-    }
-    else if ( attribute.first == "values" )
-    {
-      std::vector<std::string> values = tokenize( attribute.second, "," );
-      check( values.size() == 1,
-             line,
-             "attribute \"values\" holds multiple values <" + attribute.first +
-               ">, but it's expected to hold just one" );
-      memberData.value = values[0];
-    }
-  }
-
-  members.push_back( memberData );
-}
-
-void VulkanHppGenerator::readStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
-
-  std::string enumString = element->GetText();
-
-  check( element->PreviousSibling() && ( strcmp( element->PreviousSibling()->Value(), "[" ) == 0 ) &&
-           element->NextSibling() && ( strcmp( element->NextSibling()->Value(), "]" ) == 0 ),
-         line,
-         std::string( "structure member array specifiation is ill-formatted: <" ) + enumString + ">" );
-
-  memberData.arraySizes.push_back( enumString );
-  check( memberData.usedConstant.empty(), line, "struct already holds a constant <" + memberData.usedConstant + ">" );
-  memberData.usedConstant = enumString;
-}
-
-void VulkanHppGenerator::readStructMemberName( tinyxml2::XMLElement const *    element,
-                                               MemberData &                    memberData,
-                                               std::vector<MemberData> const & members )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
-
-  std::string name = element->GetText();
-  check( std::find_if( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ) ==
-           members.end(),
-         line,
-         "structure member name <" + name + "> already used" );
-
-  memberData.name                                        = name;
-  std::tie( memberData.arraySizes, memberData.bitCount ) = readModifiers( element->NextSibling() );
-}
-
-void VulkanHppGenerator::readStructMemberType( tinyxml2::XMLElement const * element, MemberData & memberData )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
-  checkElements( line, getChildElements( element ), {}, {} );
-
-  memberData.type = readTypeInfo( element );
-}
-
-void VulkanHppGenerator::readTag( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "author", {} }, { "contact", {} }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      check( m_tags.find( attribute.second ) == m_tags.end(),
-             line,
-             "tag named <" + attribute.second + "> has already been specified" );
-      m_tags.insert( attribute.second );
-    }
-    else
-    {
-      check( ( attribute.first == "author" ) || ( attribute.first == "contact" ),
-             line,
-             "unknown attribute <" + attribute.first + ">" );
-    }
-  }
-}
-
-void VulkanHppGenerator::readTags( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "tag", false } } );
-
-  for ( auto child : children )
-  {
-    readTag( child );
-  }
-}
-
-void VulkanHppGenerator::readType( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-
-  auto categoryIt = attributes.find( "category" );
-  if ( categoryIt != attributes.end() )
-  {
-    if ( categoryIt->second == "basetype" )
-    {
-      readTypesTypeBasetype( element, attributes );
-    }
-    else if ( categoryIt->second == "bitmask" )
-    {
-      readTypesTypeBitmask( element, attributes );
-    }
-    else if ( categoryIt->second == "define" )
-    {
-      readTypesTypeDefine( element, attributes );
-    }
-    else if ( categoryIt->second == "enum" )
-    {
-      readTypeEnum( element, attributes );
-    }
-    else if ( categoryIt->second == "funcpointer" )
-    {
-      readTypesTypeFuncpointer( element, attributes );
-    }
-    else if ( categoryIt->second == "handle" )
-    {
-      readTypesTypeHandle( element, attributes );
-    }
-    else if ( categoryIt->second == "include" )
-    {
-      readTypeInclude( element, attributes );
-    }
-    else if ( categoryIt->second == "struct" )
-    {
-      readStruct( element, false, attributes );
-    }
-    else
-    {
-      check(
-        categoryIt->second == "union", element->GetLineNum(), "unknown type category <" + categoryIt->second + ">" );
-      readStruct( element, true, attributes );
-    }
-  }
-  else
-  {
-    auto requiresIt = attributes.find( "requires" );
-    if ( requiresIt != attributes.end() )
-    {
-      readTypesTypeRequires( element, attributes );
-    }
-    else
-    {
-      check( ( attributes.size() == 1 ) && ( attributes.begin()->first == "name" ) &&
-               ( attributes.begin()->second == "int" ),
-             line,
-             "unknown type" );
-      check( m_types.insert( std::make_pair( attributes.begin()->second, TypeCategory::Unknown ) ).second,
-             line,
-             "type <" + attributes.begin()->second + "> already specified" );
-    }
-  }
-}
-
-void VulkanHppGenerator::readTypeEnum( tinyxml2::XMLElement const *               element,
-                                       std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "enum" } }, { "name", {} } }, { { "alias", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string alias, name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "alias" )
-    {
-      alias = attribute.second;
-      check( !alias.empty(), line, "enum with empty alias" );
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-      check( !name.empty(), line, "enum with empty name" );
-      check( m_enums.find( name ) == m_enums.end(), line, "enum <" + name + "> already specified" );
-    }
-  }
-  assert( !name.empty() );
-
-  if ( alias.empty() )
-  {
-    check( m_enums.insert( std::make_pair( name, EnumData( line ) ) ).second,
-           line,
-           "enum <" + name + "> already specified" );
-  }
-  else
-  {
-    auto enumIt = m_enums.find( alias );
-    check( enumIt != m_enums.end(), line, "enum with unknown alias <" + alias + ">" );
-    check( enumIt->second.alias.empty(),
-           line,
-           "enum <" + enumIt->first + "> already has an alias <" + enumIt->second.alias + ">" );
-    enumIt->second.alias = name;
-  }
-  check( m_types.insert( std::make_pair( name, TypeCategory::Enum ) ).second,
-         line,
-         "enum <" + name + "> already specified as a type" );
-}
-
-void VulkanHppGenerator::readTypeInclude( tinyxml2::XMLElement const *               element,
-                                          std::map<std::string, std::string> const & attributes )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "include" } }, { "name", {} } }, {} );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-  check( m_includes.insert( name ).second, element->GetLineNum(), "include named <" + name + "> already specified" );
-}
-
-VulkanHppGenerator::TypeInfo VulkanHppGenerator::readTypeInfo( tinyxml2::XMLElement const * element ) const
-{
-  TypeInfo                  typeInfo;
-  tinyxml2::XMLNode const * previousSibling = element->PreviousSibling();
-  if ( previousSibling && previousSibling->ToText() )
-  {
-    typeInfo.prefix = trim( previousSibling->Value() );
-  }
-  typeInfo.type                         = element->GetText();
-  tinyxml2::XMLNode const * nextSibling = element->NextSibling();
-  if ( nextSibling && nextSibling->ToText() )
-  {
-    typeInfo.postfix = trimStars( trimEnd( nextSibling->Value() ) );
-  }
-  return typeInfo;
-}
-
-void VulkanHppGenerator::readTypes( tinyxml2::XMLElement const * element )
-{
-  int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "comment", {} } }, {} );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "comment", false }, { "type", false } } );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "comment" )
-    {
-      readComment( child );
-    }
-    else
-    {
-      assert( value == "type" );
-      readType( child );
-    }
-  }
-}
-
-void VulkanHppGenerator::registerDeleter( std::string const &                         name,
-                                          std::pair<std::string, CommandData> const & commandData )
-{
-  if ( ( commandData.first.substr( 2, 7 ) == "Destroy" ) || ( commandData.first.substr( 2, 4 ) == "Free" ) )
-  {
-    std::string key;
-    size_t      valueIndex;
-    switch ( commandData.second.params.size() )
-    {
-      case 2:
-      case 3:
-        assert( commandData.second.params.back().type.type == "VkAllocationCallbacks" );
-        key        = ( commandData.second.params.size() == 2 ) ? "" : commandData.second.params[0].type.type;
-        valueIndex = commandData.second.params.size() - 2;
-        break;
-      case 4:
-        key        = commandData.second.params[0].type.type;
-        valueIndex = 3;
-        assert( m_handles.find( commandData.second.params[valueIndex].type.type ) != m_handles.end() );
-        m_handles.find( commandData.second.params[valueIndex].type.type )->second.deletePool =
-          commandData.second.params[1].type.type;
-        break;
-      default: assert( false ); valueIndex = 0;
-    }
-    auto keyHandleIt = m_handles.find( key );
-    assert( ( keyHandleIt != m_handles.end() ) &&
-            ( keyHandleIt->second.childrenHandles.find( commandData.second.params[valueIndex].type.type ) ==
-              keyHandleIt->second.childrenHandles.end() ) );
-    keyHandleIt->second.childrenHandles.insert( commandData.second.params[valueIndex].type.type );
-
-    auto handleIt = m_handles.find( commandData.second.params[valueIndex].type.type );
-    assert( handleIt != m_handles.end() );
-    handleIt->second.deleteCommand = name;
-  }
-}
-
-void VulkanHppGenerator::renameFunctionParameters()
-{
-  // we rename a couple of function parameters to prevent this warning, treated as an error:
-  // warning C4458: declaration of 'objectType' hides class member
-  for ( auto & command : m_commands )
-  {
-    for ( auto & param : command.second.params )
-    {
-      if ( param.name == "objectType" )
-      {
-        param.name += "_";
-      }
-    }
-  }
-}
-
-void VulkanHppGenerator::rescheduleRAIIHandle( std::string &                              str,
-                                               std::pair<std::string, HandleData> const & handle,
-                                               std::set<std::string> &                    listedHandles,
-                                               std::set<std::string> const &              specialFunctions ) const
-{
-  listedHandles.insert( handle.first );
-  if ( !handle.second.parent.empty() && ( listedHandles.find( handle.second.parent ) == listedHandles.end() ) )
-  {
-    auto parentIt = m_handles.find( handle.second.parent );
-    assert( parentIt != m_handles.end() );
-    str += generateRAIIHandle( *parentIt, listedHandles, specialFunctions );
-  }
-
-  for ( auto constructorIt : handle.second.constructorIts )
-  {
-    for ( auto const & param : constructorIt->second.params )
-    {
-      auto handleIt = m_handles.find( param.type.type );
-      if ( handleIt != m_handles.end() && ( listedHandles.find( param.type.type ) == listedHandles.end() ) )
-      {
-        str += generateRAIIHandle( *handleIt, listedHandles, specialFunctions );
-      }
-    }
-  }
-}
-
-std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector<RequireData> const & requireData,
-                                                                     std::set<std::string> const &    handleCommands,
-                                                                     std::set<std::string> & listedCommands ) const
-{
-  std::vector<std::string> selectedCommands;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & command : require.commands )
-    {
-      if ( ( handleCommands.find( command ) != handleCommands.end() ) && listedCommands.insert( command ).second )
-      {
-        selectedCommands.push_back( command );
-      }
-    }
-  }
-  return selectedCommands;
-}
-
-void VulkanHppGenerator::setVulkanLicenseHeader( int line, std::string const & comment )
-{
-  check( m_vulkanLicenseHeader.empty(), line, "second encounter of a Copyright comment" );
-  m_vulkanLicenseHeader = comment;
-
-  // replace any '\n' with "\n// "
-  for ( size_t pos = m_vulkanLicenseHeader.find( '\n' ); pos != std::string::npos;
-        pos        = m_vulkanLicenseHeader.find( '\n', pos + 1 ) )
-  {
-    m_vulkanLicenseHeader.replace( pos, 1, "\n// " );
-  }
-  // replace any " \n" with "\n"
-  for ( size_t pos = m_vulkanLicenseHeader.find( " \n" ); pos != std::string::npos;
-        pos        = m_vulkanLicenseHeader.find( " \n", pos ) )
-  {
-    m_vulkanLicenseHeader.replace( pos, 2, "\n" );
-  }
-  // remove any trailing spaces
-  m_vulkanLicenseHeader = trimEnd( m_vulkanLicenseHeader );
-
-  // and add a little message on our own
-  m_vulkanLicenseHeader += "\n\n// This header is generated from the Khronos Vulkan XML API Registry.";
-  m_vulkanLicenseHeader = trim( m_vulkanLicenseHeader ) + "\n";
-}
-
-std::string VulkanHppGenerator::toString( TypeCategory category )
-{
-  switch ( category )
-  {
-    case TypeCategory::Bitmask: return "bitmask";
-    case TypeCategory::BaseType: return "basetype";
-    case TypeCategory::Define: return "define";
-    case TypeCategory::Enum: return "enum";
-    case TypeCategory::FuncPointer: return "funcpointer";
-    case TypeCategory::Handle: return "handle";
-    case TypeCategory::Requires: return "requires";
-    case TypeCategory::Struct: return "struct";
-    case TypeCategory::Union: return "union";
-    case TypeCategory::Unknown: return "unkown";
-    default: assert( false ); return "";
-  }
-}
-
 std::string VulkanHppGenerator::TypeInfo::compose( bool inNamespace ) const
 {
   return prefix + ( prefix.empty() ? "" : " " ) +
@@ -14942,7 +14903,7 @@ std::string VulkanHppGenerator::TypeInfo::compose( bool inNamespace ) const
          postfix;
 }
 
-std::string to_string( tinyxml2::XMLError error )
+std::string toString( tinyxml2::XMLError error )
 {
   switch ( error )
   {
@@ -17083,7 +17044,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     tinyxml2::XMLError error = doc.LoadFile( filename.c_str() );
     if ( error != tinyxml2::XML_SUCCESS )
     {
-      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << to_string( error )
+      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << toString( error )
                 << ">" << std::endl;
       return -1;
     }

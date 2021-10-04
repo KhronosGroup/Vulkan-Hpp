@@ -1168,22 +1168,12 @@ private:
             needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;
   void      readCommands( tinyxml2::XMLElement const * element );
   void      readCommandsCommand( tinyxml2::XMLElement const * element );
-  void      readCommandsCommand( tinyxml2::XMLElement const *               element,
-                                 std::map<std::string, std::string> const & attributes );
-  void      readCommandsCommandAlias( tinyxml2::XMLElement const *               element,
-                                      std::map<std::string, std::string> const & attributes );
   ParamData readCommandsCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
   std::pair<std::string, std::string> readCommandsCommandProto( tinyxml2::XMLElement const * element );
   std::string                         readComment( tinyxml2::XMLElement const * element );
   void                                readEnums( tinyxml2::XMLElement const * element );
   void                                readEnumsConstant( tinyxml2::XMLElement const * element );
   void readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
-  void readEnumsEnum( tinyxml2::XMLElement const *               element,
-                      std::map<std::string, EnumData>::iterator  enumIt,
-                      std::map<std::string, std::string> const & attributes );
-  void readEnumsEnumAlias( tinyxml2::XMLElement const *               element,
-                           std::map<std::string, EnumData>::iterator  enumIt,
-                           std::map<std::string, std::string> const & attributes );
   void readExtensions( tinyxml2::XMLElement const * element );
   void readExtensionsExtension( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionDisabledRequire( tinyxml2::XMLElement const * element );
@@ -1225,38 +1215,37 @@ private:
   void readSPIRVExtensions( tinyxml2::XMLElement const * element );
   void readSPIRVExtensionsExtension( tinyxml2::XMLElement const * element );
   void readSPIRVExtensionsExtensionEnable( tinyxml2::XMLElement const * element );
+  void readTags( tinyxml2::XMLElement const * element );
+  void readTagsTag( tinyxml2::XMLElement const * element );
+  void readTypes( tinyxml2::XMLElement const * element );
+  void readTypesType( tinyxml2::XMLElement const * element );
   void readTypesTypeBasetype( tinyxml2::XMLElement const *               element,
                               std::map<std::string, std::string> const & attributes );
   void readTypesTypeBitmask( tinyxml2::XMLElement const *               element,
                              std::map<std::string, std::string> const & attributes );
   void readTypesTypeDefine( tinyxml2::XMLElement const *               element,
                             std::map<std::string, std::string> const & attributes );
+  void readTypesTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
   void readTypesTypeFuncpointer( tinyxml2::XMLElement const *               element,
                                  std::map<std::string, std::string> const & attributes );
   void readTypesTypeHandle( tinyxml2::XMLElement const *               element,
                             std::map<std::string, std::string> const & attributes );
+  void readTypesTypeInclude( tinyxml2::XMLElement const *               element,
+                             std::map<std::string, std::string> const & attributes );
   void readTypesTypeRequires( tinyxml2::XMLElement const *               element,
                               std::map<std::string, std::string> const & attributes );
-
-  void readStruct( tinyxml2::XMLElement const *               element,
-                   bool                                       isUnion,
-                   std::map<std::string, std::string> const & attributes );
-  void readStructAlias( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion );
-  void readStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData );
-  void readStructMemberName( tinyxml2::XMLElement const *    element,
-                             MemberData &                    memberData,
-                             std::vector<MemberData> const & members );
-  void readStructMemberType( tinyxml2::XMLElement const * element, MemberData & memberData );
-  void readTag( tinyxml2::XMLElement const * element );
-  void readTags( tinyxml2::XMLElement const * element );
-  void readType( tinyxml2::XMLElement const * element );
-  void readTypeEnum( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
-  void readTypeInclude( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );
+  void readTypesTypeStruct( tinyxml2::XMLElement const *               element,
+                            bool                                       isUnion,
+                            std::map<std::string, std::string> const & attributes );
+  void
+    readTypesTypeStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion );
+  void     readTypesTypeStructMemberEnum( tinyxml2::XMLElement const * element, MemberData & memberData );
+  void     readTypesTypeStructMemberName( tinyxml2::XMLElement const *    element,
+                                          MemberData &                    memberData,
+                                          std::vector<MemberData> const & members );
+  void     readTypesTypeStructMemberType( tinyxml2::XMLElement const * element, MemberData & memberData );
   TypeInfo readTypeInfo( tinyxml2::XMLElement const * element ) const;
-  void     readTypes( tinyxml2::XMLElement const * element );
   void     registerDeleter( std::string const & name, std::pair<std::string, CommandData> const & commandData );
-  void     renameFunctionParameters();
   void     rescheduleRAIIHandle( std::string &                              str,
                                  std::pair<std::string, HandleData> const & handle,
                                  std::set<std::string> &                    listedHandles,

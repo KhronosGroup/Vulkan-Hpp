@@ -134,7 +134,7 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
-set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 14)
+set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 17)
 
 if(MSVC)
   target_compile_options(VulkanHppGenerator PRIVATE /W4 /WX)

@@ -168,7 +168,7 @@ private:
 
   struct EnumData
   {
-    EnumData( int line ) : xmlLine( line ) {}
+    EnumData( int line, bool isBitmask_ = false ) : isBitmask( isBitmask_ ), xmlLine( line ) {}
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
     void addEnumValue( int                 line,
                        std::string const & valueName,
@@ -179,7 +179,7 @@ private:
     std::string                          alias;    // alias for this enum
     std::map<std::string, EnumAliasData> aliases;  // aliases for the values
     std::string                          bitwidth;
-    bool                                 isBitmask = false;
+    bool                                 isBitmask;
     std::vector<EnumValueData>           values;
     int                                  xmlLine;
   };
@@ -329,7 +329,9 @@ private:
 
   struct TypeData
   {
-    TypeData( TypeCategory category_ ) : category( category_ ) {}
+    TypeData( TypeCategory category_, std::string const & referencedIn_ = "" )
+      : category( category_ ), referencedIn( referencedIn_ )
+    {}
 
     TypeCategory category;
     std::string  referencedIn;

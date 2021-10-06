@@ -688,6 +688,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImportAndroidHardwareBufferInfoANDROID;
   struct MemoryGetAndroidHardwareBufferInfoANDROID;
   struct ExternalFormatANDROID;
+  struct AndroidHardwareBufferFormatProperties2ANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   //=== VK_EXT_inline_uniform_block ===
@@ -755,6 +756,8 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageDrmFormatModifierListCreateInfoEXT;
   struct ImageDrmFormatModifierExplicitCreateInfoEXT;
   struct ImageDrmFormatModifierPropertiesEXT;
+  struct DrmFormatModifierPropertiesList2EXT;
+  struct DrmFormatModifierProperties2EXT;
 
   //=== VK_EXT_validation_cache ===
   struct ValidationCacheCreateInfoEXT;
@@ -1150,6 +1153,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_4444_formats ===
   struct PhysicalDevice4444FormatsFeaturesEXT;
 
+  //=== VK_EXT_rgba10x6_formats ===
+  struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
+
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
   struct DirectFBSurfaceCreateInfoEXT;
@@ -1182,6 +1188,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_primitive_topology_list_restart ===
   struct PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
+
+  //=== VK_KHR_format_feature_flags2 ===
+  struct FormatProperties3KHR;
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
@@ -1246,6 +1255,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pageable_device_local_memory ===
   struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+
+  //=== VK_KHR_maintenance4 ===
+  struct PhysicalDeviceMaintenance4FeaturesKHR;
+  struct PhysicalDeviceMaintenance4PropertiesKHR;
+  struct DeviceBufferMemoryRequirementsKHR;
+  struct DeviceImageMemoryRequirementsKHR;
 
   //===============
   //=== HANDLEs ===
@@ -11750,6 +11765,64 @@ namespace VULKAN_HPP_NAMESPACE
     void setMemoryPriorityEXT( VULKAN_HPP_NAMESPACE::DeviceMemory memory,
                                float                              priority,
                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_KHR_maintenance4 ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getBufferMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR * pInfo,
+                                         VULKAN_HPP_NAMESPACE::MemoryRequirements2 * pMemoryRequirements,
+                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2 getBufferMemoryRequirementsKHR(
+      const DeviceBufferMemoryRequirementsKHR & info,
+      Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getBufferMemoryRequirementsKHR(
+      const DeviceBufferMemoryRequirementsKHR & info,
+      Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getImageMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR * pInfo,
+                                        VULKAN_HPP_NAMESPACE::MemoryRequirements2 * pMemoryRequirements,
+                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2 getImageMemoryRequirementsKHR(
+      const DeviceImageMemoryRequirementsKHR & info,
+      Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getImageMemoryRequirementsKHR(
+      const DeviceImageMemoryRequirementsKHR & info,
+      Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getImageSparseMemoryRequirementsKHR(
+      const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR * pInfo,
+      uint32_t *                                                     pSparseMemoryRequirementCount,
+      VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2 *         pSparseMemoryRequirements,
+      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename SparseImageMemoryRequirements2Allocator = std::allocator<SparseImageMemoryRequirements2>,
+              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
+                         getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info,
+                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename SparseImageMemoryRequirements2Allocator = std::allocator<SparseImageMemoryRequirements2>,
+              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B                                       = SparseImageMemoryRequirements2Allocator,
+              typename std::enable_if<std::is_same<typename B::value_type, SparseImageMemoryRequirements2>::value,
+                                      int>::type               = 0>
+    VULKAN_HPP_NODISCARD std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
+                         getImageSparseMemoryRequirementsKHR(
+                           const DeviceImageMemoryRequirementsKHR &  info,
+                           SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
+                           Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {

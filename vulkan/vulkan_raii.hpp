@@ -1358,6 +1358,14 @@ namespace VULKAN_HPP_NAMESPACE
         if ( !vkGetDescriptorSetLayoutSupport )
           vkGetDescriptorSetLayoutSupport = vkGetDescriptorSetLayoutSupportKHR;
 
+        //=== VK_KHR_maintenance4 ===
+        vkGetDeviceBufferMemoryRequirementsKHR = PFN_vkGetDeviceBufferMemoryRequirementsKHR(
+          vkGetDeviceProcAddr( device, "vkGetDeviceBufferMemoryRequirementsKHR" ) );
+        vkGetDeviceImageMemoryRequirementsKHR = PFN_vkGetDeviceImageMemoryRequirementsKHR(
+          vkGetDeviceProcAddr( device, "vkGetDeviceImageMemoryRequirementsKHR" ) );
+        vkGetDeviceImageSparseMemoryRequirementsKHR = PFN_vkGetDeviceImageSparseMemoryRequirementsKHR(
+          vkGetDeviceProcAddr( device, "vkGetDeviceImageSparseMemoryRequirementsKHR" ) );
+
         //=== VK_KHR_performance_query ===
         vkAcquireProfilingLockKHR =
           PFN_vkAcquireProfilingLockKHR( vkGetDeviceProcAddr( device, "vkAcquireProfilingLockKHR" ) );
@@ -2045,6 +2053,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_maintenance3 ===
       PFN_vkGetDescriptorSetLayoutSupportKHR vkGetDescriptorSetLayoutSupportKHR = 0;
+
+      //=== VK_KHR_maintenance4 ===
+      PFN_vkGetDeviceBufferMemoryRequirementsKHR      vkGetDeviceBufferMemoryRequirementsKHR      = 0;
+      PFN_vkGetDeviceImageMemoryRequirementsKHR       vkGetDeviceImageMemoryRequirementsKHR       = 0;
+      PFN_vkGetDeviceImageSparseMemoryRequirementsKHR vkGetDeviceImageSparseMemoryRequirementsKHR = 0;
 
       //=== VK_KHR_performance_query ===
       PFN_vkAcquireProfilingLockKHR vkAcquireProfilingLockKHR = 0;
@@ -3327,6 +3340,25 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::RemoteAddressNV
         getMemoryRemoteAddressNV( const MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo ) const;
+
+      //=== VK_KHR_maintenance4 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+        getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+        getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+        getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+        getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>
+        getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                      m_device;
@@ -16993,6 +17025,99 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkSetDeviceMemoryPriorityEXT(
         static_cast<VkDevice>( m_device ), static_cast<VkDeviceMemory>( m_deviceMemory ), priority );
+    }
+
+    //=== VK_KHR_maintenance4 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR &&
+        "Function <vkGetDeviceBufferMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+      getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( &info ),
+        reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+      return memoryRequirements;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      Device::getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR &&
+        "Function <vkGetDeviceBufferMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
+      StructureChain<X, Y, Z...>                  structureChain;
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements =
+        structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+      getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( &info ),
+        reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+      return structureChain;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR &&
+        "Function <vkGetDeviceImageMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+      getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+        reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+      return memoryRequirements;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      Device::getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR &&
+        "Function <vkGetDeviceImageMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
+      StructureChain<X, Y, Z...>                  structureChain;
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements =
+        structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+      getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+        reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+      return structureChain;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>
+      Device::getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetDeviceImageSparseMemoryRequirementsKHR &&
+        "Function <vkGetDeviceImageSparseMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
+      uint32_t sparseMemoryRequirementCount;
+      getDispatcher()->vkGetDeviceImageSparseMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+        &sparseMemoryRequirementCount,
+        nullptr );
+      std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2> sparseMemoryRequirements(
+        sparseMemoryRequirementCount );
+      getDispatcher()->vkGetDeviceImageSparseMemoryRequirementsKHR(
+        static_cast<VkDevice>( m_device ),
+        reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+        &sparseMemoryRequirementCount,
+        reinterpret_cast<VkSparseImageMemoryRequirements2 *>( sparseMemoryRequirements.data() ) );
+      VULKAN_HPP_ASSERT( sparseMemoryRequirementCount <= sparseMemoryRequirements.size() );
+      return sparseMemoryRequirements;
     }
 
 #endif

@@ -19670,5 +19670,163 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkSetDeviceMemoryPriorityEXT( m_device, static_cast<VkDeviceMemory>( memory ), priority );
   }
 
+  //=== VK_KHR_maintenance4 ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    Device::getBufferMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR * pInfo,
+                                            VULKAN_HPP_NAMESPACE::MemoryRequirements2 * pMemoryRequirements,
+                                            Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetDeviceBufferMemoryRequirementsKHR( m_device,
+                                              reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( pInfo ),
+                                              reinterpret_cast<VkMemoryRequirements2 *>( pMemoryRequirements ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+    Device::getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info,
+                                            Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+    d.vkGetDeviceBufferMemoryRequirementsKHR( m_device,
+                                              reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( &info ),
+                                              reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+    return memoryRequirements;
+  }
+
+  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+    Device::getBufferMemoryRequirementsKHR( const DeviceBufferMemoryRequirementsKHR & info,
+                                            Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    StructureChain<X, Y, Z...>                  structureChain;
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements =
+      structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+    d.vkGetDeviceBufferMemoryRequirementsKHR( m_device,
+                                              reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( &info ),
+                                              reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+    return structureChain;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    Device::getImageMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR * pInfo,
+                                           VULKAN_HPP_NAMESPACE::MemoryRequirements2 * pMemoryRequirements,
+                                           Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetDeviceImageMemoryRequirementsKHR( m_device,
+                                             reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( pInfo ),
+                                             reinterpret_cast<VkMemoryRequirements2 *>( pMemoryRequirements ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+    Device::getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info,
+                                           Dispatch const &                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+    d.vkGetDeviceImageMemoryRequirementsKHR( m_device,
+                                             reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+                                             reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+    return memoryRequirements;
+  }
+
+  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+    Device::getImageMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info,
+                                           Dispatch const &                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    StructureChain<X, Y, Z...>                  structureChain;
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements =
+      structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+    d.vkGetDeviceImageMemoryRequirementsKHR( m_device,
+                                             reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+                                             reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+    return structureChain;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::getImageSparseMemoryRequirementsKHR(
+    const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR * pInfo,
+    uint32_t *                                                     pSparseMemoryRequirementCount,
+    VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2 *         pSparseMemoryRequirements,
+    Dispatch const &                                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetDeviceImageSparseMemoryRequirementsKHR(
+      m_device,
+      reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( pInfo ),
+      pSparseMemoryRequirementCount,
+      reinterpret_cast<VkSparseImageMemoryRequirements2 *>( pSparseMemoryRequirements ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename SparseImageMemoryRequirements2Allocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD
+    VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
+                      Device::getImageSparseMemoryRequirementsKHR( const DeviceImageMemoryRequirementsKHR & info,
+                                                 Dispatch const &                         d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator> sparseMemoryRequirements;
+    uint32_t                                                                             sparseMemoryRequirementCount;
+    d.vkGetDeviceImageSparseMemoryRequirementsKHR(
+      m_device,
+      reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+      &sparseMemoryRequirementCount,
+      nullptr );
+    sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
+    d.vkGetDeviceImageSparseMemoryRequirementsKHR(
+      m_device,
+      reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+      &sparseMemoryRequirementCount,
+      reinterpret_cast<VkSparseImageMemoryRequirements2 *>( sparseMemoryRequirements.data() ) );
+    VULKAN_HPP_ASSERT( sparseMemoryRequirementCount <= sparseMemoryRequirements.size() );
+    return sparseMemoryRequirements;
+  }
+
+  template <
+    typename SparseImageMemoryRequirements2Allocator,
+    typename Dispatch,
+    typename B,
+    typename std::enable_if<std::is_same<typename B::value_type, SparseImageMemoryRequirements2>::value, int>::type>
+  VULKAN_HPP_NODISCARD
+    VULKAN_HPP_INLINE std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
+                      Device::getImageSparseMemoryRequirementsKHR(
+      const DeviceImageMemoryRequirementsKHR &  info,
+      SparseImageMemoryRequirements2Allocator & sparseImageMemoryRequirements2Allocator,
+      Dispatch const &                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    std::vector<SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator> sparseMemoryRequirements(
+      sparseImageMemoryRequirements2Allocator );
+    uint32_t sparseMemoryRequirementCount;
+    d.vkGetDeviceImageSparseMemoryRequirementsKHR(
+      m_device,
+      reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+      &sparseMemoryRequirementCount,
+      nullptr );
+    sparseMemoryRequirements.resize( sparseMemoryRequirementCount );
+    d.vkGetDeviceImageSparseMemoryRequirementsKHR(
+      m_device,
+      reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( &info ),
+      &sparseMemoryRequirementCount,
+      reinterpret_cast<VkSparseImageMemoryRequirements2 *>( sparseMemoryRequirements.data() ) );
+    VULKAN_HPP_ASSERT( sparseMemoryRequirementCount <= sparseMemoryRequirements.size() );
+    return sparseMemoryRequirements;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

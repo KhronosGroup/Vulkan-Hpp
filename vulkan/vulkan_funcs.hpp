@@ -2818,7 +2818,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename PipelineAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createGraphicsPipelines(
       VULKAN_HPP_NAMESPACE::PipelineCache                                        pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -2826,8 +2826,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size() );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size() );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateGraphicsPipelines( m_device,
                                    static_cast<VkPipelineCache>( pipelineCache ),
                                    createInfos.size(),
@@ -2846,7 +2846,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, Pipeline>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createGraphicsPipelines(
       VULKAN_HPP_NAMESPACE::PipelineCache                                        pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -2855,8 +2855,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateGraphicsPipelines( m_device,
                                    static_cast<VkPipelineCache>( pipelineCache ),
                                    createInfos.size(),
@@ -2872,15 +2872,15 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<Pipeline>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>
     Device::createGraphicsPipeline( VULKAN_HPP_NAMESPACE::PipelineCache                      pipelineCache,
                                     const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo & createInfo,
                                     Optional<const AllocationCallbacks>                      allocator,
                                     Dispatch const &                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    Pipeline pipeline;
-    Result   result = static_cast<Result>(
+    VULKAN_HPP_NAMESPACE::Pipeline pipeline;
+    Result                         result = static_cast<Result>(
       d.vkCreateGraphicsPipelines( m_device,
                                    static_cast<VkPipelineCache>( pipelineCache ),
                                    1,
@@ -3022,7 +3022,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename PipelineAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createComputePipelines(
       VULKAN_HPP_NAMESPACE::PipelineCache                                       pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -3030,8 +3030,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size() );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size() );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateComputePipelines( m_device,
                                   static_cast<VkPipelineCache>( pipelineCache ),
                                   createInfos.size(),
@@ -3050,7 +3050,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, Pipeline>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createComputePipelines(
       VULKAN_HPP_NAMESPACE::PipelineCache                                       pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -3059,8 +3059,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateComputePipelines( m_device,
                                   static_cast<VkPipelineCache>( pipelineCache ),
                                   createInfos.size(),
@@ -3076,15 +3076,15 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<Pipeline>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>
     Device::createComputePipeline( VULKAN_HPP_NAMESPACE::PipelineCache                     pipelineCache,
                                    const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo,
                                    Optional<const AllocationCallbacks>                     allocator,
                                    Dispatch const &                                        d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    Pipeline pipeline;
-    Result   result = static_cast<Result>(
+    VULKAN_HPP_NAMESPACE::Pipeline pipeline;
+    Result                         result = static_cast<Result>(
       d.vkCreateComputePipelines( m_device,
                                   static_cast<VkPipelineCache>( pipelineCache ),
                                   1,
@@ -3720,12 +3720,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename DescriptorSetAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<DescriptorSet, DescriptorSetAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator>>::type
     Device::allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<DescriptorSet, DescriptorSetAllocator> descriptorSets( allocateInfo.descriptorSetCount );
-    Result                                             result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator> descriptorSets(
+      allocateInfo.descriptorSetCount );
+    Result result = static_cast<Result>(
       d.vkAllocateDescriptorSets( m_device,
                                   reinterpret_cast<const VkDescriptorSetAllocateInfo *>( &allocateInfo ),
                                   reinterpret_cast<VkDescriptorSet *>( descriptorSets.data() ) ) );
@@ -3737,15 +3738,15 @@ namespace VULKAN_HPP_NAMESPACE
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, DescriptorSet>::value, int>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<DescriptorSet, DescriptorSetAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator>>::type
     Device::allocateDescriptorSets( const DescriptorSetAllocateInfo & allocateInfo,
                                     DescriptorSetAllocator &          descriptorSetAllocator,
                                     Dispatch const &                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<DescriptorSet, DescriptorSetAllocator> descriptorSets( allocateInfo.descriptorSetCount,
-                                                                       descriptorSetAllocator );
-    Result                                             result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator> descriptorSets(
+      allocateInfo.descriptorSetCount, descriptorSetAllocator );
+    Result result = static_cast<Result>(
       d.vkAllocateDescriptorSets( m_device,
                                   reinterpret_cast<const VkDescriptorSetAllocateInfo *>( &allocateInfo ),
                                   reinterpret_cast<VkDescriptorSet *>( descriptorSets.data() ) ) );
@@ -4289,12 +4290,13 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename CommandBufferAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<CommandBuffer, CommandBufferAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator>>::type
     Device::allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<CommandBuffer, CommandBufferAllocator> commandBuffers( allocateInfo.commandBufferCount );
-    Result                                             result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator> commandBuffers(
+      allocateInfo.commandBufferCount );
+    Result result = static_cast<Result>(
       d.vkAllocateCommandBuffers( m_device,
                                   reinterpret_cast<const VkCommandBufferAllocateInfo *>( &allocateInfo ),
                                   reinterpret_cast<VkCommandBuffer *>( commandBuffers.data() ) ) );
@@ -4306,15 +4308,15 @@ namespace VULKAN_HPP_NAMESPACE
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, CommandBuffer>::value, int>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<CommandBuffer, CommandBufferAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator>>::type
     Device::allocateCommandBuffers( const CommandBufferAllocateInfo & allocateInfo,
                                     CommandBufferAllocator &          commandBufferAllocator,
                                     Dispatch const &                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<CommandBuffer, CommandBufferAllocator> commandBuffers( allocateInfo.commandBufferCount,
-                                                                       commandBufferAllocator );
-    Result                                             result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator> commandBuffers(
+      allocateInfo.commandBufferCount, commandBufferAllocator );
+    Result result = static_cast<Result>(
       d.vkAllocateCommandBuffers( m_device,
                                   reinterpret_cast<const VkCommandBufferAllocateInfo *>( &allocateInfo ),
                                   reinterpret_cast<VkCommandBuffer *>( commandBuffers.data() ) ) );
@@ -8072,15 +8074,15 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename SwapchainKHRAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<SwapchainKHR, SwapchainKHRAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator>>::type
     Device::createSharedSwapchainsKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
       Optional<const AllocationCallbacks>                                    allocator,
       Dispatch const &                                                       d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<SwapchainKHR, SwapchainKHRAllocator> swapchains( createInfos.size() );
-    Result                                           result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator> swapchains( createInfos.size() );
+    Result                                                                 result = static_cast<Result>(
       d.vkCreateSharedSwapchainsKHR( m_device,
                                      createInfos.size(),
                                      reinterpret_cast<const VkSwapchainCreateInfoKHR *>( createInfos.data() ),
@@ -8095,7 +8097,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, SwapchainKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<SwapchainKHR, SwapchainKHRAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator>>::type
     Device::createSharedSwapchainsKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
       Optional<const AllocationCallbacks>                                    allocator,
@@ -8103,8 +8105,9 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                       d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<SwapchainKHR, SwapchainKHRAllocator> swapchains( createInfos.size(), swapchainKHRAllocator );
-    Result                                           result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator> swapchains( createInfos.size(),
+                                                                                       swapchainKHRAllocator );
+    Result                                                                 result = static_cast<Result>(
       d.vkCreateSharedSwapchainsKHR( m_device,
                                      createInfos.size(),
                                      reinterpret_cast<const VkSwapchainCreateInfoKHR *>( createInfos.data() ),
@@ -8115,14 +8118,15 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<SwapchainKHR>::type
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
+    typename ResultValueType<VULKAN_HPP_NAMESPACE::SwapchainKHR>::type
     Device::createSharedSwapchainKHR( const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR & createInfo,
                                       Optional<const AllocationCallbacks>                  allocator,
                                       Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    SwapchainKHR swapchain;
-    Result       result = static_cast<Result>(
+    VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain;
+    Result                             result = static_cast<Result>(
       d.vkCreateSharedSwapchainsKHR( m_device,
                                      1,
                                      reinterpret_cast<const VkSwapchainCreateInfoKHR *>( &createInfo ),
@@ -14868,7 +14872,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename PipelineAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesNV(
       VULKAN_HPP_NAMESPACE::PipelineCache                                            pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
@@ -14876,8 +14880,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size() );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size() );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateRayTracingPipelinesNV( m_device,
                                        static_cast<VkPipelineCache>( pipelineCache ),
                                        createInfos.size(),
@@ -14896,7 +14900,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, Pipeline>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesNV(
       VULKAN_HPP_NAMESPACE::PipelineCache                                            pipelineCache,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
@@ -14905,8 +14909,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
-    Result                                   result = static_cast<Result>(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
+    Result                                                         result = static_cast<Result>(
       d.vkCreateRayTracingPipelinesNV( m_device,
                                        static_cast<VkPipelineCache>( pipelineCache ),
                                        createInfos.size(),
@@ -14922,15 +14926,15 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<Pipeline>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>
     Device::createRayTracingPipelineNV( VULKAN_HPP_NAMESPACE::PipelineCache                          pipelineCache,
                                         const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV & createInfo,
                                         Optional<const AllocationCallbacks>                          allocator,
                                         Dispatch const &                                             d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    Pipeline pipeline;
-    Result   result = static_cast<Result>(
+    VULKAN_HPP_NAMESPACE::Pipeline pipeline;
+    Result                         result = static_cast<Result>(
       d.vkCreateRayTracingPipelinesNV( m_device,
                                        static_cast<VkPipelineCache>( pipelineCache ),
                                        1,
@@ -18555,7 +18559,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename PipelineAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesKHR(
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                      deferredOperation,
       VULKAN_HPP_NAMESPACE::PipelineCache                                             pipelineCache,
@@ -18564,8 +18568,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size() );
-    Result                                   result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size() );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR(
       m_device,
       static_cast<VkDeferredOperationKHR>( deferredOperation ),
       static_cast<VkPipelineCache>( pipelineCache ),
@@ -18587,7 +18591,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename Dispatch,
             typename B,
             typename std::enable_if<std::is_same<typename B::value_type, Pipeline>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<Pipeline, PipelineAllocator>>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesKHR(
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                      deferredOperation,
       VULKAN_HPP_NAMESPACE::PipelineCache                                             pipelineCache,
@@ -18597,8 +18601,8 @@ namespace VULKAN_HPP_NAMESPACE
       Dispatch const &                                                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
-    Result                                   result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR(
+    std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator> pipelines( createInfos.size(), pipelineAllocator );
+    Result result = static_cast<Result>( d.vkCreateRayTracingPipelinesKHR(
       m_device,
       static_cast<VkDeferredOperationKHR>( deferredOperation ),
       static_cast<VkPipelineCache>( pipelineCache ),
@@ -18617,7 +18621,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<Pipeline>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>
     Device::createRayTracingPipelineKHR( VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation,
                                          VULKAN_HPP_NAMESPACE::PipelineCache        pipelineCache,
                                          const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR & createInfo,
@@ -18625,8 +18629,8 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const &                                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    Pipeline pipeline;
-    Result   result = static_cast<Result>(
+    VULKAN_HPP_NAMESPACE::Pipeline pipeline;
+    Result                         result = static_cast<Result>(
       d.vkCreateRayTracingPipelinesKHR( m_device,
                                         static_cast<VkDeferredOperationKHR>( deferredOperation ),
                                         static_cast<VkPipelineCache>( pipelineCache ),

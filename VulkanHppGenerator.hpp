@@ -532,19 +532,20 @@ private:
                                                         bool                             definition,
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         size_t                           returnParamIndex ) const;
-  std::string generateCommandResultGetVectorOfHandles( std::string const &              name,
-                                                       CommandData const &              commandData,
-                                                       size_t                           initialSkipCount,
-                                                       bool                             definition,
-                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                       size_t                           returnParamIndex,
-                                                       bool                             withAllocator ) const;
-  std::string generateCommandResultGetVectorOfHandlesSingular( std::string const &              name,
+  std::string generateCommandResultGetVectorOfHandlesOrValues( std::string const &              name,
                                                                CommandData const &              commandData,
                                                                size_t                           initialSkipCount,
                                                                bool                             definition,
                                                                std::map<size_t, size_t> const & vectorParamIndices,
-                                                               size_t returnParamIndex ) const;
+                                                               size_t                           returnParamIndex,
+                                                               bool                             withAllocator ) const;
+  std::string
+              generateCommandResultGetVectorOfHandlesOrValuesSingular( std::string const &              name,
+                                                                       CommandData const &              commandData,
+                                                                       size_t                           initialSkipCount,
+                                                                       bool                             definition,
+                                                                       std::map<size_t, size_t> const & vectorParamIndices,
+                                                                       size_t                           returnParamIndex ) const;
   std::string generateCommandResultGetVectorOfHandlesUnique( std::string const &              name,
                                                              CommandData const &              commandData,
                                                              size_t                           initialSkipCount,
@@ -645,6 +646,13 @@ private:
                                                                         size_t              initialSkipCount,
                                                                         bool                definition,
                                                                         size_t              returnParamIndex ) const;
+  std::string generateCommandResultSingleSuccessWithErrors1ReturnValue2Vectors(
+    std::string const &              name,
+    CommandData const &              commandData,
+    size_t                           initialSkipCount,
+    bool                             definition,
+    size_t                           returnParamIndex,
+    std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnVoid( std::string const & name,
                                                                        CommandData const & commandData,
                                                                        size_t              initialSkipCount,
@@ -692,12 +700,17 @@ private:
                                                                        std::string const & enhancedWithAllocator,
                                                                        std::string const & enhancedSingular ) const;
   std::string
-    generateCommandSetStandardEnhancedWithAllocatorDeprecated2( bool                definition,
-                                                                std::string const & standard,
-                                                                std::string const & enhancedDeprecated,
-                                                                std::string const & enhancedWithAllocatorDeprecated,
-                                                                std::string const & enhanced,
-                                                                std::string const & enhancedWithAllocator ) const;
+              generateCommandSetStandardEnhancedWithAllocatorDeprecated2( bool                definition,
+                                                                          std::string const & standard,
+                                                                          std::string const & enhancedDeprecated,
+                                                                          std::string const & enhancedWithAllocatorDeprecated,
+                                                                          std::string const & enhanced,
+                                                                          std::string const & enhancedWithAllocator ) const;
+  std::string generateCommandSetStandardEnhancedWithAllocatorSingular( bool                definition,
+                                                                       std::string const & standard,
+                                                                       std::string const & enhanced,
+                                                                       std::string const & enhancedWithAllocator,
+                                                                       std::string const & enhancedSingular ) const;
   std::string
     generateCommandSetStandardEnhancedWithAllocatorSingularUnique( bool                definition,
                                                                    std::string const & standard,
@@ -972,6 +985,18 @@ private:
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
     std::vector<size_t> const &                        nonConstPointerParamIndices,
+    bool                                               definition ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValueSingular(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    size_t                                             returnParamIndex,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
+    bool                                               definition ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValueVector(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    size_t                                             returnParamIndex,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoidSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,

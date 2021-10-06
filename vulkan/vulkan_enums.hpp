@@ -493,6 +493,8 @@ namespace VULKAN_HPP_NAMESPACE
     eImportAndroidHardwareBufferInfoANDROID       = VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
     eMemoryGetAndroidHardwareBufferInfoANDROID    = VK_STRUCTURE_TYPE_MEMORY_GET_ANDROID_HARDWARE_BUFFER_INFO_ANDROID,
     eExternalFormatANDROID                        = VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_ANDROID,
+    eAndroidHardwareBufferFormatProperties2ANDROID =
+      VK_STRUCTURE_TYPE_ANDROID_HARDWARE_BUFFER_FORMAT_PROPERTIES_2_ANDROID,
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
     ePhysicalDeviceInlineUniformBlockFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_FEATURES_EXT,
     ePhysicalDeviceInlineUniformBlockPropertiesEXT =
@@ -546,6 +548,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImageDrmFormatModifierListCreateInfoEXT     = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_LIST_CREATE_INFO_EXT,
     eImageDrmFormatModifierExplicitCreateInfoEXT = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_EXPLICIT_CREATE_INFO_EXT,
     eImageDrmFormatModifierPropertiesEXT         = VK_STRUCTURE_TYPE_IMAGE_DRM_FORMAT_MODIFIER_PROPERTIES_EXT,
+    eDrmFormatModifierPropertiesList2EXT         = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT,
     eValidationCacheCreateInfoEXT                = VK_STRUCTURE_TYPE_VALIDATION_CACHE_CREATE_INFO_EXT,
     eShaderModuleValidationCacheCreateInfoEXT    = VK_STRUCTURE_TYPE_SHADER_MODULE_VALIDATION_CACHE_CREATE_INFO_EXT,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -793,18 +796,19 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceImageRobustnessFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT,
     ePhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR,
-    eCopyBufferInfo2KHR                   = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2_KHR,
-    eCopyImageInfo2KHR                    = VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2_KHR,
-    eCopyBufferToImageInfo2KHR            = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR,
-    eCopyImageToBufferInfo2KHR            = VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2_KHR,
-    eBlitImageInfo2KHR                    = VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2_KHR,
-    eResolveImageInfo2KHR                 = VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2_KHR,
-    eBufferCopy2KHR                       = VK_STRUCTURE_TYPE_BUFFER_COPY_2_KHR,
-    eImageCopy2KHR                        = VK_STRUCTURE_TYPE_IMAGE_COPY_2_KHR,
-    eImageBlit2KHR                        = VK_STRUCTURE_TYPE_IMAGE_BLIT_2_KHR,
-    eBufferImageCopy2KHR                  = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2_KHR,
-    eImageResolve2KHR                     = VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2_KHR,
-    ePhysicalDevice4444FormatsFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
+    eCopyBufferInfo2KHR                       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2_KHR,
+    eCopyImageInfo2KHR                        = VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2_KHR,
+    eCopyBufferToImageInfo2KHR                = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR,
+    eCopyImageToBufferInfo2KHR                = VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2_KHR,
+    eBlitImageInfo2KHR                        = VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2_KHR,
+    eResolveImageInfo2KHR                     = VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2_KHR,
+    eBufferCopy2KHR                           = VK_STRUCTURE_TYPE_BUFFER_COPY_2_KHR,
+    eImageCopy2KHR                            = VK_STRUCTURE_TYPE_IMAGE_COPY_2_KHR,
+    eImageBlit2KHR                            = VK_STRUCTURE_TYPE_IMAGE_BLIT_2_KHR,
+    eBufferImageCopy2KHR                      = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2_KHR,
+    eImageResolve2KHR                         = VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2_KHR,
+    ePhysicalDevice4444FormatsFeaturesEXT     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
+    ePhysicalDeviceRgba10X6FormatsFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
     eDirectfbSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_DIRECTFB_SURFACE_CREATE_INFO_EXT,
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
@@ -818,6 +822,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceDrmPropertiesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
     ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT,
+    eFormatProperties3KHR = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3_KHR,
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     eImportMemoryZirconHandleInfoFUCHSIA     = VK_STRUCTURE_TYPE_IMPORT_MEMORY_ZIRCON_HANDLE_INFO_FUCHSIA,
     eMemoryZirconHandlePropertiesFUCHSIA     = VK_STRUCTURE_TYPE_MEMORY_ZIRCON_HANDLE_PROPERTIES_FUCHSIA,
@@ -855,6 +860,10 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceMultiDrawPropertiesEXT   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT,
     ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT,
+    ePhysicalDeviceMaintenance4FeaturesKHR   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_FEATURES_KHR,
+    ePhysicalDeviceMaintenance4PropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_4_PROPERTIES_KHR,
+    eDeviceBufferMemoryRequirementsKHR       = VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR,
+    eDeviceImageMemoryRequirementsKHR        = VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR,
     eAttachmentDescription2KHR               = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentDescriptionStencilLayoutKHR   = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                 = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
@@ -1373,6 +1382,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryGetAndroidHardwareBufferInfoANDROID:
         return "MemoryGetAndroidHardwareBufferInfoANDROID";
       case StructureType::eExternalFormatANDROID: return "ExternalFormatANDROID";
+      case StructureType::eAndroidHardwareBufferFormatProperties2ANDROID:
+        return "AndroidHardwareBufferFormatProperties2ANDROID";
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       case StructureType::ePhysicalDeviceInlineUniformBlockFeaturesEXT:
         return "PhysicalDeviceInlineUniformBlockFeaturesEXT";
@@ -1438,6 +1449,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageDrmFormatModifierExplicitCreateInfoEXT:
         return "ImageDrmFormatModifierExplicitCreateInfoEXT";
       case StructureType::eImageDrmFormatModifierPropertiesEXT: return "ImageDrmFormatModifierPropertiesEXT";
+      case StructureType::eDrmFormatModifierPropertiesList2EXT: return "DrmFormatModifierPropertiesList2EXT";
       case StructureType::eValidationCacheCreateInfoEXT: return "ValidationCacheCreateInfoEXT";
       case StructureType::eShaderModuleValidationCacheCreateInfoEXT: return "ShaderModuleValidationCacheCreateInfoEXT";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -1722,6 +1734,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eBufferImageCopy2KHR: return "BufferImageCopy2KHR";
       case StructureType::eImageResolve2KHR: return "ImageResolve2KHR";
       case StructureType::ePhysicalDevice4444FormatsFeaturesEXT: return "PhysicalDevice4444FormatsFeaturesEXT";
+      case StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT: return "PhysicalDeviceRgba10X6FormatsFeaturesEXT";
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       case StructureType::eDirectfbSurfaceCreateInfoEXT: return "DirectfbSurfaceCreateInfoEXT";
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
@@ -1735,6 +1748,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDrmPropertiesEXT: return "PhysicalDeviceDrmPropertiesEXT";
       case StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT:
         return "PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT";
+      case StructureType::eFormatProperties3KHR: return "FormatProperties3KHR";
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       case StructureType::eImportMemoryZirconHandleInfoFUCHSIA: return "ImportMemoryZirconHandleInfoFUCHSIA";
       case StructureType::eMemoryZirconHandlePropertiesFUCHSIA: return "MemoryZirconHandlePropertiesFUCHSIA";
@@ -1777,6 +1791,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceMultiDrawPropertiesEXT: return "PhysicalDeviceMultiDrawPropertiesEXT";
       case StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT:
         return "PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT";
+      case StructureType::ePhysicalDeviceMaintenance4FeaturesKHR: return "PhysicalDeviceMaintenance4FeaturesKHR";
+      case StructureType::ePhysicalDeviceMaintenance4PropertiesKHR: return "PhysicalDeviceMaintenance4PropertiesKHR";
+      case StructureType::eDeviceBufferMemoryRequirementsKHR: return "DeviceBufferMemoryRequirementsKHR";
+      case StructureType::eDeviceImageMemoryRequirementsKHR: return "DeviceImageMemoryRequirementsKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7901,6 +7919,103 @@ namespace VULKAN_HPP_NAMESPACE
       case ShaderGroupShaderKHR::eClosestHit: return "ClosestHit";
       case ShaderGroupShaderKHR::eAnyHit: return "AnyHit";
       case ShaderGroupShaderKHR::eIntersection: return "Intersection";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_format_feature_flags2 ===
+
+  enum class FormatFeatureFlagBits2KHR : VkFormatFeatureFlags2KHR
+  {
+    eSampledImage                            = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_BIT_KHR,
+    eStorageImage                            = VK_FORMAT_FEATURE_2_STORAGE_IMAGE_BIT_KHR,
+    eStorageImageAtomic                      = VK_FORMAT_FEATURE_2_STORAGE_IMAGE_ATOMIC_BIT_KHR,
+    eUniformTexelBuffer                      = VK_FORMAT_FEATURE_2_UNIFORM_TEXEL_BUFFER_BIT_KHR,
+    eStorageTexelBuffer                      = VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_BIT_KHR,
+    eStorageTexelBufferAtomic                = VK_FORMAT_FEATURE_2_STORAGE_TEXEL_BUFFER_ATOMIC_BIT_KHR,
+    eVertexBuffer                            = VK_FORMAT_FEATURE_2_VERTEX_BUFFER_BIT_KHR,
+    eColorAttachment                         = VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BIT_KHR,
+    eColorAttachmentBlend                    = VK_FORMAT_FEATURE_2_COLOR_ATTACHMENT_BLEND_BIT_KHR,
+    eDepthStencilAttachment                  = VK_FORMAT_FEATURE_2_DEPTH_STENCIL_ATTACHMENT_BIT_KHR,
+    eBlitSrc                                 = VK_FORMAT_FEATURE_2_BLIT_SRC_BIT_KHR,
+    eBlitDst                                 = VK_FORMAT_FEATURE_2_BLIT_DST_BIT_KHR,
+    eSampledImageFilterLinear                = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_LINEAR_BIT_KHR,
+    eSampledImageFilterCubicEXT              = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT,
+    eTransferSrc                             = VK_FORMAT_FEATURE_2_TRANSFER_SRC_BIT_KHR,
+    eTransferDst                             = VK_FORMAT_FEATURE_2_TRANSFER_DST_BIT_KHR,
+    eSampledImageFilterMinmax                = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_MINMAX_BIT_KHR,
+    eMidpointChromaSamples                   = VK_FORMAT_FEATURE_2_MIDPOINT_CHROMA_SAMPLES_BIT_KHR,
+    eSampledImageYcbcrConversionLinearFilter = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_LINEAR_FILTER_BIT_KHR,
+    eSampledImageYcbcrConversionSeparateReconstructionFilter =
+      VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_SEPARATE_RECONSTRUCTION_FILTER_BIT_KHR,
+    eSampledImageYcbcrConversionChromaReconstructionExplicit =
+      VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_BIT_KHR,
+    eSampledImageYcbcrConversionChromaReconstructionExplicitForceable =
+      VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_YCBCR_CONVERSION_CHROMA_RECONSTRUCTION_EXPLICIT_FORCEABLE_BIT_KHR,
+    eDisjoint                    = VK_FORMAT_FEATURE_2_DISJOINT_BIT_KHR,
+    eCositedChromaSamples        = VK_FORMAT_FEATURE_2_COSITED_CHROMA_SAMPLES_BIT_KHR,
+    eStorageReadWithoutFormat    = VK_FORMAT_FEATURE_2_STORAGE_READ_WITHOUT_FORMAT_BIT_KHR,
+    eStorageWriteWithoutFormat   = VK_FORMAT_FEATURE_2_STORAGE_WRITE_WITHOUT_FORMAT_BIT_KHR,
+    eSampledImageDepthComparison = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_DEPTH_COMPARISON_BIT_KHR,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eVideoDecodeOutput = VK_FORMAT_FEATURE_2_VIDEO_DECODE_OUTPUT_BIT_KHR,
+    eVideoDecodeDpb    = VK_FORMAT_FEATURE_2_VIDEO_DECODE_DPB_BIT_KHR,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    eAccelerationStructureVertexBuffer = VK_FORMAT_FEATURE_2_ACCELERATION_STRUCTURE_VERTEX_BUFFER_BIT_KHR,
+    eFragmentDensityMapEXT             = VK_FORMAT_FEATURE_2_FRAGMENT_DENSITY_MAP_BIT_EXT,
+    eFragmentShadingRateAttachment     = VK_FORMAT_FEATURE_2_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eVideoEncodeInput = VK_FORMAT_FEATURE_2_VIDEO_ENCODE_INPUT_BIT_KHR,
+    eVideoEncodeDpb   = VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits2KHR value )
+  {
+    switch ( value )
+    {
+      case FormatFeatureFlagBits2KHR::eSampledImage: return "SampledImage";
+      case FormatFeatureFlagBits2KHR::eStorageImage: return "StorageImage";
+      case FormatFeatureFlagBits2KHR::eStorageImageAtomic: return "StorageImageAtomic";
+      case FormatFeatureFlagBits2KHR::eUniformTexelBuffer: return "UniformTexelBuffer";
+      case FormatFeatureFlagBits2KHR::eStorageTexelBuffer: return "StorageTexelBuffer";
+      case FormatFeatureFlagBits2KHR::eStorageTexelBufferAtomic: return "StorageTexelBufferAtomic";
+      case FormatFeatureFlagBits2KHR::eVertexBuffer: return "VertexBuffer";
+      case FormatFeatureFlagBits2KHR::eColorAttachment: return "ColorAttachment";
+      case FormatFeatureFlagBits2KHR::eColorAttachmentBlend: return "ColorAttachmentBlend";
+      case FormatFeatureFlagBits2KHR::eDepthStencilAttachment: return "DepthStencilAttachment";
+      case FormatFeatureFlagBits2KHR::eBlitSrc: return "BlitSrc";
+      case FormatFeatureFlagBits2KHR::eBlitDst: return "BlitDst";
+      case FormatFeatureFlagBits2KHR::eSampledImageFilterLinear: return "SampledImageFilterLinear";
+      case FormatFeatureFlagBits2KHR::eSampledImageFilterCubicEXT: return "SampledImageFilterCubicEXT";
+      case FormatFeatureFlagBits2KHR::eTransferSrc: return "TransferSrc";
+      case FormatFeatureFlagBits2KHR::eTransferDst: return "TransferDst";
+      case FormatFeatureFlagBits2KHR::eSampledImageFilterMinmax: return "SampledImageFilterMinmax";
+      case FormatFeatureFlagBits2KHR::eMidpointChromaSamples: return "MidpointChromaSamples";
+      case FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionLinearFilter:
+        return "SampledImageYcbcrConversionLinearFilter";
+      case FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionSeparateReconstructionFilter:
+        return "SampledImageYcbcrConversionSeparateReconstructionFilter";
+      case FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicit:
+        return "SampledImageYcbcrConversionChromaReconstructionExplicit";
+      case FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable:
+        return "SampledImageYcbcrConversionChromaReconstructionExplicitForceable";
+      case FormatFeatureFlagBits2KHR::eDisjoint: return "Disjoint";
+      case FormatFeatureFlagBits2KHR::eCositedChromaSamples: return "CositedChromaSamples";
+      case FormatFeatureFlagBits2KHR::eStorageReadWithoutFormat: return "StorageReadWithoutFormat";
+      case FormatFeatureFlagBits2KHR::eStorageWriteWithoutFormat: return "StorageWriteWithoutFormat";
+      case FormatFeatureFlagBits2KHR::eSampledImageDepthComparison: return "SampledImageDepthComparison";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case FormatFeatureFlagBits2KHR::eVideoDecodeOutput: return "VideoDecodeOutput";
+      case FormatFeatureFlagBits2KHR::eVideoDecodeDpb: return "VideoDecodeDpb";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case FormatFeatureFlagBits2KHR::eAccelerationStructureVertexBuffer: return "AccelerationStructureVertexBuffer";
+      case FormatFeatureFlagBits2KHR::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
+      case FormatFeatureFlagBits2KHR::eFragmentShadingRateAttachment: return "FragmentShadingRateAttachment";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case FormatFeatureFlagBits2KHR::eVideoEncodeInput: return "VideoEncodeInput";
+      case FormatFeatureFlagBits2KHR::eVideoEncodeDpb: return "VideoEncodeDpb";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -14259,6 +14374,160 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+
+  //=== VK_KHR_format_feature_flags2 ===
+
+  using FormatFeatureFlags2KHR = Flags<FormatFeatureFlagBits2KHR>;
+
+  template <>
+  struct FlagTraits<FormatFeatureFlagBits2KHR>
+  {
+    enum : VkFlags64
+    {
+      allFlags =
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImage ) | VkFlags64( FormatFeatureFlagBits2KHR::eStorageImage ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eStorageImageAtomic ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eUniformTexelBuffer ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eStorageTexelBuffer ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eStorageTexelBufferAtomic ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eVertexBuffer ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eColorAttachment ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eColorAttachmentBlend ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eDepthStencilAttachment ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eBlitSrc ) | VkFlags64( FormatFeatureFlagBits2KHR::eBlitDst ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageFilterLinear ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageFilterCubicEXT ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eTransferSrc ) | VkFlags64( FormatFeatureFlagBits2KHR::eTransferDst ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageFilterMinmax ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eMidpointChromaSamples ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionLinearFilter ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionSeparateReconstructionFilter ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicit ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eDisjoint ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eCositedChromaSamples ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eStorageReadWithoutFormat ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eStorageWriteWithoutFormat ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eSampledImageDepthComparison )
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        | VkFlags64( FormatFeatureFlagBits2KHR::eVideoDecodeOutput ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eVideoDecodeDpb )
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+        | VkFlags64( FormatFeatureFlagBits2KHR::eAccelerationStructureVertexBuffer ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eFragmentDensityMapEXT ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eFragmentShadingRateAttachment )
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        | VkFlags64( FormatFeatureFlagBits2KHR::eVideoEncodeInput ) |
+        VkFlags64( FormatFeatureFlagBits2KHR::eVideoEncodeDpb )
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2KHR
+    operator|( FormatFeatureFlagBits2KHR bit0, FormatFeatureFlagBits2KHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return FormatFeatureFlags2KHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2KHR
+    operator&( FormatFeatureFlagBits2KHR bit0, FormatFeatureFlagBits2KHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return FormatFeatureFlags2KHR( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2KHR
+    operator^( FormatFeatureFlagBits2KHR bit0, FormatFeatureFlagBits2KHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return FormatFeatureFlags2KHR( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2KHR operator~( FormatFeatureFlagBits2KHR bits )
+    VULKAN_HPP_NOEXCEPT
+  {
+    return ~( FormatFeatureFlags2KHR( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlags2KHR value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImage )
+      result += "SampledImage | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageImage )
+      result += "StorageImage | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageImageAtomic )
+      result += "StorageImageAtomic | ";
+    if ( value & FormatFeatureFlagBits2KHR::eUniformTexelBuffer )
+      result += "UniformTexelBuffer | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageTexelBuffer )
+      result += "StorageTexelBuffer | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageTexelBufferAtomic )
+      result += "StorageTexelBufferAtomic | ";
+    if ( value & FormatFeatureFlagBits2KHR::eVertexBuffer )
+      result += "VertexBuffer | ";
+    if ( value & FormatFeatureFlagBits2KHR::eColorAttachment )
+      result += "ColorAttachment | ";
+    if ( value & FormatFeatureFlagBits2KHR::eColorAttachmentBlend )
+      result += "ColorAttachmentBlend | ";
+    if ( value & FormatFeatureFlagBits2KHR::eDepthStencilAttachment )
+      result += "DepthStencilAttachment | ";
+    if ( value & FormatFeatureFlagBits2KHR::eBlitSrc )
+      result += "BlitSrc | ";
+    if ( value & FormatFeatureFlagBits2KHR::eBlitDst )
+      result += "BlitDst | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageFilterLinear )
+      result += "SampledImageFilterLinear | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageFilterCubicEXT )
+      result += "SampledImageFilterCubicEXT | ";
+    if ( value & FormatFeatureFlagBits2KHR::eTransferSrc )
+      result += "TransferSrc | ";
+    if ( value & FormatFeatureFlagBits2KHR::eTransferDst )
+      result += "TransferDst | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageFilterMinmax )
+      result += "SampledImageFilterMinmax | ";
+    if ( value & FormatFeatureFlagBits2KHR::eMidpointChromaSamples )
+      result += "MidpointChromaSamples | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionLinearFilter )
+      result += "SampledImageYcbcrConversionLinearFilter | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionSeparateReconstructionFilter )
+      result += "SampledImageYcbcrConversionSeparateReconstructionFilter | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicit )
+      result += "SampledImageYcbcrConversionChromaReconstructionExplicit | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageYcbcrConversionChromaReconstructionExplicitForceable )
+      result += "SampledImageYcbcrConversionChromaReconstructionExplicitForceable | ";
+    if ( value & FormatFeatureFlagBits2KHR::eDisjoint )
+      result += "Disjoint | ";
+    if ( value & FormatFeatureFlagBits2KHR::eCositedChromaSamples )
+      result += "CositedChromaSamples | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageReadWithoutFormat )
+      result += "StorageReadWithoutFormat | ";
+    if ( value & FormatFeatureFlagBits2KHR::eStorageWriteWithoutFormat )
+      result += "StorageWriteWithoutFormat | ";
+    if ( value & FormatFeatureFlagBits2KHR::eSampledImageDepthComparison )
+      result += "SampledImageDepthComparison | ";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & FormatFeatureFlagBits2KHR::eVideoDecodeOutput )
+      result += "VideoDecodeOutput | ";
+    if ( value & FormatFeatureFlagBits2KHR::eVideoDecodeDpb )
+      result += "VideoDecodeDpb | ";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & FormatFeatureFlagBits2KHR::eAccelerationStructureVertexBuffer )
+      result += "AccelerationStructureVertexBuffer | ";
+    if ( value & FormatFeatureFlagBits2KHR::eFragmentDensityMapEXT )
+      result += "FragmentDensityMapEXT | ";
+    if ( value & FormatFeatureFlagBits2KHR::eFragmentShadingRateAttachment )
+      result += "FragmentShadingRateAttachment | ";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & FormatFeatureFlagBits2KHR::eVideoEncodeInput )
+      result += "VideoEncodeInput | ";
+    if ( value & FormatFeatureFlagBits2KHR::eVideoEncodeDpb )
+      result += "VideoEncodeDpb | ";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===

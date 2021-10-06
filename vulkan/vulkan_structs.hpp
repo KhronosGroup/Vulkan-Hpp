@@ -3757,6 +3757,116 @@ namespace VULKAN_HPP_NAMESPACE
                             "ComponentMapping is not nothrow_move_constructible!" );
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
+  struct AndroidHardwareBufferFormatProperties2ANDROID
+  {
+    using NativeType = VkAndroidHardwareBufferFormatProperties2ANDROID;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eAndroidHardwareBufferFormatProperties2ANDROID;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR AndroidHardwareBufferFormatProperties2ANDROID(
+      VULKAN_HPP_NAMESPACE::Format                      format_         = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      uint64_t                                          externalFormat_ = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR      formatFeatures_ = {},
+      VULKAN_HPP_NAMESPACE::ComponentMapping            samplerYcbcrConversionComponents_ = {},
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_ =
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity,
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange_ = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull,
+      VULKAN_HPP_NAMESPACE::ChromaLocation suggestedXChromaOffset_ = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+      VULKAN_HPP_NAMESPACE::ChromaLocation suggestedYChromaOffset_ =
+        VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven ) VULKAN_HPP_NOEXCEPT
+      : format( format_ )
+      , externalFormat( externalFormat_ )
+      , formatFeatures( formatFeatures_ )
+      , samplerYcbcrConversionComponents( samplerYcbcrConversionComponents_ )
+      , suggestedYcbcrModel( suggestedYcbcrModel_ )
+      , suggestedYcbcrRange( suggestedYcbcrRange_ )
+      , suggestedXChromaOffset( suggestedXChromaOffset_ )
+      , suggestedYChromaOffset( suggestedYChromaOffset_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR AndroidHardwareBufferFormatProperties2ANDROID(
+      AndroidHardwareBufferFormatProperties2ANDROID const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    AndroidHardwareBufferFormatProperties2ANDROID( VkAndroidHardwareBufferFormatProperties2ANDROID const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : AndroidHardwareBufferFormatProperties2ANDROID(
+          *reinterpret_cast<AndroidHardwareBufferFormatProperties2ANDROID const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    AndroidHardwareBufferFormatProperties2ANDROID &
+      operator=( AndroidHardwareBufferFormatProperties2ANDROID const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    AndroidHardwareBufferFormatProperties2ANDROID &
+      operator=( VkAndroidHardwareBufferFormatProperties2ANDROID const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::AndroidHardwareBufferFormatProperties2ANDROID const *>( &rhs );
+      return *this;
+    }
+
+    operator VkAndroidHardwareBufferFormatProperties2ANDROID const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkAndroidHardwareBufferFormatProperties2ANDROID *>( this );
+    }
+
+    operator VkAndroidHardwareBufferFormatProperties2ANDROID &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkAndroidHardwareBufferFormatProperties2ANDROID *>( this );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( AndroidHardwareBufferFormatProperties2ANDROID const & ) const = default;
+#  else
+    bool operator==( AndroidHardwareBufferFormatProperties2ANDROID const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( format == rhs.format ) &&
+             ( externalFormat == rhs.externalFormat ) && ( formatFeatures == rhs.formatFeatures ) &&
+             ( samplerYcbcrConversionComponents == rhs.samplerYcbcrConversionComponents ) &&
+             ( suggestedYcbcrModel == rhs.suggestedYcbcrModel ) && ( suggestedYcbcrRange == rhs.suggestedYcbcrRange ) &&
+             ( suggestedXChromaOffset == rhs.suggestedXChromaOffset ) &&
+             ( suggestedYChromaOffset == rhs.suggestedYChromaOffset );
+    }
+
+    bool operator!=( AndroidHardwareBufferFormatProperties2ANDROID const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType          sType  = StructureType::eAndroidHardwareBufferFormatProperties2ANDROID;
+    void *                                       pNext  = {};
+    VULKAN_HPP_NAMESPACE::Format                 format = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    uint64_t                                     externalFormat                   = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR formatFeatures                   = {};
+    VULKAN_HPP_NAMESPACE::ComponentMapping       samplerYcbcrConversionComponents = {};
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel =
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange suggestedYcbcrRange    = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull;
+    VULKAN_HPP_NAMESPACE::ChromaLocation    suggestedXChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::ChromaLocation    suggestedYChromaOffset = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::AndroidHardwareBufferFormatProperties2ANDROID ) ==
+                              sizeof( VkAndroidHardwareBufferFormatProperties2ANDROID ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::AndroidHardwareBufferFormatProperties2ANDROID>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::AndroidHardwareBufferFormatProperties2ANDROID>::value,
+    "AndroidHardwareBufferFormatProperties2ANDROID is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eAndroidHardwareBufferFormatProperties2ANDROID>
+  {
+    using Type = AndroidHardwareBufferFormatProperties2ANDROID;
+  };
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
   struct AndroidHardwareBufferFormatPropertiesANDROID
   {
     using NativeType = VkAndroidHardwareBufferFormatPropertiesANDROID;
@@ -18319,6 +18429,96 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using DescriptorUpdateTemplateCreateInfoKHR = DescriptorUpdateTemplateCreateInfo;
 
+  struct DeviceBufferMemoryRequirementsKHR
+  {
+    using NativeType = VkDeviceBufferMemoryRequirementsKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eDeviceBufferMemoryRequirementsKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR DeviceBufferMemoryRequirementsKHR(
+      const VULKAN_HPP_NAMESPACE::BufferCreateInfo * pCreateInfo_ = {} ) VULKAN_HPP_NOEXCEPT
+      : pCreateInfo( pCreateInfo_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      DeviceBufferMemoryRequirementsKHR( DeviceBufferMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceBufferMemoryRequirementsKHR( VkDeviceBufferMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : DeviceBufferMemoryRequirementsKHR( *reinterpret_cast<DeviceBufferMemoryRequirementsKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    DeviceBufferMemoryRequirementsKHR &
+      operator=( DeviceBufferMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceBufferMemoryRequirementsKHR & operator=( VkDeviceBufferMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    DeviceBufferMemoryRequirementsKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DeviceBufferMemoryRequirementsKHR &
+      setPCreateInfo( const VULKAN_HPP_NAMESPACE::BufferCreateInfo * pCreateInfo_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pCreateInfo = pCreateInfo_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkDeviceBufferMemoryRequirementsKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkDeviceBufferMemoryRequirementsKHR *>( this );
+    }
+
+    operator VkDeviceBufferMemoryRequirementsKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDeviceBufferMemoryRequirementsKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DeviceBufferMemoryRequirementsKHR const & ) const = default;
+#else
+    bool operator==( DeviceBufferMemoryRequirementsKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( pCreateInfo == rhs.pCreateInfo );
+    }
+
+    bool operator!=( DeviceBufferMemoryRequirementsKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType            sType       = StructureType::eDeviceBufferMemoryRequirementsKHR;
+    const void *                                   pNext       = {};
+    const VULKAN_HPP_NAMESPACE::BufferCreateInfo * pCreateInfo = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR ) ==
+                              sizeof( VkDeviceBufferMemoryRequirementsKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DeviceBufferMemoryRequirementsKHR>::value,
+    "DeviceBufferMemoryRequirementsKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eDeviceBufferMemoryRequirementsKHR>
+  {
+    using Type = DeviceBufferMemoryRequirementsKHR;
+  };
+
   struct DeviceQueueCreateInfo
   {
     using NativeType = VkDeviceQueueCreateInfo;
@@ -20483,6 +20683,344 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::eDeviceGroupSwapchainCreateInfoKHR>
   {
     using Type = DeviceGroupSwapchainCreateInfoKHR;
+  };
+
+  struct ImageCreateInfo
+  {
+    using NativeType = VkImageCreateInfo;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImageCreateInfo;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageCreateInfo(
+      VULKAN_HPP_NAMESPACE::ImageCreateFlags    flags_                 = {},
+      VULKAN_HPP_NAMESPACE::ImageType           imageType_             = VULKAN_HPP_NAMESPACE::ImageType::e1D,
+      VULKAN_HPP_NAMESPACE::Format              format_                = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::Extent3D            extent_                = {},
+      uint32_t                                  mipLevels_             = {},
+      uint32_t                                  arrayLayers_           = {},
+      VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_               = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
+      VULKAN_HPP_NAMESPACE::ImageTiling         tiling_                = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal,
+      VULKAN_HPP_NAMESPACE::ImageUsageFlags     usage_                 = {},
+      VULKAN_HPP_NAMESPACE::SharingMode         sharingMode_           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
+      uint32_t                                  queueFamilyIndexCount_ = {},
+      const uint32_t *                          pQueueFamilyIndices_   = {},
+      VULKAN_HPP_NAMESPACE::ImageLayout         initialLayout_         = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined )
+      VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , imageType( imageType_ )
+      , format( format_ )
+      , extent( extent_ )
+      , mipLevels( mipLevels_ )
+      , arrayLayers( arrayLayers_ )
+      , samples( samples_ )
+      , tiling( tiling_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( queueFamilyIndexCount_ )
+      , pQueueFamilyIndices( pQueueFamilyIndices_ )
+      , initialLayout( initialLayout_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR ImageCreateInfo( ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageCreateInfo( VkImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImageCreateInfo( *reinterpret_cast<ImageCreateInfo const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ImageCreateInfo( VULKAN_HPP_NAMESPACE::ImageCreateFlags                                flags_,
+                     VULKAN_HPP_NAMESPACE::ImageType                                       imageType_,
+                     VULKAN_HPP_NAMESPACE::Format                                          format_,
+                     VULKAN_HPP_NAMESPACE::Extent3D                                        extent_,
+                     uint32_t                                                              mipLevels_,
+                     uint32_t                                                              arrayLayers_,
+                     VULKAN_HPP_NAMESPACE::SampleCountFlagBits                             samples_,
+                     VULKAN_HPP_NAMESPACE::ImageTiling                                     tiling_,
+                     VULKAN_HPP_NAMESPACE::ImageUsageFlags                                 usage_,
+                     VULKAN_HPP_NAMESPACE::SharingMode                                     sharingMode_,
+                     VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_,
+                     VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined )
+      : flags( flags_ )
+      , imageType( imageType_ )
+      , format( format_ )
+      , extent( extent_ )
+      , mipLevels( mipLevels_ )
+      , arrayLayers( arrayLayers_ )
+      , samples( samples_ )
+      , tiling( tiling_ )
+      , usage( usage_ )
+      , sharingMode( sharingMode_ )
+      , queueFamilyIndexCount( static_cast<uint32_t>( queueFamilyIndices_.size() ) )
+      , pQueueFamilyIndices( queueFamilyIndices_.data() )
+      , initialLayout( initialLayout_ )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImageCreateInfo & operator=( ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageCreateInfo & operator=( VkImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageCreateInfo const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    ImageCreateInfo & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    ImageCreateInfo & setFlags( VULKAN_HPP_NAMESPACE::ImageCreateFlags flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    ImageCreateInfo & setImageType( VULKAN_HPP_NAMESPACE::ImageType imageType_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageType = imageType_;
+      return *this;
+    }
+
+    ImageCreateInfo & setFormat( VULKAN_HPP_NAMESPACE::Format format_ ) VULKAN_HPP_NOEXCEPT
+    {
+      format = format_;
+      return *this;
+    }
+
+    ImageCreateInfo & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
+    {
+      extent = extent_;
+      return *this;
+    }
+
+    ImageCreateInfo & setMipLevels( uint32_t mipLevels_ ) VULKAN_HPP_NOEXCEPT
+    {
+      mipLevels = mipLevels_;
+      return *this;
+    }
+
+    ImageCreateInfo & setArrayLayers( uint32_t arrayLayers_ ) VULKAN_HPP_NOEXCEPT
+    {
+      arrayLayers = arrayLayers_;
+      return *this;
+    }
+
+    ImageCreateInfo & setSamples( VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ ) VULKAN_HPP_NOEXCEPT
+    {
+      samples = samples_;
+      return *this;
+    }
+
+    ImageCreateInfo & setTiling( VULKAN_HPP_NAMESPACE::ImageTiling tiling_ ) VULKAN_HPP_NOEXCEPT
+    {
+      tiling = tiling_;
+      return *this;
+    }
+
+    ImageCreateInfo & setUsage( VULKAN_HPP_NAMESPACE::ImageUsageFlags usage_ ) VULKAN_HPP_NOEXCEPT
+    {
+      usage = usage_;
+      return *this;
+    }
+
+    ImageCreateInfo & setSharingMode( VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ ) VULKAN_HPP_NOEXCEPT
+    {
+      sharingMode = sharingMode_;
+      return *this;
+    }
+
+    ImageCreateInfo & setQueueFamilyIndexCount( uint32_t queueFamilyIndexCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      queueFamilyIndexCount = queueFamilyIndexCount_;
+      return *this;
+    }
+
+    ImageCreateInfo & setPQueueFamilyIndices( const uint32_t * pQueueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pQueueFamilyIndices = pQueueFamilyIndices_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ImageCreateInfo & setQueueFamilyIndices(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
+    {
+      queueFamilyIndexCount = static_cast<uint32_t>( queueFamilyIndices_.size() );
+      pQueueFamilyIndices   = queueFamilyIndices_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    ImageCreateInfo & setInitialLayout( VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      initialLayout = initialLayout_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImageCreateInfo const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageCreateInfo *>( this );
+    }
+
+    operator VkImageCreateInfo &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageCreateInfo *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageCreateInfo const & ) const = default;
+#else
+    bool operator==( ImageCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) &&
+             ( imageType == rhs.imageType ) && ( format == rhs.format ) && ( extent == rhs.extent ) &&
+             ( mipLevels == rhs.mipLevels ) && ( arrayLayers == rhs.arrayLayers ) && ( samples == rhs.samples ) &&
+             ( tiling == rhs.tiling ) && ( usage == rhs.usage ) && ( sharingMode == rhs.sharingMode ) &&
+             ( queueFamilyIndexCount == rhs.queueFamilyIndexCount ) &&
+             ( pQueueFamilyIndices == rhs.pQueueFamilyIndices ) && ( initialLayout == rhs.initialLayout );
+    }
+
+    bool operator!=( ImageCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType       sType                 = StructureType::eImageCreateInfo;
+    const void *                              pNext                 = {};
+    VULKAN_HPP_NAMESPACE::ImageCreateFlags    flags                 = {};
+    VULKAN_HPP_NAMESPACE::ImageType           imageType             = VULKAN_HPP_NAMESPACE::ImageType::e1D;
+    VULKAN_HPP_NAMESPACE::Format              format                = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::Extent3D            extent                = {};
+    uint32_t                                  mipLevels             = {};
+    uint32_t                                  arrayLayers           = {};
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples               = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+    VULKAN_HPP_NAMESPACE::ImageTiling         tiling                = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal;
+    VULKAN_HPP_NAMESPACE::ImageUsageFlags     usage                 = {};
+    VULKAN_HPP_NAMESPACE::SharingMode         sharingMode           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
+    uint32_t                                  queueFamilyIndexCount = {};
+    const uint32_t *                          pQueueFamilyIndices   = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout         initialLayout         = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageCreateInfo ) == sizeof( VkImageCreateInfo ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCreateInfo>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageCreateInfo>::value,
+                            "ImageCreateInfo is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eImageCreateInfo>
+  {
+    using Type = ImageCreateInfo;
+  };
+
+  struct DeviceImageMemoryRequirementsKHR
+  {
+    using NativeType = VkDeviceImageMemoryRequirementsKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType = StructureType::eDeviceImageMemoryRequirementsKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      DeviceImageMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::ImageCreateInfo * pCreateInfo_ = {},
+                                        VULKAN_HPP_NAMESPACE::ImageAspectFlagBits     planeAspect_ =
+                                          VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor ) VULKAN_HPP_NOEXCEPT
+      : pCreateInfo( pCreateInfo_ )
+      , planeAspect( planeAspect_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      DeviceImageMemoryRequirementsKHR( DeviceImageMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceImageMemoryRequirementsKHR( VkDeviceImageMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : DeviceImageMemoryRequirementsKHR( *reinterpret_cast<DeviceImageMemoryRequirementsKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    DeviceImageMemoryRequirementsKHR &
+      operator=( DeviceImageMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceImageMemoryRequirementsKHR & operator=( VkDeviceImageMemoryRequirementsKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    DeviceImageMemoryRequirementsKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    DeviceImageMemoryRequirementsKHR &
+      setPCreateInfo( const VULKAN_HPP_NAMESPACE::ImageCreateInfo * pCreateInfo_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pCreateInfo = pCreateInfo_;
+      return *this;
+    }
+
+    DeviceImageMemoryRequirementsKHR &
+      setPlaneAspect( VULKAN_HPP_NAMESPACE::ImageAspectFlagBits planeAspect_ ) VULKAN_HPP_NOEXCEPT
+    {
+      planeAspect = planeAspect_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkDeviceImageMemoryRequirementsKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkDeviceImageMemoryRequirementsKHR *>( this );
+    }
+
+    operator VkDeviceImageMemoryRequirementsKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDeviceImageMemoryRequirementsKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DeviceImageMemoryRequirementsKHR const & ) const = default;
+#else
+    bool operator==( DeviceImageMemoryRequirementsKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( pCreateInfo == rhs.pCreateInfo ) &&
+             ( planeAspect == rhs.planeAspect );
+    }
+
+    bool operator!=( DeviceImageMemoryRequirementsKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType           sType       = StructureType::eDeviceImageMemoryRequirementsKHR;
+    const void *                                  pNext       = {};
+    const VULKAN_HPP_NAMESPACE::ImageCreateInfo * pCreateInfo = {};
+    VULKAN_HPP_NAMESPACE::ImageAspectFlagBits     planeAspect = VULKAN_HPP_NAMESPACE::ImageAspectFlagBits::eColor;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR ) ==
+                              sizeof( VkDeviceImageMemoryRequirementsKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirementsKHR>::value,
+    "DeviceImageMemoryRequirementsKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eDeviceImageMemoryRequirementsKHR>
+  {
+    using Type = DeviceImageMemoryRequirementsKHR;
   };
 
   struct DeviceMemoryOpaqueCaptureAddressInfo
@@ -22887,6 +23425,77 @@ namespace VULKAN_HPP_NAMESPACE
     std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DrawMeshTasksIndirectCommandNV>::value,
     "DrawMeshTasksIndirectCommandNV is not nothrow_move_constructible!" );
 
+  struct DrmFormatModifierProperties2EXT
+  {
+    using NativeType = VkDrmFormatModifierProperties2EXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR DrmFormatModifierProperties2EXT(
+      uint64_t                                     drmFormatModifier_               = {},
+      uint32_t                                     drmFormatModifierPlaneCount_     = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR drmFormatModifierTilingFeatures_ = {} ) VULKAN_HPP_NOEXCEPT
+      : drmFormatModifier( drmFormatModifier_ )
+      , drmFormatModifierPlaneCount( drmFormatModifierPlaneCount_ )
+      , drmFormatModifierTilingFeatures( drmFormatModifierTilingFeatures_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      DrmFormatModifierProperties2EXT( DrmFormatModifierProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DrmFormatModifierProperties2EXT( VkDrmFormatModifierProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : DrmFormatModifierProperties2EXT( *reinterpret_cast<DrmFormatModifierProperties2EXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    DrmFormatModifierProperties2EXT &
+      operator=( DrmFormatModifierProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DrmFormatModifierProperties2EXT & operator=( VkDrmFormatModifierProperties2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT const *>( &rhs );
+      return *this;
+    }
+
+    operator VkDrmFormatModifierProperties2EXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkDrmFormatModifierProperties2EXT *>( this );
+    }
+
+    operator VkDrmFormatModifierProperties2EXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDrmFormatModifierProperties2EXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DrmFormatModifierProperties2EXT const & ) const = default;
+#else
+    bool operator==( DrmFormatModifierProperties2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( drmFormatModifier == rhs.drmFormatModifier ) &&
+             ( drmFormatModifierPlaneCount == rhs.drmFormatModifierPlaneCount ) &&
+             ( drmFormatModifierTilingFeatures == rhs.drmFormatModifierTilingFeatures );
+    }
+
+    bool operator!=( DrmFormatModifierProperties2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    uint64_t                                     drmFormatModifier               = {};
+    uint32_t                                     drmFormatModifierPlaneCount     = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR drmFormatModifierTilingFeatures = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT ) ==
+                              sizeof( VkDrmFormatModifierProperties2EXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT>::value,
+    "DrmFormatModifierProperties2EXT is not nothrow_move_constructible!" );
+
   struct DrmFormatModifierPropertiesEXT
   {
     using NativeType = VkDrmFormatModifierPropertiesEXT;
@@ -22957,6 +23566,96 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT(
     std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesEXT>::value,
     "DrmFormatModifierPropertiesEXT is not nothrow_move_constructible!" );
+
+  struct DrmFormatModifierPropertiesList2EXT
+  {
+    using NativeType = VkDrmFormatModifierPropertiesList2EXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eDrmFormatModifierPropertiesList2EXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR DrmFormatModifierPropertiesList2EXT(
+      uint32_t                                                drmFormatModifierCount_       = {},
+      VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT * pDrmFormatModifierProperties_ = {} ) VULKAN_HPP_NOEXCEPT
+      : drmFormatModifierCount( drmFormatModifierCount_ )
+      , pDrmFormatModifierProperties( pDrmFormatModifierProperties_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR DrmFormatModifierPropertiesList2EXT( DrmFormatModifierPropertiesList2EXT const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    DrmFormatModifierPropertiesList2EXT( VkDrmFormatModifierPropertiesList2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : DrmFormatModifierPropertiesList2EXT( *reinterpret_cast<DrmFormatModifierPropertiesList2EXT const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    DrmFormatModifierPropertiesList2EXT(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT> const &
+        drmFormatModifierProperties_ )
+      : drmFormatModifierCount( static_cast<uint32_t>( drmFormatModifierProperties_.size() ) )
+      , pDrmFormatModifierProperties( drmFormatModifierProperties_.data() )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    DrmFormatModifierPropertiesList2EXT &
+      operator=( DrmFormatModifierPropertiesList2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DrmFormatModifierPropertiesList2EXT &
+      operator=( VkDrmFormatModifierPropertiesList2EXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesList2EXT const *>( &rhs );
+      return *this;
+    }
+
+    operator VkDrmFormatModifierPropertiesList2EXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkDrmFormatModifierPropertiesList2EXT *>( this );
+    }
+
+    operator VkDrmFormatModifierPropertiesList2EXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkDrmFormatModifierPropertiesList2EXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DrmFormatModifierPropertiesList2EXT const & ) const = default;
+#else
+    bool operator==( DrmFormatModifierPropertiesList2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( drmFormatModifierCount == rhs.drmFormatModifierCount ) &&
+             ( pDrmFormatModifierProperties == rhs.pDrmFormatModifierProperties );
+    }
+
+    bool operator!=( DrmFormatModifierPropertiesList2EXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType                     sType = StructureType::eDrmFormatModifierPropertiesList2EXT;
+    void *                                                  pNext = {};
+    uint32_t                                                drmFormatModifierCount       = {};
+    VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT * pDrmFormatModifierProperties = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesList2EXT ) ==
+                              sizeof( VkDrmFormatModifierPropertiesList2EXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesList2EXT>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesList2EXT>::value,
+    "DrmFormatModifierPropertiesList2EXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eDrmFormatModifierPropertiesList2EXT>
+  {
+    using Type = DrmFormatModifierPropertiesList2EXT;
+  };
 
   struct DrmFormatModifierPropertiesListEXT
   {
@@ -25349,6 +26048,83 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = FormatProperties2;
   };
   using FormatProperties2KHR = FormatProperties2;
+
+  struct FormatProperties3KHR
+  {
+    using NativeType = VkFormatProperties3KHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eFormatProperties3KHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      FormatProperties3KHR( VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR linearTilingFeatures_  = {},
+                            VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR optimalTilingFeatures_ = {},
+                            VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR bufferFeatures_ = {} ) VULKAN_HPP_NOEXCEPT
+      : linearTilingFeatures( linearTilingFeatures_ )
+      , optimalTilingFeatures( optimalTilingFeatures_ )
+      , bufferFeatures( bufferFeatures_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR FormatProperties3KHR( FormatProperties3KHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    FormatProperties3KHR( VkFormatProperties3KHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : FormatProperties3KHR( *reinterpret_cast<FormatProperties3KHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    FormatProperties3KHR & operator=( FormatProperties3KHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    FormatProperties3KHR & operator=( VkFormatProperties3KHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::FormatProperties3KHR const *>( &rhs );
+      return *this;
+    }
+
+    operator VkFormatProperties3KHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkFormatProperties3KHR *>( this );
+    }
+
+    operator VkFormatProperties3KHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkFormatProperties3KHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( FormatProperties3KHR const & ) const = default;
+#else
+    bool operator==( FormatProperties3KHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( linearTilingFeatures == rhs.linearTilingFeatures ) &&
+             ( optimalTilingFeatures == rhs.optimalTilingFeatures ) && ( bufferFeatures == rhs.bufferFeatures );
+    }
+
+    bool operator!=( FormatProperties3KHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType          sType                 = StructureType::eFormatProperties3KHR;
+    void *                                       pNext                 = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR linearTilingFeatures  = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR optimalTilingFeatures = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags2KHR bufferFeatures        = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::FormatProperties3KHR ) == sizeof( VkFormatProperties3KHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::FormatProperties3KHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::FormatProperties3KHR>::value,
+                            "FormatProperties3KHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eFormatProperties3KHR>
+  {
+    using Type = FormatProperties3KHR;
+  };
 
   struct FragmentShadingRateAttachmentInfoKHR
   {
@@ -29400,243 +30176,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "struct wrapper is not a standard layout!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageBlit>::value,
                             "ImageBlit is not nothrow_move_constructible!" );
-
-  struct ImageCreateInfo
-  {
-    using NativeType = VkImageCreateInfo;
-
-    static const bool                                  allowDuplicate = false;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImageCreateInfo;
-
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR ImageCreateInfo(
-      VULKAN_HPP_NAMESPACE::ImageCreateFlags    flags_                 = {},
-      VULKAN_HPP_NAMESPACE::ImageType           imageType_             = VULKAN_HPP_NAMESPACE::ImageType::e1D,
-      VULKAN_HPP_NAMESPACE::Format              format_                = VULKAN_HPP_NAMESPACE::Format::eUndefined,
-      VULKAN_HPP_NAMESPACE::Extent3D            extent_                = {},
-      uint32_t                                  mipLevels_             = {},
-      uint32_t                                  arrayLayers_           = {},
-      VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_               = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1,
-      VULKAN_HPP_NAMESPACE::ImageTiling         tiling_                = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal,
-      VULKAN_HPP_NAMESPACE::ImageUsageFlags     usage_                 = {},
-      VULKAN_HPP_NAMESPACE::SharingMode         sharingMode_           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive,
-      uint32_t                                  queueFamilyIndexCount_ = {},
-      const uint32_t *                          pQueueFamilyIndices_   = {},
-      VULKAN_HPP_NAMESPACE::ImageLayout         initialLayout_         = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined )
-      VULKAN_HPP_NOEXCEPT
-      : flags( flags_ )
-      , imageType( imageType_ )
-      , format( format_ )
-      , extent( extent_ )
-      , mipLevels( mipLevels_ )
-      , arrayLayers( arrayLayers_ )
-      , samples( samples_ )
-      , tiling( tiling_ )
-      , usage( usage_ )
-      , sharingMode( sharingMode_ )
-      , queueFamilyIndexCount( queueFamilyIndexCount_ )
-      , pQueueFamilyIndices( pQueueFamilyIndices_ )
-      , initialLayout( initialLayout_ )
-    {}
-
-    VULKAN_HPP_CONSTEXPR ImageCreateInfo( ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    ImageCreateInfo( VkImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-      : ImageCreateInfo( *reinterpret_cast<ImageCreateInfo const *>( &rhs ) )
-    {}
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    ImageCreateInfo( VULKAN_HPP_NAMESPACE::ImageCreateFlags                                flags_,
-                     VULKAN_HPP_NAMESPACE::ImageType                                       imageType_,
-                     VULKAN_HPP_NAMESPACE::Format                                          format_,
-                     VULKAN_HPP_NAMESPACE::Extent3D                                        extent_,
-                     uint32_t                                                              mipLevels_,
-                     uint32_t                                                              arrayLayers_,
-                     VULKAN_HPP_NAMESPACE::SampleCountFlagBits                             samples_,
-                     VULKAN_HPP_NAMESPACE::ImageTiling                                     tiling_,
-                     VULKAN_HPP_NAMESPACE::ImageUsageFlags                                 usage_,
-                     VULKAN_HPP_NAMESPACE::SharingMode                                     sharingMode_,
-                     VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_,
-                     VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined )
-      : flags( flags_ )
-      , imageType( imageType_ )
-      , format( format_ )
-      , extent( extent_ )
-      , mipLevels( mipLevels_ )
-      , arrayLayers( arrayLayers_ )
-      , samples( samples_ )
-      , tiling( tiling_ )
-      , usage( usage_ )
-      , sharingMode( sharingMode_ )
-      , queueFamilyIndexCount( static_cast<uint32_t>( queueFamilyIndices_.size() ) )
-      , pQueueFamilyIndices( queueFamilyIndices_.data() )
-      , initialLayout( initialLayout_ )
-    {}
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
-
-    ImageCreateInfo & operator=( ImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    ImageCreateInfo & operator=( VkImageCreateInfo const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageCreateInfo const *>( &rhs );
-      return *this;
-    }
-
-#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
-    ImageCreateInfo & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pNext = pNext_;
-      return *this;
-    }
-
-    ImageCreateInfo & setFlags( VULKAN_HPP_NAMESPACE::ImageCreateFlags flags_ ) VULKAN_HPP_NOEXCEPT
-    {
-      flags = flags_;
-      return *this;
-    }
-
-    ImageCreateInfo & setImageType( VULKAN_HPP_NAMESPACE::ImageType imageType_ ) VULKAN_HPP_NOEXCEPT
-    {
-      imageType = imageType_;
-      return *this;
-    }
-
-    ImageCreateInfo & setFormat( VULKAN_HPP_NAMESPACE::Format format_ ) VULKAN_HPP_NOEXCEPT
-    {
-      format = format_;
-      return *this;
-    }
-
-    ImageCreateInfo & setExtent( VULKAN_HPP_NAMESPACE::Extent3D const & extent_ ) VULKAN_HPP_NOEXCEPT
-    {
-      extent = extent_;
-      return *this;
-    }
-
-    ImageCreateInfo & setMipLevels( uint32_t mipLevels_ ) VULKAN_HPP_NOEXCEPT
-    {
-      mipLevels = mipLevels_;
-      return *this;
-    }
-
-    ImageCreateInfo & setArrayLayers( uint32_t arrayLayers_ ) VULKAN_HPP_NOEXCEPT
-    {
-      arrayLayers = arrayLayers_;
-      return *this;
-    }
-
-    ImageCreateInfo & setSamples( VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples_ ) VULKAN_HPP_NOEXCEPT
-    {
-      samples = samples_;
-      return *this;
-    }
-
-    ImageCreateInfo & setTiling( VULKAN_HPP_NAMESPACE::ImageTiling tiling_ ) VULKAN_HPP_NOEXCEPT
-    {
-      tiling = tiling_;
-      return *this;
-    }
-
-    ImageCreateInfo & setUsage( VULKAN_HPP_NAMESPACE::ImageUsageFlags usage_ ) VULKAN_HPP_NOEXCEPT
-    {
-      usage = usage_;
-      return *this;
-    }
-
-    ImageCreateInfo & setSharingMode( VULKAN_HPP_NAMESPACE::SharingMode sharingMode_ ) VULKAN_HPP_NOEXCEPT
-    {
-      sharingMode = sharingMode_;
-      return *this;
-    }
-
-    ImageCreateInfo & setQueueFamilyIndexCount( uint32_t queueFamilyIndexCount_ ) VULKAN_HPP_NOEXCEPT
-    {
-      queueFamilyIndexCount = queueFamilyIndexCount_;
-      return *this;
-    }
-
-    ImageCreateInfo & setPQueueFamilyIndices( const uint32_t * pQueueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
-    {
-      pQueueFamilyIndices = pQueueFamilyIndices_;
-      return *this;
-    }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    ImageCreateInfo & setQueueFamilyIndices(
-      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & queueFamilyIndices_ ) VULKAN_HPP_NOEXCEPT
-    {
-      queueFamilyIndexCount = static_cast<uint32_t>( queueFamilyIndices_.size() );
-      pQueueFamilyIndices   = queueFamilyIndices_.data();
-      return *this;
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
-    ImageCreateInfo & setInitialLayout( VULKAN_HPP_NAMESPACE::ImageLayout initialLayout_ ) VULKAN_HPP_NOEXCEPT
-    {
-      initialLayout = initialLayout_;
-      return *this;
-    }
-#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
-
-    operator VkImageCreateInfo const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<const VkImageCreateInfo *>( this );
-    }
-
-    operator VkImageCreateInfo &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkImageCreateInfo *>( this );
-    }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ImageCreateInfo const & ) const = default;
-#else
-    bool operator==( ImageCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) &&
-             ( imageType == rhs.imageType ) && ( format == rhs.format ) && ( extent == rhs.extent ) &&
-             ( mipLevels == rhs.mipLevels ) && ( arrayLayers == rhs.arrayLayers ) && ( samples == rhs.samples ) &&
-             ( tiling == rhs.tiling ) && ( usage == rhs.usage ) && ( sharingMode == rhs.sharingMode ) &&
-             ( queueFamilyIndexCount == rhs.queueFamilyIndexCount ) &&
-             ( pQueueFamilyIndices == rhs.pQueueFamilyIndices ) && ( initialLayout == rhs.initialLayout );
-    }
-
-    bool operator!=( ImageCreateInfo const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-
-  public:
-    VULKAN_HPP_NAMESPACE::StructureType       sType                 = StructureType::eImageCreateInfo;
-    const void *                              pNext                 = {};
-    VULKAN_HPP_NAMESPACE::ImageCreateFlags    flags                 = {};
-    VULKAN_HPP_NAMESPACE::ImageType           imageType             = VULKAN_HPP_NAMESPACE::ImageType::e1D;
-    VULKAN_HPP_NAMESPACE::Format              format                = VULKAN_HPP_NAMESPACE::Format::eUndefined;
-    VULKAN_HPP_NAMESPACE::Extent3D            extent                = {};
-    uint32_t                                  mipLevels             = {};
-    uint32_t                                  arrayLayers           = {};
-    VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples               = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
-    VULKAN_HPP_NAMESPACE::ImageTiling         tiling                = VULKAN_HPP_NAMESPACE::ImageTiling::eOptimal;
-    VULKAN_HPP_NAMESPACE::ImageUsageFlags     usage                 = {};
-    VULKAN_HPP_NAMESPACE::SharingMode         sharingMode           = VULKAN_HPP_NAMESPACE::SharingMode::eExclusive;
-    uint32_t                                  queueFamilyIndexCount = {};
-    const uint32_t *                          pQueueFamilyIndices   = {};
-    VULKAN_HPP_NAMESPACE::ImageLayout         initialLayout         = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
-  };
-  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageCreateInfo ) == sizeof( VkImageCreateInfo ),
-                            "struct and wrapper have different size!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCreateInfo>::value,
-                            "struct wrapper is not a standard layout!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageCreateInfo>::value,
-                            "ImageCreateInfo is not nothrow_move_constructible!" );
-
-  template <>
-  struct CppType<StructureType, StructureType::eImageCreateInfo>
-  {
-    using Type = ImageCreateInfo;
-  };
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   struct ImageFormatConstraintsInfoFUCHSIA
@@ -45673,6 +46212,175 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using PhysicalDeviceMaintenance3PropertiesKHR = PhysicalDeviceMaintenance3Properties;
 
+  struct PhysicalDeviceMaintenance4FeaturesKHR
+  {
+    using NativeType = VkPhysicalDeviceMaintenance4FeaturesKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceMaintenance4FeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDeviceMaintenance4FeaturesKHR( VULKAN_HPP_NAMESPACE::Bool32 maintenance4_ = {} ) VULKAN_HPP_NOEXCEPT
+      : maintenance4( maintenance4_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance4FeaturesKHR( PhysicalDeviceMaintenance4FeaturesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance4FeaturesKHR( VkPhysicalDeviceMaintenance4FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceMaintenance4FeaturesKHR(
+          *reinterpret_cast<PhysicalDeviceMaintenance4FeaturesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceMaintenance4FeaturesKHR &
+      operator=( PhysicalDeviceMaintenance4FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance4FeaturesKHR &
+      operator=( VkPhysicalDeviceMaintenance4FeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4FeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceMaintenance4FeaturesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceMaintenance4FeaturesKHR &
+      setMaintenance4( VULKAN_HPP_NAMESPACE::Bool32 maintenance4_ ) VULKAN_HPP_NOEXCEPT
+    {
+      maintenance4 = maintenance4_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceMaintenance4FeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceMaintenance4FeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance4FeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance4FeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceMaintenance4FeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceMaintenance4FeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( maintenance4 == rhs.maintenance4 );
+    }
+
+    bool operator!=( PhysicalDeviceMaintenance4FeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType        = StructureType::ePhysicalDeviceMaintenance4FeaturesKHR;
+    void *                              pNext        = {};
+    VULKAN_HPP_NAMESPACE::Bool32        maintenance4 = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4FeaturesKHR ) ==
+                              sizeof( VkPhysicalDeviceMaintenance4FeaturesKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4FeaturesKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4FeaturesKHR>::value,
+    "PhysicalDeviceMaintenance4FeaturesKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceMaintenance4FeaturesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance4FeaturesKHR;
+  };
+
+  struct PhysicalDeviceMaintenance4PropertiesKHR
+  {
+    using NativeType = VkPhysicalDeviceMaintenance4PropertiesKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceMaintenance4PropertiesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance4PropertiesKHR( VULKAN_HPP_NAMESPACE::DeviceSize maxBufferSize_ = {} )
+      VULKAN_HPP_NOEXCEPT : maxBufferSize( maxBufferSize_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceMaintenance4PropertiesKHR( PhysicalDeviceMaintenance4PropertiesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance4PropertiesKHR( VkPhysicalDeviceMaintenance4PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceMaintenance4PropertiesKHR(
+          *reinterpret_cast<PhysicalDeviceMaintenance4PropertiesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceMaintenance4PropertiesKHR &
+      operator=( PhysicalDeviceMaintenance4PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceMaintenance4PropertiesKHR &
+      operator=( VkPhysicalDeviceMaintenance4PropertiesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4PropertiesKHR const *>( &rhs );
+      return *this;
+    }
+
+    operator VkPhysicalDeviceMaintenance4PropertiesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceMaintenance4PropertiesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceMaintenance4PropertiesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceMaintenance4PropertiesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceMaintenance4PropertiesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceMaintenance4PropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( maxBufferSize == rhs.maxBufferSize );
+    }
+
+    bool operator!=( PhysicalDeviceMaintenance4PropertiesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType         = StructureType::ePhysicalDeviceMaintenance4PropertiesKHR;
+    void *                              pNext         = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize    maxBufferSize = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4PropertiesKHR ) ==
+                              sizeof( VkPhysicalDeviceMaintenance4PropertiesKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4PropertiesKHR>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance4PropertiesKHR>::value,
+    "PhysicalDeviceMaintenance4PropertiesKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceMaintenance4PropertiesKHR>
+  {
+    using Type = PhysicalDeviceMaintenance4PropertiesKHR;
+  };
+
   struct PhysicalDeviceMemoryBudgetPropertiesEXT
   {
     using NativeType = VkPhysicalDeviceMemoryBudgetPropertiesEXT;
@@ -48797,6 +49505,101 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDevicePushDescriptorPropertiesKHR>
   {
     using Type = PhysicalDevicePushDescriptorPropertiesKHR;
+  };
+
+  struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceRGBA10X6FormatsFeaturesEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 formatRgba10x6WithoutYCbCrSampler_ = {} ) VULKAN_HPP_NOEXCEPT
+      : formatRgba10x6WithoutYCbCrSampler( formatRgba10x6WithoutYCbCrSampler_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceRGBA10X6FormatsFeaturesEXT(
+      PhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceRGBA10X6FormatsFeaturesEXT( VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceRGBA10X6FormatsFeaturesEXT(
+          *reinterpret_cast<PhysicalDeviceRGBA10X6FormatsFeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceRGBA10X6FormatsFeaturesEXT &
+      operator=( PhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceRGBA10X6FormatsFeaturesEXT &
+      operator=( VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceRGBA10X6FormatsFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceRGBA10X6FormatsFeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceRGBA10X6FormatsFeaturesEXT & setFormatRgba10x6WithoutYCbCrSampler(
+      VULKAN_HPP_NAMESPACE::Bool32 formatRgba10x6WithoutYCbCrSampler_ ) VULKAN_HPP_NOEXCEPT
+    {
+      formatRgba10x6WithoutYCbCrSampler = formatRgba10x6WithoutYCbCrSampler_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceRGBA10X6FormatsFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( formatRgba10x6WithoutYCbCrSampler == rhs.formatRgba10x6WithoutYCbCrSampler );
+    }
+
+    bool operator!=( PhysicalDeviceRGBA10X6FormatsFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        formatRgba10x6WithoutYCbCrSampler = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRGBA10X6FormatsFeaturesEXT ) ==
+                              sizeof( VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceRGBA10X6FormatsFeaturesEXT>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceRGBA10X6FormatsFeaturesEXT>::value,
+    "PhysicalDeviceRGBA10X6FormatsFeaturesEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT>
+  {
+    using Type = PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
   };
 
   struct PhysicalDeviceRayQueryFeaturesKHR

@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 194, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 195, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5633,6 +5633,32 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ::vkSetDeviceMemoryPriorityEXT( device, memory, priority );
     }
+
+    //=== VK_KHR_maintenance4 ===
+
+    void vkGetDeviceBufferMemoryRequirementsKHR( VkDevice                                    device,
+                                                 const VkDeviceBufferMemoryRequirementsKHR * pInfo,
+                                                 VkMemoryRequirements2 * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceBufferMemoryRequirementsKHR( device, pInfo, pMemoryRequirements );
+    }
+
+    void vkGetDeviceImageMemoryRequirementsKHR( VkDevice                                   device,
+                                                const VkDeviceImageMemoryRequirementsKHR * pInfo,
+                                                VkMemoryRequirements2 * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceImageMemoryRequirementsKHR( device, pInfo, pMemoryRequirements );
+    }
+
+    void vkGetDeviceImageSparseMemoryRequirementsKHR(
+      VkDevice                                   device,
+      const VkDeviceImageMemoryRequirementsKHR * pInfo,
+      uint32_t *                                 pSparseMemoryRequirementCount,
+      VkSparseImageMemoryRequirements2 *         pSparseMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceImageSparseMemoryRequirementsKHR(
+        device, pInfo, pSparseMemoryRequirementCount, pSparseMemoryRequirements );
+    }
   };
 #endif
 
@@ -8269,6 +8295,14 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<AndroidHardwareBufferFormatProperties2ANDROID, AndroidHardwareBufferPropertiesANDROID>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   //=== VK_EXT_inline_uniform_block ===
@@ -8496,6 +8530,14 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<ImageDrmFormatModifierExplicitCreateInfoEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DrmFormatModifierPropertiesList2EXT, FormatProperties2>
   {
     enum
     {
@@ -10228,6 +10270,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_rgba10x6_formats ===
+  template <>
+  struct StructExtends<PhysicalDeviceRGBA10X6FormatsFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRGBA10X6FormatsFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_ray_tracing_pipeline ===
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, PhysicalDeviceFeatures2>
@@ -10345,6 +10405,16 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_format_feature_flags2 ===
+  template <>
+  struct StructExtends<FormatProperties3KHR, FormatProperties2>
   {
     enum
     {
@@ -10569,6 +10639,32 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_maintenance4 ===
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance4FeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance4FeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMaintenance4PropertiesKHR, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -11560,6 +11656,11 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_pageable_device_local_memory ===
     PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
+
+    //=== VK_KHR_maintenance4 ===
+    PFN_vkGetDeviceBufferMemoryRequirementsKHR      vkGetDeviceBufferMemoryRequirementsKHR      = 0;
+    PFN_vkGetDeviceImageMemoryRequirementsKHR       vkGetDeviceImageMemoryRequirementsKHR       = 0;
+    PFN_vkGetDeviceImageSparseMemoryRequirementsKHR vkGetDeviceImageSparseMemoryRequirementsKHR = 0;
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -12860,6 +12961,14 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT =
         PFN_vkSetDeviceMemoryPriorityEXT( vkGetInstanceProcAddr( instance, "vkSetDeviceMemoryPriorityEXT" ) );
+
+      //=== VK_KHR_maintenance4 ===
+      vkGetDeviceBufferMemoryRequirementsKHR = PFN_vkGetDeviceBufferMemoryRequirementsKHR(
+        vkGetInstanceProcAddr( instance, "vkGetDeviceBufferMemoryRequirementsKHR" ) );
+      vkGetDeviceImageMemoryRequirementsKHR = PFN_vkGetDeviceImageMemoryRequirementsKHR(
+        vkGetInstanceProcAddr( instance, "vkGetDeviceImageMemoryRequirementsKHR" ) );
+      vkGetDeviceImageSparseMemoryRequirementsKHR = PFN_vkGetDeviceImageSparseMemoryRequirementsKHR(
+        vkGetInstanceProcAddr( instance, "vkGetDeviceImageSparseMemoryRequirementsKHR" ) );
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -13736,6 +13845,14 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT =
         PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
+
+      //=== VK_KHR_maintenance4 ===
+      vkGetDeviceBufferMemoryRequirementsKHR = PFN_vkGetDeviceBufferMemoryRequirementsKHR(
+        vkGetDeviceProcAddr( device, "vkGetDeviceBufferMemoryRequirementsKHR" ) );
+      vkGetDeviceImageMemoryRequirementsKHR = PFN_vkGetDeviceImageMemoryRequirementsKHR(
+        vkGetDeviceProcAddr( device, "vkGetDeviceImageMemoryRequirementsKHR" ) );
+      vkGetDeviceImageSparseMemoryRequirementsKHR = PFN_vkGetDeviceImageSparseMemoryRequirementsKHR(
+        vkGetDeviceProcAddr( device, "vkGetDeviceImageSparseMemoryRequirementsKHR" ) );
     }
   };
 }  // namespace VULKAN_HPP_NAMESPACE

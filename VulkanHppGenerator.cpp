@@ -12105,92 +12105,16 @@ void VulkanHppGenerator::readExtensions( tinyxml2::XMLElement const * element )
 
 void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * element )
 {
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   { { "name", {} }, { "number", {} }, { "supported", { "disabled", "enabled", "vulkan" } } },
-                   { { "author", {} },
-                     { "comment", {} },
-                     { "contact", {} },
-                     { "deprecatedby", {} },
-                     { "obsoletedby", {} },
-                     { "platform", {} },
-                     { "promotedto", {} },
-                     { "provisional", { "true" } },
-                     { "requires", {} },
-                     { "requiresCore", {} },
-                     { "sortorder", { "1" } },
-                     { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
-                     { "type", { "device", "instance" } } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "require", false } } );
+  int                                       line       = element->GetLineNum();
+  std::map<std::string, std::string>        attributes = getAttributes( element );
+  std::vector<tinyxml2::XMLElement const *> children   = getChildElements( element );
 
-  std::string              deprecatedBy, name, number, obsoletedBy, platform, promotedTo, supported;
-  std::vector<std::string> requirements;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "deprecatedby" )
-    {
-      deprecatedBy = attribute.second;
-    }
-    else if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-    else if ( attribute.first == "number" )
-    {
-      number = attribute.second;
-    }
-    else if ( attribute.first == "obsoletedby" )
-    {
-      obsoletedBy = attribute.second;
-    }
-    else if ( attribute.first == "platform" )
-    {
-      platform = attribute.second;
-      check( m_platforms.find( platform ) != m_platforms.end(), line, "unknown platform <" + platform + ">" );
-    }
-    else if ( attribute.first == "promotedto" )
-    {
-      promotedTo = attribute.second;
-    }
-    else if ( attribute.first == "provisional" )
-    {
-      if ( platform.empty() )
-      {
-        // for now, having the attribute provisional="true" implies attribute platform="provisional" to get stuff
-        // protected by VK_ENABLE_BETA_EXTENSIONS
-        platform = "provisional";
-      }
-      check(
-        platform == "provisional",
-        line,
-        "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" +
-          platform + "\"" );
-    }
-    else if ( attribute.first == "requires" )
-    {
-      requirements = tokenize( attribute.second, "," );
-    }
-    else if ( attribute.first == "requiresCore" )
-    {
-      std::string const & requiresCore = attribute.second;
-      check( std::find_if( m_features.begin(),
-                           m_features.end(),
-                           [&requiresCore]( std::pair<std::string, FeatureData> const & feature )
-                           { return feature.second.number == requiresCore; } ) != m_features.end(),
-             line,
-             "unknown feature number <" + attribute.second + ">" );
-    }
-    else if ( attribute.first == "supported" )
-    {
-      supported = attribute.second;
-    }
-  }
+  auto it = attributes.find( "supported" );
+  check( it != attributes.end(), line, "Missing attribute <supported> for extension!" );
 
-  if ( supported == "disabled" )
+  if ( it->second == "disabled" )
   {
+    checkElements( line, children, {}, { "require" } );
     // kick out all the disabled stuff we've read before !!
     for ( auto const & child : children )
     {
@@ -12200,6 +12124,88 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
   }
   else
   {
+    checkAttributes( line,
+                     attributes,
+                     { { "name", {} }, { "number", {} }, { "supported", { "disabled", "enabled", "vulkan" } } },
+                     { { "author", {} },
+                       { "comment", {} },
+                       { "contact", {} },
+                       { "deprecatedby", {} },
+                       { "obsoletedby", {} },
+                       { "platform", {} },
+                       { "promotedto", {} },
+                       { "provisional", { "true" } },
+                       { "requires", {} },
+                       { "requiresCore", {} },
+                       { "sortorder", { "1" } },
+                       { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
+                       { "type", { "device", "instance" } } } );
+    checkElements( line, children, { { "require", false } } );
+
+    std::string              deprecatedBy, name, number, obsoletedBy, platform, promotedTo, supported;
+    std::vector<std::string> requirements;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "deprecatedby" )
+      {
+        deprecatedBy = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+      else if ( attribute.first == "number" )
+      {
+        number = attribute.second;
+      }
+      else if ( attribute.first == "obsoletedby" )
+      {
+        obsoletedBy = attribute.second;
+      }
+      else if ( attribute.first == "platform" )
+      {
+        platform = attribute.second;
+        check( m_platforms.find( platform ) != m_platforms.end(), line, "unknown platform <" + platform + ">" );
+      }
+      else if ( attribute.first == "promotedto" )
+      {
+        promotedTo = attribute.second;
+      }
+      else if ( attribute.first == "provisional" )
+      {
+        if ( platform.empty() )
+        {
+          // for now, having the attribute provisional="true" implies attribute platform="provisional" to get stuff
+          // protected by VK_ENABLE_BETA_EXTENSIONS
+          platform = "provisional";
+        }
+        check(
+          platform == "provisional",
+          line,
+          "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" +
+            platform + "\"" );
+      }
+      else if ( attribute.first == "requires" )
+      {
+        requirements = tokenize( attribute.second, "," );
+      }
+      else if ( attribute.first == "requiresCore" )
+      {
+        std::string const & requiresCore = attribute.second;
+        check( std::find_if( m_features.begin(),
+                             m_features.end(),
+                             [&requiresCore]( std::pair<std::string, FeatureData> const & feature )
+                             { return feature.second.number == requiresCore; } ) != m_features.end(),
+               line,
+               "unknown feature number <" + attribute.second + ">" );
+      }
+      else if ( attribute.first == "supported" )
+      {
+        supported = attribute.second;
+        assert( supported != "disabled" );
+      }
+    }
+
     auto pitb = m_extensions.insert(
       std::make_pair( name, ExtensionData( line, deprecatedBy, number, obsoletedBy, platform, promotedTo ) ) );
     check( pitb.second, line, "already encountered extension <" + name + ">" );
@@ -17045,8 +17051,8 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     tinyxml2::XMLError error = doc.LoadFile( filename.c_str() );
     if ( error != tinyxml2::XML_SUCCESS )
     {
-      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << toString( error )
-                << ">" << std::endl;
+      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << toString( error ) << ">"
+                << std::endl;
       return -1;
     }
 

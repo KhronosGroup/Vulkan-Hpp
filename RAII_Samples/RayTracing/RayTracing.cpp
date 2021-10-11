@@ -81,18 +81,18 @@ static_assert( sizeof( GeometryInstanceData ) == 64, "GeometryInstanceData struc
 
 struct AccelerationStructureData
 {
-  std::shared_ptr<vk::raii::AccelerationStructureNV> pAcclerationStructure;
-  std::unique_ptr<vk::raii::su::BufferData>          pScratchBufferData;
-  std::unique_ptr<vk::raii::su::BufferData>          pResultBufferData;
-  std::unique_ptr<vk::raii::su::BufferData>          pInstanceBufferData;
+  vk::raii::AccelerationStructureNV acclerationStructure = nullptr;
+  vk::raii::su::BufferData          scratchBufferData    = nullptr;
+  vk::raii::su::BufferData          resultBufferData     = nullptr;
+  vk::raii::su::BufferData          instanceBufferData   = nullptr;
 };
 
 AccelerationStructureData createAccelerationStructureData(
-  vk::raii::PhysicalDevice const &                                                                physicalDevice,
-  vk::raii::Device const &                                                                        device,
-  vk::raii::CommandBuffer const &                                                                 commandBuffer,
-  std::vector<std::pair<std::shared_ptr<vk::raii::AccelerationStructureNV>, glm::mat4x4>> const & instances,
-  std::vector<vk::GeometryNV> const &                                                             geometries )
+  vk::raii::PhysicalDevice const &                                                   physicalDevice,
+  vk::raii::Device const &                                                           device,
+  vk::raii::CommandBuffer const &                                                    commandBuffer,
+  std::vector<std::pair<vk::raii::AccelerationStructureNV &, glm::mat4x4 &>> const & instances,
+  std::vector<vk::GeometryNV> const &                                                geometries )
 {
   assert( instances.empty() ^ geometries.empty() );
 
@@ -103,51 +103,48 @@ AccelerationStructureData createAccelerationStructureData(
   vk::AccelerationStructureInfoNV accelerationStructureInfo(
     accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
   vk::AccelerationStructureCreateInfoNV accelerationStructureCreateInfoNV( 0, accelerationStructureInfo );
-  accelerationStructureData.pAcclerationStructure =
-    std::make_shared<vk::raii::AccelerationStructureNV>( device, accelerationStructureCreateInfoNV );
+  accelerationStructureData.acclerationStructure =
+    vk::raii::AccelerationStructureNV( device, accelerationStructureCreateInfoNV );
 
   vk::AccelerationStructureMemoryRequirementsInfoNV objectRequirements(
-    vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, **accelerationStructureData.pAcclerationStructure );
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eObject, *accelerationStructureData.acclerationStructure );
   vk::DeviceSize resultSizeInBytes =
     device.getAccelerationStructureMemoryRequirementsNV( objectRequirements ).memoryRequirements.size;
   assert( 0 < resultSizeInBytes );
-  accelerationStructureData.pResultBufferData =
-    vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                         device,
-                                                         resultSizeInBytes,
-                                                         vk::BufferUsageFlagBits::eRayTracingNV,
-                                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
+  accelerationStructureData.resultBufferData = vk::raii::su::BufferData( physicalDevice,
+                                                                         device,
+                                                                         resultSizeInBytes,
+                                                                         vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
 
   vk::AccelerationStructureMemoryRequirementsInfoNV buildScratchRequirements(
-    vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch,
-    **accelerationStructureData.pAcclerationStructure );
+    vk::AccelerationStructureMemoryRequirementsTypeNV::eBuildScratch, *accelerationStructureData.acclerationStructure );
   vk::AccelerationStructureMemoryRequirementsInfoNV updateScratchRequirements(
     vk::AccelerationStructureMemoryRequirementsTypeNV::eUpdateScratch,
-    **accelerationStructureData.pAcclerationStructure );
+    *accelerationStructureData.acclerationStructure );
   vk::DeviceSize scratchSizeInBytes = std::max(
     device.getAccelerationStructureMemoryRequirementsNV( buildScratchRequirements ).memoryRequirements.size,
     device.getAccelerationStructureMemoryRequirementsNV( updateScratchRequirements ).memoryRequirements.size );
   assert( 0 < scratchSizeInBytes );
 
-  accelerationStructureData.pScratchBufferData =
-    vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                         device,
-                                                         scratchSizeInBytes,
-                                                         vk::BufferUsageFlagBits::eRayTracingNV,
-                                                         vk::MemoryPropertyFlagBits::eDeviceLocal );
+  accelerationStructureData.scratchBufferData = vk::raii::su::BufferData( physicalDevice,
+                                                                          device,
+                                                                          scratchSizeInBytes,
+                                                                          vk::BufferUsageFlagBits::eRayTracingNV,
+                                                                          vk::MemoryPropertyFlagBits::eDeviceLocal );
 
   if ( !instances.empty() )
   {
-    accelerationStructureData.pInstanceBufferData =
-      vk::raii::su::make_unique<vk::raii::su::BufferData>( physicalDevice,
-                                                           device,
-                                                           instances.size() * sizeof( GeometryInstanceData ),
-                                                           vk::BufferUsageFlagBits::eRayTracingNV );
+    accelerationStructureData.instanceBufferData =
+      vk::raii::su::BufferData( physicalDevice,
+                                device,
+                                instances.size() * sizeof( GeometryInstanceData ),
+                                vk::BufferUsageFlagBits::eRayTracingNV );
 
     std::vector<GeometryInstanceData> geometryInstanceData;
     for ( size_t i = 0; i < instances.size(); i++ )
     {
-      uint64_t accelerationStructureHandle = instances[i].first->getHandle<uint64_t>();
+      uint64_t accelerationStructureHandle = instances[i].first.getHandle<uint64_t>();
 
       // For each instance we set its instance index to its index i in the instance vector, and set
       // its hit group index to 2*i. The hit group index defines which entry of the shader binding
@@ -161,16 +158,16 @@ AccelerationStructureData createAccelerationStructureData(
                                          static_cast<uint8_t>( vk::GeometryInstanceFlagBitsNV::eTriangleCullDisable ),
                                          accelerationStructureHandle );
     }
-    accelerationStructureData.pInstanceBufferData->upload( geometryInstanceData );
+    accelerationStructureData.instanceBufferData.upload( geometryInstanceData );
   }
 
   device.bindAccelerationStructureMemoryNV( vk::BindAccelerationStructureMemoryInfoNV(
-    **accelerationStructureData.pAcclerationStructure, *accelerationStructureData.pResultBufferData->deviceMemory ) );
+    *accelerationStructureData.acclerationStructure, *accelerationStructureData.resultBufferData.deviceMemory ) );
 
   vk::Buffer instanceData;
-  if ( accelerationStructureData.pInstanceBufferData )
+  if ( *accelerationStructureData.instanceBufferData.buffer )
   {
-    instanceData = *accelerationStructureData.pInstanceBufferData->buffer;
+    instanceData = *accelerationStructureData.instanceBufferData.buffer;
   }
   vk::AccelerationStructureInfoNV accelerationStructureInfoNV(
     accelerationStructureType, {}, vk::su::checked_cast<uint32_t>( instances.size() ), geometries );
@@ -178,9 +175,9 @@ AccelerationStructureData createAccelerationStructureData(
                                               instanceData,
                                               0,
                                               false,
-                                              **accelerationStructureData.pAcclerationStructure,
+                                              *accelerationStructureData.acclerationStructure,
                                               nullptr,
-                                              *accelerationStructureData.pScratchBufferData->buffer,
+                                              *accelerationStructureData.scratchBufferData.buffer,
                                               0 );
 
   vk::MemoryBarrier memoryBarrier(
@@ -788,7 +785,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::DepthBufferData      depthBufferData( physicalDevice, device, depthFormat, windowExtent );
     std::vector<vk::raii::Framebuffer> framebuffers = vk::raii::su::makeFramebuffers(
-      device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, windowExtent );
+      device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, windowExtent );
 
     bool samplerAnisotropy = !!supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features.samplerAnisotropy;
 
@@ -962,12 +959,12 @@ int main( int /*argc*/, char ** /*argv*/ )
                                            {},
                                            { vk::GeometryNV( vk::GeometryTypeNV::eTriangles, geometryDataNV ) } );
 
-        topLevelAS =
-          createAccelerationStructureData( physicalDevice,
-                                           device,
-                                           commandBuffer,
-                                           { std::make_pair( bottomLevelAS.pAcclerationStructure, transform ) },
-                                           std::vector<vk::GeometryNV>() );
+        topLevelAS = createAccelerationStructureData(
+          physicalDevice,
+          device,
+          commandBuffer,
+          { std::make_pair( std::ref( bottomLevelAS.acclerationStructure ), std::ref( transform ) ) },
+          std::vector<vk::GeometryNV>() );
       } );
 
     // create raytracing descriptor set
@@ -1043,7 +1040,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Bind ray tracing specific descriptor sets into pNext of a vk::WriteDescriptorSet
     vk::WriteDescriptorSetAccelerationStructureNV writeDescriptorSetAcceleration( 1,
-                                                                                  &**topLevelAS.pAcclerationStructure );
+                                                                                  &*topLevelAS.acclerationStructure );
     std::vector<vk::WriteDescriptorSet>           accelerationDescriptionSets;
     for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
@@ -1211,7 +1208,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                        surface,
                                        windowExtent,
                                        vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage,
-                                       &*swapChainData.pSwapChain,
+                                       &swapChainData.swapChain,
                                        graphicsAndPresentQueueFamilyIndex.first,
                                        graphicsAndPresentQueueFamilyIndex.second );
         depthBufferData = vk::raii::su::DepthBufferData(
@@ -1229,7 +1226,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                      } );
 
         framebuffers = vk::raii::su::makeFramebuffers(
-          device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, windowExtent );
+          device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, windowExtent );
       }
 
       // update the uniformBufferObject
@@ -1245,7 +1242,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       // frame begin
       vk::Result result;
       uint32_t   backBufferIndex;
-      std::tie( result, backBufferIndex ) = swapChainData.pSwapChain->acquireNextImage(
+      std::tie( result, backBufferIndex ) = swapChainData.swapChain.acquireNextImage(
         vk::su::FenceTimeout, *perFrameData[frameIndex].presentCompleteSemaphore );
       assert( result == vk::Result::eSuccess );
 
@@ -1337,7 +1334,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                  &*perFrameData[frameIndex].renderCompleteSemaphore );
       graphicsQueue.submit( submitInfo, *perFrameData[frameIndex].fence );
       vk::PresentInfoKHR presentInfoKHR(
-        *perFrameData[frameIndex].renderCompleteSemaphore, **swapChainData.pSwapChain, backBufferIndex );
+        *perFrameData[frameIndex].renderCompleteSemaphore, *swapChainData.swapChain, backBufferIndex );
       result = presentQueue.presentKHR( presentInfoKHR );
       switch ( result )
       {

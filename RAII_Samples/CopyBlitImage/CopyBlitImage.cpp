@@ -36,7 +36,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 640, 640 ) );
 
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( **surfaceData.pSurface );
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( *surfaceData.surface );
     if ( !( surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst ) )
     {
       std::cout << "Surface cannot be destination of blit - abort \n";
@@ -44,7 +44,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice(
       physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -57,7 +57,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
-                                               *surfaceData.pSurface,
+                                               surfaceData.surface,
                                                surfaceData.extent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eTransferSrc |
@@ -79,7 +79,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Result result;
     uint32_t   imageIndex;
     std::tie( result, imageIndex ) =
-      swapChainData.pSwapChain->acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+      swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -227,7 +227,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       ;
 
     /* Now present the image in the window */
-    vk::PresentInfoKHR presentInfoKHR( nullptr, **swapChainData.pSwapChain, imageIndex );
+    vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
     result = presentQueue.presentKHR( presentInfoKHR );
     switch ( result )
     {

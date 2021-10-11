@@ -48,7 +48,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice(
       physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -60,7 +60,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
-                                               *surfaceData.pSurface,
+                                               surfaceData.surface,
                                                surfaceData.extent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eTransferSrc,
@@ -74,7 +74,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
 
     std::vector<vk::raii::Framebuffer> framebuffers = vk::raii::su::makeFramebuffers(
-      device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, surfaceData.extent );
+      device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, surfaceData.extent );
 
     /* VULKAN_KEY_START */
 
@@ -104,7 +104,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Result result;
     uint32_t   imageIndex;
     std::tie( result, imageIndex ) =
-      swapChainData.pSwapChain->acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+      swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 

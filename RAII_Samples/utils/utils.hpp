@@ -217,6 +217,8 @@ namespace vk
           buffer.bindMemory( *deviceMemory, 0 );
         }
 
+        BufferData( std::nullptr_t ) {}
+
         template <typename DataType>
         void upload( DataType const & data ) const
         {
@@ -270,8 +272,8 @@ namespace vk
         }
 
         // the order of buffer and deviceMemory here is important to get the constructor running !
-        vk::raii::Buffer       buffer;
-        vk::raii::DeviceMemory deviceMemory;
+        vk::raii::Buffer       buffer       = nullptr;
+        vk::raii::DeviceMemory deviceMemory = nullptr;
 #if !defined( NDEBUG )
       private:
         vk::DeviceSize          m_size;
@@ -309,7 +311,7 @@ namespace vk
               device, physicalDevice.getMemoryProperties(), image.getMemoryRequirements(), memoryProperties ) )
         {
           image.bindMemory( *deviceMemory, 0 );
-          pImageView = vk::raii::su::make_unique<vk::raii::ImageView>(
+          imageView = vk::raii::ImageView(
             device,
             vk::ImageViewCreateInfo(
               {},
@@ -320,10 +322,12 @@ namespace vk
               { aspectMask, 0, 1, 0, 1 } ) );
         }
 
-        vk::Format                           format;
-        vk::raii::Image                      image;
-        vk::raii::DeviceMemory               deviceMemory;
-        std::unique_ptr<vk::raii::ImageView> pImageView;
+        ImageData( std::nullptr_t ) {}
+
+        vk::Format             format;
+        vk::raii::Image        image        = nullptr;
+        vk::raii::DeviceMemory deviceMemory = nullptr;
+        vk::raii::ImageView    imageView    = nullptr;
       };
 
       struct DepthBufferData : public ImageData
@@ -354,12 +358,12 @@ namespace vk
             glfwCreateWindowSurface( static_cast<VkInstance>( *instance ), window.handle, nullptr, &_surface );
           if ( err != VK_SUCCESS )
             throw std::runtime_error( "Failed to create window!" );
-          pSurface = vk::raii::su::make_unique<vk::raii::SurfaceKHR>( instance, _surface );
+          surface = vk::raii::SurfaceKHR( instance, _surface );
         }
 
-        vk::Extent2D                          extent;
-        vk::su::WindowData                    window;
-        std::unique_ptr<vk::raii::SurfaceKHR> pSurface;
+        vk::Extent2D         extent;
+        vk::su::WindowData   window;
+        vk::raii::SurfaceKHR surface = nullptr;
       };
 
       struct SwapChainData
@@ -431,9 +435,9 @@ namespace vk
             swapChainCreateInfo.queueFamilyIndexCount = 2;
             swapChainCreateInfo.pQueueFamilyIndices   = queueFamilyIndices;
           }
-          pSwapChain = vk::raii::su::make_unique<vk::raii::SwapchainKHR>( device, swapChainCreateInfo );
+          swapChain = vk::raii::SwapchainKHR( device, swapChainCreateInfo );
 
-          images = pSwapChain->getImages();
+          images = swapChain.getImages();
 
           imageViews.reserve( images.size() );
           vk::ComponentMapping componentMapping(
@@ -451,10 +455,10 @@ namespace vk
           }
         }
 
-        vk::Format                              colorFormat;
-        std::unique_ptr<vk::raii::SwapchainKHR> pSwapChain;
-        std::vector<VkImage>                    images;
-        std::vector<vk::raii::ImageView>        imageViews;
+        vk::Format                       colorFormat;
+        vk::raii::SwapchainKHR           swapChain = nullptr;
+        std::vector<VkImage>             images;
+        std::vector<vk::raii::ImageView> imageViews;
       };
 
       struct TextureData
@@ -484,7 +488,6 @@ namespace vk
                        0.0f,
                        0.0f,
                        vk::BorderColor::eFloatOpaqueBlack } )
-
         {
           vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( format );
 
@@ -497,7 +500,7 @@ namespace vk
           if ( needsStaging )
           {
             assert( ( formatProperties.optimalTilingFeatures & formatFeatureFlags ) == formatFeatureFlags );
-            pStagingBufferData = vk::raii::su::make_unique<BufferData>(
+            stagingBufferData = BufferData(
               physicalDevice, device, extent.width * extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc );
             imageTiling = vk::ImageTiling::eOptimal;
             usageFlags |= vk::ImageUsageFlagBits::eTransferDst;
@@ -509,15 +512,15 @@ namespace vk
             initialLayout = vk::ImageLayout::ePreinitialized;
             requirements  = vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostVisible;
           }
-          pImageData = vk::raii::su::make_unique<ImageData>( physicalDevice,
-                                                             device,
-                                                             format,
-                                                             extent,
-                                                             imageTiling,
-                                                             usageFlags | vk::ImageUsageFlagBits::eSampled,
-                                                             initialLayout,
-                                                             requirements,
-                                                             vk::ImageAspectFlagBits::eColor );
+          imageData = ImageData( physicalDevice,
+                                 device,
+                                 format,
+                                 extent,
+                                 imageTiling,
+                                 usageFlags | vk::ImageUsageFlagBits::eSampled,
+                                 initialLayout,
+                                 requirements,
+                                 vk::ImageAspectFlagBits::eColor );
         }
 
         template <typename ImageGenerator>
@@ -525,17 +528,17 @@ namespace vk
         {
           void * data =
             needsStaging
-              ? pStagingBufferData->deviceMemory.mapMemory( 0, pStagingBufferData->buffer.getMemoryRequirements().size )
-              : pImageData->deviceMemory.mapMemory( 0, pImageData->image.getMemoryRequirements().size );
+              ? stagingBufferData.deviceMemory.mapMemory( 0, stagingBufferData.buffer.getMemoryRequirements().size )
+              : imageData.deviceMemory.mapMemory( 0, imageData.image.getMemoryRequirements().size );
           imageGenerator( data, extent );
-          needsStaging ? pStagingBufferData->deviceMemory.unmapMemory() : pImageData->deviceMemory.unmapMemory();
+          needsStaging ? stagingBufferData.deviceMemory.unmapMemory() : imageData.deviceMemory.unmapMemory();
 
           if ( needsStaging )
           {
             // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
             vk::raii::su::setImageLayout( commandBuffer,
-                                          *pImageData->image,
-                                          pImageData->format,
+                                          *imageData.image,
+                                          imageData.format,
                                           vk::ImageLayout::eUndefined,
                                           vk::ImageLayout::eTransferDstOptimal );
             vk::BufferImageCopy copyRegion( 0,
@@ -545,11 +548,11 @@ namespace vk
                                             vk::Offset3D( 0, 0, 0 ),
                                             vk::Extent3D( extent, 1 ) );
             commandBuffer.copyBufferToImage(
-              *pStagingBufferData->buffer, *pImageData->image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
-            // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
+              *stagingBufferData.buffer, *imageData.image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
+            // Set the layout for the texture image from eTransferDstOptimal to eShaderReadOnlyOptimal
             vk::raii::su::setImageLayout( commandBuffer,
-                                          *pImageData->image,
-                                          pImageData->format,
+                                          *imageData.image,
+                                          imageData.format,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           vk::ImageLayout::eShaderReadOnlyOptimal );
           }
@@ -557,19 +560,19 @@ namespace vk
           {
             // If we can use the linear tiled image as a texture, just do it
             vk::raii::su::setImageLayout( commandBuffer,
-                                          *pImageData->image,
-                                          pImageData->format,
+                                          *imageData.image,
+                                          imageData.format,
                                           vk::ImageLayout::ePreinitialized,
                                           vk::ImageLayout::eShaderReadOnlyOptimal );
           }
         }
 
-        vk::Format                  format;
-        vk::Extent2D                extent;
-        bool                        needsStaging;
-        std::unique_ptr<BufferData> pStagingBufferData;
-        std::unique_ptr<ImageData>  pImageData;
-        vk::raii::Sampler           sampler;
+        vk::Format        format;
+        vk::Extent2D      extent;
+        bool              needsStaging;
+        BufferData        stagingBufferData = nullptr;
+        ImageData         imageData         = nullptr;
+        vk::raii::Sampler sampler;
       };
 
       std::pair<uint32_t, uint32_t>
@@ -957,7 +960,7 @@ namespace vk
         }
 
         vk::DescriptorImageInfo imageInfo(
-          *textureData.sampler, **textureData.pImageData->pImageView, vk::ImageLayout::eShaderReadOnlyOptimal );
+          *textureData.sampler, *textureData.imageData.imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
         writeDescriptorSets.emplace_back(
           *descriptorSet, dstBinding, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo, nullptr, nullptr );
 
@@ -1002,8 +1005,7 @@ namespace vk
           imageInfos.reserve( textureData.size() );
           for ( auto const & thd : textureData )
           {
-            imageInfos.emplace_back(
-              *thd.sampler, **thd.pImageData->pImageView, vk::ImageLayout::eShaderReadOnlyOptimal );
+            imageInfos.emplace_back( *thd.sampler, *thd.imageData.imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
           }
           writeDescriptorSets.emplace_back( *descriptorSet,
                                             dstBinding,

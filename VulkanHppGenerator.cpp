@@ -575,13 +575,9 @@ ${contextMembers}
     class InstanceDispatcher : public DispatchLoaderBase
     {
     public:
-      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
-        : vkGetInstanceProcAddr( getProcAddr )
-      {}
+      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr ) : vkGetInstanceProcAddr( getProcAddr ) {}
 
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-      InstanceDispatcher() = default;
-#endif
+      InstanceDispatcher( std::nullptr_t ) : DispatchLoaderBase( nullptr ) {}
 
       void init( VkInstance instance )
       {
@@ -602,21 +598,17 @@ ${instanceMembers}
   std::string deviceDispatcherTemplate = R"(
     class DeviceDispatcher : public DispatchLoaderBase
     {
-      public:
-        DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr )
-          : vkGetDeviceProcAddr( getProcAddr )
-        {}
+    public:
+      DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr ) : vkGetDeviceProcAddr( getProcAddr ) {}
 
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-        DeviceDispatcher() = default;
-#endif
+      DeviceDispatcher( std::nullptr_t ) : DispatchLoaderBase( nullptr ) {}
 
-        void init( VkDevice device )
-        {
+      void init( VkDevice device )
+      {
 ${deviceAssignments}
-        }
+      }
 
-      public:
+    public:
 ${deviceMembers}
     };
 )";
@@ -7319,13 +7311,10 @@ ${enter}  class ${handleType}
   public:
 ${singularConstructors}
 ${upgradeConstructor}
+    ${handleType}( std::nullptr_t ) {}
 ${destructor}
 
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-    ${handleType}() = default;
-#else
     ${handleType}() = delete;
-#endif
     ${handleType}( ${handleType} const & ) = delete;
     ${handleType}( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
       : ${moveConstructorInitializerList}
@@ -7351,18 +7340,6 @@ ${getConstructorSuccessCode}
       VULKAN_HPP_ASSERT( m_dispatcher${dispatcherAccess}getVkHeaderVersion() == VK_HEADER_VERSION );
       return ${getDispatcherReturn}m_dispatcher;
     }
-
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${handleName}.operator bool();
-    }
-
-    bool operator!() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${handleName}.operator!();
-    }
-#endif
 ${memberFunctionsDeclarations}
 
   private:
@@ -7399,11 +7376,7 @@ ${enter}  class ${handleType}s : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN
   public:
     ${arrayConstructors}
 
-#if defined( VULKAN_HPP_RAII_ENABLE_DEFAULT_CONSTRUCTORS )
-    ${handleType}s() = default;
-#else
     ${handleType}s() = delete;
-#endif
     ${handleType}s( ${handleType}s const & ) = delete;
     ${handleType}s( ${handleType}s && rhs ) = default;
     ${handleType}s & operator=( ${handleType}s const & ) = delete;
@@ -10395,7 +10368,8 @@ std::tuple<std::string, std::string, std::string, std::string>
           name = startLowerCase( stripPrefix( name, "p" ) );
         }
         memberVariables += "\n    " + destructorParam.type.prefix + " " + destructorParam.type.type + " " +
-                           destructorParam.type.postfix + " m_" + name + ";";
+                           destructorParam.type.postfix + " m_" + name +
+                           ( destructorParam.type.postfix.empty() ? "" : " = nullptr" ) + ";";
         moveConstructorInitializerList += ", m_" + name + "( rhs.m_" + name + " )";
         moveAssignmentInstructions += "\n        m_" + name + " = rhs.m_" + name + ";";
       }
@@ -10417,20 +10391,23 @@ std::tuple<std::string, std::string, std::string, std::string>
 
   if ( handle.first == "VkInstance" )
   {
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher m_dispatcher;";
+    memberVariables +=
+      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher m_dispatcher = nullptr;";
   }
   else if ( handle.first == "VkDevice" )
   {
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher m_dispatcher;";
+    memberVariables +=
+      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher m_dispatcher = nullptr;";
   }
   else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
   {
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher;";
+    memberVariables +=
+      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;";
   }
   else
   {
     memberVariables +=
-      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher;";
+      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;";
   }
 
   moveConstructorInitializerList += ", m_dispatcher( rhs.m_dispatcher )";
@@ -16571,15 +16548,24 @@ int main( int argc, char ** argv )
   static const std::string dispatchLoaderBase = R"(
   class DispatchLoaderBase
   {
-#if !defined(NDEBUG)
   public:
+    DispatchLoaderBase() = default;
+    DispatchLoaderBase( std::nullptr_t )
+#if !defined( NDEBUG )
+      : m_valid( false )
+#endif
+    {}
+
+#if !defined( NDEBUG )
     size_t getVkHeaderVersion() const
     {
+      VULKAN_HPP_ASSERT( m_valid );
       return vkHeaderVersion;
     }
 
   private:
     size_t vkHeaderVersion = VK_HEADER_VERSION;
+    bool   m_valid         = true;
 #endif
   };
 )";

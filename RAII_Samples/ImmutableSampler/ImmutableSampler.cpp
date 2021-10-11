@@ -55,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice(
       physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
@@ -68,7 +68,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
-                                               *surfaceData.pSurface,
+                                               surfaceData.surface,
                                                surfaceData.extent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eTransferSrc,
@@ -84,7 +84,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::su::copyToDevice( uniformBufferData.deviceMemory, mvpcMatrix );
 
     vk::Format colorFormat =
-      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( **surfaceData.pSurface ) ).format;
+      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( *surfaceData.surface ) ).format;
     vk::raii::RenderPass renderPass = vk::raii::su::makeRenderPass( device, colorFormat, depthBufferData.format );
 
     glslang::InitializeProcess();
@@ -95,7 +95,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     glslang::FinalizeProcess();
 
     std::vector<vk::raii::Framebuffer> framebuffers = vk::raii::su::makeFramebuffers(
-      device, renderPass, swapChainData.imageViews, &*depthBufferData.pImageView, surfaceData.extent );
+      device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, surfaceData.extent );
 
     vk::raii::su::BufferData vertexBufferData(
       physicalDevice, device, sizeof( texturedCubeData ), vk::BufferUsageFlagBits::eVertexBuffer );
@@ -136,7 +136,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DescriptorBufferInfo bufferInfo( *uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
     vk::DescriptorImageInfo  imageInfo(
-      *textureData.sampler, **textureData.pImageData->pImageView, vk::ImageLayout::eShaderReadOnlyOptimal );
+      *textureData.sampler, *textureData.imageData.imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
     std::array<vk::WriteDescriptorSet, 2> writeDescriptorSets = {
       vk::WriteDescriptorSet( *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, bufferInfo ),
       vk::WriteDescriptorSet( *descriptorSet, 1, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo )
@@ -164,7 +164,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::Result          result;
     uint32_t            imageIndex;
     std::tie( result, imageIndex ) =
-      swapChainData.pSwapChain->acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+      swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -194,7 +194,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
-    vk::PresentInfoKHR presentInfoKHR( nullptr, **swapChainData.pSwapChain, imageIndex );
+    vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );
     result = presentQueue.presentKHR( presentInfoKHR );
     switch ( result )
     {

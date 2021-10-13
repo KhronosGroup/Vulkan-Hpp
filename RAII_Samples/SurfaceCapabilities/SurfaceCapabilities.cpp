@@ -102,7 +102,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                         vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
                                         vk::SharedPresentSurfaceCapabilitiesKHR,
                                         vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
-                                        vk::SurfaceProtectedCapabilitiesKHR>( { **surfaceData.pSurface } );
+                                        vk::SurfaceProtectedCapabilitiesKHR>( { *surfaceData.surface } );
 
         vk::SurfaceCapabilitiesKHR const & surfaceCapabilities =
           surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
@@ -153,7 +153,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       else
       {
         vk::SurfaceCapabilitiesKHR surfaceCapabilities =
-          physicalDevices[i].getSurfaceCapabilitiesKHR( **surfaceData.pSurface );
+          physicalDevices[i].getSurfaceCapabilitiesKHR( *surfaceData.surface );
         cout( surfaceCapabilities );
       }
     }

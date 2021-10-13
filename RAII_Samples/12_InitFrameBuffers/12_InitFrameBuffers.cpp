@@ -37,13 +37,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 64, 64 ) );
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, *surfaceData.pSurface );
+      vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice(
       physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
-                                               *surfaceData.pSurface,
+                                               surfaceData.surface,
                                                surfaceData.extent,
                                                vk::ImageUsageFlagBits::eColorAttachment |
                                                  vk::ImageUsageFlagBits::eTransferSrc,
@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 
     std::array<vk::ImageView, 2> attachments;
-    attachments[1] = **depthBufferData.pImageView;
+    attachments[1] = *depthBufferData.imageView;
 
     std::vector<vk::raii::Framebuffer> framebuffers;
     framebuffers.reserve( swapChainData.imageViews.size() );

@@ -3485,9 +3485,7 @@ std::string VulkanHppGenerator::generateCommandResultGetValue( std::string const
     generateArgumentListEnhanced( commandData.params, skippedParams, {}, definition, false, false, true );
   std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
   std::string nodiscard   = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string returnBaseType = commandData.params[returnParamIndex].type.compose();
-  assert( endsWith( returnBaseType, "*" ) );
-  returnBaseType.pop_back();
+  std::string returnBaseType = trimEnd( stripPostfix( commandData.params[returnParamIndex].type.compose(), "*" ) );
   std::string typenameT;
   if ( returnBaseType == "void" )
   {

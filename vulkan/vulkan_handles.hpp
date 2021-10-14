@@ -483,6 +483,20 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_EXT_video_encode_h265 ===
+  struct VideoEncodeH265CapabilitiesEXT;
+  struct VideoEncodeH265SessionCreateInfoEXT;
+  struct VideoEncodeH265SessionParametersCreateInfoEXT;
+  struct VideoEncodeH265SessionParametersAddInfoEXT;
+  struct VideoEncodeH265VclFrameInfoEXT;
+  struct VideoEncodeH265EmitPictureParametersEXT;
+  struct VideoEncodeH265DpbSlotInfoEXT;
+  struct VideoEncodeH265NaluSliceEXT;
+  struct VideoEncodeH265ProfileEXT;
+  struct VideoEncodeH265ReferenceListsEXT;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
   struct VideoDecodeH264ProfileEXT;
   struct VideoDecodeH264CapabilitiesEXT;
@@ -1252,6 +1266,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceMultiDrawPropertiesEXT;
   struct MultiDrawInfoEXT;
   struct MultiDrawIndexedInfoEXT;
+
+  //=== VK_EXT_border_color_swizzle ===
+  struct PhysicalDeviceBorderColorSwizzleFeaturesEXT;
+  struct SamplerBorderColorComponentMappingCreateInfoEXT;
 
   //=== VK_EXT_pageable_device_local_memory ===
   struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;

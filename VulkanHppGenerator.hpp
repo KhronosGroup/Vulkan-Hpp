@@ -50,7 +50,7 @@ public:
 private:
   struct TypeInfo
   {
-    std::string compose( bool inNamespace = true ) const;
+    std::string compose( std::string const & nameSpace ) const;
 
     bool operator==( TypeInfo const & rhs ) const
     {
@@ -384,8 +384,7 @@ private:
   std::vector<size_t> determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
-                                     std::map<std::string, CommandData>::const_iterator destructorIt,
-                                     std::set<std::string> &                            specialFunctions ) const;
+                                     std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::map<std::string, CommandData>::const_iterator
                            determineRAIIHandleDestructor( std::string const & handleType ) const;
   std::set<size_t>         determineSkippedParams( std::vector<ParamData> const &   params,
@@ -415,6 +414,10 @@ private:
                                              bool                           nonConstPointerAsNullptr,
                                              std::set<size_t> const &       singularParams,
                                              bool                           raiiHandleMemberFunction ) const;
+  std::string generateCallArgumentsRAIIFactory( std::vector<ParamData> const & params,
+                                                size_t                         initialSkipCount,
+                                                std::set<size_t> const &       skippedParameters,
+                                                std::set<size_t> const &       singularParams ) const;
   std::string generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
                                             size_t                         paramIndex,
@@ -885,6 +888,24 @@ private:
                                                                  bool                          definition ) const;
   std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle,
                                                      std::set<std::string> const & specialFunctions ) const;
+  std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                size_t                                             initialSkipCount,
+                                                size_t                                             returnParamIndex,
+                                                bool                                               definition ) const;
+  std::string generateRAIIHandleCommandFactoryArgumentList( std::vector<ParamData> const & params,
+                                                            std::set<size_t> const &       skippedParameters,
+                                                            bool                           definition,
+                                                            bool                           singular ) const;
+  std::string generateRAIIHandleCommandFactorySingular( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                        size_t                           initialSkipCount,
+                                                        std::vector<size_t> const &      returnParamIndices,
+                                                        std::map<size_t, size_t> const & vectorParamIndices,
+                                                        bool                             definition ) const;
+  std::string generateRAIIHandleCommandFactoryVector( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                      size_t                           initialSkipCount,
+                                                      std::vector<size_t> const &      returnParamIndices,
+                                                      std::map<size_t, size_t> const & vectorParamIndices,
+                                                      bool                             definition ) const;
   std::string generateRAIIHandleCommandResult( std::map<std::string, CommandData>::const_iterator commandIt,
                                                size_t                                             initialSkipCount,
                                                bool                                               definition ) const;
@@ -1074,15 +1095,18 @@ private:
                                                  std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::pair<std::string, std::string>
               generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const;
-  std::string generateRAIIHandleConstructorArguments( std::string const &            handleType,
-                                                      std::vector<ParamData> const & params,
-                                                      bool                           singular,
-                                                      bool                           encounteredArgument ) const;
+  std::string generateRAIIHandleConstructorArgument( ParamData const & param, bool definition, bool singular ) const;
+  std::string generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const & handle,
+                                                      std::vector<ParamData> const &             params,
+                                                      bool                                       singular,
+                                                      bool                                       skipLeadingGrandParent,
+                                                      bool encounteredArgument ) const;
   std::string generateRAIIHandleConstructorCallArguments( std::string const &            handleType,
                                                           std::vector<ParamData> const & params,
                                                           bool                           nonConstPointerAsNullptr,
                                                           std::set<size_t> const &       singularParams,
-                                                          bool allocatorIsMemberVariable ) const;
+                                                          bool                           allocatorIsMemberVariable,
+                                                          bool                           skipLeadingGrandParent ) const;
   std::string generateRAIIHandleConstructorEnumerate( std::pair<std::string, HandleData> const &         handle,
                                                       std::map<std::string, CommandData>::const_iterator constructorIt,
                                                       std::vector<ParamData>::const_iterator             handleParamIt,
@@ -1125,6 +1149,8 @@ private:
   std::tuple<std::string, std::string, std::string, std::string>
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
                                          std::string const &                        destructorCall ) const;
+  std::string generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                     std::string const &              title ) const;
   std::string generateRAIIHandleSingularConstructorArguments(
     std::pair<std::string, HandleData> const &         handle,
     std::map<std::string, CommandData>::const_iterator constructorIt ) const;

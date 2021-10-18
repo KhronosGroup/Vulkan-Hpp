@@ -2214,6 +2214,93 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdSetCoarseSampleOrderNV          vkCmdSetCoarseSampleOrderNV          = 0;
     };
 
+    //========================================
+    //=== RAII HANDLE forward declarations ===
+    //========================================
+
+    //=== VK_VERSION_1_0 ===
+    class Instance;
+    class PhysicalDevice;
+    class Device;
+    class Queue;
+    class DeviceMemory;
+    class Fence;
+    class Semaphore;
+    class Event;
+    class QueryPool;
+    class Buffer;
+    class BufferView;
+    class Image;
+    class ImageView;
+    class ShaderModule;
+    class PipelineCache;
+    class Pipeline;
+    class PipelineLayout;
+    class Sampler;
+    class DescriptorPool;
+    class DescriptorSet;
+    class DescriptorSetLayout;
+    class Framebuffer;
+    class RenderPass;
+    class CommandPool;
+    class CommandBuffer;
+
+    //=== VK_VERSION_1_1 ===
+    class SamplerYcbcrConversion;
+    class DescriptorUpdateTemplate;
+
+    //=== VK_KHR_surface ===
+    class SurfaceKHR;
+
+    //=== VK_KHR_swapchain ===
+    class SwapchainKHR;
+
+    //=== VK_KHR_display ===
+    class DisplayKHR;
+    class DisplayModeKHR;
+
+    //=== VK_EXT_debug_report ===
+    class DebugReportCallbackEXT;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_KHR_video_queue ===
+    class VideoSessionKHR;
+    class VideoSessionParametersKHR;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+    //=== VK_NVX_binary_import ===
+    class CuModuleNVX;
+    class CuFunctionNVX;
+
+    //=== VK_EXT_debug_utils ===
+    class DebugUtilsMessengerEXT;
+
+    //=== VK_KHR_acceleration_structure ===
+    class AccelerationStructureKHR;
+
+    //=== VK_EXT_validation_cache ===
+    class ValidationCacheEXT;
+
+    //=== VK_NV_ray_tracing ===
+    class AccelerationStructureNV;
+
+    //=== VK_INTEL_performance_query ===
+    class PerformanceConfigurationINTEL;
+
+    //=== VK_KHR_deferred_host_operations ===
+    class DeferredOperationKHR;
+
+    //=== VK_NV_device_generated_commands ===
+    class IndirectCommandsLayoutNV;
+
+    //=== VK_EXT_private_data ===
+    class PrivateDataSlotEXT;
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_buffer_collection ===
+    class BufferCollectionFUCHSIA;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
     //====================
     //=== RAII HANDLES ===
     //====================
@@ -2243,6 +2330,10 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       //=== VK_VERSION_1_0 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Instance createInstance(
+        VULKAN_HPP_NAMESPACE::InstanceCreateInfo const &                                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties> enumerateInstanceExtensionProperties(
         Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
@@ -2342,6 +2433,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_instance;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance getInstance() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Instance>( m_instance );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -2350,6 +2446,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_VERSION_1_0 ===
 
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice> enumeratePhysicalDevices() const;
+
       VULKAN_HPP_NODISCARD PFN_vkVoidFunction getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_VERSION_1_1 ===
@@ -2357,7 +2455,57 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>
                            enumeratePhysicalDeviceGroups() const;
 
+      //=== VK_KHR_display ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createDisplayPlaneSurfaceKHR(
+        VULKAN_HPP_NAMESPACE::DisplaySurfaceCreateInfoKHR const &                       createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+#  if defined( VK_USE_PLATFORM_XLIB_KHR )
+      //=== VK_KHR_xlib_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createXlibSurfaceKHR(
+        VULKAN_HPP_NAMESPACE::XlibSurfaceCreateInfoKHR const &                          createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_XLIB_KHR*/
+
+#  if defined( VK_USE_PLATFORM_XCB_KHR )
+      //=== VK_KHR_xcb_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createXcbSurfaceKHR(
+        VULKAN_HPP_NAMESPACE::XcbSurfaceCreateInfoKHR const &                           createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_XCB_KHR*/
+
+#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
+      //=== VK_KHR_wayland_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createWaylandSurfaceKHR(
+        VULKAN_HPP_NAMESPACE::WaylandSurfaceCreateInfoKHR const &                       createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
+
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
+      //=== VK_KHR_android_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createAndroidSurfaceKHR(
+        VULKAN_HPP_NAMESPACE::AndroidSurfaceCreateInfoKHR const &                       createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+      //=== VK_KHR_win32_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createWin32SurfaceKHR(
+        VULKAN_HPP_NAMESPACE::Win32SurfaceCreateInfoKHR const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
       //=== VK_EXT_debug_report ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DebugReportCallbackEXT createDebugReportCallbackEXT(
+        VULKAN_HPP_NAMESPACE::DebugReportCallbackCreateInfoEXT const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       void debugReportMessageEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT      flags,
                                   VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_,
@@ -2367,17 +2515,91 @@ namespace VULKAN_HPP_NAMESPACE
                                   const std::string &                            layerPrefix,
                                   const std::string &                            message ) const VULKAN_HPP_NOEXCEPT;
 
+#  if defined( VK_USE_PLATFORM_GGP )
+      //=== VK_GGP_stream_descriptor_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createStreamDescriptorSurfaceGGP(
+        VULKAN_HPP_NAMESPACE::StreamDescriptorSurfaceCreateInfoGGP const &              createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_GGP*/
+
+#  if defined( VK_USE_PLATFORM_VI_NN )
+      //=== VK_NN_vi_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createViSurfaceNN(
+        VULKAN_HPP_NAMESPACE::ViSurfaceCreateInfoNN const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_VI_NN*/
+
       //=== VK_KHR_device_group_creation ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>
                            enumeratePhysicalDeviceGroupsKHR() const;
 
+#  if defined( VK_USE_PLATFORM_IOS_MVK )
+      //=== VK_MVK_ios_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createIOSSurfaceMVK(
+        VULKAN_HPP_NAMESPACE::IOSSurfaceCreateInfoMVK const &                           createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_IOS_MVK*/
+
+#  if defined( VK_USE_PLATFORM_MACOS_MVK )
+      //=== VK_MVK_macos_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createMacOSSurfaceMVK(
+        VULKAN_HPP_NAMESPACE::MacOSSurfaceCreateInfoMVK const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_MACOS_MVK*/
+
       //=== VK_EXT_debug_utils ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DebugUtilsMessengerEXT createDebugUtilsMessengerEXT(
+        VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCreateInfoEXT const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       void submitDebugUtilsMessageEXT(
         VULKAN_HPP_NAMESPACE::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
         VULKAN_HPP_NAMESPACE::DebugUtilsMessageTypeFlagsEXT              messageTypes,
         const VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCallbackDataEXT & callbackData ) const VULKAN_HPP_NOEXCEPT;
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+      //=== VK_FUCHSIA_imagepipe_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createImagePipeSurfaceFUCHSIA(
+        VULKAN_HPP_NAMESPACE::ImagePipeSurfaceCreateInfoFUCHSIA const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+      //=== VK_EXT_metal_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createMetalSurfaceEXT(
+        VULKAN_HPP_NAMESPACE::MetalSurfaceCreateInfoEXT const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+      //=== VK_EXT_headless_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createHeadlessSurfaceEXT(
+        VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
+      //=== VK_EXT_directfb_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createDirectFBSurfaceEXT(
+        VULKAN_HPP_NAMESPACE::DirectFBSurfaceCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      //=== VK_QNX_screen_surface ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR createScreenSurfaceQNX(
+        VULKAN_HPP_NAMESPACE::ScreenSurfaceCreateInfoQNX const &                        createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     private:
       VULKAN_HPP_NAMESPACE::Instance                                      m_instance;
@@ -2456,6 +2678,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties
                            getMemoryProperties() const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Device createDevice(
+        VULKAN_HPP_NAMESPACE::DeviceCreateInfo const &                                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties> enumerateDeviceExtensionProperties(
         Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
@@ -2546,6 +2772,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>
                            getDisplayPlanePropertiesKHR() const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>
+                           getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const;
 
 #  if defined( VK_USE_PLATFORM_XLIB_KHR )
       //=== VK_KHR_xlib_surface ===
@@ -2659,6 +2888,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_acquire_xlib_display ===
 
       void acquireXlibDisplayEXT( Display & dpy, VULKAN_HPP_NAMESPACE::DisplayKHR display ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DisplayKHR getRandROutputDisplayEXT( Display & dpy,
+                                                                                           RROutput  rrOutput ) const;
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
       //=== VK_EXT_display_surface_counter ===
@@ -2741,6 +2973,15 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_acquire_drm_display ===
 
       void acquireDrmDisplayEXT( int32_t drmFd, VULKAN_HPP_NAMESPACE::DisplayKHR display ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DisplayKHR getDrmDisplayEXT( int32_t  drmFd,
+                                                                                   uint32_t connectorId ) const;
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+      //=== VK_NV_acquire_winrt_display ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DisplayKHR getWinrtDisplayNV( uint32_t deviceRelativeId ) const;
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       //=== VK_EXT_directfb_surface ===
@@ -2884,6 +3125,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_device;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -2894,13 +3140,24 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD PFN_vkVoidFunction getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Queue getQueue( uint32_t queueFamilyIndex,
+                                                                      uint32_t queueIndex ) const;
+
       void waitIdle() const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DeviceMemory allocateMemory(
+        VULKAN_HPP_NAMESPACE::MemoryAllocateInfo const &                                allocateInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       void
         flushMappedMemoryRanges( ArrayProxy<const VULKAN_HPP_NAMESPACE::MappedMemoryRange> const & memoryRanges ) const;
 
       void invalidateMappedMemoryRanges(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::MappedMemoryRange> const & memoryRanges ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Fence createFence(
+        VULKAN_HPP_NAMESPACE::FenceCreateInfo const &                                   createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       void resetFences( ArrayProxy<const VULKAN_HPP_NAMESPACE::Fence> const & fences ) const;
 
@@ -2909,9 +3166,103 @@ namespace VULKAN_HPP_NAMESPACE
                                           VULKAN_HPP_NAMESPACE::Bool32                          waitAll,
                                           uint64_t                                              timeout ) const;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Semaphore createSemaphore(
+        VULKAN_HPP_NAMESPACE::SemaphoreCreateInfo const &                               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Event createEvent(
+        VULKAN_HPP_NAMESPACE::EventCreateInfo const &                                   createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::QueryPool createQueryPool(
+        VULKAN_HPP_NAMESPACE::QueryPoolCreateInfo const &                               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Buffer createBuffer(
+        VULKAN_HPP_NAMESPACE::BufferCreateInfo const &                                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::BufferView createBufferView(
+        VULKAN_HPP_NAMESPACE::BufferViewCreateInfo const &                              createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Image createImage(
+        VULKAN_HPP_NAMESPACE::ImageCreateInfo const &                                   createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::ImageView createImageView(
+        VULKAN_HPP_NAMESPACE::ImageViewCreateInfo const &                               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::ShaderModule createShaderModule(
+        VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo const &                            createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::PipelineCache createPipelineCache(
+        VULKAN_HPP_NAMESPACE::PipelineCacheCreateInfo const &                           createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline> createGraphicsPipelines(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                   pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Pipeline createGraphicsPipeline(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo const &                        createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline> createComputePipelines(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                  pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Pipeline createComputePipeline(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::PipelineLayout createPipelineLayout(
+        VULKAN_HPP_NAMESPACE::PipelineLayoutCreateInfo const &                          createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Sampler createSampler(
+        VULKAN_HPP_NAMESPACE::SamplerCreateInfo const &                                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout createDescriptorSetLayout(
+        VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo const &                     createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DescriptorPool createDescriptorPool(
+        VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo const &                          createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::DescriptorSet>
+        allocateDescriptorSets( VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo const & allocateInfo ) const;
+
       void updateDescriptorSets(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::WriteDescriptorSet> const & descriptorWrites,
         ArrayProxy<const VULKAN_HPP_NAMESPACE::CopyDescriptorSet> const &  descriptorCopies ) const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Framebuffer createFramebuffer(
+        VULKAN_HPP_NAMESPACE::FramebufferCreateInfo const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::RenderPass createRenderPass(
+        VULKAN_HPP_NAMESPACE::RenderPassCreateInfo const &                              createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::CommandPool createCommandPool(
+        VULKAN_HPP_NAMESPACE::CommandPoolCreateInfo const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::CommandBuffer>
+        allocateCommandBuffers( VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo const & allocateInfo ) const;
 
       //=== VK_VERSION_1_1 ===
 
@@ -2940,6 +3291,17 @@ namespace VULKAN_HPP_NAMESPACE
         getImageSparseMemoryRequirements2( const VULKAN_HPP_NAMESPACE::ImageSparseMemoryRequirementsInfo2 & info ) const
         VULKAN_HPP_NOEXCEPT;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Queue
+                           getQueue2( VULKAN_HPP_NAMESPACE::DeviceQueueInfo2 const & queueInfo ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion createSamplerYcbcrConversion(
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrConversionCreateInfo const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate createDescriptorUpdateTemplate(
+        VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateInfo const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport getDescriptorSetLayoutSupport(
         const VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
 
@@ -2948,6 +3310,10 @@ namespace VULKAN_HPP_NAMESPACE
         const VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_VERSION_1_2 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::RenderPass createRenderPass2(
+        VULKAN_HPP_NAMESPACE::RenderPassCreateInfo2 const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result
         waitSemaphores( const VULKAN_HPP_NAMESPACE::SemaphoreWaitInfo & waitInfo, uint64_t timeout ) const;
@@ -2965,6 +3331,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_swapchain ===
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR createSwapchainKHR(
+        VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR const &                            createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR
                            getGroupPresentCapabilitiesKHR() const;
 
@@ -2974,11 +3344,43 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, uint32_t>
         acquireNextImage2KHR( const VULKAN_HPP_NAMESPACE::AcquireNextImageInfoKHR & acquireInfo ) const;
 
+      //=== VK_KHR_display_swapchain ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR> createSharedSwapchainsKHR(
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR createSharedSwapchainKHR(
+        VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR const &                            createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       //=== VK_EXT_debug_marker ===
 
       void debugMarkerSetObjectTagEXT( const VULKAN_HPP_NAMESPACE::DebugMarkerObjectTagInfoEXT & tagInfo ) const;
 
       void debugMarkerSetObjectNameEXT( const VULKAN_HPP_NAMESPACE::DebugMarkerObjectNameInfoEXT & nameInfo ) const;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_KHR_video_queue ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::VideoSessionKHR createVideoSessionKHR(
+        VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR const &                         createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::VideoSessionParametersKHR createVideoSessionParametersKHR(
+        VULKAN_HPP_NAMESPACE::VideoSessionParametersCreateInfoKHR const &               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+      //=== VK_NVX_binary_import ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::CuModuleNVX createCuModuleNVX(
+        VULKAN_HPP_NAMESPACE::CuModuleCreateInfoNVX const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::CuFunctionNVX createCuFunctionNVX(
+        VULKAN_HPP_NAMESPACE::CuFunctionCreateInfoNVX const &                           createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       //=== VK_NVX_image_view_handle ===
 
@@ -3026,6 +3428,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_descriptor_update_template ===
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate createDescriptorUpdateTemplateKHR(
+        VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateInfo const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       void destroyDescriptorUpdateTemplateKHR(
         VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
         Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
@@ -3036,11 +3442,26 @@ namespace VULKAN_HPP_NAMESPACE
       void displayPowerControlEXT( VULKAN_HPP_NAMESPACE::DisplayKHR                  display,
                                    const VULKAN_HPP_NAMESPACE::DisplayPowerInfoEXT & displayPowerInfo ) const;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Fence registerEventEXT(
+        VULKAN_HPP_NAMESPACE::DeviceEventInfoEXT const &                                deviceEventInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Fence registerDisplayEventEXT(
+        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR const &             display,
+        VULKAN_HPP_NAMESPACE::DisplayEventInfoEXT const &                               displayEventInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       //=== VK_EXT_hdr_metadata ===
 
       void setHdrMetadataEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainKHR> const &   swapchains,
                               ArrayProxy<const VULKAN_HPP_NAMESPACE::HdrMetadataEXT> const & metadata ) const
         VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+
+      //=== VK_KHR_create_renderpass2 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::RenderPass createRenderPass2KHR(
+        VULKAN_HPP_NAMESPACE::RenderPassCreateInfo2 const &                             createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_KHR_external_fence_win32 ===
@@ -3106,6 +3527,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_acceleration_structure ===
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureKHR createAccelerationStructureKHR(
+        VULKAN_HPP_NAMESPACE::AccelerationStructureCreateInfoKHR const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result buildAccelerationStructuresKHR(
         VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                deferredOperation,
         ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const & infos,
@@ -3153,6 +3578,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_sampler_ycbcr_conversion ===
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion createSamplerYcbcrConversionKHR(
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrConversionCreateInfo const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       void destroySamplerYcbcrConversionKHR(
         VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion ycbcrConversion VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
         Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
@@ -3164,7 +3593,17 @@ namespace VULKAN_HPP_NAMESPACE
 
       void bindImageMemory2KHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::BindImageMemoryInfo> const & bindInfos ) const;
 
+      //=== VK_EXT_validation_cache ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::ValidationCacheEXT createValidationCacheEXT(
+        VULKAN_HPP_NAMESPACE::ValidationCacheCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       //=== VK_NV_ray_tracing ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureNV createAccelerationStructureNV(
+        VULKAN_HPP_NAMESPACE::AccelerationStructureCreateInfoNV const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR getAccelerationStructureMemoryRequirementsNV(
         const VULKAN_HPP_NAMESPACE::AccelerationStructureMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT;
@@ -3175,6 +3614,18 @@ namespace VULKAN_HPP_NAMESPACE
 
       void bindAccelerationStructureMemoryNV(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::BindAccelerationStructureMemoryInfoNV> const & bindInfos ) const;
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline> createRayTracingPipelinesNV(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                       pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Pipeline createRayTracingPipelineNV(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV const &                    createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       //=== VK_KHR_maintenance3 ===
 
@@ -3213,6 +3664,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void uninitializePerformanceApiINTEL() const VULKAN_HPP_NOEXCEPT;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::PerformanceConfigurationINTEL
+                           acquirePerformanceConfigurationINTEL(
+                             VULKAN_HPP_NAMESPACE::PerformanceConfigurationAcquireInfoINTEL const & acquireInfo ) const;
+
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::PerformanceValueINTEL
         getPerformanceParameterINTEL( VULKAN_HPP_NAMESPACE::PerformanceParameterTypeINTEL parameter ) const;
 
@@ -3239,6 +3694,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD uint64_t getMemoryOpaqueCaptureAddressKHR(
         const VULKAN_HPP_NAMESPACE::DeviceMemoryOpaqueCaptureAddressInfo & info ) const VULKAN_HPP_NOEXCEPT;
 
+      //=== VK_KHR_deferred_host_operations ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR createDeferredOperationKHR(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       //=== VK_KHR_pipeline_executable_properties ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR>
@@ -3261,7 +3721,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getGeneratedCommandsMemoryRequirementsNV(
         const VULKAN_HPP_NAMESPACE::GeneratedCommandsMemoryRequirementsInfoNV & info ) const VULKAN_HPP_NOEXCEPT;
 
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutNV createIndirectCommandsLayoutNV(
+        VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoNV const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
       //=== VK_EXT_private_data ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::PrivateDataSlotEXT createPrivateDataSlotEXT(
+        VULKAN_HPP_NAMESPACE::PrivateDataSlotCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       void setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType         objectType_,
                               uint64_t                                 objectHandle,
@@ -3272,6 +3740,24 @@ namespace VULKAN_HPP_NAMESPACE
         getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType         objectType_,
                            uint64_t                                 objectHandle,
                            VULKAN_HPP_NAMESPACE::PrivateDataSlotEXT privateDataSlot ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_ray_tracing_pipeline ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline> createRayTracingPipelinesKHR(
+        VULKAN_HPP_NAMESPACE::Optional<
+          const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR> const & deferredOperation,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::Pipeline createRayTracingPipelineKHR(
+        VULKAN_HPP_NAMESPACE::Optional<
+          const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR> const & deferredOperation,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR const &                   createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_memory ===
@@ -3292,6 +3778,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD zx_handle_t getSemaphoreZirconHandleFUCHSIA(
         const VULKAN_HPP_NAMESPACE::SemaphoreGetZirconHandleInfoFUCHSIA & getZirconHandleInfo ) const;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+      //=== VK_FUCHSIA_buffer_collection ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::BufferCollectionFUCHSIA createBufferCollectionFUCHSIA(
+        VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
       //=== VK_NV_external_memory_rdma ===
@@ -3412,6 +3906,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_accelerationStructureKHR;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3510,6 +4009,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructureNV;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -3611,6 +4115,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Buffer const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_buffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -3720,6 +4229,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_bufferCollectionFUCHSIA;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3823,6 +4337,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_bufferView;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -3914,6 +4433,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_commandPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -4009,6 +4533,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_commandBuffer;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -4857,6 +5386,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_cuFunctionNVX;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -4948,6 +5482,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::CuModuleNVX const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_cuModuleNVX;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -5050,6 +5589,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_debugReportCallbackEXT;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance getInstance() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Instance>( m_instance );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5150,6 +5694,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_debugUtilsMessengerEXT;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance getInstance() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Instance>( m_instance );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5246,6 +5795,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_deferredOperationKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -5353,6 +5907,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_descriptorPool;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5440,6 +5999,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DescriptorSet const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSet;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -5588,6 +6152,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_descriptorSetLayout;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5688,6 +6257,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_descriptorUpdateTemplate;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5781,6 +6355,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_deviceMemory;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -5929,6 +6508,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_displayKHR;
       }
 
+      VULKAN_HPP_NAMESPACE::PhysicalDevice getPhysicalDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::PhysicalDevice>( m_physicalDevice );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5938,6 +6522,10 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_display ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR> getModeProperties() const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::DisplayModeKHR createMode(
+        VULKAN_HPP_NAMESPACE::DisplayModeCreateInfoKHR const &                          createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       //=== VK_KHR_get_display_properties2 ===
 
@@ -6011,15 +6599,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     public:
       DisplayModeKHR(
-        VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const &         physicalDevice,
         VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR const &             display,
         VULKAN_HPP_NAMESPACE::DisplayModeCreateInfoKHR const &                          createInfo,
         VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_physicalDevice( *physicalDevice ), m_dispatcher( physicalDevice.getDispatcher() )
+        : m_dispatcher( display.getDispatcher() )
       {
         VULKAN_HPP_NAMESPACE::Result result =
           static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkCreateDisplayModeKHR(
-            static_cast<VkPhysicalDevice>( *physicalDevice ),
+            static_cast<VkPhysicalDevice>( display.getPhysicalDevice() ),
             static_cast<VkDisplayKHR>( *display ),
             reinterpret_cast<const VkDisplayModeCreateInfoKHR *>( &createInfo ),
             reinterpret_cast<const VkAllocationCallbacks *>(
@@ -6075,7 +6662,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     private:
       VULKAN_HPP_NAMESPACE::DisplayModeKHR                                        m_displayModeKHR;
-      VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice;
+      VkPhysicalDevice                                                            m_physicalDevice;
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;
     };
 
@@ -6157,6 +6744,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Event const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_event;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -6301,6 +6893,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_fence;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -6398,6 +6995,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_framebuffer;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -6489,6 +7091,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Image const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_image;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -6601,6 +7208,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_imageView;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -6705,6 +7317,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_indirectCommandsLayoutNV;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -6792,6 +7409,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_performanceConfigurationINTEL;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -6888,6 +7510,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PipelineCache const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineCache;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -7092,6 +7719,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Result getConstructorSuccessCode() const
       {
         return m_constructorSuccessCode;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -7397,6 +8029,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_pipelineLayout;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -7497,6 +8134,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_privateDataSlotEXT;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -7588,6 +8230,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_queryPool;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -7837,6 +8484,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_renderPass;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -7939,6 +8591,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_sampler;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -8039,6 +8696,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_samplerYcbcrConversion;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -8130,6 +8792,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Semaphore const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_semaphore;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -8235,6 +8902,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ShaderModule const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_shaderModule;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -8633,6 +9305,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_surfaceKHR;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance getInstance() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Instance>( m_instance );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -8734,6 +9411,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_swapchainKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -8919,6 +9601,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_validationCacheEXT;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -9022,6 +9709,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionKHR;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -9133,6 +9825,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_videoSessionParametersKHR;
       }
 
+      VULKAN_HPP_NAMESPACE::Device getDevice() const VULKAN_HPP_NOEXCEPT
+      {
+        return static_cast<VULKAN_HPP_NAMESPACE::Device>( m_device );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -9156,6 +9853,19 @@ namespace VULKAN_HPP_NAMESPACE
     //===========================
 
     //=== VK_VERSION_1_0 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Instance Context::createInstance(
+      VULKAN_HPP_NAMESPACE::InstanceCreateInfo const &                                createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Instance( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice>
+                                           Instance::enumeratePhysicalDevices() const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::PhysicalDevices( *this );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures
                                            PhysicalDevice::getFeatures() const VULKAN_HPP_NOEXCEPT
@@ -9245,6 +9955,13 @@ namespace VULKAN_HPP_NAMESPACE
       Device::getProcAddr( const std::string & name ) const VULKAN_HPP_NOEXCEPT
     {
       return getDispatcher()->vkGetDeviceProcAddr( static_cast<VkDevice>( m_device ), name.c_str() );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Device PhysicalDevice::createDevice(
+      VULKAN_HPP_NAMESPACE::DeviceCreateInfo const &                                  createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Device( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties>
@@ -9374,6 +10091,12 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Queue
+                                           Device::getQueue( uint32_t queueFamilyIndex, uint32_t queueIndex ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Queue( *this, queueFamilyIndex, queueIndex );
+    }
+
     VULKAN_HPP_INLINE void Queue::submit( ArrayProxy<const VULKAN_HPP_NAMESPACE::SubmitInfo> const & submits,
                                           VULKAN_HPP_NAMESPACE::Fence                                fence ) const
     {
@@ -9406,6 +10129,13 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitIdle" );
       }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DeviceMemory Device::allocateMemory(
+      VULKAN_HPP_NAMESPACE::MemoryAllocateInfo const &                                allocateInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DeviceMemory( *this, allocateInfo, allocator );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE void *
@@ -9583,6 +10313,13 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Fence Device::createFence(
+      VULKAN_HPP_NAMESPACE::FenceCreateInfo const &                                   createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Fence( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void Device::resetFences( ArrayProxy<const VULKAN_HPP_NAMESPACE::Fence> const & fences ) const
     {
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkResetFences(
@@ -9624,6 +10361,20 @@ namespace VULKAN_HPP_NAMESPACE
       return result;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Semaphore Device::createSemaphore(
+      VULKAN_HPP_NAMESPACE::SemaphoreCreateInfo const &                               createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Semaphore( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Event Device::createEvent(
+      VULKAN_HPP_NAMESPACE::EventCreateInfo const &                                   createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Event( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Event::getStatus() const
     {
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
@@ -9654,6 +10405,13 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Event::reset" );
       }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::QueryPool Device::createQueryPool(
+      VULKAN_HPP_NAMESPACE::QueryPoolCreateInfo const &                               createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::QueryPool( *this, createInfo, allocator );
     }
 
     template <typename T>
@@ -9708,6 +10466,27 @@ namespace VULKAN_HPP_NAMESPACE
       return std::make_pair( result, data );
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Buffer Device::createBuffer(
+      VULKAN_HPP_NAMESPACE::BufferCreateInfo const &                                  createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Buffer( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::BufferView Device::createBufferView(
+      VULKAN_HPP_NAMESPACE::BufferViewCreateInfo const &                              createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::BufferView( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Image Device::createImage(
+      VULKAN_HPP_NAMESPACE::ImageCreateInfo const &                                   createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Image( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SubresourceLayout Image::getSubresourceLayout(
       const VULKAN_HPP_NAMESPACE::ImageSubresource & subresource ) const VULKAN_HPP_NOEXCEPT
     {
@@ -9717,6 +10496,27 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<const VkImageSubresource *>( &subresource ),
                                                     reinterpret_cast<VkSubresourceLayout *>( &layout ) );
       return layout;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::ImageView Device::createImageView(
+      VULKAN_HPP_NAMESPACE::ImageViewCreateInfo const &                               createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::ImageView( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::ShaderModule Device::createShaderModule(
+      VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo const &                            createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::ShaderModule( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::PipelineCache Device::createPipelineCache(
+      VULKAN_HPP_NAMESPACE::PipelineCacheCreateInfo const &                           createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::PipelineCache( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<uint8_t> PipelineCache::getData() const
@@ -9764,12 +10564,85 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline>
+                                           Device::createGraphicsPipelines(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                   pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>            allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipelines( *this, pipelineCache, createInfos, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Pipeline Device::createGraphicsPipeline(
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                      pipelineCache,
+      VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo const &                        createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, pipelineCache, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline>
+                                           Device::createComputePipelines(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                  pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>           allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipelines( *this, pipelineCache, createInfos, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Pipeline Device::createComputePipeline(
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                      pipelineCache,
+      VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo const &                         createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, pipelineCache, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::PipelineLayout Device::createPipelineLayout(
+      VULKAN_HPP_NAMESPACE::PipelineLayoutCreateInfo const &                          createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::PipelineLayout( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Sampler Device::createSampler(
+      VULKAN_HPP_NAMESPACE::SamplerCreateInfo const &                                 createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Sampler( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout
+                                           Device::createDescriptorSetLayout(
+        VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo const &                     createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DescriptorPool Device::createDescriptorPool(
+      VULKAN_HPP_NAMESPACE::DescriptorPoolCreateInfo const &                          createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DescriptorPool( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void
       DescriptorPool::reset( VULKAN_HPP_NAMESPACE::DescriptorPoolResetFlags flags ) const VULKAN_HPP_NOEXCEPT
     {
       getDispatcher()->vkResetDescriptorPool( static_cast<VkDevice>( m_device ),
                                               static_cast<VkDescriptorPool>( m_descriptorPool ),
                                               static_cast<VkDescriptorPoolResetFlags>( flags ) );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::DescriptorSet>
+      Device::allocateDescriptorSets( VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo const & allocateInfo ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DescriptorSets( *this, allocateInfo );
     }
 
     VULKAN_HPP_INLINE void Device::updateDescriptorSets(
@@ -9784,6 +10657,20 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkCopyDescriptorSet *>( descriptorCopies.data() ) );
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Framebuffer Device::createFramebuffer(
+      VULKAN_HPP_NAMESPACE::FramebufferCreateInfo const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Framebuffer( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::RenderPass Device::createRenderPass(
+      VULKAN_HPP_NAMESPACE::RenderPassCreateInfo const &                              createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::RenderPass( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Extent2D
                                            RenderPass::getRenderAreaGranularity() const VULKAN_HPP_NOEXCEPT
     {
@@ -9792,6 +10679,13 @@ namespace VULKAN_HPP_NAMESPACE
                                                    static_cast<VkRenderPass>( m_renderPass ),
                                                    reinterpret_cast<VkExtent2D *>( &granularity ) );
       return granularity;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::CommandPool Device::createCommandPool(
+      VULKAN_HPP_NAMESPACE::CommandPoolCreateInfo const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CommandPool( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_INLINE void CommandPool::reset( VULKAN_HPP_NAMESPACE::CommandPoolResetFlags flags ) const
@@ -9804,6 +10698,12 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::CommandPool::reset" );
       }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::CommandBuffer>
+      Device::allocateCommandBuffers( VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo const & allocateInfo ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CommandBuffers( *this, allocateInfo );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::begin( const VULKAN_HPP_NAMESPACE::CommandBufferBeginInfo & beginInfo ) const
@@ -10716,6 +11616,28 @@ namespace VULKAN_HPP_NAMESPACE
                                           static_cast<VkCommandPoolTrimFlags>( flags ) );
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Queue
+      Device::getQueue2( VULKAN_HPP_NAMESPACE::DeviceQueueInfo2 const & queueInfo ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Queue( *this, queueInfo );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion
+                                           Device::createSamplerYcbcrConversion(
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrConversionCreateInfo const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate
+                                           Device::createDescriptorUpdateTemplate(
+        VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateInfo const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void
       DescriptorSet::updateWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
                                          const void * pData ) const VULKAN_HPP_NOEXCEPT
@@ -10821,6 +11743,13 @@ namespace VULKAN_HPP_NAMESPACE
                                                       static_cast<VkDeviceSize>( countBufferOffset ),
                                                       maxDrawCount,
                                                       stride );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::RenderPass Device::createRenderPass2(
+      VULKAN_HPP_NAMESPACE::RenderPassCreateInfo2 const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::RenderPass( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2(
@@ -11033,6 +11962,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_swapchain ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR Device::createSwapchainKHR(
+      VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR const &                            createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VkImage> SwapchainKHR::getImages() const
     {
@@ -11287,6 +12223,12 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>
+      PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DisplayKHRs( *this, planeIndex );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>
                                            DisplayKHR::getModeProperties() const
     {
@@ -11325,6 +12267,13 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DisplayModeKHR DisplayKHR::createMode(
+      VULKAN_HPP_NAMESPACE::DisplayModeCreateInfoKHR const &                          createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DisplayModeKHR( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DisplayPlaneCapabilitiesKHR
                                            DisplayModeKHR::getDisplayPlaneCapabilities( uint32_t planeIndex ) const
     {
@@ -11345,8 +12294,39 @@ namespace VULKAN_HPP_NAMESPACE
       return capabilities;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createDisplayPlaneSurfaceKHR(
+      VULKAN_HPP_NAMESPACE::DisplaySurfaceCreateInfoKHR const &                       createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+
+    //=== VK_KHR_display_swapchain ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR>
+                                           Device::createSharedSwapchainsKHR(
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>        allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SwapchainKHRs( *this, createInfos, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR Device::createSharedSwapchainKHR(
+      VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR const &                            createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR( *this, createInfo, allocator );
+    }
+
 #  if defined( VK_USE_PLATFORM_XLIB_KHR )
     //=== VK_KHR_xlib_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createXlibSurfaceKHR(
+      VULKAN_HPP_NAMESPACE::XlibSurfaceCreateInfoKHR const &                          createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32 PhysicalDevice::getXlibPresentationSupportKHR(
       uint32_t queueFamilyIndex, Display & dpy, VisualID visualID ) const VULKAN_HPP_NOEXCEPT
@@ -11363,6 +12343,13 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_XCB_KHR )
     //=== VK_KHR_xcb_surface ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createXcbSurfaceKHR(
+      VULKAN_HPP_NAMESPACE::XcbSurfaceCreateInfoKHR const &                           createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32 PhysicalDevice::getXcbPresentationSupportKHR(
       uint32_t queueFamilyIndex, xcb_connection_t & connection, xcb_visualid_t visual_id ) const VULKAN_HPP_NOEXCEPT
     {
@@ -11378,6 +12365,13 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
     //=== VK_KHR_wayland_surface ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createWaylandSurfaceKHR(
+      VULKAN_HPP_NAMESPACE::WaylandSurfaceCreateInfoKHR const &                       createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getWaylandPresentationSupportKHR( uint32_t            queueFamilyIndex,
                                                         struct wl_display & display ) const VULKAN_HPP_NOEXCEPT
@@ -11392,8 +12386,26 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
+    //=== VK_KHR_android_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createAndroidSurfaceKHR(
+      VULKAN_HPP_NAMESPACE::AndroidSurfaceCreateInfoKHR const &                       createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_KHR_win32_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createWin32SurfaceKHR(
+      VULKAN_HPP_NAMESPACE::Win32SurfaceCreateInfoKHR const &                         createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
       PhysicalDevice::getWin32PresentationSupportKHR( uint32_t queueFamilyIndex ) const VULKAN_HPP_NOEXCEPT
@@ -11408,6 +12420,14 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     //=== VK_EXT_debug_report ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DebugReportCallbackEXT
+                                           Instance::createDebugReportCallbackEXT(
+        VULKAN_HPP_NAMESPACE::DebugReportCallbackCreateInfoEXT const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DebugReportCallbackEXT( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_INLINE void Instance::debugReportMessageEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT      flags,
                                                             VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_,
@@ -11575,6 +12595,13 @@ namespace VULKAN_HPP_NAMESPACE
       return videoFormatProperties;
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::VideoSessionKHR Device::createVideoSessionKHR(
+      VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR const &                         createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::VideoSessionKHR( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>
                                            VideoSessionKHR::getMemoryRequirements() const
     {
@@ -11631,6 +12658,14 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::VideoSessionKHR::bindMemory" );
       }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::VideoSessionParametersKHR
+                                           Device::createVideoSessionParametersKHR(
+        VULKAN_HPP_NAMESPACE::VideoSessionParametersCreateInfoKHR const &               createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::VideoSessionParametersKHR( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_INLINE void VideoSessionParametersKHR::update(
@@ -11839,6 +12874,20 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NVX_binary_import ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::CuModuleNVX Device::createCuModuleNVX(
+      VULKAN_HPP_NAMESPACE::CuModuleCreateInfoNVX const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CuModuleNVX( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::CuFunctionNVX Device::createCuFunctionNVX(
+      VULKAN_HPP_NAMESPACE::CuFunctionCreateInfoNVX const &                           createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CuFunctionNVX( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void CommandBuffer::cuLaunchKernelNVX(
       const VULKAN_HPP_NAMESPACE::CuLaunchInfoNVX & launchInfo ) const VULKAN_HPP_NOEXCEPT
     {
@@ -11966,6 +13015,18 @@ namespace VULKAN_HPP_NAMESPACE
       }
       return info;
     }
+
+#  if defined( VK_USE_PLATFORM_GGP )
+    //=== VK_GGP_stream_descriptor_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR
+                                           Instance::createStreamDescriptorSurfaceGGP(
+        VULKAN_HPP_NAMESPACE::StreamDescriptorSurfaceCreateInfoGGP const &              createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_GGP*/
 
     //=== VK_NV_external_memory_capabilities ===
 
@@ -12311,6 +13372,17 @@ namespace VULKAN_HPP_NAMESPACE
                                              groupCountZ );
     }
 
+#  if defined( VK_USE_PLATFORM_VI_NN )
+    //=== VK_NN_vi_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createViSurfaceNN(
+      VULKAN_HPP_NAMESPACE::ViSurfaceCreateInfoNN const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_VI_NN*/
+
     //=== VK_KHR_maintenance1 ===
 
     VULKAN_HPP_INLINE void
@@ -12625,6 +13697,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_KHR_descriptor_update_template ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate
+                                           Device::createDescriptorUpdateTemplateKHR(
+        VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplateCreateInfo const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void Device::destroyDescriptorUpdateTemplateKHR(
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate            descriptorUpdateTemplate,
       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const VULKAN_HPP_NOEXCEPT
@@ -12689,6 +13769,12 @@ namespace VULKAN_HPP_NAMESPACE
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::acquireXlibDisplayEXT" );
       }
     }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DisplayKHR
+      PhysicalDevice::getRandROutputDisplayEXT( Display & dpy, RROutput rrOutput ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DisplayKHR( *this, dpy, rrOutput );
+    }
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
     //=== VK_EXT_display_surface_counter ===
@@ -12731,6 +13817,21 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::displayPowerControlEXT" );
       }
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Fence Device::registerEventEXT(
+      VULKAN_HPP_NAMESPACE::DeviceEventInfoEXT const &                                deviceEventInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Fence( *this, deviceEventInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Fence Device::registerDisplayEventEXT(
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR const &             display,
+      VULKAN_HPP_NAMESPACE::DisplayEventInfoEXT const &                               displayEventInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Fence( *this, display, displayEventInfo, allocator );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
@@ -12857,6 +13958,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_create_renderpass2 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::RenderPass Device::createRenderPass2KHR(
+      VULKAN_HPP_NAMESPACE::RenderPassCreateInfo2 const &                             createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::RenderPass( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2KHR(
       const VULKAN_HPP_NAMESPACE::RenderPassBeginInfo & renderPassBegin,
@@ -13304,6 +14412,28 @@ namespace VULKAN_HPP_NAMESPACE
       return capabilities;
     }
 
+#  if defined( VK_USE_PLATFORM_IOS_MVK )
+    //=== VK_MVK_ios_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createIOSSurfaceMVK(
+      VULKAN_HPP_NAMESPACE::IOSSurfaceCreateInfoMVK const &                           createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_IOS_MVK*/
+
+#  if defined( VK_USE_PLATFORM_MACOS_MVK )
+    //=== VK_MVK_macos_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createMacOSSurfaceMVK(
+      VULKAN_HPP_NAMESPACE::MacOSSurfaceCreateInfoMVK const &                         createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_MACOS_MVK*/
+
     //=== VK_EXT_debug_utils ===
 
     VULKAN_HPP_INLINE void
@@ -13390,6 +14520,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdInsertDebugUtilsLabelEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                       reinterpret_cast<const VkDebugUtilsLabelEXT *>( &labelInfo ) );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DebugUtilsMessengerEXT
+                                           Instance::createDebugUtilsMessengerEXT(
+        VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCreateInfoEXT const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DebugUtilsMessengerEXT( *this, createInfo, allocator );
     }
 
     VULKAN_HPP_INLINE void Instance::submitDebugUtilsMessageEXT(
@@ -13597,6 +14735,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_acceleration_structure ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureKHR
+                                           Device::createAccelerationStructureKHR(
+        VULKAN_HPP_NAMESPACE::AccelerationStructureCreateInfoKHR const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructuresKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const &      infos,
@@ -13923,6 +15069,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_KHR_sampler_ycbcr_conversion ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion
+                                           Device::createSamplerYcbcrConversionKHR(
+        VULKAN_HPP_NAMESPACE::SamplerYcbcrConversionCreateInfo const &                  createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void Device::destroySamplerYcbcrConversionKHR(
       VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion              ycbcrConversion,
       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const VULKAN_HPP_NOEXCEPT
@@ -13996,6 +15150,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_EXT_validation_cache ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::ValidationCacheEXT
+                                           Device::createValidationCacheEXT(
+        VULKAN_HPP_NAMESPACE::ValidationCacheCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::ValidationCacheEXT( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_INLINE void
       ValidationCacheEXT::merge( ArrayProxy<const VULKAN_HPP_NAMESPACE::ValidationCacheEXT> const & srcCaches ) const
@@ -14097,6 +15259,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_NV_ray_tracing ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureNV
+                                           Device::createAccelerationStructureNV(
+        VULKAN_HPP_NAMESPACE::AccelerationStructureCreateInfoNV const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureNV( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR
                                            Device::getAccelerationStructureMemoryRequirementsNV(
@@ -14223,6 +15393,25 @@ namespace VULKAN_HPP_NAMESPACE
                                          width,
                                          height,
                                          depth );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline>
+                                           Device::createRayTracingPipelinesNV(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                       pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipelines( *this, pipelineCache, createInfos, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Pipeline Device::createRayTracingPipelineNV(
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                      pipelineCache,
+      VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV const &                    createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, pipelineCache, createInfo, allocator );
     }
 
     template <typename T>
@@ -14764,6 +15953,13 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::PerformanceConfigurationINTEL
+                                           Device::acquirePerformanceConfigurationINTEL(
+        VULKAN_HPP_NAMESPACE::PerformanceConfigurationAcquireInfoINTEL const & acquireInfo ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::PerformanceConfigurationINTEL( *this, acquireInfo );
+    }
+
     VULKAN_HPP_INLINE void
       Queue::setPerformanceConfigurationINTEL( VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL configuration ) const
     {
@@ -14811,6 +16007,29 @@ namespace VULKAN_HPP_NAMESPACE
                                              static_cast<VkSwapchainKHR>( m_swapchainKHR ),
                                              static_cast<VkBool32>( localDimmingEnable ) );
     }
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+    //=== VK_FUCHSIA_imagepipe_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR
+                                           Instance::createImagePipeSurfaceFUCHSIA(
+        VULKAN_HPP_NAMESPACE::ImagePipeSurfaceCreateInfoFUCHSIA const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+    //=== VK_EXT_metal_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createMetalSurfaceEXT(
+      VULKAN_HPP_NAMESPACE::MetalSurfaceCreateInfoEXT const &                         createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
     //=== VK_KHR_fragment_shading_rate ===
 
@@ -15110,6 +16329,15 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
+    //=== VK_EXT_headless_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createHeadlessSurfaceEXT(
+      VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateInfoEXT const &                      createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
+
     //=== VK_KHR_buffer_device_address ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceAddress Device::getBufferAddressKHR(
@@ -15341,6 +16569,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_KHR_deferred_host_operations ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR
+                                           Device::createDeferredOperationKHR(
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR( *this, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t DeferredOperationKHR::getMaxConcurrency() const VULKAN_HPP_NOEXCEPT
     {
@@ -15584,6 +16819,14 @@ namespace VULKAN_HPP_NAMESPACE
                                                        groupIndex );
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutNV
+                                           Device::createIndirectCommandsLayoutNV(
+        VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoNV const &                createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutNV( *this, createInfo, allocator );
+    }
+
     //=== VK_EXT_acquire_drm_display ===
 
     VULKAN_HPP_INLINE void PhysicalDevice::acquireDrmDisplayEXT( int32_t                          drmFd,
@@ -15601,7 +16844,21 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DisplayKHR
+                                           PhysicalDevice::getDrmDisplayEXT( int32_t drmFd, uint32_t connectorId ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DisplayKHR( *this, drmFd, connectorId );
+    }
+
     //=== VK_EXT_private_data ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::PrivateDataSlotEXT
+                                           Device::createPrivateDataSlotEXT(
+        VULKAN_HPP_NAMESPACE::PrivateDataSlotCreateInfoEXT const &                      createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::PrivateDataSlotEXT( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_INLINE void Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType         objectType_,
                                                       uint64_t                                 objectHandle,
@@ -15871,10 +17128,23 @@ namespace VULKAN_HPP_NAMESPACE
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::DisplayKHR::acquireWinrtNV" );
       }
     }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::DisplayKHR
+                                           PhysicalDevice::getWinrtDisplayNV( uint32_t deviceRelativeId ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::DisplayKHR( *this, deviceRelativeId );
+    }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
     //=== VK_EXT_directfb_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createDirectFBSurfaceEXT(
+      VULKAN_HPP_NAMESPACE::DirectFBSurfaceCreateInfoEXT const &                      createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getDirectFBPresentationSupportEXT( uint32_t    queueFamilyIndex,
@@ -15913,6 +17183,29 @@ namespace VULKAN_HPP_NAMESPACE
         width,
         height,
         depth );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline>
+                                           Device::createRayTracingPipelinesKHR(
+        VULKAN_HPP_NAMESPACE::Optional<
+          const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR> const & deferredOperation,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                                        pipelineCache,
+        VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> const & createInfos,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipelines( *this, deferredOperation, pipelineCache, createInfos, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Pipeline Device::createRayTracingPipelineKHR(
+      VULKAN_HPP_NAMESPACE::Optional<
+        const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR> const & deferredOperation,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache> const &
+                                                                                      pipelineCache,
+      VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR const &                   createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, deferredOperation, pipelineCache, createInfo, allocator );
     }
 
     template <typename T>
@@ -16157,6 +17450,14 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_buffer_collection ===
 
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::BufferCollectionFUCHSIA
+                                           Device::createBufferCollectionFUCHSIA(
+        VULKAN_HPP_NAMESPACE::BufferCollectionCreateInfoFUCHSIA const &                 createInfo,
+        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::BufferCollectionFUCHSIA( *this, createInfo, allocator );
+    }
+
     VULKAN_HPP_INLINE void BufferCollectionFUCHSIA::setImageConstraints(
       const VULKAN_HPP_NAMESPACE::ImageConstraintsInfoFUCHSIA & imageConstraintsInfo ) const
     {
@@ -16341,6 +17642,13 @@ namespace VULKAN_HPP_NAMESPACE
 
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
     //=== VK_QNX_screen_surface ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR Instance::createScreenSurfaceQNX(
+      VULKAN_HPP_NAMESPACE::ScreenSurfaceCreateInfoQNX const &                        createInfo,
+      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR( *this, createInfo, allocator );
+    }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Bool32
                                            PhysicalDevice::getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,

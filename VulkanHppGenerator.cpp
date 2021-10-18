@@ -1920,79 +1920,6 @@ std::string VulkanHppGenerator::findBaseName( std::string                       
   return baseName;
 }
 
-std::string VulkanHppGenerator::generateArgumentEnhancedConstPointer( ParamData const & param,
-                                                                      bool              definition,
-                                                                      bool              withAllocators,
-#if !defined( NDEBUG )
-                                                                      bool withDispatcher,
-#endif
-                                                                      bool & hasDefaultAssignment ) const
-{
-  std::string composedType = param.type.compose();
-  assert( endsWith( composedType, " *" ) );
-
-  std::string argument;
-  std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
-  if ( param.len.empty() )
-  {
-    assert( withDispatcher || !isHandleType( param.type.type ) );
-    assert( !param.type.prefix.empty() && ( param.type.postfix == "*" ) );
-    assert( param.arraySizes.empty() );
-    if ( param.type.type == "void" )
-    {
-      assert( !param.optional );
-      argument = composedType + " " + param.name;
-    }
-    else if ( param.optional )
-    {
-      argument = "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
-                 ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
-      hasDefaultAssignment = true;
-    }
-    else
-    {
-      argument = stripPostfix( composedType, " *" ) + " & " + name;
-    }
-  }
-  else
-  {
-    // a const-pointer with a non-empty len is either null-terminated (aka a string) or represented by an
-    // ArrayProxy
-    assert( param.arraySizes.empty() );
-    if ( param.len == "null-terminated" )
-    {
-      assert( param.type.type == "char" );
-      if ( param.optional )
-      {
-        argument = "Optional<const std::string> " + name +
-                   ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
-        hasDefaultAssignment = true;
-      }
-      else
-      {
-        argument = "const std::string & " + name;
-      }
-    }
-    else
-    {
-      // an ArrayProxy also covers no data, so any optional flag can be ignored here
-      std::string type = stripPostfix( composedType, " *" );
-      size_t      pos  = type.find( "void" );
-      if ( pos != std::string::npos )
-      {
-        type.replace( pos, 4, "T" );
-      }
-      argument = "ArrayProxy<" + type + "> const & " + name;
-      if ( param.optional && !definition )
-      {
-        argument += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
-        hasDefaultAssignment = true;
-      }
-    }
-  }
-  return argument;
-}
-
 std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                                               std::set<size_t> const &       skippedParams,
                                                               std::set<size_t> const &       singularParams,
@@ -2014,36 +1941,94 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
         argumentList += ", ";
       }
       bool hasDefaultAssignment = false;
+
+      std::string composedType = params[i].type.compose();
+
       if ( singularParams.find( i ) != singularParams.end() )
       {
         assert( !params[i].optional );
         assert( params[i].type.isConstPointer() && !params[i].len.empty() &&
                 !isLenByStructMember( params[i].len, params ) && beginsWith( params[i].type.type, "Vk" ) );
         assert( !isHandleType( params[i].type.type ) );
-        argumentList += "const VULKAN_HPP_NAMESPACE::" + stripPrefix( params[i].type.type, "Vk" ) + " & " +
+        assert( endsWith( composedType, " *" ) );
+        argumentList += stripPostfix( composedType, " *" ) + " & " +
                         stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) );
       }
       else if ( params[i].type.isConstPointer() )
       {
-        argumentList += generateArgumentEnhancedConstPointer( params[i],
-                                                              definition,
-                                                              withAllocators,
-#if !defined( NDEBUG )
-                                                              withDispatcher,
-#endif
-                                                              hasDefaultAssignment );
+        assert( endsWith( composedType, " *" ) );
+        std::string name = startLowerCase( stripPrefix( params[i].name, "p" ) );
+        if ( params[i].len.empty() )
+        {
+          assert( withDispatcher || !isHandleType( params[i].type.type ) );
+          assert( !params[i].type.prefix.empty() && ( params[i].type.postfix == "*" ) );
+          assert( params[i].arraySizes.empty() );
+          if ( params[i].type.type == "void" )
+          {
+            assert( !params[i].optional );
+            argumentList += composedType + " " + params[i].name;
+          }
+          else if ( params[i].optional )
+          {
+            argumentList +=
+              "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
+              ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+            hasDefaultAssignment = true;
+          }
+          else
+          {
+            argumentList += stripPostfix( composedType, " *" ) + " & " + name;
+          }
+        }
+        else
+        {
+          // a const-pointer with a non-empty len is either null-terminated (aka a string) or represented by an
+          // ArrayProxy
+          assert( params[i].arraySizes.empty() );
+          if ( params[i].len == "null-terminated" )
+          {
+            assert( params[i].type.type == "char" );
+            if ( params[i].optional )
+            {
+              argumentList +=
+                "Optional<const std::string> " + name +
+                ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+              hasDefaultAssignment = true;
+            }
+            else
+            {
+              argumentList += "const std::string & " + name;
+            }
+          }
+          else
+          {
+            // an ArrayProxy also covers no data, so any optional flag can be ignored here
+            std::string type = stripPostfix( composedType, " *" );
+            size_t      pos  = type.find( "void" );
+            if ( pos != std::string::npos )
+            {
+              type.replace( pos, 4, "T" );
+            }
+            argumentList += "ArrayProxy<" + type + "> const & " + name;
+            if ( params[i].optional && !definition )
+            {
+              argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
+              hasDefaultAssignment = true;
+            }
+          }
+        }
       }
       else if ( params[i].type.isNonConstPointer() )
       {
         assert( withDispatcher || !isHandleType( params[i].type.type ) );
         assert( params[i].len.empty() && !params[i].optional );
-        argumentList += params[i].type.prefix + ( params[i].type.prefix.empty() ? "" : " " ) + params[i].type.type +
-                        " & " + params[i].name;
+        assert( endsWith( composedType, " *" ) );
+        argumentList += stripPostfix( composedType, " *" ) + " & " + params[i].name;
       }
       else
       {
         assert( params[i].type.isValue() );
-        argumentList += params[i].type.compose() + " " + params[i].name + generateCArraySizes( params[i].arraySizes );
+        argumentList += composedType + " " + params[i].name + generateCArraySizes( params[i].arraySizes );
       }
       argumentList += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment
                                      ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT"
@@ -2178,7 +2163,31 @@ ${toStringChecks}
 )";
 
     std::string allFlags, toStringChecks;
-    std::tie( allFlags, toStringChecks ) = generateBitmaskValues( bitmaskIt, bitmaskBitsIt );
+    bool        encounteredFlag = false;
+    std::string previousEnter, previousLeave;
+    for ( auto const & value : bitmaskBitsIt->second.values )
+    {
+      auto [enter, leave]   = generateProtection( value.extension, value.protect );
+      std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
+      allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " +
+                  ( encounteredFlag ? "| " : "  " ) + bitmaskIt->second.type + "( " + strippedEnumName +
+                  "::" + valueName + " )";
+      if ( value.singleBit )
+      {
+        toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " +
+                          strippedEnumName + "::" + valueName + " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
+      }
+      encounteredFlag = true;
+      previousEnter   = enter;
+      previousLeave   = leave;
+    }
+    if ( !previousLeave.empty() )
+    {
+      assert( endsWith( previousLeave, "\n" ) );
+      toStringChecks += previousLeave;
+      previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
+      allFlags += "\n" + previousLeave;
+    }
 
     str += replaceWithMap( bitmaskValuesTemplate,
                            { { "alias", alias },
@@ -2210,43 +2219,6 @@ std::string VulkanHppGenerator::generateBitmasks( std::vector<RequireData> const
     }
   }
   return addTitleAndProtection( title, str );
-}
-
-std::pair<std::string, std::string>
-  VulkanHppGenerator::generateBitmaskValues( std::map<std::string, BitmaskData>::const_iterator bitmaskIt,
-                                             std::map<std::string, EnumData>::const_iterator    bitmaskBitsIt ) const
-{
-  assert( !bitmaskBitsIt->second.values.empty() );
-
-  std::string allFlags, toStringChecks;
-  std::string strippedEnumName = stripPrefix( bitmaskBitsIt->first, "Vk" );
-  bool        encounteredFlag  = false;
-  std::string previousEnter, previousLeave;
-  for ( auto const & value : bitmaskBitsIt->second.values )
-  {
-    auto [enter, leave]   = generateProtection( value.extension, value.protect );
-    std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
-    allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " +
-                ( encounteredFlag ? "| " : "  " ) + bitmaskIt->second.type + "( " + strippedEnumName +
-                "::" + valueName + " )";
-    if ( value.singleBit )
-    {
-      toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " +
-                        strippedEnumName + "::" + valueName + " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
-    }
-    encounteredFlag = true;
-    previousEnter   = enter;
-    previousLeave   = leave;
-  }
-  if ( !previousLeave.empty() )
-  {
-    assert( endsWith( previousLeave, "\n" ) );
-    toStringChecks += previousLeave;
-    previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
-    allFlags += "\n" + previousLeave;
-  }
-
-  return std::make_pair( allFlags, toStringChecks );
 }
 
 std::string VulkanHppGenerator::generateCallArgumentsEnhanced( std::vector<ParamData> const & params,
@@ -2312,8 +2284,8 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::string const
         {
           assert( param.arraySizes.size() == 1 );
           assert( param.type.isValue() );
-          assert( param.type.prefix == "const" );
-          argument = "reinterpret_cast<const " + param.type.type + "*>( " + argument + " )";
+          assert( param.type.postfix.empty() );
+          argument = "reinterpret_cast<" + param.type.compose( false ) + " *>( " + argument + " )";
         }
         else if ( param.type.isValue() )
         {
@@ -2322,8 +2294,7 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::string const
         else
         {
           assert( !param.type.postfix.empty() );
-          argument = "reinterpret_cast<" + ( param.type.prefix.empty() ? "" : param.type.prefix ) + " " +
-                     param.type.type + " " + param.type.postfix + ">( " + argument + " )";
+          argument = "reinterpret_cast<" + param.type.compose( false ) + ">( " + argument + " )";
         }
       }
       arguments += argument;
@@ -2393,7 +2364,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer(
     }
     if ( beginsWith( param.type.type, "Vk" ) )
     {
-      argument = "reinterpret_cast<const " + param.type.type + " *>( " + argument + " )";
+      argument = "reinterpret_cast<" + param.type.compose( false ) + ">( " + argument + " )";
     }
   }
   else if ( param.len == "null-terminated" )
@@ -2424,8 +2395,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer(
     }
     if ( beginsWith( param.type.type, "Vk" ) || ( param.type.type == "void" ) )
     {
-      argument = "reinterpret_cast<" + param.type.prefix + " " + param.type.type + " " + param.type.postfix + ">( " +
-                 argument + " )";
+      argument = "reinterpret_cast<" + param.type.compose( false ) + ">( " + argument + " )";
     }
   }
   return argument;
@@ -2444,7 +2414,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
     assert( param.arraySizes.empty() );
     if ( beginsWith( param.type.type, "Vk" ) )
     {
-      argument = "reinterpret_cast<" + param.type.type + " *>( &" + name + " )";
+      argument = "reinterpret_cast<" + param.type.compose( false ) + ">( &" + name + " )";
     }
     else
     {
@@ -2474,7 +2444,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
       if ( ( beginsWith( param.type.type, "Vk" ) || ( param.type.type == "void" ) ) &&
            ( !raiiHandleMemberFunction || !isHandleType( param.type.type ) ) )
       {
-        argument = "reinterpret_cast<" + param.type.type + " *>( " + argument + " )";
+        argument = "reinterpret_cast<" + param.type.compose( false ) + ">( " + argument + " )";
       }
     }
   }
@@ -2505,7 +2475,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
       }
       else
       {
-        argument = "static_cast<" + param.type.type + ">( " + param.name + " )";
+        argument = "static_cast<" + param.type.compose( false ) + ">( " + param.name + " )";
       }
     }
     else
@@ -2513,7 +2483,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
       assert( !param.optional );
       assert( param.arraySizes.size() == 1 );
       assert( param.type.prefix == "const" );
-      argument = "reinterpret_cast<const " + param.type.type + " *>( " + param.name + " )";
+      argument = "reinterpret_cast<" + param.type.compose( false ) + " *>( " + param.name + " )";
     }
   }
   else
@@ -2639,10 +2609,7 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
   auto commandIt = m_commands.find( command );
   assert( commandIt != m_commands.end() );
 
-  std::string strippedName = startLowerCase( stripPrefix( commandIt->first, "vk" ) );
-
-  std::string str = "\n";
-  str += generateCommand( commandIt->first, commandIt->second, handle.empty() ? 0 : 1, true );
+  std::string str = "\n" + generateCommand( commandIt->first, commandIt->second, handle.empty() ? 0 : 1, true );
 
   // special handling for destroy functions, filter out alias functions
   std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, 1, m_tags );

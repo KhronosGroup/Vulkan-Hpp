@@ -397,13 +397,6 @@ private:
   std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
-  std::string generateArgumentEnhancedConstPointer( ParamData const & param,
-                                                    bool              definition,
-                                                    bool              withAllocators,
-#if !defined( NDEBUG )
-                                                    bool withDispatcher,
-#endif
-                                                    bool & hasDefaultAssignment ) const;
   std::string generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                             std::set<size_t> const &       skippedParams,
                                             std::set<size_t> const &       singularParams,
@@ -417,9 +410,6 @@ private:
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
                                 std::string const &              title ) const;
-  std::pair<std::string, std::string>
-              generateBitmaskValues( std::map<std::string, BitmaskData>::const_iterator bitmaskIt,
-                                     std::map<std::string, EnumData>::const_iterator    bitmaskBitsIt ) const;
   std::string generateCallArgumentsEnhanced( std::vector<ParamData> const & params,
                                              size_t                         initialSkipCount,
                                              bool                           nonConstPointerAsNullptr,

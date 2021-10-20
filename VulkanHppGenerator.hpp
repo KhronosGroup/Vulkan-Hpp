@@ -409,11 +409,11 @@ private:
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
                                 std::string const &              title ) const;
-  std::string generateCallArgumentsEnhanced( std::vector<ParamData> const & params,
-                                             size_t                         initialSkipCount,
-                                             bool                           nonConstPointerAsNullptr,
-                                             std::set<size_t> const &       singularParams,
-                                             bool                           raiiHandleMemberFunction ) const;
+  std::string generateCallArgumentsEnhanced( CommandData const &      commandData,
+                                             size_t                   initialSkipCount,
+                                             bool                     nonConstPointerAsNullptr,
+                                             std::set<size_t> const & singularParams,
+                                             bool                     raiiHandleMemberFunction ) const;
   std::string generateCallArgumentsRAIIFactory( std::vector<ParamData> const & params,
                                                 size_t                         initialSkipCount,
                                                 std::set<size_t> const &       skippedParameters,
@@ -1090,18 +1090,21 @@ private:
                                                  std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::pair<std::string, std::string>
               generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const;
-  std::string generateRAIIHandleConstructorArgument( ParamData const & param, bool definition, bool singular ) const;
-  std::string generateRAIIHandleConstructorArguments( std::pair<std::string, HandleData> const & handle,
-                                                      std::vector<ParamData> const &             params,
-                                                      bool                                       singular,
-                                                      bool                                       skipLeadingGrandParent,
-                                                      bool encounteredArgument ) const;
-  std::string generateRAIIHandleConstructorCallArguments( std::string const &            handleType,
-                                                          std::vector<ParamData> const & params,
-                                                          bool                           nonConstPointerAsNullptr,
-                                                          std::set<size_t> const &       singularParams,
-                                                          bool                           allocatorIsMemberVariable,
-                                                          bool                           skipLeadingGrandParent ) const;
+  std::string generateRAIIHandleConstructorArgument( ParamData const & param,
+                                                     bool              definition,
+                                                     bool              singular,
+                                                     bool              takesOwnership ) const;
+  std::string generateRAIIHandleConstructorArguments(
+    std::pair<std::string, HandleData> const &                             handle,
+    std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
+    bool                                                                   singular,
+    bool                                                                   takesOwnership ) const;
+  std::string generateRAIIHandleConstructorCallArguments(
+    std::pair<std::string, HandleData> const &                             handle,
+    std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
+    bool                                                                   nonConstPointerAsNullptr,
+    std::set<size_t> const &                                               singularParams,
+    bool                                                                   allocatorIsMemberVariable ) const;
   std::string generateRAIIHandleConstructorEnumerate( std::pair<std::string, HandleData> const &         handle,
                                                       std::map<std::string, CommandData>::const_iterator constructorIt,
                                                       std::vector<ParamData>::const_iterator             handleParamIt,
@@ -1109,10 +1112,10 @@ private:
                                                       std::string const &                                enter,
                                                       std::string const &                                leave ) const;
   std::string
-              generateRAIIHandleConstructorInitializationList( std::string const &                                handleType,
+              generateRAIIHandleConstructorInitializationList( std::pair<std::string, HandleData> const &         handle,
                                                                std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                std::map<std::string, CommandData>::const_iterator destructorIt,
-                                                               bool hasSecondLevelCommands ) const;
+                                                               bool takesOwnership ) const;
   std::string generateRAIIHandleConstructorResult( std::pair<std::string, HandleData> const &         handle,
                                                    std::map<std::string, CommandData>::const_iterator constructorIt,
                                                    std::string const &                                enter,
@@ -1136,10 +1139,12 @@ private:
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle,
                                          std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
-              generateRAIIHandleDestructor( std::string const &                                handleType,
+              generateRAIIHandleDestructor( std::string const &                                parentType,
+                                            std::string const &                                handleType,
                                             std::map<std::string, CommandData>::const_iterator destructorIt,
                                             std::string const &                                enter ) const;
-  std::string generateRAIIHandleDestructorCallArguments( std::string const &            handleType,
+  std::string generateRAIIHandleDestructorCallArguments( std::string const &            parentType,
+                                                         std::string const &            handleType,
                                                          std::vector<ParamData> const & params ) const;
   std::tuple<std::string, std::string, std::string, std::string>
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
@@ -1149,7 +1154,6 @@ private:
   std::string generateRAIIHandleSingularConstructorArguments(
     std::pair<std::string, HandleData> const &         handle,
     std::map<std::string, CommandData>::const_iterator constructorIt ) const;
-  std::string generateRAIIHandleUpgradeConstructor( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleVectorSizeCheck( std::string const &                           name,
                                                  CommandData const &                           commandData,
                                                  size_t                                        initialSkipCount,
@@ -1188,7 +1192,8 @@ private:
                                        size_t                                        initialSkipCount,
                                        std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                        std::set<size_t> const &                      skippedParams ) const;
-  std::string getPlatform( std::string const & title ) const;
+  std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
+  std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &   params,
                                                      std::map<size_t, size_t> const & vectorParamIndices,
@@ -1292,6 +1297,7 @@ private:
                                                    std::set<std::string> const &    handleCommands,
                                                    std::set<std::string> &          listedCommands ) const;
   void                     setVulkanLicenseHeader( int line, std::string const & comment );
+  bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
   std::string              toString( TypeCategory category );
 
 private:

@@ -6066,6 +6066,11 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
                                                                                 CommandData const & commandData,
                                                                                 std::string const & firstArg ) const
 {
+  if (commandName == "vkGetInstanceProcAddr")
+  {
+    // Don't overwite vkGetInstanceProcAddr with NULL.
+    return "";
+  }
   std::string str = "      " + commandName + " = PFN_" + commandName + "( vkGet" +
                     ( ( firstArg == "device" ) ? "Device" : "Instance" ) + "ProcAddr( " + firstArg + ", \"" +
                     commandName + "\" ) );\n";

@@ -612,11 +612,6 @@ private:
                                                                          size_t              initialSkipCount,
                                                                          bool                definition,
                                                                          size_t              returnParamIndex ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle0Vector( std::string const & name,
-                                                                                CommandData const & commandData,
-                                                                                size_t              initialSkipCount,
-                                                                                bool                definition,
-                                                                                size_t returnParamIndex ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle1Vector(
     std::string const &               name,
     CommandData const &               commandData,
@@ -877,10 +872,7 @@ private:
   std::string                         generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
                                                           std::set<std::string> &                    listedHandles,
                                                           std::set<std::string> const &              specialFunctions ) const;
-  std::string                         generateRAIIHandleCommand( std::string const &           command,
-                                                                 size_t                        initialSkipCount,
-                                                                 std::set<std::string> const & specialFunctions,
-                                                                 bool                          definition ) const;
+  std::string generateRAIIHandleCommand( std::string const & command, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle,
                                                      std::set<std::string> const & specialFunctions ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
@@ -927,19 +919,19 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors1ReturnVoidSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors1ReturnVoidVector(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return(
     std::map<std::string, CommandData>::const_iterator commandIt,

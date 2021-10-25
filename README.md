@@ -530,7 +530,18 @@ If you have not defined your own ```VULKAN_HPP_DEFAULT_DISPATCHER```, and have `
 
 #### VULKAN_HPP_DISABLE_ENHANCED_MODE
 
-When this is defined before including vulkan.hpp, you essentially disable all enhanced functionality. All you then get is improved compile time error detection, via scoped enums, usage of the helper class ```vk::Flags``` for bitmasks, wrapper structs for all vulkan structs providing default initialization, and the helper class ```vk::StructureChain``` for compile-time construction of structure chains.
+When this is defined before including vulkan.hpp, you essentially disable all enhanced functionality. All you then get is
+* improved compile time error detection, via scoped enums;
+* usage of the helper class ```vk::Flags``` for bitmasks;
+* wrapper structs for all vulkan structs providing default initialization;
+* the helper class ```vk::StructureChain``` for compile-time construction of structure chains.
+
+If this is not defined, you additionally get
+* enhanced versions of the commands (consuming `vk::ArrayProxy<>`, simplifying handling of array data; returning requested data; throwing exceptions on errors (as long as `VULKAN_HPP_NO_EXCEPTIONS` is not defined);
+* enhanced structure constructors (as long as `VULKAN_HPP_NO_STRUCT_CONSTRUCTORS` is not defined) (consuming `vk::ArrayProxyNoTemporaries<>`);
+* enhanced setter functions on some members of structs (consuming `vk::ArrayProxyNoTemporaries<>`);
+* the helper classes `vk::ArrayProxy<>` and `vk::ArrayProxyNoTemporaries<>`
+* all the RAII-stuff in vulkan_raii.hpp
 
 #### VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
 

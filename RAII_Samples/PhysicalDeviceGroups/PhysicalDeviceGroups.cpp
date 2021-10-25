@@ -48,8 +48,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "physicalDevices:\n";
       for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
-        vk::raii::PhysicalDevice physicalDevice( static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ),
-                                                 instance.getDispatcher() );
+        vk::raii::PhysicalDevice physicalDevice(
+          instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ) );
         std::cout << "\t\t" << j << " : " << physicalDevice.getProperties().deviceName << "\n";
       }
       std::cout << "\t"
@@ -58,8 +58,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( 1 < groupProperties[i].physicalDeviceCount )
       {
-        vk::raii::PhysicalDevice physicalDevice( static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ),
-                                                 instance.getDispatcher() );
+        vk::raii::PhysicalDevice physicalDevice(
+          instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ) );
 
         // get the QueueFamilyProperties of the first PhysicalDevice
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();

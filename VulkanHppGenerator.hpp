@@ -475,23 +475,18 @@ private:
                                              CommandData const & commandData,
                                              size_t              initialSkipCount,
                                              bool                definition,
-                                             size_t              nonConstPointerIndex ) const;
+                                             size_t              returnParamIndex ) const;
   std::string generateCommandResultGetHandleUnique( std::string const & name,
                                                     CommandData const & commandData,
                                                     size_t              initialSkipCount,
                                                     bool                definition,
-                                                    size_t              nonConstPointerIndex ) const;
+                                                    size_t              returnParamIndex ) const;
   std::string generateCommandResultGetSingularAndValue( std::string const &              name,
                                                         CommandData const &              commandData,
                                                         size_t                           initialSkipCount,
                                                         bool                             definition,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateCommandResultGetTwoValues( std::string const & name,
-                                                 CommandData const & commandData,
-                                                 size_t              initialSkipCount,
-                                                 bool                definition,
-                                                 std::vector<size_t> returnParamIndices ) const;
   std::string generateCommandResultGetTwoVectors( std::string const &              name,
                                                   CommandData const &              commandData,
                                                   size_t                           initialSkipCount,

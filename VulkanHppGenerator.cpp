@@ -779,12 +779,15 @@ std::string VulkanHppGenerator::generateThrowResultException() const
   cases.pop_back();  // remove last newline
 
   const std::string throwTemplate = R"(
-  [[noreturn]] static void throwResultException( Result result, char const * message )
+  namespace
   {
-    switch ( result )
+    [[noreturn]] void throwResultException( Result result, char const * message )
     {
+      switch ( result )
+      {
 ${cases}
-      default: throw SystemError( make_error_code( result ) );
+        default: throw SystemError( make_error_code( result ) );
+      }
     }
   }
 )";

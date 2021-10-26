@@ -22,17 +22,22 @@ Vulkan-Hpp requires a C++11 capable compiler to compile. The following compilers
 
 To build the local samples and tests you'll have to clone this repository and run CMake to generate the required build files
 
-0.) Ensure that you have CMake and git installed and accessible from a shell. Ensure that you have installed the Vulkan SDK. Optionally install clang-format >= 10.0 to get a nicely formatted Vulkan-Hpp header.
-1.) Open a shell which provides git and clone the repository with:
-```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
-2.) Change the current directory to the newly created Vulkan-Hpp directory.
-3.) Create a new folder named ```build``` and change the current directory to the newly created folder.
-4.) Create a build environment with CMake
-```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -G "<generator>" ..```
-For a full list of generators execute ```cmake -G```.
-5.) Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
+0. Install dependencies.
+   * Ensure that you have CMake and git installed and accessible from a shell.
+   * Ensure that you have installed the Vulkan SDK.
+   * Optionally install clang-format >= 11.0 to get a nicely formatted Vulkan-Hpp header.
+1. Open a shell which provides git and clone the repository with:
+    ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
+2. Change the current directory to the newly created Vulkan-Hpp directory.
+3. Create a new folder named ```build``` and change the current directory to the newly created folder.
+4. Create a build environment with CMake
+    ```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -G "<generator>" ..```
+    For a full list of generators execute ```cmake -G```.
+    *  To rebuild `vulkan.hpp` from the `vk.xml`  XML registry file, add the
+       `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
+5. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
 
-optional) To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
+Optional: To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
 
 ### Optional Features
 

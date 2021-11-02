@@ -12143,6 +12143,13 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 
     // get the EnumData entry in enum map
     std::map<std::string, EnumData>::iterator enumIt = m_enums.find( name );
+    if ( enumIt == m_enums.end() )
+    {
+      enumIt = std::find_if( m_enums.begin(),
+                             m_enums.end(),
+                             [&name]( std::pair<std::string, EnumData> const & enumData )
+                             { return enumData.second.alias == name; } );
+    }
     check( enumIt != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
     check( enumIt->second.values.empty(), line, "enum <" + name + "> already holds values" );
 

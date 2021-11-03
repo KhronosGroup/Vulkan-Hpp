@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 196, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 197, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -3413,6 +3413,19 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetShaderInfoAMD( device, pipeline, shaderStage, infoType, pInfoSize, pInfo );
     }
 
+    //=== VK_KHR_dynamic_rendering ===
+
+    void vkCmdBeginRenderingKHR( VkCommandBuffer            commandBuffer,
+                                 const VkRenderingInfoKHR * pRenderingInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdBeginRenderingKHR( commandBuffer, pRenderingInfo );
+    }
+
+    void vkCmdEndRenderingKHR( VkCommandBuffer commandBuffer ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdEndRenderingKHR( commandBuffer );
+    }
+
 #  if defined( VK_USE_PLATFORM_GGP )
     //=== VK_GGP_stream_descriptor_surface ===
 
@@ -6701,6 +6714,14 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<DeviceGroupRenderPassBeginInfo, RenderingInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
   struct StructExtends<DeviceGroupCommandBufferBeginInfo, CommandBufferBeginInfo>
   {
     enum
@@ -7745,6 +7766,46 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264ProfileEXT, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7805,12 +7866,92 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<VideoEncodeH265ProfileEXT, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265ProfileEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265ProfileEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265ProfileEXT, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265ProfileEXT, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
   template <>
   struct StructExtends<VideoDecodeH264ProfileEXT, VideoProfileKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264ProfileEXT, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264ProfileEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264ProfileEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264ProfileEXT, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH264ProfileEXT, BufferCreateInfo>
   {
     enum
     {
@@ -7878,6 +8019,96 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_texture_gather_bias_lod ===
   template <>
   struct StructExtends<TextureLODGatherFormatPropertiesAMD, ImageFormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_dynamic_rendering ===
+  template <>
+  struct StructExtends<PipelineRenderingCreateInfoKHR, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDynamicRenderingFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDynamicRenderingFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<CommandBufferInheritanceRenderingInfoKHR, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<RenderingFragmentShadingRateAttachmentInfoKHR, RenderingInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<RenderingFragmentDensityMapAttachmentInfoEXT, RenderingInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AttachmentSampleCountInfoAMD, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AttachmentSampleCountInfoAMD, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, RenderingInfoKHR>
   {
     enum
     {
@@ -8837,6 +9068,46 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_video_decode_h265 ===
   template <>
   struct StructExtends<VideoDecodeH265ProfileEXT, VideoProfileKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoDecodeH265ProfileEXT, BufferCreateInfo>
   {
     enum
     {
@@ -11210,6 +11481,10 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_AMD_shader_info ===
     PFN_vkGetShaderInfoAMD vkGetShaderInfoAMD = 0;
 
+    //=== VK_KHR_dynamic_rendering ===
+    PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR = 0;
+    PFN_vkCmdEndRenderingKHR   vkCmdEndRenderingKHR   = 0;
+
 #if defined( VK_USE_PLATFORM_GGP )
     //=== VK_GGP_stream_descriptor_surface ===
     PFN_vkCreateStreamDescriptorSurfaceGGP vkCreateStreamDescriptorSurfaceGGP = 0;
@@ -12274,6 +12549,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_AMD_shader_info ===
       vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetInstanceProcAddr( instance, "vkGetShaderInfoAMD" ) );
+
+      //=== VK_KHR_dynamic_rendering ===
+      vkCmdBeginRenderingKHR =
+        PFN_vkCmdBeginRenderingKHR( vkGetInstanceProcAddr( instance, "vkCmdBeginRenderingKHR" ) );
+      vkCmdEndRenderingKHR = PFN_vkCmdEndRenderingKHR( vkGetInstanceProcAddr( instance, "vkCmdEndRenderingKHR" ) );
 
 #if defined( VK_USE_PLATFORM_GGP )
       //=== VK_GGP_stream_descriptor_surface ===
@@ -13354,6 +13634,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_AMD_shader_info ===
       vkGetShaderInfoAMD = PFN_vkGetShaderInfoAMD( vkGetDeviceProcAddr( device, "vkGetShaderInfoAMD" ) );
+
+      //=== VK_KHR_dynamic_rendering ===
+      vkCmdBeginRenderingKHR = PFN_vkCmdBeginRenderingKHR( vkGetDeviceProcAddr( device, "vkCmdBeginRenderingKHR" ) );
+      vkCmdEndRenderingKHR   = PFN_vkCmdEndRenderingKHR( vkGetDeviceProcAddr( device, "vkCmdEndRenderingKHR" ) );
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_NV_external_memory_win32 ===

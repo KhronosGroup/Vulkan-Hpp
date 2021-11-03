@@ -515,6 +515,18 @@ namespace VULKAN_HPP_NAMESPACE
   struct ShaderResourceUsageAMD;
   struct ShaderStatisticsInfoAMD;
 
+  //=== VK_KHR_dynamic_rendering ===
+  struct RenderingInfoKHR;
+  struct RenderingAttachmentInfoKHR;
+  struct PipelineRenderingCreateInfoKHR;
+  struct PhysicalDeviceDynamicRenderingFeaturesKHR;
+  struct CommandBufferInheritanceRenderingInfoKHR;
+  struct RenderingFragmentShadingRateAttachmentInfoKHR;
+  struct RenderingFragmentDensityMapAttachmentInfoEXT;
+  struct AttachmentSampleCountInfoAMD;
+  using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
+  struct MultiviewPerViewAttributesInfoNVX;
+
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
   struct StreamDescriptorSurfaceCreateInfoGGP;
@@ -3932,6 +3944,20 @@ namespace VULKAN_HPP_NAMESPACE
                                       uint32_t                         stride,
                                       Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
       VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_KHR_dynamic_rendering ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void beginRenderingKHR( const VULKAN_HPP_NAMESPACE::RenderingInfoKHR * pRenderingInfo,
+                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void beginRenderingKHR( const VULKAN_HPP_NAMESPACE::RenderingInfoKHR & renderingInfo,
+                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void endRenderingKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_KHR_device_group ===
 

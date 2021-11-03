@@ -398,7 +398,18 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoDecodeH264SessionParametersAddInfoEXT = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT,
     eVideoDecodeH264DpbSlotInfoEXT              = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_DPB_SLOT_INFO_EXT,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eTextureLodGatherFormatPropertiesAMD = VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
+    eTextureLodGatherFormatPropertiesAMD       = VK_STRUCTURE_TYPE_TEXTURE_LOD_GATHER_FORMAT_PROPERTIES_AMD,
+    eRenderingInfoKHR                          = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+    eRenderingAttachmentInfoKHR                = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+    ePipelineRenderingCreateInfoKHR            = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR,
+    ePhysicalDeviceDynamicRenderingFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
+    eCommandBufferInheritanceRenderingInfoKHR  = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR,
+    eRenderingFragmentShadingRateAttachmentInfoKHR =
+      VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
+    eRenderingFragmentDensityMapAttachmentInfoEXT =
+      VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_INFO_EXT,
+    eAttachmentSampleCountInfoAMD      = VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_AMD,
+    eMultiviewPerViewAttributesInfoNVX = VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_ATTRIBUTES_INFO_NVX,
 #if defined( VK_USE_PLATFORM_GGP )
     eStreamDescriptorSurfaceCreateInfoGGP = VK_STRUCTURE_TYPE_STREAM_DESCRIPTOR_SURFACE_CREATE_INFO_GGP,
 #endif /*VK_USE_PLATFORM_GGP*/
@@ -882,6 +893,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAttachmentDescriptionStencilLayoutKHR   = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                 = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
     eAttachmentReferenceStencilLayoutKHR     = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_STENCIL_LAYOUT_KHR,
+    eAttachmentSampleCountInfoNV             = VK_STRUCTURE_TYPE_ATTACHMENT_SAMPLE_COUNT_INFO_NV,
     eBindBufferMemoryDeviceGroupInfoKHR      = VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_DEVICE_GROUP_INFO_KHR,
     eBindBufferMemoryInfoKHR                 = VK_STRUCTURE_TYPE_BIND_BUFFER_MEMORY_INFO_KHR,
     eBindImageMemoryDeviceGroupInfoKHR       = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_DEVICE_GROUP_INFO_KHR,
@@ -1294,6 +1306,18 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoDecodeH264DpbSlotInfoEXT: return "VideoDecodeH264DpbSlotInfoEXT";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eTextureLodGatherFormatPropertiesAMD: return "TextureLodGatherFormatPropertiesAMD";
+      case StructureType::eRenderingInfoKHR: return "RenderingInfoKHR";
+      case StructureType::eRenderingAttachmentInfoKHR: return "RenderingAttachmentInfoKHR";
+      case StructureType::ePipelineRenderingCreateInfoKHR: return "PipelineRenderingCreateInfoKHR";
+      case StructureType::ePhysicalDeviceDynamicRenderingFeaturesKHR:
+        return "PhysicalDeviceDynamicRenderingFeaturesKHR";
+      case StructureType::eCommandBufferInheritanceRenderingInfoKHR: return "CommandBufferInheritanceRenderingInfoKHR";
+      case StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR:
+        return "RenderingFragmentShadingRateAttachmentInfoKHR";
+      case StructureType::eRenderingFragmentDensityMapAttachmentInfoEXT:
+        return "RenderingFragmentDensityMapAttachmentInfoEXT";
+      case StructureType::eAttachmentSampleCountInfoAMD: return "AttachmentSampleCountInfoAMD";
+      case StructureType::eMultiviewPerViewAttributesInfoNVX: return "MultiviewPerViewAttributesInfoNVX";
 #if defined( VK_USE_PLATFORM_GGP )
       case StructureType::eStreamDescriptorSurfaceCreateInfoGGP: return "StreamDescriptorSurfaceCreateInfoGGP";
 #endif /*VK_USE_PLATFORM_GGP*/
@@ -3891,11 +3915,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
-    eDisableOptimization                    = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
-    eAllowDerivatives                       = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
-    eDerivative                             = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
-    eViewIndexFromDeviceIndex               = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eDispatchBase                           = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eDisableOptimization      = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+    eAllowDerivatives         = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
+    eDerivative               = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
+    eViewIndexFromDeviceIndex = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
+    eDispatchBase             = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR =
+      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
+    eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT =
+      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
     eRayTracingNoNullAnyHitShadersKHR       = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
     eRayTracingNoNullClosestHitShadersKHR   = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,
     eRayTracingNoNullMissShadersKHR         = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR,
@@ -3925,6 +3953,10 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits::eDerivative: return "Derivative";
       case PipelineCreateFlagBits::eViewIndexFromDeviceIndex: return "ViewIndexFromDeviceIndex";
       case PipelineCreateFlagBits::eDispatchBase: return "DispatchBase";
+      case PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR:
+        return "VkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR";
+      case PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT:
+        return "VkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT";
       case PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR: return "RayTracingNoNullAnyHitShadersKHR";
       case PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR: return "RayTracingNoNullClosestHitShadersKHR";
       case PipelineCreateFlagBits::eRayTracingNoNullMissShadersKHR: return "RayTracingNoNullMissShadersKHR";
@@ -4504,6 +4536,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eStore    = VK_ATTACHMENT_STORE_OP_STORE,
     eDontCare = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+    eNoneKHR  = VK_ATTACHMENT_STORE_OP_NONE_KHR,
     eNoneEXT  = VK_ATTACHMENT_STORE_OP_NONE_EXT,
     eNoneQCOM = VK_ATTACHMENT_STORE_OP_NONE_QCOM
   };
@@ -4514,7 +4547,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case AttachmentStoreOp::eStore: return "Store";
       case AttachmentStoreOp::eDontCare: return "DontCare";
-      case AttachmentStoreOp::eNoneEXT: return "NoneEXT";
+      case AttachmentStoreOp::eNoneKHR: return "NoneKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6026,36 +6059,6 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h265 ===
 
-  enum class VideoEncodeH265CapabilityFlagBitsEXT : VkVideoEncodeH265CapabilityFlagsEXT
-  {
-    eWeightedBiPredImplicit     = VK_VIDEO_ENCODE_H265_CAPABILITY_WEIGHTED_BI_PRED_IMPLICIT_BIT_EXT,
-    eTransform8X8               = VK_VIDEO_ENCODE_H265_CAPABILITY_TRANSFORM_8X8_BIT_EXT,
-    eChromaQpOffset             = VK_VIDEO_ENCODE_H265_CAPABILITY_CHROMA_QP_OFFSET_BIT_EXT,
-    eSecondChromaQpOffset       = VK_VIDEO_ENCODE_H265_CAPABILITY_SECOND_CHROMA_QP_OFFSET_BIT_EXT,
-    eDeblockingFilterDisabled   = VK_VIDEO_ENCODE_H265_CAPABILITY_DEBLOCKING_FILTER_DISABLED_BIT_EXT,
-    eDeblockingFilterEnabled    = VK_VIDEO_ENCODE_H265_CAPABILITY_DEBLOCKING_FILTER_ENABLED_BIT_EXT,
-    eDeblockingFilterPartial    = VK_VIDEO_ENCODE_H265_CAPABILITY_DEBLOCKING_FILTER_PARTIAL_BIT_EXT,
-    eMultipleSlicePerFrame      = VK_VIDEO_ENCODE_H265_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT,
-    eEvenlyDistributedSliceSize = VK_VIDEO_ENCODE_H265_CAPABILITY_EVENLY_DISTRIBUTED_SLICE_SIZE_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case VideoEncodeH265CapabilityFlagBitsEXT::eWeightedBiPredImplicit: return "WeightedBiPredImplicit";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eTransform8X8: return "Transform8X8";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eChromaQpOffset: return "ChromaQpOffset";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eSecondChromaQpOffset: return "SecondChromaQpOffset";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterDisabled: return "DeblockingFilterDisabled";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterEnabled: return "DeblockingFilterEnabled";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterPartial: return "DeblockingFilterPartial";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eMultipleSlicePerFrame: return "MultipleSlicePerFrame";
-      case VideoEncodeH265CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize: return "EvenlyDistributedSliceSize";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
   enum class VideoEncodeH265InputModeFlagBitsEXT : VkVideoEncodeH265InputModeFlagsEXT
   {
     eFrame  = VK_VIDEO_ENCODE_H265_INPUT_MODE_FRAME_BIT_EXT,
@@ -6110,6 +6113,15 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoEncodeH265CtbSizeFlagBitsEXT::e64: return "64";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
+  }
+
+  enum class VideoEncodeH265CapabilityFlagBitsEXT : VkVideoEncodeH265CapabilityFlagsEXT
+  {
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagBitsEXT )
+  {
+    return "(void)";
   }
 
   enum class VideoEncodeH265CreateFlagBitsEXT : VkVideoEncodeH265CreateFlagsEXT
@@ -6169,6 +6181,26 @@ namespace VULKAN_HPP_NAMESPACE
       case ShaderInfoTypeAMD::eStatistics: return "Statistics";
       case ShaderInfoTypeAMD::eBinary: return "Binary";
       case ShaderInfoTypeAMD::eDisassembly: return "Disassembly";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_dynamic_rendering ===
+
+  enum class RenderingFlagBitsKHR : VkRenderingFlagsKHR
+  {
+    eContentsSecondaryCommandBuffers = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR,
+    eSuspending                      = VK_RENDERING_SUSPENDING_BIT_KHR,
+    eResuming                        = VK_RENDERING_RESUMING_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( RenderingFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case RenderingFlagBitsKHR::eContentsSecondaryCommandBuffers: return "ContentsSecondaryCommandBuffers";
+      case RenderingFlagBitsKHR::eSuspending: return "Suspending";
+      case RenderingFlagBitsKHR::eResuming: return "Resuming";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -9793,6 +9825,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( PipelineCreateFlagBits::eDisableOptimization ) | VkFlags( PipelineCreateFlagBits::eAllowDerivatives ) |
         VkFlags( PipelineCreateFlagBits::eDerivative ) | VkFlags( PipelineCreateFlagBits::eViewIndexFromDeviceIndex ) |
         VkFlags( PipelineCreateFlagBits::eDispatchBase ) |
+        VkFlags( PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR ) |
+        VkFlags( PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullMissShadersKHR ) |
@@ -9849,6 +9883,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ViewIndexFromDeviceIndex | ";
     if ( value & PipelineCreateFlagBits::eDispatchBase )
       result += "DispatchBase | ";
+    if ( value & PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR )
+      result += "VkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR | ";
+    if ( value & PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT )
+      result += "VkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT | ";
     if ( value & PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR )
       result += "RayTracingNoNullAnyHitShadersKHR | ";
     if ( value & PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR )
@@ -12846,73 +12884,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   using VideoEncodeH265CapabilityFlagsEXT = Flags<VideoEncodeH265CapabilityFlagBitsEXT>;
 
-  template <>
-  struct FlagTraits<VideoEncodeH265CapabilityFlagBitsEXT>
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagsEXT )
   {
-    enum : VkFlags
-    {
-      allFlags = VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eWeightedBiPredImplicit ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eTransform8X8 ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eChromaQpOffset ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eSecondChromaQpOffset ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterDisabled ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterEnabled ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterPartial ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eMultipleSlicePerFrame ) |
-                 VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
-    };
-  };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator|(
-    VideoEncodeH265CapabilityFlagBitsEXT bit0, VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator&(
-    VideoEncodeH265CapabilityFlagBitsEXT bit0, VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator^(
-    VideoEncodeH265CapabilityFlagBitsEXT bit0, VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT
-    operator~( VideoEncodeH265CapabilityFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265CapabilityFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagsEXT value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eWeightedBiPredImplicit )
-      result += "WeightedBiPredImplicit | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eTransform8X8 )
-      result += "Transform8X8 | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eChromaQpOffset )
-      result += "ChromaQpOffset | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eSecondChromaQpOffset )
-      result += "SecondChromaQpOffset | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterDisabled )
-      result += "DeblockingFilterDisabled | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterEnabled )
-      result += "DeblockingFilterEnabled | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eDeblockingFilterPartial )
-      result += "DeblockingFilterPartial | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eMultipleSlicePerFrame )
-      result += "MultipleSlicePerFrame | ";
-    if ( value & VideoEncodeH265CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
-      result += "EvenlyDistributedSliceSize | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+    return "{}";
   }
 
   using VideoEncodeH265InputModeFlagsEXT = Flags<VideoEncodeH265InputModeFlagBitsEXT>;
@@ -13144,6 +13118,59 @@ namespace VULKAN_HPP_NAMESPACE
     return "{}";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_KHR_dynamic_rendering ===
+
+  using RenderingFlagsKHR = Flags<RenderingFlagBitsKHR>;
+
+  template <>
+  struct FlagTraits<RenderingFlagBitsKHR>
+  {
+    enum : VkFlags
+    {
+      allFlags = VkFlags( RenderingFlagBitsKHR::eContentsSecondaryCommandBuffers ) |
+                 VkFlags( RenderingFlagBitsKHR::eSuspending ) | VkFlags( RenderingFlagBitsKHR::eResuming )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlagsKHR operator|( RenderingFlagBitsKHR bit0,
+                                                                      RenderingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return RenderingFlagsKHR( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlagsKHR operator&( RenderingFlagBitsKHR bit0,
+                                                                      RenderingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return RenderingFlagsKHR( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlagsKHR operator^( RenderingFlagBitsKHR bit0,
+                                                                      RenderingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return RenderingFlagsKHR( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlagsKHR operator~( RenderingFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( RenderingFlagsKHR( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( RenderingFlagsKHR value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & RenderingFlagBitsKHR::eContentsSecondaryCommandBuffers )
+      result += "ContentsSecondaryCommandBuffers | ";
+    if ( value & RenderingFlagBitsKHR::eSuspending )
+      result += "Suspending | ";
+    if ( value & RenderingFlagBitsKHR::eResuming )
+      result += "Resuming | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
 
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===

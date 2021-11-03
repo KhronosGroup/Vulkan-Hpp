@@ -5040,6 +5040,140 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using AttachmentReferenceStencilLayoutKHR = AttachmentReferenceStencilLayout;
 
+  struct AttachmentSampleCountInfoAMD
+  {
+    using NativeType = VkAttachmentSampleCountInfoAMD;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eAttachmentSampleCountInfoAMD;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      AttachmentSampleCountInfoAMD( uint32_t                                          colorAttachmentCount_    = {},
+                                    const VULKAN_HPP_NAMESPACE::SampleCountFlagBits * pColorAttachmentSamples_ = {},
+                                    VULKAN_HPP_NAMESPACE::SampleCountFlagBits         depthStencilAttachmentSamples_ =
+                                      VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1 ) VULKAN_HPP_NOEXCEPT
+      : colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachmentSamples( pColorAttachmentSamples_ )
+      , depthStencilAttachmentSamples( depthStencilAttachmentSamples_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      AttachmentSampleCountInfoAMD( AttachmentSampleCountInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    AttachmentSampleCountInfoAMD( VkAttachmentSampleCountInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
+      : AttachmentSampleCountInfoAMD( *reinterpret_cast<AttachmentSampleCountInfoAMD const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    AttachmentSampleCountInfoAMD( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<
+                                    const VULKAN_HPP_NAMESPACE::SampleCountFlagBits> const & colorAttachmentSamples_,
+                                  VULKAN_HPP_NAMESPACE::SampleCountFlagBits depthStencilAttachmentSamples_ =
+                                    VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1 )
+      : colorAttachmentCount( static_cast<uint32_t>( colorAttachmentSamples_.size() ) )
+      , pColorAttachmentSamples( colorAttachmentSamples_.data() )
+      , depthStencilAttachmentSamples( depthStencilAttachmentSamples_ )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    AttachmentSampleCountInfoAMD & operator=( AttachmentSampleCountInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    AttachmentSampleCountInfoAMD & operator=( VkAttachmentSampleCountInfoAMD const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    AttachmentSampleCountInfoAMD & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    AttachmentSampleCountInfoAMD & setColorAttachmentCount( uint32_t colorAttachmentCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount = colorAttachmentCount_;
+      return *this;
+    }
+
+    AttachmentSampleCountInfoAMD & setPColorAttachmentSamples(
+      const VULKAN_HPP_NAMESPACE::SampleCountFlagBits * pColorAttachmentSamples_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pColorAttachmentSamples = pColorAttachmentSamples_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    AttachmentSampleCountInfoAMD & setColorAttachmentSamples(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::SampleCountFlagBits> const &
+        colorAttachmentSamples_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount    = static_cast<uint32_t>( colorAttachmentSamples_.size() );
+      pColorAttachmentSamples = colorAttachmentSamples_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    AttachmentSampleCountInfoAMD & setDepthStencilAttachmentSamples(
+      VULKAN_HPP_NAMESPACE::SampleCountFlagBits depthStencilAttachmentSamples_ ) VULKAN_HPP_NOEXCEPT
+    {
+      depthStencilAttachmentSamples = depthStencilAttachmentSamples_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkAttachmentSampleCountInfoAMD const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkAttachmentSampleCountInfoAMD *>( this );
+    }
+
+    operator VkAttachmentSampleCountInfoAMD &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkAttachmentSampleCountInfoAMD *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( AttachmentSampleCountInfoAMD const & ) const = default;
+#else
+    bool operator==( AttachmentSampleCountInfoAMD const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( colorAttachmentCount == rhs.colorAttachmentCount ) &&
+             ( pColorAttachmentSamples == rhs.pColorAttachmentSamples ) &&
+             ( depthStencilAttachmentSamples == rhs.depthStencilAttachmentSamples );
+    }
+
+    bool operator!=( AttachmentSampleCountInfoAMD const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType               sType = StructureType::eAttachmentSampleCountInfoAMD;
+    const void *                                      pNext = {};
+    uint32_t                                          colorAttachmentCount    = {};
+    const VULKAN_HPP_NAMESPACE::SampleCountFlagBits * pColorAttachmentSamples = {};
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits         depthStencilAttachmentSamples =
+      VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD ) ==
+                              sizeof( VkAttachmentSampleCountInfoAMD ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::AttachmentSampleCountInfoAMD>::value,
+    "AttachmentSampleCountInfoAMD is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eAttachmentSampleCountInfoAMD>
+  {
+    using Type = AttachmentSampleCountInfoAMD;
+  };
+  using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
+
   struct Extent2D
   {
     using NativeType = VkExtent2D;
@@ -11704,6 +11838,194 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::eCommandBufferInheritanceRenderPassTransformInfoQCOM>
   {
     using Type = CommandBufferInheritanceRenderPassTransformInfoQCOM;
+  };
+
+  struct CommandBufferInheritanceRenderingInfoKHR
+  {
+    using NativeType = VkCommandBufferInheritanceRenderingInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eCommandBufferInheritanceRenderingInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceRenderingInfoKHR(
+      VULKAN_HPP_NAMESPACE::RenderingFlagsKHR   flags_                   = {},
+      uint32_t                                  viewMask_                = {},
+      uint32_t                                  colorAttachmentCount_    = {},
+      const VULKAN_HPP_NAMESPACE::Format *      pColorAttachmentFormats_ = {},
+      VULKAN_HPP_NAMESPACE::Format              depthAttachmentFormat_   = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::Format              stencilAttachmentFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1 )
+      VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , viewMask( viewMask_ )
+      , colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachmentFormats( pColorAttachmentFormats_ )
+      , depthAttachmentFormat( depthAttachmentFormat_ )
+      , stencilAttachmentFormat( stencilAttachmentFormat_ )
+      , rasterizationSamples( rasterizationSamples_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR CommandBufferInheritanceRenderingInfoKHR(
+      CommandBufferInheritanceRenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    CommandBufferInheritanceRenderingInfoKHR( VkCommandBufferInheritanceRenderingInfoKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : CommandBufferInheritanceRenderingInfoKHR(
+          *reinterpret_cast<CommandBufferInheritanceRenderingInfoKHR const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    CommandBufferInheritanceRenderingInfoKHR(
+      VULKAN_HPP_NAMESPACE::RenderingFlagsKHR                                                   flags_,
+      uint32_t                                                                                  viewMask_,
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Format> const & colorAttachmentFormats_,
+      VULKAN_HPP_NAMESPACE::Format              depthAttachmentFormat_   = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::Format              stencilAttachmentFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1 )
+      : flags( flags_ )
+      , viewMask( viewMask_ )
+      , colorAttachmentCount( static_cast<uint32_t>( colorAttachmentFormats_.size() ) )
+      , pColorAttachmentFormats( colorAttachmentFormats_.data() )
+      , depthAttachmentFormat( depthAttachmentFormat_ )
+      , stencilAttachmentFormat( stencilAttachmentFormat_ )
+      , rasterizationSamples( rasterizationSamples_ )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      operator=( CommandBufferInheritanceRenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      operator=( VkCommandBufferInheritanceRenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::CommandBufferInheritanceRenderingInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    CommandBufferInheritanceRenderingInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setFlags( VULKAN_HPP_NAMESPACE::RenderingFlagsKHR flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR & setViewMask( uint32_t viewMask_ ) VULKAN_HPP_NOEXCEPT
+    {
+      viewMask = viewMask_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setColorAttachmentCount( uint32_t colorAttachmentCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount = colorAttachmentCount_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setPColorAttachmentFormats( const VULKAN_HPP_NAMESPACE::Format * pColorAttachmentFormats_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pColorAttachmentFormats = pColorAttachmentFormats_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    CommandBufferInheritanceRenderingInfoKHR & setColorAttachmentFormats(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Format> const &
+        colorAttachmentFormats_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount    = static_cast<uint32_t>( colorAttachmentFormats_.size() );
+      pColorAttachmentFormats = colorAttachmentFormats_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setDepthAttachmentFormat( VULKAN_HPP_NAMESPACE::Format depthAttachmentFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      depthAttachmentFormat = depthAttachmentFormat_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setStencilAttachmentFormat( VULKAN_HPP_NAMESPACE::Format stencilAttachmentFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      stencilAttachmentFormat = stencilAttachmentFormat_;
+      return *this;
+    }
+
+    CommandBufferInheritanceRenderingInfoKHR &
+      setRasterizationSamples( VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples_ ) VULKAN_HPP_NOEXCEPT
+    {
+      rasterizationSamples = rasterizationSamples_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkCommandBufferInheritanceRenderingInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkCommandBufferInheritanceRenderingInfoKHR *>( this );
+    }
+
+    operator VkCommandBufferInheritanceRenderingInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkCommandBufferInheritanceRenderingInfoKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( CommandBufferInheritanceRenderingInfoKHR const & ) const = default;
+#else
+    bool operator==( CommandBufferInheritanceRenderingInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) &&
+             ( viewMask == rhs.viewMask ) && ( colorAttachmentCount == rhs.colorAttachmentCount ) &&
+             ( pColorAttachmentFormats == rhs.pColorAttachmentFormats ) &&
+             ( depthAttachmentFormat == rhs.depthAttachmentFormat ) &&
+             ( stencilAttachmentFormat == rhs.stencilAttachmentFormat ) &&
+             ( rasterizationSamples == rhs.rasterizationSamples );
+    }
+
+    bool operator!=( CommandBufferInheritanceRenderingInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType       sType    = StructureType::eCommandBufferInheritanceRenderingInfoKHR;
+    const void *                              pNext    = {};
+    VULKAN_HPP_NAMESPACE::RenderingFlagsKHR   flags    = {};
+    uint32_t                                  viewMask = {};
+    uint32_t                                  colorAttachmentCount    = {};
+    const VULKAN_HPP_NAMESPACE::Format *      pColorAttachmentFormats = {};
+    VULKAN_HPP_NAMESPACE::Format              depthAttachmentFormat   = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::Format              stencilAttachmentFormat = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples    = VULKAN_HPP_NAMESPACE::SampleCountFlagBits::e1;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CommandBufferInheritanceRenderingInfoKHR ) ==
+                              sizeof( VkCommandBufferInheritanceRenderingInfoKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::CommandBufferInheritanceRenderingInfoKHR>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CommandBufferInheritanceRenderingInfoKHR>::value,
+    "CommandBufferInheritanceRenderingInfoKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eCommandBufferInheritanceRenderingInfoKHR>
+  {
+    using Type = CommandBufferInheritanceRenderingInfoKHR;
   };
 
   struct Viewport
@@ -36995,6 +37317,107 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = MultisamplePropertiesEXT;
   };
 
+  struct MultiviewPerViewAttributesInfoNVX
+  {
+    using NativeType = VkMultiviewPerViewAttributesInfoNVX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eMultiviewPerViewAttributesInfoNVX;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR MultiviewPerViewAttributesInfoNVX(
+      VULKAN_HPP_NAMESPACE::Bool32 perViewAttributes_              = {},
+      VULKAN_HPP_NAMESPACE::Bool32 perViewAttributesPositionXOnly_ = {} ) VULKAN_HPP_NOEXCEPT
+      : perViewAttributes( perViewAttributes_ )
+      , perViewAttributesPositionXOnly( perViewAttributesPositionXOnly_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      MultiviewPerViewAttributesInfoNVX( MultiviewPerViewAttributesInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    MultiviewPerViewAttributesInfoNVX( VkMultiviewPerViewAttributesInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : MultiviewPerViewAttributesInfoNVX( *reinterpret_cast<MultiviewPerViewAttributesInfoNVX const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    MultiviewPerViewAttributesInfoNVX &
+      operator=( MultiviewPerViewAttributesInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    MultiviewPerViewAttributesInfoNVX & operator=( VkMultiviewPerViewAttributesInfoNVX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::MultiviewPerViewAttributesInfoNVX const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    MultiviewPerViewAttributesInfoNVX & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    MultiviewPerViewAttributesInfoNVX &
+      setPerViewAttributes( VULKAN_HPP_NAMESPACE::Bool32 perViewAttributes_ ) VULKAN_HPP_NOEXCEPT
+    {
+      perViewAttributes = perViewAttributes_;
+      return *this;
+    }
+
+    MultiviewPerViewAttributesInfoNVX & setPerViewAttributesPositionXOnly(
+      VULKAN_HPP_NAMESPACE::Bool32 perViewAttributesPositionXOnly_ ) VULKAN_HPP_NOEXCEPT
+    {
+      perViewAttributesPositionXOnly = perViewAttributesPositionXOnly_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkMultiviewPerViewAttributesInfoNVX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkMultiviewPerViewAttributesInfoNVX *>( this );
+    }
+
+    operator VkMultiviewPerViewAttributesInfoNVX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkMultiviewPerViewAttributesInfoNVX *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( MultiviewPerViewAttributesInfoNVX const & ) const = default;
+#else
+    bool operator==( MultiviewPerViewAttributesInfoNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( perViewAttributes == rhs.perViewAttributes ) &&
+             ( perViewAttributesPositionXOnly == rhs.perViewAttributesPositionXOnly );
+    }
+
+    bool operator!=( MultiviewPerViewAttributesInfoNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType             = StructureType::eMultiviewPerViewAttributesInfoNVX;
+    const void *                        pNext             = {};
+    VULKAN_HPP_NAMESPACE::Bool32        perViewAttributes = {};
+    VULKAN_HPP_NAMESPACE::Bool32        perViewAttributesPositionXOnly = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::MultiviewPerViewAttributesInfoNVX ) ==
+                              sizeof( VkMultiviewPerViewAttributesInfoNVX ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::MultiviewPerViewAttributesInfoNVX>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::MultiviewPerViewAttributesInfoNVX>::value,
+    "MultiviewPerViewAttributesInfoNVX is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eMultiviewPerViewAttributesInfoNVX>
+  {
+    using Type = MultiviewPerViewAttributesInfoNVX;
+  };
+
   struct MutableDescriptorTypeListVALVE
   {
     using NativeType = VkMutableDescriptorTypeListVALVE;
@@ -41865,6 +42288,99 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceDrmPropertiesEXT>
   {
     using Type = PhysicalDeviceDrmPropertiesEXT;
+  };
+
+  struct PhysicalDeviceDynamicRenderingFeaturesKHR
+  {
+    using NativeType = VkPhysicalDeviceDynamicRenderingFeaturesKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceDynamicRenderingFeaturesKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDynamicRenderingFeaturesKHR(
+      VULKAN_HPP_NAMESPACE::Bool32 dynamicRendering_ = {} ) VULKAN_HPP_NOEXCEPT : dynamicRendering( dynamicRendering_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDynamicRenderingFeaturesKHR(
+      PhysicalDeviceDynamicRenderingFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceDynamicRenderingFeaturesKHR( VkPhysicalDeviceDynamicRenderingFeaturesKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceDynamicRenderingFeaturesKHR(
+          *reinterpret_cast<PhysicalDeviceDynamicRenderingFeaturesKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceDynamicRenderingFeaturesKHR &
+      operator=( PhysicalDeviceDynamicRenderingFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceDynamicRenderingFeaturesKHR &
+      operator=( VkPhysicalDeviceDynamicRenderingFeaturesKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingFeaturesKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PhysicalDeviceDynamicRenderingFeaturesKHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PhysicalDeviceDynamicRenderingFeaturesKHR &
+      setDynamicRendering( VULKAN_HPP_NAMESPACE::Bool32 dynamicRendering_ ) VULKAN_HPP_NOEXCEPT
+    {
+      dynamicRendering = dynamicRendering_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceDynamicRenderingFeaturesKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDynamicRenderingFeaturesKHR *>( this );
+    }
+
+    operator VkPhysicalDeviceDynamicRenderingFeaturesKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDynamicRenderingFeaturesKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceDynamicRenderingFeaturesKHR const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceDynamicRenderingFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( dynamicRendering == rhs.dynamicRendering );
+    }
+
+    bool operator!=( PhysicalDeviceDynamicRenderingFeaturesKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType            = StructureType::ePhysicalDeviceDynamicRenderingFeaturesKHR;
+    void *                              pNext            = {};
+    VULKAN_HPP_NAMESPACE::Bool32        dynamicRendering = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingFeaturesKHR ) ==
+                              sizeof( VkPhysicalDeviceDynamicRenderingFeaturesKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingFeaturesKHR>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingFeaturesKHR>::value,
+    "PhysicalDeviceDynamicRenderingFeaturesKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceDynamicRenderingFeaturesKHR>
+  {
+    using Type = PhysicalDeviceDynamicRenderingFeaturesKHR;
   };
 
   struct PhysicalDeviceExclusiveScissorFeaturesNV
@@ -60824,6 +61340,163 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PipelineRasterizationStateStreamCreateInfoEXT;
   };
 
+  struct PipelineRenderingCreateInfoKHR
+  {
+    using NativeType = VkPipelineRenderingCreateInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePipelineRenderingCreateInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PipelineRenderingCreateInfoKHR(
+      uint32_t                             viewMask_                = {},
+      uint32_t                             colorAttachmentCount_    = {},
+      const VULKAN_HPP_NAMESPACE::Format * pColorAttachmentFormats_ = {},
+      VULKAN_HPP_NAMESPACE::Format         depthAttachmentFormat_   = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::Format         stencilAttachmentFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined )
+      VULKAN_HPP_NOEXCEPT
+      : viewMask( viewMask_ )
+      , colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachmentFormats( pColorAttachmentFormats_ )
+      , depthAttachmentFormat( depthAttachmentFormat_ )
+      , stencilAttachmentFormat( stencilAttachmentFormat_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR
+      PipelineRenderingCreateInfoKHR( PipelineRenderingCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PipelineRenderingCreateInfoKHR( VkPipelineRenderingCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PipelineRenderingCreateInfoKHR( *reinterpret_cast<PipelineRenderingCreateInfoKHR const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PipelineRenderingCreateInfoKHR(
+      uint32_t                                                                                  viewMask_,
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Format> const & colorAttachmentFormats_,
+      VULKAN_HPP_NAMESPACE::Format depthAttachmentFormat_   = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      VULKAN_HPP_NAMESPACE::Format stencilAttachmentFormat_ = VULKAN_HPP_NAMESPACE::Format::eUndefined )
+      : viewMask( viewMask_ )
+      , colorAttachmentCount( static_cast<uint32_t>( colorAttachmentFormats_.size() ) )
+      , pColorAttachmentFormats( colorAttachmentFormats_.data() )
+      , depthAttachmentFormat( depthAttachmentFormat_ )
+      , stencilAttachmentFormat( stencilAttachmentFormat_ )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PipelineRenderingCreateInfoKHR &
+      operator=( PipelineRenderingCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PipelineRenderingCreateInfoKHR & operator=( VkPipelineRenderingCreateInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PipelineRenderingCreateInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    PipelineRenderingCreateInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    PipelineRenderingCreateInfoKHR & setViewMask( uint32_t viewMask_ ) VULKAN_HPP_NOEXCEPT
+    {
+      viewMask = viewMask_;
+      return *this;
+    }
+
+    PipelineRenderingCreateInfoKHR & setColorAttachmentCount( uint32_t colorAttachmentCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount = colorAttachmentCount_;
+      return *this;
+    }
+
+    PipelineRenderingCreateInfoKHR &
+      setPColorAttachmentFormats( const VULKAN_HPP_NAMESPACE::Format * pColorAttachmentFormats_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pColorAttachmentFormats = pColorAttachmentFormats_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PipelineRenderingCreateInfoKHR & setColorAttachmentFormats(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Format> const &
+        colorAttachmentFormats_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount    = static_cast<uint32_t>( colorAttachmentFormats_.size() );
+      pColorAttachmentFormats = colorAttachmentFormats_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    PipelineRenderingCreateInfoKHR &
+      setDepthAttachmentFormat( VULKAN_HPP_NAMESPACE::Format depthAttachmentFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      depthAttachmentFormat = depthAttachmentFormat_;
+      return *this;
+    }
+
+    PipelineRenderingCreateInfoKHR &
+      setStencilAttachmentFormat( VULKAN_HPP_NAMESPACE::Format stencilAttachmentFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      stencilAttachmentFormat = stencilAttachmentFormat_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPipelineRenderingCreateInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPipelineRenderingCreateInfoKHR *>( this );
+    }
+
+    operator VkPipelineRenderingCreateInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPipelineRenderingCreateInfoKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PipelineRenderingCreateInfoKHR const & ) const = default;
+#else
+    bool operator==( PipelineRenderingCreateInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( viewMask == rhs.viewMask ) &&
+             ( colorAttachmentCount == rhs.colorAttachmentCount ) &&
+             ( pColorAttachmentFormats == rhs.pColorAttachmentFormats ) &&
+             ( depthAttachmentFormat == rhs.depthAttachmentFormat ) &&
+             ( stencilAttachmentFormat == rhs.stencilAttachmentFormat );
+    }
+
+    bool operator!=( PipelineRenderingCreateInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType  sType                   = StructureType::ePipelineRenderingCreateInfoKHR;
+    const void *                         pNext                   = {};
+    uint32_t                             viewMask                = {};
+    uint32_t                             colorAttachmentCount    = {};
+    const VULKAN_HPP_NAMESPACE::Format * pColorAttachmentFormats = {};
+    VULKAN_HPP_NAMESPACE::Format         depthAttachmentFormat   = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    VULKAN_HPP_NAMESPACE::Format         stencilAttachmentFormat = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PipelineRenderingCreateInfoKHR ) ==
+                              sizeof( VkPipelineRenderingCreateInfoKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PipelineRenderingCreateInfoKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PipelineRenderingCreateInfoKHR>::value,
+    "PipelineRenderingCreateInfoKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePipelineRenderingCreateInfoKHR>
+  {
+    using Type = PipelineRenderingCreateInfoKHR;
+  };
+
   struct PipelineRepresentativeFragmentTestStateCreateInfoNV
   {
     using NativeType = VkPipelineRepresentativeFragmentTestStateCreateInfoNV;
@@ -67275,6 +67948,551 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::eRenderPassTransformBeginInfoQCOM>
   {
     using Type = RenderPassTransformBeginInfoQCOM;
+  };
+
+  struct RenderingAttachmentInfoKHR
+  {
+    using NativeType = VkRenderingAttachmentInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eRenderingAttachmentInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    RenderingAttachmentInfoKHR(
+      VULKAN_HPP_NAMESPACE::ImageView           imageView_          = {},
+      VULKAN_HPP_NAMESPACE::ImageLayout         imageLayout_        = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+      VULKAN_HPP_NAMESPACE::ResolveModeFlagBits resolveMode_        = VULKAN_HPP_NAMESPACE::ResolveModeFlagBits::eNone,
+      VULKAN_HPP_NAMESPACE::ImageView           resolveImageView_   = {},
+      VULKAN_HPP_NAMESPACE::ImageLayout         resolveImageLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+      VULKAN_HPP_NAMESPACE::AttachmentLoadOp    loadOp_             = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad,
+      VULKAN_HPP_NAMESPACE::AttachmentStoreOp   storeOp_            = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore,
+      VULKAN_HPP_NAMESPACE::ClearValue          clearValue_         = {} ) VULKAN_HPP_NOEXCEPT
+      : imageView( imageView_ )
+      , imageLayout( imageLayout_ )
+      , resolveMode( resolveMode_ )
+      , resolveImageView( resolveImageView_ )
+      , resolveImageLayout( resolveImageLayout_ )
+      , loadOp( loadOp_ )
+      , storeOp( storeOp_ )
+      , clearValue( clearValue_ )
+    {}
+
+    RenderingAttachmentInfoKHR( RenderingAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingAttachmentInfoKHR( VkRenderingAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : RenderingAttachmentInfoKHR( *reinterpret_cast<RenderingAttachmentInfoKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    RenderingAttachmentInfoKHR & operator=( RenderingAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingAttachmentInfoKHR & operator=( VkRenderingAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    RenderingAttachmentInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR & setImageView( VULKAN_HPP_NAMESPACE::ImageView imageView_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageView = imageView_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR & setImageLayout( VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageLayout = imageLayout_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR &
+      setResolveMode( VULKAN_HPP_NAMESPACE::ResolveModeFlagBits resolveMode_ ) VULKAN_HPP_NOEXCEPT
+    {
+      resolveMode = resolveMode_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR &
+      setResolveImageView( VULKAN_HPP_NAMESPACE::ImageView resolveImageView_ ) VULKAN_HPP_NOEXCEPT
+    {
+      resolveImageView = resolveImageView_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR &
+      setResolveImageLayout( VULKAN_HPP_NAMESPACE::ImageLayout resolveImageLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      resolveImageLayout = resolveImageLayout_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR & setLoadOp( VULKAN_HPP_NAMESPACE::AttachmentLoadOp loadOp_ ) VULKAN_HPP_NOEXCEPT
+    {
+      loadOp = loadOp_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR & setStoreOp( VULKAN_HPP_NAMESPACE::AttachmentStoreOp storeOp_ ) VULKAN_HPP_NOEXCEPT
+    {
+      storeOp = storeOp_;
+      return *this;
+    }
+
+    RenderingAttachmentInfoKHR &
+      setClearValue( VULKAN_HPP_NAMESPACE::ClearValue const & clearValue_ ) VULKAN_HPP_NOEXCEPT
+    {
+      clearValue = clearValue_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkRenderingAttachmentInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkRenderingAttachmentInfoKHR *>( this );
+    }
+
+    operator VkRenderingAttachmentInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkRenderingAttachmentInfoKHR *>( this );
+    }
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType       sType              = StructureType::eRenderingAttachmentInfoKHR;
+    const void *                              pNext              = {};
+    VULKAN_HPP_NAMESPACE::ImageView           imageView          = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout         imageLayout        = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::ResolveModeFlagBits resolveMode        = VULKAN_HPP_NAMESPACE::ResolveModeFlagBits::eNone;
+    VULKAN_HPP_NAMESPACE::ImageView           resolveImageView   = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout         resolveImageLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::AttachmentLoadOp    loadOp             = VULKAN_HPP_NAMESPACE::AttachmentLoadOp::eLoad;
+    VULKAN_HPP_NAMESPACE::AttachmentStoreOp   storeOp            = VULKAN_HPP_NAMESPACE::AttachmentStoreOp::eStore;
+    VULKAN_HPP_NAMESPACE::ClearValue          clearValue         = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR ) ==
+                              sizeof( VkRenderingAttachmentInfoKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR>::value,
+                            "RenderingAttachmentInfoKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eRenderingAttachmentInfoKHR>
+  {
+    using Type = RenderingAttachmentInfoKHR;
+  };
+
+  struct RenderingFragmentDensityMapAttachmentInfoEXT
+  {
+    using NativeType = VkRenderingFragmentDensityMapAttachmentInfoEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eRenderingFragmentDensityMapAttachmentInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR RenderingFragmentDensityMapAttachmentInfoEXT(
+      VULKAN_HPP_NAMESPACE::ImageView   imageView_   = {},
+      VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined )
+      VULKAN_HPP_NOEXCEPT
+      : imageView( imageView_ )
+      , imageLayout( imageLayout_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR RenderingFragmentDensityMapAttachmentInfoEXT(
+      RenderingFragmentDensityMapAttachmentInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingFragmentDensityMapAttachmentInfoEXT( VkRenderingFragmentDensityMapAttachmentInfoEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : RenderingFragmentDensityMapAttachmentInfoEXT(
+          *reinterpret_cast<RenderingFragmentDensityMapAttachmentInfoEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    RenderingFragmentDensityMapAttachmentInfoEXT &
+      operator=( RenderingFragmentDensityMapAttachmentInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingFragmentDensityMapAttachmentInfoEXT &
+      operator=( VkRenderingFragmentDensityMapAttachmentInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::RenderingFragmentDensityMapAttachmentInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    RenderingFragmentDensityMapAttachmentInfoEXT & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderingFragmentDensityMapAttachmentInfoEXT &
+      setImageView( VULKAN_HPP_NAMESPACE::ImageView imageView_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageView = imageView_;
+      return *this;
+    }
+
+    RenderingFragmentDensityMapAttachmentInfoEXT &
+      setImageLayout( VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageLayout = imageLayout_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkRenderingFragmentDensityMapAttachmentInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkRenderingFragmentDensityMapAttachmentInfoEXT *>( this );
+    }
+
+    operator VkRenderingFragmentDensityMapAttachmentInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkRenderingFragmentDensityMapAttachmentInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( RenderingFragmentDensityMapAttachmentInfoEXT const & ) const = default;
+#else
+    bool operator==( RenderingFragmentDensityMapAttachmentInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( imageView == rhs.imageView ) &&
+             ( imageLayout == rhs.imageLayout );
+    }
+
+    bool operator!=( RenderingFragmentDensityMapAttachmentInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType       = StructureType::eRenderingFragmentDensityMapAttachmentInfoEXT;
+    const void *                        pNext       = {};
+    VULKAN_HPP_NAMESPACE::ImageView     imageView   = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout   imageLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderingFragmentDensityMapAttachmentInfoEXT ) ==
+                              sizeof( VkRenderingFragmentDensityMapAttachmentInfoEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderingFragmentDensityMapAttachmentInfoEXT>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderingFragmentDensityMapAttachmentInfoEXT>::value,
+    "RenderingFragmentDensityMapAttachmentInfoEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eRenderingFragmentDensityMapAttachmentInfoEXT>
+  {
+    using Type = RenderingFragmentDensityMapAttachmentInfoEXT;
+  };
+
+  struct RenderingFragmentShadingRateAttachmentInfoKHR
+  {
+    using NativeType = VkRenderingFragmentShadingRateAttachmentInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR RenderingFragmentShadingRateAttachmentInfoKHR(
+      VULKAN_HPP_NAMESPACE::ImageView   imageView_                      = {},
+      VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_                    = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+      VULKAN_HPP_NAMESPACE::Extent2D    shadingRateAttachmentTexelSize_ = {} ) VULKAN_HPP_NOEXCEPT
+      : imageView( imageView_ )
+      , imageLayout( imageLayout_ )
+      , shadingRateAttachmentTexelSize( shadingRateAttachmentTexelSize_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR RenderingFragmentShadingRateAttachmentInfoKHR(
+      RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingFragmentShadingRateAttachmentInfoKHR( VkRenderingFragmentShadingRateAttachmentInfoKHR const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : RenderingFragmentShadingRateAttachmentInfoKHR(
+          *reinterpret_cast<RenderingFragmentShadingRateAttachmentInfoKHR const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    RenderingFragmentShadingRateAttachmentInfoKHR &
+      operator=( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingFragmentShadingRateAttachmentInfoKHR &
+      operator=( VkRenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    RenderingFragmentShadingRateAttachmentInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderingFragmentShadingRateAttachmentInfoKHR &
+      setImageView( VULKAN_HPP_NAMESPACE::ImageView imageView_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageView = imageView_;
+      return *this;
+    }
+
+    RenderingFragmentShadingRateAttachmentInfoKHR &
+      setImageLayout( VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageLayout = imageLayout_;
+      return *this;
+    }
+
+    RenderingFragmentShadingRateAttachmentInfoKHR & setShadingRateAttachmentTexelSize(
+      VULKAN_HPP_NAMESPACE::Extent2D const & shadingRateAttachmentTexelSize_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shadingRateAttachmentTexelSize = shadingRateAttachmentTexelSize_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkRenderingFragmentShadingRateAttachmentInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkRenderingFragmentShadingRateAttachmentInfoKHR *>( this );
+    }
+
+    operator VkRenderingFragmentShadingRateAttachmentInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkRenderingFragmentShadingRateAttachmentInfoKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( RenderingFragmentShadingRateAttachmentInfoKHR const & ) const = default;
+#else
+    bool operator==( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( imageView == rhs.imageView ) &&
+             ( imageLayout == rhs.imageLayout ) &&
+             ( shadingRateAttachmentTexelSize == rhs.shadingRateAttachmentTexelSize );
+    }
+
+    bool operator!=( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType       = StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR;
+    const void *                        pNext       = {};
+    VULKAN_HPP_NAMESPACE::ImageView     imageView   = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout   imageLayout = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::Extent2D      shadingRateAttachmentTexelSize = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR ) ==
+                              sizeof( VkRenderingFragmentShadingRateAttachmentInfoKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR>::value,
+    "RenderingFragmentShadingRateAttachmentInfoKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR>
+  {
+    using Type = RenderingFragmentShadingRateAttachmentInfoKHR;
+  };
+
+  struct RenderingInfoKHR
+  {
+    using NativeType = VkRenderingInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eRenderingInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR_14 RenderingInfoKHR(
+      VULKAN_HPP_NAMESPACE::RenderingFlagsKHR                  flags_                = {},
+      VULKAN_HPP_NAMESPACE::Rect2D                             renderArea_           = {},
+      uint32_t                                                 layerCount_           = {},
+      uint32_t                                                 viewMask_             = {},
+      uint32_t                                                 colorAttachmentCount_ = {},
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pColorAttachments_    = {},
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pDepthAttachment_     = {},
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pStencilAttachment_   = {} ) VULKAN_HPP_NOEXCEPT
+      : flags( flags_ )
+      , renderArea( renderArea_ )
+      , layerCount( layerCount_ )
+      , viewMask( viewMask_ )
+      , colorAttachmentCount( colorAttachmentCount_ )
+      , pColorAttachments( pColorAttachments_ )
+      , pDepthAttachment( pDepthAttachment_ )
+      , pStencilAttachment( pStencilAttachment_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR_14 RenderingInfoKHR( RenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingInfoKHR( VkRenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : RenderingInfoKHR( *reinterpret_cast<RenderingInfoKHR const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    RenderingInfoKHR(
+      VULKAN_HPP_NAMESPACE::RenderingFlagsKHR flags_,
+      VULKAN_HPP_NAMESPACE::Rect2D            renderArea_,
+      uint32_t                                layerCount_,
+      uint32_t                                viewMask_,
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR> const &
+                                                               colorAttachments_,
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pDepthAttachment_   = {},
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pStencilAttachment_ = {} )
+      : flags( flags_ )
+      , renderArea( renderArea_ )
+      , layerCount( layerCount_ )
+      , viewMask( viewMask_ )
+      , colorAttachmentCount( static_cast<uint32_t>( colorAttachments_.size() ) )
+      , pColorAttachments( colorAttachments_.data() )
+      , pDepthAttachment( pDepthAttachment_ )
+      , pStencilAttachment( pStencilAttachment_ )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    RenderingInfoKHR & operator=( RenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingInfoKHR & operator=( VkRenderingInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::RenderingInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    RenderingInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setFlags( VULKAN_HPP_NAMESPACE::RenderingFlagsKHR flags_ ) VULKAN_HPP_NOEXCEPT
+    {
+      flags = flags_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setRenderArea( VULKAN_HPP_NAMESPACE::Rect2D const & renderArea_ ) VULKAN_HPP_NOEXCEPT
+    {
+      renderArea = renderArea_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setLayerCount( uint32_t layerCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      layerCount = layerCount_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setViewMask( uint32_t viewMask_ ) VULKAN_HPP_NOEXCEPT
+    {
+      viewMask = viewMask_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setColorAttachmentCount( uint32_t colorAttachmentCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount = colorAttachmentCount_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setPColorAttachments(
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pColorAttachments_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pColorAttachments = pColorAttachments_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    RenderingInfoKHR & setColorAttachments(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR> const &
+        colorAttachments_ ) VULKAN_HPP_NOEXCEPT
+    {
+      colorAttachmentCount = static_cast<uint32_t>( colorAttachments_.size() );
+      pColorAttachments    = colorAttachments_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    RenderingInfoKHR & setPDepthAttachment( const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pDepthAttachment_ )
+      VULKAN_HPP_NOEXCEPT
+    {
+      pDepthAttachment = pDepthAttachment_;
+      return *this;
+    }
+
+    RenderingInfoKHR & setPStencilAttachment(
+      const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pStencilAttachment_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pStencilAttachment = pStencilAttachment_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkRenderingInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkRenderingInfoKHR *>( this );
+    }
+
+    operator VkRenderingInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkRenderingInfoKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( RenderingInfoKHR const & ) const = default;
+#else
+    bool operator==( RenderingInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) &&
+             ( renderArea == rhs.renderArea ) && ( layerCount == rhs.layerCount ) && ( viewMask == rhs.viewMask ) &&
+             ( colorAttachmentCount == rhs.colorAttachmentCount ) && ( pColorAttachments == rhs.pColorAttachments ) &&
+             ( pDepthAttachment == rhs.pDepthAttachment ) && ( pStencilAttachment == rhs.pStencilAttachment );
+    }
+
+    bool operator!=( RenderingInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType                      sType                = StructureType::eRenderingInfoKHR;
+    const void *                                             pNext                = {};
+    VULKAN_HPP_NAMESPACE::RenderingFlagsKHR                  flags                = {};
+    VULKAN_HPP_NAMESPACE::Rect2D                             renderArea           = {};
+    uint32_t                                                 layerCount           = {};
+    uint32_t                                                 viewMask             = {};
+    uint32_t                                                 colorAttachmentCount = {};
+    const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pColorAttachments    = {};
+    const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pDepthAttachment     = {};
+    const VULKAN_HPP_NAMESPACE::RenderingAttachmentInfoKHR * pStencilAttachment   = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderingInfoKHR ) == sizeof( VkRenderingInfoKHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderingInfoKHR>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderingInfoKHR>::value,
+                            "RenderingInfoKHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eRenderingInfoKHR>
+  {
+    using Type = RenderingInfoKHR;
   };
 
   struct ResolveImageInfo2KHR

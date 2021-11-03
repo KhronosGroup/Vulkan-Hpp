@@ -1288,6 +1288,10 @@ namespace VULKAN_HPP_NAMESPACE
         if ( !vkCmdDrawIndexedIndirectCount )
           vkCmdDrawIndexedIndirectCount = vkCmdDrawIndexedIndirectCountKHR;
 
+        //=== VK_KHR_dynamic_rendering ===
+        vkCmdBeginRenderingKHR = PFN_vkCmdBeginRenderingKHR( vkGetDeviceProcAddr( device, "vkCmdBeginRenderingKHR" ) );
+        vkCmdEndRenderingKHR   = PFN_vkCmdEndRenderingKHR( vkGetDeviceProcAddr( device, "vkCmdEndRenderingKHR" ) );
+
         //=== VK_KHR_external_fence_fd ===
         vkImportFenceFdKHR = PFN_vkImportFenceFdKHR( vkGetDeviceProcAddr( device, "vkImportFenceFdKHR" ) );
         vkGetFenceFdKHR    = PFN_vkGetFenceFdKHR( vkGetDeviceProcAddr( device, "vkGetFenceFdKHR" ) );
@@ -1996,6 +2000,10 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_draw_indirect_count ===
       PFN_vkCmdDrawIndirectCountKHR        vkCmdDrawIndirectCountKHR        = 0;
       PFN_vkCmdDrawIndexedIndirectCountKHR vkCmdDrawIndexedIndirectCountKHR = 0;
+
+      //=== VK_KHR_dynamic_rendering ===
+      PFN_vkCmdBeginRenderingKHR vkCmdBeginRenderingKHR = 0;
+      PFN_vkCmdEndRenderingKHR   vkCmdEndRenderingKHR   = 0;
 
       //=== VK_KHR_external_fence_fd ===
       PFN_vkImportFenceFdKHR vkImportFenceFdKHR = 0;
@@ -4901,6 +4909,12 @@ namespace VULKAN_HPP_NAMESPACE
                                         VULKAN_HPP_NAMESPACE::DeviceSize countBufferOffset,
                                         uint32_t                         maxDrawCount,
                                         uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_dynamic_rendering ===
+
+      void beginRenderingKHR( const VULKAN_HPP_NAMESPACE::RenderingInfoKHR & renderingInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      void endRenderingKHR() const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_device_group ===
 
@@ -13079,6 +13093,26 @@ namespace VULKAN_HPP_NAMESPACE
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Pipeline::getShaderInfoAMD" );
       }
       return info;
+    }
+
+    //=== VK_KHR_dynamic_rendering ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::beginRenderingKHR(
+      const VULKAN_HPP_NAMESPACE::RenderingInfoKHR & renderingInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginRenderingKHR &&
+                         "Function <vkCmdBeginRenderingKHR> needs extension <VK_KHR_dynamic_rendering> enabled!" );
+
+      getDispatcher()->vkCmdBeginRenderingKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                               reinterpret_cast<const VkRenderingInfoKHR *>( &renderingInfo ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::endRenderingKHR() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndRenderingKHR &&
+                         "Function <vkCmdEndRenderingKHR> needs extension <VK_KHR_dynamic_rendering> enabled!" );
+
+      getDispatcher()->vkCmdEndRenderingKHR( static_cast<VkCommandBuffer>( m_commandBuffer ) );
     }
 
 #  if defined( VK_USE_PLATFORM_GGP )

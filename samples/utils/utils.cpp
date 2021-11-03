@@ -1165,8 +1165,7 @@ namespace vk
     {
 #if defined( NDEBUG )
       // in non-debug mode just use the InstanceCreateInfo for instance creation
-      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo(
-        { {}, &applicationInfo, layers, extensions } );
+      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo( { {}, &applicationInfo, layers, extensions } );
 #else
       // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
       vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |

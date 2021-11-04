@@ -575,11 +575,8 @@ ${contextMembers}
     class InstanceDispatcher : public DispatchLoaderBase
     {
     public:
-      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr ) : vkGetInstanceProcAddr( getProcAddr ) {}
-
-      InstanceDispatcher( std::nullptr_t ) : DispatchLoaderBase( nullptr ) {}
-
-      void init( VkInstance instance )
+      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
+        : vkGetInstanceProcAddr( getProcAddr )
       {
 ${instanceAssignments}
         vkGetDeviceProcAddr =
@@ -599,11 +596,7 @@ ${instanceMembers}
     class DeviceDispatcher : public DispatchLoaderBase
     {
     public:
-      DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr ) : vkGetDeviceProcAddr( getProcAddr ) {}
-
-      DeviceDispatcher( std::nullptr_t ) : DispatchLoaderBase( nullptr ) {}
-
-      void init( VkDevice device )
+      DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
       {
 ${deviceAssignments}
       }
@@ -7261,7 +7254,7 @@ ${getConstructorSuccessCode}
 
     ${dispatcherType} const * getDispatcher() const
     {
-      VULKAN_HPP_ASSERT( m_dispatcher${dispatcherAccess}getVkHeaderVersion() == VK_HEADER_VERSION );
+      VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
       return ${getDispatcherReturn}m_dispatcher;
     }
 ${memberFunctionsDeclarations}
@@ -7275,11 +7268,10 @@ ${leave})";
       handleTemplate,
       { { "debugReportObjectType", debugReportObjectType },
         { "destructor", destructor },
-        { "dispatcherAccess", ( handleType == "Device" ) || ( handleType == "Instance" ) ? "." : "->" },
         { "dispatcherType", dispatcherType },
         { "enter", enter },
         { "getConstructorSuccessCode", getConstructorSuccessCode },
-        { "getDispatcherReturn", ( handleType == "Device" ) || ( handleType == "Instance" ) ? "&" : "" },
+        { "getDispatcherReturn", ( handleType == "Device" ) || ( handleType == "Instance" ) ? "&*" : "" },
         { "handleName", handleName },
         { "handleType", handleType },
         { "leave", leave },
@@ -9840,10 +9832,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorInitializationList(
   auto [parentType, parentName] = getParentTypeAndName( handle );
   std::string handleName        = startLowerCase( stripPrefix( handle.first, "Vk" ) );
 
-  std::string initializationList = "m_" + parentName + "( &" + parentName + " ), ";
+  std::string initializationList = "m_" + parentName + "( &" + parentName + " )";
   if ( takesOwnership )
   {
-    initializationList += "m_" + handleName + "( " + handleName + " ), ";
+    initializationList += ", m_" + handleName + "( " + handleName + " )";
   }
 
   if ( destructorIt != m_commands.end() )
@@ -9856,7 +9848,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorInitializationList(
         {
           assert( destructorParam.type.isValue() && destructorParam.arraySizes.empty() && destructorParam.len.empty() &&
                   !destructorParam.optional );
-          initializationList += "m_" + startLowerCase( stripPrefix( destructorParam.type.type, "Vk" ) ) + "( ";
+          initializationList += ", m_" + startLowerCase( stripPrefix( destructorParam.type.type, "Vk" ) ) + "( ";
           auto constructorParamIt = std::find_if( constructorIt->second.params.begin(),
                                                   constructorIt->second.params.end(),
                                                   [&destructorParam]( ParamData const & pd )
@@ -9896,14 +9888,14 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorInitializationList(
             }
             assert( found );
           }
-          initializationList += " ), ";
+          initializationList += " )";
         }
         else if ( destructorParam.type.type == "VkAllocationCallbacks" )
         {
           assert( destructorParam.type.isConstPointer() && destructorParam.arraySizes.empty() &&
                   destructorParam.len.empty() && destructorParam.optional );
           initializationList +=
-            "m_allocator( reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) ), ";
+            ", m_allocator( reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )";
         }
         else
         {
@@ -9923,15 +9915,19 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorResult(
 {
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string getDispatcher      = parentName + ".getDispatcher()";
-  std::string dispatcherArgument = getDispatcher;
-  if ( handle.first == "VkInstance" )
+  std::string getDispatcher = parentName + ".getDispatcher()";
+  std::string dispatcherInitializer, dispatcherInit;
+  if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) )
   {
-    dispatcherArgument += "->vkGetInstanceProcAddr";
+    dispatcherInitializer = ", m_dispatcher( " + getDispatcher + " )";
   }
-  else if ( handle.first == "VkDevice" )
+  else
   {
-    dispatcherArgument += "->vkGetDeviceProcAddr";
+    std::string handleType = stripPrefix( handle.first, "Vk" );
+    dispatcherInit =
+      "\n        m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + handleType +
+      "Dispatcher( " + parentName + ".getDispatcher()->vkGet" + handleType + "ProcAddr, static_cast<" + handle.first +
+      ">( m_" + startLowerCase( handleType ) + " ) ) );";
   }
 
   std::string constructorArguments = generateRAIIHandleConstructorArguments( handle, constructorIt, false, false );
@@ -9939,19 +9935,13 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorResult(
   std::string callArguments = generateRAIIHandleConstructorCallArguments(
     handle, constructorIt, false, {}, handle.second.destructorIt != m_commands.end() );
 
-  std::string dispatcherInit;
-  if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
-  {
-    dispatcherInit = "\n    m_dispatcher.init( static_cast<" + handle.first + ">( m_" +
-                     startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );";
-  }
   std::string initializationList =
     generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
 
   const std::string constructorTemplate =
     R"(
 ${enter}    ${handleType}( ${constructorArguments} )
-      : ${initializationList}m_dispatcher( ${dispatcherArgument} )
+      : ${initializationList}${dispatcherInitializer}
     {
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${getDispatcher}->${constructorCall}( ${callArguments} ) );
       if ( ${failureCheck} )
@@ -9965,7 +9955,7 @@ ${leave})";
                          { { "callArguments", callArguments },
                            { "constructorArguments", constructorArguments },
                            { "constructorCall", constructorIt->first },
-                           { "dispatcherArgument", dispatcherArgument },
+                           { "dispatcherInitializer", dispatcherInitializer },
                            { "dispatcherInit", dispatcherInit },
                            { "enter", enter },
                            { "failureCheck", generateFailureCheck( constructorIt->second.successCodes ) },
@@ -9983,14 +9973,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership(
 
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string dispatcherArgument = parentName + ".getDispatcher()";
-  if ( handle.first == "VkInstance" )
+  std::string dispatcherInitializer;
+  if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) )
   {
-    dispatcherArgument += "->vkGetInstanceProcAddr";
-  }
-  else if ( handle.first == "VkDevice" )
-  {
-    dispatcherArgument += "->vkGetDeviceProcAddr";
+    dispatcherInitializer = ", m_dispatcher( " + parentName + ".getDispatcher() )";
   }
 
   std::string constructorArguments =
@@ -10008,26 +9994,28 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership(
     }
 #endif
     constructorArguments += ", VULKAN_HPP_NAMESPACE::Result successCode = VULKAN_HPP_NAMESPACE::Result::eSuccess";
-    initializationList += "m_constructorSuccessCode( successCode ), ";
+    initializationList += ", m_constructorSuccessCode( successCode )";
   }
 
   std::string dispatcherInit;
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherInit = "\n      m_dispatcher.init( static_cast<" + handle.first + ">( m_" +
-                     startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " ) );\n    ";
+    dispatcherInit =
+      "\n        m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + handleType +
+      "Dispatcher( " + parentName + ".getDispatcher()->vkGet" + handleType + "ProcAddr, static_cast<" + handle.first +
+      ">( m_" + startLowerCase( handleType ) + " ) ) );";
   }
 
   const std::string constructorTemplate =
     R"(
     ${handleType}( ${constructorArguments} )
-      : ${initializationList}m_dispatcher( ${dispatcherArgument} )
+      : ${initializationList}${dispatcherInitializer}
     {${dispatcherInit}}
 )";
 
   return replaceWithMap( constructorTemplate,
                          { { "constructorArguments", constructorArguments },
-                           { "dispatcherArgument", dispatcherArgument },
+                           { "dispatcherInitializer", dispatcherInitializer },
                            { "dispatcherInit", dispatcherInit },
                            { "handleType", handleType },
                            { "initializationList", initializationList } } );
@@ -10132,13 +10120,14 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVectorSingular(
     generateRAIIHandleConstructorCallArguments( handle, constructorIt, false, singularParams, true );
   std::string initializationList =
     generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
+  assert( !initializationList.empty() );
   std::string failureCheck = generateFailureCheck( constructorIt->second.successCodes );
   replaceAll( failureCheck, "result", "m_constructorSuccessCode" );
 
   const std::string singularConstructorTemplate =
     R"(
 ${enter}    ${handleType}( ${constructorArguments} )
-      : ${initializationList}m_dispatcher( ${firstArgument}.getDispatcher() )
+      : ${initializationList}, m_dispatcher( ${firstArgument}.getDispatcher() )
     {
       m_constructorSuccessCode = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${constructorCall}( ${callArguments} ) );
       if ( ${failureCheck} )
@@ -10171,11 +10160,12 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVoid(
   std::string constructorArguments = generateRAIIHandleConstructorArguments( handle, constructorIt, false, false );
   std::string initializationList =
     generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
+  assert( !initializationList.empty() );
 
   const std::string constructorTemplate =
     R"(
 ${enter}    ${handleType}( ${constructorArguments} )
-      : ${initializationList}m_dispatcher( ${firstArgument}.getDispatcher() )
+      : ${initializationList}, m_dispatcher( ${firstArgument}.getDispatcher() )
     {
       getDispatcher()->${constructorCall}( ${callArguments} );
     }
@@ -10196,43 +10186,43 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
                                                            std::set<std::string> const & specialFunctions ) const
 {
   const std::string contextTemplate = R"(
-  class Context
-  {
-  public:
-    Context()
-      : m_dispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) )
-    {}
-
-    ~Context() = default;
-
-    Context( Context const & ) = delete;
-    Context( Context && rhs ) VULKAN_HPP_NOEXCEPT
-      : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) )
-      , m_dispatcher( std::move( rhs.m_dispatcher ) )
-    {}
-    Context & operator=( Context const & ) = delete;
-    Context & operator=( Context && rhs ) VULKAN_HPP_NOEXCEPT
+    class Context
     {
-      if ( this != &rhs )
+    public:
+      Context()
+        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
+      {}
+
+      ~Context() = default;
+
+      Context( Context const & ) = delete;
+      Context( Context && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) )
+        , m_dispatcher( rhs.m_dispatcher.release() )
+      {}
+      Context & operator=( Context const & ) = delete;
+      Context & operator=( Context && rhs ) VULKAN_HPP_NOEXCEPT
       {
-        m_dynamicLoader = std::move( rhs.m_dynamicLoader );
-        m_dispatcher    = std::move( rhs.m_dispatcher );
+        if ( this != &rhs )
+          {
+          m_dynamicLoader = std::move( rhs.m_dynamicLoader );
+          m_dispatcher.reset( rhs.m_dispatcher.release() );
+        }
+        return *this;
       }
-      return *this;
-    }
 
 ${memberFunctionDeclarations}
 
-    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
-    {
-      VULKAN_HPP_ASSERT( m_dispatcher.getVkHeaderVersion() == VK_HEADER_VERSION );
-      return &m_dispatcher;
-    }
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return &*m_dispatcher;
+      }
 
-  private:
-    VULKAN_HPP_NAMESPACE::DynamicLoader                                m_dynamicLoader;
-    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher m_dispatcher;
-  };
+    private:
+      VULKAN_HPP_NAMESPACE::DynamicLoader                                                 m_dynamicLoader;
+      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher> m_dispatcher;
+    };
 
 )";
 
@@ -10423,26 +10413,37 @@ std::tuple<std::string, std::string, std::string, std::string>
   if ( handle.first == "VkInstance" )
   {
     memberVariables +=
-      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher m_dispatcher = nullptr;";
+      "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher> m_dispatcher;";
   }
   else if ( handle.first == "VkDevice" )
   {
     memberVariables +=
-      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher m_dispatcher = nullptr;";
+      "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher> m_dispatcher;";
   }
   else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
   {
     memberVariables +=
-      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;";
+      "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;";
   }
   else
   {
     memberVariables +=
-      "\n    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;";
+      "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;";
   }
 
-  moveConstructorInitializerList += ", m_dispatcher( rhs.m_dispatcher )";
-  moveAssignmentInstructions += "\n        m_dispatcher = rhs.m_dispatcher;";
+  if ( ( handle.first == "VkInstance" ) || ( handle.first == "VkDevice" ) )
+  {
+    moveConstructorInitializerList += ", m_dispatcher( rhs.m_dispatcher.release() )";
+    moveAssignmentInstructions += "\n        m_dispatcher.reset( rhs.m_dispatcher.release() );";
+  }
+  else
+  {
+    moveConstructorInitializerList +=
+      ", m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )";
+    moveAssignmentInstructions +=
+      "\n        m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );";
+  }
+
   return std::make_tuple(
     getConstructorSuccessCode, memberVariables, moveConstructorInitializerList, moveAssignmentInstructions );
 }

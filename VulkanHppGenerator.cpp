@@ -2254,26 +2254,21 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
         encounteredArgument = true;
         break;
       case 2:
-        assert( isHandleType( commandData.params[0].type.type ) && commandData.params[0].type.isValue() );
-        assert( commandData.params[0].arraySizes.empty() && commandData.params[0].len.empty() );
-        assert( commandData.params[0].type.type == commandData.handle );
-        if ( skipLeadingGrandParent( *m_handles.find( commandData.params[1].type.type ) ) )
         {
-          auto [parentType, parentName] = getParentTypeAndName( *m_handles.find( commandData.params[1].type.type ) );
-          arguments                     = "static_cast<" + commandData.handle + ">( **m_" + parentName + "->get" +
-                      stripPrefix( commandData.handle, "Vk" ) + "() )";
-        }
-        else
-        {
-          arguments = "static_cast<" + commandData.handle + ">( **m_" +
+          assert( isHandleType( commandData.params[0].type.type ) && commandData.params[0].type.isValue() );
+          assert( commandData.params[0].arraySizes.empty() && commandData.params[0].len.empty() );
+          assert( commandData.params[0].type.type == commandData.handle );
+          auto handleIt = m_handles.find( commandData.params[1].type.type );
+          assert( handleIt != m_handles.end() );
+          arguments = "static_cast<" + commandData.handle + ">( m_" +
                       startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )";
-        }
 
-        assert( isHandleType( commandData.params[1].type.type ) && commandData.params[1].type.isValue() );
-        assert( commandData.params[1].arraySizes.empty() && commandData.params[1].len.empty() );
-        arguments += ", static_cast<" + commandData.params[1].type.type + ">( m_" +
-                     startLowerCase( stripPrefix( commandData.params[1].type.type, "Vk" ) ) + " )";
-        encounteredArgument = true;
+          assert( commandData.params[1].type.isValue() && commandData.params[1].arraySizes.empty() &&
+                  commandData.params[1].len.empty() );
+          arguments += ", static_cast<" + commandData.params[1].type.type + ">( m_" +
+                       generateRAIIHandleConstructorParamName( handleIt->first, handleIt->second.destructorIt ) + " )";
+          encounteredArgument = true;
+        }
         break;
     }
   }
@@ -7169,16 +7164,15 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
   {
     rescheduleRAIIHandle( str, handle, listedHandles, specialFunctions );
 
-    auto [enter, leave]           = generateProtection( handle.first, !handle.second.alias.empty() );
-    std::string handleType        = stripPrefix( handle.first, "Vk" );
-    std::string handleName        = startLowerCase( handleType );
-    auto [parentType, parentName] = getParentTypeAndName( handle );
+    auto [enter, leave]    = generateProtection( handle.first, !handle.second.alias.empty() );
+    std::string handleType = stripPrefix( handle.first, "Vk" );
+    std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
     auto [singularConstructors, arrayConstructors] = generateRAIIHandleConstructors( handle );
     auto [destructor, destructorCall] =
       ( handle.second.destructorIt == m_commands.end() )
         ? std::make_pair( "", "" )
-        : generateRAIIHandleDestructor( "Vk" + parentType, handle.first, handle.second.destructorIt, enter );
+        : generateRAIIHandleDestructor( handle.first, handle.second.destructorIt, enter );
 
     auto [getConstructorSuccessCode, memberVariables, moveConstructorInitializerList, moveAssignmentInstructions] =
       generateRAIIHandleDetails( handle, destructorCall );
@@ -7211,6 +7205,18 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
         ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
         ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher"
         : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher";
+
+    std::string getParent;
+    if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) &&
+         ( handle.second.destructorIt != m_commands.end() ) )
+    {
+      assert( !handle.second.destructorIt->second.params.empty() );
+      std::string parentType = stripPrefix( handle.second.destructorIt->second.params.front().type.type, "Vk" );
+      getParent              = "    VULKAN_HPP_NAMESPACE::" + parentType + " get" + parentType + "() const\n";
+      getParent += "    {\n";
+      getParent += "      return m_" + handle.second.destructorIt->second.params.front().name + ";\n";
+      getParent += "    }\n";
+    }
 
     const std::string handleTemplate = R"(
 ${enter}  class ${handleType}
@@ -7247,11 +7253,7 @@ ${moveAssignmentInstructions}
     }
 
 ${getConstructorSuccessCode}
-    VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${parentType} const * get${parentType}() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${parentName};
-    }
-
+${getParent}
     ${dispatcherType} const * getDispatcher() const
     {
       VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -7272,6 +7274,7 @@ ${leave})";
         { "enter", enter },
         { "getConstructorSuccessCode", getConstructorSuccessCode },
         { "getDispatcherReturn", ( handleType == "Device" ) || ( handleType == "Instance" ) ? "&*" : "" },
+        { "getParent", getParent },
         { "handleName", handleName },
         { "handleType", handleType },
         { "leave", leave },
@@ -7280,8 +7283,6 @@ ${leave})";
         { "moveAssignmentInstructions", moveAssignmentInstructions },
         { "moveConstructorInitializerList", moveConstructorInitializerList },
         { "objTypeEnum", objTypeEnum },
-        { "parentType", parentType },
-        { "parentName", parentName },
         { "singularConstructors", singularConstructors } } );
 
     if ( !arrayConstructors.empty() )
@@ -9628,7 +9629,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments(
   std::string arguments = "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + parentType + " const & " + parentName;
   if ( takesOwnership )
   {
-    arguments += ", " + handle.first + " " + startLowerCase( stripPrefix( handle.first, "Vk" ) );
+    arguments +=
+      ", " + handle.first + " " + generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
   }
 
   if ( constructorIt != m_commands.end() )
@@ -9688,7 +9690,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorCallArguments(
     assert( ( 1 < constructorIt->second.params.size() ) &&
             ( m_handles.find( constructorIt->second.params[0].type.type ) != m_handles.end() ) &&
             ( m_handles.find( constructorIt->second.params[1].type.type ) != m_handles.end() ) );
-    arguments += "static_cast<" + constructorIt->second.params[0].type.type + ">( **" +
+    arguments += "static_cast<" + constructorIt->second.params[0].type.type + ">( " +
                  constructorIt->second.params[1].name + ".get" +
                  stripPrefix( constructorIt->second.params[0].type.type, "Vk" ) + "() )";
     encounteredArgument = true;
@@ -9708,8 +9710,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorCallArguments(
       {
         assert( !param.optional );
         assert( singularParams.empty() || ( param.len == constructorIt->second.params[*singularParams.begin()].name ) );
-        arguments +=
-          "reinterpret_cast<" + handle.first + "*>( &m_" + startLowerCase( stripPrefix( handle.first, "Vk" ) ) + " )";
+        std::string paramName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
+        arguments += "reinterpret_cast<" + handle.first + "*>( &m_" + paramName + " )";
       }
       else if ( nonConstPointerAsNullptr )
       {
@@ -9725,8 +9727,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorCallArguments(
       assert( param.optional );
       if ( allocatorIsMemberVariable )
       {
-        // VkAllocationCallbacks is stored as a member of the handle class !
-        arguments += "m_allocator";
+        arguments += "reinterpret_cast<const VkAllocationCallbacks *>( m_allocator )";
       }
       else
       {
@@ -9830,81 +9831,140 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorInitializationList(
   bool                                                                   takesOwnership ) const
 {
   auto [parentType, parentName] = getParentTypeAndName( handle );
-  std::string handleName        = startLowerCase( stripPrefix( handle.first, "Vk" ) );
+  std::string handleName        = generateRAIIHandleConstructorParamName( handle.first, destructorIt );
 
-  std::string initializationList = "m_" + parentName + "( &" + parentName + " )";
-  if ( takesOwnership )
-  {
-    initializationList += ", m_" + handleName + "( " + handleName + " )";
-  }
-
+  std::string initializationList;
   if ( destructorIt != m_commands.end() )
   {
     for ( auto destructorParam : destructorIt->second.params )
     {
-      if ( ( destructorParam.type.type != ( "Vk" + parentType ) ) && ( destructorParam.type.type != handle.first ) )
+      if ( destructorParam.type.type == "Vk" + parentType )
       {
-        if ( isHandleType( destructorParam.type.type ) )
+        initializationList += "m_" + parentName + "( *" + parentName + " ), ";
+      }
+      else if ( destructorParam.type.type == handle.first )
+      {
+        if ( takesOwnership )
         {
-          assert( destructorParam.type.isValue() && destructorParam.arraySizes.empty() && destructorParam.len.empty() &&
-                  !destructorParam.optional );
-          initializationList += ", m_" + startLowerCase( stripPrefix( destructorParam.type.type, "Vk" ) ) + "( ";
-          auto constructorParamIt = std::find_if( constructorIt->second.params.begin(),
-                                                  constructorIt->second.params.end(),
-                                                  [&destructorParam]( ParamData const & pd )
-                                                  { return pd.type.type == destructorParam.type.type; } );
-          if ( constructorParamIt != constructorIt->second.params.end() )
-          {
-            assert( constructorParamIt->type.isValue() && constructorParamIt->arraySizes.empty() &&
-                    constructorParamIt->len.empty() && !constructorParamIt->optional );
-            initializationList += constructorParamIt->name;
-          }
-          else
-          {
-#if !defined( NDEBUG )
-            bool found = false;
-#endif
-            for ( auto constructorParam : constructorIt->second.params )
-            {
-              auto structureIt = m_structures.find( constructorParam.type.type );
-              if ( structureIt != m_structures.end() )
-              {
-                auto structureMemberIt = std::find_if( structureIt->second.members.begin(),
-                                                       structureIt->second.members.end(),
-                                                       [&destructorParam]( MemberData const & md )
-                                                       { return md.type.type == destructorParam.type.type; } );
-                if ( structureMemberIt != structureIt->second.members.end() )
-                {
-                  assert( constructorParam.type.isConstPointer() && constructorParam.arraySizes.empty() &&
-                          constructorParam.len.empty() && !constructorParam.optional );
-                  initializationList +=
-                    startLowerCase( stripPrefix( constructorParam.name, "p" ) ) + "." + structureMemberIt->name;
-#if !defined( NDEBUG )
-                  found = true;
-#endif
-                  break;
-                }
-              }
-            }
-            assert( found );
-          }
-          initializationList += " )";
+          initializationList += "m_" + handleName + "( " + handleName + " ), ";
         }
-        else if ( destructorParam.type.type == "VkAllocationCallbacks" )
+      }
+      else if ( destructorParam.type.type == "VkAllocationCallbacks" )
+      {
+        assert( destructorParam.type.isConstPointer() && destructorParam.arraySizes.empty() &&
+                destructorParam.len.empty() && destructorParam.optional );
+        initializationList +=
+          "m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ), ";
+      }
+      else if ( isHandleType( destructorParam.type.type ) )
+      {
+        assert( destructorParam.type.isValue() && destructorParam.arraySizes.empty() && destructorParam.len.empty() &&
+                !destructorParam.optional );
+        initializationList += "m_" + destructorParam.name + "( ";
+        auto constructorParamIt = std::find_if( constructorIt->second.params.begin(),
+                                                constructorIt->second.params.end(),
+                                                [&destructorParam]( ParamData const & pd )
+                                                { return pd.type.type == destructorParam.type.type; } );
+        if ( constructorParamIt != constructorIt->second.params.end() )
         {
-          assert( destructorParam.type.isConstPointer() && destructorParam.arraySizes.empty() &&
-                  destructorParam.len.empty() && destructorParam.optional );
-          initializationList +=
-            ", m_allocator( reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) )";
+          assert( constructorParamIt->type.isValue() && constructorParamIt->arraySizes.empty() &&
+                  constructorParamIt->len.empty() && !constructorParamIt->optional );
+          if ( constructorParamIt->type.type == "Vk" + parentType )
+          {
+            initializationList += "*";
+          }
+          initializationList += constructorParamIt->name;
         }
         else
         {
-          // we can ignore all other parameters here !
+#if !defined( NDEBUG )
+          bool found = false;
+#endif
+          for ( auto constructorParam : constructorIt->second.params )
+          {
+            auto structureIt = m_structures.find( constructorParam.type.type );
+            if ( structureIt != m_structures.end() )
+            {
+              auto structureMemberIt = std::find_if( structureIt->second.members.begin(),
+                                                     structureIt->second.members.end(),
+                                                     [&destructorParam]( MemberData const & md )
+                                                     { return md.type.type == destructorParam.type.type; } );
+              if ( structureMemberIt != structureIt->second.members.end() )
+              {
+                assert( constructorParam.type.isConstPointer() && constructorParam.arraySizes.empty() &&
+                        constructorParam.len.empty() && !constructorParam.optional );
+                initializationList +=
+                  startLowerCase( stripPrefix( constructorParam.name, "p" ) ) + "." + structureMemberIt->name;
+#if !defined( NDEBUG )
+                found = true;
+#endif
+                break;
+              }
+            }
+          }
+          assert( found );
         }
+        initializationList += " ), ";
+      }
+      else
+      {
+        // we can ignore all other parameters here !
       }
     }
   }
-  return initializationList;
+  else
+  {
+    if ( !handle.second.secondLevelCommands.empty() )
+    {
+      assert( !handle.second.constructorIts.empty() );
+      auto constructorCommandIt = m_commands.find( handle.second.constructorIts.front()->first );
+      assert( ( constructorCommandIt != m_commands.end() ) && ( 1 < constructorCommandIt->second.params.size() ) );
+      assert( std::next( constructorCommandIt->second.params.begin() )->type.type == "Vk" + parentType );
+
+      auto commandIt = m_commands.find( *handle.second.secondLevelCommands.begin() );
+      assert( ( commandIt != m_commands.end() ) && ( 1 < commandIt->second.params.size() ) );
+      assert( commandIt->second.params.front().type.type == constructorCommandIt->second.params.front().type.type );
+      assert( std::next( commandIt->second.params.begin() )->type.type == handle.first );
+
+      std::string grandParentType = stripPrefix( commandIt->second.params.front().type.type, "Vk" );
+      initializationList +=
+        "m_" + startLowerCase( grandParentType ) + "( " + parentName + ".get" + grandParentType + "() ), ";
+    }
+    if ( takesOwnership )
+    {
+      initializationList += "m_" + handleName + "( " + handleName + " ), ";
+    }
+  }
+  return initializationList.empty() ? initializationList
+                                    : initializationList.substr( 0, initializationList.size() - 2 );
+}
+
+std::string VulkanHppGenerator::generateRAIIHandleConstructorParamName(
+  std::string const & type, std::map<std::string, CommandData>::const_iterator destructorIt ) const
+{
+  if ( destructorIt != m_commands.end() )
+  {
+    auto destructorParamIt =
+      std::find_if( destructorIt->second.params.begin(),
+                    destructorIt->second.params.end(),
+                    [&type]( ParamData const & destructorParam ) { return destructorParam.type.type == type; } );
+    if ( destructorParamIt != destructorIt->second.params.end() )
+    {
+      assert( std::find_if( std::next( destructorParamIt ),
+                            destructorIt->second.params.end(),
+                            [&type]( ParamData const & destructorParam )
+                            { return destructorParam.type.type == type; } ) == destructorIt->second.params.end() );
+      if ( !destructorParamIt->type.isValue() )
+      {
+        return startLowerCase( stripPrefix( stripPluralS( destructorParamIt->name ), "p" ) );
+      }
+      else
+      {
+        return destructorParamIt->name;
+      }
+    }
+  }
+  return startLowerCase( stripPrefix( type, "Vk" ) );
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleConstructorResult(
@@ -9919,7 +9979,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorResult(
   std::string dispatcherInitializer, dispatcherInit;
   if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) )
   {
-    dispatcherInitializer = ", m_dispatcher( " + getDispatcher + " )";
+    dispatcherInitializer = "m_dispatcher( " + getDispatcher + " )";
   }
   else
   {
@@ -9937,6 +9997,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorResult(
 
   std::string initializationList =
     generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
+  if ( !initializationList.empty() && !dispatcherInitializer.empty() )
+  {
+    initializationList += ", ";
+  }
 
   const std::string constructorTemplate =
     R"(
@@ -9973,12 +10037,6 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership(
 
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string dispatcherInitializer;
-  if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) )
-  {
-    dispatcherInitializer = ", m_dispatcher( " + parentName + ".getDispatcher() )";
-  }
-
   std::string constructorArguments =
     generateRAIIHandleConstructorArguments( handle, handle.second.destructorIt, false, true );
   std::string initializationList = generateRAIIHandleConstructorInitializationList(
@@ -9995,6 +10053,16 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership(
 #endif
     constructorArguments += ", VULKAN_HPP_NAMESPACE::Result successCode = VULKAN_HPP_NAMESPACE::Result::eSuccess";
     initializationList += ", m_constructorSuccessCode( successCode )";
+  }
+
+  std::string dispatcherInitializer;
+  if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) )
+  {
+    dispatcherInitializer = "m_dispatcher( " + parentName + ".getDispatcher() )";
+  }
+  if ( !initializationList.empty() && !dispatcherInitializer.empty() )
+  {
+    initializationList += ", ";
   }
 
   std::string dispatcherInit;
@@ -10160,12 +10228,15 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVoid(
   std::string constructorArguments = generateRAIIHandleConstructorArguments( handle, constructorIt, false, false );
   std::string initializationList =
     generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
-  assert( !initializationList.empty() );
+  if ( !initializationList.empty() )
+  {
+    initializationList += ", ";
+  }
 
   const std::string constructorTemplate =
     R"(
 ${enter}    ${handleType}( ${constructorArguments} )
-      : ${initializationList}, m_dispatcher( ${firstArgument}.getDispatcher() )
+      : ${initializationList}m_dispatcher( ${firstArgument}.getDispatcher() )
     {
       getDispatcher()->${constructorCall}( ${callArguments} );
     }
@@ -10190,7 +10261,8 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
     {
     public:
       Context()
-        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher( m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
+        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher(
+            m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
       {}
 
       ~Context() = default;
@@ -10232,8 +10304,7 @@ ${memberFunctionDeclarations}
 }
 
 std::pair<std::string, std::string>
-  VulkanHppGenerator::generateRAIIHandleDestructor( std::string const &                                parentType,
-                                                    std::string const &                                handleType,
+  VulkanHppGenerator::generateRAIIHandleDestructor( std::string const &                                handleType,
                                                     std::map<std::string, CommandData>::const_iterator destructorIt,
                                                     std::string const &                                enter ) const
 {
@@ -10245,8 +10316,7 @@ std::pair<std::string, std::string>
     destructorLeave.clear();
   }
   std::string destructorCall =
-    destructorIt->first + "( " +
-    generateRAIIHandleDestructorCallArguments( parentType, handleType, destructorIt->second.params ) + " )";
+    destructorIt->first + "( " + generateRAIIHandleDestructorCallArguments( handleType, destructorIt ) + " )";
 
   const std::string destructorTemplate = R"(
 ${enter}~${handleType}()
@@ -10258,55 +10328,61 @@ ${enter}~${handleType}()
     }
 ${leave})";
 
-  std::string destructor = replaceWithMap( destructorTemplate,
-                                           { { "destructorCall", destructorCall },
-                                             { "enter", destructorEnter },
-                                             { "handleName", startLowerCase( stripPrefix( handleType, "Vk" ) ) },
-                                             { "handleType", stripPrefix( handleType, "Vk" ) },
-                                             { "leave", destructorLeave } } );
+  std::string destructor =
+    replaceWithMap( destructorTemplate,
+                    { { "destructorCall", destructorCall },
+                      { "enter", destructorEnter },
+                      { "handleName", generateRAIIHandleConstructorParamName( handleType, destructorIt ) },
+                      { "handleType", stripPrefix( handleType, "Vk" ) },
+                      { "leave", destructorLeave } } );
   return std::make_pair( destructor, destructorCall );
 }
 
-std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::string const &            parentType,
-                                                                           std::string const &            handleType,
-                                                                           std::vector<ParamData> const & params ) const
+std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments(
+  std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const
 {
   std::string arguments;
   bool        encounteredArgument = false;
-  for ( auto param : params )
+  for ( auto param : destructorIt->second.params )
   {
     if ( encounteredArgument )
     {
       arguments += ", ";
     }
-    if ( param.type.type == "VkAllocationCallbacks" )
+    if ( param.type.type == handleType )
     {
-      // VkAllocationCallbacks is stored as a member of the handle class
-      arguments += "m_allocator";
+      std::string handleName = param.name;
+      if ( param.type.isValue() )
+      {
+        arguments += "static_cast<" + handleType + ">( m_" + handleName + " )";
+      }
+      else
+      {
+        arguments += "reinterpret_cast<" + handleType + " const *>( &m_" +
+                     stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ) ) + " )";
+      }
+    }
+    else if ( param.type.type == "VkAllocationCallbacks" )
+    {
+      // vk::AllocationCallbacks is stored as a member of the handle class
+      arguments += "reinterpret_cast<const VkAllocationCallbacks *>( m_allocator )";
     }
     else if ( isHandleType( param.type.type ) )
     {
       assert( param.arraySizes.empty() );
-      std::string argument = "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) );
+      std::string argument = "m_" + param.name;
       if ( param.type.isValue() )
       {
-        if ( param.type.type == parentType )
-        {
-          argument = "static_cast<" + param.type.type + ">( **" + argument + " )";
-        }
-        else if ( param.type.type == handleType )
-        {
-          argument = "static_cast<" + param.type.type + ">( " + argument + " )";
-        }
-        arguments += argument;
+        arguments += "static_cast<" + param.type.type + ">( " + argument + " )";
       }
       else
       {
         assert( param.type.isConstPointer() );
-        assert( !param.len.empty() &&
-                ( std::find_if( params.begin(),
-                                params.end(),
-                                [&param]( ParamData const & pd ) { return pd.name == param.len; } ) != params.end() ) );
+        assert( !param.len.empty() && ( std::find_if( destructorIt->second.params.begin(),
+                                                      destructorIt->second.params.end(),
+                                                      [&param]( ParamData const & pd ) {
+                                                        return pd.name == param.len;
+                                                      } ) != destructorIt->second.params.end() ) );
         arguments += "reinterpret_cast<" + param.type.type + " const *>( &" + argument + " )";
       }
     }
@@ -10314,9 +10390,10 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
     {
       assert( ( param.type.type == "uint32_t" ) && param.type.isValue() && param.arraySizes.empty() &&
               param.len.empty() && !param.optional );
-      assert( std::find_if( params.begin(),
-                            params.end(),
-                            [&param]( ParamData const & pd ) { return pd.len == param.name; } ) != params.end() );
+      assert( std::find_if( destructorIt->second.params.begin(),
+                            destructorIt->second.params.end(),
+                            [&param]( ParamData const & pd )
+                            { return pd.len == param.name; } ) != destructorIt->second.params.end() );
       arguments += "1";
     }
     encounteredArgument = true;
@@ -10342,25 +10419,10 @@ std::tuple<std::string, std::string, std::string, std::string>
 
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string moveConstructorInitializerList = "m_" + parentName +
-                                               "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
-                                               parentName + ", nullptr ) ), ";
-  std::string moveAssignmentInstructions = "          m_" + parentName +
-                                           " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
-                                           parentName + ", nullptr );\n";
-  std::string memberVariables =
-    "      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + parentType + " const * m_" + parentName + " = nullptr;";
-
   std::string handleType = stripPrefix( handle.first, "Vk" );
-  std::string handleName = startLowerCase( handleType );
+  std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
-  moveConstructorInitializerList +=
-    "m_" + handleName + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName + ", {} ) )";
-  moveAssignmentInstructions += "        m_" + handleName +
-                                " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName +
-                                ", {} );";
-  memberVariables += "    VULKAN_HPP_NAMESPACE::" + handleType + " m_" + handleName + ";";
-
+  std::string moveConstructorInitializerList, moveAssignmentInstructions, memberVariables;
   if ( handle.second.destructorIt != m_commands.end() )
   {
     moveAssignmentInstructions = "        if ( m_" + handleName +
@@ -10369,42 +10431,79 @@ std::tuple<std::string, std::string, std::string, std::string>
                                  "          getDispatcher()->" +
                                  destructorCall +
                                  ";\n"
-                                 "        }\n"
-                                 "        " +
-                                 moveAssignmentInstructions;
+                                 "        }";
     for ( auto const & destructorParam : handle.second.destructorIt->second.params )
     {
-      if ( ( destructorParam.type.type != "Vk" + parentType ) && ( destructorParam.type.type != handle.first ) &&
-           ( std::find_if( handle.second.destructorIt->second.params.begin(),
-                           handle.second.destructorIt->second.params.end(),
-                           [&destructorParam]( ParamData const & pd ) { return pd.len == destructorParam.name; } ) ==
-             handle.second.destructorIt->second.params.end() ) )
+      if ( destructorParam.type.type == "Vk" + parentType )
+      {
+        moveConstructorInitializerList = "m_" + parentName +
+                                         "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                         parentName + ", {} ) ), ";
+        moveAssignmentInstructions = "\n          m_" + parentName +
+                                     " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                     parentName + ", {} );";
+        memberVariables = "\n    VULKAN_HPP_NAMESPACE::" + parentType + " m_" + parentName + " = {};";
+      }
+      else if ( destructorParam.type.type == handle.first )
+      {
+        moveConstructorInitializerList += "m_" + handleName +
+                                          "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                          handleName + ", {} ) ), ";
+        moveAssignmentInstructions += "\n          m_" + handleName +
+                                      " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                      handleName + ", {} );";
+        memberVariables += "\n    VULKAN_HPP_NAMESPACE::" + handleType + " m_" + handleName + " = {};";
+      }
+      else if ( std::find_if( handle.second.destructorIt->second.params.begin(),
+                              handle.second.destructorIt->second.params.end(),
+                              [&destructorParam]( ParamData const & pd ) { return pd.len == destructorParam.name; } ) ==
+                handle.second.destructorIt->second.params.end() )
       {
         std::string name = destructorParam.name;
         if ( !destructorParam.type.isValue() )
         {
           name = startLowerCase( stripPrefix( name, "p" ) );
         }
-        memberVariables += "\n    " + destructorParam.type.prefix + " " + destructorParam.type.type + " " +
-                           destructorParam.type.postfix + " m_" + name +
-                           ( destructorParam.type.postfix.empty() ? "" : " = nullptr" ) + ";";
-        moveConstructorInitializerList += ", m_" + name + "( rhs.m_" + name + " )";
-        moveAssignmentInstructions += "\n        m_" + name + " = rhs.m_" + name + ";";
+        memberVariables += "\n    " + destructorParam.type.compose( "VULKAN_HPP_NAMESPACE" ) + " m_" + name + " = " +
+                           ( destructorParam.type.postfix.empty() ? "{}" : "nullptr" ) + ";";
+        moveConstructorInitializerList +=
+          "m_" + name + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + name + ", {} ) ), ";
+        moveAssignmentInstructions += "\n        m_" + name +
+                                      " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + name +
+                                      ", {} );";
       }
     }
   }
-#if !defined( NDEBUG )
-  else if ( !handle.second.secondLevelCommands.empty() )
+  else
   {
-    assert( !handle.second.constructorIts.empty() );
-    assert( !handle.second.constructorIts.front()->second.params.empty() );
-    auto const & frontType = handle.second.constructorIts.front()->second.params.front().type.type;
-    assert( isHandleType( frontType ) );
-    auto handleIt = m_handles.find( "Vk" + parentType );
-    assert( handleIt != m_handles.end() );
-    assert( handleIt->second.parent == frontType );
+    if ( !handle.second.secondLevelCommands.empty() )
+    {
+      assert( !handle.second.constructorIts.empty() );
+      assert( !handle.second.constructorIts.front()->second.params.empty() );
+      auto const & frontType = handle.second.constructorIts.front()->second.params.front().type.type;
+      assert( isHandleType( frontType ) );
+      auto handleIt = m_handles.find( "Vk" + parentType );
+      assert( handleIt != m_handles.end() );
+      assert( handleIt->second.parent == frontType );
+      std::string frontName = handle.second.constructorIts.front()->second.params.front().name;
+
+      moveConstructorInitializerList = "m_" + frontName +
+                                       "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                       frontName + ", {} ) ), ";
+      moveAssignmentInstructions = "\n          m_" + frontName +
+                                   " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + frontName +
+                                   ", {} );";
+      memberVariables = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
+    }
+    moveConstructorInitializerList += "m_" + handleName +
+                                      "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                      handleName + ", {} ) ), ";
+    moveAssignmentInstructions += "\n          m_" + handleName +
+                                  " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName +
+                                  ", {} );";
+    memberVariables += "\n    VULKAN_HPP_NAMESPACE::" + handleType + " m_" + handleName + " = {};";
   }
-#endif
+
   if ( multiSuccessCodeContructor )
   {
     memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode;";
@@ -10433,13 +10532,13 @@ std::tuple<std::string, std::string, std::string, std::string>
 
   if ( ( handle.first == "VkInstance" ) || ( handle.first == "VkDevice" ) )
   {
-    moveConstructorInitializerList += ", m_dispatcher( rhs.m_dispatcher.release() )";
+    moveConstructorInitializerList += "m_dispatcher( rhs.m_dispatcher.release() )";
     moveAssignmentInstructions += "\n        m_dispatcher.reset( rhs.m_dispatcher.release() );";
   }
   else
   {
     moveConstructorInitializerList +=
-      ", m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )";
+      "m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )";
     moveAssignmentInstructions +=
       "\n        m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );";
   }

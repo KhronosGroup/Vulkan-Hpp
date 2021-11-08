@@ -1104,10 +1104,13 @@ private:
                                                       std::string const &                                enter,
                                                       std::string const &                                leave ) const;
   std::string
-              generateRAIIHandleConstructorInitializationList( std::pair<std::string, HandleData> const &         handle,
-                                                               std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                               std::map<std::string, CommandData>::const_iterator destructorIt,
-                                                               bool takesOwnership ) const;
+    generateRAIIHandleConstructorInitializationList( std::pair<std::string, HandleData> const &         handle,
+                                                     std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                     std::map<std::string, CommandData>::const_iterator destructorIt,
+                                                     bool takesOwnership ) const;
+  std::string
+              generateRAIIHandleConstructorParamName( std::string const &                                type,
+                                                      std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::string generateRAIIHandleConstructorResult( std::pair<std::string, HandleData> const &         handle,
                                                    std::map<std::string, CommandData>::const_iterator constructorIt,
                                                    std::string const &                                enter,
@@ -1131,13 +1134,12 @@ private:
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle,
                                          std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
-              generateRAIIHandleDestructor( std::string const &                                parentType,
-                                            std::string const &                                handleType,
+              generateRAIIHandleDestructor( std::string const &                                handleType,
                                             std::map<std::string, CommandData>::const_iterator destructorIt,
                                             std::string const &                                enter ) const;
-  std::string generateRAIIHandleDestructorCallArguments( std::string const &            parentType,
-                                                         std::string const &            handleType,
-                                                         std::vector<ParamData> const & params ) const;
+  std::string
+    generateRAIIHandleDestructorCallArguments( std::string const &                                handleType,
+                                               std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::tuple<std::string, std::string, std::string, std::string>
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
                                          std::string const &                        destructorCall ) const;

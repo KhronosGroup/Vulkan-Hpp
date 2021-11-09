@@ -942,7 +942,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors3Return(
     std::map<std::string, CommandData>::const_iterator commandIt,
@@ -953,7 +953,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessNoErrors(
     std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
@@ -973,7 +973,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1Return(
     std::map<std::string, CommandData>::const_iterator commandIt,
@@ -984,7 +984,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    size_t                                             returnParamIndex,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValueSingular(
     std::map<std::string, CommandData>::const_iterator commandIt,
@@ -1002,7 +1002,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    size_t                                             returnParamIndex,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoidVector(
     std::map<std::string, CommandData>::const_iterator commandIt,
@@ -1134,9 +1134,9 @@ private:
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle,
                                          std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
-              generateRAIIHandleDestructor( std::string const &                                handleType,
-                                            std::map<std::string, CommandData>::const_iterator destructorIt,
-                                            std::string const &                                enter ) const;
+    generateRAIIHandleDestructor( std::string const &                                handleType,
+                                  std::map<std::string, CommandData>::const_iterator destructorIt,
+                                  std::string const &                                enter ) const;
   std::string
     generateRAIIHandleDestructorCallArguments( std::string const &                                handleType,
                                                std::map<std::string, CommandData>::const_iterator destructorIt ) const;

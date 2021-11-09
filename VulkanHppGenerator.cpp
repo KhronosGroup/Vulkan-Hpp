@@ -13329,11 +13329,14 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableVersion(
   for ( auto const & attribute : attributes )
   {
     assert( attribute.first == "version" );
-    check( beginsWith( attribute.second, "VK_API_VERSION_" ),
+    std::string feature = attribute.second;
+    if ( beginsWith( feature, "VK_API_" ) )
+    {
+      feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
+    }
+    check( beginsWith( feature, "VK_VERSION_" ),
            xmlLine,
            "unknown version <" + attribute.second + "> specified for SPIR-V capability" );
-    std::string feature = attribute.second;
-    feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
     check( m_features.find( feature ) != m_features.end(),
            xmlLine,
            "unknown version <" + attribute.second + "> specified for SPIR-V capability" );
@@ -13389,11 +13392,14 @@ void VulkanHppGenerator::readSPIRVExtensionsExtensionEnable( tinyxml2::XMLElemen
     else
     {
       assert( attribute.first == "version" );
-      check( beginsWith( attribute.second, "VK_API_VERSION_" ),
+      std::string feature = attribute.second;
+      if ( beginsWith( feature, "VK_API_" ) )
+      {
+        feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
+      }
+      check( beginsWith( feature, "VK_VERSION_" ),
              line,
              "unknown version <" + attribute.second + "> specified for SPIR-V extension" );
-      std::string feature = attribute.second;
-      feature.erase( 3, 4 );  // remove "API_" from the version -> VK_VERSION_x_y
       check( m_features.find( feature ) != m_features.end(),
              line,
              "unknown version <" + attribute.second + "> specified for SPIR-V extension" );

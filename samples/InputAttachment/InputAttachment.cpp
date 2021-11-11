@@ -159,12 +159,13 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                             vk::ImageLayout::eTransferDstOptimal,
                             vk::ImageLayout::eShaderReadOnlyOptimal );
 
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    vk::ImageSubresourceRange imageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
-    vk::ImageViewCreateInfo   imageViewCreateInfo(
-      {}, inputImage, vk::ImageViewType::e2D, swapChainData.colorFormat, componentMapping, imageSubresourceRange );
-    vk::ImageView inputAttachmentView = device.createImageView( imageViewCreateInfo );
+    vk::ImageViewCreateInfo imageViewCreateInfo( {},
+                                                 inputImage,
+                                                 vk::ImageViewType::e2D,
+                                                 swapChainData.colorFormat,
+                                                 {},
+                                                 { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
+    vk::ImageView           inputAttachmentView = device.createImageView( imageViewCreateInfo );
 
     vk::DescriptorSetLayoutBinding layoutBinding(
       0, vk::DescriptorType::eInputAttachment, 1, vk::ShaderStageFlagBits::eFragment );

@@ -76,7 +76,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    vk::raii::PhysicalDevice            physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+    vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
     vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( vk::Format::eR8G8B8A8Unorm );
     if ( !( formatProperties.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment ) )
@@ -96,8 +96,8 @@ int                 main( int /*argc*/, char ** /*argv*/ )
       device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } );
     vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
-    vk::raii::Queue           graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
-    vk::raii::Queue           presentQueue( device, graphicsAndPresentQueueFamilyIndex.second, 0 );
+    vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
+    vk::raii::Queue presentQueue( device, graphicsAndPresentQueueFamilyIndex.second, 0 );
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
@@ -117,7 +117,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     // Create the image that will be used as the input attachment
     // The image for the color attachment is the presentable image already created as part of the SwapChainData
-    vk::ImageCreateInfo              imageCreateInfo( {},
+    vk::ImageCreateInfo imageCreateInfo( {},
                                          vk::ImageType::e2D,
                                          swapChainData.colorFormat,
                                          vk::Extent3D( surfaceData.extent, 1 ),
@@ -127,12 +127,12 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                          vk::ImageTiling::eOptimal,
                                          vk::ImageUsageFlagBits::eInputAttachment |
                                            vk::ImageUsageFlagBits::eTransferDst );
-    vk::raii::Image inputImage( device, imageCreateInfo );
+    vk::raii::Image     inputImage( device, imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = inputImage.getMemoryRequirements();
     uint32_t               memoryTypeIndex =
       vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, {} );
-    vk::MemoryAllocateInfo                  memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
+    vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
     vk::raii::DeviceMemory inputMemory( device, memoryAllocateInfo );
     inputImage.bindMemory( *inputMemory, 0 );
 
@@ -144,11 +144,11 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                   vk::ImageLayout::eUndefined,
                                   vk::ImageLayout::eTransferDstOptimal );
 
-    vk::ClearColorValue       clearColorValue( std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) );
-    vk::ImageSubresourceRange imageSubresourceRange(
-      vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS );
     commandBuffer.clearColorImage(
-      *inputImage, vk::ImageLayout::eTransferDstOptimal, clearColorValue, imageSubresourceRange );
+      *inputImage,
+      vk::ImageLayout::eTransferDstOptimal,
+      { std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) },
+      { { vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS } } );
 
     // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
     vk::raii::su::setImageLayout( commandBuffer,
@@ -157,20 +157,21 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                   vk::ImageLayout::eTransferDstOptimal,
                                   vk::ImageLayout::eShaderReadOnlyOptimal );
 
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    imageSubresourceRange = vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
-    vk::ImageViewCreateInfo imageViewCreateInfo(
-      {}, *inputImage, vk::ImageViewType::e2D, swapChainData.colorFormat, componentMapping, imageSubresourceRange );
+    vk::ImageViewCreateInfo imageViewCreateInfo( {},
+                                                 *inputImage,
+                                                 vk::ImageViewType::e2D,
+                                                 swapChainData.colorFormat,
+                                                 {},
+                                                 { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     vk::raii::ImageView inputAttachmentView( device, imageViewCreateInfo );
 
     vk::DescriptorSetLayoutBinding layoutBinding(
       0, vk::DescriptorType::eInputAttachment, 1, vk::ShaderStageFlagBits::eFragment );
-    vk::DescriptorSetLayoutCreateInfo              descriptorSetLayoutCreateInfo( {}, layoutBinding );
-    vk::raii::DescriptorSetLayout descriptorSetLayout( device, descriptorSetLayoutCreateInfo );
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo( {}, layoutBinding );
+    vk::raii::DescriptorSetLayout     descriptorSetLayout( device, descriptorSetLayoutCreateInfo );
 
-    vk::PipelineLayoutCreateInfo              pipelineLayoutCreateInfo( {}, *descriptorSetLayout );
-    vk::raii::PipelineLayout pipelineLayout( device, pipelineLayoutCreateInfo );
+    vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo( {}, *descriptorSetLayout );
+    vk::raii::PipelineLayout     pipelineLayout( device, pipelineLayoutCreateInfo );
 
     std::array<vk::AttachmentDescription, 2> attachments = {
       // First attachment is the color attachment - clear at the beginning of the renderpass and transition layout to
@@ -201,7 +202,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     vk::AttachmentReference  inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::SubpassDescription   subPass( {}, vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
     vk::RenderPassCreateInfo renderPassCreateInfo( {}, attachments, subPass );
-    vk::raii::RenderPass renderPass( device, renderPassCreateInfo );
+    vk::raii::RenderPass     renderPass( device, renderPassCreateInfo );
 
     glslang::InitializeProcess();
     vk::raii::ShaderModule vertexShaderModule =
@@ -218,8 +219,9 @@ int                 main( int /*argc*/, char ** /*argv*/ )
       vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize );
     vk::raii::DescriptorPool descriptorPool( device, descriptorPoolCreateInfo );
 
-    vk::DescriptorSetAllocateInfo            descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
-    vk::raii::DescriptorSet descriptorSet = std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
+    vk::raii::DescriptorSet       descriptorSet =
+      std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
 
     vk::DescriptorImageInfo inputImageInfo( nullptr, *inputAttachmentView, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::WriteDescriptorSet  writeDescriptorSet(
@@ -227,23 +229,22 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
-    vk::raii::Pipeline graphicsPipeline =
-      vk::raii::su::makeGraphicsPipeline( device,
-                                                pipelineCache,
-                                                vertexShaderModule,
-                                                nullptr,
-                                                fragmentShaderModule,
-                                                nullptr,
-                                                0,
-                                                {},
-                                                vk::FrontFace::eClockwise,
-                                                false,
-                                                pipelineLayout,
-                                                renderPass );
+    vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline( device,
+                                                                              pipelineCache,
+                                                                              vertexShaderModule,
+                                                                              nullptr,
+                                                                              fragmentShaderModule,
+                                                                              nullptr,
+                                                                              0,
+                                                                              {},
+                                                                              vk::FrontFace::eClockwise,
+                                                                              false,
+                                                                              pipelineLayout,
+                                                                              renderPass );
 
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
-    vk::Result result;
-    uint32_t   imageIndex;
+    vk::Result          result;
+    uint32_t            imageIndex;
     std::tie( result, imageIndex ) =
       swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
@@ -259,12 +260,12 @@ int                 main( int /*argc*/, char ** /*argv*/ )
       vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { *descriptorSet }, nullptr );
 
     commandBuffer.setViewport( 0,
-                                vk::Viewport( 0.0f,
-                                              0.0f,
-                                              static_cast<float>( surfaceData.extent.width ),
-                                              static_cast<float>( surfaceData.extent.height ),
-                                              0.0f,
-                                              1.0f ) );
+                               vk::Viewport( 0.0f,
+                                             0.0f,
+                                             static_cast<float>( surfaceData.extent.width ),
+                                             static_cast<float>( surfaceData.extent.height ),
+                                             0.0f,
+                                             1.0f ) );
     commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ) );
 
     commandBuffer.draw( 3, 1, 0, 0 );

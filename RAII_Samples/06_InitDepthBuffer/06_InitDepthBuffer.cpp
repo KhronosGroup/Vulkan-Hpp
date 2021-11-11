@@ -92,11 +92,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::DeviceMemory depthMemory( device, memoryAllocateInfo );
     depthImage.bindMemory( *depthMemory, 0 );
 
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 );
-    vk::ImageViewCreateInfo   imageViewCreateInfo(
-      {}, *depthImage, vk::ImageViewType::e2D, depthFormat, componentMapping, subResourceRange );
+    vk::ImageViewCreateInfo imageViewCreateInfo(
+      {}, *depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
     vk::raii::ImageView depthView( device, imageViewCreateInfo );
 
     /* VULKAN_HPP_KEY_END */

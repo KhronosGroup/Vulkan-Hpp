@@ -92,15 +92,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     device.bindImageMemory( depthImage, depthMemory, 0 );
 
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 );
-    vk::ImageView             depthView = device.createImageView( vk::ImageViewCreateInfo( vk::ImageViewCreateFlags(),
-                                                                               depthImage,
-                                                                               vk::ImageViewType::e2D,
-                                                                               depthFormat,
-                                                                               componentMapping,
-                                                                               subResourceRange ) );
+    vk::ImageView depthView =
+      device.createImageView( vk::ImageViewCreateInfo( vk::ImageViewCreateFlags(),
+                                                       depthImage,
+                                                       vk::ImageViewType::e2D,
+                                                       depthFormat,
+                                                       {},
+                                                       { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } ) );
 
     // destroy depthView, depthMemory, and depthImage
     device.destroyImageView( depthView );

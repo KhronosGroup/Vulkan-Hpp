@@ -160,13 +160,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<vk::raii::ImageView> imageViews;
     imageViews.reserve( swapChainImages.size() );
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
+    vk::ImageViewCreateInfo   imageViewCreateInfo(
+      {}, {}, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     for ( auto image : swapChainImages )
     {
-      vk::ImageViewCreateInfo imageViewCreateInfo(
-        {}, static_cast<vk::Image>( image ), vk::ImageViewType::e2D, format, componentMapping, subResourceRange );
+      imageViewCreateInfo.image = static_cast<vk::Image>( image );
       imageViews.push_back( { device, imageViewCreateInfo } );
     }
 

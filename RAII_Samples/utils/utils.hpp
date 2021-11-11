@@ -313,13 +313,7 @@ namespace vk
           image.bindMemory( *deviceMemory, 0 );
           imageView = vk::raii::ImageView(
             device,
-            vk::ImageViewCreateInfo(
-              {},
-              *image,
-              vk::ImageViewType::e2D,
-              format,
-              { ComponentSwizzle::eR, ComponentSwizzle::eG, ComponentSwizzle::eB, ComponentSwizzle::eA },
-              { aspectMask, 0, 1, 0, 1 } ) );
+            vk::ImageViewCreateInfo( {}, *image, vk::ImageViewType::e2D, format, {}, { aspectMask, 0, 1, 0, 1 } ) );
         }
 
         ImageData( std::nullptr_t ) {}
@@ -440,17 +434,11 @@ namespace vk
           images = swapChain.getImages();
 
           imageViews.reserve( images.size() );
-          vk::ComponentMapping componentMapping(
-            vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-          vk::ImageSubresourceRange subResourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
+          vk::ImageViewCreateInfo imageViewCreateInfo(
+            {}, {}, vk::ImageViewType::e2D, colorFormat, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
           for ( auto image : images )
           {
-            vk::ImageViewCreateInfo imageViewCreateInfo( {},
-                                                         static_cast<vk::Image>( image ),
-                                                         vk::ImageViewType::e2D,
-                                                         colorFormat,
-                                                         componentMapping,
-                                                         subResourceRange );
+            imageViewCreateInfo.image = static_cast<vk::Image>( image );
             imageViews.emplace_back( device, imageViewCreateInfo );
           }
         }

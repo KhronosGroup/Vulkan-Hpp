@@ -193,11 +193,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                              vk::BorderColor::eFloatOpaqueWhite );
     vk::raii::Sampler     sampler( device, samplerCreateInfo );
 
-    vk::ComponentMapping componentMapping(
-      vk::ComponentSwizzle::eR, vk::ComponentSwizzle::eG, vk::ComponentSwizzle::eB, vk::ComponentSwizzle::eA );
-    vk::ImageSubresourceRange imageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
-    vk::ImageViewCreateInfo   imageViewCreateInfo(
-      {}, *image, vk::ImageViewType::e2D, format, componentMapping, imageSubresourceRange );
+    vk::ImageViewCreateInfo imageViewCreateInfo(
+      {}, *image, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     vk::raii::ImageView imageView( device, imageViewCreateInfo );
 
     /* VULKAN_KEY_END */

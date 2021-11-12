@@ -5892,14 +5892,12 @@ std::string VulkanHppGenerator::generateCommandVoidGetValue( std::string const &
   }
 }
 
-std::string VulkanHppGenerator::generateConstexprString( std::pair<std::string, StructureData> const & structData,
-                                                         bool assignmentOperator ) const
+std::string VulkanHppGenerator::generateConstexprString( std::string const & structName ) const
 {
-  // structs with a union (and VkBaseInStructure and VkBaseOutStructure) can't be a constexpr!
-  bool isConstExpression = !containsUnion( structData.first ) && ( structData.first != "VkBaseInStructure" ) &&
-                           ( structData.first != "VkBaseOutStructure" );
+  // structs with a VkBaseInStructure and VkBaseOutStructure can't be a constexpr!
+  bool isConstExpression = ( structName != "VkBaseInStructure" ) && ( structName != "VkBaseOutStructure" );
   return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) +
-                               ( ( containsArray( structData.first ) || assignmentOperator ) ? "_14 " : " " ) )
+                               ( ( containsUnion( structName ) || containsArray( structName ) ) ? "_14 " : " " ) )
                            : "";
 }
 
@@ -10889,7 +10887,7 @@ std::string
 
   std::string str = replaceWithMap( constructors,
                                     { { "arguments", arguments },
-                                      { "constexpr", generateConstexprString( structData, false ) },
+                                      { "constexpr", generateConstexprString( structData.first ) },
                                       { "initializers", initializers },
                                       { "structName", stripPrefix( structData.first, "Vk" ) } } );
 
@@ -11315,7 +11313,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const &       
   if ( member.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static const std::string templateString = R"(
-    ${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
+    ${constexpr}${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${assignment};
       return *this;
@@ -11326,8 +11324,9 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const &       
       member.arraySizes.empty()
         ? member.type.compose( "VULKAN_HPP_NAMESPACE" )
         : generateStandardArray( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes );
+    bool        isReinterpretation = !member.bitCount.empty() && beginsWith( member.type.type, "Vk" );
     std::string assignment;
-    if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
+    if ( isReinterpretation )
     {
       assignment = member.name + " = " + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
     }
@@ -11339,6 +11338,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const &       
     str += replaceWithMap(
       templateString,
       { { "assignment", assignment },
+        { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
         { "memberName", member.name },
         { "MemberName", startUpperCase( member.name ) },
         { "memberType", memberType },
@@ -11540,8 +11540,10 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
           : ( "const " +
               generateStandardArray( memberIt->type.compose( "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
 
+      // In a majority of cases this can be constexpr in C++11 as well, however, determining when exactly
+      // that is the case is a lot more involved and probably not worth it.
       static const std::string constructorTemplate = R"(
-    ${unionName}( ${memberType} ${argumentName}_${defaultAssignment} )
+    VULKAN_HPP_CONSTEXPR_14 ${unionName}( ${memberType} ${argumentName}_${defaultAssignment} )
       : ${memberName}( ${argumentName}_ )
     {})";
 
@@ -11610,22 +11612,12 @@ ${enter}  union ${unionName}
   {
     using NativeType = Vk${unionName};
 #if !defined( VULKAN_HPP_NO_UNION_CONSTRUCTORS )
-    ${unionName}( VULKAN_HPP_NAMESPACE::${unionName} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void *>( this ), &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
-    }
 ${constructors}
 #endif /*VULKAN_HPP_NO_UNION_CONSTRUCTORS*/
 
 #if !defined( VULKAN_HPP_NO_UNION_SETTERS )
 ${setters}
 #endif /*VULKAN_HPP_NO_UNION_SETTERS*/
-
-    VULKAN_HPP_NAMESPACE::${unionName} & operator=( VULKAN_HPP_NAMESPACE::${unionName} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      memcpy( static_cast<void*>( this ), &rhs, sizeof( VULKAN_HPP_NAMESPACE::${unionName} ) );
-      return *this;
-    }
 
     operator Vk${unionName} const &() const
     {

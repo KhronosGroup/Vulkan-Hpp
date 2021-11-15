@@ -29,13 +29,12 @@ To build the local samples and tests you'll have to clone this repository and ru
 1. Open a shell which provides git and clone the repository with:
     ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
 2. Change the current directory to the newly created Vulkan-Hpp directory.
-3. Create a new folder named ```build``` and change the current directory to the newly created folder.
-4. Create a build environment with CMake
-    ```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -G "<generator>" ..```
-    For a full list of generators execute ```cmake -G```.
+3. Create a build environment with CMake
+    ```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -B build```
+    You might have to specify a generator via `-G`, for a full list of generators execute ```cmake -G```.
     *  To rebuild `vulkan.hpp` from the `vk.xml`  XML registry file, add the
        `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
-5. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
+4. Either open the generated project with an IDE, e.g. Visual Studio or launch the build process with ```cmake --build .```.
 
 Optional: To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
 

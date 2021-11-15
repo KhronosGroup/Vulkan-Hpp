@@ -775,8 +775,7 @@ private:
                                            bool                             definition,
                                            std::map<size_t, size_t> const & vectorParamIndices,
                                            size_t                           returnParamIndex ) const;
-  std::string generateConstexprString( std::pair<std::string, StructureData> const & structData,
-                                       bool                                          assignmentOperator ) const;
+  std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
                                                               CommandData const & commandData,

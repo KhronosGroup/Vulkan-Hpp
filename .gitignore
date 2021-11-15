@@ -1,5 +1,0 @@
-# Everything in the default cmake build folder.
-build/*
-
-# The .clang-format file selected by cmake.
-.clang-format

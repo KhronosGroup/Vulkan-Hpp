@@ -3027,10 +3027,11 @@ std::string
       R"(    template <typename StructureChain, typename StructureChainAllocator = std::allocator<StructureChain>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${typenameCheck}>
     ${nodiscard}std::vector<StructureChain, StructureChainAllocator>  ${commandName}( ${argumentList} )${const};)";
 
-    std::string typenameCheck = withAllocator ? ( ", typename B = " + allocatorType +
-                                                  ", typename std::enable_if<std::is_same<typename B::value_type, " +
-                                                  vectorElementType + ">::value, int>::type = 0" )
-                                              : "";
+    std::string typenameCheck =
+      withAllocator
+        ? ( ", typename B = StructureChainAllocator, typename std::enable_if<std::is_same<typename B::value_type, " +
+            vectorElementType + ">::value, int>::type = 0" )
+        : "";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
@@ -8458,11 +8459,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
     VULKAN_HPP_NODISCARD std::vector<StructureChain<X, Y, Z...>> ${commandName}( ${argumentList} ) const;
 )";
 
-    return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName }
-                           } );
+    return replaceWithMap( declarationTemplate, { { "argumentList", argumentList }, { "commandName", commandName } } );
   }
 }
 

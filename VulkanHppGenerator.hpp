@@ -381,7 +381,7 @@ private:
   size_t              determineDefaultStartIndex( std::vector<ParamData> const & params,
                                                   std::set<size_t> const &       skippedParams ) const;
   size_t              determineInitialSkipCount( std::string const & command ) const;
-  std::vector<size_t> determineNonConstPointerParamIndices( std::vector<ParamData> const & params ) const;
+  std::vector<size_t> determineReturnParamIndices( std::vector<ParamData> const & params ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const &                                handleType,
                                      std::map<std::string, CommandData>::const_iterator destructorIt ) const;
@@ -1008,7 +1008,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    size_t                                             returnParamIndex,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2Return(
     std::map<std::string, CommandData>::const_iterator commandIt,
@@ -1025,7 +1025,7 @@ private:
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,
-    std::vector<size_t> const &                        nonConstPointerParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
     bool                                               definition ) const;
   std::string generateRAIIHandleCommandValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                               size_t                                             initialSkipCount,
@@ -1049,24 +1049,24 @@ private:
   std::string generateRAIIHandleCommandVoid1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                          size_t                           initialSkipCount,
                                                          std::map<size_t, size_t> const & vectorParamIndices,
-                                                         std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                         size_t                           returnParamIndex,
                                                          bool                             definition ) const;
   std::string generateRAIIHandleCommandVoid1ReturnValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                                          size_t                           initialSkipCount,
                                                          std::map<size_t, size_t> const & vectorParamIndices,
-                                                         std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                         size_t                           returnParamIndex,
                                                          bool                             definition ) const;
   std::string
     generateRAIIHandleCommandVoid2ReturnEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                         size_t                           initialSkipCount,
                                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                                        std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                        std::vector<size_t> const &      returnParamIndices,
                                                         bool                             definition ) const;
   std::string
     generateRAIIHandleCommandVoid2ReturnEnumerateValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                                         size_t                           initialSkipCount,
                                                         std::map<size_t, size_t> const & vectorParamIndices,
-                                                        std::vector<size_t> const &      nonConstPointerParamIndices,
+                                                        std::vector<size_t> const &      returnParamIndices,
                                                         bool                             definition ) const;
   std::pair<std::string, std::string>
     generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
@@ -1109,12 +1109,18 @@ private:
                                                      std::map<std::string, CommandData>::const_iterator destructorIt,
                                                      bool takesOwnership ) const;
   std::string
-              generateRAIIHandleConstructorParamName( std::string const &                                type,
-                                                      std::map<std::string, CommandData>::const_iterator destructorIt ) const;
-  std::string generateRAIIHandleConstructorResult( std::pair<std::string, HandleData> const &         handle,
+    generateRAIIHandleConstructorParamName( std::string const &                                type,
+                                            std::map<std::string, CommandData>::const_iterator destructorIt ) const;
+  std::pair<std::string, std::string>
+              generateRAIIHandleConstructorResult( std::pair<std::string, HandleData> const &         handle,
                                                    std::map<std::string, CommandData>::const_iterator constructorIt,
                                                    std::string const &                                enter,
                                                    std::string const &                                leave ) const;
+  std::string generateRAIIHandleConstructorResultSingleSuccessWithErrors1Return0Vector(
+    std::pair<std::string, HandleData> const &         handle,
+    std::map<std::string, CommandData>::const_iterator constructorIt,
+    std::string const &                                enter,
+    std::string const &                                leave ) const;
   std::string generateRAIIHandleConstructorTakeOwnership( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleConstructorVector( std::pair<std::string, HandleData> const &         handle,
                                                    std::map<std::string, CommandData>::const_iterator constructorIt,
@@ -1122,15 +1128,21 @@ private:
                                                    std::string const &                                enter,
                                                    std::string const &                                leave ) const;
   std::string
-              generateRAIIHandleConstructorVectorSingular( std::pair<std::string, HandleData> const &         handle,
-                                                           std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                           std::vector<ParamData>::const_iterator             handleParamIt,
-                                                           std::string const &                                enter,
-                                                           std::string const &                                leave ) const;
-  std::string generateRAIIHandleConstructorVoid( std::pair<std::string, HandleData> const &         handle,
+    generateRAIIHandleConstructorVectorSingular( std::pair<std::string, HandleData> const &         handle,
                                                  std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                 std::vector<ParamData>::const_iterator             handleParamIt,
                                                  std::string const &                                enter,
                                                  std::string const &                                leave ) const;
+  std::pair<std::string, std::string>
+    generateRAIIHandleConstructorVoid( std::pair<std::string, HandleData> const &         handle,
+                                       std::map<std::string, CommandData>::const_iterator constructorIt,
+                                       std::string const &                                enter,
+                                       std::string const &                                leave ) const;
+  std::string
+              generateRAIIHandleConstructorVoid1Return0Vector( std::pair<std::string, HandleData> const &         handle,
+                                                               std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                               std::string const &                                enter,
+                                                               std::string const &                                leave ) const;
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle,
                                          std::set<std::string> const &              specialFunctions ) const;
   std::pair<std::string, std::string>
@@ -1155,7 +1167,6 @@ private:
                                                  std::set<size_t> const &                      skippedParams ) const;
   std::string generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts,
                                  std::string const &                                          structName,
-                                 std::string const &                                          prefix,
                                  bool mutualExclusiveLens ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure,
                               std::set<std::string> &                       listedStructs ) const;

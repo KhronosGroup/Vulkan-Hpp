@@ -458,6 +458,12 @@ private:
                                               bool                              definition,
                                               std::pair<size_t, size_t> const & vectorParamIndices,
                                               bool                              withAllocators ) const;
+  std::string generateCommandResultEnumerateChained( std::string const &               name,
+                                                     CommandData const &               commandData,
+                                                     size_t                            initialSkipCount,
+                                                     bool                              definition,
+                                                     std::pair<size_t, size_t> const & vectorParamIndices,
+                                                     bool                              withAllocators ) const;
   std::string generateCommandResultEnumerateTwoVectors( std::string const &              name,
                                                         CommandData const &              commandData,
                                                         size_t                           initialSkipCount,
@@ -939,6 +945,12 @@ private:
     bool                                               definition,
     std::vector<size_t> const &                        returnParamIndices ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerate(
+    std::map<std::string, CommandData>::const_iterator commandIt,
+    size_t                                             initialSkipCount,
+    std::map<size_t, size_t> const &                   vectorParamIndices,
+    std::vector<size_t> const &                        returnParamIndices,
+    bool                                               definition ) const;
+  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerateChain(
     std::map<std::string, CommandData>::const_iterator commandIt,
     size_t                                             initialSkipCount,
     std::map<size_t, size_t> const &                   vectorParamIndices,

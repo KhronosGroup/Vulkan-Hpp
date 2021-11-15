@@ -2876,12 +2876,15 @@ std::string VulkanHppGenerator::generateCommandResultEnumerate( std::string cons
       {
         ${vectorName}.resize( ${counterName} );
         result = static_cast<Result>( d.${vkCommand}( ${secondCallArguments} ) );
-        VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
       }
     } while ( result == Result::eIncomplete );
-    if ( ( result == Result::eSuccess ) && ( ${counterName} < ${vectorName}.size() ) )
+    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
     {
-      ${vectorName}.resize( ${counterName} );
+      VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+      if ( ${counterName} < ${vectorName}.size() )
+      {
+        ${vectorName}.resize( ${counterName} );
+      }
     }
     return createResultValue( result, ${vectorName}, VULKAN_HPP_NAMESPACE_STRING"::${className}${classSeparator}${commandName}" );
   })";
@@ -2930,6 +2933,111 @@ std::string VulkanHppGenerator::generateCommandResultEnumerate( std::string cons
                              { "nodiscard", nodiscard },
                              { "typenameCheck", typenameCheck },
                              { "vectorElementType", vectorElementType } } );
+  }
+}
+
+std::string
+  VulkanHppGenerator::generateCommandResultEnumerateChained( std::string const &               name,
+                                                             CommandData const &               commandData,
+                                                             size_t                            initialSkipCount,
+                                                             bool                              definition,
+                                                             std::pair<size_t, size_t> const & vectorParamIndex,
+                                                             bool                              withAllocator ) const
+{
+  std::set<size_t> skippedParams = determineSkippedParams( commandData.params,
+                                                           initialSkipCount,
+                                                           { vectorParamIndex },
+                                                           { vectorParamIndex.second, vectorParamIndex.first },
+                                                           false );
+  std::string      argumentList =
+    generateArgumentListEnhanced( commandData.params, skippedParams, {}, definition, withAllocator, true, true );
+  std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
+  std::string nodiscard   = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
+  std::string vectorElementType =
+    stripPostfix( commandData.params[vectorParamIndex.first].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
+  std::string allocatorType = startUpperCase( vectorElementType ) + "Allocator";
+
+  if ( definition )
+  {
+    const std::string functionTemplate =
+      R"(  template <typename StructureChain, typename StructureChainAllocator, typename Dispatch${typenameCheck}>
+  ${nodiscard}VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator> ${className}${classSeparator}${commandName}( ${argumentList} )${const}
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    std::vector<StructureChain, StructureChainAllocator> returnVector(${structureChainAllocator});
+    std::vector<${vectorElementType}> ${vectorName};
+    ${counterType} ${counterName};
+    Result result;
+    do
+    {
+      result = static_cast<Result>( d.${vkCommand}( ${firstCallArguments} ) );
+      if ( ( result == Result::eSuccess ) && ${counterName} )
+      {
+        returnVector.resize( ${counterName} );
+        ${vectorName}.resize( ${counterName} );
+        for ( ${counterType} i = 0; i < ${counterName}; i++ )
+        {
+          ${vectorName}[i].pNext = returnVector[i].template get<${vectorElementType}>().pNext;
+        }
+        result = static_cast<Result>( d.${vkCommand}( ${secondCallArguments} ) );
+      }
+    } while ( result == Result::eIncomplete );
+    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+      if ( ${counterName} < ${vectorName}.size() )
+      {
+        returnVector.resize( ${counterName} );
+      }
+      for ( ${counterType} i = 0; i < ${counterName}; i++ )
+      {
+        returnVector[i].template get<${vectorElementType}>() = ${vectorName}[i];
+      }
+    }
+    return createResultValue( result, returnVector, VULKAN_HPP_NAMESPACE_STRING"::${className}${classSeparator}${commandName}" );
+  })";
+
+    std::string typenameCheck = withAllocator
+                                  ? ( ", typename B, typename std::enable_if<std::is_same<typename B::value_type, " +
+                                      vectorElementType + ">::value, int>::type " )
+                                  : "";
+
+    return replaceWithMap(
+      functionTemplate,
+      { { "argumentList", argumentList },
+        { "className",
+          initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
+        { "classSeparator", commandData.handle.empty() ? "" : "::" },
+        { "commandName", commandName },
+        { "const", commandData.handle.empty() ? "" : " const" },
+        { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.second].name, "p" ) ) },
+        { "counterType", commandData.params[vectorParamIndex.second].type.type },
+        { "firstCallArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, true, {}, false ) },
+        { "nodiscard", nodiscard },
+        { "secondCallArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, false ) },
+        { "structureChainAllocator", withAllocator ? ( " structureChainAllocator " ) : "" },
+        { "typenameCheck", typenameCheck },
+        { "vectorElementType", vectorElementType },
+        { "vectorName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) ) },
+        { "vkCommand", name } } );
+  }
+  else
+  {
+    const std::string functionTemplate =
+      R"(    template <typename StructureChain, typename StructureChainAllocator = std::allocator<StructureChain>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE${typenameCheck}>
+    ${nodiscard}std::vector<StructureChain, StructureChainAllocator>  ${commandName}( ${argumentList} )${const};)";
+
+    std::string typenameCheck = withAllocator ? ( ", typename B = " + allocatorType +
+                                                  ", typename std::enable_if<std::is_same<typename B::value_type, " +
+                                                  vectorElementType + ">::value, int>::type = 0" )
+                                              : "";
+
+    return replaceWithMap( functionTemplate,
+                           { { "argumentList", argumentList },
+                             { "const", commandData.handle.empty() ? "" : " const" },
+                             { "commandName", commandName },
+                             { "nodiscard", nodiscard },
+                             { "typenameCheck", typenameCheck } } );
   }
 }
 
@@ -4354,25 +4462,53 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
   bool                        definition,
   std::vector<size_t> const & returnParamIndices ) const
 {
-  if ( ( commandData.params[returnParamIndices[0]].type.type == "size_t" ) ||
-       ( commandData.params[returnParamIndices[0]].type.type == "uint32_t" ) )
+  if ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) &&
+       ( commandData.successCodes[1] == "VK_INCOMPLETE" ) )
   {
-    if ( !isStructureChainAnchor( commandData.params[returnParamIndices[1]].type.type ) )
+    if ( ( commandData.params[returnParamIndices[0]].type.type == "size_t" ) ||
+         ( commandData.params[returnParamIndices[0]].type.type == "uint32_t" ) )
     {
-      std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
-      if ( vectorParamIndices.size() == 1 )
+      if ( isStructureChainAnchor( commandData.params[returnParamIndices[1]].type.type ) )
       {
-        if ( returnParamIndices[0] == vectorParamIndices.begin()->second )
+        std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
+        if ( vectorParamIndices.size() == 1 )
         {
-          if ( returnParamIndices[1] == vectorParamIndices.begin()->first )
+          if ( returnParamIndices[0] == vectorParamIndices.begin()->second )
           {
-            return generateCommandSetStandardEnhancedWithAllocator(
-              definition,
-              generateCommandStandard( name, commandData, initialSkipCount, definition ),
-              generateCommandResultEnumerate(
-                name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), false ),
-              generateCommandResultEnumerate(
-                name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), true ) );
+            if ( returnParamIndices[1] == vectorParamIndices.begin()->first )
+            {
+              return generateCommandSetStandardEnhancedWithAllocatorChained(
+                definition,
+                generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                generateCommandResultEnumerate(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), false ),
+                generateCommandResultEnumerate(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), true ),
+                generateCommandResultEnumerateChained(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), false ),
+                generateCommandResultEnumerateChained(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), true ) );
+            }
+          }
+        }
+      }
+      else
+      {
+        std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandData.params );
+        if ( vectorParamIndices.size() == 1 )
+        {
+          if ( returnParamIndices[0] == vectorParamIndices.begin()->second )
+          {
+            if ( returnParamIndices[1] == vectorParamIndices.begin()->first )
+            {
+              return generateCommandSetStandardEnhancedWithAllocator(
+                definition,
+                generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                generateCommandResultEnumerate(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), false ),
+                generateCommandResultEnumerate(
+                  name, commandData, initialSkipCount, definition, *vectorParamIndices.begin(), true ) );
+            }
           }
         }
       }
@@ -8098,7 +8234,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
         }
       }
     }
-    else if ( !isStructureChainAnchor( commandIt->second.params[returnParamIndices[1]].type.type ) )
+    else
     {
       std::map<size_t, size_t> vectorParamIndices = determineVectorParamIndices( commandIt->second.params );
       if ( vectorParamIndices.size() == 1 )
@@ -8111,8 +8247,14 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
                  ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
                  ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
             {
-              return generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerate(
+              std::string str = generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerate(
                 commandIt, initialSkipCount, vectorParamIndices, returnParamIndices, definition );
+              if ( isStructureChainAnchor( commandIt->second.params[returnParamIndices[1]].type.type ) )
+              {
+                str += generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerateChain(
+                  commandIt, initialSkipCount, vectorParamIndices, returnParamIndices, definition );
+              }
+              return str;
             }
           }
         }
@@ -8161,16 +8303,19 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
       {
         ${vectorName}.resize( ${counterName} );
         result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${secondCallArguments} ) );
-        VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
       }
     } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( ${counterName} < ${vectorName}.size() ) )
-    {
-      ${vectorName}.resize( ${counterName} );
-    }
     if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
     {
       throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
+    }
+    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    {
+      VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+      if ( ${counterName} < ${vectorName}.size() )
+      {
+        ${vectorName}.resize( ${counterName} );
+      }
     }
     return ${vectorName};
   }
@@ -8213,6 +8358,112 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
                              { "argumentList", argumentList },
                              { "commandName", commandName },
                              { "vectorElementType", vectorElementType },
+                           } );
+  }
+}
+
+std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerateChain(
+  std::map<std::string, CommandData>::const_iterator commandIt,
+  size_t                                             initialSkipCount,
+  std::map<size_t, size_t> const &                   vectorParamIndices,
+  std::vector<size_t> const &                        returnParamIndices,
+  bool                                               definition ) const
+{
+  std::set<size_t> skippedParameters =
+    determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParamIndices, returnParamIndices, false );
+  std::string argumentList =
+    generateArgumentListEnhanced( commandIt->second.params, skippedParameters, {}, definition, false, true, false );
+  std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
+  std::string vectorElementType = commandIt->second.params[vectorParamIndices.begin()->first].type.type;
+  if ( !isHandleType( vectorElementType ) )
+  {
+    assert( commandIt->second.params[vectorParamIndices.begin()->first].type.isNonConstPointer() );
+    vectorElementType =
+      ( vectorElementType == "void" )
+        ? "uint8_t"
+        : stripPostfix(
+            commandIt->second.params[vectorParamIndices.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+  }
+
+  if ( definition )
+  {
+    const std::string definitionTemplate =
+      R"(
+  template <typename X, typename Y, typename... Z>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain<X, Y, Z...>> ${className}::${commandName}( ${argumentList} ) const
+  {${functionPointerCheck}
+    std::vector<StructureChain<X, Y, Z...>> returnVector;
+    std::vector<${vectorElementType}> ${vectorName};
+    ${counterType} ${counterName};
+    VULKAN_HPP_NAMESPACE::Result result;
+    do
+    {
+      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${firstCallArguments} ) );
+      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ${counterName} )
+      {
+        returnVector.resize( ${counterName} );
+        ${vectorName}.resize( ${counterName} );
+        for ( ${counterType} i = 0; i < ${counterName}; i++ )
+        {
+          ${vectorName}[i].pNext = returnVector[i].template get<${vectorElementType}>().pNext;
+        }
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${secondCallArguments} ) );
+      }
+    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+    if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    {
+      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
+    }
+    VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+    if ( ${counterName} < ${vectorName}.size() )
+    {
+      returnVector.resize( ${counterName} );
+    }
+    for ( ${counterType} i = 0; i < ${counterName}; i++ )
+    {
+      returnVector[i].template get<${vectorElementType}>() = ${vectorName}[i];
+    }
+    return ${vectorName};
+  }
+)";
+
+    std::string counterName =
+      startLowerCase( stripPrefix( commandIt->second.params[vectorParamIndices.begin()->second].name, "p" ) );
+    std::string firstCallArguments =
+      generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, true, {}, true );
+    std::string secondCallArguments =
+      generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, true );
+    std::string vectorName =
+      startLowerCase( stripPrefix( commandIt->second.params[vectorParamIndices.begin()->first].name, "p" ) );
+
+    return replaceWithMap(
+      definitionTemplate,
+      { { "argumentList", argumentList },
+        { "className",
+          initialSkipCount ? stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" )
+                           : "Context" },
+        { "commandName", commandName },
+        { "counterName", counterName },
+        { "counterType", commandIt->second.params[vectorParamIndices.begin()->second].type.type },
+        { "firstCallArguments", firstCallArguments },
+        { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
+        { "secondCallArguments", secondCallArguments },
+        { "vectorElementType", vectorElementType },
+        { "vectorName", vectorName },
+        { "vkCommand", commandIt->first } } );
+  }
+  else
+  {
+    std::string const declarationTemplate =
+      R"(
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD std::vector<StructureChain<X, Y, Z...>> ${commandName}( ${argumentList} ) const;
+)";
+
+    return replaceWithMap( declarationTemplate,
+                           {
+                             { "argumentList", argumentList },
+                             { "commandName", commandName }
                            } );
   }
 }
@@ -10060,11 +10311,11 @@ ${enter}    ${handleType}s( ${constructorArguments} )
         {
           ${vectorName}.resize( ${counterName} );
           result = static_cast<VULKAN_HPP_NAMESPACE::Result>( dispatcher->${constructorCall}( ${secondCallArguments} ) );
-          VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
         }
       } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
       if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
+        VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
         this->reserve( ${counterName} );
         for ( auto const & ${handleName} : ${vectorName} )
         {

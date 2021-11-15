@@ -1076,7 +1076,10 @@ namespace VULKAN_HPP_NAMESPACE
     {
       static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
                      "The structure chain is not valid!" );
-      link<sizeof...( ChainElements ) - 1>();
+      link( &std::get<0>( *this ),
+            &std::get<0>( rhs ),
+            reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( *this ) ),
+            reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( rhs ) ) );
     }
 
     StructureChain( StructureChain && rhs ) VULKAN_HPP_NOEXCEPT
@@ -1084,7 +1087,10 @@ namespace VULKAN_HPP_NAMESPACE
     {
       static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid,
                      "The structure chain is not valid!" );
-      link<sizeof...( ChainElements ) - 1>();
+      link( &std::get<0>( *this ),
+            &std::get<0>( rhs ),
+            reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( *this ) ),
+            reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( rhs ) ) );
     }
 
     StructureChain( ChainElements const &... elems ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( elems... )
@@ -1097,7 +1103,10 @@ namespace VULKAN_HPP_NAMESPACE
     StructureChain & operator=( StructureChain const & rhs ) VULKAN_HPP_NOEXCEPT
     {
       std::tuple<ChainElements...>::operator=( rhs );
-      link<sizeof...( ChainElements ) - 1>();
+      link( &std::get<0>( *this ),
+            &std::get<0>( rhs ),
+            reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( *this ) ),
+            reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( rhs ) ) );
       return *this;
     }
 
@@ -1237,6 +1246,19 @@ namespace VULKAN_HPP_NAMESPACE
     template <size_t Index>
     typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
     {}
+
+    void link( void * dstBase, void const * srcBase, VkBaseOutStructure * dst, VkBaseInStructure const * src )
+    {
+      while ( src->pNext )
+      {
+        std::ptrdiff_t offset =
+          reinterpret_cast<char const *>( src->pNext ) - reinterpret_cast<char const *>( srcBase );
+        dst->pNext = reinterpret_cast<VkBaseOutStructure *>( reinterpret_cast<char *>( dstBase ) + offset );
+        dst        = dst->pNext;
+        src        = src->pNext;
+      }
+      dst->pNext = nullptr;
+    }
 
     void unlink( VkBaseOutStructure const * pNext ) VULKAN_HPP_NOEXCEPT
     {

@@ -28,6 +28,8 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
+#define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 0
+
 // clang-format off
 // we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
 #include <vulkan/vulkan.hpp>
@@ -720,13 +722,28 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
     instanceExtensions.push_back( VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME );
 
-    vk::raii::Context  context;
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+    vk::raii::Context context;
+#else
+    vk::raii::Context context(
+      reinterpret_cast<PFN_vkGetInstanceProcAddr>( glfwGetInstanceProcAddress( NULL, "vkGetInstanceProcAddr" ) ) );
+#endif
     vk::raii::Instance instance =
       vk::raii::su::makeInstance( context, AppName, EngineName, {}, instanceExtensions, VK_API_VERSION_1_2 );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
     vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
+
+    std::vector<vk::ExtensionProperties> extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
+    assert( vk::su::contains( extensionProperties, VK_KHR_SWAPCHAIN_EXTENSION_NAME ) );
+    assert( vk::su::contains( extensionProperties, VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME ) );
+    if ( !vk::su::contains( extensionProperties, VK_NV_RAY_TRACING_EXTENSION_NAME ) )
+    {
+      std::cout << "PhysicalDevice does not support VK_NV_ray_tracing extension!\n";
+      std::cout << "No ray tracing available under such circumstances.\n";
+      return 0;
+    }
 
     // Create Window Surface (using glfw)
     VkSurfaceKHR glfwSurface;
@@ -1368,6 +1385,67 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.waitIdle();
 
     glfwDestroyWindow( window );
+
+#if !VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+    // destroy all the vk::raii-stuff before glfw is terminated
+    shaderBindingTableBufferData.buffer       = vk::raii::Buffer( nullptr );
+    shaderBindingTableBufferData.deviceMemory = vk::raii::DeviceMemory( nullptr );
+    rayTracingPipeline                        = vk::raii::Pipeline( nullptr );
+    rayTracingPipelineLayout                  = vk::raii::PipelineLayout( nullptr );
+    closestHitShaderModule                    = vk::raii::ShaderModule( nullptr );
+    shadowMissShaderModule                    = vk::raii::ShaderModule( nullptr );
+    missShaderModule                          = vk::raii::ShaderModule( nullptr );
+    raygenShaderModule                        = vk::raii::ShaderModule( nullptr );
+    rayTracingDescriptorSets.clear();
+    rayTracingDescriptorSetLayout                 = vk::raii::DescriptorSetLayout( nullptr );
+    rayTracingDescriptorPool                      = vk::raii::DescriptorPool( nullptr );
+    topLevelAS.acclerationStructure               = vk::raii::AccelerationStructureNV( nullptr );
+    topLevelAS.instanceBufferData.buffer          = vk::raii::Buffer( nullptr );
+    topLevelAS.instanceBufferData.deviceMemory    = vk::raii::DeviceMemory( nullptr );
+    topLevelAS.resultBufferData.buffer            = vk::raii::Buffer( nullptr );
+    topLevelAS.resultBufferData.deviceMemory      = vk::raii::DeviceMemory( nullptr );
+    topLevelAS.scratchBufferData.buffer           = vk::raii::Buffer( nullptr );
+    topLevelAS.scratchBufferData.deviceMemory     = vk::raii::DeviceMemory( nullptr );
+    descriptorSet                                 = vk::raii::DescriptorSet( nullptr );
+    bottomLevelAS.acclerationStructure            = vk::raii::AccelerationStructureNV( nullptr );
+    bottomLevelAS.instanceBufferData.buffer       = vk::raii::Buffer( nullptr );
+    bottomLevelAS.instanceBufferData.deviceMemory = vk::raii::DeviceMemory( nullptr );
+    bottomLevelAS.resultBufferData.buffer         = vk::raii::Buffer( nullptr );
+    bottomLevelAS.resultBufferData.deviceMemory   = vk::raii::DeviceMemory( nullptr );
+    bottomLevelAS.scratchBufferData.buffer        = vk::raii::Buffer( nullptr );
+    bottomLevelAS.scratchBufferData.deviceMemory  = vk::raii::DeviceMemory( nullptr );
+    uniformBufferData.buffer                      = vk::raii::Buffer( nullptr );
+    uniformBufferData.deviceMemory                = vk::raii::DeviceMemory( nullptr );
+    graphicsPipeline                              = vk::raii::Pipeline( nullptr );
+    pipelineCache                                 = vk::raii::PipelineCache( nullptr );
+    fragmentShaderModule                          = vk::raii::ShaderModule( nullptr );
+    vertexShaderModule                            = vk::raii::ShaderModule( nullptr );
+    pipelineLayout                                = vk::raii::PipelineLayout( nullptr );
+    descriptorSetLayout                           = vk::raii::DescriptorSetLayout( nullptr );
+    indexBufferData.buffer                        = vk::raii::Buffer( nullptr );
+    indexBufferData.deviceMemory                  = vk::raii::DeviceMemory( nullptr );
+    vertexBufferData.buffer                       = vk::raii::Buffer( nullptr );
+    vertexBufferData.deviceMemory                 = vk::raii::DeviceMemory( nullptr );
+    materialBufferData.buffer                     = vk::raii::Buffer( nullptr );
+    materialBufferData.deviceMemory               = vk::raii::DeviceMemory( nullptr );
+    textures.clear();
+    framebuffers.clear();
+    depthBufferData.deviceMemory = vk::raii::DeviceMemory( nullptr );
+    depthBufferData.image        = vk::raii::Image( nullptr );
+    depthBufferData.imageView    = vk::raii::ImageView( nullptr );
+    renderPass                   = vk::raii::RenderPass( nullptr );
+    swapChainData.imageViews.clear();
+    swapChainData.swapChain = vk::raii::SwapchainKHR( nullptr );
+    descriptorPool          = vk::raii::DescriptorPool( nullptr );
+    perFrameData.clear();
+    device  = vk::raii::Device( nullptr );
+    surface = vk::raii::SurfaceKHR( nullptr );
+#  if !defined( NDEBUG )
+    debugUtilsMessenger = vk::raii::DebugUtilsMessengerEXT( nullptr );
+#  endif
+    instance = vk::raii::Instance( nullptr );
+#endif
+
     glfwTerminate();
   }
   catch ( vk::SystemError & err )

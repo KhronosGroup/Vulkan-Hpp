@@ -10789,24 +10789,35 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
     class Context
     {
     public:
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
       Context()
         : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher(
             m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
+#else
+      Context( PFN_vkGetInstanceProcAddr getInstanceProcAddr )
+        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher( getInstanceProcAddr ) )
+#endif
       {}
 
       ~Context() = default;
 
       Context( Context const & ) = delete;
       Context( Context && rhs ) VULKAN_HPP_NOEXCEPT
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
         : m_dynamicLoader( std::move( rhs.m_dynamicLoader ) )
         , m_dispatcher( rhs.m_dispatcher.release() )
+#else
+        : m_dispatcher( rhs.m_dispatcher.release() )
+#endif
       {}
       Context & operator=( Context const & ) = delete;
       Context & operator=( Context && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
-          {
+        {
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
           m_dynamicLoader = std::move( rhs.m_dynamicLoader );
+#endif
           m_dispatcher.reset( rhs.m_dispatcher.release() );
         }
         return *this;
@@ -10821,7 +10832,9 @@ ${memberFunctionDeclarations}
       }
 
     private:
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
       VULKAN_HPP_NAMESPACE::DynamicLoader                                                 m_dynamicLoader;
+#endif
       std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher> m_dispatcher;
     };
 
@@ -10968,9 +10981,9 @@ std::tuple<std::string, std::string, std::string, std::string>
         moveConstructorInitializerList = "m_" + parentName +
                                          "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
                                          parentName + ", {} ) ), ";
-        moveAssignmentInstructions = "\n          m_" + parentName +
-                                     " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
-                                     parentName + ", {} );";
+        moveAssignmentInstructions += "\n          m_" + parentName +
+                                      " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
+                                      parentName + ", {} );";
         memberVariables = "\n    VULKAN_HPP_NAMESPACE::" + parentType + " m_" + parentName + " = {};";
       }
       else if ( destructorParam.type.type == handle.first )

@@ -471,12 +471,6 @@ private:
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         bool                             withAllocators ) const;
-  std::string generateCommandResultEnumerateTwoVectorsDeprecated( std::string const &              name,
-                                                                  CommandData const &              commandData,
-                                                                  size_t                           initialSkipCount,
-                                                                  bool                             definition,
-                                                                  std::map<size_t, size_t> const & vectorParamIndices,
-                                                                  bool withAllocators ) const;
   std::string generateCommandResultGetChain( std::string const & name,
                                              CommandData const & commandData,
                                              size_t              initialSkipCount,
@@ -684,19 +678,12 @@ private:
                                                             std::string const & enhancedChained,
                                                             std::string const & enhancedChainedWithAllocator ) const;
   std::string
-    generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated( bool                definition,
-                                                                       std::string const & standard,
-                                                                       std::string const & enhancedDeprecated,
-                                                                       std::string const & enhanced,
-                                                                       std::string const & enhancedWithAllocator,
-                                                                       std::string const & enhancedSingular ) const;
-  std::string
-              generateCommandSetStandardEnhancedWithAllocatorDeprecated2( bool                definition,
-                                                                          std::string const & standard,
-                                                                          std::string const & enhancedDeprecated,
-                                                                          std::string const & enhancedWithAllocatorDeprecated,
-                                                                          std::string const & enhanced,
-                                                                          std::string const & enhancedWithAllocator ) const;
+              generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated( bool                definition,
+                                                                                 std::string const & standard,
+                                                                                 std::string const & enhancedDeprecated,
+                                                                                 std::string const & enhanced,
+                                                                                 std::string const & enhancedWithAllocator,
+                                                                                 std::string const & enhancedSingular ) const;
   std::string generateCommandSetStandardEnhancedWithAllocatorSingular( bool                definition,
                                                                        std::string const & standard,
                                                                        std::string const & enhanced,

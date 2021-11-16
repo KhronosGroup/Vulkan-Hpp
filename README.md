@@ -618,7 +618,6 @@ The affected functions are
 	Device::getRayTracingShaderGroupHandlesKHR
 	Device::getRayTracingShaderGroupHandlesNV
 	Device::writeAccelerationStructuresPropertiesKHR
-	PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR
 ```
 All those elements will be removed around November 2021.
 

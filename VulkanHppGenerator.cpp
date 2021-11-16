@@ -2964,7 +2964,7 @@ std::string
   ${nodiscard}VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator> ${className}${classSeparator}${commandName}( ${argumentList} )${const}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<StructureChain, StructureChainAllocator> returnVector(${structureChainAllocator});
+    std::vector<StructureChain, StructureChainAllocator> returnVector${structureChainAllocator};
     std::vector<${vectorElementType}> ${vectorName};
     ${counterType} ${counterName};
     Result result;
@@ -3015,7 +3015,7 @@ std::string
         { "firstCallArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, true, {}, false ) },
         { "nodiscard", nodiscard },
         { "secondCallArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, false ) },
-        { "structureChainAllocator", withAllocator ? ( " structureChainAllocator " ) : "" },
+        { "structureChainAllocator", withAllocator ? ( "( structureChainAllocator )" ) : "" },
         { "typenameCheck", typenameCheck },
         { "vectorElementType", vectorElementType },
         { "vectorName", startLowerCase( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) ) },

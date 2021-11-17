@@ -878,6 +878,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceGlobalPriorityQueryFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_EXT,
     eQueueFamilyGlobalPriorityPropertiesEXT      = VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_EXT,
+    ePhysicalDeviceImageViewMinLodFeaturesEXT    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_MIN_LOD_FEATURES_EXT,
+    eImageViewMinLodCreateInfoEXT                = VK_STRUCTURE_TYPE_IMAGE_VIEW_MIN_LOD_CREATE_INFO_EXT,
     ePhysicalDeviceMultiDrawFeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_FEATURES_EXT,
     ePhysicalDeviceMultiDrawPropertiesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTI_DRAW_PROPERTIES_EXT,
     ePhysicalDeviceBorderColorSwizzleFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT,
@@ -1837,6 +1839,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceGlobalPriorityQueryFeaturesEXT:
         return "PhysicalDeviceGlobalPriorityQueryFeaturesEXT";
       case StructureType::eQueueFamilyGlobalPriorityPropertiesEXT: return "QueueFamilyGlobalPriorityPropertiesEXT";
+      case StructureType::ePhysicalDeviceImageViewMinLodFeaturesEXT: return "PhysicalDeviceImageViewMinLodFeaturesEXT";
+      case StructureType::eImageViewMinLodCreateInfoEXT: return "ImageViewMinLodCreateInfoEXT";
       case StructureType::ePhysicalDeviceMultiDrawFeaturesEXT: return "PhysicalDeviceMultiDrawFeaturesEXT";
       case StructureType::ePhysicalDeviceMultiDrawPropertiesEXT: return "PhysicalDeviceMultiDrawPropertiesEXT";
       case StructureType::ePhysicalDeviceBorderColorSwizzleFeaturesEXT:
@@ -5208,7 +5212,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVerisiliconProprietary  = VK_DRIVER_ID_VERISILICON_PROPRIETARY,
     eMesaTurnip              = VK_DRIVER_ID_MESA_TURNIP,
     eMesaV3Dv                = VK_DRIVER_ID_MESA_V3DV,
-    eMesaPanvk               = VK_DRIVER_ID_MESA_PANVK
+    eMesaPanvk               = VK_DRIVER_ID_MESA_PANVK,
+    eSamsungProprietary      = VK_DRIVER_ID_SAMSUNG_PROPRIETARY
   };
   using DriverIdKHR = DriverId;
 
@@ -5236,6 +5241,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverId::eMesaTurnip: return "MesaTurnip";
       case DriverId::eMesaV3Dv: return "MesaV3Dv";
       case DriverId::eMesaPanvk: return "MesaPanvk";
+      case DriverId::eSamsungProprietary: return "SamsungProprietary";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

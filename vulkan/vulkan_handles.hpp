@@ -1273,6 +1273,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceGlobalPriorityQueryFeaturesEXT;
   struct QueueFamilyGlobalPriorityPropertiesEXT;
 
+  //=== VK_EXT_image_view_min_lod ===
+  struct PhysicalDeviceImageViewMinLodFeaturesEXT;
+  struct ImageViewMinLodCreateInfoEXT;
+
   //=== VK_EXT_multi_draw ===
   struct PhysicalDeviceMultiDrawFeaturesEXT;
   struct PhysicalDeviceMultiDrawPropertiesEXT;

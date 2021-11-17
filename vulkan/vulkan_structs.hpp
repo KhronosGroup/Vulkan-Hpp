@@ -33130,6 +33130,90 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = ImageViewHandleInfoNVX;
   };
 
+  struct ImageViewMinLodCreateInfoEXT
+  {
+    using NativeType = VkImageViewMinLodCreateInfoEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImageViewMinLodCreateInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImageViewMinLodCreateInfoEXT( float minLod_ = {} ) VULKAN_HPP_NOEXCEPT : minLod( minLod_ ) {}
+
+    VULKAN_HPP_CONSTEXPR
+      ImageViewMinLodCreateInfoEXT( ImageViewMinLodCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageViewMinLodCreateInfoEXT( VkImageViewMinLodCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImageViewMinLodCreateInfoEXT( *reinterpret_cast<ImageViewMinLodCreateInfoEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImageViewMinLodCreateInfoEXT & operator=( ImageViewMinLodCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImageViewMinLodCreateInfoEXT & operator=( VkImageViewMinLodCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 ImageViewMinLodCreateInfoEXT & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ImageViewMinLodCreateInfoEXT & setMinLod( float minLod_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minLod = minLod_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImageViewMinLodCreateInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImageViewMinLodCreateInfoEXT *>( this );
+    }
+
+    operator VkImageViewMinLodCreateInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImageViewMinLodCreateInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImageViewMinLodCreateInfoEXT const & ) const = default;
+#else
+    bool operator==( ImageViewMinLodCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( minLod == rhs.minLod );
+    }
+
+    bool operator!=( ImageViewMinLodCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType  = StructureType::eImageViewMinLodCreateInfoEXT;
+    const void *                        pNext  = {};
+    float                               minLod = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT ) ==
+                              sizeof( VkImageViewMinLodCreateInfoEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT>::value,
+                            "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageViewMinLodCreateInfoEXT>::value,
+    "ImageViewMinLodCreateInfoEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eImageViewMinLodCreateInfoEXT>
+  {
+    using Type = ImageViewMinLodCreateInfoEXT;
+  };
+
   struct ImageViewUsageCreateInfo
   {
     using NativeType = VkImageViewUsageCreateInfo;
@@ -45832,6 +45916,100 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT>
   {
     using Type = PhysicalDeviceImageViewImageFormatInfoEXT;
+  };
+
+  struct PhysicalDeviceImageViewMinLodFeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceImageViewMinLodFeaturesEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceImageViewMinLodFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDeviceImageViewMinLodFeaturesEXT( VULKAN_HPP_NAMESPACE::Bool32 minLod_ = {} ) VULKAN_HPP_NOEXCEPT
+      : minLod( minLod_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceImageViewMinLodFeaturesEXT(
+      PhysicalDeviceImageViewMinLodFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceImageViewMinLodFeaturesEXT( VkPhysicalDeviceImageViewMinLodFeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceImageViewMinLodFeaturesEXT(
+          *reinterpret_cast<PhysicalDeviceImageViewMinLodFeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceImageViewMinLodFeaturesEXT &
+      operator=( PhysicalDeviceImageViewMinLodFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceImageViewMinLodFeaturesEXT &
+      operator=( VkPhysicalDeviceImageViewMinLodFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewMinLodFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageViewMinLodFeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceImageViewMinLodFeaturesEXT &
+                            setMinLod( VULKAN_HPP_NAMESPACE::Bool32 minLod_ ) VULKAN_HPP_NOEXCEPT
+    {
+      minLod = minLod_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceImageViewMinLodFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceImageViewMinLodFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceImageViewMinLodFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceImageViewMinLodFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceImageViewMinLodFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceImageViewMinLodFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( minLod == rhs.minLod );
+    }
+
+    bool operator!=( PhysicalDeviceImageViewMinLodFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType  = StructureType::ePhysicalDeviceImageViewMinLodFeaturesEXT;
+    void *                              pNext  = {};
+    VULKAN_HPP_NAMESPACE::Bool32        minLod = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewMinLodFeaturesEXT ) ==
+                              sizeof( VkPhysicalDeviceImageViewMinLodFeaturesEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewMinLodFeaturesEXT>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageViewMinLodFeaturesEXT>::value,
+    "PhysicalDeviceImageViewMinLodFeaturesEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceImageViewMinLodFeaturesEXT>
+  {
+    using Type = PhysicalDeviceImageViewMinLodFeaturesEXT;
   };
 
   struct PhysicalDeviceImagelessFramebufferFeatures

@@ -77,19 +77,19 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert(ap0.size() == 0);
 
     // Type
-    //fct(2);   // not supported: attempting to reference a deleted function
-    //fctc(1);  // not supported: attempting to reference a deleted function
+    // fct(2);   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<int>(int &&)
+    // fctc(1);  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<T,0>(int &&)
 
     // getInt()
-    //fct( getInt() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( T && value )
-    //fctc( getInt() );   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( typename std::remove_const<T>::type && value )
+    // fct( getInt() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<int>(int &&)
+    // fctc( getInt() );   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<T,0>(int &&)
 
     int i0 = 1;
     fct(i0);
     fctc(i0);
 
     const int i1 = 2;
-    //fct(i1);   // not supported: cannot convert argument 1 from 'const int' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct(i1);   // not supported: ArrayProxyNoTemporaries<const int&>(const int &)
     fctc(i1);
 
     // count, T *
@@ -99,7 +99,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // count, T const*
     int const* i1p = &i1;
-    //fct({ 1, i1p });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct({ 1, i1p });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
     fctc({ 1, i1p });
 
     // std::array<T,N>
@@ -109,31 +109,31 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // std::array<const T,N>
     std::array<const int, 2> sa1 = { 0, 1 };
-    //fct(sa1); // not supported: cannot convert argument 1 from 'std::array<const int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct(sa1); // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<const int,2>&>(V)
     fctc(sa1);
 
     // std::array<T,N> const
     std::array<int, 2> const sa2 = { 1, 2 };
-    //fct(sa2);    // not supported: cannot convert from 'const int *' to 'int *'
+    // fct(sa2);    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<int,2>&>(V)
     fctc(sa2);
 
     // std::array<const T,N> const
     std::array<const int, 2> const sa3 = { 1, 2 };
-    //fct(sa3); // not supported: cannot convert argument 1 from 'const std::array<const int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct(sa3); // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<const int,2>&>(V)
     fctc(sa3);
 
     // getArray
-    //fct( getConstArray() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::array<T, N> const && data )
-    //fctc( getConstArray() );    // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::array<typename std::remove_const<T>::type> const && data ) 
-    //fct( getArray() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::array<T, N> && data )
-    //fctc( getArray() );   // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::array<typename std::remove_const<T>::type, N> && data )
+    // fct( getConstArray() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<int,2>>(V &&)
+    // fctc( getConstArray() );   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<int,2>>(V &&)
+    // fct( getArray() );         // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<int,2>>(V &&)
+    // fctc( getArray() );        // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<int,2>>(V &&)
 
     // from std::array constructors
     vk::ArrayProxyNoTemporaries<int> ap2 = sa0;
     assert(ap2.size() == 2);
-    //vk::ArrayProxyNoTemporaries<int> ap3 = sa1;  // not supported: cannot convert from 'std::array<const int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
-    //vk::ArrayProxyNoTemporaries<int> ap4 = sa2;  // not supported: cannot convert from 'int *' to 'int *'
-    //vk::ArrayProxyNoTemporaries<int> ap5 = sa3;  // not supported: cannot convert from 'const std::array<const int,2>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // vk::ArrayProxyNoTemporaries<int> ap3 = sa1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<const int,2>&>(V)
+    // vk::ArrayProxyNoTemporaries<int> ap4 = sa2;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<int,2>&>(V)
+    // vk::ArrayProxyNoTemporaries<int> ap5 = sa3;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::array<const int,2>&>(V)
 
     vk::ArrayProxyNoTemporaries<const int> ap6 = sa0;
     assert(ap6.size() == 2);
@@ -151,18 +151,18 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // std::vector<T> const
     std::vector<int> const sv1 = { 0, 1 };
-    //fct(sv1); // not supported:  cannot convert from 'const int *' to 'int *'
+    // fct(sv1); // not supported:  attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::vector<int,std::allocator<int>>&>(V)
     fctc(sv1);
 
     vk::ArrayProxyNoTemporaries<int> ap10 = sv0;
     assert(ap10.size() == 2);
-    //vk::ArrayProxyNoTemporaries<int> ap11 = sv1;  // not supported: cannot convert from 'int *' to 'int *'
+    // vk::ArrayProxyNoTemporaries<int> ap11 = sv1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::vector<int,std::allocator<int>>&>(V)
 
     // getVector
-    //fct( getConstVector() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::vector<T, Allocator> const && data )
-    //fctc( getConstVector() );    // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::vector<typename std::remove_const<T>::type, Allocator> const && data )
-    //fct( getVector() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::vector<T> && data )
-    //fctc( getVector() );   // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::vector<typename std::remove_const<T>::type> && data )
+    // fct( getConstVector() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::vector<int,std::allocator<int>>>(V &&)
+    // fctc( getConstVector() );   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::vector<int,std::allocator<int>>>(V &&)
+    // fct( getVector() );         // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::vector<int,std::allocator<int>>>(V &&)
+    // fctc( getVector() );        // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::vector<int,std::allocator<int>>>(V &&)
 
     vk::ArrayProxyNoTemporaries<const int> ap12 = sv0;
     assert(ap12.size() == 2);
@@ -173,44 +173,44 @@ int main( int /*argc*/, char ** /*argv*/ )
     fct({});
     fctc({});
 
-    //fct({ 0, 1 });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
-    //fctc({ 0, 1 });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
+    // fct({ 0, 1 });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fctc({ 0, 1 });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
-    //int a = 0;
-    //int b = 1;
-    //fct({ a, b });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
-    //fctc({ a,b });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
+    // int a = 0;
+    // int b = 1;
+    // fct({ a, b });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fctc({ a,b });    // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<const int32_t>'
 
     auto il0 = { 0, 1 };   // -> std::initializer_list<int>
-    //fct(il0);  // not supported: cannot convert from 'const int *' to 'int *'
+    // fct(il0);  // not supported: cannot convert from 'const int *' to 'int *'
     fctc(il0);
 
     std::initializer_list<int> il1 = { 0, 1 };
-    //fct(il1);  // not supported: cannot convert from 'const int *' to 'int *'
+    // fct(il1);  // not supported: cannot convert from 'const int *' to 'int *'
     fctc(il1);
 
     std::initializer_list<const int> il2 = { 0, 1 };
-    //fct(il2);  // not supported: cannot convert argument 1 from 'std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct(il2);  // not supported: attempting to reference a deleted function : ArrayProxyNoTemporaries<std::initializer_list<T>&>(V)
     fctc(il2);
 
     std::initializer_list<int> const il3 = { 0, 1 };
-    //fct(il3);  // not supported: cannot convert from 'const int *' to 'int *'
+    // fct(il3);  // not supported: cannot convert from 'const int *' to 'int *'
     fctc(il3);
 
     std::initializer_list<const int> const il4 = { 0, 1 };
-    //fct(il4);  // not supported: cannot convert argument 1 from 'const std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // fct(il4);  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::initializer_list<T>&>(V)
     fctc(il4);
 
     // getInitializerList
-    //fct( getConstInitializerList() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::initializer_list<T> const && list )
-    //fctc( getConstInitializerList() );    // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const && list ) 
-    //fct( getInitializerList() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::initializer_list<T> && list )
-    //fctc( getInitializerList() );   // // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> && list )
+    // fct( getConstInitializerList() );     // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries(const std::initializer_list<int> &&)
+    // fctc( getConstInitializerList() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<T,0>(const std::initializer_list<int> &&)
+    // fct( getInitializerList() );          // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries(std::initializer_list<int> &&)
+    // fctc( getInitializerList() );         // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<T,0>(std::initializer_list<int> &&)
 
-    //vk::ArrayProxyNoTemporaries<int> ap14 = il1;   // not supported: cannot convert from 'const int *' to 'int *'
-    //vk::ArrayProxyNoTemporaries<int> ap15 = il2;   // not supported: cannot convert from 'std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
-    //vk::ArrayProxyNoTemporaries<int> ap16 = il3;   // not supported: cannot convert from 'const int *' to 'int *'
-    //vk::ArrayProxyNoTemporaries<int> ap17 = il4;   // not supported: cannot convert from 'const std::initializer_list<const int>' to 'vk::ArrayProxyNoTemporaries<int>'
+    // vk::ArrayProxyNoTemporaries<int> ap14 = il1;   // not supported: cannot convert from 'const int *' to 'int *'
+    // vk::ArrayProxyNoTemporaries<int> ap15 = il2;   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::initializer_list<T>&>(V)
+    // vk::ArrayProxyNoTemporaries<int> ap16 = il3;   // not supported: cannot convert from 'const int *' to 'int *'
+    // vk::ArrayProxyNoTemporaries<int> ap17 = il4;   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::initializer_list<T>&>(V)
 
     vk::ArrayProxyNoTemporaries<const int> ap18 = il1;
     assert(ap18.size() == 2);

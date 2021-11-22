@@ -41,7 +41,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( ap0.size() == 0 );
 
     // Type
-    // fct(2);  // not supported: cannot convert from 'const int *' to 'T *'
+    // fct(2);  // not supported: cannot convert argument 1 from 'int' to 'vk::ArrayProxy<int>'
     fctc( 1 );
 
     int i0 = 1;
@@ -49,7 +49,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( i0 );
 
     const int i1 = 2;
-    // fct(i1);   // not supported: cannot convert from 'const int *' to 'T *'
+    // fct(i1);   // not supported: cannot convert argument 1 from 'const int' to 'vk::ArrayProxy<int>'
     fctc( i1 );
 
     // count, T *
@@ -59,7 +59,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // count, T const*
     int const * i1p = &i1;
-    // fct({ 1, i1p });   // not supported: cannot convert from 'const int *' to 'T *'
+    // fct({ 1, i1p });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxy<int>'
     fctc( { 1, i1p } );
 
     // std::array<T,N>
@@ -69,7 +69,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // std::array<T,N> const
     std::array<const int, 2> sa1 = { 0, 1 };
-    // fct(sa1); // not supported: cannot convert from '_Ty *' to 'T *'
+    // fct(sa1); // not supported: cannot convert argument 1 from 'std::array<const int,2>' to 'vk::ArrayProxy<int>'
     fctc( sa1 );
 
     std::array<int, 2> const sa2 = { 1, 2 };
@@ -77,14 +77,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( sa2 );
 
     std::array<const int, 2> const sa3 = { 1, 2 };
-    // fct(sa3); // not supported: cannot convert from '_Ty *' to 'T *'
+    // fct(sa3); // not supported: cannot convert argument 1 from 'const std::array<const int,2>' to 'vk::ArrayProxy<int>'
     fctc( sa3 );
 
     vk::ArrayProxy<int> ap2 = sa0;
     assert( ap2.size() == 2 );
-    // vk::ArrayProxy<int> ap3 = sa1;  // not supported: cannot convert from '_Ty *' to 'T *'
+    // vk::ArrayProxy<int> ap3 = sa1;  // not supported: cannot convert from 'std::array<const int,2>' to 'vk::ArrayProxy<int>'
     // vk::ArrayProxy<int> ap4 = sa2;  // not supported: cannot convert from '_Ty *' to 'T *'
-    // vk::ArrayProxy<int> ap5 = sa3;  // not supported: cannot convert from '_Ty *' to 'T *'
+    // vk::ArrayProxy<int> ap5 = sa3;  // not supported: cannot convert from 'const std::array<const int,2>' to 'vk::ArrayProxy<int>'
 
     vk::ArrayProxy<const int> ap6 = sa0;
     assert( ap6.size() == 2 );
@@ -134,7 +134,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( il1 );
 
     std::initializer_list<const int> il2 = { 0, 1 };
-    // fct(il2);  // not supported: cannot convert from '_Elem *' to 'T *'
+    // fct(il2);  // not supported: cannot convert argument 1 from 'std::initializer_list<T>' to 'vk::ArrayProxy<int>'
     fctc( il2 );
 
     std::initializer_list<int> const il3 = { 0, 1 };
@@ -142,13 +142,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     fctc( il3 );
 
     std::initializer_list<const int> const il4 = { 0, 1 };
-    // fct(il4);  // not supported: cannot convert from 'const _Elem *' to 'T *'
+    // fct(il4);  // not supported: cannot convert argument 1 from 'const std::initializer_list<T>' to 'vk::ArrayProxy<int>'
     fctc( il4 );
 
     // vk::ArrayProxy<int> ap14 = il1;   // not supported: cannot convert from 'const _Elem *' to 'T *'
-    // vk::ArrayProxy<int> ap15 = il2;   // not supported: cannot convert from '_Ty *' to 'T *'
-    // vk::ArrayProxy<int> ap16 = il3;   // not supported: cannot convert from '_Ty *' to 'T *'
-    // vk::ArrayProxy<int> ap17 = il4;   // not supported: cannot convert from '_Ty *' to 'T *'
+    // vk::ArrayProxy<int> ap15 = il2;   // not supported: cannot convert from 'std::initializer_list<T>' to 'vk::ArrayProxy<int>'
+    // vk::ArrayProxy<int> ap16 = il3;   // not supported: cannot convert from 'const _Elem *' to 'T *'
+    // vk::ArrayProxy<int> ap17 = il4;   // not supported: cannot convert from 'const std::initializer_list<T>' to 'vk::ArrayProxy<int>'
 
     vk::ArrayProxy<const int> ap18 = il1;
     assert( ap18.size() == 2 );

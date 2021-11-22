@@ -15647,22 +15647,24 @@ int main( int argc, char ** argv )
 #    pragma GCC diagnostic pop
 #  endif
 
-    // Any type with a .data() return type implicitly convertible to T*, and a
-    // .size() return type implicitly convertible to size_t. The const version
-    // can capture temporaries, with lifetime ending at end of statement.
-    template<typename V, typename std::enable_if<
-                             std::is_convertible<decltype(std::declval<V>().data()), T*>::value
-                             && std::is_convertible<decltype(std::declval<V>().size()), std::size_t>::value>::type* = nullptr>
-    ArrayProxy( const V & v ) VULKAN_HPP_NOEXCEPT
-        : m_count( static_cast<uint32_t>( v.size() ) ),
-          m_ptr( v.data() )
+    // Any type with a .data() return type implicitly convertible to T*, and a .size() return type implicitly
+    // convertible to size_t. The const version can capture temporaries, with lifetime ending at end of statement.
+    template <typename V,
+              typename std::enable_if<
+                std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+                std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
+    ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( v.size() ) )
+      , m_ptr( v.data() )
     {}
-    template<typename V, typename std::enable_if<
-                             std::is_convertible<decltype(std::declval<V>().data()), T*>::value
-                             && std::is_convertible<decltype(std::declval<V>().size()), std::size_t>::value>::type* = nullptr>
+
+    template <typename V,
+              typename std::enable_if<
+                std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+                std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
     ArrayProxy( V & v ) VULKAN_HPP_NOEXCEPT
-        : m_count( static_cast<uint32_t>( v.size() ) ),
-          m_ptr( v.data() )
+      : m_count( static_cast<uint32_t>( v.size() ) )
+      , m_ptr( v.data() )
     {}
 
     const T * begin() const VULKAN_HPP_NOEXCEPT
@@ -15726,7 +15728,7 @@ int main( int argc, char ** argv )
       , m_ptr( &value )
     {}
 
-    template<typename V>
+    template <typename V>
     ArrayProxyNoTemporaries( V && value ) = delete;
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
@@ -15782,14 +15784,15 @@ int main( int argc, char ** argv )
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> && list ) = delete;
 
-    // Any type with a .data() return type implicitly convertible to T*, and a
-    // .size() return type implicitly convertible to size_t.
-    template<typename V, typename std::enable_if<
-                             std::is_convertible<decltype(std::declval<V>().data()), T*>::value
-                             && std::is_convertible<decltype(std::declval<V>().size()), std::size_t>::value>::type* = nullptr>
+    // Any type with a .data() return type implicitly convertible to T*, and a // .size() return type implicitly
+    // convertible to size_t.
+    template <typename V,
+              typename std::enable_if<
+                std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+                std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
     ArrayProxyNoTemporaries( V & v ) VULKAN_HPP_NOEXCEPT
-        : m_count( static_cast<uint32_t>( v.size() ) ),
-          m_ptr( v.data() )
+      : m_count( static_cast<uint32_t>( v.size() ) )
+      , m_ptr( v.data() )
     {}
 
     const T * begin() const VULKAN_HPP_NOEXCEPT

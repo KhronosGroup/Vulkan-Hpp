@@ -228,6 +228,44 @@ private:
     int                      xmlLine;
   };
 
+  struct ComponentData
+  {
+    ComponentData( int line ) : xmlLine( line ) {}
+
+    std::string bits;
+    std::string name;
+    std::string numericFormat;
+    std::string planeIndex;
+    int         xmlLine;
+  };
+
+  struct PlaneData
+  {
+    PlaneData( int line ) : xmlLine( line ) {}
+
+    std::string compatible;
+    std::string heightDivisor;
+    std::string widthDivisor;
+    int         xmlLine;
+  };
+
+  struct FormatData
+  {
+    FormatData( int line ) : xmlLine( line ) {}
+
+    std::string                blockExtent;
+    std::string                blockSize;
+    std::string                chroma;
+    std::string                classAttribute;
+    std::vector<ComponentData> components;
+    std::string                compressed;
+    std::string                packed;
+    std::vector<PlaneData>     planes;
+    std::string                spirvImageFormat;
+    std::string                texelsPerBlock;
+    int                        xmlLine;
+  };
+
   struct FuncPointerArgumentData
   {
     FuncPointerArgumentData( std::string const & t, int line ) : type( t ), xmlLine( line ) {}
@@ -1242,6 +1280,11 @@ private:
   void readFeatureRequireType( tinyxml2::XMLElement const *                 element,
                                std::map<std::string, FeatureData>::iterator featureIt,
                                RequireData &                                requireData );
+  void readFormats( tinyxml2::XMLElement const * element );
+  void readFormatsFormat( tinyxml2::XMLElement const * element );
+  void readFormatsFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void readFormatsFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
+  void readFormatsFormatSPIRVImageFormat( tinyxml2::XMLElement const * element, FormatData & formatData );
   std::pair<NameData, TypeInfo> readNameAndType( tinyxml2::XMLElement const * elements );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readPlatformsPlatform( tinyxml2::XMLElement const * element );
@@ -1314,6 +1357,7 @@ private:
   std::map<std::string, ExtensionData> m_extensions;
   std::map<int, std::map<std::string, ExtensionData>::const_iterator> m_extensionsByNumber;
   std::map<std::string, FeatureData>                                  m_features;
+  std::map<std::string, FormatData>                                   m_formats;
   std::map<std::string, FuncPointerData>                              m_funcPointers;
   std::map<std::string, HandleData>                                   m_handles;
   std::set<std::string>                                               m_includes;

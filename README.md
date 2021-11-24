@@ -502,6 +502,38 @@ vulkan.hpp provides a couple of type traits, easing template programming:
 - `HandleClass::debugReportObjectType`
 	Maps a handle class (`vk::Instance`, `vk::Device`, ...) to the corresponding `DebugReportObjectTypeEXT` value (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) by the static member `debugReportObjectType`.
 
+### vk::Format trait functions
+
+vulkan.hpp provides a couple of trait functions on `vk::Format`. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved by the compiler.
+- `uin8_t blockSize( vk::Format format );`
+	Gets the texel block size of this format in bytes.
+- `uint8_t texelsPerBlock( vk::Format format );`
+	Gets the number of texels in a texel block.
+- `std::array<uint8_t, 3> blockExtent( vk::Format format );`
+	Gets the three-dimensional extent of texel blocks.
+- `char const * compressionScheme( vk::Format format );`
+	Gets a textual description of the compression scheme of this format, or an empty text if it is not compressed.
+- `bool isCompressed( vk::Format format );`
+	True, if format is a compressed format, otherwise false.
+- `uint8_t packed( vk::Format format );`
+	Gets the number of bits into which the format is packed. A single image element in this format can be stored in the same space as a scalar type of this bit width.
+- `uint8_t componentCount( vk::Format format );`
+	Gets the number of components of this format.
+- `bool componentsAreCompressed( vk::Format format );`
+	True, if the components of this format are compressed, otherwise False.
+- `uint8_t componentBits( vk::Format format, uint8_t component );`
+	Gets the number of bits in this component, if not compressed, otherwise 0.
+- `uint8_t componentPlaneIndex( vk::Format format, uint8_t component );`
+	Gets the plane index, this component lies in.
+- `uint8_t planeCount( vk::Format format );`
+	Gets the number of image planes of this format.
+- `vk::Format planeCompatibleFormat( vk::Format format, uint8_t plane );`
+	Gets a single-plane format compatible with this plane.
+- `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane );`
+	Gets the relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
+- `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
+	Gets the relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
+
 ### Samples and Tests
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.

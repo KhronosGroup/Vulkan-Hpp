@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 199, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 200, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -314,7 +314,7 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<
                 std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
                 std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
-    ArrayProxy( const V & v ) VULKAN_HPP_NOEXCEPT
+    ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
     {}
@@ -10591,6 +10591,32 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_physical_device_drm ===
   template <>
   struct StructExtends<PhysicalDeviceDrmPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_depth_clip_control ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClipControlFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClipControlFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineViewportDepthClipControlCreateInfoEXT, PipelineViewportStateCreateInfo>
   {
     enum
     {

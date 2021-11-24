@@ -818,18 +818,20 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceImageRobustnessFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_ROBUSTNESS_FEATURES_EXT,
     ePhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_WORKGROUP_MEMORY_EXPLICIT_LAYOUT_FEATURES_KHR,
-    eCopyBufferInfo2KHR                       = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2_KHR,
-    eCopyImageInfo2KHR                        = VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2_KHR,
-    eCopyBufferToImageInfo2KHR                = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR,
-    eCopyImageToBufferInfo2KHR                = VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2_KHR,
-    eBlitImageInfo2KHR                        = VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2_KHR,
-    eResolveImageInfo2KHR                     = VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2_KHR,
-    eBufferCopy2KHR                           = VK_STRUCTURE_TYPE_BUFFER_COPY_2_KHR,
-    eImageCopy2KHR                            = VK_STRUCTURE_TYPE_IMAGE_COPY_2_KHR,
-    eImageBlit2KHR                            = VK_STRUCTURE_TYPE_IMAGE_BLIT_2_KHR,
-    eBufferImageCopy2KHR                      = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2_KHR,
-    eImageResolve2KHR                         = VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2_KHR,
-    ePhysicalDevice4444FormatsFeaturesEXT     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
+    eCopyBufferInfo2KHR                   = VK_STRUCTURE_TYPE_COPY_BUFFER_INFO_2_KHR,
+    eCopyImageInfo2KHR                    = VK_STRUCTURE_TYPE_COPY_IMAGE_INFO_2_KHR,
+    eCopyBufferToImageInfo2KHR            = VK_STRUCTURE_TYPE_COPY_BUFFER_TO_IMAGE_INFO_2_KHR,
+    eCopyImageToBufferInfo2KHR            = VK_STRUCTURE_TYPE_COPY_IMAGE_TO_BUFFER_INFO_2_KHR,
+    eBlitImageInfo2KHR                    = VK_STRUCTURE_TYPE_BLIT_IMAGE_INFO_2_KHR,
+    eResolveImageInfo2KHR                 = VK_STRUCTURE_TYPE_RESOLVE_IMAGE_INFO_2_KHR,
+    eBufferCopy2KHR                       = VK_STRUCTURE_TYPE_BUFFER_COPY_2_KHR,
+    eImageCopy2KHR                        = VK_STRUCTURE_TYPE_IMAGE_COPY_2_KHR,
+    eImageBlit2KHR                        = VK_STRUCTURE_TYPE_IMAGE_BLIT_2_KHR,
+    eBufferImageCopy2KHR                  = VK_STRUCTURE_TYPE_BUFFER_IMAGE_COPY_2_KHR,
+    eImageResolve2KHR                     = VK_STRUCTURE_TYPE_IMAGE_RESOLVE_2_KHR,
+    ePhysicalDevice4444FormatsFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
+    ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM =
+      VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_FEATURES_ARM,
     ePhysicalDeviceRgba10X6FormatsFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RGBA10X6_FORMATS_FEATURES_EXT,
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
     eDirectfbSurfaceCreateInfoEXT = VK_STRUCTURE_TYPE_DIRECTFB_SURFACE_CREATE_INFO_EXT,
@@ -839,9 +841,12 @@ namespace VULKAN_HPP_NAMESPACE
     eMutableDescriptorTypeCreateInfoVALVE = VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_VALVE,
     ePhysicalDeviceVertexInputDynamicStateFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
-    eVertexInputBindingDescription2EXT   = VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
-    eVertexInputAttributeDescription2EXT = VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
-    ePhysicalDeviceDrmPropertiesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
+    eVertexInputBindingDescription2EXT         = VK_STRUCTURE_TYPE_VERTEX_INPUT_BINDING_DESCRIPTION_2_EXT,
+    eVertexInputAttributeDescription2EXT       = VK_STRUCTURE_TYPE_VERTEX_INPUT_ATTRIBUTE_DESCRIPTION_2_EXT,
+    ePhysicalDeviceDrmPropertiesEXT            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRM_PROPERTIES_EXT,
+    ePhysicalDeviceDepthClipControlFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT,
+    ePipelineViewportDepthClipControlCreateInfoEXT =
+      VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLIP_CONTROL_CREATE_INFO_EXT,
     ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PRIMITIVE_TOPOLOGY_LIST_RESTART_FEATURES_EXT,
     eFormatProperties3KHR = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3_KHR,
@@ -1786,6 +1791,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eBufferImageCopy2KHR: return "BufferImageCopy2KHR";
       case StructureType::eImageResolve2KHR: return "ImageResolve2KHR";
       case StructureType::ePhysicalDevice4444FormatsFeaturesEXT: return "PhysicalDevice4444FormatsFeaturesEXT";
+      case StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM:
+        return "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM";
       case StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT: return "PhysicalDeviceRgba10X6FormatsFeaturesEXT";
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       case StructureType::eDirectfbSurfaceCreateInfoEXT: return "DirectfbSurfaceCreateInfoEXT";
@@ -1798,6 +1805,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVertexInputBindingDescription2EXT: return "VertexInputBindingDescription2EXT";
       case StructureType::eVertexInputAttributeDescription2EXT: return "VertexInputAttributeDescription2EXT";
       case StructureType::ePhysicalDeviceDrmPropertiesEXT: return "PhysicalDeviceDrmPropertiesEXT";
+      case StructureType::ePhysicalDeviceDepthClipControlFeaturesEXT:
+        return "PhysicalDeviceDepthClipControlFeaturesEXT";
+      case StructureType::ePipelineViewportDepthClipControlCreateInfoEXT:
+        return "PipelineViewportDepthClipControlCreateInfoEXT";
       case StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT:
         return "PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT";
       case StructureType::eFormatProperties3KHR: return "FormatProperties3KHR";
@@ -3919,21 +3930,19 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
-    eDisableOptimization      = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
-    eAllowDerivatives         = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
-    eDerivative               = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
-    eViewIndexFromDeviceIndex = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eDispatchBase             = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
-    eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR =
-      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
-    eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT =
-      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
-    eRayTracingNoNullAnyHitShadersKHR       = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
-    eRayTracingNoNullClosestHitShadersKHR   = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,
-    eRayTracingNoNullMissShadersKHR         = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR,
-    eRayTracingNoNullIntersectionShadersKHR = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR,
-    eRayTracingSkipTrianglesKHR             = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR,
-    eRayTracingSkipAabbsKHR                 = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR,
+    eDisableOptimization                       = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+    eAllowDerivatives                          = VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT,
+    eDerivative                                = VK_PIPELINE_CREATE_DERIVATIVE_BIT,
+    eViewIndexFromDeviceIndex                  = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
+    eDispatchBase                              = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eRenderingFragmentShadingRateAttachmentKHR = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
+    eRenderingFragmentDensityMapAttachmentEXT  = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
+    eRayTracingNoNullAnyHitShadersKHR          = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_ANY_HIT_SHADERS_BIT_KHR,
+    eRayTracingNoNullClosestHitShadersKHR      = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_CLOSEST_HIT_SHADERS_BIT_KHR,
+    eRayTracingNoNullMissShadersKHR            = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_MISS_SHADERS_BIT_KHR,
+    eRayTracingNoNullIntersectionShadersKHR    = VK_PIPELINE_CREATE_RAY_TRACING_NO_NULL_INTERSECTION_SHADERS_BIT_KHR,
+    eRayTracingSkipTrianglesKHR                = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_TRIANGLES_BIT_KHR,
+    eRayTracingSkipAabbsKHR                    = VK_PIPELINE_CREATE_RAY_TRACING_SKIP_AABBS_BIT_KHR,
     eRayTracingShaderGroupHandleCaptureReplayKHR =
       VK_PIPELINE_CREATE_RAY_TRACING_SHADER_GROUP_HANDLE_CAPTURE_REPLAY_BIT_KHR,
     eDeferCompileNV                    = VK_PIPELINE_CREATE_DEFER_COMPILE_BIT_NV,
@@ -3945,7 +3954,11 @@ namespace VULKAN_HPP_NAMESPACE
     eEarlyReturnOnFailureEXT           = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT_EXT,
     eRayTracingAllowMotionNV           = VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV,
     eDispatchBaseKHR                   = VK_PIPELINE_CREATE_DISPATCH_BASE_KHR,
-    eViewIndexFromDeviceIndexKHR       = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR
+    eViewIndexFromDeviceIndexKHR       = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
+    eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT =
+      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_DENSITY_MAP_ATTACHMENT_BIT_EXT,
+    eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR =
+      VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
   };
 
   VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits value )
@@ -3957,10 +3970,10 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits::eDerivative: return "Derivative";
       case PipelineCreateFlagBits::eViewIndexFromDeviceIndex: return "ViewIndexFromDeviceIndex";
       case PipelineCreateFlagBits::eDispatchBase: return "DispatchBase";
-      case PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR:
-        return "VkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR";
-      case PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT:
-        return "VkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT";
+      case PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR:
+        return "RenderingFragmentShadingRateAttachmentKHR";
+      case PipelineCreateFlagBits::eRenderingFragmentDensityMapAttachmentEXT:
+        return "RenderingFragmentDensityMapAttachmentEXT";
       case PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR: return "RayTracingNoNullAnyHitShadersKHR";
       case PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR: return "RayTracingNoNullClosestHitShadersKHR";
       case PipelineCreateFlagBits::eRayTracingNoNullMissShadersKHR: return "RayTracingNoNullMissShadersKHR";
@@ -4146,24 +4159,6 @@ namespace VULKAN_HPP_NAMESPACE
       case VertexInputRate::eInstance: return "Instance";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
-  }
-
-  enum class PipelineColorBlendStateCreateFlagBits : VkPipelineColorBlendStateCreateFlags
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits )
-  {
-    return "(void)";
-  }
-
-  enum class PipelineDepthStencilStateCreateFlagBits : VkPipelineDepthStencilStateCreateFlags
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits )
-  {
-    return "(void)";
   }
 
   enum class PipelineDynamicStateCreateFlagBits : VkPipelineDynamicStateCreateFlags
@@ -4631,7 +4626,13 @@ namespace VULKAN_HPP_NAMESPACE
     ePerViewAttributesNVX    = VK_SUBPASS_DESCRIPTION_PER_VIEW_ATTRIBUTES_BIT_NVX,
     ePerViewPositionXOnlyNVX = VK_SUBPASS_DESCRIPTION_PER_VIEW_POSITION_X_ONLY_BIT_NVX,
     eFragmentRegionQCOM      = VK_SUBPASS_DESCRIPTION_FRAGMENT_REGION_BIT_QCOM,
-    eShaderResolveQCOM       = VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM
+    eShaderResolveQCOM       = VK_SUBPASS_DESCRIPTION_SHADER_RESOLVE_BIT_QCOM,
+    eRasterizationOrderAttachmentColorAccessARM =
+      VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_COLOR_ACCESS_BIT_ARM,
+    eRasterizationOrderAttachmentDepthAccessARM =
+      VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_ARM,
+    eRasterizationOrderAttachmentStencilAccessARM =
+      VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM
   };
 
   VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlagBits value )
@@ -4642,6 +4643,12 @@ namespace VULKAN_HPP_NAMESPACE
       case SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX: return "PerViewPositionXOnlyNVX";
       case SubpassDescriptionFlagBits::eFragmentRegionQCOM: return "FragmentRegionQCOM";
       case SubpassDescriptionFlagBits::eShaderResolveQCOM: return "ShaderResolveQCOM";
+      case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessARM:
+        return "RasterizationOrderAttachmentColorAccessARM";
+      case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessARM:
+        return "RasterizationOrderAttachmentDepthAccessARM";
+      case SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessARM:
+        return "RasterizationOrderAttachmentStencilAccessARM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8038,6 +8045,44 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+  //=== VK_ARM_rasterization_order_attachment_access ===
+
+  enum class PipelineColorBlendStateCreateFlagBits : VkPipelineColorBlendStateCreateFlags
+  {
+    eRasterizationOrderAttachmentAccessARM =
+      VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_ARM
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineColorBlendStateCreateFlagBits::eRasterizationOrderAttachmentAccessARM:
+        return "RasterizationOrderAttachmentAccessARM";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  enum class PipelineDepthStencilStateCreateFlagBits : VkPipelineDepthStencilStateCreateFlags
+  {
+    eRasterizationOrderAttachmentDepthAccessARM =
+      VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_DEPTH_ACCESS_BIT_ARM,
+    eRasterizationOrderAttachmentStencilAccessARM =
+      VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentDepthAccessARM:
+        return "RasterizationOrderAttachmentDepthAccessARM";
+      case PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentStencilAccessARM:
+        return "RasterizationOrderAttachmentStencilAccessARM";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
@@ -9815,9 +9860,49 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits>;
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags )
+  template <>
+  struct FlagTraits<PipelineColorBlendStateCreateFlagBits>
   {
-    return "{}";
+    enum : VkFlags
+    {
+      allFlags = VkFlags( PipelineColorBlendStateCreateFlagBits::eRasterizationOrderAttachmentAccessARM )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator|(
+    PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineColorBlendStateCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator&(
+    PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineColorBlendStateCreateFlags( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator^(
+    PipelineColorBlendStateCreateFlagBits bit0, PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineColorBlendStateCreateFlags( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags
+    operator~( PipelineColorBlendStateCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( PipelineColorBlendStateCreateFlags( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & PipelineColorBlendStateCreateFlagBits::eRasterizationOrderAttachmentAccessARM )
+      result += "RasterizationOrderAttachmentAccessARM | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
@@ -9831,8 +9916,8 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( PipelineCreateFlagBits::eDisableOptimization ) | VkFlags( PipelineCreateFlagBits::eAllowDerivatives ) |
         VkFlags( PipelineCreateFlagBits::eDerivative ) | VkFlags( PipelineCreateFlagBits::eViewIndexFromDeviceIndex ) |
         VkFlags( PipelineCreateFlagBits::eDispatchBase ) |
-        VkFlags( PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR ) |
-        VkFlags( PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT ) |
+        VkFlags( PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR ) |
+        VkFlags( PipelineCreateFlagBits::eRenderingFragmentDensityMapAttachmentEXT ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR ) |
         VkFlags( PipelineCreateFlagBits::eRayTracingNoNullMissShadersKHR ) |
@@ -9889,10 +9974,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ViewIndexFromDeviceIndex | ";
     if ( value & PipelineCreateFlagBits::eDispatchBase )
       result += "DispatchBase | ";
-    if ( value & PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR )
-      result += "VkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR | ";
-    if ( value & PipelineCreateFlagBits::eVkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT )
-      result += "VkPipelineRasterizationStateCreateFragmentDensityMapAttachmentEXT | ";
+    if ( value & PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR )
+      result += "RenderingFragmentShadingRateAttachmentKHR | ";
+    if ( value & PipelineCreateFlagBits::eRenderingFragmentDensityMapAttachmentEXT )
+      result += "RenderingFragmentDensityMapAttachmentEXT | ";
     if ( value & PipelineCreateFlagBits::eRayTracingNoNullAnyHitShadersKHR )
       result += "RayTracingNoNullAnyHitShadersKHR | ";
     if ( value & PipelineCreateFlagBits::eRayTracingNoNullClosestHitShadersKHR )
@@ -9929,9 +10014,52 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits>;
 
-  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags )
+  template <>
+  struct FlagTraits<PipelineDepthStencilStateCreateFlagBits>
   {
-    return "{}";
+    enum : VkFlags
+    {
+      allFlags = VkFlags( PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentDepthAccessARM ) |
+                 VkFlags( PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentStencilAccessARM )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator|(
+    PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineDepthStencilStateCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator&(
+    PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineDepthStencilStateCreateFlags( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator^(
+    PipelineDepthStencilStateCreateFlagBits bit0, PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return PipelineDepthStencilStateCreateFlags( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags
+    operator~( PipelineDepthStencilStateCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( PipelineDepthStencilStateCreateFlags( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentDepthAccessARM )
+      result += "RasterizationOrderAttachmentDepthAccessARM | ";
+    if ( value & PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentStencilAccessARM )
+      result += "RasterizationOrderAttachmentStencilAccessARM | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits>;
@@ -10605,7 +10733,10 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( SubpassDescriptionFlagBits::ePerViewAttributesNVX ) |
                  VkFlags( SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX ) |
                  VkFlags( SubpassDescriptionFlagBits::eFragmentRegionQCOM ) |
-                 VkFlags( SubpassDescriptionFlagBits::eShaderResolveQCOM )
+                 VkFlags( SubpassDescriptionFlagBits::eShaderResolveQCOM ) |
+                 VkFlags( SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessARM ) |
+                 VkFlags( SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessARM ) |
+                 VkFlags( SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessARM )
     };
   };
 
@@ -10647,6 +10778,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentRegionQCOM | ";
     if ( value & SubpassDescriptionFlagBits::eShaderResolveQCOM )
       result += "ShaderResolveQCOM | ";
+    if ( value & SubpassDescriptionFlagBits::eRasterizationOrderAttachmentColorAccessARM )
+      result += "RasterizationOrderAttachmentColorAccessARM | ";
+    if ( value & SubpassDescriptionFlagBits::eRasterizationOrderAttachmentDepthAccessARM )
+      result += "RasterizationOrderAttachmentDepthAccessARM | ";
+    if ( value & SubpassDescriptionFlagBits::eRasterizationOrderAttachmentStencilAccessARM )
+      result += "RasterizationOrderAttachmentStencilAccessARM | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }

@@ -41388,6 +41388,99 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV;
   };
 
+  struct PhysicalDeviceDepthClipControlFeaturesEXT
+  {
+    using NativeType = VkPhysicalDeviceDepthClipControlFeaturesEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceDepthClipControlFeaturesEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipControlFeaturesEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 depthClipControl_ = {} ) VULKAN_HPP_NOEXCEPT : depthClipControl( depthClipControl_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceDepthClipControlFeaturesEXT(
+      PhysicalDeviceDepthClipControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceDepthClipControlFeaturesEXT( VkPhysicalDeviceDepthClipControlFeaturesEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceDepthClipControlFeaturesEXT(
+          *reinterpret_cast<PhysicalDeviceDepthClipControlFeaturesEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceDepthClipControlFeaturesEXT &
+      operator=( PhysicalDeviceDepthClipControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceDepthClipControlFeaturesEXT &
+      operator=( VkPhysicalDeviceDepthClipControlFeaturesEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClipControlFeaturesEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceDepthClipControlFeaturesEXT & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceDepthClipControlFeaturesEXT &
+                            setDepthClipControl( VULKAN_HPP_NAMESPACE::Bool32 depthClipControl_ ) VULKAN_HPP_NOEXCEPT
+    {
+      depthClipControl = depthClipControl_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceDepthClipControlFeaturesEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceDepthClipControlFeaturesEXT *>( this );
+    }
+
+    operator VkPhysicalDeviceDepthClipControlFeaturesEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceDepthClipControlFeaturesEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceDepthClipControlFeaturesEXT const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceDepthClipControlFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( depthClipControl == rhs.depthClipControl );
+    }
+
+    bool operator!=( PhysicalDeviceDepthClipControlFeaturesEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType            = StructureType::ePhysicalDeviceDepthClipControlFeaturesEXT;
+    void *                              pNext            = {};
+    VULKAN_HPP_NAMESPACE::Bool32        depthClipControl = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClipControlFeaturesEXT ) ==
+                              sizeof( VkPhysicalDeviceDepthClipControlFeaturesEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClipControlFeaturesEXT>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClipControlFeaturesEXT>::value,
+    "PhysicalDeviceDepthClipControlFeaturesEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceDepthClipControlFeaturesEXT>
+  {
+    using Type = PhysicalDeviceDepthClipControlFeaturesEXT;
+  };
+
   struct PhysicalDeviceDepthClipEnableFeaturesEXT
   {
     using NativeType = VkPhysicalDeviceDepthClipEnableFeaturesEXT;
@@ -50776,6 +50869,99 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT>
   {
     using Type = PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
+  };
+
+  struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM
+  {
+    using NativeType = VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(
+      VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderColorAttachmentAccess_   = {},
+      VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderDepthAttachmentAccess_   = {},
+      VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderStencilAttachmentAccess_ = {} ) VULKAN_HPP_NOEXCEPT
+      : rasterizationOrderColorAttachmentAccess( rasterizationOrderColorAttachmentAccess_ )
+      , rasterizationOrderDepthAttachmentAccess( rasterizationOrderDepthAttachmentAccess_ )
+      , rasterizationOrderStencilAttachmentAccess( rasterizationOrderStencilAttachmentAccess_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(
+      PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(
+      VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM(
+          *reinterpret_cast<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM & operator                          =(
+      PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM &
+      operator=( VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const *>(
+          &rhs );
+      return *this;
+    }
+
+    operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM *>( this );
+    }
+
+    operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) &&
+             ( rasterizationOrderColorAttachmentAccess == rhs.rasterizationOrderColorAttachmentAccess ) &&
+             ( rasterizationOrderDepthAttachmentAccess == rhs.rasterizationOrderDepthAttachmentAccess ) &&
+             ( rasterizationOrderStencilAttachmentAccess == rhs.rasterizationOrderStencilAttachmentAccess );
+    }
+
+    bool operator!=( PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType =
+      StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
+    const void *                 pNext                                     = {};
+    VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderColorAttachmentAccess   = {};
+    VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderDepthAttachmentAccess   = {};
+    VULKAN_HPP_NAMESPACE::Bool32 rasterizationOrderStencilAttachmentAccess = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT(
+    sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM ) ==
+      sizeof( VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM ),
+    "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<
+      VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM>::value,
+    "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM>
+  {
+    using Type = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
   };
 
   struct PhysicalDeviceRayQueryFeaturesKHR
@@ -62851,6 +63037,100 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePipelineViewportCoarseSampleOrderStateCreateInfoNV>
   {
     using Type = PipelineViewportCoarseSampleOrderStateCreateInfoNV;
+  };
+
+  struct PipelineViewportDepthClipControlCreateInfoEXT
+  {
+    using NativeType = VkPipelineViewportDepthClipControlCreateInfoEXT;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePipelineViewportDepthClipControlCreateInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PipelineViewportDepthClipControlCreateInfoEXT(
+      VULKAN_HPP_NAMESPACE::Bool32 negativeOneToOne_ = {} ) VULKAN_HPP_NOEXCEPT : negativeOneToOne( negativeOneToOne_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PipelineViewportDepthClipControlCreateInfoEXT(
+      PipelineViewportDepthClipControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PipelineViewportDepthClipControlCreateInfoEXT( VkPipelineViewportDepthClipControlCreateInfoEXT const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PipelineViewportDepthClipControlCreateInfoEXT(
+          *reinterpret_cast<PipelineViewportDepthClipControlCreateInfoEXT const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PipelineViewportDepthClipControlCreateInfoEXT &
+      operator=( PipelineViewportDepthClipControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PipelineViewportDepthClipControlCreateInfoEXT &
+      operator=( VkPipelineViewportDepthClipControlCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PipelineViewportDepthClipControlCreateInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PipelineViewportDepthClipControlCreateInfoEXT &
+                            setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PipelineViewportDepthClipControlCreateInfoEXT &
+                            setNegativeOneToOne( VULKAN_HPP_NAMESPACE::Bool32 negativeOneToOne_ ) VULKAN_HPP_NOEXCEPT
+    {
+      negativeOneToOne = negativeOneToOne_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPipelineViewportDepthClipControlCreateInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPipelineViewportDepthClipControlCreateInfoEXT *>( this );
+    }
+
+    operator VkPipelineViewportDepthClipControlCreateInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPipelineViewportDepthClipControlCreateInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PipelineViewportDepthClipControlCreateInfoEXT const & ) const = default;
+#else
+    bool operator==( PipelineViewportDepthClipControlCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( negativeOneToOne == rhs.negativeOneToOne );
+    }
+
+    bool operator!=( PipelineViewportDepthClipControlCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePipelineViewportDepthClipControlCreateInfoEXT;
+    const void *                        pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        negativeOneToOne = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PipelineViewportDepthClipControlCreateInfoEXT ) ==
+                              sizeof( VkPipelineViewportDepthClipControlCreateInfoEXT ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PipelineViewportDepthClipControlCreateInfoEXT>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PipelineViewportDepthClipControlCreateInfoEXT>::value,
+    "PipelineViewportDepthClipControlCreateInfoEXT is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePipelineViewportDepthClipControlCreateInfoEXT>
+  {
+    using Type = PipelineViewportDepthClipControlCreateInfoEXT;
   };
 
   struct PipelineViewportExclusiveScissorStateCreateInfoNV

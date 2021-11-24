@@ -1033,13 +1033,18 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
           assert( ( commandIt->second.handle == "VkInstance" ) ||
                   hasParentHandle( commandIt->second.handle, "VkInstance" ) );
 
-          ia += "        " + commandIt->first + " = PFN_" + commandIt->first + "( vkGetInstanceProcAddr( instance, \"" +
-                commandIt->first + "\" ) );\n";
-          // if this is an alias'ed function, use it as a fallback for the original one
-          if ( !commandIt->second.alias.empty() )
+          // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
+          // instance nullptr !
+          if ( command != "vkGetInstanceProcAddr" )
           {
-            ia += "        if ( !" + commandIt->second.alias + " ) " + commandIt->second.alias + " = " +
-                  commandIt->first + ";\n";
+            ia += "        " + commandIt->first + " = PFN_" + commandIt->first +
+                  "( vkGetInstanceProcAddr( instance, \"" + commandIt->first + "\" ) );\n";
+            // if this is an alias'ed function, use it as a fallback for the original one
+            if ( !commandIt->second.alias.empty() )
+            {
+              ia += "        if ( !" + commandIt->second.alias + " ) " + commandIt->second.alias + " = " +
+                    commandIt->first + ";\n";
+            }
           }
 
           im += +"      PFN_" + commandIt->first + " " + commandIt->first + " = 0;\n";

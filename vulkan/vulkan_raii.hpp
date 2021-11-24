@@ -82,8 +82,7 @@ namespace VULKAN_HPP_NAMESPACE
           vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceQueueFamilyProperties" ) );
         vkGetPhysicalDeviceMemoryProperties = PFN_vkGetPhysicalDeviceMemoryProperties(
           vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceMemoryProperties" ) );
-        vkGetInstanceProcAddr = PFN_vkGetInstanceProcAddr( vkGetInstanceProcAddr( instance, "vkGetInstanceProcAddr" ) );
-        vkCreateDevice        = PFN_vkCreateDevice( vkGetInstanceProcAddr( instance, "vkCreateDevice" ) );
+        vkCreateDevice = PFN_vkCreateDevice( vkGetInstanceProcAddr( instance, "vkCreateDevice" ) );
         vkEnumerateDeviceExtensionProperties = PFN_vkEnumerateDeviceExtensionProperties(
           vkGetInstanceProcAddr( instance, "vkEnumerateDeviceExtensionProperties" ) );
         vkEnumerateDeviceLayerProperties =

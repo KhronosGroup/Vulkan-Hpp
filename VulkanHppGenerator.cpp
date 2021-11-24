@@ -13435,6 +13435,210 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
   }
 }
 
+void VulkanHppGenerator::readFormats( tinyxml2::XMLElement const * element )
+{
+  int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "format", false } } );
+
+  for ( auto child : children )
+  {
+    readFormatsFormat( child );
+  }
+}
+
+void VulkanHppGenerator::readFormatsFormat( tinyxml2::XMLElement const * element )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes(
+    line,
+    attributes,
+    { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "12", "16", "24", "32" } },
+      { "class", {} },
+      { "name", {} },
+      { "texelsPerBlock",
+        { "1", "16", "20", "25", "30", "36", "40", "48", "50", "60", "64", "80", "100", "120", "144" } } },
+    { { "blockExtent", { "1", "2", "4", "5", "6", "8", "10", "12" } },
+      { "chroma", { "420", "422", "444" } },
+      { "compressed", { "ASTC HDR", "ASTC LDR", "BC", "EAC", "ETC", "ETC2", "PVRTC" } },
+      { "packed", { "8", "16", "32" } } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "component", false } }, { "plane", "spirvimageformat" } );
+
+  FormatData  format( line );
+  std::string name;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "blockExtent" )
+    {
+      check( tokenize( attribute.second, "," ).size() == 3,
+             line,
+             "unexpected number of elements in attribute <blockExtent>" );
+      format.blockExtent = attribute.second;
+    }
+    if ( attribute.first == "blockSize" )
+    {
+      format.blockSize = attribute.second;
+    }
+    else if ( attribute.first == "chroma" )
+    {
+      format.chroma = attribute.second;
+    }
+    else if ( attribute.first == "class" )
+    {
+      format.classAttribute = attribute.second;
+    }
+    else if ( attribute.first == "compressed" )
+    {
+      format.compressed = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else if ( attribute.first == "packed" )
+    {
+      format.packed = attribute.second;
+    }
+    else if ( attribute.first == "texelsPerBlock" )
+    {
+      format.texelsPerBlock = attribute.second;
+    }
+  }
+
+  auto formatIt = m_enums.find( "VkFormat" );
+  assert( formatIt != m_enums.end() );
+
+  check( std::find_if( formatIt->second.values.begin(),
+                       formatIt->second.values.end(),
+                       [&name]( EnumValueData const & evd )
+                       { return evd.name == name; } ) != formatIt->second.values.end(),
+         line,
+         "format <" + name + "> not found in the list of formats specified on line " +
+           std::to_string( formatIt->second.xmlLine ) );
+  auto [it, inserted] = m_formats.insert( std::make_pair( name, format ) );
+  check( inserted, line, "format <" + name + "> already specified on line " + std::to_string( it->second.xmlLine ) );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "component" )
+    {
+      readFormatsFormatComponent( child, it->second );
+    }
+    else if ( value == "plane" )
+    {
+      readFormatsFormatPlane( child, it->second );
+    }
+    else if ( value == "spirvimageformat" )
+    {
+      readFormatsFormatSPIRVImageFormat( child, it->second );
+    }
+  }
+}
+
+void VulkanHppGenerator::readFormatsFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes(
+    line,
+    attributes,
+    { { "bits", { "1", "2", "4", "5", "6", "8", "9", "10", "11", "12", "16", "24", "32", "64", "compressed" } },
+      { "name", {} },
+      { "numericFormat", { "SFLOAT", "SINT", "SNORM", "SRGB", "SSCALED", "UFLOAT", "UINT", "UNORM", "USCALED" } } },
+    { { "planeIndex", { "0", "1", "2" } } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  formatData.components.emplace_back( line );
+  ComponentData & component = formatData.components.back();
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "bits" )
+    {
+      check( ( attribute.second != "compressed" ) || !formatData.compressed.empty(),
+             line,
+             "component of a not compressed format is marked as compressed" );
+      component.bits = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      component.name = attribute.second;
+    }
+    else if ( attribute.first == "numericFormat" )
+    {
+      component.numericFormat = attribute.second;
+    }
+    else if ( attribute.first == "planeIndex" )
+    {
+      component.planeIndex = attribute.second;
+    }
+  }
+}
+
+void VulkanHppGenerator::readFormatsFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line,
+                   attributes,
+                   { { "compatible", {} },
+                     { "index", { "0", "1", "2" } },
+                     { "heightDivisor", { "1", "2" } },
+                     { "widthDivisor", { "1", "2" } } },
+                   {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  formatData.planes.emplace_back( line );
+  PlaneData & plane = formatData.planes.back();
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "compatible" )
+    {
+      plane.compatible = attribute.second;
+      auto formatIt    = m_enums.find( "VkFormat" );
+      assert( formatIt != m_enums.end() );
+      check( std::find_if( formatIt->second.values.begin(),
+                           formatIt->second.values.end(),
+                           [&plane]( EnumValueData const & evd )
+                           { return evd.name == plane.compatible; } ) != formatIt->second.values.end(),
+             line,
+             "encountered unknown format <" + plane.compatible + ">" );
+    }
+    else if ( attribute.first == "index" )
+    {
+      size_t index = std::stoi( attribute.second );
+      check( index + 1 == formatData.planes.size(), line, "unexpected index <" + attribute.second + ">" );
+    }
+    else if ( attribute.first == "heightDivisor" )
+    {
+      plane.heightDivisor = attribute.second;
+    }
+    else if ( attribute.first == "widthDivisor" )
+    {
+      plane.widthDivisor = attribute.second;
+    }
+  }
+}
+
+void VulkanHppGenerator::readFormatsFormatSPIRVImageFormat( tinyxml2::XMLElement const * element,
+                                                            FormatData &                 formatData )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  for ( auto const & attribute : attributes )
+  {
+    assert( attribute.first == "name" );
+    check( formatData.spirvImageFormat.empty(), line, "spirvimageformat <" + attribute.second + "> already specified" );
+    formatData.spirvImageFormat = attribute.second;
+  }
+}
+
 std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeInfo>
   VulkanHppGenerator::readNameAndType( tinyxml2::XMLElement const * element )
 {
@@ -13526,6 +13730,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "enums", false },
                    { "extensions", true },
                    { "feature", false },
+                   { "formats", true },
                    { "platforms", true },
                    { "spirvcapabilities", true },
                    { "spirvextensions", true },
@@ -13557,6 +13762,10 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     else if ( value == "feature" )
     {
       readFeature( child );
+    }
+    else if ( value == "formats" )
+    {
+      readFormats( child );
     }
     else if ( value == "platforms" )
     {

@@ -1202,6 +1202,26 @@ void VulkanHppGenerator::checkEnumCorrectness() const
   {
     checkEnumCorrectness( ext.second.requireData );
   }
+
+  // special check for VkFormat
+  auto enumIt = m_enums.find( "VkFormat" );
+  assert( enumIt != m_enums.end() );
+  assert( enumIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
+  for ( auto enumValueIt = std::next( enumIt->second.values.begin() ); enumValueIt != enumIt->second.values.end();
+        ++enumValueIt )
+  {
+    auto formatIt = m_formats.find( enumValueIt->name );
+    if ( formatIt == m_formats.end() )
+    {
+      auto aliasIt =
+        std::find_if( enumIt->second.aliases.begin(),
+                      enumIt->second.aliases.end(),
+                      [&enumValueIt]( auto const & ead ) { return ead.second.name == enumValueIt->name; } );
+      check( aliasIt != enumIt->second.aliases.end(),
+             enumValueIt->xmlLine,
+             "missing format specification for <" + enumValueIt->name + ">" );
+    }
+  }
 }
 
 void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & requireData ) const
@@ -13519,10 +13539,10 @@ void VulkanHppGenerator::readFormatsFormat( tinyxml2::XMLElement const * element
   check( std::find_if( formatIt->second.values.begin(),
                        formatIt->second.values.end(),
                        [&name]( EnumValueData const & evd )
-                       { return evd.name == name; } ) != formatIt->second.values.end(),
+                       { return evd.name == name; } ) != formatIt->second.values.end() ||
+           ( formatIt->second.aliases.find( name ) != formatIt->second.aliases.end() ),
          line,
-         "format <" + name + "> not found in the list of formats specified on line " +
-           std::to_string( formatIt->second.xmlLine ) );
+         "encountered unknown format <" + name + ">" );
   auto [it, inserted] = m_formats.insert( std::make_pair( name, format ) );
   check( inserted, line, "format <" + name + "> already specified on line " + std::to_string( it->second.xmlLine ) );
 

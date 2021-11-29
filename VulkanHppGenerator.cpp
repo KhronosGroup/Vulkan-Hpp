@@ -383,6 +383,298 @@ ${enums}
   return replaceWithMap( enumsTemplate, { { "enums", enums } } );
 }
 
+std::string VulkanHppGenerator::generateFormatTraits() const
+{
+  const std::string formatTraitsTemplate = R"(
+  //=====================
+  //=== Format Traits ===
+  //=====================
+
+  // The texel block size in bytes.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${blockSizeCases}
+      default : VULKAN_HPP_ASSERT( false ); return 0;
+    }
+  }
+
+  // The number of texels in a texel block.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${texelsPerBlockCases}
+      default: VULKAN_HPP_ASSERT( false ); return 0;
+    }
+  }
+
+  // The three-dimensional extent of a texel block.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${blockExtentCases}
+      default: return {1, 1, 1 };
+    }
+  }
+
+  // A textual description of the compression scheme, or an empty string if it is not compressed
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${compressionSchemeCases}
+      default: return "";
+    }
+  }
+
+  // True, if this format is a compressed one.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
+  }
+
+  // The number of bits into which the format is packed. A single image element in this format
+  // can be stored in the same space as a scalar type of this bit width.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${packedCases}
+      default: return 0;
+    }
+  }
+
+  // The number of components of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${componentCountCases}
+      default: return 0;
+    }
+  }
+
+  // True, if the components of this format are compressed, otherwise false.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${componentsAreCompressedCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // The number of bits in this component, if not compressed, otherwise 0.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentBitsCases}
+      default: return 0;
+    }
+  }
+
+  // The plane this component lies in.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentPlaneIndexCases}
+      default: return 0;
+    }
+  }
+
+  // The number of image planes of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${planeCountCases}
+      default: return 1;
+    }
+  }
+
+  // The single-plane format that this plane is compatible with.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeCompatibleCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return format;
+    }
+  }
+
+  // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeHeightDivisorCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
+    }
+  }
+
+  // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeWidthDivisorCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
+    }
+  }
+)";
+
+  auto formatIt = m_enums.find( "VkFormat" );
+  assert( formatIt != m_enums.end() );
+  assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
+
+  std::string blockSizeCases, texelsPerBlockCases, blockExtentCases, compressionSchemeCases, packedCases,
+    componentCountCases, componentsAreCompressedCases, componentBitsCases, componentPlaneIndexCases, planeCountCases,
+    planeCompatibleCases, planeHeightDivisorCases, planeWidthDivisorCases;
+  for ( auto formatValuesIt = std::next( formatIt->second.values.begin() );
+        formatValuesIt != formatIt->second.values.end();
+        ++formatValuesIt )
+  {
+    auto traitIt = m_formats.find( formatValuesIt->name );
+    assert( traitIt != m_formats.end() );
+    std::string caseString =
+      "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false, m_tags ) +
+      ":";
+    blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
+    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
+    if ( !traitIt->second.blockExtent.empty() )
+    {
+      std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
+      assert( blockExtent.size() == 3 );
+      blockExtentCases +=
+        caseString + " return { " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " };\n";
+    }
+    if ( !traitIt->second.compressed.empty() )
+    {
+      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
+    }
+    if ( !traitIt->second.packed.empty() )
+    {
+      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
+    }
+    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
+    if ( traitIt->second.components.front().bits == "compressed" )
+    {
+      componentsAreCompressedCases += caseString += "\n";
+    }
+    else
+    {
+      const std::string componentBitsCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases +=
+          "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
+      }
+      componentCases.pop_back();
+      componentBitsCases += replaceWithMap( componentBitsCaseTemplate,
+                                            { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+    if ( !traitIt->second.components.front().planeIndex.empty() )
+    {
+      const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases +=
+          "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
+      }
+      componentCases.pop_back();
+      componentPlaneIndexCases += replaceWithMap(
+        componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+    if ( !traitIt->second.planes.empty() )
+    {
+      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
+
+      const std::string planeCompatibleCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${compatibleCases}
+          default: VULKAN_HPP_ASSERT( false ); return VULKAN_HPP_NAMESPACE::Format::eUndefined;
+        }
+)";
+
+      const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${heightDivisorCases}
+          default: VULKAN_HPP_ASSERT( false ); return 1;
+        }
+)";
+
+      const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${widthDivisorCases}
+          default: VULKAN_HPP_ASSERT( false ); return 1;
+        }
+)";
+
+      std::string compatibleCases, heightDivisorCases, widthDivisorCases;
+      for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
+      {
+        compatibleCases += "          case " + std::to_string( i ) + ": return VULKAN_HPP_NAMESPACE::Format::" +
+                           generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false, m_tags ) +
+                           ";\n";
+        heightDivisorCases +=
+          "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
+        widthDivisorCases +=
+          "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
+      }
+      compatibleCases.pop_back();
+      heightDivisorCases.pop_back();
+      widthDivisorCases.pop_back();
+      planeCompatibleCases += replaceWithMap(
+        planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
+      planeHeightDivisorCases +=
+        replaceWithMap( planeHeightDivisorCaseTemplate,
+                        { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
+      planeWidthDivisorCases += replaceWithMap(
+        planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
+    }
+  }
+
+  return replaceWithMap( formatTraitsTemplate,
+                         { { "blockExtentCases", blockExtentCases },
+                           { "blockSizeCases", blockSizeCases },
+                           { "componentBitsCases", componentBitsCases },
+                           { "componentCountCases", componentCountCases },
+                           { "componentPlaneIndexCases", componentPlaneIndexCases },
+                           { "componentsAreCompressedCases", componentsAreCompressedCases },
+                           { "compressionSchemeCases", compressionSchemeCases },
+                           { "packedCases", packedCases },
+                           { "planeCompatibleCases", planeCompatibleCases },
+                           { "planeCountCases", planeCountCases },
+                           { "planeHeightDivisorCases", planeHeightDivisorCases },
+                           { "planeWidthDivisorCases", planeWidthDivisorCases },
+                           { "texelsPerBlockCases", texelsPerBlockCases } } );
+}
+
 std::string VulkanHppGenerator::generateHandles() const
 {
   // Note: reordering structs or handles by features and extensions is not possible!
@@ -13562,6 +13854,29 @@ void VulkanHppGenerator::readFormatsFormat( tinyxml2::XMLElement const * element
       readFormatsFormatSPIRVImageFormat( child, it->second );
     }
   }
+
+  if ( it->second.components.front().bits == "compressed" )
+  {
+    for ( auto componentIt = std::next( it->second.components.begin() ); componentIt != it->second.components.end();
+          ++componentIt )
+    {
+      check( componentIt->bits == "compressed",
+             line,
+             "component is expected to be marked as compressed in attribute <bits>" );
+    }
+  }
+  if ( !it->second.components.front().planeIndex.empty() )
+  {
+    for ( auto componentIt = std::next( it->second.components.begin() ); componentIt != it->second.components.end();
+          ++componentIt )
+    {
+      check( !componentIt->planeIndex.empty(), line, "component is expected to have a planeIndex" );
+    }
+    // size_t planeCount = 1 + std::stoi( it->second.components.back().planeIndex );
+    // check( it->second.planes.size() == planeCount,
+    //       line,
+    //       "number of planes does not fit to largest planeIndex of the components" );
+  }
 }
 
 void VulkanHppGenerator::readFormatsFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData )
@@ -17824,6 +18139,7 @@ namespace VULKAN_HPP_NAMESPACE
 )";
     str += typeTraits;
     str += generator.generateEnums();
+    str += generator.generateFormatTraits();
     str += generator.generateIndexTypeTraits();
     str += generator.generateBitmasks();
     str += R"(

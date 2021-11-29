@@ -31,6 +31,7 @@ public:
   std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
+  std::string         generateFormatTraits() const;
   std::string         generateHandles() const;
   std::string         generateHashStructures() const;
   std::string         generateIndexTypeTraits() const;

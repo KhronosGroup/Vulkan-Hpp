@@ -48,6 +48,28 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::unordered_map<vk::Instance, size_t> umap;
     umap[*instance] = 1;
+
+    vk::AabbPositionsKHR aabb0, aabb1;
+    auto                 h3 = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
+    auto                 h4 = std::hash<vk::AabbPositionsKHR>{}( aabb1 );
+    assert( h3 == h4 );
+
+    aabb0.minX = 1.0f;
+    auto h5    = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
+    assert( h3 != h5 );
+
+    std::unordered_set<vk::AabbPositionsKHR> aabbSet;
+    aabbSet.insert( aabb0 );
+
+    std::unordered_map<vk::AabbPositionsKHR, size_t> aabbMap;
+    aabbMap[aabb0] = 1;
+
+    vk::AccelerationStructureInstanceKHR asi;
+    asi.instanceCustomIndex                    = 1;
+    asi.mask                                   = 2;
+    asi.instanceShaderBindingTableRecordOffset = 3;
+    asi.flags                                  = 4;
+    auto h6                                    = std::hash<vk::AccelerationStructureInstanceKHR>{}( asi );
   }
   catch ( vk::SystemError const & err )
   {

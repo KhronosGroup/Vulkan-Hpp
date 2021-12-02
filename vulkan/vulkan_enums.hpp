@@ -377,6 +377,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeH264NaluSliceEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_NALU_SLICE_EXT,
     eVideoEncodeH264EmitPictureParametersEXT    = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_EMIT_PICTURE_PARAMETERS_EXT,
     eVideoEncodeH264ProfileEXT                  = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_PROFILE_EXT,
+    eVideoEncodeH264RateControlInfoEXT          = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_INFO_EXT,
+    eVideoEncodeH264RateControlLayerInfoEXT     = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_LAYER_INFO_EXT,
     eVideoEncodeH265CapabilitiesEXT             = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_CAPABILITIES_EXT,
     eVideoEncodeH265SessionCreateInfoEXT        = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_CREATE_INFO_EXT,
     eVideoEncodeH265SessionParametersCreateInfoEXT =
@@ -388,6 +390,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeH265EmitPictureParametersEXT    = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_EMIT_PICTURE_PARAMETERS_EXT,
     eVideoEncodeH265ProfileEXT                  = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PROFILE_EXT,
     eVideoEncodeH265ReferenceListsEXT           = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_REFERENCE_LISTS_EXT,
+    eVideoEncodeH265RateControlInfoEXT          = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_INFO_EXT,
+    eVideoEncodeH265RateControlLayerInfoEXT     = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_LAYER_INFO_EXT,
     eVideoDecodeH264CapabilitiesEXT             = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_CAPABILITIES_EXT,
     eVideoDecodeH264SessionCreateInfoEXT        = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_CREATE_INFO_EXT,
     eVideoDecodeH264PictureInfoEXT              = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PICTURE_INFO_EXT,
@@ -778,8 +782,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDevicePipelineCreationCacheControlFeaturesEXT =
       VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_CREATION_CACHE_CONTROL_FEATURES_EXT,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eVideoEncodeInfoKHR            = VK_STRUCTURE_TYPE_VIDEO_ENCODE_INFO_KHR,
-    eVideoEncodeRateControlInfoKHR = VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_INFO_KHR,
+    eVideoEncodeInfoKHR                 = VK_STRUCTURE_TYPE_VIDEO_ENCODE_INFO_KHR,
+    eVideoEncodeRateControlInfoKHR      = VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_INFO_KHR,
+    eVideoEncodeRateControlLayerInfoKHR = VK_STRUCTURE_TYPE_VIDEO_ENCODE_RATE_CONTROL_LAYER_INFO_KHR,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     ePhysicalDeviceDiagnosticsConfigFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV,
     eDeviceDiagnosticsConfigCreateInfoNV       = VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV,
@@ -1289,6 +1294,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeH264NaluSliceEXT: return "VideoEncodeH264NaluSliceEXT";
       case StructureType::eVideoEncodeH264EmitPictureParametersEXT: return "VideoEncodeH264EmitPictureParametersEXT";
       case StructureType::eVideoEncodeH264ProfileEXT: return "VideoEncodeH264ProfileEXT";
+      case StructureType::eVideoEncodeH264RateControlInfoEXT: return "VideoEncodeH264RateControlInfoEXT";
+      case StructureType::eVideoEncodeH264RateControlLayerInfoEXT: return "VideoEncodeH264RateControlLayerInfoEXT";
       case StructureType::eVideoEncodeH265CapabilitiesEXT: return "VideoEncodeH265CapabilitiesEXT";
       case StructureType::eVideoEncodeH265SessionCreateInfoEXT: return "VideoEncodeH265SessionCreateInfoEXT";
       case StructureType::eVideoEncodeH265SessionParametersCreateInfoEXT:
@@ -1301,6 +1308,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeH265EmitPictureParametersEXT: return "VideoEncodeH265EmitPictureParametersEXT";
       case StructureType::eVideoEncodeH265ProfileEXT: return "VideoEncodeH265ProfileEXT";
       case StructureType::eVideoEncodeH265ReferenceListsEXT: return "VideoEncodeH265ReferenceListsEXT";
+      case StructureType::eVideoEncodeH265RateControlInfoEXT: return "VideoEncodeH265RateControlInfoEXT";
+      case StructureType::eVideoEncodeH265RateControlLayerInfoEXT: return "VideoEncodeH265RateControlLayerInfoEXT";
       case StructureType::eVideoDecodeH264CapabilitiesEXT: return "VideoDecodeH264CapabilitiesEXT";
       case StructureType::eVideoDecodeH264SessionCreateInfoEXT: return "VideoDecodeH264SessionCreateInfoEXT";
       case StructureType::eVideoDecodeH264PictureInfoEXT: return "VideoDecodeH264PictureInfoEXT";
@@ -1739,6 +1748,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoEncodeInfoKHR: return "VideoEncodeInfoKHR";
       case StructureType::eVideoEncodeRateControlInfoKHR: return "VideoEncodeRateControlInfoKHR";
+      case StructureType::eVideoEncodeRateControlLayerInfoKHR: return "VideoEncodeRateControlLayerInfoKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::ePhysicalDeviceDiagnosticsConfigFeaturesNV:
         return "PhysicalDeviceDiagnosticsConfigFeaturesNV";
@@ -5994,7 +6004,8 @@ namespace VULKAN_HPP_NAMESPACE
     eDeblockingFilterEnabled    = VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_ENABLED_BIT_EXT,
     eDeblockingFilterPartial    = VK_VIDEO_ENCODE_H264_CAPABILITY_DEBLOCKING_FILTER_PARTIAL_BIT_EXT,
     eMultipleSlicePerFrame      = VK_VIDEO_ENCODE_H264_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT,
-    eEvenlyDistributedSliceSize = VK_VIDEO_ENCODE_H264_CAPABILITY_EVENLY_DISTRIBUTED_SLICE_SIZE_BIT_EXT
+    eEvenlyDistributedSliceSize = VK_VIDEO_ENCODE_H264_CAPABILITY_EVENLY_DISTRIBUTED_SLICE_SIZE_BIT_EXT,
+    eOptionalRcExtensionStruct  = VK_VIDEO_ENCODE_H264_CAPABILITY_OPTIONAL_RC_EXTENSION_STRUCT_BIT_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagBitsEXT value )
@@ -6012,6 +6023,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial: return "DeblockingFilterPartial";
       case VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame: return "MultipleSlicePerFrame";
       case VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize: return "EvenlyDistributedSliceSize";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eOptionalRcExtensionStruct: return "OptionalRcExtensionStruct";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6064,6 +6076,24 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case VideoEncodeH264CreateFlagBitsEXT::eDefault: return "Default";
       case VideoEncodeH264CreateFlagBitsEXT::eReserved0: return "Reserved0";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  enum class VideoEncodeH264RateControlStructureFlagBitsEXT : VkVideoEncodeH264RateControlStructureFlagsEXT
+  {
+    eUnknown = VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_UNKNOWN_EXT,
+    eFlat    = VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_FLAT_BIT_EXT,
+    eDyadic  = VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264RateControlStructureFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case VideoEncodeH264RateControlStructureFlagBitsEXT::eUnknown: return "Unknown";
+      case VideoEncodeH264RateControlStructureFlagBitsEXT::eFlat: return "Flat";
+      case VideoEncodeH264RateControlStructureFlagBitsEXT::eDyadic: return "Dyadic";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6124,6 +6154,24 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoEncodeH265CtbSizeFlagBitsEXT::e16: return "16";
       case VideoEncodeH265CtbSizeFlagBitsEXT::e32: return "32";
       case VideoEncodeH265CtbSizeFlagBitsEXT::e64: return "64";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  enum class VideoEncodeH265RateControlStructureFlagBitsEXT : VkVideoEncodeH265RateControlStructureFlagsEXT
+  {
+    eUnknown = VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_UNKNOWN_EXT,
+    eFlat    = VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_FLAT_BIT_EXT,
+    eDyadic  = VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265RateControlStructureFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case VideoEncodeH265RateControlStructureFlagBitsEXT::eUnknown: return "Unknown";
+      case VideoEncodeH265RateControlStructureFlagBitsEXT::eFlat: return "Flat";
+      case VideoEncodeH265RateControlStructureFlagBitsEXT::eDyadic: return "Dyadic";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7695,8 +7743,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class VideoEncodeRateControlFlagBitsKHR : VkVideoEncodeRateControlFlagsKHR
   {
-    eDefault = VK_VIDEO_ENCODE_RATE_CONTROL_DEFAULT_KHR,
-    eReset   = VK_VIDEO_ENCODE_RATE_CONTROL_RESET_BIT_KHR
+    eDefault   = VK_VIDEO_ENCODE_RATE_CONTROL_DEFAULT_KHR,
+    eReserved0 = VK_VIDEO_ENCODE_RATE_CONTROL_RESERVED_0_BIT_KHR
   };
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlFlagBitsKHR value )
@@ -7704,7 +7752,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case VideoEncodeRateControlFlagBitsKHR::eDefault: return "Default";
-      case VideoEncodeRateControlFlagBitsKHR::eReset: return "Reset";
+      case VideoEncodeRateControlFlagBitsKHR::eReserved0: return "Reserved0";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -10847,7 +10895,7 @@ namespace VULKAN_HPP_NAMESPACE
         {
           case 0: return 0;
           case 1: return 1;
-          case 2: return 2;
+          case 2: return 1;
           default: VULKAN_HPP_ASSERT( false ); return 0;
         }
       case VULKAN_HPP_NAMESPACE::Format::eG10X6B10X6R10X63Plane444Unorm3Pack16:
@@ -16103,7 +16151,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterEnabled ) |
                  VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial ) |
                  VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame ) |
-                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize ) |
+                 VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eOptionalRcExtensionStruct )
     };
   };
 
@@ -16159,6 +16208,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "MultipleSlicePerFrame | ";
     if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eEvenlyDistributedSliceSize )
       result += "EvenlyDistributedSliceSize | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eOptionalRcExtensionStruct )
+      result += "OptionalRcExtensionStruct | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -16313,6 +16364,60 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeH264CreateFlagBitsEXT::eReserved0 )
       result += "Reserved0 | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  using VideoEncodeH264RateControlStructureFlagsEXT = Flags<VideoEncodeH264RateControlStructureFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<VideoEncodeH264RateControlStructureFlagBitsEXT>
+  {
+    enum : VkFlags
+    {
+      allFlags = VkFlags( VideoEncodeH264RateControlStructureFlagBitsEXT::eUnknown ) |
+                 VkFlags( VideoEncodeH264RateControlStructureFlagBitsEXT::eFlat ) |
+                 VkFlags( VideoEncodeH264RateControlStructureFlagBitsEXT::eDyadic )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264RateControlStructureFlagsEXT
+    operator|( VideoEncodeH264RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH264RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH264RateControlStructureFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264RateControlStructureFlagsEXT
+    operator&( VideoEncodeH264RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH264RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH264RateControlStructureFlagsEXT( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264RateControlStructureFlagsEXT
+    operator^( VideoEncodeH264RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH264RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH264RateControlStructureFlagsEXT( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264RateControlStructureFlagsEXT
+    operator~( VideoEncodeH264RateControlStructureFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( VideoEncodeH264RateControlStructureFlagsEXT( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264RateControlStructureFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & VideoEncodeH264RateControlStructureFlagBitsEXT::eFlat )
+      result += "Flat | ";
+    if ( value & VideoEncodeH264RateControlStructureFlagBitsEXT::eDyadic )
+      result += "Dyadic | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -16491,6 +16596,60 @@ namespace VULKAN_HPP_NAMESPACE
       result += "32 | ";
     if ( value & VideoEncodeH265CtbSizeFlagBitsEXT::e64 )
       result += "64 | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  using VideoEncodeH265RateControlStructureFlagsEXT = Flags<VideoEncodeH265RateControlStructureFlagBitsEXT>;
+
+  template <>
+  struct FlagTraits<VideoEncodeH265RateControlStructureFlagBitsEXT>
+  {
+    enum : VkFlags
+    {
+      allFlags = VkFlags( VideoEncodeH265RateControlStructureFlagBitsEXT::eUnknown ) |
+                 VkFlags( VideoEncodeH265RateControlStructureFlagBitsEXT::eFlat ) |
+                 VkFlags( VideoEncodeH265RateControlStructureFlagBitsEXT::eDyadic )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265RateControlStructureFlagsEXT
+    operator|( VideoEncodeH265RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH265RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH265RateControlStructureFlagsEXT( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265RateControlStructureFlagsEXT
+    operator&( VideoEncodeH265RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH265RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH265RateControlStructureFlagsEXT( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265RateControlStructureFlagsEXT
+    operator^( VideoEncodeH265RateControlStructureFlagBitsEXT bit0,
+               VideoEncodeH265RateControlStructureFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return VideoEncodeH265RateControlStructureFlagsEXT( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265RateControlStructureFlagsEXT
+    operator~( VideoEncodeH265RateControlStructureFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( VideoEncodeH265RateControlStructureFlagsEXT( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265RateControlStructureFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & VideoEncodeH265RateControlStructureFlagBitsEXT::eFlat )
+      result += "Flat | ";
+    if ( value & VideoEncodeH265RateControlStructureFlagBitsEXT::eDyadic )
+      result += "Dyadic | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -17701,8 +17860,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum : VkFlags
     {
-      allFlags =
-        VkFlags( VideoEncodeRateControlFlagBitsKHR::eDefault ) | VkFlags( VideoEncodeRateControlFlagBitsKHR::eReset )
+      allFlags = VkFlags( VideoEncodeRateControlFlagBitsKHR::eDefault ) |
+                 VkFlags( VideoEncodeRateControlFlagBitsKHR::eReserved0 )
     };
   };
 
@@ -17736,8 +17895,8 @@ namespace VULKAN_HPP_NAMESPACE
       return "{}";
 
     std::string result;
-    if ( value & VideoEncodeRateControlFlagBitsKHR::eReset )
-      result += "Reset | ";
+    if ( value & VideoEncodeRateControlFlagBitsKHR::eReserved0 )
+      result += "Reserved0 | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }

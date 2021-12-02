@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 200, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 201, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -7667,6 +7667,22 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<VideoEncodeH264RateControlInfoEXT, VideoEncodeRateControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264RateControlLayerInfoEXT, VideoEncodeRateControlLayerInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7761,6 +7777,22 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<VideoEncodeH265ProfileEXT, BufferCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265RateControlInfoEXT, VideoEncodeRateControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265RateControlLayerInfoEXT, VideoEncodeRateControlLayerInfoKHR>
   {
     enum
     {
@@ -10191,6 +10223,14 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<VideoEncodeRateControlLayerInfoKHR, VideoCodingControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===
@@ -10467,6 +10507,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_ARM_rasterization_order_attachment_access ===
+  template <>
+  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM, DeviceCreateInfo>
   {
     enum
     {

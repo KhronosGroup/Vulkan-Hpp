@@ -480,6 +480,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH264DpbSlotInfoEXT;
   struct VideoEncodeH264NaluSliceEXT;
   struct VideoEncodeH264ProfileEXT;
+  struct VideoEncodeH264RateControlInfoEXT;
+  struct VideoEncodeH264RateControlLayerInfoEXT;
+  struct VideoEncodeH264QpEXT;
+  struct VideoEncodeH264FrameSizeEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -494,6 +498,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH265NaluSliceEXT;
   struct VideoEncodeH265ProfileEXT;
   struct VideoEncodeH265ReferenceListsEXT;
+  struct VideoEncodeH265RateControlInfoEXT;
+  struct VideoEncodeH265RateControlLayerInfoEXT;
+  struct VideoEncodeH265QpEXT;
+  struct VideoEncodeH265FrameSizeEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -1108,6 +1116,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_encode_queue ===
   struct VideoEncodeInfoKHR;
   struct VideoEncodeRateControlInfoKHR;
+  struct VideoEncodeRateControlLayerInfoKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===

@@ -13872,10 +13872,10 @@ void VulkanHppGenerator::readFormatsFormat( tinyxml2::XMLElement const * element
     {
       check( !componentIt->planeIndex.empty(), line, "component is expected to have a planeIndex" );
     }
-    // size_t planeCount = 1 + std::stoi( it->second.components.back().planeIndex );
-    // check( it->second.planes.size() == planeCount,
-    //       line,
-    //       "number of planes does not fit to largest planeIndex of the components" );
+     size_t planeCount = 1 + std::stoi( it->second.components.back().planeIndex );
+     check( it->second.planes.size() == planeCount,
+           line,
+           "number of planes does not fit to largest planeIndex of the components" );
   }
 }
 

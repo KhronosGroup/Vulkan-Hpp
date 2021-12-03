@@ -33,7 +33,7 @@ public:
   std::string         generateEnums() const;
   std::string         generateFormatTraits() const;
   std::string         generateHandles() const;
-  std::string         generateHashStructures() const;
+  std::string         generateHandleHashStructures() const;
   std::string         generateIndexTypeTraits() const;
   std::string         generateRAIICommandDefinitions() const;
   std::string         generateRAIIDispatchers() const;
@@ -435,15 +435,19 @@ private:
   std::map<size_t, size_t> determineVectorParamIndices( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
-  std::string generateArgumentListEnhanced( std::vector<ParamData> const & params,
-                                            std::set<size_t> const &       skippedParams,
-                                            std::set<size_t> const &       singularParams,
-                                            bool                           definition,
-                                            bool                           withAllocators,
-                                            bool                           structureChain,
-                                            bool                           withDispatcher ) const;
-  std::string generateArgumentListStandard( std::vector<ParamData> const & params,
-                                            std::set<size_t> const &       skippedParams ) const;
+  std::vector<MemberData>::const_iterator findStructMemberIt( std::string const &             name,
+                                                              std::vector<MemberData> const & memberData ) const;
+  std::vector<MemberData>::const_iterator findStructMemberItByType( std::string const &             type,
+                                                                    std::vector<MemberData> const & memberData ) const;
+  std::string                             generateArgumentListEnhanced( std::vector<ParamData> const & params,
+                                                                        std::set<size_t> const &       skippedParams,
+                                                                        std::set<size_t> const &       singularParams,
+                                                                        bool                           definition,
+                                                                        bool                           withAllocators,
+                                                                        bool                           structureChain,
+                                                                        bool                           withDispatcher ) const;
+  std::string                             generateArgumentListStandard( std::vector<ParamData> const & params,
+                                                                        std::set<size_t> const &       skippedParams ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
@@ -887,7 +891,8 @@ private:
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle,
                                           std::set<std::string> &                    listedHandles ) const;
   std::string generateHandleEmpty( HandleData const & handleData ) const;
-  std::string generateHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateHandleHashStructures( std::vector<RequireData> const & requireData,
+                                            std::string const &              title ) const;
   std::string
                                       generateLenInitializer( std::vector<MemberData>::const_iterator                                        mit,
                                                               std::map<std::vector<MemberData>::const_iterator,
@@ -1213,6 +1218,7 @@ private:
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string
     generateStructConstructorArgument( bool listedArgument, MemberData const & memberData, bool withDefault ) const;
+  std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructExtendsStructs( std::vector<RequireData> const & requireData,
                                             std::set<std::string> &          listedStructs,
@@ -1248,6 +1254,7 @@ private:
   bool isMultiSuccessCodeConstructor(
     std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>>
             needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;

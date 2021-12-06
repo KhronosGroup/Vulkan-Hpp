@@ -385,6 +385,11 @@ ${enums}
 
 std::string VulkanHppGenerator::generateFormatTraits() const
 {
+  if ( m_formats.empty() )
+  {
+    return "";
+  }
+
   const std::string formatTraitsTemplate = R"(
   //=====================
   //=== Format Traits ===
@@ -14115,12 +14120,12 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "enums", false },
                    { "extensions", true },
                    { "feature", false },
-                   { "formats", true },
                    { "platforms", true },
                    { "spirvcapabilities", true },
                    { "spirvextensions", true },
                    { "tags", true },
-                   { "types", true } } );
+                   { "types", true } },
+                 { "formats" } );
   for ( auto child : children )
   {
     const std::string value = child->Value();

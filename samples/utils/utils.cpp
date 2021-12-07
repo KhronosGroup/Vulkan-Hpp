@@ -909,7 +909,7 @@ namespace vk
       colorFormat                        = surfaceFormat.format;
 
       vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
-      VkExtent2D                 swapchainExtent;
+      vk::Extent2D               swapchainExtent;
       if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
       {
         // If the surface size is undefined, the size is set to the size of the images requested.

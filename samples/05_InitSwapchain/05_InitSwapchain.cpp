@@ -100,7 +100,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       ( formats[0].format == vk::Format::eUndefined ) ? vk::Format::eB8G8R8A8Unorm : formats[0].format;
 
     vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
-    VkExtent2D                 swapchainExtent;
+    vk::Extent2D               swapchainExtent;
     if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
     {
       // If the surface size is undefined, the size is set to the size of the images requested.

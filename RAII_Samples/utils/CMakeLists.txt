@@ -27,11 +27,11 @@ set(SOURCES
 source_group(headers FILES ${HEADERS})
 source_group(sources FILES ${SOURCES})
 
-add_library(RAII_utils
+add_library(RAII_utils INTERFACE
   ${SOURCES}
   ${HEADERS}
 )
 
-target_link_libraries(RAII_utils PRIVATE utils)
-target_compile_definitions(RAII_utils PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries(RAII_utils INTERFACE utils)
+target_compile_definitions(RAII_utils INTERFACE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 

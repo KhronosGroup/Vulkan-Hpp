@@ -3083,6 +3083,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMemoryPlane1EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT,
     eMemoryPlane2EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT,
     eMemoryPlane3EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_3_BIT_EXT,
+    eNoneKHR         = VK_IMAGE_ASPECT_NONE_KHR,
     ePlane0KHR       = VK_IMAGE_ASPECT_PLANE_0_BIT_KHR,
     ePlane1KHR       = VK_IMAGE_ASPECT_PLANE_1_BIT_KHR,
     ePlane2KHR       = VK_IMAGE_ASPECT_PLANE_2_BIT_KHR
@@ -3103,6 +3104,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageAspectFlagBits::eMemoryPlane1EXT: return "MemoryPlane1EXT";
       case ImageAspectFlagBits::eMemoryPlane2EXT: return "MemoryPlane2EXT";
       case ImageAspectFlagBits::eMemoryPlane3EXT: return "MemoryPlane3EXT";
+      case ImageAspectFlagBits::eNoneKHR: return "NoneKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -12425,7 +12427,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageAspectFlagBits::ePlane0 ) | VkFlags( ImageAspectFlagBits::ePlane1 ) |
                  VkFlags( ImageAspectFlagBits::ePlane2 ) | VkFlags( ImageAspectFlagBits::eMemoryPlane0EXT ) |
                  VkFlags( ImageAspectFlagBits::eMemoryPlane1EXT ) | VkFlags( ImageAspectFlagBits::eMemoryPlane2EXT ) |
-                 VkFlags( ImageAspectFlagBits::eMemoryPlane3EXT )
+                 VkFlags( ImageAspectFlagBits::eMemoryPlane3EXT ) | VkFlags( ImageAspectFlagBits::eNoneKHR )
     };
   };
 

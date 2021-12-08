@@ -1491,22 +1491,25 @@ void VulkanHppGenerator::checkEnumCorrectness() const
   }
 
   // special check for VkFormat
-  auto enumIt = m_enums.find( "VkFormat" );
-  assert( enumIt != m_enums.end() );
-  assert( enumIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
-  for ( auto enumValueIt = std::next( enumIt->second.values.begin() ); enumValueIt != enumIt->second.values.end();
-        ++enumValueIt )
+  if ( !m_formats.empty() )
   {
-    auto formatIt = m_formats.find( enumValueIt->name );
-    if ( formatIt == m_formats.end() )
+    auto enumIt = m_enums.find( "VkFormat" );
+    assert( enumIt != m_enums.end() );
+    assert( enumIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
+    for ( auto enumValueIt = std::next( enumIt->second.values.begin() ); enumValueIt != enumIt->second.values.end();
+          ++enumValueIt )
     {
-      auto aliasIt =
-        std::find_if( enumIt->second.aliases.begin(),
-                      enumIt->second.aliases.end(),
-                      [&enumValueIt]( auto const & ead ) { return ead.second.name == enumValueIt->name; } );
-      check( aliasIt != enumIt->second.aliases.end(),
-             enumValueIt->xmlLine,
-             "missing format specification for <" + enumValueIt->name + ">" );
+      auto formatIt = m_formats.find( enumValueIt->name );
+      if ( formatIt == m_formats.end() )
+      {
+        auto aliasIt =
+          std::find_if( enumIt->second.aliases.begin(),
+                        enumIt->second.aliases.end(),
+                        [&enumValueIt]( auto const & ead ) { return ead.second.name == enumValueIt->name; } );
+        check( aliasIt != enumIt->second.aliases.end(),
+               enumValueIt->xmlLine,
+               "missing format specification for <" + enumValueIt->name + ">" );
+      }
     }
   }
 }

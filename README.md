@@ -531,8 +531,12 @@ vulkan.hpp provides a couple of trait functions on `vk::Format`. With C++14 and 
 	Gets a single-plane format compatible with this plane.
 - `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-- `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
+- Cuint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
+
+### Hashing Vulkan types
+
+With the additional header `vulkan_hash.hpp`, you get specializations of `std::hash` for the handle wrapper classes and, with C++14, for the structure wrappers. With `VULKAN_HPP_HASH_COMBINE`, you can define your own hash combining algorithm for the structure elements.
 
 ### Samples and Tests
 

@@ -41,6 +41,7 @@ public:
   std::string         generateResultExceptions() const;
   std::string         generateStructExtendsStructs() const;
   std::string         generateStructForwardDeclarations() const;
+  std::string         generateStructHashStructures() const;
   std::string         generateStructs() const;
   std::string         generateThrowResultException() const;
   std::string const & getTypesafeCheck() const;
@@ -1218,6 +1219,8 @@ private:
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string
     generateStructConstructorArgument( bool listedArgument, MemberData const & memberData, bool withDefault ) const;
+  std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure,
+                              std::set<std::string> &                       listedStructs ) const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructExtendsStructs( std::vector<RequireData> const & requireData,

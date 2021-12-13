@@ -91,6 +91,8 @@ file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp vulka
 string(REPLACE "\\" "\\\\" vulkan_handles_hpp ${vulkan_handles_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp vulkan_structs_hpp)
 string(REPLACE "\\" "\\\\" vulkan_structs_hpp ${vulkan_structs_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp vulkan_hash_hpp)
+string(REPLACE "\\" "\\\\" vulkan_hash_hpp ${vulkan_hash_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_raii_hpp)
 string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
 add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}"
@@ -98,6 +100,7 @@ add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}"
                 -DVULKAN_FUNCS_HPP_FILE="${vulkan_funcs_hpp}"
                 -DVULKAN_HANDLES_HPP_FILE="${vulkan_handles_hpp}"
                 -DVULKAN_STRUCTS_HPP_FILE="${vulkan_structs_hpp}"
+                -DVULKAN_HASH_HPP_FILE="${vulkan_hash_hpp}"
                 -DVULKAN_RAII_HPP_FILE="${vulkan_raii_hpp}")
 include_directories(${VulkanHeaders_INCLUDE_DIR})
 

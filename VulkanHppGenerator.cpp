@@ -703,9 +703,9 @@ std::string VulkanHppGenerator::generateHandles() const
 std::string VulkanHppGenerator::generateHandleHashStructures() const
 {
   const std::string hashesTemplate = R"(
-  //=======================
-  //=== HASH structures ===
-  //=======================
+  //===================================
+  //=== HASH structures for handles ===
+  //===================================
 
 ${hashes}
 )";
@@ -1016,6 +1016,36 @@ ${forwardDeclarations}
   }
 
   return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
+}
+
+std::string VulkanHppGenerator::generateStructHashStructures() const
+{
+  const std::string hashesTemplate = R"(
+#if 14 <= VULKAN_HPP_CPP_VERSION
+  //======================================
+  //=== HASH structures for structures ===
+  //======================================
+
+#  if !defined( VULKAN_HPP_HASH_COMBINE )
+#    define VULKAN_HPP_HASH_COMBINE( seed, value ) \
+      seed ^= std::hash<std::decay<decltype( value )>::type>{}( value ) + 0x9e3779b9 + ( seed << 6 ) + ( seed >> 2 )
+#  endif
+
+${hashes}
+#endif    // 14 <= VULKAN_HPP_CPP_VERSION
+)";
+
+  // Note reordering structs or handles by features and extensions is not possible!
+  std::set<std::string> listedStructs;
+  std::string           hashes;
+  for ( auto const & structure : m_structures )
+  {
+    if ( listedStructs.find( structure.first ) == listedStructs.end() )
+    {
+      hashes += generateStructHashStructure( structure, listedStructs );
+    }
+  }
+  return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
 }
 
 std::string VulkanHppGenerator::generateStructs() const
@@ -11903,6 +11933,53 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( bool         
   return str;
 }
 
+std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::string, StructureData> const & structure,
+                                                             std::set<std::string> & listedStructs ) const
+{
+  assert( listedStructs.find( structure.first ) == listedStructs.end() );
+
+  std::string str;
+  for ( auto const & member : structure.second.members )
+  {
+    auto structIt = m_structures.find( member.type.type );
+    if ( ( structIt != m_structures.end() ) && ( structure.first != member.type.type ) &&
+         ( listedStructs.find( member.type.type ) == listedStructs.end() ) )
+    {
+      str += generateStructHashStructure( *structIt, listedStructs );
+    }
+  }
+
+  if ( !containsUnion( structure.first ) )
+  {
+    static const std::string hashTemplate = R"(
+  ${enter}template <> struct hash<VULKAN_HPP_NAMESPACE::${structureType}>
+  {
+    std::size_t operator()(VULKAN_HPP_NAMESPACE::${structureType} const & ${structureName}) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+${hashSum}
+      return seed;
+    }
+  };
+${leave})";
+
+    auto [enter, leave] = generateProtection(
+      structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
+
+    std::string structureType = stripPrefix( structure.first, "Vk" );
+    std::string structureName = startLowerCase( structureType );
+    str += replaceWithMap( hashTemplate,
+                           { { "enter", enter },
+                             { "hashSum", generateStructHashSum( structureName, structure.second.members ) },
+                             { "leave", leave },
+                             { "structureName", structureName },
+                             { "structureType", structureType } } );
+  }
+
+  listedStructs.insert( structure.first );
+  return str;
+}
+
 std::string VulkanHppGenerator::generateStructHashSum( std::string const &             structName,
                                                        std::vector<MemberData> const & members ) const
 {
@@ -11912,19 +11989,18 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const &      
     if ( !member.arraySizes.empty() )
     {
       assert( member.arraySizes.size() < 3 );
-      std::string memberType = member.type.compose( "VULKAN_HPP_NAMESPACE" );
       hashSum += "    for ( size_t i = 0; i < " + member.arraySizes[0] + "; ++i )\n";
       hashSum += "    {\n";
       if ( member.arraySizes.size() == 1 )
       {
         hashSum +=
-          "      VULKAN_HPP_HASH_COMBINE( " + memberType + ", seed, " + structName + "." + member.name + "[i] );\n";
+          "      VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i] );\n";
       }
       else
       {
         hashSum += "      for ( size_t j=0; j < " + member.arraySizes[1] + "; ++j )\n";
         hashSum += "      {\n";
-        hashSum += "        VULKAN_HPP_HASH_COMBINE( " + memberType + ", seed, " + structName + "." + member.name +
+        hashSum += "        VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name +
                    "[i][j] );\n";
         hashSum += "      }\n";
       }
@@ -11932,9 +12008,7 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const &      
     }
     else
     {
-      std::string memberType =
-        member.bitCount.empty() ? member.type.compose( "VULKAN_HPP_NAMESPACE" ) : member.type.type;
-      hashSum += "    VULKAN_HPP_HASH_COMBINE( " + memberType + ", seed, " + structName + "." + member.name + " );\n";
+      hashSum += "    VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + " );\n";
     }
   }
   assert( !hashSum.empty() );
@@ -12042,32 +12116,6 @@ ${members}
     {
       str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureType + ";\n";
     }
-  }
-
-  if ( !containsUnion( structure.first ) )
-  {
-    static const std::string hashTemplate = R"(
-} // VULKAN_HPP_NAMESPACE
-
-template <> struct std::hash<VULKAN_HPP_NAMESPACE::${structureType}>
-{
-  std::size_t operator()(VULKAN_HPP_NAMESPACE::${structureType} const & ${structureName}) const VULKAN_HPP_NOEXCEPT
-  {
-    std::size_t seed = 0;
-${hashSum}
-    return seed;
-  }
-};
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-
-    std::string structureName = startLowerCase( structureType );
-    str += replaceWithMap( hashTemplate,
-                           { { "hashSum", generateStructHashSum( structureName, structure.second.members ) },
-                             { "structureName", structureName },
-                             { "structureType", structureType } } );
   }
 
   str += leave;
@@ -16761,18 +16809,6 @@ int main( int argc, char ** argv )
   {
     return flags.operator^( bit );
   }
-}  // namespace VULKAN_HPP_NAMESPACE
-
-template <typename BitType> struct std::hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
-{
-  std::size_t operator()(VULKAN_HPP_NAMESPACE::Flags<BitType> const& flags) const VULKAN_HPP_NOEXCEPT
-  {
-    return std::hash<typename std::underlying_type<BitType>::type>{}(static_cast<typename std::underlying_type<BitType>::type>(flags));
-  }
-};
-
-namespace VULKAN_HPP_NAMESPACE
-{
 )";
 
   static const std::string classObjectDestroy = R"(
@@ -17485,11 +17521,6 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if !defined( VULKAN_HPP_NAMESPACE )
 #  define VULKAN_HPP_NAMESPACE vk
-#endif
-
-#if !defined( VULKAN_HPP_HASH_COMBINE )
-#  define VULKAN_HPP_HASH_COMBINE( valueType, seed, value ) \
-  seed ^= std::hash<std::remove_const<valueType>::type>{}( value ) + 0x9e3779b9 + ( seed << 6 ) + ( seed >> 2 )
 #endif
 
 #define VULKAN_HPP_STRINGIFY2( text ) #text
@@ -18205,7 +18236,7 @@ namespace VULKAN_HPP_NAMESPACE
     str += generator.generateIndexTypeTraits();
     str += generator.generateBitmasks();
     str += R"(
-  }   // namespace VULKAN_HPP_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
     writeToFile( str, VULKAN_ENUMS_HPP_FILE );
@@ -18224,11 +18255,6 @@ namespace VULKAN_HPP_NAMESPACE
     str += generator.generateHandles();
     str += R"(
   }   // namespace VULKAN_HPP_NAMESPACE
-
-namespace std
-{)";
-    str += generator.generateHandleHashStructures();
-    str += R"(} // namespace std
 #endif
 )";
     writeToFile( str, VULKAN_HANDLES_HPP_FILE );
@@ -18329,6 +18355,39 @@ namespace VULKAN_HPP_NAMESPACE
       "#endif\n";
 
     writeToFile( str, VULKAN_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HASH_HPP_FILE << "..." << std::endl;
+    str.clear();
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_HASH_HPP
+#  define VULKAN_HASH_HPP
+
+#include <vulkan/vulkan.hpp>
+
+namespace std
+{
+  //=======================================
+  //=== HASH structures for Flags types ===
+  //=======================================
+
+  template <typename BitType>
+  struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Flags<BitType> const & flags ) const VULKAN_HPP_NOEXCEPT
+    {
+      return std::hash<typename std::underlying_type<BitType>::type>{}(
+        static_cast<typename std::underlying_type<BitType>::type>( flags ) );
+    }
+  };
+)";
+    str += generator.generateHandleHashStructures();
+    str += generator.generateStructHashStructures();
+    str += R"(
+} // namespace std
+#endif    // VULKAN_HASH_HPP
+)";
+    writeToFile( str, VULKAN_HASH_HPP_FILE );
 
     std::cout << "VulkanHppGenerator: Generating " << VULKAN_RAII_HPP_FILE << " ..." << std::endl;
     str.clear();

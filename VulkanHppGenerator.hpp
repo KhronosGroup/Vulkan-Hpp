@@ -1214,13 +1214,12 @@ private:
   std::string generateStruct( std::pair<std::string, StructureData> const & structure,
                               std::set<std::string> &                       listedStructs ) const;
   std::string generateStructAssignmentOperators( std::pair<std::string, StructureData> const & structure ) const;
-  std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string
     generateStructConstructorArgument( bool listedArgument, MemberData const & memberData, bool withDefault ) const;
   std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure,
-                              std::set<std::string> &                       listedStructs ) const;
+                                           std::set<std::string> &                       listedStructs ) const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructExtendsStructs( std::vector<RequireData> const & requireData,
@@ -1228,11 +1227,11 @@ private:
                                             std::string const &              title ) const;
   std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
                                                  std::string const &              title ) const;
-  std::pair<std::string, std::string> generateStructMembers( std::pair<std::string, StructureData> const & structData,
-                                                             std::string const & prefix ) const;
-  std::string                         generateStructSetter( std::string const &             structureName,
-                                                            std::vector<MemberData> const & memberData,
-                                                            size_t                          index ) const;
+  std::tuple<std::string, std::string, std::string, std::string>
+              generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
+  std::string generateStructSetter( std::string const &             structureName,
+                                    std::vector<MemberData> const & memberData,
+                                    size_t                          index ) const;
   std::string generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateSuccessCodeList( std::vector<std::string> const & successCodes ) const;

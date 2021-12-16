@@ -11694,56 +11694,6 @@ std::string VulkanHppGenerator::generateStructAssignmentOperators(
 }
 
 std::string
-  VulkanHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
-{
-  static const std::set<std::string> simpleTypes = { "char",      "double",   "DWORD",    "float",   "HANDLE",
-                                                     "HINSTANCE", "HMONITOR", "HWND",     "int",     "int8_t",
-                                                     "int16_t",   "int32_t",  "int64_t",  "LPCWSTR", "size_t",
-                                                     "uint8_t",   "uint16_t", "uint32_t", "uint64_t" };
-  // two structs are compared by comparing each of the elements
-  std::string compareMembers;
-  std::string intro = "";
-  for ( size_t i = 0; i < structData.second.members.size(); i++ )
-  {
-    MemberData const & member = structData.second.members[i];
-    auto               typeIt = m_types.find( member.type.type );
-    assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::Requires ) && member.type.postfix.empty() &&
-         ( simpleTypes.find( member.type.type ) == simpleTypes.end() ) )
-    {
-      // this type might support operator==()... that is, use memcmp
-      compareMembers +=
-        intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
-    }
-    else
-    {
-      // for all others, we use the operator== of that type
-      compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
-    }
-    intro = "\n          && ";
-  }
-
-  static const std::string compareTemplate = R"(
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${name} const & ) const = default;
-#else
-    bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ${compareMembers};
-    }
-
-    bool operator!=( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-)";
-
-  return replaceWithMap( compareTemplate,
-                         { { "name", stripPrefix( structData.first, "Vk" ) }, { "compareMembers", compareMembers } } );
-}
-
-std::string
   VulkanHppGenerator::generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const
 {
   // the constructor with all the elements as arguments, with defaults
@@ -11993,15 +11943,13 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const &      
       hashSum += "    {\n";
       if ( member.arraySizes.size() == 1 )
       {
-        hashSum +=
-          "      VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i] );\n";
+        hashSum += "      VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i] );\n";
       }
       else
       {
         hashSum += "      for ( size_t j=0; j < " + member.arraySizes[1] + "; ++j )\n";
         hashSum += "      {\n";
-        hashSum += "        VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name +
-                   "[i][j] );\n";
+        hashSum += "        VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + "[i][j] );\n";
         hashSum += "      }\n";
       }
       hashSum += "    }\n";
@@ -12040,17 +11988,52 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
     constructorAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/\n";
   }
 
+  std::string structureType = stripPrefix( structure.first, "Vk" );
+  // the member variables
+  std::string members, memberNames, memberTypes, sTypeValue;
+  std::tie( members, memberNames, memberTypes, sTypeValue ) = generateStructMembers( structure );
+
+  // reflect is meaningfull for structs only, filter out unions
+  std::string reflect;
+  if ( !structure.second.isUnion )
+  {
+    static const std::string reflectTemplate = R"(
+#if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#else
+    std::tuple<${memberTypes}>
+#endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( ${memberNames} );
+    }
+)";
+
+    reflect = replaceWithMap( reflectTemplate, { { "memberNames", memberNames }, { "memberTypes", memberTypes } } );
+  }
+
   // operator==() and operator!=()
   // only structs without a union as a member can have a meaningfull == and != operation; we filter them out
   std::string compareOperators;
   if ( !containsUnion( structure.first ) )
   {
-    compareOperators += generateStructCompareOperators( structure );
-  }
+    static const std::string compareOperatorsTemplate = R"(
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ${structureType} const & ) const = default;
+#else
+    bool operator==( ${structureType} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
 
-  // the member variables
-  std::string members, sTypeValue;
-  std::tie( members, sTypeValue ) = generateStructMembers( structure, "    " );
+    bool operator!=( ${structureType} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#endif
+)";
+    compareOperators = replaceWithMap( compareOperatorsTemplate, { { "structureType", structureType } } );
+  }
 
   static const std::string structureTemplate = R"(  struct ${structureType}
   {
@@ -12069,9 +12052,8 @@ ${constructorAndSetters}
     {
       return *reinterpret_cast<Vk${structureType}*>( this );
     }
-
+${reflect}
 ${compareOperators}
-
     public:
 ${members}
   };
@@ -12080,7 +12062,6 @@ ${members}
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${structureType}>::value, "${structureType} is not nothrow_move_constructible!" );
 )";
 
-  std::string structureType = stripPrefix( structure.first, "Vk" );
   std::string allowDuplicate, typeValue;
   if ( !sTypeValue.empty() )
   {
@@ -12094,6 +12075,7 @@ ${members}
                            { "constructorAndSetters", constructorAndSetters },
                            { "compareOperators", compareOperators },
                            { "members", members },
+                           { "reflect", reflect },
                            { "structureType", structureType },
                            { "typeValue", typeValue } } );
 
@@ -12203,36 +12185,36 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
   return addTitleAndProtection( title, str );
 }
 
-std::pair<std::string, std::string>
-  VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructureData> const & structData,
-                                             std::string const &                           prefix ) const
+std::tuple<std::string, std::string, std::string, std::string>
+  VulkanHppGenerator::generateStructMembers( std::pair<std::string, StructureData> const & structData ) const
 {
-  std::string str, sTypeValue;
+  std::string members, memberNames, memberTypes, sTypeValue;
   for ( auto const & member : structData.second.members )
   {
-    str += prefix;
+    members += "    ";
+    std::string type;
     if ( !member.bitCount.empty() && beginsWith( member.type.type, "Vk" ) )
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );  // never encounterd a different case
-      str += member.type.type;
+      type = member.type.type;
     }
     else if ( member.arraySizes.empty() )
     {
-      str += member.type.compose( "VULKAN_HPP_NAMESPACE" );
+      type = member.type.compose( "VULKAN_HPP_NAMESPACE" );
     }
     else
     {
       assert( member.type.prefix.empty() && member.type.postfix.empty() );
-      str += generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes );
+      type = generateStandardArrayWrapper( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes );
     }
-    str += " " + member.name;
+    members += type + " " + member.name;
     if ( !member.value.empty() )
     {
       // special handling for members with legal value: use it as the default
-      str += " = ";
+      members += " = ";
       if ( member.type.type == "uint32_t" )
       {
-        str += member.value;
+        members += member.value;
       }
       else
       {
@@ -12244,7 +12226,7 @@ std::pair<std::string, std::string>
                                      [&enumValue]( EnumValueData const & evd ) { return enumValue == evd.name; } );
         assert( valueIt != enumIt->second.values.end() );
         std::string valueName = generateEnumValueName( enumIt->first, valueIt->name, enumIt->second.isBitmask, m_tags );
-        str += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
+        members += stripPrefix( member.type.type, "Vk" ) + "::" + valueName;
         if ( member.name == "sType" )
         {
           sTypeValue = valueName;
@@ -12257,27 +12239,30 @@ std::pair<std::string, std::string>
       assert( member.arraySizes.empty() || member.bitCount.empty() );
       if ( !member.bitCount.empty() )
       {
-        str += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin is
-                                         // supported (up to C++20)
+        members += " : " + member.bitCount;  // except for bitfield members, where no default member initializatin is
+                                             // supported (up to C++20)
       }
       else
       {
-        str += " = ";
+        members += " = ";
         auto enumIt = m_enums.find( member.type.type );
         if ( member.arraySizes.empty() && ( enumIt != m_enums.end() ) && member.type.postfix.empty() )
         {
-          str +=
+          members +=
             generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
         }
         else
         {
-          str += "{}";
+          members += "{}";
         }
       }
     }
-    str += ";\n";
+    members += ";\n";
+
+    memberNames += member.name + ", ";
+    memberTypes += type + " const &, ";
   }
-  return std::make_pair( str, sTypeValue );
+  return std::make_tuple( members, stripPostfix( memberNames, ", " ), stripPostfix( memberTypes, ", " ), sTypeValue );
 }
 
 std::string VulkanHppGenerator::generateStructSetter( std::string const &             structureName,

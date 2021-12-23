@@ -11954,6 +11954,29 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const &      
       }
       hashSum += "    }\n";
     }
+    else if ( member.type.type == "char" && !member.len.empty() )
+    {
+      assert( member.len.size() < 3 );
+      if ( member.len.size() == 1 )
+      {
+        assert( member.len[0] == "null-terminated" );
+        hashSum += "    for ( const char* p = " + structName + "." + member.name + "; *p != '\\0'; ++p )\n";
+        hashSum += "    {\n";
+        hashSum += "      VULKAN_HPP_HASH_COMBINE( seed, *p );\n";
+        hashSum += "    }\n";
+      }
+      else
+      {
+        assert( member.len[1] == "null-terminated" );
+        hashSum += "    for ( size_t i = 0; i < " + structName + "." + member.len[0] + "; ++i )\n";
+        hashSum += "    {\n";
+        hashSum += "        for ( const char* p = " + structName + "." + member.name + "[i]; *p != '\\0'; ++p )\n";
+        hashSum += "        {\n";
+        hashSum += "          VULKAN_HPP_HASH_COMBINE( seed, *p );\n";
+        hashSum += "        }\n";
+        hashSum += "    }\n";
+      }
+    }
     else
     {
       hashSum += "    VULKAN_HPP_HASH_COMBINE( seed, " + structName + "." + member.name + " );\n";
@@ -14408,8 +14431,7 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableProperty(
     }
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -14468,8 +14490,7 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableStruct(
   {
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),

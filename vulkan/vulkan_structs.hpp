@@ -49610,6 +49610,202 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceFragmentDensityMapFeaturesEXT;
   };
 
+  struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM
+  {
+    using NativeType = VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM(
+      VULKAN_HPP_NAMESPACE::Bool32 fragmentDensityMapOffset_ = {} ) VULKAN_HPP_NOEXCEPT
+      : fragmentDensityMapOffset( fragmentDensityMapOffset_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM(
+      PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM(
+      VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM(
+          *reinterpret_cast<PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM &
+      operator=( PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM &
+      operator=( VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM &
+                            setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM &
+      setFragmentDensityMapOffset( VULKAN_HPP_NAMESPACE::Bool32 fragmentDensityMapOffset_ ) VULKAN_HPP_NOEXCEPT
+    {
+      fragmentDensityMapOffset = fragmentDensityMapOffset_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    explicit operator VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM *>( this );
+    }
+
+    explicit operator VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM *>( this );
+    }
+
+#if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Bool32 const &>
+#endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, fragmentDensityMapOffset );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
+
+    bool operator!=( PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        fragmentDensityMapOffset = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM ) ==
+                              sizeof( VkPhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>::value,
+    "PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM>
+  {
+    using Type = PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
+  };
+
+  struct PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM
+  {
+    using NativeType = VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM(
+      VULKAN_HPP_NAMESPACE::Extent2D fragmentDensityOffsetGranularity_ = {} ) VULKAN_HPP_NOEXCEPT
+      : fragmentDensityOffsetGranularity( fragmentDensityOffsetGranularity_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM(
+      PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM(
+      VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM(
+          *reinterpret_cast<PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM &
+      operator=( PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM &
+      operator=( VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this =
+        *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const *>( &rhs );
+      return *this;
+    }
+
+    explicit operator VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM *>( this );
+    }
+
+    explicit operator VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM *>( this );
+    }
+
+#if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Extent2D const &>
+#endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, fragmentDensityOffsetGranularity );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
+
+    bool operator!=( PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Extent2D      fragmentDensityOffsetGranularity = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM ) ==
+                              sizeof( VkPhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<
+                              VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>::value,
+                            "PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM>
+  {
+    using Type = PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM;
+  };
+
   struct PhysicalDeviceFragmentDensityMapPropertiesEXT
   {
     using NativeType = VkPhysicalDeviceFragmentDensityMapPropertiesEXT;
@@ -53105,6 +53301,111 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<StructureType, StructureType::ePhysicalDeviceLineRasterizationPropertiesEXT>
   {
     using Type = PhysicalDeviceLineRasterizationPropertiesEXT;
+  };
+
+  struct PhysicalDeviceLinearColorAttachmentFeaturesNV
+  {
+    using NativeType = VkPhysicalDeviceLinearColorAttachmentFeaturesNV;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::ePhysicalDeviceLinearColorAttachmentFeaturesNV;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceLinearColorAttachmentFeaturesNV(
+      VULKAN_HPP_NAMESPACE::Bool32 linearColorAttachment_ = {} ) VULKAN_HPP_NOEXCEPT
+      : linearColorAttachment( linearColorAttachment_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceLinearColorAttachmentFeaturesNV(
+      PhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceLinearColorAttachmentFeaturesNV( VkPhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceLinearColorAttachmentFeaturesNV(
+          *reinterpret_cast<PhysicalDeviceLinearColorAttachmentFeaturesNV const *>( &rhs ) )
+    {}
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceLinearColorAttachmentFeaturesNV &
+      operator=( PhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceLinearColorAttachmentFeaturesNV &
+      operator=( VkPhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceLinearColorAttachmentFeaturesNV const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceLinearColorAttachmentFeaturesNV &
+                            setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceLinearColorAttachmentFeaturesNV &
+      setLinearColorAttachment( VULKAN_HPP_NAMESPACE::Bool32 linearColorAttachment_ ) VULKAN_HPP_NOEXCEPT
+    {
+      linearColorAttachment = linearColorAttachment_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    explicit operator VkPhysicalDeviceLinearColorAttachmentFeaturesNV const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceLinearColorAttachmentFeaturesNV *>( this );
+    }
+
+    explicit operator VkPhysicalDeviceLinearColorAttachmentFeaturesNV &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceLinearColorAttachmentFeaturesNV *>( this );
+    }
+
+#if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Bool32 const &>
+#endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, linearColorAttachment );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceLinearColorAttachmentFeaturesNV const & ) const = default;
+#else
+    bool operator==( PhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
+
+    bool operator!=( PhysicalDeviceLinearColorAttachmentFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType = StructureType::ePhysicalDeviceLinearColorAttachmentFeaturesNV;
+    void *                              pNext = {};
+    VULKAN_HPP_NAMESPACE::Bool32        linearColorAttachment = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceLinearColorAttachmentFeaturesNV ) ==
+                              sizeof( VkPhysicalDeviceLinearColorAttachmentFeaturesNV ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceLinearColorAttachmentFeaturesNV>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceLinearColorAttachmentFeaturesNV>::value,
+    "PhysicalDeviceLinearColorAttachmentFeaturesNV is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceLinearColorAttachmentFeaturesNV>
+  {
+    using Type = PhysicalDeviceLinearColorAttachmentFeaturesNV;
   };
 
   struct PhysicalDeviceMaintenance3Properties
@@ -73669,6 +73970,112 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using QueueFamilyProperties2KHR = QueueFamilyProperties2;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  struct QueueFamilyQueryResultStatusProperties2KHR
+  {
+    using NativeType = VkQueueFamilyQueryResultStatusProperties2KHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eQueueFamilyQueryResultStatusProperties2KHR;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      QueueFamilyQueryResultStatusProperties2KHR( VULKAN_HPP_NAMESPACE::Bool32 supported_ = {} ) VULKAN_HPP_NOEXCEPT
+      : supported( supported_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR QueueFamilyQueryResultStatusProperties2KHR(
+      QueueFamilyQueryResultStatusProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    QueueFamilyQueryResultStatusProperties2KHR( VkQueueFamilyQueryResultStatusProperties2KHR const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : QueueFamilyQueryResultStatusProperties2KHR(
+          *reinterpret_cast<QueueFamilyQueryResultStatusProperties2KHR const *>( &rhs ) )
+    {}
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    QueueFamilyQueryResultStatusProperties2KHR &
+      operator=( QueueFamilyQueryResultStatusProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    QueueFamilyQueryResultStatusProperties2KHR &
+      operator=( VkQueueFamilyQueryResultStatusProperties2KHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 QueueFamilyQueryResultStatusProperties2KHR & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 QueueFamilyQueryResultStatusProperties2KHR &
+                            setSupported( VULKAN_HPP_NAMESPACE::Bool32 supported_ ) VULKAN_HPP_NOEXCEPT
+    {
+      supported = supported_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    explicit operator VkQueueFamilyQueryResultStatusProperties2KHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkQueueFamilyQueryResultStatusProperties2KHR *>( this );
+    }
+
+    explicit operator VkQueueFamilyQueryResultStatusProperties2KHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkQueueFamilyQueryResultStatusProperties2KHR *>( this );
+    }
+
+#  if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#  else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Bool32 const &>
+#  endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, supported );
+    }
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( QueueFamilyQueryResultStatusProperties2KHR const & ) const = default;
+#  else
+    bool operator==( QueueFamilyQueryResultStatusProperties2KHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
+
+    bool operator!=( QueueFamilyQueryResultStatusProperties2KHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType     = StructureType::eQueueFamilyQueryResultStatusProperties2KHR;
+    void *                              pNext     = {};
+    VULKAN_HPP_NAMESPACE::Bool32        supported = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR ) ==
+                              sizeof( VkQueueFamilyQueryResultStatusProperties2KHR ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR>::value,
+    "QueueFamilyQueryResultStatusProperties2KHR is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eQueueFamilyQueryResultStatusProperties2KHR>
+  {
+    using Type = QueueFamilyQueryResultStatusProperties2KHR;
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   struct RayTracingShaderGroupCreateInfoKHR
   {
     using NativeType = VkRayTracingShaderGroupCreateInfoKHR;
@@ -81962,6 +82369,144 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SubpassEndInfoKHR = SubpassEndInfo;
 
+  struct SubpassFragmentDensityMapOffsetEndInfoQCOM
+  {
+    using NativeType = VkSubpassFragmentDensityMapOffsetEndInfoQCOM;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType =
+      StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR SubpassFragmentDensityMapOffsetEndInfoQCOM(
+      uint32_t                               fragmentDensityOffsetCount_ = {},
+      const VULKAN_HPP_NAMESPACE::Offset2D * pFragmentDensityOffsets_    = {} ) VULKAN_HPP_NOEXCEPT
+      : fragmentDensityOffsetCount( fragmentDensityOffsetCount_ )
+      , pFragmentDensityOffsets( pFragmentDensityOffsets_ )
+    {}
+
+    VULKAN_HPP_CONSTEXPR SubpassFragmentDensityMapOffsetEndInfoQCOM(
+      SubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    SubpassFragmentDensityMapOffsetEndInfoQCOM( VkSubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs )
+      VULKAN_HPP_NOEXCEPT
+      : SubpassFragmentDensityMapOffsetEndInfoQCOM(
+          *reinterpret_cast<SubpassFragmentDensityMapOffsetEndInfoQCOM const *>( &rhs ) )
+    {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    SubpassFragmentDensityMapOffsetEndInfoQCOM(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Offset2D> const &
+        fragmentDensityOffsets_ )
+      : fragmentDensityOffsetCount( static_cast<uint32_t>( fragmentDensityOffsets_.size() ) )
+      , pFragmentDensityOffsets( fragmentDensityOffsets_.data() )
+    {}
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    SubpassFragmentDensityMapOffsetEndInfoQCOM &
+      operator=( SubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    SubpassFragmentDensityMapOffsetEndInfoQCOM &
+      operator=( VkSubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 SubpassFragmentDensityMapOffsetEndInfoQCOM &
+                            setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 SubpassFragmentDensityMapOffsetEndInfoQCOM &
+                            setFragmentDensityOffsetCount( uint32_t fragmentDensityOffsetCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      fragmentDensityOffsetCount = fragmentDensityOffsetCount_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 SubpassFragmentDensityMapOffsetEndInfoQCOM &
+      setPFragmentDensityOffsets( const VULKAN_HPP_NAMESPACE::Offset2D * pFragmentDensityOffsets_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pFragmentDensityOffsets = pFragmentDensityOffsets_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    SubpassFragmentDensityMapOffsetEndInfoQCOM & setFragmentDensityOffsets(
+      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::Offset2D> const &
+        fragmentDensityOffsets_ ) VULKAN_HPP_NOEXCEPT
+    {
+      fragmentDensityOffsetCount = static_cast<uint32_t>( fragmentDensityOffsets_.size() );
+      pFragmentDensityOffsets    = fragmentDensityOffsets_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    explicit operator VkSubpassFragmentDensityMapOffsetEndInfoQCOM const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkSubpassFragmentDensityMapOffsetEndInfoQCOM *>( this );
+    }
+
+    explicit operator VkSubpassFragmentDensityMapOffsetEndInfoQCOM &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkSubpassFragmentDensityMapOffsetEndInfoQCOM *>( this );
+    }
+
+#if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &,
+               const void * const &,
+               uint32_t const &,
+               const VULKAN_HPP_NAMESPACE::Offset2D * const &>
+#endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, fragmentDensityOffsetCount, pFragmentDensityOffsets );
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( SubpassFragmentDensityMapOffsetEndInfoQCOM const & ) const = default;
+#else
+    bool operator==( SubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() == rhs.reflect();
+    }
+
+    bool operator!=( SubpassFragmentDensityMapOffsetEndInfoQCOM const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return this->reflect() != rhs.reflect();
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType    sType = StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM;
+    const void *                           pNext = {};
+    uint32_t                               fragmentDensityOffsetCount = {};
+    const VULKAN_HPP_NAMESPACE::Offset2D * pFragmentDensityOffsets    = {};
+  };
+  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM ) ==
+                              sizeof( VkSubpassFragmentDensityMapOffsetEndInfoQCOM ),
+                            "struct and wrapper have different size!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_standard_layout<VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM>::value,
+    "struct wrapper is not a standard layout!" );
+  VULKAN_HPP_STATIC_ASSERT(
+    std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SubpassFragmentDensityMapOffsetEndInfoQCOM>::value,
+    "SubpassFragmentDensityMapOffsetEndInfoQCOM is not nothrow_move_constructible!" );
+
+  template <>
+  struct CppType<StructureType, StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM>
+  {
+    using Type = SubpassFragmentDensityMapOffsetEndInfoQCOM;
+  };
+
   struct SubpassShadingPipelineCreateInfoHUAWEI
   {
     using NativeType = VkSubpassShadingPipelineCreateInfoHUAWEI;
@@ -88530,11 +89075,13 @@ namespace VULKAN_HPP_NAMESPACE
       uint32_t                                                             idrPeriod_              = {},
       uint32_t                                                             consecutiveBFrameCount_ = {},
       VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT rateControlStructure_ =
-        VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT::eUnknown ) VULKAN_HPP_NOEXCEPT
+        VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT::eUnknown,
+      uint8_t temporalLayerCount_ = {} ) VULKAN_HPP_NOEXCEPT
       : gopFrameCount( gopFrameCount_ )
       , idrPeriod( idrPeriod_ )
       , consecutiveBFrameCount( consecutiveBFrameCount_ )
       , rateControlStructure( rateControlStructure_ )
+      , temporalLayerCount( temporalLayerCount_ )
     {}
 
     VULKAN_HPP_CONSTEXPR
@@ -88587,6 +89134,13 @@ namespace VULKAN_HPP_NAMESPACE
       rateControlStructure = rateControlStructure_;
       return *this;
     }
+
+    VULKAN_HPP_CONSTEXPR_14 VideoEncodeH264RateControlInfoEXT &
+                            setTemporalLayerCount( uint8_t temporalLayerCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      temporalLayerCount = temporalLayerCount_;
+      return *this;
+    }
 #  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
 
     explicit operator VkVideoEncodeH264RateControlInfoEXT const &() const VULKAN_HPP_NOEXCEPT
@@ -88607,11 +89161,13 @@ namespace VULKAN_HPP_NAMESPACE
                uint32_t const &,
                uint32_t const &,
                uint32_t const &,
-               VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT const &>
+               VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT const &,
+               uint8_t const &>
 #  endif
       reflect() const VULKAN_HPP_NOEXCEPT
     {
-      return std::tie( sType, pNext, gopFrameCount, idrPeriod, consecutiveBFrameCount, rateControlStructure );
+      return std::tie(
+        sType, pNext, gopFrameCount, idrPeriod, consecutiveBFrameCount, rateControlStructure, temporalLayerCount );
     }
 
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
@@ -88636,6 +89192,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t                            consecutiveBFrameCount = {};
     VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT rateControlStructure =
       VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureFlagBitsEXT::eUnknown;
+    uint8_t temporalLayerCount = {};
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlInfoEXT ) ==
                               sizeof( VkVideoEncodeH264RateControlInfoEXT ),
@@ -90665,11 +91222,13 @@ namespace VULKAN_HPP_NAMESPACE
       uint32_t                                                             idrPeriod_              = {},
       uint32_t                                                             consecutiveBFrameCount_ = {},
       VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT rateControlStructure_ =
-        VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT::eUnknown ) VULKAN_HPP_NOEXCEPT
+        VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT::eUnknown,
+      uint8_t subLayerCount_ = {} ) VULKAN_HPP_NOEXCEPT
       : gopFrameCount( gopFrameCount_ )
       , idrPeriod( idrPeriod_ )
       , consecutiveBFrameCount( consecutiveBFrameCount_ )
       , rateControlStructure( rateControlStructure_ )
+      , subLayerCount( subLayerCount_ )
     {}
 
     VULKAN_HPP_CONSTEXPR
@@ -90722,6 +91281,13 @@ namespace VULKAN_HPP_NAMESPACE
       rateControlStructure = rateControlStructure_;
       return *this;
     }
+
+    VULKAN_HPP_CONSTEXPR_14 VideoEncodeH265RateControlInfoEXT &
+                            setSubLayerCount( uint8_t subLayerCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      subLayerCount = subLayerCount_;
+      return *this;
+    }
 #  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
 
     explicit operator VkVideoEncodeH265RateControlInfoEXT const &() const VULKAN_HPP_NOEXCEPT
@@ -90742,11 +91308,13 @@ namespace VULKAN_HPP_NAMESPACE
                uint32_t const &,
                uint32_t const &,
                uint32_t const &,
-               VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT const &>
+               VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT const &,
+               uint8_t const &>
 #  endif
       reflect() const VULKAN_HPP_NOEXCEPT
     {
-      return std::tie( sType, pNext, gopFrameCount, idrPeriod, consecutiveBFrameCount, rateControlStructure );
+      return std::tie(
+        sType, pNext, gopFrameCount, idrPeriod, consecutiveBFrameCount, rateControlStructure, subLayerCount );
     }
 
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
@@ -90771,6 +91339,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint32_t                            consecutiveBFrameCount = {};
     VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT rateControlStructure =
       VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureFlagBitsEXT::eUnknown;
+    uint8_t subLayerCount = {};
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlInfoEXT ) ==
                               sizeof( VkVideoEncodeH265RateControlInfoEXT ),

@@ -15652,35 +15652,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename Dispatch>
-  VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it." )
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
-    typename ResultValueType<uint64_t>::type Device::getCalibratedTimestampsEXT(
-      ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos,
-      ArrayProxy<uint64_t> const &                                               timestamps,
-      Dispatch const &                                                           d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    VULKAN_HPP_ASSERT( timestampInfos.size() == timestamps.size() );
-#  else
-    if ( timestampInfos.size() != timestamps.size() )
-    {
-      throw LogicError( VULKAN_HPP_NAMESPACE_STRING
-                        "::VkDevice::getCalibratedTimestampsEXT: timestampInfos.size() != timestamps.size()" );
-    }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-    uint64_t maxDeviation;
-    Result   result = static_cast<Result>(
-      d.vkGetCalibratedTimestampsEXT( m_device,
-                                      timestampInfos.size(),
-                                      reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ),
-                                      timestamps.data(),
-                                      &maxDeviation ) );
-    return createResultValue(
-      result, maxDeviation, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
-  }
-
   template <typename Uint64_tAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
@@ -15728,6 +15699,7 @@ namespace VULKAN_HPP_NAMESPACE
                                       &maxDeviation ) );
     return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
   }
+
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<uint64_t, uint64_t>>::type

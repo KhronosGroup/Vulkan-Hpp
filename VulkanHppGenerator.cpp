@@ -11694,6 +11694,61 @@ std::string VulkanHppGenerator::generateStructAssignmentOperators(
 }
 
 std::string
+  VulkanHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
+{
+  static const std::set<std::string> simpleTypes = { "char",      "double",   "DWORD",    "float",   "HANDLE",
+                                                     "HINSTANCE", "HMONITOR", "HWND",     "int",     "int8_t",
+                                                     "int16_t",   "int32_t",  "int64_t",  "LPCWSTR", "size_t",
+                                                     "uint8_t",   "uint16_t", "uint32_t", "uint64_t" };
+  // two structs are compared by comparing each of the elements
+  std::string compareMembers;
+  std::string intro = "";
+  for ( size_t i = 0; i < structData.second.members.size(); i++ )
+  {
+    MemberData const & member = structData.second.members[i];
+    auto               typeIt = m_types.find( member.type.type );
+    assert( typeIt != m_types.end() );
+    if ( ( typeIt->second.category == TypeCategory::Requires ) && member.type.postfix.empty() &&
+         ( simpleTypes.find( member.type.type ) == simpleTypes.end() ) )
+    {
+      // this type might support operator==()... that is, use memcmp
+      compareMembers +=
+        intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
+    }
+    else
+    {
+      // for all others, we use the operator== of that type
+      compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
+    }
+    intro = "\n          && ";
+  }
+
+  // reflection is not available with gcc 7.5 and below!
+  static const std::string compareTemplate = R"(
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+    auto operator<=>( ${name} const & ) const = default;
+#else
+    bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
+      return this->reflect() == rhs.reflect();
+ #else
+      return ${compareMembers};
+#endif
+    }
+
+    bool operator!=( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+)";
+
+  return replaceWithMap( compareTemplate,
+                         { { "name", stripPrefix( structData.first, "Vk" ) }, { "compareMembers", compareMembers } } );
+}
+
+std::string
   VulkanHppGenerator::generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const
 {
   // the constructor with all the elements as arguments, with defaults
@@ -11997,7 +12052,9 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   std::string reflect;
   if ( !structure.second.isUnion )
   {
+    // gcc compilers 7.5 and before can't tie the large tuples you get here !!
     static const std::string reflectTemplate = R"(
+#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
 #if 14 <= VULKAN_HPP_CPP_VERSION
     auto
 #else
@@ -12007,6 +12064,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
     {
       return std::tie( ${memberNames} );
     }
+#endif
 )";
 
     reflect = replaceWithMap( reflectTemplate, { { "memberNames", memberNames }, { "memberTypes", memberTypes } } );
@@ -12017,22 +12075,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   std::string compareOperators;
   if ( !containsUnion( structure.first ) )
   {
-    static const std::string compareOperatorsTemplate = R"(
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${structureType} const & ) const = default;
-#else
-    bool operator==( ${structureType} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return this->reflect() == rhs.reflect();
-    }
-
-    bool operator!=( ${structureType} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return this->reflect() != rhs.reflect();
-    }
-#endif
-)";
-    compareOperators = replaceWithMap( compareOperatorsTemplate, { { "structureType", structureType } } );
+    compareOperators += generateStructCompareOperators( structure );
   }
 
   static const std::string structureTemplate = R"(  struct ${structureType}

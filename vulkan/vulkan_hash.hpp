@@ -994,9 +994,15 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.sType );
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.pApplicationName );
+      for ( const char * p = applicationInfo.pApplicationName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.applicationVersion );
-      VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.pEngineName );
+      for ( const char * p = applicationInfo.pEngineName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.engineVersion );
       VULKAN_HPP_HASH_COMBINE( seed, applicationInfo.apiVersion );
       return seed;
@@ -2196,7 +2202,10 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.flags );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.stage );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.module );
-      VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.pName );
+      for ( const char * p = pipelineShaderStageCreateInfo.pName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, pipelineShaderStageCreateInfo.pSpecializationInfo );
       return seed;
     }
@@ -2421,7 +2430,10 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.sType );
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.module );
-      VULKAN_HPP_HASH_COMBINE( seed, cuFunctionCreateInfoNVX.pName );
+      for ( const char * p = cuFunctionCreateInfoNVX.pName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       return seed;
     }
   };
@@ -2493,7 +2505,10 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.pMarkerName );
+      for ( const char * p = debugMarkerMarkerInfoEXT.pMarkerName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       for ( size_t i = 0; i < 4; ++i )
       {
         VULKAN_HPP_HASH_COMBINE( seed, debugMarkerMarkerInfoEXT.color[i] );
@@ -2513,7 +2528,10 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.objectType );
       VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.object );
-      VULKAN_HPP_HASH_COMBINE( seed, debugMarkerObjectNameInfoEXT.pObjectName );
+      for ( const char * p = debugMarkerObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       return seed;
     }
   };
@@ -2561,7 +2579,10 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.pLabelName );
+      for ( const char * p = debugUtilsLabelEXT.pLabelName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       for ( size_t i = 0; i < 4; ++i )
       {
         VULKAN_HPP_HASH_COMBINE( seed, debugUtilsLabelEXT.color[i] );
@@ -2581,7 +2602,10 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.objectType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.objectHandle );
-      VULKAN_HPP_HASH_COMBINE( seed, debugUtilsObjectNameInfoEXT.pObjectName );
+      for ( const char * p = debugUtilsObjectNameInfoEXT.pObjectName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       return seed;
     }
   };
@@ -2596,9 +2620,15 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.flags );
-      VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.pMessageIdName );
+      for ( const char * p = debugUtilsMessengerCallbackDataEXT.pMessageIdName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.messageIdNumber );
-      VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.pMessage );
+      for ( const char * p = debugUtilsMessengerCallbackDataEXT.pMessage; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.queueLabelCount );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.pQueueLabels );
       VULKAN_HPP_HASH_COMBINE( seed, debugUtilsMessengerCallbackDataEXT.cmdBufLabelCount );
@@ -3089,9 +3119,21 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.queueCreateInfoCount );
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.pQueueCreateInfos );
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.enabledLayerCount );
-      VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.ppEnabledLayerNames );
+      for ( size_t i = 0; i < deviceCreateInfo.enabledLayerCount; ++i )
+      {
+        for ( const char * p = deviceCreateInfo.ppEnabledLayerNames[i]; *p != '\0'; ++p )
+        {
+          VULKAN_HPP_HASH_COMBINE( seed, *p );
+        }
+      }
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.enabledExtensionCount );
-      VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.ppEnabledExtensionNames );
+      for ( size_t i = 0; i < deviceCreateInfo.enabledExtensionCount; ++i )
+      {
+        for ( const char * p = deviceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
+        {
+          VULKAN_HPP_HASH_COMBINE( seed, *p );
+        }
+      }
       VULKAN_HPP_HASH_COMBINE( seed, deviceCreateInfo.pEnabledFeatures );
       return seed;
     }
@@ -3630,7 +3672,10 @@ namespace std
     {
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.display );
-      VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.displayName );
+      for ( const char * p = displayPropertiesKHR.displayName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
       VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.physicalDimensions );
       VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.physicalResolution );
       VULKAN_HPP_HASH_COMBINE( seed, displayPropertiesKHR.supportedTransforms );
@@ -5411,9 +5456,21 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.flags );
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.pApplicationInfo );
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.enabledLayerCount );
-      VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.ppEnabledLayerNames );
+      for ( size_t i = 0; i < instanceCreateInfo.enabledLayerCount; ++i )
+      {
+        for ( const char * p = instanceCreateInfo.ppEnabledLayerNames[i]; *p != '\0'; ++p )
+        {
+          VULKAN_HPP_HASH_COMBINE( seed, *p );
+        }
+      }
       VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.enabledExtensionCount );
-      VULKAN_HPP_HASH_COMBINE( seed, instanceCreateInfo.ppEnabledExtensionNames );
+      for ( size_t i = 0; i < instanceCreateInfo.enabledExtensionCount; ++i )
+      {
+        for ( const char * p = instanceCreateInfo.ppEnabledExtensionNames[i]; *p != '\0'; ++p )
+        {
+          VULKAN_HPP_HASH_COMBINE( seed, *p );
+        }
+      }
       return seed;
     }
   };

@@ -36,40 +36,68 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
+    {
+      vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::UniqueInstance  instance = vk::createInstanceUnique( vk::InstanceCreateInfo( {}, &appInfo ) );
 
-    auto h1 = std::hash<vk::Instance>{}( *instance );
-    auto h2 = std::hash<VkInstance>{}( static_cast<VkInstance>( *instance ) );
-    assert( h1 == h2 );
+      auto h1 = std::hash<vk::Instance>{}( *instance );
+      auto h2 = std::hash<VkInstance>{}( static_cast<VkInstance>( *instance ) );
+      assert( h1 == h2 );
 
-    std::unordered_set<vk::Instance> uset;
-    uset.insert( *instance );
+      std::unordered_set<vk::Instance> uset;
+      uset.insert( *instance );
 
-    std::unordered_map<vk::Instance, size_t> umap;
-    umap[*instance] = 1;
+      std::unordered_map<vk::Instance, size_t> umap;
+      umap[*instance] = 1;
 
-    vk::FormatFeatureFlags fff;
-    auto hf = std::hash<vk::FormatFeatureFlags>{}( fff );
+      vk::FormatFeatureFlags fff;
+      auto                   hf = std::hash<vk::FormatFeatureFlags>{}( fff );
+    }
 
 #if 14 <= VULKAN_HPP_CPP_VERSION
-    vk::AabbPositionsKHR aabb0, aabb1;
-    auto                 h3 = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
-    auto                 h4 = std::hash<vk::AabbPositionsKHR>{}( aabb1 );
-    assert( h3 == h4 );
+    {
+      vk::AabbPositionsKHR aabb0, aabb1;
+      auto                 h1 = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
+      auto                 h2 = std::hash<vk::AabbPositionsKHR>{}( aabb1 );
+      assert( h1 == h2 );
 
-    aabb0.minX = 1.0f;
-    auto h5    = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
-    assert( h3 != h5 );
+      aabb0.minX = 1.0f;
+      auto h3    = std::hash<vk::AabbPositionsKHR>{}( aabb0 );
+      assert( h1 != h3 );
 
-    std::unordered_set<vk::AabbPositionsKHR> aabbSet;
-    aabbSet.insert( aabb0 );
+      std::unordered_set<vk::AabbPositionsKHR> aabbSet;
+      aabbSet.insert( aabb0 );
 
-    std::unordered_map<vk::AabbPositionsKHR, size_t> aabbMap;
-    aabbMap[aabb0] = 1;
+      std::unordered_map<vk::AabbPositionsKHR, size_t> aabbMap;
+      aabbMap[aabb0] = 1;
 
-    vk::AccelerationStructureBuildSizesInfoKHR asbsi;
-    auto                                       h6 = std::hash<vk::AccelerationStructureBuildSizesInfoKHR>{}( asbsi );
+      vk::AccelerationStructureBuildSizesInfoKHR asbsi;
+      auto                                       h4 = std::hash<vk::AccelerationStructureBuildSizesInfoKHR>{}( asbsi );
+    }
+
+    {
+      std::string         name1 = AppName;
+      std::string         name2 = AppName;
+      vk::ApplicationInfo appInfo1( name1.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::ApplicationInfo appInfo2( name2.c_str(), 1, EngineName, 1, VK_API_VERSION_1_1 );
+      auto                h1 = std::hash<vk::ApplicationInfo>{}( appInfo1 );
+      auto                h2 = std::hash<vk::ApplicationInfo>{}( appInfo2 );
+      assert( h1 == h2 );
+    }
+
+    {
+      std::vector<const char *> enabledLayers1 = { "Layer1", "Layer2", "Layer3" };
+      auto                      enabledLayers2 = enabledLayers1;
+
+      vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
+      vk::InstanceCreateInfo info1(
+        {}, &appInfo, static_cast<uint32_t>( enabledLayers1.size() ), enabledLayers1.data() );
+      vk::InstanceCreateInfo info2(
+        {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
+      auto h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
+      auto h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
+      assert( h1 == h2 );
+    }
 #endif
   }
   catch ( vk::SystemError const & err )

@@ -541,12 +541,6 @@ private:
                                              size_t              initialSkipCount,
                                              bool                definition,
                                              size_t              returnParamIndex ) const;
-  std::string generateCommandResultGetValueDeprecated( std::string const &              name,
-                                                       CommandData const &              commandData,
-                                                       size_t                           initialSkipCount,
-                                                       bool                             definition,
-                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                       size_t                           returnParamIndex ) const;
   std::string generateCommandResultGetVector( std::string const &              name,
                                               CommandData const &              commandData,
                                               size_t                           initialSkipCount,
@@ -715,19 +709,12 @@ private:
                                                                std::string const & enhanced,
                                                                std::string const & enhancedWithAllocator ) const;
   std::string
-    generateCommandSetStandardEnhancedWithAllocatorChained( bool                definition,
-                                                            std::string const & standard,
-                                                            std::string const & enhanced,
-                                                            std::string const & enhancedWithAllocator,
-                                                            std::string const & enhancedChained,
-                                                            std::string const & enhancedChainedWithAllocator ) const;
-  std::string
-              generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated( bool                definition,
-                                                                                 std::string const & standard,
-                                                                                 std::string const & enhancedDeprecated,
-                                                                                 std::string const & enhanced,
-                                                                                 std::string const & enhancedWithAllocator,
-                                                                                 std::string const & enhancedSingular ) const;
+              generateCommandSetStandardEnhancedWithAllocatorChained( bool                definition,
+                                                                      std::string const & standard,
+                                                                      std::string const & enhanced,
+                                                                      std::string const & enhancedWithAllocator,
+                                                                      std::string const & enhancedChained,
+                                                                      std::string const & enhancedChainedWithAllocator ) const;
   std::string generateCommandSetStandardEnhancedWithAllocatorSingular( bool                definition,
                                                                        std::string const & standard,
                                                                        std::string const & enhanced,

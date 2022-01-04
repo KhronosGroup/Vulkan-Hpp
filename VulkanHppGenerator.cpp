@@ -3866,69 +3866,6 @@ std::string VulkanHppGenerator::generateCommandResultGetValue( std::string const
   }
 }
 
-std::string
-  VulkanHppGenerator::generateCommandResultGetValueDeprecated( std::string const &              name,
-                                                               CommandData const &              commandData,
-                                                               size_t                           initialSkipCount,
-                                                               bool                             definition,
-                                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                                               size_t                           returnParamIndex ) const
-{
-  assert( commandData.returnType == "VkResult" );
-  assert( ( vectorParamIndices.find( returnParamIndex ) == vectorParamIndices.end() ) );
-
-  std::string argumentList = generateFunctionHeaderArgumentsEnhanced(
-    commandData, returnParamIndex, INVALID_INDEX, initialSkipCount, vectorParamIndices, !definition, false );
-  std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  std::string nodiscard   = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string returnType =
-    stripPostfix( commandData.params[returnParamIndex].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <typename Dispatch>
-  VULKAN_HPP_DEPRECATED( "This function is deprecated. Use one of the other flavours of it.")
-  ${nodiscard}VULKAN_HPP_INLINE typename ResultValueType<${returnType}>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    ${functionBody}
-  })";
-
-    return replaceWithMap(
-      functionTemplate,
-      { { "argumentList", argumentList },
-        { "className",
-          initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
-        { "classSeparator", commandData.handle.empty() ? "" : "::" },
-        { "commandName", commandName },
-        { "functionBody",
-          generateFunctionBodyEnhanced( name,
-                                        commandData,
-                                        initialSkipCount,
-                                        returnParamIndex,
-                                        INVALID_INDEX,
-                                        vectorParamIndices,
-                                        false,
-                                        returnType,
-                                        false ) },
-        { "nodiscard", nodiscard },
-        { "returnType", returnType } } );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}typename ResultValueType<${returnType}>::type ${commandName}( ${argumentList} ) const;)";
-
-    return replaceWithMap( functionTemplate,
-                           { { "argumentList", argumentList },
-                             { "commandName", commandName },
-                             { "nodiscard", nodiscard },
-                             { "returnType", returnType } } );
-  }
-}
-
 std::string VulkanHppGenerator::generateCommandResultGetVector( std::string const &              name,
                                                                 CommandData const &              commandData,
                                                                 size_t                           initialSkipCount,
@@ -5235,11 +5172,9 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Ret
                      !isHandleType( commandData.params[vectorParamIndices.begin()->first].type.type ) &&
                      !isStructureChainAnchor( commandData.params[vectorParamIndices.begin()->first].type.type ) )
                 {
-                  return generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated(
+                  return generateCommandSetStandardEnhancedWithAllocatorSingular(
                     definition,
                     generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                    generateCommandResultGetValueDeprecated(
-                      name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndices[1] ),
                     generateCommandResultGetVectorAndValue(
                       name, commandData, initialSkipCount, definition, vectorParamIndices, returnParamIndices, false ),
                     generateCommandResultGetVectorAndValue(
@@ -5399,34 +5334,6 @@ ${commandEnhancedChainedWithAllocator}
                                           { "newlineOnDefinition", definition ? "\n" : "" } } ) );
 }
 
-std::string VulkanHppGenerator::generateCommandSetStandardEnhancedWithAllocatorSingularDeprecated(
-  bool                definition,
-  std::string const & standard,
-  std::string const & enhancedDeprecated,
-  std::string const & enhanced,
-  std::string const & enhancedWithAllocator,
-  std::string const & enhancedSingular ) const
-{
-  const std::string commandTemplate = R"(
-${commandStandard}${newlineOnDefinition}
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-${commandEnhancedDeprecated}${newlineOnDefinition}
-${commandEnhanced}${newlineOnDefinition}
-${commandEnhancedWithAllocator}
-${commandEnhancedSingular}
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-)";
-
-  return replaceWithMap(
-    commandTemplate,
-    std::map<std::string, std::string>( { { "commandEnhanced", enhanced },
-                                          { "commandEnhancedDeprecated", enhancedDeprecated },
-                                          { "commandEnhancedSingular", enhancedSingular },
-                                          { "commandEnhancedWithAllocator", enhancedWithAllocator },
-                                          { "commandStandard", standard },
-                                          { "newlineOnDefinition", definition ? "\n" : "" } } ) );
-}
-
 std::string VulkanHppGenerator::generateCommandSetStandardEnhancedWithAllocatorSingular(
   bool                definition,
   std::string const & standard,
@@ -5439,7 +5346,7 @@ ${commandStandard}${newlineOnDefinition}
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
 ${commandEnhanced}${newlineOnDefinition}
 ${commandEnhancedWithAllocator}${newlineOnDefinition}
-${commandEnhancedSingular}${newlineOnDefinition}
+${commandEnhancedSingular}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 )";
 

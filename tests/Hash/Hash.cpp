@@ -83,6 +83,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       auto                h1 = std::hash<vk::ApplicationInfo>{}( appInfo1 );
       auto                h2 = std::hash<vk::ApplicationInfo>{}( appInfo2 );
       assert( h1 == h2 );
+      assert( appInfo1 == appInfo2 );
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+      assert( appInfo1 <= appInfo2 );
+#  endif
     }
 
     {
@@ -97,6 +101,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       auto h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
       auto h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
       assert( h1 == h2 );
+      assert( info1 == info2 );
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+      assert( info1 <= info2 );
+#  endif
     }
 #endif
   }

@@ -545,6 +545,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #endif
 
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    std::strong_ordering operator<=>( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) <=> *static_cast<std::array<char, N> const *>( &rhs );
+    }
+#else
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     bool operator<( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
@@ -568,6 +575,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return *static_cast<std::array<char, N> const *>( this ) >= *static_cast<std::array<char, N> const *>( &rhs );
     }
+#endif
 
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     bool operator==( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT

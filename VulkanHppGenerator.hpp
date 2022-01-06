@@ -416,6 +416,7 @@ private:
                                                     std::vector<MemberData> const & members,
                                                     std::set<std::string> &         sTypeValues ) const;
   bool                containsArray( std::string const & type ) const;
+  bool                containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                containsUnion( std::string const & type ) const;
   std::vector<size_t> determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
   size_t              determineDefaultStartIndex( std::vector<ParamData> const & params,

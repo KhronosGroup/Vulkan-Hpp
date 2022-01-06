@@ -1924,6 +1924,18 @@ bool VulkanHppGenerator::containsArray( std::string const & type ) const
   return found;
 }
 
+bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const & members ) const
+{
+  for ( auto const & m : members )
+  {
+    if ( ( ( m.type.type == "float" ) || ( m.type.type == "double" ) ) && m.type.isValue() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool VulkanHppGenerator::containsUnion( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains a union
@@ -11608,8 +11620,11 @@ std::string
                                                      "int16_t",   "int32_t",  "int64_t",  "LPCWSTR", "size_t",
                                                      "uint8_t",   "uint16_t", "uint32_t", "uint64_t" };
   // two structs are compared by comparing each of the elements
-  std::string compareMembers;
-  std::string intro = "";
+  std::string compareMembers, spaceshipMembers;
+  std::string intro             = "";
+  bool        nonDefaultCompare = false;
+  std::string spaceshipOrdering =
+    containsFloatingPoints( structData.second.members ) ? "std::partial_ordering" : "std::strong_ordering";
   for ( size_t i = 0; i < structData.second.members.size(); i++ )
   {
     MemberData const & member = structData.second.members[i];
@@ -11618,41 +11633,129 @@ std::string
     if ( ( typeIt->second.category == TypeCategory::Requires ) && member.type.postfix.empty() &&
          ( simpleTypes.find( member.type.type ) == simpleTypes.end() ) )
     {
-      // this type might support operator==()... that is, use memcmp
+      nonDefaultCompare = true;
+      // this type might support operator==() or operator<=>()... that is, use memcmp
       compareMembers +=
         intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
+
+      static const std::string spaceshipMemberTemplate =
+        R"(      if ( auto cmp = memcmp( &${name}, &rhs.${name}, sizeof( ${type} ) ); cmp != 0 )
+        return ( cmp < 0 ) ? ${ordering}::less : ${ordering}::greater;
+)";
+      spaceshipMembers +=
+        replaceWithMap( spaceshipMemberTemplate,
+                        { { "name", member.name }, { "ordering", spaceshipOrdering }, { "type", member.type.type } } );
+    }
+    else if ( member.type.type == "char" && !member.len.empty() )
+    {
+      // compare null-terminated strings
+      nonDefaultCompare = true;
+      assert( member.len.size() < 3 );
+      if ( member.len.size() == 1 )
+      {
+        assert( member.len[0] == "null-terminated" );
+        compareMembers += intro + "( ( " + member.name + " == rhs." + member.name + " ) || ( strcmp( " + member.name + ", rhs." + member.name + " ) == 0 ) )";
+
+        static const std::string spaceshipMemberTemplate =
+          R"(     if ( ${name} != rhs.${name} )
+        if ( auto cmp = strcmp( ${name}, rhs.${name} ); cmp != 0 )
+          return ( cmp < 0 ) ? ${ordering}::less : ${ordering}::greater;
+)";
+        spaceshipMembers +=
+          replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering } } );
+      }
+      else
+      {
+        assert( member.len[1] == "null-terminated" );
+        static const std::string commpareMemberTemplate = R"(      [this, rhs]
+      {
+        bool equal = true;
+        for ( size_t i = 0; equal && ( i < ${count} ); ++i )
+        {
+          equal = ( ( ${name}[i] == rhs.${name}[i] ) || ( strcmp( ${name}[i], rhs.${name}[i] ) == 0 ) );
+        }
+        return equal;
+      }())";
+        compareMembers +=
+          intro + replaceWithMap( commpareMemberTemplate, { { "count", member.len[0] }, { "name", member.name } } );
+
+        static const std::string spaceshipMemberTemplate = R"(      for ( size_t i = 0; i < ${count}; ++i )
+      {
+        if ( ${name}[i] != rhs.${name}[i] )
+          if ( auto cmp = strcmp( ${name}[i], rhs.${name}[i] ); cmp != 0 )
+            return cmp < 0 ? ${ordering}::less : ${ordering}::greater;
+      }
+)";
+        spaceshipMembers +=
+          replaceWithMap( spaceshipMemberTemplate,
+                          { { "count", member.len[0] }, { "name", member.name }, { "ordering", spaceshipOrdering } } );
+      }
     }
     else
     {
       // for all others, we use the operator== of that type
       compareMembers += intro + "( " + member.name + " == rhs." + member.name + " )";
+      spaceshipMembers +=
+        "      if ( auto cmp = " + member.name + " <=> rhs." + member.name + "; cmp != 0 ) return cmp;\n";
     }
     intro = "\n          && ";
   }
 
-  // reflection is not available with gcc 7.5 and below!
-  static const std::string compareTemplate = R"(
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${name} const & ) const = default;
-#else
-    bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
+  std::string structName = stripPrefix( structData.first, "Vk" );
+
+  std::string compareBody, spaceshipOperator, spaceshipOperatorElse, spaceshipOperatorEndif;
+  if ( nonDefaultCompare )
+  {
+    compareBody = "      return " + compareMembers + ";";
+
+    static const std::string spaceshipOperatorTemplate =
+      R"(    ${ordering} operator<=>( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
+${spaceshipMembers}
+      return ${ordering}::equivalent;
+    })";
+    spaceshipOperator = replaceWithMap(
+      spaceshipOperatorTemplate,
+      { { "name", structName }, { "ordering", spaceshipOrdering }, { "spaceshipMembers", spaceshipMembers } } );
+    spaceshipOperatorElse  = "#endif\n";
+    spaceshipOperatorEndif = "";
+  }
+  else
+  {
+    // reflection is not available with gcc 7.5 and below!
+    static const std::string compareBodyTemplate = R"(#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
       return this->reflect() == rhs.reflect();
  #else
       return ${compareMembers};
-#endif
+#endif)";
+    compareBody = replaceWithMap( compareBodyTemplate, { { "compareMembers", compareMembers } } );
+
+    spaceshipOperator      = "auto operator<=>( " + structName + " const & ) const = default;";
+    spaceshipOperatorElse  = "#else";
+    spaceshipOperatorEndif = "#endif\n";
+  }
+
+  static const std::string compareTemplate = R"(
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+${spaceshipOperator}
+${spaceshipOperatorElse}
+    bool operator==( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+${compareBody}
     }
 
     bool operator!=( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
-)";
+${spaceshipOperatorEndif})";
 
   return replaceWithMap( compareTemplate,
-                         { { "name", stripPrefix( structData.first, "Vk" ) }, { "compareMembers", compareMembers } } );
+                         { { "name", structName },
+                           { "compareBody", compareBody },
+                           { "spaceshipOperator", spaceshipOperator },
+                           { "spaceshipOperatorElse", spaceshipOperatorElse },
+                           { "spaceshipOperatorEndif", spaceshipOperatorEndif } } );
 }
 
 std::string
@@ -14381,7 +14484,8 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableProperty(
     }
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      std::vector<std::string>
+      requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -14440,7 +14544,8 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableStruct(
   {
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string> requires = tokenize( attribute.second, "," );
+      std::vector<std::string>
+      requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -16487,6 +16592,13 @@ int main( int argc, char ** argv )
     }
 #endif
 
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
+    std::strong_ordering operator<=>( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return *static_cast<std::array<char, N> const *>( this ) <=> *static_cast<std::array<char, N> const *>( &rhs );
+    }
+#else
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     bool operator<( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
@@ -16510,6 +16622,7 @@ int main( int argc, char ** argv )
     {
       return *static_cast<std::array<char, N> const *>( this ) >= *static_cast<std::array<char, N> const *>( &rhs );
     }
+#endif
 
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     bool operator==( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT

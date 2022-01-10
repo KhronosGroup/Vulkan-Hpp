@@ -419,6 +419,7 @@ private:
   bool                containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                containsUnion( std::string const & type ) const;
   std::vector<size_t> determineConstPointerParamIndices( std::vector<ParamData> const & params ) const;
+  std::set<size_t>    determineConstVoidPointerParamIndices( std::vector<ParamData> const & params ) const;
   size_t              determineDefaultStartIndex( std::vector<ParamData> const & params,
                                                   std::set<size_t> const &       skippedParams ) const;
   size_t              determineInitialSkipCount( std::string const & command ) const;
@@ -444,6 +445,7 @@ private:
   std::string                             generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                                                         std::set<size_t> const &       skippedParams,
                                                                         std::set<size_t> const &       singularParams,
+                                                                        std::set<size_t> const &       templatedParams,
                                                                         bool                           definition,
                                                                         bool                           withAllocators,
                                                                         bool                           structureChain,
@@ -458,6 +460,7 @@ private:
                                              size_t                   initialSkipCount,
                                              bool                     nonConstPointerAsNullptr,
                                              std::set<size_t> const & singularParams,
+                                             std::set<size_t> const & templatedParams,
                                              bool                     raiiHandleMemberFunction ) const;
   std::string generateCallArgumentsRAIIFactory( std::vector<ParamData> const & params,
                                                 size_t                         initialSkipCount,
@@ -468,10 +471,12 @@ private:
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
                                             std::set<size_t> const &       singularParams,
+                                            std::set<size_t> const &       templatedParams,
                                             bool                           raiiHandleMemberFunction ) const;
   std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
                                                         size_t                   paramIndex,
-                                                        std::set<size_t> const & singularParams ) const;
+                                                        std::set<size_t> const & singularParams,
+                                                        std::set<size_t> const & templatedParams ) const;
   std::string generateCallArgumentEnhancedNonConstPointer( ParamData const &        param,
                                                            size_t                   paramIndex,
                                                            bool                     nonConstPointerAsNullptr,
@@ -636,6 +641,11 @@ private:
                                                                    CommandData const & commandData,
                                                                    size_t              initialSkipCount,
                                                                    bool                definition ) const;
+  std::string generateCommandResultSingleSuccessWithErrors0Return0Vector1ConstPointer( std::string const & name,
+                                                                                       CommandData const & commandData,
+                                                                                       size_t initialSkipCount,
+                                                                                       bool   definition,
+                                                                                       size_t constPointerIndex ) const;
   std::string generateCommandResultSingleSuccessWithErrors1Return( std::string const & name,
                                                                    CommandData const & commandData,
                                                                    size_t              initialSkipCount,

@@ -419,7 +419,6 @@ private:
   bool                containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                containsUnion( std::string const & type ) const;
   std::vector<size_t> determineConstPointerParams( std::vector<ParamData> const & params ) const;
-  std::set<size_t>    determineConstVoidPointerParams( std::vector<ParamData> const & params ) const;
   size_t              determineDefaultStartIndex( std::vector<ParamData> const & params,
                                                   std::set<size_t> const &       skippedParams ) const;
   size_t              determineInitialSkipCount( std::string const & command ) const;
@@ -436,6 +435,7 @@ private:
                                                    bool                             singular ) const;
   std::string              determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   std::map<size_t, size_t> determineVectorParams( std::vector<ParamData> const & params ) const;
+  std::set<size_t>         determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                     distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::string findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
   std::vector<MemberData>::const_iterator findStructMemberIt( std::string const &             name,
@@ -452,6 +452,9 @@ private:
                                                                         bool                           withDispatcher ) const;
   std::string                             generateArgumentListStandard( std::vector<ParamData> const & params,
                                                                         std::set<size_t> const &       skippedParams ) const;
+  std::string                             generateArgumentTemplates( std::vector<ParamData> const & params,
+                                                                     std::set<size_t> const &       templatedParams,
+                                                                     bool                           complete ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData,
                                 std::set<std::string> &          listedBitmasks,
@@ -759,15 +762,15 @@ private:
                                     CommandData const & commandData,
                                     size_t              initialSkipCount,
                                     bool                definition ) const;
-  std::string generateCommandVoid( std::string const &              name,
-                                   CommandData const &              commandData,
-                                   size_t                           initialSkipCount,
-                                   bool                             definition,
-                                   std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandVoid0Return( std::string const & name,
                                           CommandData const & commandData,
                                           size_t              initialSkipCount,
                                           bool                definition ) const;
+  std::string generateCommandVoid0ReturnVectorOrPointer( std::string const &              name,
+                                                         CommandData const &              commandData,
+                                                         size_t                           initialSkipCount,
+                                                         bool                             definition,
+                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandVoid1Return( std::string const & name,
                                           CommandData const & commandData,
                                           size_t              initialSkipCount,

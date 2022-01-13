@@ -3520,10 +3520,10 @@ namespace VULKAN_HPP_NAMESPACE
                        const void *                     pData,
                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer     dstBuffer,
-                       VULKAN_HPP_NAMESPACE::DeviceSize dstOffset,
-                       ArrayProxy<const T> const &      data,
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer       dstBuffer,
+                       VULKAN_HPP_NAMESPACE::DeviceSize   dstOffset,
+                       ArrayProxy<const DataType> const & data,
                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -3695,11 +3695,11 @@ namespace VULKAN_HPP_NAMESPACE
                         const void *                           pValues,
                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename ValuesType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void pushConstants( VULKAN_HPP_NAMESPACE::PipelineLayout   layout,
                         VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags,
                         uint32_t                               offset,
-                        ArrayProxy<const T> const &            values,
+                        ArrayProxy<const ValuesType> const &   values,
                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -4028,6 +4028,15 @@ namespace VULKAN_HPP_NAMESPACE
                                            const void *                                   pData,
                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
       VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void pushDescriptorSetWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                                           VULKAN_HPP_NAMESPACE::PipelineLayout           layout,
+                                           uint32_t                                       set,
+                                           DataType const &                               data,
+                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     //=== VK_EXT_conditional_rendering ===
 
@@ -4411,6 +4420,11 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void setCheckpointNV( const void *       pCheckpointMarker,
                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename CheckpointMarkerType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setCheckpointNV( CheckpointMarkerType const & checkpointMarker,
+                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     //=== VK_INTEL_performance_query ===
 
@@ -7958,10 +7972,10 @@ namespace VULKAN_HPP_NAMESPACE
                            VULKAN_HPP_NAMESPACE::DeviceSize       stride,
                            VULKAN_HPP_NAMESPACE::QueryResultFlags flags,
                            Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<T, Allocator>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<DataType, Allocator>>
                          getQueryPoolResults( VULKAN_HPP_NAMESPACE::QueryPool              queryPool,
                                               uint32_t                                     firstQuery,
                                               uint32_t                                     queryCount,
@@ -7969,8 +7983,8 @@ namespace VULKAN_HPP_NAMESPACE
                                               VULKAN_HPP_NAMESPACE::DeviceSize             stride,
                                               VULKAN_HPP_NAMESPACE::QueryResultFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<T>
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD ResultValue<DataType>
                          getQueryPoolResult( VULKAN_HPP_NAMESPACE::QueryPool              queryPool,
                                              uint32_t                                     firstQuery,
                                              uint32_t                                     queryCount,
@@ -9220,6 +9234,14 @@ namespace VULKAN_HPP_NAMESPACE
                                           const void *                                   pData,
                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
       VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void updateDescriptorSetWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorSet            descriptorSet,
+                                          VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                                          DataType const &                               data,
+                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void getDescriptorSetLayoutSupport( const VULKAN_HPP_NAMESPACE::DescriptorSetLayoutCreateInfo * pCreateInfo,
@@ -10065,6 +10087,14 @@ namespace VULKAN_HPP_NAMESPACE
                                              const void *                                   pData,
                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
       VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void updateDescriptorSetWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorSet            descriptorSet,
+                                             VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
+                                             DataType const &                               data,
+                                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const
+      VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     //=== VK_EXT_display_control ===
 
@@ -10549,22 +10579,23 @@ namespace VULKAN_HPP_NAMESPACE
         ArrayProxy<T> const &                                                    data,
         size_t                                                                   stride,
         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T, Allocator>>::type
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<DataType, Allocator>>::type
       writeAccelerationStructuresPropertiesKHR(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
         VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
         size_t                                                                   dataSize,
         size_t                                                                   stride,
         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type writeAccelerationStructuresPropertyKHR(
-      ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
-      VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
-      size_t                                                                   stride,
-      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<DataType>::type
+      writeAccelerationStructuresPropertyKHR(
+        ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
+        VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
+        size_t                                                                   stride,
+        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -10939,17 +10970,17 @@ namespace VULKAN_HPP_NAMESPACE
                                          uint32_t                       groupCount,
                                          ArrayProxy<T> const &          data,
                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T, Allocator>>::type
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<DataType, Allocator>>::type
       getRayTracingShaderGroupHandlesNV( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                          uint32_t                       firstGroup,
                                          uint32_t                       groupCount,
                                          size_t                         dataSize,
                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<DataType>::type
       getRayTracingShaderGroupHandleNV( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                         uint32_t                       firstGroup,
                                         uint32_t                       groupCount,
@@ -10968,15 +10999,15 @@ namespace VULKAN_HPP_NAMESPACE
       getAccelerationStructureHandleNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure,
                                         ArrayProxy<T> const &                         data,
                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T, Allocator>>::type
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<DataType, Allocator>>::type
       getAccelerationStructureHandleNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure,
                                         size_t                                        dataSize,
                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<DataType>::type
       getAccelerationStructureHandleNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure,
                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11705,17 +11736,17 @@ namespace VULKAN_HPP_NAMESPACE
                                           uint32_t                       groupCount,
                                           ArrayProxy<T> const &          data,
                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T, Allocator>>::type
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<DataType, Allocator>>::type
       getRayTracingShaderGroupHandlesKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                           uint32_t                       firstGroup,
                                           uint32_t                       groupCount,
                                           size_t                         dataSize,
                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<DataType>::type
       getRayTracingShaderGroupHandleKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                          uint32_t                       firstGroup,
                                          uint32_t                       groupCount,
@@ -11739,18 +11770,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                        ArrayProxy<T> const &          data,
                                                        Dispatch const & d
                                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T,
-              typename Allocator = std::allocator<T>,
+    template <typename DataType,
+              typename Allocator = std::allocator<DataType>,
               typename Dispatch  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<T, Allocator>>::type
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<std::vector<DataType, Allocator>>::type
       getRayTracingCaptureReplayShaderGroupHandlesKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                                        uint32_t                       firstGroup,
                                                        uint32_t                       groupCount,
                                                        size_t                         dataSize,
                                                        Dispatch const & d
                                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename T, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<T>::type
+    template <typename DataType, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<DataType>::type
       getRayTracingCaptureReplayShaderGroupHandleKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
                                                       uint32_t                       firstGroup,
                                                       uint32_t                       groupCount,

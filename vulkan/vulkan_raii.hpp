@@ -3550,15 +3550,15 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::DeferredOperationKHR                             deferredOperation,
         const VULKAN_HPP_NAMESPACE::CopyMemoryToAccelerationStructureInfoKHR & info ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T> writeAccelerationStructuresPropertiesKHR(
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType> writeAccelerationStructuresPropertiesKHR(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
         VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
         size_t                                                                   dataSize,
         size_t                                                                   stride ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD T writeAccelerationStructuresPropertyKHR(
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType writeAccelerationStructuresPropertyKHR(
         ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
         VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
         size_t                                                                   stride ) const;
@@ -4029,11 +4029,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_ray_tracing ===
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T> getHandle( size_t dataSize ) const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType> getHandle( size_t dataSize ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD T getHandle() const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType getHandle() const;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device                = {};
@@ -4661,10 +4661,10 @@ namespace VULKAN_HPP_NAMESPACE
                               ArrayProxy<const VULKAN_HPP_NAMESPACE::BufferImageCopy> const & regions ) const
         VULKAN_HPP_NOEXCEPT;
 
-      template <typename T>
-      void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer     dstBuffer,
-                         VULKAN_HPP_NAMESPACE::DeviceSize dstOffset,
-                         ArrayProxy<const T> const &      data ) const VULKAN_HPP_NOEXCEPT;
+      template <typename DataType>
+      void updateBuffer( VULKAN_HPP_NAMESPACE::Buffer       dstBuffer,
+                         VULKAN_HPP_NAMESPACE::DeviceSize   dstOffset,
+                         ArrayProxy<const DataType> const & data ) const VULKAN_HPP_NOEXCEPT;
 
       void fillBuffer( VULKAN_HPP_NAMESPACE::Buffer     dstBuffer,
                        VULKAN_HPP_NAMESPACE::DeviceSize dstOffset,
@@ -4742,11 +4742,11 @@ namespace VULKAN_HPP_NAMESPACE
                                  VULKAN_HPP_NAMESPACE::QueryResultFlags flags
                                    VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-      template <typename T>
+      template <typename ValuesType>
       void pushConstants( VULKAN_HPP_NAMESPACE::PipelineLayout   layout,
                           VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags,
                           uint32_t                               offset,
-                          ArrayProxy<const T> const &            values ) const VULKAN_HPP_NOEXCEPT;
+                          ArrayProxy<const ValuesType> const &   values ) const VULKAN_HPP_NOEXCEPT;
 
       void beginRenderPass( const VULKAN_HPP_NAMESPACE::RenderPassBeginInfo & renderPassBegin,
                             VULKAN_HPP_NAMESPACE::SubpassContents             contents ) const VULKAN_HPP_NOEXCEPT;
@@ -4905,10 +4905,11 @@ namespace VULKAN_HPP_NAMESPACE
         uint32_t                                                           set,
         ArrayProxy<const VULKAN_HPP_NAMESPACE::WriteDescriptorSet> const & descriptorWrites ) const VULKAN_HPP_NOEXCEPT;
 
+      template <typename DataType>
       void pushDescriptorSetWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
                                              VULKAN_HPP_NAMESPACE::PipelineLayout           layout,
                                              uint32_t                                       set,
-                                             const void * pData ) const VULKAN_HPP_NOEXCEPT;
+                                             DataType const & data ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_conditional_rendering ===
 
@@ -5080,7 +5081,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_device_diagnostic_checkpoints ===
 
-      void setCheckpointNV( const void * pCheckpointMarker ) const VULKAN_HPP_NOEXCEPT;
+      template <typename CheckpointMarkerType>
+      void setCheckpointNV( CheckpointMarkerType const & checkpointMarker ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_INTEL_performance_query ===
 
@@ -6026,13 +6028,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_VERSION_1_1 ===
 
+      template <typename DataType>
       void updateWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                               const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
+                               DataType const &                               data ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_descriptor_update_template ===
 
+      template <typename DataType>
       void updateWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                                  const void *                                   pData ) const VULKAN_HPP_NOEXCEPT;
+                                  DataType const &                               data ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device         = {};
@@ -7751,32 +7755,31 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_ray_tracing ===
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T>
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType>
         getRayTracingShaderGroupHandlesNV( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD T getRayTracingShaderGroupHandleNV( uint32_t firstGroup, uint32_t groupCount ) const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType getRayTracingShaderGroupHandleNV( uint32_t firstGroup, uint32_t groupCount ) const;
 
       void compileDeferredNV( uint32_t shader ) const;
 
       //=== VK_KHR_ray_tracing_pipeline ===
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T>
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType>
         getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD T getRayTracingShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType getRayTracingShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::vector<T> getRayTracingCaptureReplayShaderGroupHandlesKHR( uint32_t firstGroup,
-                                                                                           uint32_t groupCount,
-                                                                                           size_t   dataSize ) const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType> getRayTracingCaptureReplayShaderGroupHandlesKHR(
+        uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD T getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup,
-                                                                             uint32_t groupCount ) const;
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup,
+                                                                                    uint32_t groupCount ) const;
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceSize getRayTracingShaderGroupStackSizeKHR(
         uint32_t group, VULKAN_HPP_NAMESPACE::ShaderGroupShaderKHR groupShader ) const VULKAN_HPP_NOEXCEPT;
@@ -8239,16 +8242,16 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_VERSION_1_0 ===
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>>
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<DataType>>
                            getResults( uint32_t                                     firstQuery,
                                        uint32_t                                     queryCount,
                                        size_t                                       dataSize,
                                        VULKAN_HPP_NAMESPACE::DeviceSize             stride,
                                        VULKAN_HPP_NAMESPACE::QueryResultFlags flags VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const;
 
-      template <typename T>
-      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, T>
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, DataType>
                            getResult( uint32_t                                     firstQuery,
                                       uint32_t                                     queryCount,
                                       VULKAN_HPP_NAMESPACE::DeviceSize             stride,
@@ -10410,22 +10413,22 @@ namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_RAII_NAMESPACE::QueryPool( *this, createInfo, allocator );
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<T>>
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::vector<DataType>>
                                            QueryPool::getResults( uint32_t                               firstQuery,
                              uint32_t                               queryCount,
                              size_t                                 dataSize,
                              VULKAN_HPP_NAMESPACE::DeviceSize       stride,
                              VULKAN_HPP_NAMESPACE::QueryResultFlags flags ) const
     {
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result =
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result =
         static_cast<Result>( getDispatcher()->vkGetQueryPoolResults( static_cast<VkDevice>( m_device ),
                                                                      static_cast<VkQueryPool>( m_queryPool ),
                                                                      firstQuery,
                                                                      queryCount,
-                                                                     data.size() * sizeof( T ),
+                                                                     data.size() * sizeof( DataType ),
                                                                      reinterpret_cast<void *>( data.data() ),
                                                                      static_cast<VkDeviceSize>( stride ),
                                                                      static_cast<VkQueryResultFlags>( flags ) ) );
@@ -10437,20 +10440,20 @@ namespace VULKAN_HPP_NAMESPACE
       return std::make_pair( result, data );
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, T>
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::Result, DataType>
                          QueryPool::getResult( uint32_t                               firstQuery,
                             uint32_t                               queryCount,
                             VULKAN_HPP_NAMESPACE::DeviceSize       stride,
                             VULKAN_HPP_NAMESPACE::QueryResultFlags flags ) const
     {
-      T      data;
-      Result result =
+      DataType data;
+      Result   result =
         static_cast<Result>( getDispatcher()->vkGetQueryPoolResults( static_cast<VkDevice>( m_device ),
                                                                      static_cast<VkQueryPool>( m_queryPool ),
                                                                      firstQuery,
                                                                      queryCount,
-                                                                     sizeof( T ),
+                                                                     sizeof( DataType ),
                                                                      reinterpret_cast<void *>( &data ),
                                                                      static_cast<VkDeviceSize>( stride ),
                                                                      static_cast<VkQueryResultFlags>( flags ) ) );
@@ -11000,15 +11003,16 @@ namespace VULKAN_HPP_NAMESPACE
                                                reinterpret_cast<const VkBufferImageCopy *>( regions.data() ) );
     }
 
-    template <typename T>
-    VULKAN_HPP_INLINE void CommandBuffer::updateBuffer( VULKAN_HPP_NAMESPACE::Buffer     dstBuffer,
-                                                        VULKAN_HPP_NAMESPACE::DeviceSize dstOffset,
-                                                        ArrayProxy<const T> const & data ) const VULKAN_HPP_NOEXCEPT
+    template <typename DataType>
+    VULKAN_HPP_INLINE void
+      CommandBuffer::updateBuffer( VULKAN_HPP_NAMESPACE::Buffer       dstBuffer,
+                                   VULKAN_HPP_NAMESPACE::DeviceSize   dstOffset,
+                                   ArrayProxy<const DataType> const & data ) const VULKAN_HPP_NOEXCEPT
     {
       getDispatcher()->vkCmdUpdateBuffer( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                           static_cast<VkBuffer>( dstBuffer ),
                                           static_cast<VkDeviceSize>( dstOffset ),
-                                          data.size() * sizeof( T ),
+                                          data.size() * sizeof( DataType ),
                                           reinterpret_cast<const void *>( data.data() ) );
     }
 
@@ -11197,17 +11201,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                   static_cast<VkQueryResultFlags>( flags ) );
     }
 
-    template <typename T>
-    VULKAN_HPP_INLINE void CommandBuffer::pushConstants( VULKAN_HPP_NAMESPACE::PipelineLayout   layout,
-                                                         VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags,
-                                                         uint32_t                               offset,
-                                                         ArrayProxy<const T> const & values ) const VULKAN_HPP_NOEXCEPT
+    template <typename ValuesType>
+    VULKAN_HPP_INLINE void
+      CommandBuffer::pushConstants( VULKAN_HPP_NAMESPACE::PipelineLayout   layout,
+                                    VULKAN_HPP_NAMESPACE::ShaderStageFlags stageFlags,
+                                    uint32_t                               offset,
+                                    ArrayProxy<const ValuesType> const &   values ) const VULKAN_HPP_NOEXCEPT
     {
       getDispatcher()->vkCmdPushConstants( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                            static_cast<VkPipelineLayout>( layout ),
                                            static_cast<VkShaderStageFlags>( stageFlags ),
                                            offset,
-                                           values.size() * sizeof( T ),
+                                           values.size() * sizeof( ValuesType ),
                                            reinterpret_cast<const void *>( values.data() ) );
     }
 
@@ -11639,15 +11644,16 @@ namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate( *this, createInfo, allocator );
     }
 
+    template <typename DataType>
     VULKAN_HPP_INLINE void
       DescriptorSet::updateWithTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                                         const void * pData ) const VULKAN_HPP_NOEXCEPT
+                                         DataType const &                               data ) const VULKAN_HPP_NOEXCEPT
     {
       getDispatcher()->vkUpdateDescriptorSetWithTemplate(
         static_cast<VkDevice>( m_device ),
         static_cast<VkDescriptorSet>( m_descriptorSet ),
         static_cast<VkDescriptorUpdateTemplate>( descriptorUpdateTemplate ),
-        pData );
+        reinterpret_cast<const void *>( &data ) );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExternalBufferProperties
@@ -13704,11 +13710,12 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkWriteDescriptorSet *>( descriptorWrites.data() ) );
     }
 
+    template <typename DataType>
     VULKAN_HPP_INLINE void CommandBuffer::pushDescriptorSetWithTemplateKHR(
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
       VULKAN_HPP_NAMESPACE::PipelineLayout           layout,
       uint32_t                                       set,
-      const void *                                   pData ) const VULKAN_HPP_NOEXCEPT
+      DataType const &                               data ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkCmdPushDescriptorSetWithTemplateKHR &&
@@ -13719,7 +13726,7 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkDescriptorUpdateTemplate>( descriptorUpdateTemplate ),
         static_cast<VkPipelineLayout>( layout ),
         set,
-        pData );
+        reinterpret_cast<const void *>( &data ) );
     }
 
     //=== VK_EXT_conditional_rendering ===
@@ -13771,9 +13778,10 @@ namespace VULKAN_HPP_NAMESPACE
           static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
     }
 
+    template <typename DataType>
     VULKAN_HPP_INLINE void
       DescriptorSet::updateWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate,
-                                            const void * pData ) const VULKAN_HPP_NOEXCEPT
+                                            DataType const & data ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkUpdateDescriptorSetWithTemplateKHR &&
@@ -13783,7 +13791,7 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkDevice>( m_device ),
         static_cast<VkDescriptorSet>( m_descriptorSet ),
         static_cast<VkDescriptorUpdateTemplate>( descriptorUpdateTemplate ),
-        pData );
+        reinterpret_cast<const void *>( &data ) );
     }
 
     //=== VK_NV_clip_space_w_scaling ===
@@ -14976,8 +14984,8 @@ namespace VULKAN_HPP_NAMESPACE
       return result;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> Device::writeAccelerationStructuresPropertiesKHR(
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType> Device::writeAccelerationStructuresPropertiesKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
       VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
       size_t                                                                   dataSize,
@@ -14987,14 +14995,14 @@ namespace VULKAN_HPP_NAMESPACE
         getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR &&
         "Function <vkWriteAccelerationStructuresPropertiesKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result = static_cast<Result>( getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR(
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result = static_cast<Result>( getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR(
         static_cast<VkDevice>( m_device ),
         accelerationStructures.size(),
         reinterpret_cast<const VkAccelerationStructureKHR *>( accelerationStructures.data() ),
         static_cast<VkQueryType>( queryType ),
-        data.size() * sizeof( T ),
+        data.size() * sizeof( DataType ),
         reinterpret_cast<void *>( data.data() ),
         stride ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
@@ -15005,19 +15013,19 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD T Device::writeAccelerationStructuresPropertyKHR(
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD DataType Device::writeAccelerationStructuresPropertyKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureKHR> const & accelerationStructures,
       VULKAN_HPP_NAMESPACE::QueryType                                          queryType,
       size_t                                                                   stride ) const
     {
-      T      data;
-      Result result = static_cast<Result>( getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR(
+      DataType data;
+      Result   result = static_cast<Result>( getDispatcher()->vkWriteAccelerationStructuresPropertiesKHR(
         static_cast<VkDevice>( m_device ),
         accelerationStructures.size(),
         reinterpret_cast<const VkAccelerationStructureKHR *>( accelerationStructures.data() ),
         static_cast<VkQueryType>( queryType ),
-        sizeof( T ),
+        sizeof( DataType ),
         reinterpret_cast<void *>( &data ),
         stride ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
@@ -15482,22 +15490,22 @@ namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, pipelineCache, createInfo, allocator );
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T>
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType>
       Pipeline::getRayTracingShaderGroupHandlesNV( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesNV &&
         "Function <vkGetRayTracingShaderGroupHandlesNV> needs extension <VK_NV_ray_tracing> enabled!" );
 
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result = static_cast<Result>(
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesNV( static_cast<VkDevice>( m_device ),
                                                               static_cast<VkPipeline>( m_pipeline ),
                                                               firstGroup,
                                                               groupCount,
-                                                              data.size() * sizeof( T ),
+                                                              data.size() * sizeof( DataType ),
                                                               reinterpret_cast<void *>( data.data() ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -15506,16 +15514,17 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD T Pipeline::getRayTracingShaderGroupHandleNV( uint32_t firstGroup, uint32_t groupCount ) const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD DataType Pipeline::getRayTracingShaderGroupHandleNV( uint32_t firstGroup,
+                                                                              uint32_t groupCount ) const
     {
-      T      data;
-      Result result = static_cast<Result>(
+      DataType data;
+      Result   result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesNV( static_cast<VkDevice>( m_device ),
                                                               static_cast<VkPipeline>( m_pipeline ),
                                                               firstGroup,
                                                               groupCount,
-                                                              sizeof( T ),
+                                                              sizeof( DataType ),
                                                               reinterpret_cast<void *>( &data ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -15524,18 +15533,19 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> AccelerationStructureNV::getHandle( size_t dataSize ) const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType>
+                                           AccelerationStructureNV::getHandle( size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureHandleNV &&
                          "Function <vkGetAccelerationStructureHandleNV> needs extension <VK_NV_ray_tracing> enabled!" );
 
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result = static_cast<Result>( getDispatcher()->vkGetAccelerationStructureHandleNV(
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result = static_cast<Result>( getDispatcher()->vkGetAccelerationStructureHandleNV(
         static_cast<VkDevice>( m_device ),
         static_cast<VkAccelerationStructureNV>( m_accelerationStructure ),
-        data.size() * sizeof( T ),
+        data.size() * sizeof( DataType ),
         reinterpret_cast<void *>( data.data() ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -15544,14 +15554,14 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD T AccelerationStructureNV::getHandle() const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD DataType AccelerationStructureNV::getHandle() const
     {
-      T      data;
-      Result result = static_cast<Result>( getDispatcher()->vkGetAccelerationStructureHandleNV(
+      DataType data;
+      Result   result = static_cast<Result>( getDispatcher()->vkGetAccelerationStructureHandleNV(
         static_cast<VkDevice>( m_device ),
         static_cast<VkAccelerationStructureNV>( m_accelerationStructure ),
-        sizeof( T ),
+        sizeof( DataType ),
         reinterpret_cast<void *>( &data ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -15868,13 +15878,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NV_device_diagnostic_checkpoints ===
 
-    VULKAN_HPP_INLINE void CommandBuffer::setCheckpointNV( const void * pCheckpointMarker ) const VULKAN_HPP_NOEXCEPT
+    template <typename CheckpointMarkerType>
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setCheckpointNV( CheckpointMarkerType const & checkpointMarker ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkCmdSetCheckpointNV &&
         "Function <vkCmdSetCheckpointNV> needs extension <VK_NV_device_diagnostic_checkpoints> enabled!" );
 
-      getDispatcher()->vkCmdSetCheckpointNV( static_cast<VkCommandBuffer>( m_commandBuffer ), pCheckpointMarker );
+      getDispatcher()->vkCmdSetCheckpointNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                             reinterpret_cast<const void *>( &checkpointMarker ) );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointDataNV>
@@ -17301,22 +17314,22 @@ namespace VULKAN_HPP_NAMESPACE
       return VULKAN_HPP_RAII_NAMESPACE::Pipeline( *this, deferredOperation, pipelineCache, createInfo, allocator );
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T>
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType>
       Pipeline::getRayTracingShaderGroupHandlesKHR( uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR &&
         "Function <vkGetRayTracingShaderGroupHandlesKHR> needs extension <VK_KHR_ray_tracing_pipeline> enabled!" );
 
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result = static_cast<Result>(
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR( static_cast<VkDevice>( m_device ),
                                                                static_cast<VkPipeline>( m_pipeline ),
                                                                firstGroup,
                                                                groupCount,
-                                                               data.size() * sizeof( T ),
+                                                               data.size() * sizeof( DataType ),
                                                                reinterpret_cast<void *>( data.data() ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -17325,16 +17338,17 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD T Pipeline::getRayTracingShaderGroupHandleKHR( uint32_t firstGroup, uint32_t groupCount ) const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD DataType Pipeline::getRayTracingShaderGroupHandleKHR( uint32_t firstGroup,
+                                                                               uint32_t groupCount ) const
     {
-      T      data;
-      Result result = static_cast<Result>(
+      DataType data;
+      Result   result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingShaderGroupHandlesKHR( static_cast<VkDevice>( m_device ),
                                                                static_cast<VkPipeline>( m_pipeline ),
                                                                firstGroup,
                                                                groupCount,
-                                                               sizeof( T ),
+                                                               sizeof( DataType ),
                                                                reinterpret_cast<void *>( &data ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -17343,22 +17357,24 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<T> Pipeline::getRayTracingCaptureReplayShaderGroupHandlesKHR(
-      uint32_t firstGroup, uint32_t groupCount, size_t dataSize ) const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType>
+      Pipeline::getRayTracingCaptureReplayShaderGroupHandlesKHR( uint32_t firstGroup,
+                                                                 uint32_t groupCount,
+                                                                 size_t   dataSize ) const
     {
       VULKAN_HPP_ASSERT(
         getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR &&
         "Function <vkGetRayTracingCaptureReplayShaderGroupHandlesKHR> needs extension <VK_KHR_ray_tracing_pipeline> enabled!" );
 
-      VULKAN_HPP_ASSERT( dataSize % sizeof( T ) == 0 );
-      std::vector<T> data( dataSize / sizeof( T ) );
-      Result         result = static_cast<Result>(
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      Result                result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR( static_cast<VkDevice>( m_device ),
                                                                             static_cast<VkPipeline>( m_pipeline ),
                                                                             firstGroup,
                                                                             groupCount,
-                                                                            data.size() * sizeof( T ),
+                                                                            data.size() * sizeof( DataType ),
                                                                             reinterpret_cast<void *>( data.data() ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
@@ -17368,17 +17384,17 @@ namespace VULKAN_HPP_NAMESPACE
       return data;
     }
 
-    template <typename T>
-    VULKAN_HPP_NODISCARD T Pipeline::getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup,
-                                                                                     uint32_t groupCount ) const
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD DataType Pipeline::getRayTracingCaptureReplayShaderGroupHandleKHR( uint32_t firstGroup,
+                                                                                            uint32_t groupCount ) const
     {
-      T      data;
-      Result result = static_cast<Result>(
+      DataType data;
+      Result   result = static_cast<Result>(
         getDispatcher()->vkGetRayTracingCaptureReplayShaderGroupHandlesKHR( static_cast<VkDevice>( m_device ),
                                                                             static_cast<VkPipeline>( m_pipeline ),
                                                                             firstGroup,
                                                                             groupCount,
-                                                                            sizeof( T ),
+                                                                            sizeof( DataType ),
                                                                             reinterpret_cast<void *>( &data ) ) );
       if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {

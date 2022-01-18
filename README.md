@@ -30,7 +30,7 @@ To build the local samples and tests you'll have to clone this repository and ru
     ```git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Hpp.git```
 2. Change the current directory to the newly created Vulkan-Hpp directory.
 3. Create a build environment with CMake
-    ```cmake -D DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -B build```
+    ```cmake -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DSAMPLES_BUILD=ON -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON -DTESTS_BUILD=ON -B build```
     You might have to specify a generator via `-G`, for a full list of generators execute ```cmake -G```.
     *  To rebuild `vulkan.hpp` from the `vk.xml`  XML registry file, add the
        `-DVULKAN_HPP_RUN_GENERATOR=ON` option to the CMake command line.
@@ -531,7 +531,7 @@ vulkan.hpp provides a couple of trait functions on `vk::Format`. With C++14 and 
 	Gets a single-plane format compatible with this plane.
 - `uint8_t planeHeightDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-- Cuint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
+- `uint8_t planeWidthDivisor( vk::Format format, uint8_t plane );`
 	Gets the relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
 
 ### Hashing Vulkan types

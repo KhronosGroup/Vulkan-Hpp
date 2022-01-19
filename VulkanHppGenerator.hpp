@@ -644,10 +644,12 @@ private:
                                                                    CommandData const & commandData,
                                                                    size_t              initialSkipCount,
                                                                    bool                definition ) const;
-  std::string generateCommandResultSingleSuccessWithErrors0Return0Vector( std::string const & name,
-                                                                          CommandData const & commandData,
-                                                                          size_t              initialSkipCount,
-                                                                          bool                definition ) const;
+  std::string
+              generateCommandResultSingleSuccessWithErrors0ReturnNVectors( std::string const &              name,
+                                                                           CommandData const &              commandData,
+                                                                           size_t                           initialSkipCount,
+                                                                           bool                             definition,
+                                                                           std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandResultSingleSuccessWithErrors1Return( std::string const & name,
                                                                    CommandData const & commandData,
                                                                    size_t              initialSkipCount,

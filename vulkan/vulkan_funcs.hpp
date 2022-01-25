@@ -13875,11 +13875,11 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::buildAccelerationStructuresKHR(
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::buildAccelerationStructuresKHR(
     VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                     deferredOperation,
     ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const &      infos,
     ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildRangeInfoKHR * const> const & pBuildRangeInfos,
-    Dispatch const & d ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    Dispatch const &                                                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS

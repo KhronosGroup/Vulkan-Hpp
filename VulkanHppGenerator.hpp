@@ -383,6 +383,8 @@ private:
   std::string addTitleAndProtection( std::string const & title,
                                      std::string const & strIf,
                                      std::string const & strElse = {} ) const;
+  bool        allVectorSizesSupported( std::vector<ParamData> const & params,
+                                       std::map<size_t, size_t> const & vectorParams ) const;
   void        appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
                                                    std::set<std::string> &          listedCommands,
                                                    std::string const &              title,
@@ -540,11 +542,6 @@ private:
                                                         bool                             definition,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateCommandResultGetTwoVectors( std::string const &              name,
-                                                  CommandData const &              commandData,
-                                                  size_t                           initialSkipCount,
-                                                  bool                             definition,
-                                                  std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandResultGetValue( std::string const & name,
                                              CommandData const & commandData,
                                              size_t              initialSkipCount,
@@ -615,6 +612,12 @@ private:
                                                                   CommandData const & commandData,
                                                                   size_t              initialSkipCount,
                                                                   bool                definition ) const;
+  std::string
+              generateCommandResultMultiSuccessWithErrors0ReturnNVector( std::string const &              name,
+                                                                         CommandData const &              commandData,
+                                                                         size_t                           initialSkipCount,
+                                                                         bool                             definition,
+                                                                         std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandResultMultiSuccessWithErrors1Return( std::string const & name,
                                                                   CommandData const & commandData,
                                                                   size_t              initialSkipCount,

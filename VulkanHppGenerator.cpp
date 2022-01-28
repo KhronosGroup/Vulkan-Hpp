@@ -421,7 +421,7 @@ ${texelsPerBlockCases}
     switch( format )
     {
 ${blockExtentCases}
-      default: return {1, 1, 1 };
+      default: return {{1, 1, 1 }};
     }
   }
 
@@ -557,7 +557,7 @@ ${planeWidthDivisorCases}
       std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
       assert( blockExtent.size() == 3 );
       blockExtentCases +=
-        caseString + " return { " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " };\n";
+        caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
     }
     if ( !traitIt->second.compressed.empty() )
     {

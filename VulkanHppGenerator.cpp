@@ -5565,17 +5565,19 @@ std::string VulkanHppGenerator::generateCommandType( std::string const & name,
   assert( ( commandData.returnType != "VkResult" ) && ( commandData.returnType != "void" ) &&
           commandData.successCodes.empty() && commandData.errorCodes.empty() );
 
-  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
-  std::string      argumentList =
-    generateArgumentListEnhanced( commandData.params, skippedParams, {}, {}, definition, false, false, true );
-  std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  std::string nodiscard   = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string returnType  = stripPrefix( commandData.returnType, "Vk" );
+  std::set<size_t> skippedParams   = determineSkippedParams( commandData.params, initialSkipCount, {}, {}, false );
+  std::set<size_t> templatedParams = determineVoidPointerParams( commandData.params );
+  std::string      argumentList    = generateArgumentListEnhanced(
+    commandData.params, skippedParams, {}, templatedParams, definition, false, false, true );
+  std::string argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
+  std::string commandName       = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
+  std::string nodiscard  = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
+  std::string returnType = stripPrefix( commandData.returnType, "Vk" );
 
   if ( definition )
   {
     std::string const functionTemplate =
-      R"(  template <typename Dispatch>
+      R"(  template <${argumentTemplates}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5585,7 +5587,8 @@ std::string VulkanHppGenerator::generateCommandType( std::string const & name,
     return replaceWithMap(
       functionTemplate,
       { { "argumentList", argumentList },
-        { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, {}, false ) },
+        { "argumentTemplates", argumentTemplates },
+        { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, false ) },
         { "className",
           initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
@@ -5597,11 +5600,12 @@ std::string VulkanHppGenerator::generateCommandType( std::string const & name,
   else
   {
     std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+      R"(    template <${argumentTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ${nodiscard}${returnType} ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;)";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
+                             { "argumentTemplates", argumentTemplates },
                              { "commandName", commandName },
                              { "nodiscard", nodiscard },
                              { "returnType", returnType } } );
@@ -5619,22 +5623,16 @@ std::string VulkanHppGenerator::generateCommandValue( std::string const & name,
     std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
     if ( vectorParams.empty() )
     {
-      std::vector<size_t> constPointerParams = determineConstPointerParams( commandData.params );
-      switch ( constPointerParams.size() )
+      if ( determineConstPointerParams( commandData.params ).empty() )
       {
-        case 0:
-          return generateCommandSetStandard(
-            generateCommandStandard( name, commandData, initialSkipCount, definition ) );
-          break;
-        case 1:
-          if ( commandData.params[constPointerParams[0]].type.type != "void" )
-          {
-            return generateCommandSetStandardEnhanced(
-              definition,
-              generateCommandStandard( name, commandData, initialSkipCount, definition ),
-              generateCommandType( name, commandData, initialSkipCount, definition ) );
-          }
-          break;
+        return generateCommandSetStandard( generateCommandStandard( name, commandData, initialSkipCount, definition ) );
+      }
+      else
+      {
+        return generateCommandSetStandardEnhanced(
+          definition,
+          generateCommandStandard( name, commandData, initialSkipCount, definition ),
+          generateCommandType( name, commandData, initialSkipCount, definition ) );
       }
     }
   }
@@ -9643,15 +9641,17 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
 {
   std::set<size_t> skippedParams =
     determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, {}, false );
-  std::string argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, skippedParams, {}, {}, definition, false, false, false );
+  std::set<size_t> templatedParams = determineVoidPointerParams( commandIt->second.params );
+  std::string      argumentList =
+    generateArgumentListEnhanced( commandIt->second.params, skippedParams, {}, templatedParams, definition, false, false, false );
+  std::string argumentTemplates = generateArgumentTemplates( commandIt->second.params, templatedParams, true );
   std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
   std::string returnType  = generateNamespacedType( commandIt->second.returnType );
 
   if ( definition )
   {
     std::string const definitionTemplate =
-      R"(
+      R"(${argumentTemplates}
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {${functionPointerCheck}${vectorSizeCheck}
     return getDispatcher()->${vkCommand}( ${callArguments} );
@@ -9659,7 +9659,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
 )";
 
     std::string callArguments =
-      generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
+      generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, templatedParams, true );
     std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( vectorParams );
     std::string                                            vectorSizeCheckString =
       vectorSizeCheck.first
@@ -9671,6 +9671,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
       definitionTemplate,
       { { "argumentList", argumentList },
         { "callArguments", callArguments },
+        { "argumentTemplates", argumentTemplates },
         { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
         { "commandName", commandName },
         { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
@@ -9681,13 +9682,14 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
   else
   {
     std::string const declarationTemplate =
-      R"(
+      R"(${argumentTemplates}
   VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;
 )";
 
     return replaceWithMap( declarationTemplate,
                            {
                              { "argumentList", argumentList },
+                             { "argumentTemplates", argumentTemplates },
                              { "commandName", commandName },
                              { "returnType", returnType },
                            } );
@@ -13796,7 +13798,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequireCommand( tinyxml2::XMLEle
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, {} );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
   std::string name;

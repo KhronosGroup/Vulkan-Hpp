@@ -50,30 +50,28 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    std::unique_ptr<vk::ContextHandle<>> contextHandle = std::make_unique<vk::ContextHandle<>>();
-    std::unique_ptr<vk::InstanceHandle<>> instanceHandle =
-      vk::su::makeUniqueInstanceHandle( *contextHandle, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Context  context;
+    vk::raii::Instance instance =
+      vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    std::unique_ptr<vk::DebugUtilsMessengerEXTHandle<>> debugUtilsMessenger =
-      vk::su::makeUniqueDebugUtilsMessengerEXTHandle( *instanceHandle );
+    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    std::unique_ptr<vk::PhysicalDeviceHandles<>> physicalDeviceHandles =
-      std::make_unique<vk::PhysicalDeviceHandles<>>( *instanceHandle );
+    vk::raii::PhysicalDevices physicalDevices( instance );
 
     /* VULKAN_KEY_START */
 
-    for ( size_t i = 0; i < physicalDeviceHandles->size(); i++ )
+    for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
       std::vector<vk::ExtensionProperties> extensionProperties =
-        (*physicalDeviceHandles)[i].enumerateDeviceExtensionProperties();
+        physicalDevices[i].enumerateDeviceExtensionProperties();
       bool containsMemoryBudget = vk::su::contains( extensionProperties, "VK_EXT_memory_budget" );
 
       std::cout << "PhysicalDevice " << i << " :\n";
       auto memoryProperties2 =
-        (*physicalDeviceHandles)[i]
+        physicalDevices[i]
           .getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
       vk::PhysicalDeviceMemoryProperties const & memoryProperties =
         memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;

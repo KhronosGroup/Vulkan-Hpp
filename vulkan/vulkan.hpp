@@ -640,12 +640,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename FlagBitsType>
   struct FlagTraits
-  {
-    enum
-    {
-      allFlags = 0
-    };
-  };
+  {};
 
   template <typename BitType>
   class Flags

@@ -602,7 +602,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH265VclFrameInfoEXT;
   struct VideoEncodeH265EmitPictureParametersEXT;
   struct VideoEncodeH265DpbSlotInfoEXT;
-  struct VideoEncodeH265NaluSliceEXT;
+  struct VideoEncodeH265NaluSliceSegmentEXT;
   struct VideoEncodeH265ProfileEXT;
   struct VideoEncodeH265ReferenceListsEXT;
   struct VideoEncodeH265RateControlInfoEXT;

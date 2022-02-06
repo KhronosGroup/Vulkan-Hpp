@@ -12646,17 +12646,17 @@ namespace std
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceEXT>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentEXT>
   {
-    std::size_t operator()(
-      VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceEXT const & videoEncodeH265NaluSliceEXT ) const VULKAN_HPP_NOEXCEPT
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentEXT const &
+                              videoEncodeH265NaluSliceSegmentEXT ) const VULKAN_HPP_NOEXCEPT
     {
       std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceEXT.ctbCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceEXT.pReferenceFinalLists );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceEXT.pSliceHeaderStd );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceSegmentEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceSegmentEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceSegmentEXT.ctbCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceSegmentEXT.pReferenceFinalLists );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265NaluSliceSegmentEXT.pSliceSegmentHeaderStd );
       return seed;
     }
   };
@@ -12807,8 +12807,8 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.pReferenceFinalLists );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.naluSliceEntryCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.pNaluSliceEntries );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.naluSliceSegmentEntryCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.pNaluSliceSegmentEntries );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265VclFrameInfoEXT.pCurrentPictureInfo );
       return seed;
     }

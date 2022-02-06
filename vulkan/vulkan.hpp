@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 204, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 205, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -9099,7 +9099,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier2KHR>
+  struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier2>
   {
     enum
     {
@@ -10790,7 +10790,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_QCOM_rotated_copy_commands ===
   template <>
-  struct StructExtends<CopyCommandTransformInfoQCOM, BufferImageCopy2KHR>
+  struct StructExtends<CopyCommandTransformInfoQCOM, BufferImageCopy2>
   {
     enum
     {
@@ -10798,7 +10798,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<CopyCommandTransformInfoQCOM, ImageBlit2KHR>
+  struct StructExtends<CopyCommandTransformInfoQCOM, ImageBlit2>
   {
     enum
     {

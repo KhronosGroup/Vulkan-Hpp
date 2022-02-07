@@ -16791,12 +16791,7 @@ int main( int argc, char ** argv )
   static const std::string classFlags = R"(
   template <typename FlagBitsType>
   struct FlagTraits
-  {
-    enum
-    {
-      allFlags = 0
-    };
-  };
+  {};
 
   template <typename BitType>
   class Flags

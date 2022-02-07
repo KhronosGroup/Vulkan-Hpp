@@ -449,7 +449,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeH265SessionParametersAddInfoEXT = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT,
     eVideoEncodeH265VclFrameInfoEXT             = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_VCL_FRAME_INFO_EXT,
     eVideoEncodeH265DpbSlotInfoEXT              = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_DPB_SLOT_INFO_EXT,
-    eVideoEncodeH265NaluSliceEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_NALU_SLICE_EXT,
+    eVideoEncodeH265NaluSliceSegmentEXT         = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_NALU_SLICE_SEGMENT_EXT,
     eVideoEncodeH265EmitPictureParametersEXT    = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_EMIT_PICTURE_PARAMETERS_EXT,
     eVideoEncodeH265ProfileEXT                  = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_PROFILE_EXT,
     eVideoEncodeH265ReferenceListsEXT           = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_REFERENCE_LISTS_EXT,
@@ -1445,7 +1445,7 @@ namespace VULKAN_HPP_NAMESPACE
         return "VideoEncodeH265SessionParametersAddInfoEXT";
       case StructureType::eVideoEncodeH265VclFrameInfoEXT: return "VideoEncodeH265VclFrameInfoEXT";
       case StructureType::eVideoEncodeH265DpbSlotInfoEXT: return "VideoEncodeH265DpbSlotInfoEXT";
-      case StructureType::eVideoEncodeH265NaluSliceEXT: return "VideoEncodeH265NaluSliceEXT";
+      case StructureType::eVideoEncodeH265NaluSliceSegmentEXT: return "VideoEncodeH265NaluSliceSegmentEXT";
       case StructureType::eVideoEncodeH265EmitPictureParametersEXT: return "VideoEncodeH265EmitPictureParametersEXT";
       case StructureType::eVideoEncodeH265ProfileEXT: return "VideoEncodeH265ProfileEXT";
       case StructureType::eVideoEncodeH265ReferenceListsEXT: return "VideoEncodeH265ReferenceListsEXT";
@@ -3186,6 +3186,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePlane0          = VK_IMAGE_ASPECT_PLANE_0_BIT,
     ePlane1          = VK_IMAGE_ASPECT_PLANE_1_BIT,
     ePlane2          = VK_IMAGE_ASPECT_PLANE_2_BIT,
+    eNone            = VK_IMAGE_ASPECT_NONE,
     eMemoryPlane0EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_0_BIT_EXT,
     eMemoryPlane1EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_1_BIT_EXT,
     eMemoryPlane2EXT = VK_IMAGE_ASPECT_MEMORY_PLANE_2_BIT_EXT,
@@ -3207,11 +3208,11 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageAspectFlagBits::ePlane0: return "Plane0";
       case ImageAspectFlagBits::ePlane1: return "Plane1";
       case ImageAspectFlagBits::ePlane2: return "Plane2";
+      case ImageAspectFlagBits::eNone: return "None";
       case ImageAspectFlagBits::eMemoryPlane0EXT: return "MemoryPlane0EXT";
       case ImageAspectFlagBits::eMemoryPlane1EXT: return "MemoryPlane1EXT";
       case ImageAspectFlagBits::eMemoryPlane2EXT: return "MemoryPlane2EXT";
       case ImageAspectFlagBits::eMemoryPlane3EXT: return "MemoryPlane3EXT";
-      case ImageAspectFlagBits::eNoneKHR: return "NoneKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6620,9 +6621,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class VideoEncodeH265InputModeFlagBitsEXT : VkVideoEncodeH265InputModeFlagsEXT
   {
-    eFrame  = VK_VIDEO_ENCODE_H265_INPUT_MODE_FRAME_BIT_EXT,
-    eSlice  = VK_VIDEO_ENCODE_H265_INPUT_MODE_SLICE_BIT_EXT,
-    eNonVcl = VK_VIDEO_ENCODE_H265_INPUT_MODE_NON_VCL_BIT_EXT
+    eFrame        = VK_VIDEO_ENCODE_H265_INPUT_MODE_FRAME_BIT_EXT,
+    eSliceSegment = VK_VIDEO_ENCODE_H265_INPUT_MODE_SLICE_SEGMENT_BIT_EXT,
+    eNonVcl       = VK_VIDEO_ENCODE_H265_INPUT_MODE_NON_VCL_BIT_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265InputModeFlagBitsEXT value )
@@ -6630,7 +6631,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case VideoEncodeH265InputModeFlagBitsEXT::eFrame: return "Frame";
-      case VideoEncodeH265InputModeFlagBitsEXT::eSlice: return "Slice";
+      case VideoEncodeH265InputModeFlagBitsEXT::eSliceSegment: return "SliceSegment";
       case VideoEncodeH265InputModeFlagBitsEXT::eNonVcl: return "NonVcl";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
@@ -6638,9 +6639,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class VideoEncodeH265OutputModeFlagBitsEXT : VkVideoEncodeH265OutputModeFlagsEXT
   {
-    eFrame  = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_FRAME_BIT_EXT,
-    eSlice  = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_SLICE_BIT_EXT,
-    eNonVcl = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_NON_VCL_BIT_EXT
+    eFrame        = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_FRAME_BIT_EXT,
+    eSliceSegment = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_SLICE_SEGMENT_BIT_EXT,
+    eNonVcl       = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_NON_VCL_BIT_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265OutputModeFlagBitsEXT value )
@@ -6648,7 +6649,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case VideoEncodeH265OutputModeFlagBitsEXT::eFrame: return "Frame";
-      case VideoEncodeH265OutputModeFlagBitsEXT::eSlice: return "Slice";
+      case VideoEncodeH265OutputModeFlagBitsEXT::eSliceSegment: return "SliceSegment";
       case VideoEncodeH265OutputModeFlagBitsEXT::eNonVcl: return "NonVcl";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
@@ -12563,9 +12564,9 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( ImageAspectFlagBits::eColor ) | VkFlags( ImageAspectFlagBits::eDepth ) |
                  VkFlags( ImageAspectFlagBits::eStencil ) | VkFlags( ImageAspectFlagBits::eMetadata ) |
                  VkFlags( ImageAspectFlagBits::ePlane0 ) | VkFlags( ImageAspectFlagBits::ePlane1 ) |
-                 VkFlags( ImageAspectFlagBits::ePlane2 ) | VkFlags( ImageAspectFlagBits::eMemoryPlane0EXT ) |
-                 VkFlags( ImageAspectFlagBits::eMemoryPlane1EXT ) | VkFlags( ImageAspectFlagBits::eMemoryPlane2EXT ) |
-                 VkFlags( ImageAspectFlagBits::eMemoryPlane3EXT ) | VkFlags( ImageAspectFlagBits::eNoneKHR )
+                 VkFlags( ImageAspectFlagBits::ePlane2 ) | VkFlags( ImageAspectFlagBits::eNone ) |
+                 VkFlags( ImageAspectFlagBits::eMemoryPlane0EXT ) | VkFlags( ImageAspectFlagBits::eMemoryPlane1EXT ) |
+                 VkFlags( ImageAspectFlagBits::eMemoryPlane2EXT ) | VkFlags( ImageAspectFlagBits::eMemoryPlane3EXT )
     };
   };
 
@@ -17261,7 +17262,7 @@ namespace VULKAN_HPP_NAMESPACE
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eFrame ) |
-                 VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eSlice ) |
+                 VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eSliceSegment ) |
                  VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eNonVcl )
     };
   };
@@ -17298,8 +17299,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeH265InputModeFlagBitsEXT::eFrame )
       result += "Frame | ";
-    if ( value & VideoEncodeH265InputModeFlagBitsEXT::eSlice )
-      result += "Slice | ";
+    if ( value & VideoEncodeH265InputModeFlagBitsEXT::eSliceSegment )
+      result += "SliceSegment | ";
     if ( value & VideoEncodeH265InputModeFlagBitsEXT::eNonVcl )
       result += "NonVcl | ";
 
@@ -17314,7 +17315,7 @@ namespace VULKAN_HPP_NAMESPACE
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eFrame ) |
-                 VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eSlice ) |
+                 VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eSliceSegment ) |
                  VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eNonVcl )
     };
   };
@@ -17351,8 +17352,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeH265OutputModeFlagBitsEXT::eFrame )
       result += "Frame | ";
-    if ( value & VideoEncodeH265OutputModeFlagBitsEXT::eSlice )
-      result += "Slice | ";
+    if ( value & VideoEncodeH265OutputModeFlagBitsEXT::eSliceSegment )
+      result += "SliceSegment | ";
     if ( value & VideoEncodeH265OutputModeFlagBitsEXT::eNonVcl )
       result += "NonVcl | ";
 

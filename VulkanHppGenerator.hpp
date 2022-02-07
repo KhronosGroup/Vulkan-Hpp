@@ -383,7 +383,7 @@ private:
   std::string addTitleAndProtection( std::string const & title,
                                      std::string const & strIf,
                                      std::string const & strElse = {} ) const;
-  bool        allVectorSizesSupported( std::vector<ParamData> const & params,
+  bool        allVectorSizesSupported( std::vector<ParamData> const &   params,
                                        std::map<size_t, size_t> const & vectorParams ) const;
   void        appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
                                                    std::set<std::string> &          listedCommands,
@@ -560,12 +560,6 @@ private:
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       std::vector<size_t> const &      returnParam,
                                                       bool                             withAllocator ) const;
-  std::string generateCommandResultGetVectorDeprecated( std::string const &              name,
-                                                        CommandData const &              commandData,
-                                                        size_t                           initialSkipCount,
-                                                        bool                             definition,
-                                                        std::map<size_t, size_t> const & vectorParamIndices,
-                                                        size_t                           returnParam ) const;
   std::string generateCommandResultGetVectorOfHandlesOrValues( std::string const &              name,
                                                                CommandData const &              commandData,
                                                                size_t                           initialSkipCount,
@@ -713,11 +707,10 @@ private:
                                                          std::string const & standard,
                                                          std::string const & enhanced,
                                                          std::string const & enhancedChained ) const;
-  std::string generateCommandSetStandardEnhancedSingularDeprecated( bool                definition,
-                                                                    std::string const & standard,
-                                                                    std::string const & enhancedDeprecated,
-                                                                    std::string const & enhanced,
-                                                                    std::string const & enhancedSingular ) const;
+  std::string generateCommandSetStandardEnhancedSingular( bool                definition,
+                                                          std::string const & standard,
+                                                          std::string const & enhanced,
+                                                          std::string const & enhancedSingular ) const;
   std::string generateCommandSetStandardEnhancedUnique( bool                definition,
                                                         std::string const & standard,
                                                         std::string const & enhanced,
@@ -831,65 +824,6 @@ private:
                                        bool                               bitmask ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
-  std::string generateFunctionBodyEnhanced( std::string const &              name,
-                                            CommandData const &              commandData,
-                                            size_t                           initialSkipCount,
-                                            size_t                           returnParam,
-                                            size_t                           templateParamIndex,
-                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                            bool                             twoStep,
-                                            std::string const &              enhancedReturnType,
-                                            bool                             withAllocator ) const;
-  std::string generateFunctionBodyEnhancedLocalReturnVariable( CommandData const & commandData,
-                                                               size_t              returnParam,
-                                                               std::string const & enhancedReturnType,
-                                                               bool                withAllocator ) const;
-  std::string
-              generateFunctionBodyEnhancedMultiVectorSizeCheck( std::string const &              name,
-                                                                CommandData const &              commandData,
-                                                                size_t                           initialSkipCount,
-                                                                size_t                           returnParam,
-                                                                std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateFunctionBodyEnhancedReturnResultValue( std::string const & returnName,
-                                                             std::string const & name,
-                                                             CommandData const & commandData,
-                                                             size_t              initialSkipCount,
-                                                             size_t              returnParam,
-                                                             bool                twoStep ) const;
-  std::string generateFunctionBodyEnhancedSingleStep( std::string const &              name,
-                                                      CommandData const &              commandData,
-                                                      size_t                           returnParam,
-                                                      size_t                           templateParamIndex,
-                                                      std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateFunctionBodyEnhancedTwoStep( std::string const &              name,
-                                                   CommandData const &              commandData,
-                                                   size_t                           returnParam,
-                                                   size_t                           templateParamIndex,
-                                                   std::map<size_t, size_t> const & vectorParamIndices,
-                                                   std::string const &              returnName ) const;
-  std::string generateFunctionHeaderArgumentsEnhanced( CommandData const &              commandData,
-                                                       size_t                           returnParam,
-                                                       size_t                           templateParamIndex,
-                                                       size_t                           initialSkipCount,
-                                                       std::map<size_t, size_t> const & vectorParamIndices,
-                                                       bool                             withDefaults,
-                                                       bool                             withAllocator ) const;
-  std::string generateFunctionCall( std::string const &              name,
-                                    CommandData const &              commandData,
-                                    size_t                           returnParam,
-                                    size_t                           templateParamIndex,
-                                    std::map<size_t, size_t> const & vectorParamIndices,
-                                    bool                             twoStep,
-                                    bool                             firstCall ) const;
-  std::string generateFunctionHeaderArgumentEnhanced( ParamData const &                param,
-                                                      size_t                           paramIndex,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      bool                             skip,
-                                                      bool                             isTemplateParam ) const;
-  std::string generateFunctionHeaderArgumentEnhancedVector( ParamData const &   param,
-                                                            std::string const & strippedParameterName,
-                                                            bool                hasSizeParam,
-                                                            bool                isTemplateParam ) const;
   std::string generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle,
                               std::set<std::string> &                    listedHandles ) const;

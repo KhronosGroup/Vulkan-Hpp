@@ -50,13 +50,14 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::UniqueInstance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    vk::UniqueDebugUtilsMessengerEXT debugUtilsMessenger = vk::su::createDebugUtilsMessenger( instance );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
-    std::vector<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
 
     /* VULKAN_KEY_START */
 
@@ -95,6 +96,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     /* VULKAN_KEY_END */
+
+#if !defined( NDEBUG )
+    instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
+#endif
+    instance.destroy();
   }
   catch ( vk::SystemError & err )
   {

@@ -12,26 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if(!MSVC)
-	cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.2)
 
-	project(RAII_PhysicalDeviceMemoryProperties)
+project(RAII_PhysicalDeviceMemoryProperties)
 
-	set(HEADERS
-	)
+set(HEADERS
+)
 
-	set(SOURCES
-	  PhysicalDeviceMemoryProperties.cpp
-	)
+set(SOURCES
+  PhysicalDeviceMemoryProperties.cpp
+)
 
-	source_group(headers FILES ${HEADERS})
-	source_group(sources FILES ${SOURCES})
+source_group(headers FILES ${HEADERS})
+source_group(sources FILES ${SOURCES})
 
-	add_executable(RAII_PhysicalDeviceMemoryProperties
-	  ${HEADERS}
-	  ${SOURCES}
-	)
+add_executable(RAII_PhysicalDeviceMemoryProperties
+  ${HEADERS}
+  ${SOURCES}
+)
 
-	set_target_properties(RAII_PhysicalDeviceMemoryProperties PROPERTIES FOLDER "RAIISamples")
-	target_link_libraries(RAII_PhysicalDeviceMemoryProperties PRIVATE utils)
-endif(!MSVC)
+set_target_properties(RAII_PhysicalDeviceMemoryProperties PROPERTIES FOLDER "RAII_Samples")
+target_link_libraries(RAII_PhysicalDeviceMemoryProperties PRIVATE utils)

@@ -648,17 +648,6 @@ The implicit cast operators on ```vk::ResultValue``` are potentially wrong under
 	
 The type traits ```cpp_type<ObjectType::eObjectTypeID>``` are replaced by the more general type traits ```CppType<Type, Type::eTypeID>```.
 
-Some functions (listed below) provide an interface that does not fit to the general approach in vulkan.hpp, where values you get from a function are supposed to be returned. Use the corresponding functions with the same name, that actually return those values, instead.
-The affected functions are
-```
-	Device::getAccelerationStructureHandleNV
-	Device::getCalibratedTimestampsEXT
-	Device::getQueryPoolResults
-	Device::getRayTracingCaptureReplayShaderGroupHandlesKHR
-	Device::getRayTracingShaderGroupHandlesKHR
-	Device::getRayTracingShaderGroupHandlesNV
-	Device::writeAccelerationStructuresPropertiesKHR
-```
 All those elements will be removed around November 2021.
 
 ## See Also

@@ -438,7 +438,7 @@ namespace vk
       {
         std::cerr << "\t"
                   << "Queue Labels:\n";
-        for ( uint8_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+        for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
         {
           std::cerr << "\t\t"
                     << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
@@ -448,7 +448,7 @@ namespace vk
       {
         std::cerr << "\t"
                   << "CommandBuffer Labels:\n";
-        for ( uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+        for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
         {
           std::cerr << "\t\t"
                     << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
@@ -458,7 +458,7 @@ namespace vk
       {
         std::cerr << "\t"
                   << "Objects:\n";
-        for ( uint8_t i = 0; i < pCallbackData->objectCount; i++ )
+        for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
         {
           std::cerr << "\t\t"
                     << "Object " << i << "\n";

@@ -42,7 +42,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
   {
     message << "\t"
             << "Queue Labels:\n";
-    for ( uint8_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
       message << "\t\t"
               << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
@@ -52,7 +52,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
   {
     message << "\t"
             << "CommandBuffer Labels:\n";
-    for ( uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
       message << "\t\t"
               << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
@@ -62,7 +62,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
   {
     message << "\t"
             << "Objects:\n";
-    for ( uint8_t i = 0; i < pCallbackData->objectCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message << "\t\t"
               << "Object " << i << "\n";

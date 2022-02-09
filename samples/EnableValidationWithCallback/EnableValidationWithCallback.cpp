@@ -68,7 +68,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
   if ( 0 < pCallbackData->queueLabelCount )
   {
     message += std::string( "\t" ) + "Queue Labels:\n";
-    for ( uint8_t i = 0; i < pCallbackData->queueLabelCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
       message += std::string( "\t\t" ) + "labelName = <" + pCallbackData->pQueueLabels[i].pLabelName + ">\n";
     }
@@ -76,14 +76,14 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
   if ( 0 < pCallbackData->cmdBufLabelCount )
   {
     message += std::string( "\t" ) + "CommandBuffer Labels:\n";
-    for ( uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
       message += std::string( "\t\t" ) + "labelName = <" + pCallbackData->pCmdBufLabels[i].pLabelName + ">\n";
     }
   }
   if ( 0 < pCallbackData->objectCount )
   {
-    for ( uint8_t i = 0; i < pCallbackData->objectCount; i++ )
+    for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message += std::string( "\t" ) + "Object " + std::to_string( i ) + "\n";
       message += std::string( "\t\t" ) + "objectType   = " +

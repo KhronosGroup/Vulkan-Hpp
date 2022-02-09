@@ -602,16 +602,6 @@ private:
                                                            CommandData const & commandData,
                                                            size_t              initialSkipCount,
                                                            bool                definition ) const;
-  std::string generateCommandResultMultiSuccessWithErrors0Return( std::string const & name,
-                                                                  CommandData const & commandData,
-                                                                  size_t              initialSkipCount,
-                                                                  bool                definition ) const;
-  std::string
-              generateCommandResultMultiSuccessWithErrors0ReturnNVector( std::string const &              name,
-                                                                         CommandData const &              commandData,
-                                                                         size_t                           initialSkipCount,
-                                                                         bool                             definition,
-                                                                         std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandResultMultiSuccessWithErrors1Return( std::string const & name,
                                                                   CommandData const & commandData,
                                                                   size_t              initialSkipCount,
@@ -637,16 +627,6 @@ private:
                                                             CommandData const & commandData,
                                                             size_t              initialSkipCount,
                                                             bool                definition ) const;
-  std::string generateCommandResultSingleSuccessWithErrors0Return( std::string const & name,
-                                                                   CommandData const & commandData,
-                                                                   size_t              initialSkipCount,
-                                                                   bool                definition ) const;
-  std::string
-              generateCommandResultSingleSuccessWithErrors0ReturnNVectors( std::string const &              name,
-                                                                           CommandData const &              commandData,
-                                                                           size_t                           initialSkipCount,
-                                                                           bool                             definition,
-                                                                           std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandResultSingleSuccessWithErrors1Return( std::string const & name,
                                                                    CommandData const & commandData,
                                                                    size_t              initialSkipCount,
@@ -699,6 +679,15 @@ private:
                                                                    size_t                      initialSkipCount,
                                                                    bool                        definition,
                                                                    std::vector<size_t> const & returnParamIndices ) const;
+  std::string generateCommandResultWithErrors0Return( std::string const & name,
+                                                      CommandData const & commandData,
+                                                      size_t              initialSkipCount,
+                                                      bool                definition ) const;
+  std::string generateCommandResultWithErrors0ReturnNVector( std::string const &              name,
+                                                             CommandData const &              commandData,
+                                                             size_t                           initialSkipCount,
+                                                             bool                             definition,
+                                                             std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandSetStandard( std::string const & standard ) const;
   std::string generateCommandSetStandardEnhanced( bool                definition,
                                                   std::string const & standard,

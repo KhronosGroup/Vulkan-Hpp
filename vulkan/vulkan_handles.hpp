@@ -7791,15 +7791,15 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void free( VULKAN_HPP_NAMESPACE::DeviceMemory                memory,
-               const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
-               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void( free )( VULKAN_HPP_NAMESPACE::DeviceMemory                memory,
+                  const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void free( VULKAN_HPP_NAMESPACE::DeviceMemory memory,
-               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
-                                  VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void( free )( VULKAN_HPP_NAMESPACE::DeviceMemory memory,
+                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator
+                                     VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -8993,16 +8993,16 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    Result free( VULKAN_HPP_NAMESPACE::DescriptorPool        descriptorPool,
-                 uint32_t                                    descriptorSetCount,
-                 const VULKAN_HPP_NAMESPACE::DescriptorSet * pDescriptorSets,
-                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    Result( free )( VULKAN_HPP_NAMESPACE::DescriptorPool        descriptorPool,
+                    uint32_t                                    descriptorSetCount,
+                    const VULKAN_HPP_NAMESPACE::DescriptorSet * pDescriptorSets,
+                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<void>::type
-      free( VULKAN_HPP_NAMESPACE::DescriptorPool                          descriptorPool,
-            ArrayProxy<const VULKAN_HPP_NAMESPACE::DescriptorSet> const & descriptorSets,
-            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    typename ResultValueType<void>::type( free )(
+      VULKAN_HPP_NAMESPACE::DescriptorPool                          descriptorPool,
+      ArrayProxy<const VULKAN_HPP_NAMESPACE::DescriptorSet> const & descriptorSets,
+      Dispatch const & d                                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -9243,15 +9243,15 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void free( VULKAN_HPP_NAMESPACE::CommandPool           commandPool,
-               uint32_t                                    commandBufferCount,
-               const VULKAN_HPP_NAMESPACE::CommandBuffer * pCommandBuffers,
-               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void( free )( VULKAN_HPP_NAMESPACE::CommandPool           commandPool,
+                  uint32_t                                    commandBufferCount,
+                  const VULKAN_HPP_NAMESPACE::CommandBuffer * pCommandBuffers,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void free( VULKAN_HPP_NAMESPACE::CommandPool                             commandPool,
-               ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers,
-               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    void( free )( VULKAN_HPP_NAMESPACE::CommandPool                             commandPool,
+                  ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers,
+                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     //=== VK_VERSION_1_1 ===

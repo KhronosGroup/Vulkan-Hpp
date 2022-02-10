@@ -964,9 +964,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::free( VULKAN_HPP_NAMESPACE::DeviceMemory                memory,
-                                       const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
-                                       Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void( Device::free )( VULKAN_HPP_NAMESPACE::DeviceMemory                memory,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkFreeMemory(
@@ -975,9 +975,9 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::free( VULKAN_HPP_NAMESPACE::DeviceMemory                        memory,
-                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
-                                       Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void( Device::free )( VULKAN_HPP_NAMESPACE::DeviceMemory                        memory,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkFreeMemory( m_device,
@@ -3862,10 +3862,10 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::free( VULKAN_HPP_NAMESPACE::DescriptorPool        descriptorPool,
-                                         uint32_t                                    descriptorSetCount,
-                                         const VULKAN_HPP_NAMESPACE::DescriptorSet * pDescriptorSets,
-                                         Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE Result( Device::free )( VULKAN_HPP_NAMESPACE::DescriptorPool        descriptorPool,
+                                            uint32_t                                    descriptorSetCount,
+                                            const VULKAN_HPP_NAMESPACE::DescriptorSet * pDescriptorSets,
+                                            Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
@@ -3877,10 +3877,10 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type
-    Device::free( VULKAN_HPP_NAMESPACE::DescriptorPool                          descriptorPool,
-                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DescriptorSet> const & descriptorSets,
-                  Dispatch const &                                              d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type( Device::free )(
+    VULKAN_HPP_NAMESPACE::DescriptorPool                          descriptorPool,
+    ArrayProxy<const VULKAN_HPP_NAMESPACE::DescriptorSet> const & descriptorSets,
+    Dispatch const &                                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     Result result = static_cast<Result>(
@@ -3888,7 +3888,7 @@ namespace VULKAN_HPP_NAMESPACE
                               static_cast<VkDescriptorPool>( descriptorPool ),
                               descriptorSets.size(),
                               reinterpret_cast<const VkDescriptorSet *>( descriptorSets.data() ) ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::Device::free" );
+    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::( Device::free )" );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
@@ -4433,10 +4433,10 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::free( VULKAN_HPP_NAMESPACE::CommandPool           commandPool,
-                                       uint32_t                                    commandBufferCount,
-                                       const VULKAN_HPP_NAMESPACE::CommandBuffer * pCommandBuffers,
-                                       Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void( Device::free )( VULKAN_HPP_NAMESPACE::CommandPool           commandPool,
+                                          uint32_t                                    commandBufferCount,
+                                          const VULKAN_HPP_NAMESPACE::CommandBuffer * pCommandBuffers,
+                                          Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkFreeCommandBuffers( m_device,
@@ -4447,9 +4447,9 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::free( VULKAN_HPP_NAMESPACE::CommandPool                             commandPool,
-                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers,
-                                       Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void( Device::free )( VULKAN_HPP_NAMESPACE::CommandPool                             commandPool,
+                                          ArrayProxy<const VULKAN_HPP_NAMESPACE::CommandBuffer> const & commandBuffers,
+                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkFreeCommandBuffers( m_device,

@@ -3136,6 +3136,20 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
       destroyCommandString.replace( pos, commandName.length(), shortenedName );
       pos = destroyCommandString.find( commandName, pos );
     }
+
+    // special handling for "free", to prevent interfering with MSVC debug free!
+    if ( shortenedName == "free" )
+    {
+      std::string toEncloseString = stripPrefix( handle, "Vk" ) + "::free";
+      std::string enclosedString  = "( " + toEncloseString + " )";
+      pos             = destroyCommandString.find( toEncloseString );
+      while ( pos != std::string::npos )
+      {
+        destroyCommandString.replace( pos, toEncloseString.length(), enclosedString );
+        pos = destroyCommandString.find( toEncloseString, pos + enclosedString.length() );
+      }
+    }
+
     // we need to remove the default argument for the first argument, to prevent ambiguities!
     assert( 1 < commandIt->second.params.size() );
     pos = destroyCommandString.find( commandIt->second.params[1].name );  // skip the standard version of the function
@@ -6031,7 +6045,8 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
     }
     else if ( name.substr( 2, 4 ) == "Free" )
     {
-      shortenedName = "free";
+      // enclose "free" in parenthesis to prevent interference with MSVC debug free
+      shortenedName = "( free )";
     }
     else
     {
@@ -16470,7 +16485,7 @@ int main( int argc, char ** argv )
     void destroy( T t ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_owner && m_dispatch );
-      m_owner.free( t, m_allocationCallbacks, *m_dispatch );
+      ( m_owner.free )( t, m_allocationCallbacks, *m_dispatch );
     }
 
   private:
@@ -16570,7 +16585,7 @@ int main( int argc, char ** argv )
       template <typename T>
       void destroy(T t) VULKAN_HPP_NOEXCEPT
       {
-        m_owner.free( m_pool, t, *m_dispatch );
+        ( m_owner.free )( m_pool, t, *m_dispatch );
       }
 
     private:

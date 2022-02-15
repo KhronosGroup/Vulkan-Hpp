@@ -452,16 +452,6 @@ ${packedCases}
     }
   }
 
-  // The number of components of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentCountCases}
-      default: return 0;
-    }
-  }
-
   // True, if the components of this format are compressed, otherwise false.
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
   {
@@ -480,6 +470,36 @@ ${componentsAreCompressedCases}
     {
 ${componentBitsCases}
       default: return 0;
+    }
+  }
+
+  // The number of components of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${componentCountCases}
+      default: return 0;
+    }
+  }
+
+  // The name of the component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentNameCases}
+      default: return "";
+    }
+  }
+
+  // The numeric format of the component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentNumericFormatCases}
+      default: return "";
     }
   }
 
@@ -539,8 +559,9 @@ ${planeWidthDivisorCases}
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
   std::string blockSizeCases, texelsPerBlockCases, blockExtentCases, compressionSchemeCases, packedCases,
-    componentCountCases, componentsAreCompressedCases, componentBitsCases, componentPlaneIndexCases, planeCountCases,
-    planeCompatibleCases, planeHeightDivisorCases, planeWidthDivisorCases;
+    componentsAreCompressedCases, componentCountCases, componentBitsCases, componentNameCases,
+    componentNumericFormatCases, componentPlaneIndexCases, planeCountCases, planeCompatibleCases,
+    planeHeightDivisorCases, planeWidthDivisorCases;
   for ( auto formatValuesIt = std::next( formatIt->second.values.begin() );
         formatValuesIt != formatIt->second.values.end();
         ++formatValuesIt )
@@ -570,7 +591,7 @@ ${planeWidthDivisorCases}
     componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
     if ( traitIt->second.components.front().bits == "compressed" )
     {
-      componentsAreCompressedCases += caseString += "\n";
+      componentsAreCompressedCases += caseString + "\n";
     }
     else
     {
@@ -592,6 +613,47 @@ ${componentCases}
       componentBitsCases += replaceWithMap( componentBitsCaseTemplate,
                                             { { "caseString", caseString }, { "componentCases", componentCases } } );
     }
+
+    {
+      const std::string componentNameCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases +=
+          "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
+      }
+      componentCases.pop_back();
+      componentNameCases += replaceWithMap( componentNameCaseTemplate,
+                                            { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+
+    {
+      const std::string componentNumericFormatCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases += "          case " + std::to_string( i ) + ": return \"" +
+                          traitIt->second.components[i].numericFormat + "\";\n";
+      }
+      componentCases.pop_back();
+      componentNumericFormatCases += replaceWithMap(
+        componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+
     if ( !traitIt->second.components.front().planeIndex.empty() )
     {
       const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
@@ -669,6 +731,8 @@ ${widthDivisorCases}
                            { "blockSizeCases", blockSizeCases },
                            { "componentBitsCases", componentBitsCases },
                            { "componentCountCases", componentCountCases },
+                           { "componentNameCases", componentNameCases },
+                           { "componentNumericFormatCases", componentNumericFormatCases },
                            { "componentPlaneIndexCases", componentPlaneIndexCases },
                            { "componentsAreCompressedCases", componentsAreCompressedCases },
                            { "compressionSchemeCases", compressionSchemeCases },
@@ -10738,7 +10802,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   if ( multiSuccessCodeContructor )
   {
     clearMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
+    memberVariables +=
+      "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
   }
 

@@ -523,6 +523,10 @@ vulkan.hpp provides a couple of trait functions on `vk::Format`. With C++14 and 
 	True, if the components of this format are compressed, otherwise False.
 - `uint8_t componentBits( vk::Format format, uint8_t component );`
 	Gets the number of bits in this component, if not compressed, otherwise 0.
+- `char const * componentName( vk::Format format, uint8_t component );`
+	Gets the name of this component as a c-string.
+- `char const * componentNumericFormat( vk::Format format, uint8_t component );`
+	Gets the numeric format of this component as a c-string.
 - `uint8_t componentPlaneIndex( vk::Format format, uint8_t component );`
 	Gets the plane index, this component lies in.
 - `uint8_t planeCount( vk::Format format );`

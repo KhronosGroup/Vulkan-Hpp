@@ -6873,16 +6873,13 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
     auto [singularConstructors, arrayConstructors] = generateRAIIHandleConstructors( handle );
-    auto [destructor, destructorCall] =
-      ( handle.second.destructorIt == m_commands.end() )
-        ? std::make_pair( "", "" )
-        : generateRAIIHandleDestructor( handle.first, handle.second.destructorIt, enter );
 
-    auto [getConstructorSuccessCode,
+    auto [clearMembers,
+          getConstructorSuccessCode,
           memberVariables,
           moveConstructorInitializerList,
           moveAssignmentInstructions,
-          swapMembers] = generateRAIIHandleDetails( handle, destructorCall );
+          swapMembers] = generateRAIIHandleDetails( handle );
 
     std::string declarations = generateRAIIHandleCommandDeclarations( handle, specialFunctions );
 
@@ -6937,7 +6934,11 @@ ${enter}  class ${handleType}
   public:
 ${singularConstructors}
     ${handleType}( std::nullptr_t ) {}
-${destructor}
+
+    ~${handleType}()
+    {
+      clear();
+    }
 
     ${handleType}() = delete;
     ${handleType}( ${handleType} const & ) = delete;
@@ -6959,6 +6960,11 @@ ${moveAssignmentInstructions}
       return m_${handleName};
     }
 
+    void clear() VULKAN_HPP_NOEXCEPT
+    {
+${clearMembers}
+    }
+
 ${getConstructorSuccessCode}
 ${getParent}
     ${dispatcherType} const * getDispatcher() const
@@ -6967,7 +6973,7 @@ ${getParent}
       return ${getDispatcherReturn}m_dispatcher;
     }
 
-    void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType} & rhs )
+    void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType} & rhs ) VULKAN_HPP_NOEXCEPT
     {
 ${swapMembers}
     }
@@ -6981,8 +6987,8 @@ ${leave})";
 
     str += replaceWithMap(
       handleTemplate,
-      { { "debugReportObjectType", debugReportObjectType },
-        { "destructor", destructor },
+      { { "clearMembers", clearMembers },
+        { "debugReportObjectType", debugReportObjectType },
         { "dispatcherType", dispatcherType },
         { "enter", enter },
         { "getConstructorSuccessCode", getConstructorSuccessCode },
@@ -10561,41 +10567,6 @@ ${memberFunctionDeclarations}
     { { "memberFunctionDeclarations", generateRAIIHandleCommandDeclarations( handle, specialFunctions ) } } );
 }
 
-std::pair<std::string, std::string>
-  VulkanHppGenerator::generateRAIIHandleDestructor( std::string const &                                handleType,
-                                                    std::map<std::string, CommandData>::const_iterator destructorIt,
-                                                    std::string const &                                enter ) const
-{
-  auto [destructorEnter, destructorLeave] = generateProtection( destructorIt->second.referencedIn, std::string() );
-  bool doProtect                          = !destructorEnter.empty() && ( destructorEnter != enter );
-  if ( !doProtect )
-  {
-    destructorEnter.clear();
-    destructorLeave.clear();
-  }
-  std::string destructorCall =
-    destructorIt->first + "( " + generateRAIIHandleDestructorCallArguments( handleType, destructorIt ) + " )";
-
-  const std::string destructorTemplate = R"(
-${enter}~${handleType}()
-    {
-      if ( m_${handleName} )
-      {
-        getDispatcher()->${destructorCall};
-      }
-    }
-${leave})";
-
-  std::string destructor =
-    replaceWithMap( destructorTemplate,
-                    { { "destructorCall", destructorCall },
-                      { "enter", destructorEnter },
-                      { "handleName", generateRAIIHandleConstructorParamName( handleType, destructorIt ) },
-                      { "handleType", stripPrefix( handleType, "Vk" ) },
-                      { "leave", destructorLeave } } );
-  return std::make_pair( destructor, destructorCall );
-}
-
 std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments(
   std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const
 {
@@ -10659,9 +10630,8 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments(
   return arguments;
 }
 
-std::tuple<std::string, std::string, std::string, std::string, std::string>
-  VulkanHppGenerator::generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle,
-                                                 std::string const &                        destructorCall ) const
+std::tuple<std::string, std::string, std::string, std::string, std::string, std::string>
+  VulkanHppGenerator::generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const
 {
   std::string getConstructorSuccessCode;
   bool        multiSuccessCodeContructor = isMultiSuccessCodeConstructor( handle.second.constructorIts );
@@ -10680,13 +10650,17 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
   std::string handleType = stripPrefix( handle.first, "Vk" );
   std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
-  std::string moveConstructorInitializerList, moveAssignmentInstructions, memberVariables, swapMembers;
+  std::string clearMembers, moveConstructorInitializerList, moveAssignmentInstructions, memberVariables, swapMembers;
+
   if ( handle.second.destructorIt != m_commands.end() )
   {
-    moveAssignmentInstructions = "        if ( m_" + handleName + " )\n";
-    moveAssignmentInstructions += "        {\n";
-    moveAssignmentInstructions += "          getDispatcher()->" + destructorCall + ";\n";
-    moveAssignmentInstructions += "        }";
+    moveAssignmentInstructions = "          clear();";
+
+    clearMembers = "        if ( m_" + handleName + " )\n";
+    clearMembers += "        {\n";
+    clearMembers += "          getDispatcher()->" + handle.second.destructorIt->first + "( " +
+                    generateRAIIHandleDestructorCallArguments( handle.first, handle.second.destructorIt ) + " );\n";
+    clearMembers += "        }";
     for ( auto const & destructorParam : handle.second.destructorIt->second.params )
     {
       std::string memberName, memberType;
@@ -10715,6 +10689,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
       }
       if ( !memberName.empty() )
       {
+        clearMembers += "\n      m_" + memberName + " = nullptr;";
         moveConstructorInitializerList += "m_" + memberName +
                                           "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
                                           memberName + ", {} ) ), ";
@@ -10739,6 +10714,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
       assert( handleIt->second.parent == frontType );
       std::string frontName = handle.second.constructorIts.front()->second.params.front().name;
 
+      clearMembers += "\n        m_" + frontName + " = nullptr;";
       moveConstructorInitializerList = "m_" + frontName +
                                        "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
                                        frontName + ", {} ) ), ";
@@ -10748,6 +10724,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
       memberVariables = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
       swapMembers     = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
     }
+    clearMembers += "\n        m_" + handleName + " = nullptr;";
     moveConstructorInitializerList += "m_" + handleName +
                                       "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" +
                                       handleName + ", {} ) ), ";
@@ -10760,7 +10737,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
 
   if ( multiSuccessCodeContructor )
   {
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode;";
+    clearMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
+    memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
   }
 
@@ -10784,6 +10762,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
     memberVariables +=
       "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;";
   }
+  clearMembers += "\n        m_dispatcher = nullptr;";
   swapMembers += "\n      std::swap( m_dispatcher, rhs.m_dispatcher );";
 
   if ( ( handle.first == "VkInstance" ) || ( handle.first == "VkDevice" ) )
@@ -10799,7 +10778,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string>
       "\n        m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );";
   }
 
-  return std::make_tuple( getConstructorSuccessCode,
+  return std::make_tuple( clearMembers,
+                          getConstructorSuccessCode,
                           memberVariables,
                           moveConstructorInitializerList,
                           moveAssignmentInstructions,

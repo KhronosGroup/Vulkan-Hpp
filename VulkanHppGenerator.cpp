@@ -7013,6 +7013,7 @@ ${enter}  class ${handleType}s : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN
   {
   public:
     ${arrayConstructors}
+    ${handleType}s( std::nullptr_t ) {}
 
     ${handleType}s() = delete;
     ${handleType}s( ${handleType}s const & ) = delete;

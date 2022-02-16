@@ -3259,6 +3259,8 @@ namespace VULKAN_HPP_NAMESPACE
         }
       }
 
+      PhysicalDevices( std::nullptr_t ) {}
+
       PhysicalDevices()                          = delete;
       PhysicalDevices( PhysicalDevices const & ) = delete;
       PhysicalDevices( PhysicalDevices && rhs )  = default;
@@ -5733,6 +5735,8 @@ namespace VULKAN_HPP_NAMESPACE
         }
       }
 
+      CommandBuffers( std::nullptr_t ) {}
+
       CommandBuffers()                         = delete;
       CommandBuffers( CommandBuffers const & ) = delete;
       CommandBuffers( CommandBuffers && rhs )  = default;
@@ -6574,6 +6578,8 @@ namespace VULKAN_HPP_NAMESPACE
         }
       }
 
+      DescriptorSets( std::nullptr_t ) {}
+
       DescriptorSets()                         = delete;
       DescriptorSets( DescriptorSets const & ) = delete;
       DescriptorSets( DescriptorSets && rhs )  = default;
@@ -7142,6 +7148,8 @@ namespace VULKAN_HPP_NAMESPACE
           throwResultException( result, "vkGetDisplayPlaneSupportedDisplaysKHR" );
         }
       }
+
+      DisplayKHRs( std::nullptr_t ) {}
 
       DisplayKHRs()                      = delete;
       DisplayKHRs( DisplayKHRs const & ) = delete;
@@ -8607,6 +8615,8 @@ namespace VULKAN_HPP_NAMESPACE
           throwResultException( result, "vkCreateRayTracingPipelinesNV" );
         }
       }
+
+      Pipelines( std::nullptr_t ) {}
 
       Pipelines()                    = delete;
       Pipelines( Pipelines const & ) = delete;
@@ -10307,6 +10317,8 @@ namespace VULKAN_HPP_NAMESPACE
           throwResultException( result, "vkCreateSharedSwapchainsKHR" );
         }
       }
+
+      SwapchainKHRs( std::nullptr_t ) {}
 
       SwapchainKHRs()                        = delete;
       SwapchainKHRs( SwapchainKHRs const & ) = delete;

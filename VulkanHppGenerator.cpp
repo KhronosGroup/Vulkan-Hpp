@@ -11244,10 +11244,10 @@ ${spaceshipMembers}
   }
   else
   {
-    // reflection is not available with gcc 7.5 and below!
-    static const std::string compareBodyTemplate = R"(#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
+    // use reflection only if VULKAN_HPP_USE_REFLECT is defined
+    static const std::string compareBodyTemplate = R"(#if defined( VULKAN_HPP_USE_REFLECT )
       return this->reflect() == rhs.reflect();
- #else
+#else
       return ${compareMembers};
 #endif)";
     compareBody = replaceWithMap( compareBodyTemplate, { { "compareMembers", compareMembers } } );
@@ -11607,9 +11607,9 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   std::string reflect;
   if ( !structure.second.isUnion )
   {
-    // gcc compilers 7.5 and before can't tie the large tuples you get here !!
+    // use reflection only if VULKAN_HPP_USE_REFLECT is defined
     static const std::string reflectTemplate = R"(
-#if !defined( __GNUC__ ) || (70500 < GCC_VERSION)
+#if defined( VULKAN_HPP_USE_REFLECT )
 #if 14 <= VULKAN_HPP_CPP_VERSION
     auto
 #else

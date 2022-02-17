@@ -639,10 +639,14 @@ With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that op
 
 With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported (see ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```). If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.
 
-
 #### VULKAN_HPP_TYPESAFE_CONVERSION
 
 32-bit vulkan is not typesafe for handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.
+
+#### VULKAN_HPP_USE_REFLECT
+
+With this define you can include a reflection mechanism on the vk-structures. It adds a function ```reflect``` that returns a tuple-version of the structure. That tuple then could easily be iterated. But at least for now, that feature takes lots of compile-time resources, so currently it is recommended to enable that feature only if you're willing to pay that price.
+
 
 ## Deprecated elements
 

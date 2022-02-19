@@ -12291,6 +12291,26 @@ namespace std
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeCapabilitiesKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeCapabilitiesKHR const & videoEncodeCapabilitiesKHR ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.flags );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.rateControlModes );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.rateControlLayerCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.qualityLevelCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeCapabilitiesKHR.inputImageDataFillAlignment );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilitiesEXT>
   {
     std::size_t
@@ -12303,13 +12323,14 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.flags );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.inputModeFlags );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.outputModeFlags );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.minPictureSizeInMbs );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxPictureSizeInMbs );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.inputImageDataAlignment );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxNumL0ReferenceForP );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxNumL0ReferenceForB );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxNumL1Reference );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.qualityLevelCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxPPictureL0ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxBPictureL0ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxL1ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.motionVectorsOverPicBoundariesFlag );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxBytesPerPicDenom );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.maxBitsPerMbDenom );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.log2MaxMvLengthHorizontal );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.log2MaxMvLengthVertical );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264CapabilitiesEXT.stdExtensionVersion );
       return seed;
     }
@@ -12327,7 +12348,7 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264DpbSlotInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264DpbSlotInfoEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264DpbSlotInfoEXT.slotIndex );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264DpbSlotInfoEXT.pStdPictureInfo );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264DpbSlotInfoEXT.pStdReferenceInfo );
       return seed;
     }
   };
@@ -12370,6 +12391,26 @@ namespace std
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsEXT const &
+                              videoEncodeH264ReferenceListsEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.referenceList0EntryCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.pReferenceList0Entries );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.referenceList1EntryCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.pReferenceList1Entries );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264ReferenceListsEXT.pMemMgmtCtrlOperations );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceEXT>
   {
     std::size_t operator()(
@@ -12378,12 +12419,9 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pSliceHeaderStd );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.mbCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.refFinalList0EntryCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pRefFinalList0Entries );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.refFinalList1EntryCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pRefFinalList1Entries );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pReferenceFinalLists );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264NaluSliceEXT.pSliceHeaderStd );
       return seed;
     }
   };
@@ -12531,10 +12569,7 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.refDefaultFinalList0EntryCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pRefDefaultFinalList0Entries );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.refDefaultFinalList1EntryCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pRefDefaultFinalList1Entries );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pReferenceFinalLists );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.naluSliceEntryCount );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pNaluSliceEntries );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH264VclFrameInfoEXT.pCurrentPictureInfo );
@@ -12558,12 +12593,22 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.inputModeFlags );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.outputModeFlags );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.ctbSizes );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.inputImageDataAlignment );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxNumL0ReferenceForP );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxNumL0ReferenceForB );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxNumL1Reference );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxNumSubLayers );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.qualityLevelCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.transformBlockSizes );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxPPictureL0ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxBPictureL0ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxL1ReferenceCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxSubLayersCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.minLog2MinLumaCodingBlockSizeMinus3 );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxLog2MinLumaCodingBlockSizeMinus3 );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.minLog2MinLumaTransformBlockSizeMinus2 );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxLog2MinLumaTransformBlockSizeMinus2 );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.minMaxTransformHierarchyDepthInter );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxMaxTransformHierarchyDepthInter );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.minMaxTransformHierarchyDepthIntra );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxMaxTransformHierarchyDepthIntra );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxDiffCuQpDeltaDepth );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.minMaxNumMergeCand );
+      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.maxMaxNumMergeCand );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeH265CapabilitiesEXT.stdExtensionVersion );
       return seed;
     }

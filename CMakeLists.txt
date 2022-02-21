@@ -85,6 +85,8 @@ file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp vulkan_enums_hpp)
 string(REPLACE "\\" "\\\\" vulkan_enums_hpp ${vulkan_enums_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp vulkan_format_traits_hpp)
+string(REPLACE "\\" "\\\\" vulkan_format_traits_hpp ${vulkan_format_traits_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp vulkan_funcs_hpp)
 string(REPLACE "\\" "\\\\" vulkan_funcs_hpp ${vulkan_funcs_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp vulkan_handles_hpp)
@@ -97,6 +99,7 @@ file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_r
 string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
 add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}"
                 -DVULKAN_ENUMS_HPP_FILE="${vulkan_enums_hpp}"
+                -DVULKAN_FORMAT_TRAITS_HPP_FILE="${vulkan_format_traits_hpp}"
                 -DVULKAN_FUNCS_HPP_FILE="${vulkan_funcs_hpp}"
                 -DVULKAN_HANDLES_HPP_FILE="${vulkan_handles_hpp}"
                 -DVULKAN_STRUCTS_HPP_FILE="${vulkan_structs_hpp}"

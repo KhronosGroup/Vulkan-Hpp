@@ -119,7 +119,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 205, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 206, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -8205,7 +8205,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
   template <>
-  struct StructExtends<VideoEncodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<VideoEncodeH264CapabilitiesEXT, VideoEncodeCapabilitiesKHR>
   {
     enum
     {
@@ -8321,7 +8321,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h265 ===
   template <>
-  struct StructExtends<VideoEncodeH265CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<VideoEncodeH265CapabilitiesEXT, VideoEncodeCapabilitiesKHR>
   {
     enum
     {
@@ -10598,6 +10598,14 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
+  template <>
+  struct StructExtends<VideoEncodeCapabilitiesKHR, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
   template <>
   struct StructExtends<VideoEncodeRateControlInfoKHR, VideoCodingControlInfoKHR>
   {

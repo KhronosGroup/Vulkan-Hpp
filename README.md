@@ -504,7 +504,7 @@ vulkan.hpp provides a couple of type traits, easing template programming:
 
 ### vk::Format trait functions
 
-vulkan.hpp provides a couple of trait functions on `vk::Format`. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved by the compiler.
+With the additional header `vulkan_format_traits.hpp`, a couple of trait functions on `vk::Format` are provided. With C++14 and above, all those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved by the compiler.
 - `uin8_t blockSize( vk::Format format );`
 	Gets the texel block size of this format in bytes.
 - `uint8_t texelsPerBlock( vk::Format format );`

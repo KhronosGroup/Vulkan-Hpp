@@ -17876,7 +17876,6 @@ namespace VULKAN_HPP_NAMESPACE
 )";
     str += typeTraits;
     str += generator.generateEnums();
-    str += generator.generateFormatTraits();
     str += generator.generateIndexTypeTraits();
     str += generator.generateBitmasks();
     str += R"(
@@ -17884,6 +17883,24 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
     writeToFile( str, VULKAN_ENUMS_HPP_FILE );
+
+    std::cout << "VulkanHppGenerator: Generating " << VULKAN_FORMAT_TRAITS_HPP_FILE << " ..." << std::endl;
+    str = generator.getVulkanLicenseHeader();
+    str += +R"(
+#ifndef VULKAN_FORMAT_TRAITS_HPP
+#  define VULKAN_FORMAT_TRAITS_HPP
+
+#include <vulkan/vulkan.hpp>
+
+namespace VULKAN_HPP_NAMESPACE
+{
+)";
+    str += generator.generateFormatTraits();
+    str += R"(
+}   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+    writeToFile( str, VULKAN_FORMAT_TRAITS_HPP_FILE );
 
     std::cout << "VulkanHppGenerator: Generating " << VULKAN_HANDLES_HPP_FILE << " ..." << std::endl;
     str.clear();

@@ -737,14 +737,15 @@ private:
                                                                      std::string const & enhancedUnique,
                                                                      std::string const & enhancedUniqueWithAllocator ) const;
   std::string generateCommandSetStandardOrEnhanced( std::string const & standard, std::string const & enhanced ) const;
+  std::string generateCommandSingle( std::string const &              name,
+                                     CommandData const &              commandData,
+                                     size_t                           initialSkipCount,
+                                     bool                             definition,
+                                     std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandStandard( std::string const & name,
                                        CommandData const & commandData,
                                        size_t              initialSkipCount,
                                        bool                definition ) const;
-  std::string generateCommandType( std::string const & name,
-                                   CommandData const & commandData,
-                                   size_t              initialSkipCount,
-                                   bool                definition ) const;
   std::string generateCommandValue( std::string const & name,
                                     CommandData const & commandData,
                                     size_t              initialSkipCount,
@@ -753,11 +754,6 @@ private:
                                           CommandData const & commandData,
                                           size_t              initialSkipCount,
                                           bool                definition ) const;
-  std::string generateCommandVoid0ReturnVectorOrPointer( std::string const &              name,
-                                                         CommandData const &              commandData,
-                                                         size_t                           initialSkipCount,
-                                                         bool                             definition,
-                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandVoid1Return( std::string const & name,
                                           CommandData const & commandData,
                                           size_t              initialSkipCount,

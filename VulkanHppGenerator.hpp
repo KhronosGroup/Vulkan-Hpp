@@ -683,11 +683,6 @@ private:
                                                       CommandData const & commandData,
                                                       size_t              initialSkipCount,
                                                       bool                definition ) const;
-  std::string generateCommandResultWithErrors0ReturnNVector( std::string const &              name,
-                                                             CommandData const &              commandData,
-                                                             size_t                           initialSkipCount,
-                                                             bool                             definition,
-                                                             std::map<size_t, size_t> const & vectorParams ) const;
   std::string generateCommandSetStandard( std::string const & standard ) const;
   std::string generateCommandSetStandardEnhanced( bool                definition,
                                                   std::string const & standard,

@@ -27,8 +27,8 @@ static char const * EngineName = "Vulkan.hpp";
 
 std::string decodeAPIVersion( uint32_t apiVersion )
 {
-  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) +
-         "." + std::to_string( VK_VERSION_PATCH( apiVersion ) );
+  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) + "." +
+         std::to_string( VK_VERSION_PATCH( apiVersion ) );
 }
 
 std::string decodeDriverVersion( uint32_t driverVersion, uint32_t vendorID )
@@ -36,11 +36,9 @@ std::string decodeDriverVersion( uint32_t driverVersion, uint32_t vendorID )
   switch ( vendorID )
   {
     case 4318:
-      return std::to_string( ( driverVersion >> 22 ) & 0x3FF ) + "." +
-             std::to_string( ( driverVersion >> 14 ) & 0xFF ) + "." + std::to_string( ( driverVersion >> 6 ) & 0xFF ) +
-             "." + std::to_string( driverVersion & 0x3F );
-    case 0x8086:
-      return std::to_string( ( driverVersion >> 14 ) & 0x3FFFF ) + "." + std::to_string( ( driverVersion & 0x3FFF ) );
+      return std::to_string( ( driverVersion >> 22 ) & 0x3FF ) + "." + std::to_string( ( driverVersion >> 14 ) & 0xFF ) + "." +
+             std::to_string( ( driverVersion >> 6 ) & 0xFF ) + "." + std::to_string( driverVersion & 0x3F );
+    case 0x8086: return std::to_string( ( driverVersion >> 14 ) & 0x3FFFF ) + "." + std::to_string( ( driverVersion & 0x3FFF ) );
     default: return decodeAPIVersion( driverVersion );
   }
 }
@@ -103,8 +101,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
@@ -116,8 +113,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties =
-        physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
 
       std::cout << "PhysicalDevice " << i << "\n";
       auto properties2 = physicalDevices[i]
@@ -162,8 +158,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "\t\t"
                 << "apiVersion        = " << decodeAPIVersion( properties.apiVersion ) << "\n";
       std::cout << "\t\t"
-                << "driverVersion     = " << decodeDriverVersion( properties.driverVersion, properties.vendorID )
-                << "\n";
+                << "driverVersion     = " << decodeDriverVersion( properties.driverVersion, properties.vendorID ) << "\n";
       std::cout << "\t\t"
                 << "vendorID          = " << decodeVendorID( properties.vendorID ) << "\n";
       std::cout << "\t\t"
@@ -177,344 +172,243 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "\t\t"
                 << "limits:\n";
       std::cout << "\t\t\t"
-                << "bufferImageGranularity                          = " << properties.limits.bufferImageGranularity
-                << "\n";
+                << "bufferImageGranularity                          = " << properties.limits.bufferImageGranularity << "\n";
       std::cout << "\t\t\t"
-                << "discreteQueuePriorities                         = " << properties.limits.discreteQueuePriorities
-                << "\n";
+                << "discreteQueuePriorities                         = " << properties.limits.discreteQueuePriorities << "\n";
       std::cout << "\t\t\t"
-                << "framebufferColorSampleCounts                    = "
-                << vk::to_string( properties.limits.framebufferColorSampleCounts ) << "\n";
+                << "framebufferColorSampleCounts                    = " << vk::to_string( properties.limits.framebufferColorSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "framebufferDepthSampleCounts                    = "
-                << vk::to_string( properties.limits.framebufferDepthSampleCounts ) << "\n";
+                << "framebufferDepthSampleCounts                    = " << vk::to_string( properties.limits.framebufferDepthSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "framebufferNoAttachmentsSampleCounts            = "
-                << vk::to_string( properties.limits.framebufferNoAttachmentsSampleCounts ) << "\n";
+                << "framebufferNoAttachmentsSampleCounts            = " << vk::to_string( properties.limits.framebufferNoAttachmentsSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "framebufferStencilSampleCounts                  = "
-                << vk::to_string( properties.limits.framebufferStencilSampleCounts ) << "\n";
+                << "framebufferStencilSampleCounts                  = " << vk::to_string( properties.limits.framebufferStencilSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "lineWidthGranularity                            = " << properties.limits.lineWidthGranularity
-                << "\n";
+                << "lineWidthGranularity                            = " << properties.limits.lineWidthGranularity << "\n";
       std::cout << "\t\t\t"
                 << "lineWidthRange                                  = "
                 << "[" << properties.limits.lineWidthRange[0] << ", " << properties.limits.lineWidthRange[1] << "]"
                 << "\n";
       std::cout << "\t\t\t"
-                << "maxBoundDescriptorSets                          = " << properties.limits.maxBoundDescriptorSets
-                << "\n";
+                << "maxBoundDescriptorSets                          = " << properties.limits.maxBoundDescriptorSets << "\n";
       std::cout << "\t\t\t"
                 << "maxClipDistances                                = " << properties.limits.maxClipDistances << "\n";
       std::cout << "\t\t\t"
-                << "maxColorAttachments                             = " << properties.limits.maxColorAttachments
-                << "\n";
+                << "maxColorAttachments                             = " << properties.limits.maxColorAttachments << "\n";
       std::cout << "\t\t\t"
-                << "maxCombinedClipAndCullDistances                 = "
-                << properties.limits.maxCombinedClipAndCullDistances << "\n";
+                << "maxCombinedClipAndCullDistances                 = " << properties.limits.maxCombinedClipAndCullDistances << "\n";
       std::cout << "\t\t\t"
-                << "maxComputeSharedMemorySize                      = " << properties.limits.maxComputeSharedMemorySize
-                << "\n";
+                << "maxComputeSharedMemorySize                      = " << properties.limits.maxComputeSharedMemorySize << "\n";
       std::cout << "\t\t\t"
                 << "maxComputeWorkGroupCount                        = "
-                << "[" << properties.limits.maxComputeWorkGroupCount[0] << ", "
-                << properties.limits.maxComputeWorkGroupCount[1] << ", "
+                << "[" << properties.limits.maxComputeWorkGroupCount[0] << ", " << properties.limits.maxComputeWorkGroupCount[1] << ", "
                 << properties.limits.maxComputeWorkGroupCount[2] << "]"
                 << "\n";
       std::cout << "\t\t\t"
-                << "maxComputeWorkGroupInvocations                  = "
-                << properties.limits.maxComputeWorkGroupInvocations << "\n";
+                << "maxComputeWorkGroupInvocations                  = " << properties.limits.maxComputeWorkGroupInvocations << "\n";
       std::cout << "\t\t\t"
                 << "maxComputeWorkGroupSize                         = "
-                << "[" << properties.limits.maxComputeWorkGroupSize[0] << ", "
-                << properties.limits.maxComputeWorkGroupSize[1] << ", " << properties.limits.maxComputeWorkGroupSize[2]
-                << "]"
+                << "[" << properties.limits.maxComputeWorkGroupSize[0] << ", " << properties.limits.maxComputeWorkGroupSize[1] << ", "
+                << properties.limits.maxComputeWorkGroupSize[2] << "]"
                 << "\n";
       std::cout << "\t\t\t"
                 << "maxCullDistances                                = " << properties.limits.maxCullDistances << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetInputAttachments                = "
-                << properties.limits.maxDescriptorSetInputAttachments << "\n";
+                << "maxDescriptorSetInputAttachments                = " << properties.limits.maxDescriptorSetInputAttachments << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetSampledImages                   = "
-                << properties.limits.maxDescriptorSetSampledImages << "\n";
+                << "maxDescriptorSetSampledImages                   = " << properties.limits.maxDescriptorSetSampledImages << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetSamplers                        = " << properties.limits.maxDescriptorSetSamplers
-                << "\n";
+                << "maxDescriptorSetSamplers                        = " << properties.limits.maxDescriptorSetSamplers << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetStorageBuffers                  = "
-                << properties.limits.maxDescriptorSetStorageBuffers << "\n";
+                << "maxDescriptorSetStorageBuffers                  = " << properties.limits.maxDescriptorSetStorageBuffers << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetStorageBuffersDynamic           = "
-                << properties.limits.maxDescriptorSetStorageBuffersDynamic << "\n";
+                << "maxDescriptorSetStorageBuffersDynamic           = " << properties.limits.maxDescriptorSetStorageBuffersDynamic << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetStorageImages                   = "
-                << properties.limits.maxDescriptorSetStorageImages << "\n";
+                << "maxDescriptorSetStorageImages                   = " << properties.limits.maxDescriptorSetStorageImages << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetUniformBuffers                  = "
-                << properties.limits.maxDescriptorSetUniformBuffers << "\n";
+                << "maxDescriptorSetUniformBuffers                  = " << properties.limits.maxDescriptorSetUniformBuffers << "\n";
       std::cout << "\t\t\t"
-                << "maxDescriptorSetUniformBuffersDynamic           = "
-                << properties.limits.maxDescriptorSetUniformBuffersDynamic << "\n";
+                << "maxDescriptorSetUniformBuffersDynamic           = " << properties.limits.maxDescriptorSetUniformBuffersDynamic << "\n";
       std::cout << "\t\t\t"
-                << "maxDrawIndexedIndexValue                        = " << properties.limits.maxDrawIndexedIndexValue
-                << "\n";
+                << "maxDrawIndexedIndexValue                        = " << properties.limits.maxDrawIndexedIndexValue << "\n";
       std::cout << "\t\t\t"
-                << "maxDrawIndirectCount                            = " << properties.limits.maxDrawIndirectCount
-                << "\n";
+                << "maxDrawIndirectCount                            = " << properties.limits.maxDrawIndirectCount << "\n";
       std::cout << "\t\t\t"
-                << "maxFragmentCombinedOutputResources              = "
-                << properties.limits.maxFragmentCombinedOutputResources << "\n";
+                << "maxFragmentCombinedOutputResources              = " << properties.limits.maxFragmentCombinedOutputResources << "\n";
       std::cout << "\t\t\t"
-                << "maxFragmentDualSrcAttachments                   = "
-                << properties.limits.maxFragmentDualSrcAttachments << "\n";
+                << "maxFragmentDualSrcAttachments                   = " << properties.limits.maxFragmentDualSrcAttachments << "\n";
       std::cout << "\t\t\t"
-                << "maxFragmentInputComponents                      = " << properties.limits.maxFragmentInputComponents
-                << "\n";
+                << "maxFragmentInputComponents                      = " << properties.limits.maxFragmentInputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxFragmentOutputAttachments                    = "
-                << properties.limits.maxFragmentOutputAttachments << "\n";
+                << "maxFragmentOutputAttachments                    = " << properties.limits.maxFragmentOutputAttachments << "\n";
       std::cout << "\t\t\t"
-                << "maxFramebufferHeight                            = " << properties.limits.maxFramebufferHeight
-                << "\n";
+                << "maxFramebufferHeight                            = " << properties.limits.maxFramebufferHeight << "\n";
       std::cout << "\t\t\t"
-                << "maxFramebufferLayers                            = " << properties.limits.maxFramebufferLayers
-                << "\n";
+                << "maxFramebufferLayers                            = " << properties.limits.maxFramebufferLayers << "\n";
       std::cout << "\t\t\t"
-                << "maxFramebufferWidth                             = " << properties.limits.maxFramebufferWidth
-                << "\n";
+                << "maxFramebufferWidth                             = " << properties.limits.maxFramebufferWidth << "\n";
       std::cout << "\t\t\t"
-                << "maxGeometryInputComponents                      = " << properties.limits.maxGeometryInputComponents
-                << "\n";
+                << "maxGeometryInputComponents                      = " << properties.limits.maxGeometryInputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxGeometryOutputComponents                     = " << properties.limits.maxGeometryOutputComponents
-                << "\n";
+                << "maxGeometryOutputComponents                     = " << properties.limits.maxGeometryOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxGeometryOutputVertices                       = " << properties.limits.maxGeometryOutputVertices
-                << "\n";
+                << "maxGeometryOutputVertices                       = " << properties.limits.maxGeometryOutputVertices << "\n";
       std::cout << "\t\t\t"
-                << "maxGeometryShaderInvocations                    = "
-                << properties.limits.maxGeometryShaderInvocations << "\n";
+                << "maxGeometryShaderInvocations                    = " << properties.limits.maxGeometryShaderInvocations << "\n";
       std::cout << "\t\t\t"
-                << "maxGeometryTotalOutputComponents                = "
-                << properties.limits.maxGeometryTotalOutputComponents << "\n";
+                << "maxGeometryTotalOutputComponents                = " << properties.limits.maxGeometryTotalOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxImageArrayLayers                             = " << properties.limits.maxImageArrayLayers
-                << "\n";
+                << "maxImageArrayLayers                             = " << properties.limits.maxImageArrayLayers << "\n";
       std::cout << "\t\t\t"
-                << "maxImageDimension1D                             = " << properties.limits.maxImageDimension1D
-                << "\n";
+                << "maxImageDimension1D                             = " << properties.limits.maxImageDimension1D << "\n";
       std::cout << "\t\t\t"
-                << "maxImageDimension2D                             = " << properties.limits.maxImageDimension2D
-                << "\n";
+                << "maxImageDimension2D                             = " << properties.limits.maxImageDimension2D << "\n";
       std::cout << "\t\t\t"
-                << "maxImageDimension3D                             = " << properties.limits.maxImageDimension3D
-                << "\n";
+                << "maxImageDimension3D                             = " << properties.limits.maxImageDimension3D << "\n";
       std::cout << "\t\t\t"
-                << "maxImageDimensionCube                           = " << properties.limits.maxImageDimensionCube
-                << "\n";
+                << "maxImageDimensionCube                           = " << properties.limits.maxImageDimensionCube << "\n";
       std::cout << "\t\t\t"
-                << "maxInterpolationOffset                          = " << properties.limits.maxInterpolationOffset
-                << "\n";
+                << "maxInterpolationOffset                          = " << properties.limits.maxInterpolationOffset << "\n";
       std::cout << "\t\t\t"
-                << "maxMemoryAllocationCount                        = " << properties.limits.maxMemoryAllocationCount
-                << "\n";
+                << "maxMemoryAllocationCount                        = " << properties.limits.maxMemoryAllocationCount << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorInputAttachments           = "
-                << properties.limits.maxPerStageDescriptorInputAttachments << "\n";
+                << "maxPerStageDescriptorInputAttachments           = " << properties.limits.maxPerStageDescriptorInputAttachments << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorSampledImages              = "
-                << properties.limits.maxPerStageDescriptorSampledImages << "\n";
+                << "maxPerStageDescriptorSampledImages              = " << properties.limits.maxPerStageDescriptorSampledImages << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorSamplers                   = "
-                << properties.limits.maxPerStageDescriptorSamplers << "\n";
+                << "maxPerStageDescriptorSamplers                   = " << properties.limits.maxPerStageDescriptorSamplers << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorStorageBuffers             = "
-                << properties.limits.maxPerStageDescriptorStorageBuffers << "\n";
+                << "maxPerStageDescriptorStorageBuffers             = " << properties.limits.maxPerStageDescriptorStorageBuffers << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorStorageImages              = "
-                << properties.limits.maxPerStageDescriptorStorageImages << "\n";
+                << "maxPerStageDescriptorStorageImages              = " << properties.limits.maxPerStageDescriptorStorageImages << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageDescriptorUniformBuffers             = "
-                << properties.limits.maxPerStageDescriptorUniformBuffers << "\n";
+                << "maxPerStageDescriptorUniformBuffers             = " << properties.limits.maxPerStageDescriptorUniformBuffers << "\n";
       std::cout << "\t\t\t"
-                << "maxPerStageResources                            = " << properties.limits.maxPerStageResources
-                << "\n";
+                << "maxPerStageResources                            = " << properties.limits.maxPerStageResources << "\n";
       std::cout << "\t\t\t"
-                << "maxPushConstantsSize                            = " << properties.limits.maxPushConstantsSize
-                << "\n";
+                << "maxPushConstantsSize                            = " << properties.limits.maxPushConstantsSize << "\n";
       std::cout << "\t\t\t"
                 << "maxSampleMaskWords                              = " << properties.limits.maxSampleMaskWords << "\n";
       std::cout << "\t\t\t"
-                << "maxSamplerAllocationCount                       = " << properties.limits.maxSamplerAllocationCount
-                << "\n";
+                << "maxSamplerAllocationCount                       = " << properties.limits.maxSamplerAllocationCount << "\n";
       std::cout << "\t\t\t"
-                << "maxSamplerAnisotropy                            = " << properties.limits.maxSamplerAnisotropy
-                << "\n";
+                << "maxSamplerAnisotropy                            = " << properties.limits.maxSamplerAnisotropy << "\n";
       std::cout << "\t\t\t"
                 << "maxSamplerLodBias                               = " << properties.limits.maxSamplerLodBias << "\n";
       std::cout << "\t\t\t"
-                << "maxStorageBufferRange                           = " << properties.limits.maxStorageBufferRange
-                << "\n";
+                << "maxStorageBufferRange                           = " << properties.limits.maxStorageBufferRange << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationControlPerPatchOutputComponents  = "
-                << properties.limits.maxTessellationControlPerPatchOutputComponents << "\n";
+                << "maxTessellationControlPerPatchOutputComponents  = " << properties.limits.maxTessellationControlPerPatchOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationControlPerVertexInputComponents  = "
-                << properties.limits.maxTessellationControlPerVertexInputComponents << "\n";
+                << "maxTessellationControlPerVertexInputComponents  = " << properties.limits.maxTessellationControlPerVertexInputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationControlPerVertexOutputComponents = "
-                << properties.limits.maxTessellationControlPerVertexOutputComponents << "\n";
+                << "maxTessellationControlPerVertexOutputComponents = " << properties.limits.maxTessellationControlPerVertexOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationControlTotalOutputComponents     = "
-                << properties.limits.maxTessellationControlTotalOutputComponents << "\n";
+                << "maxTessellationControlTotalOutputComponents     = " << properties.limits.maxTessellationControlTotalOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationEvaluationInputComponents        = "
-                << properties.limits.maxTessellationEvaluationInputComponents << "\n";
+                << "maxTessellationEvaluationInputComponents        = " << properties.limits.maxTessellationEvaluationInputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationEvaluationOutputComponents       = "
-                << properties.limits.maxTessellationEvaluationOutputComponents << "\n";
+                << "maxTessellationEvaluationOutputComponents       = " << properties.limits.maxTessellationEvaluationOutputComponents << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationGenerationLevel                  = "
-                << properties.limits.maxTessellationGenerationLevel << "\n";
+                << "maxTessellationGenerationLevel                  = " << properties.limits.maxTessellationGenerationLevel << "\n";
       std::cout << "\t\t\t"
-                << "maxTessellationPatchSize                        = " << properties.limits.maxTessellationPatchSize
-                << "\n";
+                << "maxTessellationPatchSize                        = " << properties.limits.maxTessellationPatchSize << "\n";
       std::cout << "\t\t\t"
-                << "maxTexelBufferElements                          = " << properties.limits.maxTexelBufferElements
-                << "\n";
+                << "maxTexelBufferElements                          = " << properties.limits.maxTexelBufferElements << "\n";
       std::cout << "\t\t\t"
-                << "maxTexelGatherOffset                            = " << properties.limits.maxTexelGatherOffset
-                << "\n";
+                << "maxTexelGatherOffset                            = " << properties.limits.maxTexelGatherOffset << "\n";
       std::cout << "\t\t\t"
                 << "maxTexelOffset                                  = " << properties.limits.maxTexelOffset << "\n";
       std::cout << "\t\t\t"
-                << "maxUniformBufferRange                           = " << properties.limits.maxUniformBufferRange
-                << "\n";
+                << "maxUniformBufferRange                           = " << properties.limits.maxUniformBufferRange << "\n";
       std::cout << "\t\t\t"
-                << "maxVertexInputAttributeOffset                   = "
-                << properties.limits.maxVertexInputAttributeOffset << "\n";
+                << "maxVertexInputAttributeOffset                   = " << properties.limits.maxVertexInputAttributeOffset << "\n";
       std::cout << "\t\t\t"
-                << "maxVertexInputAttributes                        = " << properties.limits.maxVertexInputAttributes
-                << "\n";
+                << "maxVertexInputAttributes                        = " << properties.limits.maxVertexInputAttributes << "\n";
       std::cout << "\t\t\t"
-                << "maxVertexInputBindings                          = " << properties.limits.maxVertexInputBindings
-                << "\n";
+                << "maxVertexInputBindings                          = " << properties.limits.maxVertexInputBindings << "\n";
       std::cout << "\t\t\t"
-                << "maxVertexInputBindingStride                     = " << properties.limits.maxVertexInputBindingStride
-                << "\n";
+                << "maxVertexInputBindingStride                     = " << properties.limits.maxVertexInputBindingStride << "\n";
       std::cout << "\t\t\t"
-                << "maxVertexOutputComponents                       = " << properties.limits.maxVertexOutputComponents
-                << "\n";
+                << "maxVertexOutputComponents                       = " << properties.limits.maxVertexOutputComponents << "\n";
       std::cout << "\t\t\t"
                 << "maxViewportDimensions                           = "
-                << "[" << properties.limits.maxViewportDimensions[0] << ", "
-                << properties.limits.maxViewportDimensions[1] << "]"
+                << "[" << properties.limits.maxViewportDimensions[0] << ", " << properties.limits.maxViewportDimensions[1] << "]"
                 << "\n";
       std::cout << "\t\t\t"
                 << "maxViewports                                    = " << properties.limits.maxViewports << "\n";
       std::cout << "\t\t\t"
-                << "minInterpolationOffset                          = " << properties.limits.minInterpolationOffset
-                << "\n";
+                << "minInterpolationOffset                          = " << properties.limits.minInterpolationOffset << "\n";
       std::cout << "\t\t\t"
-                << "minMemoryMapAlignment                           = " << properties.limits.minMemoryMapAlignment
-                << "\n";
+                << "minMemoryMapAlignment                           = " << properties.limits.minMemoryMapAlignment << "\n";
       std::cout << "\t\t\t"
-                << "minStorageBufferOffsetAlignment                 = "
-                << properties.limits.minStorageBufferOffsetAlignment << "\n";
+                << "minStorageBufferOffsetAlignment                 = " << properties.limits.minStorageBufferOffsetAlignment << "\n";
       std::cout << "\t\t\t"
-                << "minTexelBufferOffsetAlignment                   = "
-                << properties.limits.minTexelBufferOffsetAlignment << "\n";
+                << "minTexelBufferOffsetAlignment                   = " << properties.limits.minTexelBufferOffsetAlignment << "\n";
       std::cout << "\t\t\t"
-                << "minTexelGatherOffset                            = " << properties.limits.minTexelGatherOffset
-                << "\n";
+                << "minTexelGatherOffset                            = " << properties.limits.minTexelGatherOffset << "\n";
       std::cout << "\t\t\t"
                 << "minTexelOffset                                  = " << properties.limits.minTexelOffset << "\n";
       std::cout << "\t\t\t"
-                << "minUniformBufferOffsetAlignment                 = "
-                << properties.limits.minUniformBufferOffsetAlignment << "\n";
+                << "minUniformBufferOffsetAlignment                 = " << properties.limits.minUniformBufferOffsetAlignment << "\n";
       std::cout << "\t\t\t"
-                << "mipmapPrecisionBits                             = " << properties.limits.mipmapPrecisionBits
-                << "\n";
+                << "mipmapPrecisionBits                             = " << properties.limits.mipmapPrecisionBits << "\n";
       std::cout << "\t\t\t"
-                << "nonCoherentAtomSize                             = " << properties.limits.nonCoherentAtomSize
-                << "\n";
+                << "nonCoherentAtomSize                             = " << properties.limits.nonCoherentAtomSize << "\n";
       std::cout << "\t\t\t"
-                << "optimalBufferCopyOffsetAlignment                = "
-                << properties.limits.optimalBufferCopyOffsetAlignment << "\n";
+                << "optimalBufferCopyOffsetAlignment                = " << properties.limits.optimalBufferCopyOffsetAlignment << "\n";
       std::cout << "\t\t\t"
-                << "optimalBufferCopyRowPitchAlignment              = "
-                << properties.limits.optimalBufferCopyRowPitchAlignment << "\n";
+                << "optimalBufferCopyRowPitchAlignment              = " << properties.limits.optimalBufferCopyRowPitchAlignment << "\n";
       std::cout << "\t\t\t"
-                << "pointSizeGranularity                            = " << properties.limits.pointSizeGranularity
-                << "\n";
+                << "pointSizeGranularity                            = " << properties.limits.pointSizeGranularity << "\n";
       std::cout << "\t\t\t"
                 << "pointSizeRange                                  = "
                 << "[" << properties.limits.pointSizeRange[0] << ", " << properties.limits.pointSizeRange[1] << "]"
                 << "\n";
       std::cout << "\t\t\t"
-                << "sampledImageColorSampleCounts                   = "
-                << vk::to_string( properties.limits.sampledImageColorSampleCounts ) << "\n";
+                << "sampledImageColorSampleCounts                   = " << vk::to_string( properties.limits.sampledImageColorSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "sampledImageDepthSampleCounts                   = "
-                << vk::to_string( properties.limits.sampledImageDepthSampleCounts ) << "\n";
+                << "sampledImageDepthSampleCounts                   = " << vk::to_string( properties.limits.sampledImageDepthSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "sampledImageIntegerSampleCounts                 = "
-                << vk::to_string( properties.limits.sampledImageIntegerSampleCounts ) << "\n";
+                << "sampledImageIntegerSampleCounts                 = " << vk::to_string( properties.limits.sampledImageIntegerSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "sampledImageStencilSampleCounts                 = "
-                << vk::to_string( properties.limits.sampledImageStencilSampleCounts ) << "\n";
+                << "sampledImageStencilSampleCounts                 = " << vk::to_string( properties.limits.sampledImageStencilSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "sparseAddressSpaceSize                          = " << properties.limits.sparseAddressSpaceSize
-                << "\n";
+                << "sparseAddressSpaceSize                          = " << properties.limits.sparseAddressSpaceSize << "\n";
       std::cout << "\t\t\t"
-                << "standardSampleLocations                         = "
-                << !!properties.limits.standardSampleLocations << "\n";
+                << "standardSampleLocations                         = " << !!properties.limits.standardSampleLocations << "\n";
       std::cout << "\t\t\t"
-                << "storageImageSampleCounts                        = "
-                << vk::to_string( properties.limits.storageImageSampleCounts ) << "\n";
+                << "storageImageSampleCounts                        = " << vk::to_string( properties.limits.storageImageSampleCounts ) << "\n";
       std::cout << "\t\t\t"
-                << "strictLines                                     = "
-                << !!properties.limits.strictLines << "\n";
+                << "strictLines                                     = " << !!properties.limits.strictLines << "\n";
       std::cout << "\t\t\t"
-                << "subPixelInterpolationOffsetBits                 = "
-                << properties.limits.subPixelInterpolationOffsetBits << "\n";
+                << "subPixelInterpolationOffsetBits                 = " << properties.limits.subPixelInterpolationOffsetBits << "\n";
       std::cout << "\t\t\t"
-                << "subPixelPrecisionBits                           = " << properties.limits.subPixelPrecisionBits
-                << "\n";
+                << "subPixelPrecisionBits                           = " << properties.limits.subPixelPrecisionBits << "\n";
       std::cout << "\t\t\t"
-                << "subTexelPrecisionBits                           = " << properties.limits.subTexelPrecisionBits
-                << "\n";
+                << "subTexelPrecisionBits                           = " << properties.limits.subTexelPrecisionBits << "\n";
       std::cout << "\t\t\t"
-                << "timestampComputeAndGraphics                     = "
-                << !!properties.limits.timestampComputeAndGraphics << "\n";
+                << "timestampComputeAndGraphics                     = " << !!properties.limits.timestampComputeAndGraphics << "\n";
       std::cout << "\t\t\t"
                 << "timestampPeriod                                 = " << properties.limits.timestampPeriod << "\n";
       std::cout << "\t\t\t"
                 << "viewportBoundsRange                             = "
-                << "[" << properties.limits.viewportBoundsRange[0] << ", " << properties.limits.viewportBoundsRange[1]
-                << "]"
+                << "[" << properties.limits.viewportBoundsRange[0] << ", " << properties.limits.viewportBoundsRange[1] << "]"
                 << "\n";
       std::cout << "\t\t\t"
-                << "viewportSubPixelBits                            = " << properties.limits.viewportSubPixelBits
-                << "\n";
+                << "viewportSubPixelBits                            = " << properties.limits.viewportSubPixelBits << "\n";
       std::cout << "\t\t"
                 << "sparseProperties:\n";
       std::cout << "\t\t\t"
-                << "residencyAlignedMipSize                   = "
-                << !!properties.sparseProperties.residencyAlignedMipSize << "\n";
+                << "residencyAlignedMipSize                   = " << !!properties.sparseProperties.residencyAlignedMipSize << "\n";
       std::cout << "\t\t\t"
-                << "residencyNonResidentStrict                = "
-                << !!properties.sparseProperties.residencyNonResidentStrict << "\n";
+                << "residencyNonResidentStrict                = " << !!properties.sparseProperties.residencyNonResidentStrict << "\n";
       std::cout << "\t\t\t"
-                << "residencyStandard2DBlockShape             = "
-                << !!properties.sparseProperties.residencyStandard2DBlockShape << "\n";
+                << "residencyStandard2DBlockShape             = " << !!properties.sparseProperties.residencyStandard2DBlockShape << "\n";
       std::cout << "\t\t\t"
-                << "residencyStandard2DMultisampleBlockShape  = "
-                << !!properties.sparseProperties.residencyStandard2DMultisampleBlockShape << "\n";
+                << "residencyStandard2DMultisampleBlockShape  = " << !!properties.sparseProperties.residencyStandard2DMultisampleBlockShape << "\n";
       std::cout << "\t\t\t"
-                << "residencyStandard3DBlockShape             = "
-                << !!properties.sparseProperties.residencyStandard3DBlockShape << "\n";
+                << "residencyStandard3DBlockShape             = " << !!properties.sparseProperties.residencyStandard3DBlockShape << "\n";
       std::cout << "\n";
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_blend_operation_advanced" ) )
@@ -524,25 +418,17 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "BlendOperationAdvancedProperties:\n";
         std::cout << "\t\t"
-                  << "advancedBlendAllOperations            = "
-                  << !!blendOperationAdvancedProperties.advancedBlendAllOperations << "\n";
+                  << "advancedBlendAllOperations            = " << !!blendOperationAdvancedProperties.advancedBlendAllOperations << "\n";
         std::cout << "\t\t"
-                  << "advancedBlendCorrelatedOverlap        = "
-                  << !!blendOperationAdvancedProperties.advancedBlendCorrelatedOverlap << "\n";
+                  << "advancedBlendCorrelatedOverlap        = " << !!blendOperationAdvancedProperties.advancedBlendCorrelatedOverlap << "\n";
         std::cout << "\t\t"
-                  << "advancedBlendIndependentBlend         = "
-                  << !!blendOperationAdvancedProperties.advancedBlendIndependentBlend << "\n";
+                  << "advancedBlendIndependentBlend         = " << !!blendOperationAdvancedProperties.advancedBlendIndependentBlend << "\n";
         std::cout << "\t\t"
-                  << "advancedBlendMaxColorAttachments      = "
-                  << blendOperationAdvancedProperties.advancedBlendMaxColorAttachments << "\n";
+                  << "advancedBlendMaxColorAttachments      = " << blendOperationAdvancedProperties.advancedBlendMaxColorAttachments << "\n";
         std::cout << "\t\t"
-                  << "advancedBlendNonPremultipliedDstColor = "
-                  << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedDstColor
-                  << "\n";
+                  << "advancedBlendNonPremultipliedDstColor = " << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedDstColor << "\n";
         std::cout << "\t\t"
-                  << "advancedBlendNonPremultipliedSrcColor = "
-                  << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedSrcColor
-                  << "\n";
+                  << "advancedBlendNonPremultipliedSrcColor = " << !!blendOperationAdvancedProperties.advancedBlendNonPremultipliedSrcColor << "\n";
         std::cout << "\n";
       }
 
@@ -553,35 +439,25 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "ConservativeRasterizationProperties:\n";
         std::cout << "\t\t"
-                  << "conservativePointAndLineRasterization       = "
-                  << !!conservativeRasterizationProperties.conservativePointAndLineRasterization
+                  << "conservativePointAndLineRasterization       = " << !!conservativeRasterizationProperties.conservativePointAndLineRasterization << "\n";
+        std::cout << "\t\t"
+                  << "conservativeRasterizationPostDepthCoverage  = " << !!conservativeRasterizationProperties.conservativeRasterizationPostDepthCoverage
                   << "\n";
         std::cout << "\t\t"
-                  << "conservativeRasterizationPostDepthCoverage  = "
-                  << !!conservativeRasterizationProperties.conservativeRasterizationPostDepthCoverage
+                  << "degenerateLinesRasterized                   = " << !!conservativeRasterizationProperties.degenerateLinesRasterized << "\n";
+        std::cout << "\t\t"
+                  << "degenerateTrianglesRasterized               = " << !!conservativeRasterizationProperties.degenerateTrianglesRasterized << "\n";
+        std::cout << "\t\t"
+                  << "extraPrimitiveOverestimationSizeGranularity = " << conservativeRasterizationProperties.extraPrimitiveOverestimationSizeGranularity
                   << "\n";
         std::cout << "\t\t"
-                  << "degenerateLinesRasterized                   = "
-                  << !!conservativeRasterizationProperties.degenerateLinesRasterized << "\n";
+                  << "fullyCoveredFragmentShaderInputVariable     = " << !!conservativeRasterizationProperties.fullyCoveredFragmentShaderInputVariable << "\n";
         std::cout << "\t\t"
-                  << "degenerateTrianglesRasterized               = "
-                  << !!conservativeRasterizationProperties.degenerateTrianglesRasterized << "\n";
+                  << "maxExtraPrimitiveOverestimationSize         = " << conservativeRasterizationProperties.maxExtraPrimitiveOverestimationSize << "\n";
         std::cout << "\t\t"
-                  << "extraPrimitiveOverestimationSizeGranularity = "
-                  << conservativeRasterizationProperties.extraPrimitiveOverestimationSizeGranularity << "\n";
+                  << "primitiveOverestimationSize                 = " << conservativeRasterizationProperties.primitiveOverestimationSize << "\n";
         std::cout << "\t\t"
-                  << "fullyCoveredFragmentShaderInputVariable     = "
-                  << !!conservativeRasterizationProperties.fullyCoveredFragmentShaderInputVariable
-                  << "\n";
-        std::cout << "\t\t"
-                  << "maxExtraPrimitiveOverestimationSize         = "
-                  << conservativeRasterizationProperties.maxExtraPrimitiveOverestimationSize << "\n";
-        std::cout << "\t\t"
-                  << "primitiveOverestimationSize                 = "
-                  << conservativeRasterizationProperties.primitiveOverestimationSize << "\n";
-        std::cout << "\t\t"
-                  << "primitiveUnderestimation                    = "
-                  << !!conservativeRasterizationProperties.primitiveUnderestimation << "\n";
+                  << "primitiveUnderestimation                    = " << !!conservativeRasterizationProperties.primitiveUnderestimation << "\n";
         std::cout << "\n";
       }
 
@@ -592,8 +468,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "CooperativeMatrixProperties:\n";
         std::cout << "\t\t"
-                  << "cooperativeMatrixSupportedStages  = "
-                  << vk::to_string( cooperativeMatrixProperties.cooperativeMatrixSupportedStages ) << "\n";
+                  << "cooperativeMatrixSupportedStages  = " << vk::to_string( cooperativeMatrixProperties.cooperativeMatrixSupportedStages ) << "\n";
         std::cout << "\n";
       }
 
@@ -604,17 +479,13 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "DepthStencilResolveProperties:\n";
         std::cout << "\t\t"
-                  << "independentResolve            = "
-                  << !!depthStencilResolveProperties.independentResolve << "\n";
+                  << "independentResolve            = " << !!depthStencilResolveProperties.independentResolve << "\n";
         std::cout << "\t\t"
-                  << "independentResolveNone        = "
-                  << !!depthStencilResolveProperties.independentResolveNone << "\n";
+                  << "independentResolveNone        = " << !!depthStencilResolveProperties.independentResolveNone << "\n";
         std::cout << "\t\t"
-                  << "supportedDepthResolveModes    = "
-                  << vk::to_string( depthStencilResolveProperties.supportedDepthResolveModes ) << "\n";
+                  << "supportedDepthResolveModes    = " << vk::to_string( depthStencilResolveProperties.supportedDepthResolveModes ) << "\n";
         std::cout << "\t\t"
-                  << "supportedStencilResolveModes  = "
-                  << vk::to_string( depthStencilResolveProperties.supportedStencilResolveModes ) << "\n";
+                  << "supportedStencilResolveModes  = " << vk::to_string( depthStencilResolveProperties.supportedStencilResolveModes ) << "\n";
         std::cout << "\n";
       }
 
@@ -625,26 +496,25 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "DescriptorIndexingProperties:\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindInputAttachments       = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindInputAttachments << "\n";
+                  << "maxDescriptorSetUpdateAfterBindInputAttachments       = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindInputAttachments
+                  << "\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindSampledImages          = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindSampledImages << "\n";
+                  << "maxDescriptorSetUpdateAfterBindSampledImages          = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindSampledImages
+                  << "\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindSamplers               = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindSamplers << "\n";
+                  << "maxDescriptorSetUpdateAfterBindSamplers               = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindSamplers << "\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindStorageBuffers         = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindStorageBuffers << "\n";
+                  << "maxDescriptorSetUpdateAfterBindStorageBuffers         = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindStorageBuffers
+                  << "\n";
         std::cout << "\t\t"
                   << "maxDescriptorSetUpdateAfterBindStorageBuffersDynamic  = "
                   << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindStorageBuffersDynamic << "\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindStorageImages          = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindStorageImages << "\n";
+                  << "maxDescriptorSetUpdateAfterBindStorageImages          = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindStorageImages
+                  << "\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetUpdateAfterBindUniformBuffers         = "
-                  << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindUniformBuffers << "\n";
+                  << "maxDescriptorSetUpdateAfterBindUniformBuffers         = " << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindUniformBuffers
+                  << "\n";
         std::cout << "\t\t"
                   << "maxDescriptorSetUpdateAfterBindUniformBuffersDynamic  = "
                   << descriptorIndexingProperties.maxDescriptorSetUpdateAfterBindUniformBuffersDynamic << "\n";
@@ -655,8 +525,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "maxPerStageDescriptorUpdateAfterBindSampledImages     = "
                   << descriptorIndexingProperties.maxPerStageDescriptorUpdateAfterBindSampledImages << "\n";
         std::cout << "\t\t"
-                  << "maxPerStageDescriptorUpdateAfterBindSamplers          = "
-                  << descriptorIndexingProperties.maxPerStageDescriptorUpdateAfterBindSamplers << "\n";
+                  << "maxPerStageDescriptorUpdateAfterBindSamplers          = " << descriptorIndexingProperties.maxPerStageDescriptorUpdateAfterBindSamplers
+                  << "\n";
         std::cout << "\t\t"
                   << "maxPerStageDescriptorUpdateAfterBindStorageBuffers    = "
                   << descriptorIndexingProperties.maxPerStageDescriptorUpdateAfterBindStorageBuffers << "\n";
@@ -667,44 +537,34 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "maxPerStageDescriptorUpdateAfterBindUniformBuffers    = "
                   << descriptorIndexingProperties.maxPerStageDescriptorUpdateAfterBindUniformBuffers << "\n";
         std::cout << "\t\t"
-                  << "maxPerStageUpdateAfterBindResources                   = "
-                  << descriptorIndexingProperties.maxPerStageUpdateAfterBindResources << "\n";
+                  << "maxPerStageUpdateAfterBindResources                   = " << descriptorIndexingProperties.maxPerStageUpdateAfterBindResources << "\n";
         std::cout << "\t\t"
-                  << "maxUpdateAfterBindDescriptorsInAllPools               = "
-                  << descriptorIndexingProperties.maxUpdateAfterBindDescriptorsInAllPools << "\n";
+                  << "maxUpdateAfterBindDescriptorsInAllPools               = " << descriptorIndexingProperties.maxUpdateAfterBindDescriptorsInAllPools << "\n";
         std::cout << "\t\t"
-                  << "quadDivergentImplicitLod                              = "
-                  << !!descriptorIndexingProperties.quadDivergentImplicitLod << "\n";
+                  << "quadDivergentImplicitLod                              = " << !!descriptorIndexingProperties.quadDivergentImplicitLod << "\n";
         std::cout << "\t\t"
-                  << "robustBufferAccessUpdateAfterBind                     = "
-                  << !!descriptorIndexingProperties.robustBufferAccessUpdateAfterBind << "\n";
+                  << "robustBufferAccessUpdateAfterBind                     = " << !!descriptorIndexingProperties.robustBufferAccessUpdateAfterBind << "\n";
         std::cout << "\t\t"
                   << "shaderInputAttachmentArrayNonUniformIndexingNative    = "
-                  << !!descriptorIndexingProperties.shaderInputAttachmentArrayNonUniformIndexingNative
-                  << "\n";
+                  << !!descriptorIndexingProperties.shaderInputAttachmentArrayNonUniformIndexingNative << "\n";
         std::cout << "\t\t"
                   << "shaderSampledImageArrayNonUniformIndexingNative       = "
-                  << !!descriptorIndexingProperties.shaderSampledImageArrayNonUniformIndexingNative
-                  << "\n";
+                  << !!descriptorIndexingProperties.shaderSampledImageArrayNonUniformIndexingNative << "\n";
         std::cout << "\t\t"
                   << "shaderStorageBufferArrayNonUniformIndexingNative      = "
-                  << !!descriptorIndexingProperties.shaderStorageBufferArrayNonUniformIndexingNative
-                  << "\n";
+                  << !!descriptorIndexingProperties.shaderStorageBufferArrayNonUniformIndexingNative << "\n";
         std::cout << "\t\t"
                   << "shaderStorageImageArrayNonUniformIndexingNative       = "
-                  << !!descriptorIndexingProperties.shaderStorageImageArrayNonUniformIndexingNative
-                  << "\n";
+                  << !!descriptorIndexingProperties.shaderStorageImageArrayNonUniformIndexingNative << "\n";
         std::cout << "\t\t"
                   << "shaderUniformBufferArrayNonUniformIndexingNative      = "
-                  << !!descriptorIndexingProperties.shaderUniformBufferArrayNonUniformIndexingNative
-                  << "\n";
+                  << !!descriptorIndexingProperties.shaderUniformBufferArrayNonUniformIndexingNative << "\n";
         std::cout << "\n";
       }
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_discard_rectangles" ) )
       {
-        vk::PhysicalDeviceDiscardRectanglePropertiesEXT const & discardRectangleProperties =
-          properties2.get<vk::PhysicalDeviceDiscardRectanglePropertiesEXT>();
+        vk::PhysicalDeviceDiscardRectanglePropertiesEXT const & discardRectangleProperties = properties2.get<vk::PhysicalDeviceDiscardRectanglePropertiesEXT>();
         std::cout << "\t"
                   << "DiscardRectangleProperties:\n";
         std::cout << "\t\t"
@@ -714,8 +574,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_KHR_driver_properties" ) )
       {
-        vk::PhysicalDeviceDriverPropertiesKHR const & driverProperties =
-          properties2.get<vk::PhysicalDeviceDriverPropertiesKHR>();
+        vk::PhysicalDeviceDriverPropertiesKHR const & driverProperties = properties2.get<vk::PhysicalDeviceDriverPropertiesKHR>();
         std::cout << "\t"
                   << "DriverProperties:\n";
         std::cout << "\t\t"
@@ -725,8 +584,8 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t\t"
                   << "driverInfo          = " << driverProperties.driverInfo << "\n";
         std::cout << "\t\t"
-                  << "conformanceVersion  = " << static_cast<uint32_t>( driverProperties.conformanceVersion.major )
-                  << "." << static_cast<uint32_t>( driverProperties.conformanceVersion.minor ) << "."
+                  << "conformanceVersion  = " << static_cast<uint32_t>( driverProperties.conformanceVersion.major ) << "."
+                  << static_cast<uint32_t>( driverProperties.conformanceVersion.minor ) << "."
                   << static_cast<uint32_t>( driverProperties.conformanceVersion.subminor ) << "."
                   << static_cast<uint32_t>( driverProperties.conformanceVersion.patch ) << std::dec << "\n";
         std::cout << "\n";
@@ -739,68 +598,49 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "ExternalMemoryHostProperties:\n";
         std::cout << "\t\t"
-                  << "minImportedHostPointerAlignment = "
-                  << externalMemoryHostProperties.minImportedHostPointerAlignment << "\n";
+                  << "minImportedHostPointerAlignment = " << externalMemoryHostProperties.minImportedHostPointerAlignment << "\n";
         std::cout << "\n";
       }
 
       if ( vk::su::contains( extensionProperties, "VK_KHR_shader_float_controls" ) )
       {
-        vk::PhysicalDeviceFloatControlsPropertiesKHR const & floatControlsProperties =
-          properties2.get<vk::PhysicalDeviceFloatControlsPropertiesKHR>();
+        vk::PhysicalDeviceFloatControlsPropertiesKHR const & floatControlsProperties = properties2.get<vk::PhysicalDeviceFloatControlsPropertiesKHR>();
         std::cout << "\t"
                   << "FloatControlsProperties:\n";
         std::cout << "\t\t"
-                  << "denormBehaviorIndependence            = "
-                  << vk::to_string( floatControlsProperties.denormBehaviorIndependence ) << "\n";
+                  << "denormBehaviorIndependence            = " << vk::to_string( floatControlsProperties.denormBehaviorIndependence ) << "\n";
         std::cout << "\t\t"
-                  << "roundingModeIndependence              = "
-                  << vk::to_string( floatControlsProperties.roundingModeIndependence ) << "\n";
+                  << "roundingModeIndependence              = " << vk::to_string( floatControlsProperties.roundingModeIndependence ) << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormFlushToZeroFloat16        = "
-                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat16 << "\n";
+                  << "shaderDenormFlushToZeroFloat16        = " << !!floatControlsProperties.shaderDenormFlushToZeroFloat16 << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormFlushToZeroFloat32        = "
-                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat32 << "\n";
+                  << "shaderDenormFlushToZeroFloat32        = " << !!floatControlsProperties.shaderDenormFlushToZeroFloat32 << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormFlushToZeroFloat64        = "
-                  << !!floatControlsProperties.shaderDenormFlushToZeroFloat64 << "\n";
+                  << "shaderDenormFlushToZeroFloat64        = " << !!floatControlsProperties.shaderDenormFlushToZeroFloat64 << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormPreserveFloat16           = "
-                  << !!floatControlsProperties.shaderDenormPreserveFloat16 << "\n";
+                  << "shaderDenormPreserveFloat16           = " << !!floatControlsProperties.shaderDenormPreserveFloat16 << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormPreserveFloat32           = "
-                  << !!floatControlsProperties.shaderDenormPreserveFloat32 << "\n";
+                  << "shaderDenormPreserveFloat32           = " << !!floatControlsProperties.shaderDenormPreserveFloat32 << "\n";
         std::cout << "\t\t"
-                  << "shaderDenormPreserveFloat64           = "
-                  << !!floatControlsProperties.shaderDenormPreserveFloat64 << "\n";
+                  << "shaderDenormPreserveFloat64           = " << !!floatControlsProperties.shaderDenormPreserveFloat64 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTEFloat16          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTEFloat16 << "\n";
+                  << "shaderRoundingModeRTEFloat16          = " << !!floatControlsProperties.shaderRoundingModeRTEFloat16 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTEFloat32          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTEFloat32 << "\n";
+                  << "shaderRoundingModeRTEFloat32          = " << !!floatControlsProperties.shaderRoundingModeRTEFloat32 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTEFloat64          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTEFloat64 << "\n";
+                  << "shaderRoundingModeRTEFloat64          = " << !!floatControlsProperties.shaderRoundingModeRTEFloat64 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTZFloat16          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTZFloat16 << "\n";
+                  << "shaderRoundingModeRTZFloat16          = " << !!floatControlsProperties.shaderRoundingModeRTZFloat16 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTZFloat32          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTZFloat32 << "\n";
+                  << "shaderRoundingModeRTZFloat32          = " << !!floatControlsProperties.shaderRoundingModeRTZFloat32 << "\n";
         std::cout << "\t\t"
-                  << "shaderRoundingModeRTZFloat64          = "
-                  << !!floatControlsProperties.shaderRoundingModeRTZFloat64 << "\n";
+                  << "shaderRoundingModeRTZFloat64          = " << !!floatControlsProperties.shaderRoundingModeRTZFloat64 << "\n";
         std::cout << "\t\t"
-                  << "shaderSignedZeroInfNanPreserveFloat16 = "
-                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat16 << "\n";
+                  << "shaderSignedZeroInfNanPreserveFloat16 = " << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat16 << "\n";
         std::cout << "\t\t"
-                  << "shaderSignedZeroInfNanPreserveFloat32 = "
-                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat32 << "\n";
+                  << "shaderSignedZeroInfNanPreserveFloat32 = " << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat32 << "\n";
         std::cout << "\t\t"
-                  << "shaderSignedZeroInfNanPreserveFloat64 = "
-                  << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat64 << "\n";
+                  << "shaderSignedZeroInfNanPreserveFloat64 = " << !!floatControlsProperties.shaderSignedZeroInfNanPreserveFloat64 << "\n";
         std::cout << "\n";
       }
 
@@ -811,14 +651,13 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "FragmentDensityProperties:\n";
         std::cout << "\t\t"
-                  << "fragmentDensityInvocations  = "
-                  << !!fragmentDensityMapProperties.fragmentDensityInvocations << "\n";
+                  << "fragmentDensityInvocations  = " << !!fragmentDensityMapProperties.fragmentDensityInvocations << "\n";
         std::cout << "\t\t"
-                  << "maxFragmentDensityTexelSize = " << fragmentDensityMapProperties.maxFragmentDensityTexelSize.width
-                  << " x " << fragmentDensityMapProperties.maxFragmentDensityTexelSize.height << "\n";
+                  << "maxFragmentDensityTexelSize = " << fragmentDensityMapProperties.maxFragmentDensityTexelSize.width << " x "
+                  << fragmentDensityMapProperties.maxFragmentDensityTexelSize.height << "\n";
         std::cout << "\t\t"
-                  << "minFragmentDensityTexelSize = " << fragmentDensityMapProperties.minFragmentDensityTexelSize.width
-                  << " x " << fragmentDensityMapProperties.minFragmentDensityTexelSize.height << "\n";
+                  << "minFragmentDensityTexelSize = " << fragmentDensityMapProperties.minFragmentDensityTexelSize.width << " x "
+                  << fragmentDensityMapProperties.minFragmentDensityTexelSize.height << "\n";
         std::cout << "\n";
       }
 
@@ -844,17 +683,15 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "InlineUniformBlockProperties:\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetInlineUniformBlocks                     = "
-                  << inlineUniformBlockProperties.maxDescriptorSetInlineUniformBlocks << "\n";
+                  << "maxDescriptorSetInlineUniformBlocks                     = " << inlineUniformBlockProperties.maxDescriptorSetInlineUniformBlocks << "\n";
         std::cout << "\t\t"
                   << "maxDescriptorSetUpdateAfterBindInlineUniformBlocks      = "
                   << inlineUniformBlockProperties.maxDescriptorSetUpdateAfterBindInlineUniformBlocks << "\n";
         std::cout << "\t\t"
-                  << "maxInlineUniformBlockSize                               = "
-                  << inlineUniformBlockProperties.maxInlineUniformBlockSize << "\n";
+                  << "maxInlineUniformBlockSize                               = " << inlineUniformBlockProperties.maxInlineUniformBlockSize << "\n";
         std::cout << "\t\t"
-                  << "maxPerStageDescriptorInlineUniformBlocks                = "
-                  << inlineUniformBlockProperties.maxPerStageDescriptorInlineUniformBlocks << "\n";
+                  << "maxPerStageDescriptorInlineUniformBlocks                = " << inlineUniformBlockProperties.maxPerStageDescriptorInlineUniformBlocks
+                  << "\n";
         std::cout << "\t\t"
                   << "maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks = "
                   << inlineUniformBlockProperties.maxPerStageDescriptorUpdateAfterBindInlineUniformBlocks << "\n";
@@ -872,8 +709,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\n";
       }
 
-      vk::PhysicalDeviceMaintenance3Properties const & maintenance3Properties =
-        properties2.get<vk::PhysicalDeviceMaintenance3Properties>();
+      vk::PhysicalDeviceMaintenance3Properties const & maintenance3Properties = properties2.get<vk::PhysicalDeviceMaintenance3Properties>();
       std::cout << "\t"
                 << "Maintenance3Properties:\n";
       std::cout << "\t\t"
@@ -884,8 +720,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_NV_mesh_shader" ) )
       {
-        vk::PhysicalDeviceMeshShaderPropertiesNV const & meshShaderProperties =
-          properties2.get<vk::PhysicalDeviceMeshShaderPropertiesNV>();
+        vk::PhysicalDeviceMeshShaderPropertiesNV const & meshShaderProperties = properties2.get<vk::PhysicalDeviceMeshShaderPropertiesNV>();
         std::cout << "\t"
                   << "MeshShaderProperties:\n";
         std::cout << "\t\t"
@@ -902,8 +737,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "maxMeshWorkGroupInvocations       = " << meshShaderProperties.maxMeshWorkGroupInvocations << "\n";
         std::cout << "\t\t"
                   << "maxMeshWorkGroupSize              = "
-                  << "[" << meshShaderProperties.maxMeshWorkGroupSize[0] << ", "
-                  << meshShaderProperties.maxMeshWorkGroupSize[1] << ", "
+                  << "[" << meshShaderProperties.maxMeshWorkGroupSize[0] << ", " << meshShaderProperties.maxMeshWorkGroupSize[1] << ", "
                   << meshShaderProperties.maxMeshWorkGroupSize[2] << "]"
                   << "\n";
         std::cout << "\t\t"
@@ -914,16 +748,13 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "maxTaskWorkGroupInvocations       = " << meshShaderProperties.maxTaskWorkGroupInvocations << "\n";
         std::cout << "\t\t"
                   << "maxTaskWorkGroupSize              = "
-                  << "[" << meshShaderProperties.maxTaskWorkGroupSize[0] << ", "
-                  << meshShaderProperties.maxTaskWorkGroupSize[1] << ", "
+                  << "[" << meshShaderProperties.maxTaskWorkGroupSize[0] << ", " << meshShaderProperties.maxTaskWorkGroupSize[1] << ", "
                   << meshShaderProperties.maxTaskWorkGroupSize[2] << "]"
                   << "\n";
         std::cout << "\t\t"
-                  << "meshOutputPerPrimitiveGranularity = " << meshShaderProperties.meshOutputPerPrimitiveGranularity
-                  << "\n";
+                  << "meshOutputPerPrimitiveGranularity = " << meshShaderProperties.meshOutputPerPrimitiveGranularity << "\n";
         std::cout << "\t\t"
-                  << "meshOutputPerVertexGranularity    = " << meshShaderProperties.meshOutputPerVertexGranularity
-                  << "\n";
+                  << "meshOutputPerVertexGranularity    = " << meshShaderProperties.meshOutputPerVertexGranularity << "\n";
         std::cout << "\n";
       }
 
@@ -934,13 +765,11 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "MultiviewPerViewAttributesProperties:\n";
         std::cout << "\t\t"
-                  << "perViewPositionAllComponents  = "
-                  << !!multiviewPerViewAttributesProperties.perViewPositionAllComponents << "\n";
+                  << "perViewPositionAllComponents  = " << !!multiviewPerViewAttributesProperties.perViewPositionAllComponents << "\n";
         std::cout << "\n";
       }
 
-      vk::PhysicalDeviceMultiviewProperties const & multiviewProperties =
-        properties2.get<vk::PhysicalDeviceMultiviewProperties>();
+      vk::PhysicalDeviceMultiviewProperties const & multiviewProperties = properties2.get<vk::PhysicalDeviceMultiviewProperties>();
       std::cout << "\t"
                 << "MultiviewProperties:\n";
       std::cout << "\t\t"
@@ -951,8 +780,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_pci_bus_info" ) )
       {
-        vk::PhysicalDevicePCIBusInfoPropertiesEXT const & pciBusInfoProperties =
-          properties2.get<vk::PhysicalDevicePCIBusInfoPropertiesEXT>();
+        vk::PhysicalDevicePCIBusInfoPropertiesEXT const & pciBusInfoProperties = properties2.get<vk::PhysicalDevicePCIBusInfoPropertiesEXT>();
         std::cout << "\t"
                   << "PCIBusInfoProperties:\n";
         std::cout << "\t\t"
@@ -968,18 +796,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_KHR_maintenance2" ) )
       {
-        vk::PhysicalDevicePointClippingProperties const & pointClippingProperties =
-          properties2.get<vk::PhysicalDevicePointClippingProperties>();
+        vk::PhysicalDevicePointClippingProperties const & pointClippingProperties = properties2.get<vk::PhysicalDevicePointClippingProperties>();
         std::cout << "\t"
                   << "PointClippingProperties:\n";
         std::cout << "\t\t"
-                  << "pointClippingBehavior = " << vk::to_string( pointClippingProperties.pointClippingBehavior )
-                  << "\n";
+                  << "pointClippingBehavior = " << vk::to_string( pointClippingProperties.pointClippingBehavior ) << "\n";
         std::cout << "\n";
       }
 
-      vk::PhysicalDeviceProtectedMemoryProperties const & protectedMemoryProperties =
-        properties2.get<vk::PhysicalDeviceProtectedMemoryProperties>();
+      vk::PhysicalDeviceProtectedMemoryProperties const & protectedMemoryProperties = properties2.get<vk::PhysicalDeviceProtectedMemoryProperties>();
       std::cout << "\t"
                 << "ProtectedMemoryProperties:\n";
       std::cout << "\t\t"
@@ -988,8 +813,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_KHR_push_descriptor" ) )
       {
-        vk::PhysicalDevicePushDescriptorPropertiesKHR const & pushDescriptorProperties =
-          properties2.get<vk::PhysicalDevicePushDescriptorPropertiesKHR>();
+        vk::PhysicalDevicePushDescriptorPropertiesKHR const & pushDescriptorProperties = properties2.get<vk::PhysicalDevicePushDescriptorPropertiesKHR>();
         std::cout << "\t"
                   << "PushDescriptorProperties:\n";
         std::cout << "\t\t"
@@ -999,13 +823,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_NV_ray_tracing" ) )
       {
-        vk::PhysicalDeviceRayTracingPropertiesNV const & rayTracingProperties =
-          properties2.get<vk::PhysicalDeviceRayTracingPropertiesNV>();
+        vk::PhysicalDeviceRayTracingPropertiesNV const & rayTracingProperties = properties2.get<vk::PhysicalDeviceRayTracingPropertiesNV>();
         std::cout << "\t"
                   << "RayTracingProperties:\n";
         std::cout << "\t\t"
-                  << "maxDescriptorSetAccelerationStructures  = "
-                  << rayTracingProperties.maxDescriptorSetAccelerationStructures << "\n";
+                  << "maxDescriptorSetAccelerationStructures  = " << rayTracingProperties.maxDescriptorSetAccelerationStructures << "\n";
         std::cout << "\t\t"
                   << "maxGeometryCount                        = " << rayTracingProperties.maxGeometryCount << "\n";
         std::cout << "\t\t"
@@ -1017,8 +839,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t\t"
                   << "maxTriangleCount                        = " << rayTracingProperties.maxTriangleCount << "\n";
         std::cout << "\t\t"
-                  << "shaderGroupBaseAlignment                = " << rayTracingProperties.shaderGroupBaseAlignment
-                  << "\n";
+                  << "shaderGroupBaseAlignment                = " << rayTracingProperties.shaderGroupBaseAlignment << "\n";
         std::cout << "\t\t"
                   << "shaderGroupHandleSize                   = " << rayTracingProperties.shaderGroupHandleSize << "\n";
         std::cout << "\n";
@@ -1026,26 +847,23 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_sample_locations" ) )
       {
-        vk::PhysicalDeviceSampleLocationsPropertiesEXT const & sampleLocationProperties =
-          properties2.get<vk::PhysicalDeviceSampleLocationsPropertiesEXT>();
+        vk::PhysicalDeviceSampleLocationsPropertiesEXT const & sampleLocationProperties = properties2.get<vk::PhysicalDeviceSampleLocationsPropertiesEXT>();
         std::cout << "\t"
                   << "SampleLocationProperties:\n";
         std::cout << "\t\t"
-                  << "maxSampleLocationGridSize     = " << sampleLocationProperties.maxSampleLocationGridSize.width
-                  << " x " << sampleLocationProperties.maxSampleLocationGridSize.height << "\n";
+                  << "maxSampleLocationGridSize     = " << sampleLocationProperties.maxSampleLocationGridSize.width << " x "
+                  << sampleLocationProperties.maxSampleLocationGridSize.height << "\n";
         std::cout << "\t\t"
                   << "sampleLocationCoordinateRange = "
-                  << "[" << sampleLocationProperties.sampleLocationCoordinateRange[0] << ", "
-                  << sampleLocationProperties.sampleLocationCoordinateRange[1] << "]"
+                  << "[" << sampleLocationProperties.sampleLocationCoordinateRange[0] << ", " << sampleLocationProperties.sampleLocationCoordinateRange[1]
+                  << "]"
                   << "\n";
         std::cout << "\t\t"
-                  << "sampleLocationSampleCounts    = "
-                  << vk::to_string( sampleLocationProperties.sampleLocationSampleCounts ) << "\n";
+                  << "sampleLocationSampleCounts    = " << vk::to_string( sampleLocationProperties.sampleLocationSampleCounts ) << "\n";
         std::cout << "\t\t"
                   << "sampleLocationSubPixelBits    = " << sampleLocationProperties.sampleLocationSubPixelBits << "\n";
         std::cout << "\t\t"
-                  << "variableSampleLocations       = "
-                  << !!sampleLocationProperties.variableSampleLocations << "\n";
+                  << "variableSampleLocations       = " << !!sampleLocationProperties.variableSampleLocations << "\n";
         std::cout << "\n";
       }
 
@@ -1056,18 +874,15 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "SamplerFilterMinmaxProperties:\n";
         std::cout << "\t\t"
-                  << "filterMinmaxImageComponentMapping   = "
-                  << !!samplerFilterMinmaxProperties.filterMinmaxImageComponentMapping << "\n";
+                  << "filterMinmaxImageComponentMapping   = " << !!samplerFilterMinmaxProperties.filterMinmaxImageComponentMapping << "\n";
         std::cout << "\t\t"
-                  << "filterMinmaxSingleComponentFormats  = "
-                  << !!samplerFilterMinmaxProperties.filterMinmaxSingleComponentFormats << "\n";
+                  << "filterMinmaxSingleComponentFormats  = " << !!samplerFilterMinmaxProperties.filterMinmaxSingleComponentFormats << "\n";
         std::cout << "\n";
       }
 
       if ( vk::su::contains( extensionProperties, "VK_AMD_shader_core_properties2" ) )
       {
-        vk::PhysicalDeviceShaderCoreProperties2AMD const & shaderCoreProperties2 =
-          properties2.get<vk::PhysicalDeviceShaderCoreProperties2AMD>();
+        vk::PhysicalDeviceShaderCoreProperties2AMD const & shaderCoreProperties2 = properties2.get<vk::PhysicalDeviceShaderCoreProperties2AMD>();
         std::cout << "\t"
                   << "ShaderCoreProperties2:\n";
         std::cout << "\t\t"
@@ -1079,8 +894,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_AMD_shader_core_properties2" ) )
       {
-        vk::PhysicalDeviceShaderCorePropertiesAMD const & shaderCoreProperties =
-          properties2.get<vk::PhysicalDeviceShaderCorePropertiesAMD>();
+        vk::PhysicalDeviceShaderCorePropertiesAMD const & shaderCoreProperties = properties2.get<vk::PhysicalDeviceShaderCorePropertiesAMD>();
         std::cout << "\t"
                   << "ShaderCoreProperties:\n";
         std::cout << "\t\t"
@@ -1116,8 +930,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_NV_shader_sm_builtins" ) )
       {
-        vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV const & shaderSMBuiltinsProperties =
-          properties2.get<vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV>();
+        vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV const & shaderSMBuiltinsProperties = properties2.get<vk::PhysicalDeviceShaderSMBuiltinsPropertiesNV>();
         std::cout << "\t"
                   << "ShaderSMBuiltinsProperties:\n";
         std::cout << "\t\t"
@@ -1129,8 +942,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( vk::su::contains( extensionProperties, "VK_NV_shading_rate_image" ) )
       {
-        vk::PhysicalDeviceShadingRateImagePropertiesNV const & shadingRageImageProperties =
-          properties2.get<vk::PhysicalDeviceShadingRateImagePropertiesNV>();
+        vk::PhysicalDeviceShadingRateImagePropertiesNV const & shadingRageImageProperties = properties2.get<vk::PhysicalDeviceShadingRateImagePropertiesNV>();
         std::cout << "\t"
                   << "ShadingRateImageProperties:\n";
         std::cout << "\t\t"
@@ -1139,19 +951,16 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "shadingRatePaletteSize      = " << shadingRageImageProperties.shadingRatePaletteSize << "\n";
         std::cout << "\t\t"
                   << "shadingRatePaletteSize      = "
-                  << "[" << shadingRageImageProperties.shadingRateTexelSize.width << " x "
-                  << shadingRageImageProperties.shadingRateTexelSize.height << "]"
+                  << "[" << shadingRageImageProperties.shadingRateTexelSize.width << " x " << shadingRageImageProperties.shadingRateTexelSize.height << "]"
                   << "\n";
         std::cout << "\n";
       }
 
-      vk::PhysicalDeviceSubgroupProperties const & subgroupProperties =
-        properties2.get<vk::PhysicalDeviceSubgroupProperties>();
+      vk::PhysicalDeviceSubgroupProperties const & subgroupProperties = properties2.get<vk::PhysicalDeviceSubgroupProperties>();
       std::cout << "\t"
                 << "SubgroupProperties:\n";
       std::cout << "\t\t"
-                << "quadOperationsInAllStages = " << !!subgroupProperties.quadOperationsInAllStages
-                << "\n";
+                << "quadOperationsInAllStages = " << !!subgroupProperties.quadOperationsInAllStages << "\n";
       std::cout << "\t\t"
                 << "subgroupSize              = " << subgroupProperties.subgroupSize << "\n";
       std::cout << "\t\t"
@@ -1167,15 +976,13 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "SubgroupSizeControlProperties:\n";
         std::cout << "\t\t"
-                  << "maxComputeWorkgroupSubgroups  = " << subgroupSizeControlProperties.maxComputeWorkgroupSubgroups
-                  << "\n";
+                  << "maxComputeWorkgroupSubgroups  = " << subgroupSizeControlProperties.maxComputeWorkgroupSubgroups << "\n";
         std::cout << "\t\t"
                   << "maxSubgroupSize               = " << subgroupSizeControlProperties.maxSubgroupSize << "\n";
         std::cout << "\t\t"
                   << "minSubgroupSize               = " << subgroupSizeControlProperties.minSubgroupSize << "\n";
         std::cout << "\t\t"
-                  << "requiredSubgroupSizeStages    = "
-                  << vk::to_string( subgroupSizeControlProperties.requiredSubgroupSizeStages ) << "\n";
+                  << "requiredSubgroupSizeStages    = " << vk::to_string( subgroupSizeControlProperties.requiredSubgroupSizeStages ) << "\n";
         std::cout << "\n";
       }
 
@@ -1186,8 +993,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "TimelineSemaphoreProperties:\n";
         std::cout << "\t\t"
-                  << "maxTimelineSemaphoreValueDifference = "
-                  << timelineSemaphoreProperties.maxTimelineSemaphoreValueDifference << "\n";
+                  << "maxTimelineSemaphoreValueDifference = " << timelineSemaphoreProperties.maxTimelineSemaphoreValueDifference << "\n";
         std::cout << "\n";
       }
 
@@ -1198,18 +1004,14 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "TexelBufferAlignmentProperties:\n";
         std::cout << "\t\t"
-                  << "storageTexelBufferOffsetAlignmentBytes        = "
-                  << texelBufferAlignmentProperties.storageTexelBufferOffsetAlignmentBytes << "\n";
+                  << "storageTexelBufferOffsetAlignmentBytes        = " << texelBufferAlignmentProperties.storageTexelBufferOffsetAlignmentBytes << "\n";
         std::cout << "\t\t"
-                  << "storageTexelBufferOffsetSingleTexelAlignment  = "
-                  << !!texelBufferAlignmentProperties.storageTexelBufferOffsetSingleTexelAlignment
+                  << "storageTexelBufferOffsetSingleTexelAlignment  = " << !!texelBufferAlignmentProperties.storageTexelBufferOffsetSingleTexelAlignment
                   << "\n";
         std::cout << "\t\t"
-                  << "uniformTexelBufferOffsetAlignmentBytes        = "
-                  << texelBufferAlignmentProperties.uniformTexelBufferOffsetAlignmentBytes << "\n";
+                  << "uniformTexelBufferOffsetAlignmentBytes        = " << texelBufferAlignmentProperties.uniformTexelBufferOffsetAlignmentBytes << "\n";
         std::cout << "\t\t"
-                  << "uniformTexelBufferOffsetSingleTexelAlignment  = "
-                  << !!texelBufferAlignmentProperties.uniformTexelBufferOffsetSingleTexelAlignment
+                  << "uniformTexelBufferOffsetSingleTexelAlignment  = " << !!texelBufferAlignmentProperties.uniformTexelBufferOffsetSingleTexelAlignment
                   << "\n";
         std::cout << "\n";
       }
@@ -1221,36 +1023,25 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t"
                   << "TransformFeedbackProperties:\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackBufferDataSize          = "
-                  << transformFeedbackProperties.maxTransformFeedbackBufferDataSize << "\n";
+                  << "maxTransformFeedbackBufferDataSize          = " << transformFeedbackProperties.maxTransformFeedbackBufferDataSize << "\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackBufferDataStride        = "
-                  << transformFeedbackProperties.maxTransformFeedbackBufferDataStride << "\n";
+                  << "maxTransformFeedbackBufferDataStride        = " << transformFeedbackProperties.maxTransformFeedbackBufferDataStride << "\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackBuffers                 = "
-                  << transformFeedbackProperties.maxTransformFeedbackBuffers << "\n";
+                  << "maxTransformFeedbackBuffers                 = " << transformFeedbackProperties.maxTransformFeedbackBuffers << "\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackBufferSize              = "
-                  << transformFeedbackProperties.maxTransformFeedbackBufferSize << "\n";
+                  << "maxTransformFeedbackBufferSize              = " << transformFeedbackProperties.maxTransformFeedbackBufferSize << "\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackStreamDataSize          = "
-                  << transformFeedbackProperties.maxTransformFeedbackStreamDataSize << "\n";
+                  << "maxTransformFeedbackStreamDataSize          = " << transformFeedbackProperties.maxTransformFeedbackStreamDataSize << "\n";
         std::cout << "\t\t"
-                  << "maxTransformFeedbackStreams                 = "
-                  << transformFeedbackProperties.maxTransformFeedbackStreams << "\n";
+                  << "maxTransformFeedbackStreams                 = " << transformFeedbackProperties.maxTransformFeedbackStreams << "\n";
         std::cout << "\t\t"
-                  << "transformFeedbackDraw                       = "
-                  << !!transformFeedbackProperties.transformFeedbackDraw << "\n";
+                  << "transformFeedbackDraw                       = " << !!transformFeedbackProperties.transformFeedbackDraw << "\n";
         std::cout << "\t\t"
-                  << "transformFeedbackQueries                    = "
-                  << !!transformFeedbackProperties.transformFeedbackQueries << "\n";
+                  << "transformFeedbackQueries                    = " << !!transformFeedbackProperties.transformFeedbackQueries << "\n";
         std::cout << "\t\t"
-                  << "transformFeedbackRasterizationStreamSelect  = "
-                  << !!transformFeedbackProperties.transformFeedbackRasterizationStreamSelect
-                  << "\n";
+                  << "transformFeedbackRasterizationStreamSelect  = " << !!transformFeedbackProperties.transformFeedbackRasterizationStreamSelect << "\n";
         std::cout << "\t\t"
-                  << "transformFeedbackStreamsLinesTriangles      = "
-                  << !!transformFeedbackProperties.transformFeedbackStreamsLinesTriangles << "\n";
+                  << "transformFeedbackStreamsLinesTriangles      = " << !!transformFeedbackProperties.transformFeedbackStreamsLinesTriangles << "\n";
         std::cout << "\n";
       }
 

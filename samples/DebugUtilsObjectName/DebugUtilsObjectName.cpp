@@ -33,16 +33,14 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
     assert( !physicalDevices.empty() );
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
-    vk::Device device = vk::su::createDevice( physicalDevices[0], graphicsQueueFamilyIndex );
+    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
+    vk::Device device                   = vk::su::createDevice( physicalDevices[0], graphicsQueueFamilyIndex );
 
     // create an image
     vk::ImageCreateInfo imageCreateInfo( {},
@@ -54,12 +52,11 @@ int main( int /*argc*/, char ** /*argv*/ )
                                          vk::SampleCountFlagBits::e1,
                                          vk::ImageTiling::eLinear,
                                          vk::ImageUsageFlagBits::eTransferSrc );
-    vk::Image     image = device.createImage( imageCreateInfo );
+    vk::Image           image = device.createImage( imageCreateInfo );
 
     /* VULKAN_KEY_START */
 
-    vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
-      vk::ObjectType::eImage, NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( VkImage, image ), "Image name" );
+    vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo( vk::ObjectType::eImage, NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( VkImage, image ), "Image name" );
     device.setDebugUtilsObjectNameEXT( debugUtilsObjectNameInfo );
 
     /* VULKAN_KEY_END */

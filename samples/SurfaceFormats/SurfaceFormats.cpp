@@ -31,8 +31,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
@@ -46,8 +45,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
-      std::vector<vk::SurfaceFormatKHR> surfaceFormats =
-        physicalDevices[i].getSurfaceFormatsKHR( surfaceData.surface );
+      std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevices[i].getSurfaceFormatsKHR( surfaceData.surface );
       for ( size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << "\tFormat " << j << "\n";

@@ -30,8 +30,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     /* VULKAN_HPP_KEY_START */

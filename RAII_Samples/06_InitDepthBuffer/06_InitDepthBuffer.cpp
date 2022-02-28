@@ -27,8 +27,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -38,8 +37,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::raii::Device device = vk::raii::su::makeDevice(
-      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -78,8 +76,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++ )
     {
       if ( ( typeBits & 1 ) &&
-           ( ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal ) ==
-             vk::MemoryPropertyFlagBits::eDeviceLocal ) )
+           ( ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eDeviceLocal ) == vk::MemoryPropertyFlagBits::eDeviceLocal ) )
       {
         typeIndex = i;
         break;
@@ -92,9 +89,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::DeviceMemory depthMemory( device, memoryAllocateInfo );
     depthImage.bindMemory( *depthMemory, 0 );
 
-    vk::ImageViewCreateInfo imageViewCreateInfo(
-      {}, *depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
-    vk::raii::ImageView depthView( device, imageViewCreateInfo );
+    vk::ImageViewCreateInfo imageViewCreateInfo( {}, *depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
+    vk::raii::ImageView     depthView( device, imageViewCreateInfo );
 
     /* VULKAN_HPP_KEY_END */
   }

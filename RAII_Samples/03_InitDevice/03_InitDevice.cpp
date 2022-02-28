@@ -36,8 +36,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_HPP_KEY_START */
 
     // find the index of the first queue family that supports graphics
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     // create a Device
     float                     queuePriority = 0.0f;

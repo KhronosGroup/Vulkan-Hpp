@@ -77,9 +77,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #else
 
   // aggregate initialization: need to explicitly specify sType and pNext, as well as all the other members !
-  vk::ApplicationInfo ai1{
-    vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2
-  };
+  vk::ApplicationInfo ai1{ vk::StructureType::eApplicationInfo, nullptr, appName, appVersion, engineName, engineVersion, VK_API_VERSION_1_2 };
 
 #  if ( 20 <= VULKAN_HPP_CPP_VERSION )
   // designated initializers are available with C++20

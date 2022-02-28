@@ -28,8 +28,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -48,8 +47,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "physicalDevices:\n";
       for ( size_t j = 0; j < groupProperties[i].physicalDeviceCount; j++ )
       {
-        vk::raii::PhysicalDevice physicalDevice(
-          instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ) );
+        vk::raii::PhysicalDevice physicalDevice( instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[j] ) );
         std::cout << "\t\t" << j << " : " << physicalDevice.getProperties().deviceName << "\n";
       }
       std::cout << "\t"
@@ -58,8 +56,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       if ( 1 < groupProperties[i].physicalDeviceCount )
       {
-        vk::raii::PhysicalDevice physicalDevice(
-          instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ) );
+        vk::raii::PhysicalDevice physicalDevice( instance, static_cast<VkPhysicalDevice>( groupProperties[i].physicalDevices[0] ) );
 
         // get the QueueFamilyProperties of the first PhysicalDevice
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
@@ -67,18 +64,15 @@ int main( int /*argc*/, char ** /*argv*/ )
         // get the first index into queueFamiliyProperties which supports graphics
         auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
                                               queueFamilyProperties.end(),
-                                              []( vk::QueueFamilyProperties const & qfp )
-                                              { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
+                                              []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
         size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
         assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
         // create a Device
         float                     queuePriority = 0.0f;
-        vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-          {}, static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
+        vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
         vk::StructureChain<vk::DeviceCreateInfo, vk::DeviceGroupDeviceCreateInfo> deviceCreateInfoChain(
-          { {}, deviceQueueCreateInfo },
-          { groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices } );
+          { {}, deviceQueueCreateInfo }, { groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices } );
 
         vk::raii::Device device( physicalDevice, deviceCreateInfoChain.get<vk::DeviceCreateInfo>() );
       }

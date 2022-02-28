@@ -45,9 +45,7 @@ namespace vk
       }
     }
 
-    bool GLSLtoSPV( const vk::ShaderStageFlagBits shaderType,
-                    std::string const &           glslShader,
-                    std::vector<unsigned int> &   spvShader )
+    bool GLSLtoSPV( const vk::ShaderStageFlagBits shaderType, std::string const & glslShader, std::vector<unsigned int> & spvShader )
     {
       EShLanguage stage = translateShaderStage( shaderType );
 
@@ -58,7 +56,7 @@ namespace vk
       shader.setStrings( shaderStrings, 1 );
 
       // Enable SPIR-V and Vulkan rules when parsing GLSL
-      EShMessages messages = ( EShMessages )( EShMsgSpvRules | EShMsgVulkanRules );
+      EShMessages messages = (EShMessages)( EShMsgSpvRules | EShMsgVulkanRules );
 
       if ( !shader.parse( &glslang::DefaultTBuiltInResource, 100, false, messages ) )
       {
@@ -86,9 +84,7 @@ namespace vk
       return true;
     }
 
-    vk::ShaderModule createShaderModule( vk::Device const &      device,
-                                         vk::ShaderStageFlagBits shaderStage,
-                                         std::string const &     shaderText )
+    vk::ShaderModule createShaderModule( vk::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText )
     {
       std::vector<unsigned int> shaderSPV;
       if ( !GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )

@@ -29,27 +29,23 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
+    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a DescriptorSetLayout
-    vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding(
-      0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex );
-    vk::DescriptorSetLayout descriptorSetLayout = device.createDescriptorSetLayout(
-      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), descriptorSetLayoutBinding ) );
+    vk::DescriptorSetLayoutBinding descriptorSetLayoutBinding( 0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex );
+    vk::DescriptorSetLayout        descriptorSetLayout =
+      device.createDescriptorSetLayout( vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), descriptorSetLayoutBinding ) );
 
     // create a PipelineLayout using that DescriptorSetLayout
-    vk::PipelineLayout pipelineLayout = device.createPipelineLayout(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), descriptorSetLayout ) );
+    vk::PipelineLayout pipelineLayout = device.createPipelineLayout( vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), descriptorSetLayout ) );
 
     // destroy the pipelineLayout and the descriptorSetLayout
     device.destroyPipelineLayout( pipelineLayout );

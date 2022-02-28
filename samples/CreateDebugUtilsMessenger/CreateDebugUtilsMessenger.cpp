@@ -34,9 +34,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT( VkInstance       
   return pfnVkCreateDebugUtilsMessengerEXT( instance, pCreateInfo, pAllocator, pMessenger );
 }
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance                    instance,
-                                                            VkDebugUtilsMessengerEXT      messenger,
-                                                            VkAllocationCallbacks const * pAllocator )
+VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance, VkDebugUtilsMessengerEXT messenger, VkAllocationCallbacks const * pAllocator )
 {
   return pfnVkDestroyDebugUtilsMessengerEXT( instance, messenger, pAllocator );
 }
@@ -85,8 +83,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
       message << "\t\t"
               << "Object " << i << "\n";
       message << "\t\t\t"
-              << "objectType   = "
-              << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
+              << "objectType   = " << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
       message << "\t\t\t"
               << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
@@ -114,31 +111,26 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<vk::ExtensionProperties> props = vk::enumerateInstanceExtensionProperties();
 
-    auto propertyIterator = std::find_if( props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) {
-      return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0;
-    } );
+    auto propertyIterator = std::find_if(
+      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
     if ( propertyIterator == props.end() )
     {
-      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension"
-                << std::endl;
+      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension" << std::endl;
       exit( 1 );
     }
 
     vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
     const char *        extensionName = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
-    vk::Instance        instance =
-      vk::createInstance( vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
+    vk::Instance        instance      = vk::createInstance( vk::InstanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, {}, extensionName ) );
 
-    pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+    pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
       exit( 1 );
     }
 
-    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>( instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -147,11 +139,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                          vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-    vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                                                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+    vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::DebugUtilsMessengerEXT            debugUtilsMessenger = instance.createDebugUtilsMessengerEXT(
-      vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
+    vk::DebugUtilsMessengerEXT        debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
 
     instance.destroyDebugUtilsMessengerEXT( debugUtilsMessenger );
     instance.destroy();

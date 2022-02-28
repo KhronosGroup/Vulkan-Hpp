@@ -22,8 +22,8 @@
 
 std::string decodeAPIVersion( uint32_t apiVersion )
 {
-  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) +
-         "." + std::to_string( VK_VERSION_PATCH( apiVersion ) );
+  return std::to_string( VK_VERSION_MAJOR( apiVersion ) ) + "." + std::to_string( VK_VERSION_MINOR( apiVersion ) ) + "." +
+         std::to_string( VK_VERSION_PATCH( apiVersion ) );
 }
 
 int main( int /*argc*/, char ** /*argv*/ )

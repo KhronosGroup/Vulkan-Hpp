@@ -31,15 +31,13 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
+    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
@@ -47,7 +45,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<unsigned int> vertexShaderSPV;
 #if !defined( NDEBUG )
-    bool ok = 
+    bool ok =
 #endif
       vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C, vertexShaderSPV );
     assert( ok );
@@ -57,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<unsigned int> fragmentShaderSPV;
 #if !defined( NDEBUG )
-    ok = 
+    ok =
 #endif
       vk::su::GLSLtoSPV( vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C, fragmentShaderSPV );
     assert( ok );

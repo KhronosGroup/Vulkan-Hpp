@@ -67,8 +67,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
       message << "\t\t"
               << "Object " << i << "\n";
       message << "\t\t\t"
-              << "objectType   = "
-              << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
+              << "objectType   = " << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
       message << "\t\t\t"
               << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
@@ -98,14 +97,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<vk::ExtensionProperties> props = context.enumerateInstanceExtensionProperties();
 
-    auto propsIterator = std::find_if( props.begin(),
-                                       props.end(),
-                                       []( vk::ExtensionProperties const & ep )
-                                       { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
+    auto propsIterator = std::find_if(
+      props.begin(), props.end(), []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == 0; } );
     if ( propsIterator == props.end() )
     {
-      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension"
-                << std::endl;
+      std::cout << "Something went very wrong, cannot find " << VK_EXT_DEBUG_UTILS_EXTENSION_NAME << " extension" << std::endl;
       exit( 1 );
     }
 
@@ -116,12 +112,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                          vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-    vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                                                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+    vk::DebugUtilsMessageTypeFlagsEXT    messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::DebugUtilsMessengerCreateInfoEXT  debugUtilsMessengerCreateInfoEXT(
-      {}, severityFlags, messageTypeFlags, &debugMessageFunc );
-    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
+    vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc );
+    vk::raii::DebugUtilsMessengerEXT     debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
 
     /* VULKAN_KEY_END */
   }

@@ -42,38 +42,34 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
+    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
-    vk::su::BufferData uniformBufferData(
-      physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
-    glm::mat4x4 mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
+    vk::su::BufferData uniformBufferData( physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
+    glm::mat4x4        mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
     vk::su::copyToDevice( device, uniformBufferData.deviceMemory, mvpcMatrix );
 
-    vk::DescriptorSetLayout descriptorSetLayout = vk::su::createDescriptorSetLayout(
-      device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
+    vk::DescriptorSetLayout descriptorSetLayout =
+      vk::su::createDescriptorSetLayout( device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a descriptor pool
     vk::DescriptorPoolSize poolSize( vk::DescriptorType::eUniformBuffer, 1 );
-    vk::DescriptorPool     descriptorPool = device.createDescriptorPool(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
+    vk::DescriptorPool     descriptorPool =
+      device.createDescriptorPool( vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
 
     // allocate a descriptor set
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
     vk::DescriptorBufferInfo descriptorBufferInfo( uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
-    vk::WriteDescriptorSet   writeDescriptorSet(
-      descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
+    vk::WriteDescriptorSet   writeDescriptorSet( descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
     device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     device.freeDescriptorSets( descriptorPool, descriptorSet );

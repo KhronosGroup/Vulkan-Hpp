@@ -38,8 +38,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -49,11 +48,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::raii::Device device = vk::raii::su::makeDevice(
-      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::raii::CommandPool commandPool = vk::raii::CommandPool(
-      device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } );
+    vk::raii::CommandPool commandPool =
+      vk::raii::CommandPool( device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } );
     vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
     vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
@@ -62,19 +60,17 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                device,
                                                surfaceData.surface,
                                                surfaceData.extent,
-                                               vk::ImageUsageFlagBits::eColorAttachment |
-                                                 vk::ImageUsageFlagBits::eTransferSrc,
+                                               vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
                                                {},
                                                graphicsAndPresentQueueFamilyIndex.first,
                                                graphicsAndPresentQueueFamilyIndex.second );
 
     vk::raii::su::DepthBufferData depthBufferData( physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent );
 
-    vk::raii::RenderPass renderPass =
-      vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
+    vk::raii::RenderPass renderPass = vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
 
-    std::vector<vk::raii::Framebuffer> framebuffers = vk::raii::su::makeFramebuffers(
-      device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, surfaceData.extent );
+    std::vector<vk::raii::Framebuffer> framebuffers =
+      vk::raii::su::makeFramebuffers( device, renderPass, swapChainData.imageViews, &depthBufferData.imageView, surfaceData.extent );
 
     /* VULKAN_KEY_START */
 
@@ -84,10 +80,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // allocate device memory for that buffer
     vk::MemoryRequirements memoryRequirements = vertexBuffer.getMemoryRequirements();
-    uint32_t               memoryTypeIndex =
-      vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
-                              memoryRequirements.memoryTypeBits,
-                              vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+    uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+                                                       memoryRequirements.memoryTypeBits,
+                                                       vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
     vk::raii::DeviceMemory deviceMemory( device, memoryAllocateInfo );
 
@@ -103,8 +98,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::Result result;
     uint32_t   imageIndex;
-    std::tie( result, imageIndex ) =
-      swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -114,8 +108,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     commandBuffer.begin( {} );
 
-    vk::RenderPassBeginInfo renderPassBeginInfo(
-      *renderPass, *framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
+    vk::RenderPassBeginInfo renderPassBeginInfo( *renderPass, *framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
     commandBuffer.beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
 
     commandBuffer.bindVertexBuffers( 0, { *vertexBuffer }, { 0 } );

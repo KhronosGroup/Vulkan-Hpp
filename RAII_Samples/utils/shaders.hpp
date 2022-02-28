@@ -23,9 +23,7 @@ namespace vk
     namespace su
     {
       template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-      vk::raii::ShaderModule makeShaderModule( vk::raii::Device const & device,
-                                               vk::ShaderStageFlagBits  shaderStage,
-                                               std::string const &      shaderText )
+      vk::raii::ShaderModule makeShaderModule( vk::raii::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText )
       {
         std::vector<unsigned int> shaderSPV;
         if ( !vk::su::GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )

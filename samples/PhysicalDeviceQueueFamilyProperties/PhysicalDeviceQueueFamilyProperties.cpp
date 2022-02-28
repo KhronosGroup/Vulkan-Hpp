@@ -31,8 +31,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
@@ -44,21 +43,18 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some features are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties =
-        physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
 
       std::cout << "PhysicalDevice " << i << "\n";
 
       // need to explicitly specify all the template arguments for getQueueFamilyProperties2 to make the compiler happy
-      using Chain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
-      auto queueFamilyProperties2 =
-        physicalDevices[i].getQueueFamilyProperties2<Chain, std::allocator<Chain>, vk::DispatchLoaderDynamic>();
+      using Chain                 = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
+      auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain, std::allocator<Chain>, vk::DispatchLoaderDynamic>();
       for ( size_t j = 0; j < queueFamilyProperties2.size(); j++ )
       {
         std::cout << "\t"
                   << "QueueFamily " << j << "\n";
-        vk::QueueFamilyProperties const & properties =
-          queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
+        vk::QueueFamilyProperties const & properties = queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
         std::cout << "\t\t"
                   << "QueueFamilyProperties:\n";
         std::cout << "\t\t\t"
@@ -68,20 +64,17 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << "\t\t\t"
                   << "timestampValidBits          = " << properties.timestampValidBits << "\n";
         std::cout << "\t\t\t"
-                  << "minImageTransferGranularity = " << properties.minImageTransferGranularity.width << " x "
-                  << properties.minImageTransferGranularity.height << " x "
-                  << properties.minImageTransferGranularity.depth << "\n";
+                  << "minImageTransferGranularity = " << properties.minImageTransferGranularity.width << " x " << properties.minImageTransferGranularity.height
+                  << " x " << properties.minImageTransferGranularity.depth << "\n";
         std::cout << "\n";
 
         if ( vk::su::contains( extensionProperties, "VK_NV_device_diagnostic_checkpoints" ) )
         {
-          vk::QueueFamilyCheckpointPropertiesNV const & checkpointProperties =
-            queueFamilyProperties2[j].get<vk::QueueFamilyCheckpointPropertiesNV>();
+          vk::QueueFamilyCheckpointPropertiesNV const & checkpointProperties = queueFamilyProperties2[j].get<vk::QueueFamilyCheckpointPropertiesNV>();
           std::cout << "\t\t"
                     << "CheckPointPropertiesNV:\n";
           std::cout << "\t\t\t"
-                    << "checkpointExecutionStageMask  = "
-                    << vk::to_string( checkpointProperties.checkpointExecutionStageMask ) << "\n";
+                    << "checkpointExecutionStageMask  = " << vk::to_string( checkpointProperties.checkpointExecutionStageMask ) << "\n";
           std::cout << "\n";
         }
       }

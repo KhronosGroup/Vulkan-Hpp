@@ -29,8 +29,7 @@ void cout( vk::SurfaceCapabilitiesKHR const & surfaceCapabilities )
 {
   std::cout << "\tCapabilities:\n";
   std::cout << "\t\t"
-            << "currentExtent           = " << surfaceCapabilities.currentExtent.width << " x "
-            << surfaceCapabilities.currentExtent.height << "\n";
+            << "currentExtent           = " << surfaceCapabilities.currentExtent.width << " x " << surfaceCapabilities.currentExtent.height << "\n";
   std::cout << "\t\t"
             << "currentTransform        = " << vk::to_string( surfaceCapabilities.currentTransform ) << "\n";
   std::cout << "\t\t"
@@ -38,13 +37,11 @@ void cout( vk::SurfaceCapabilitiesKHR const & surfaceCapabilities )
   std::cout << "\t\t"
             << "maxImageCount           = " << surfaceCapabilities.maxImageCount << "\n";
   std::cout << "\t\t"
-            << "maxImageExtent          = " << surfaceCapabilities.maxImageExtent.width << " x "
-            << surfaceCapabilities.maxImageExtent.height << "\n";
+            << "maxImageExtent          = " << surfaceCapabilities.maxImageExtent.width << " x " << surfaceCapabilities.maxImageExtent.height << "\n";
   std::cout << "\t\t"
             << "minImageCount           = " << surfaceCapabilities.minImageCount << "\n";
   std::cout << "\t\t"
-            << "minImageExtent          = " << surfaceCapabilities.minImageExtent.width << " x "
-            << surfaceCapabilities.minImageExtent.height << "\n";
+            << "minImageExtent          = " << surfaceCapabilities.minImageExtent.width << " x " << surfaceCapabilities.minImageExtent.height << "\n";
   std::cout << "\t\t"
             << "supportedCompositeAlpha = " << vk::to_string( surfaceCapabilities.supportedCompositeAlpha ) << "\n";
   std::cout << "\t\t"
@@ -60,13 +57,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::raii::Context context;
 
-    std::vector<vk::ExtensionProperties> instanceExtensionProperties = context.enumerateInstanceExtensionProperties();
-    bool                                 supportsGetSurfaceCapabilities2 =
-      ( std::find_if( instanceExtensionProperties.begin(),
-                      instanceExtensionProperties.end(),
-                      []( vk::ExtensionProperties const & ep ) {
-                        return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0;
-                      } ) != instanceExtensionProperties.end() );
+    std::vector<vk::ExtensionProperties> instanceExtensionProperties     = context.enumerateInstanceExtensionProperties();
+    bool                                 supportsGetSurfaceCapabilities2 = ( std::find_if( instanceExtensionProperties.begin(),
+                                                           instanceExtensionProperties.end(),
+                                                           []( vk::ExtensionProperties const & ep ) {
+                                                             return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0;
+                                                           } ) != instanceExtensionProperties.end() );
 
     std::vector<std::string> extensions = vk::su::getInstanceExtensions();
     if ( supportsGetSurfaceCapabilities2 )
@@ -90,22 +86,19 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties =
-        physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
 
       std::cout << "PhysicalDevice " << i << "\n";
       if ( supportsGetSurfaceCapabilities2 )
       {
-        auto surfaceCapabilities2 =
-          physicalDevices[i]
-            .getSurfaceCapabilities2KHR<vk::SurfaceCapabilities2KHR,
-                                        vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
-                                        vk::SharedPresentSurfaceCapabilitiesKHR,
-                                        vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
-                                        vk::SurfaceProtectedCapabilitiesKHR>( { *surfaceData.surface } );
+        auto surfaceCapabilities2 = physicalDevices[i]
+                                      .getSurfaceCapabilities2KHR<vk::SurfaceCapabilities2KHR,
+                                                                  vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
+                                                                  vk::SharedPresentSurfaceCapabilitiesKHR,
+                                                                  vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
+                                                                  vk::SurfaceProtectedCapabilitiesKHR>( { *surfaceData.surface } );
 
-        vk::SurfaceCapabilitiesKHR const & surfaceCapabilities =
-          surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
+        vk::SurfaceCapabilitiesKHR const & surfaceCapabilities = surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
         cout( surfaceCapabilities );
 
         if ( vk::su::contains( extensionProperties, "VK_AMD_display_native_hdr" ) )
@@ -120,12 +113,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
         if ( vk::su::contains( extensionProperties, "VK_KHR_shared_presentable_image" ) )
         {
-          vk::SharedPresentSurfaceCapabilitiesKHR sharedPresentSurfaceCapabilities =
-            surfaceCapabilities2.get<vk::SharedPresentSurfaceCapabilitiesKHR>();
+          vk::SharedPresentSurfaceCapabilitiesKHR sharedPresentSurfaceCapabilities = surfaceCapabilities2.get<vk::SharedPresentSurfaceCapabilitiesKHR>();
           std::cout << "\tSharedPresentSurfaceCapabilitiesKHR:\n";
           std::cout << "\t\t"
-                    << "sharedPresentSupportedUsageFlags  = "
-                    << vk::to_string( sharedPresentSurfaceCapabilities.sharedPresentSupportedUsageFlags ) << "\n";
+                    << "sharedPresentSupportedUsageFlags  = " << vk::to_string( sharedPresentSurfaceCapabilities.sharedPresentSupportedUsageFlags ) << "\n";
           std::cout << "\n";
         }
 
@@ -135,15 +126,13 @@ int main( int /*argc*/, char ** /*argv*/ )
             surfaceCapabilities2.get<vk::SurfaceCapabilitiesFullScreenExclusiveEXT>();
           std::cout << "\tSurfaceCapabilitiesFullScreenExclusiveEXT:\n";
           std::cout << "\t\t"
-                    << "fullScreenExclusiveSupported  = "
-                    << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported << "\n";
+                    << "fullScreenExclusiveSupported  = " << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported << "\n";
           std::cout << "\n";
         }
 
         if ( vk::su::contains( extensionProperties, "VK_KHR_surface_protected_capabilities" ) )
         {
-          vk::SurfaceProtectedCapabilitiesKHR surfaceProtectedCapabilities =
-            surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
+          vk::SurfaceProtectedCapabilitiesKHR surfaceProtectedCapabilities = surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
           std::cout << "\tSurfaceProtectedCapabilitiesKHR:\n";
           std::cout << "\t\t"
                     << "supportsProtected  = " << !!surfaceProtectedCapabilities.supportsProtected << "\n";
@@ -152,8 +141,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       }
       else
       {
-        vk::SurfaceCapabilitiesKHR surfaceCapabilities =
-          physicalDevices[i].getSurfaceCapabilitiesKHR( *surfaceData.surface );
+        vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[i].getSurfaceCapabilitiesKHR( *surfaceData.surface );
         cout( surfaceCapabilities );
       }
     }

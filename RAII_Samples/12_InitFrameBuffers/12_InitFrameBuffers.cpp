@@ -27,8 +27,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -38,23 +37,20 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::raii::Device device = vk::raii::su::makeDevice(
-      physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::raii::su::SwapChainData swapChainData( physicalDevice,
                                                device,
                                                surfaceData.surface,
                                                surfaceData.extent,
-                                               vk::ImageUsageFlagBits::eColorAttachment |
-                                                 vk::ImageUsageFlagBits::eTransferSrc,
+                                               vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
                                                {},
                                                graphicsAndPresentQueueFamilyIndex.first,
                                                graphicsAndPresentQueueFamilyIndex.second );
 
     vk::raii::su::DepthBufferData depthBufferData( physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent );
 
-    vk::raii::RenderPass renderPass =
-      vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
+    vk::raii::RenderPass renderPass = vk::raii::su::makeRenderPass( device, swapChainData.colorFormat, depthBufferData.format );
 
     /* VULKAN_KEY_START */
 
@@ -66,8 +62,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( auto const & view : swapChainData.imageViews )
     {
       attachments[0] = *view;
-      vk::FramebufferCreateInfo framebufferCreateInfo(
-        {}, *renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
+      vk::FramebufferCreateInfo framebufferCreateInfo( {}, *renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
       framebuffers.push_back( vk::raii::Framebuffer( device, framebufferCreateInfo ) );
     }
 

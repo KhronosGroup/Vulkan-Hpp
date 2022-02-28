@@ -42,21 +42,18 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::Device device = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
+    uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
     /* VULKAN_HPP_KEY_START */
 
-    glm::mat4x4 model = glm::mat4x4( 1.0f );
-    glm::mat4x4 view =
-      glm::lookAt( glm::vec3( -5.0f, 3.0f, -10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
+    glm::mat4x4 model      = glm::mat4x4( 1.0f );
+    glm::mat4x4 view       = glm::lookAt( glm::vec3( -5.0f, 3.0f, -10.0f ), glm::vec3( 0.0f, 0.0f, 0.0f ), glm::vec3( 0.0f, -1.0f, 0.0f ) );
     glm::mat4x4 projection = glm::perspective( glm::radians( 45.0f ), 1.0f, 0.1f, 100.0f );
     // clang-format off
     glm::mat4x4 clip = glm::mat4x4( 1.0f,  0.0f, 0.0f, 0.0f,
@@ -66,16 +63,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     // clang-format on
     glm::mat4x4 mvpc = clip * projection * view * model;
 
-    vk::Buffer uniformDataBuffer = device.createBuffer(
-      vk::BufferCreateInfo( vk::BufferCreateFlags(), sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer ) );
+    vk::Buffer uniformDataBuffer =
+      device.createBuffer( vk::BufferCreateInfo( vk::BufferCreateFlags(), sizeof( mvpc ), vk::BufferUsageFlagBits::eUniformBuffer ) );
 
     vk::MemoryRequirements memoryRequirements = device.getBufferMemoryRequirements( uniformDataBuffer );
-    uint32_t               typeIndex =
-      vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
-                              memoryRequirements.memoryTypeBits,
-                              vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
-    vk::DeviceMemory uniformDataMemory =
-      device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
+    uint32_t               typeIndex          = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+                                                 memoryRequirements.memoryTypeBits,
+                                                 vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+    vk::DeviceMemory       uniformDataMemory  = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, typeIndex ) );
 
     uint8_t * pData = static_cast<uint8_t *>( device.mapMemory( uniformDataMemory, 0, memoryRequirements.size ) );
     memcpy( pData, &mvpc, sizeof( mvpc ) );

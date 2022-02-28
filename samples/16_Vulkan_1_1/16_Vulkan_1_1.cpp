@@ -44,8 +44,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize the DipatchLoaderDynamic to use
     static vk::DynamicLoader  dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-      dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
     VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
 #endif
 
@@ -55,19 +54,15 @@ int main( int /*argc*/, char ** /*argv*/ )
     // Translate the version into major/minor for easier comparison
     uint32_t loader_major_version = VK_VERSION_MAJOR( apiVersion );
     uint32_t loader_minor_version = VK_VERSION_MINOR( apiVersion );
-    std::cout << "Loader/Runtime support detected for Vulkan " << loader_major_version << "." << loader_minor_version
-              << "\n";
+    std::cout << "Loader/Runtime support detected for Vulkan " << loader_major_version << "." << loader_minor_version << "\n";
 
     // Check current version against what we want to run
-    if ( loader_major_version > desiredMajorVersion ||
-         ( loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion ) )
+    if ( loader_major_version > desiredMajorVersion || ( loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion ) )
     {
       // Create the instance
-      vk::Instance instance =
-        vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion );
+      vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion );
 #if !defined( NDEBUG )
-      vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-        instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+      vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
       // Get the list of physical devices
@@ -76,11 +71,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       // Go through the list of physical devices and select only those that are capable of running the API version we
       // want.
       std::vector<vk::PhysicalDevice> desiredPhysicalDevices;
-      std::copy_if(
-        physicalDevices.begin(),
-        physicalDevices.end(),
-        std::back_inserter( desiredPhysicalDevices ),
-        [desiredVersion]( vk::PhysicalDevice const & pd ) { return pd.getProperties().apiVersion >= desiredVersion; } );
+      std::copy_if( physicalDevices.begin(),
+                    physicalDevices.end(),
+                    std::back_inserter( desiredPhysicalDevices ),
+                    [desiredVersion]( vk::PhysicalDevice const & pd ) { return pd.getProperties().apiVersion >= desiredVersion; } );
 
       // If we have something in the desired version physical device list, we're good
       if ( desiredPhysicalDevices.size() > 0 )
@@ -101,13 +95,12 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     if ( usingMinorVersion < desiredMinorVersion )
     {
-      std::cout << "Determined that this system can only use Vulkan API version " << usingVersionString
-                << " instead of desired version " << desiredVersionString << std::endl;
+      std::cout << "Determined that this system can only use Vulkan API version " << usingVersionString << " instead of desired version "
+                << desiredVersionString << std::endl;
     }
     else
     {
-      std::cout << "Determined that this system can run desired Vulkan API version " << desiredVersionString
-                << std::endl;
+      std::cout << "Determined that this system can run desired Vulkan API version " << desiredVersionString << std::endl;
     }
 
     /* VULKAN_KEY_END */

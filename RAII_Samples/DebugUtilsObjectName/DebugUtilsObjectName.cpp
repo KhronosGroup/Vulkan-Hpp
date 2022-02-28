@@ -31,8 +31,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -40,17 +39,15 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::PhysicalDevices physicalDevices( instance );
     assert( !physicalDevices.empty() );
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
-    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevices[0], graphicsQueueFamilyIndex );
+    uint32_t         graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevices[0].getQueueFamilyProperties() );
+    vk::raii::Device device                   = vk::raii::su::makeDevice( physicalDevices[0], graphicsQueueFamilyIndex );
 
     // create an image
     vk::raii::Image image = vk::raii::su::makeImage( device );
 
     /* VULKAN_KEY_START */
 
-    vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
-      vk::ObjectType::eImage, NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( VkImage, *image ), "Image name" );
+    vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo( vk::ObjectType::eImage, NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST( VkImage, *image ), "Image name" );
     device.setDebugUtilsObjectNameEXT( debugUtilsObjectNameInfo );
 
     /* VULKAN_KEY_END */

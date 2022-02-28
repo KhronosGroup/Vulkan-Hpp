@@ -94,12 +94,10 @@ int main( int /*argc*/, char ** /*argv*/ )
       auto                      enabledLayers2 = enabledLayers1;
 
       vk::ApplicationInfo    appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-      vk::InstanceCreateInfo info1(
-        {}, &appInfo, static_cast<uint32_t>( enabledLayers1.size() ), enabledLayers1.data() );
-      vk::InstanceCreateInfo info2(
-        {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
-      auto h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
-      auto h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
+      vk::InstanceCreateInfo info1( {}, &appInfo, static_cast<uint32_t>( enabledLayers1.size() ), enabledLayers1.data() );
+      vk::InstanceCreateInfo info2( {}, &appInfo, static_cast<uint32_t>( enabledLayers2.size() ), enabledLayers2.data() );
+      auto                   h1 = std::hash<vk::InstanceCreateInfo>{}( info1 );
+      auto                   h2 = std::hash<vk::InstanceCreateInfo>{}( info2 );
       assert( h1 == h2 );
       assert( info1 == info2 );
 #  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )

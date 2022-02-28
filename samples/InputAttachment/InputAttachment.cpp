@@ -72,8 +72,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
@@ -87,15 +86,12 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 500, 500 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::Device device =
-      vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = vk::su::createCommandPool( device, graphicsAndPresentQueueFamilyIndex.first );
     vk::CommandBuffer commandBuffer =
-      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) )
-        .front();
+      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
 
     vk::Queue graphicsQueue = device.getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
     vk::Queue presentQueue  = device.getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
@@ -104,8 +100,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                          device,
                                          surfaceData.surface,
                                          surfaceData.extent,
-                                         vk::ImageUsageFlagBits::eColorAttachment |
-                                           vk::ImageUsageFlagBits::eTransferSrc,
+                                         vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
                                          {},
                                          graphicsAndPresentQueueFamilyIndex.first,
                                          graphicsAndPresentQueueFamilyIndex.second );
@@ -126,54 +121,36 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                          1,
                                          vk::SampleCountFlagBits::e1,
                                          vk::ImageTiling::eOptimal,
-                                         vk::ImageUsageFlagBits::eInputAttachment |
-                                           vk::ImageUsageFlagBits::eTransferDst );
+                                         vk::ImageUsageFlagBits::eInputAttachment | vk::ImageUsageFlagBits::eTransferDst );
     vk::Image           inputImage = device.createImage( imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( inputImage );
-    uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
-      physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
-    vk::DeviceMemory inputMemory =
-      device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
+    uint32_t memoryTypeIndex     = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlags() );
+    vk::DeviceMemory inputMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     device.bindImageMemory( inputImage, inputMemory, 0 );
 
     // Set the image layout to TRANSFER_DST_OPTIMAL to be ready for clear
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
-    vk::su::setImageLayout( commandBuffer,
-                            inputImage,
-                            swapChainData.colorFormat,
-                            vk::ImageLayout::eUndefined,
-                            vk::ImageLayout::eTransferDstOptimal );
+    vk::su::setImageLayout( commandBuffer, inputImage, swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
 
-    commandBuffer.clearColorImage(
-      inputImage,
-      vk::ImageLayout::eTransferDstOptimal,
-      vk::ClearColorValue( std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) ),
-      vk::ImageSubresourceRange(
-        vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS ) );
+    commandBuffer.clearColorImage( inputImage,
+                                   vk::ImageLayout::eTransferDstOptimal,
+                                   vk::ClearColorValue( std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) ),
+                                   vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS ) );
 
     // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
-    vk::su::setImageLayout( commandBuffer,
-                            inputImage,
-                            swapChainData.colorFormat,
-                            vk::ImageLayout::eTransferDstOptimal,
-                            vk::ImageLayout::eShaderReadOnlyOptimal );
+    vk::su::setImageLayout(
+      commandBuffer, inputImage, swapChainData.colorFormat, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
 
-    vk::ImageViewCreateInfo imageViewCreateInfo( {},
-                                                 inputImage,
-                                                 vk::ImageViewType::e2D,
-                                                 swapChainData.colorFormat,
-                                                 {},
-                                                 { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
-    vk::ImageView           inputAttachmentView = device.createImageView( imageViewCreateInfo );
+    vk::ImageViewCreateInfo imageViewCreateInfo(
+      {}, inputImage, vk::ImageViewType::e2D, swapChainData.colorFormat, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
+    vk::ImageView inputAttachmentView = device.createImageView( imageViewCreateInfo );
 
-    vk::DescriptorSetLayoutBinding layoutBinding(
-      0, vk::DescriptorType::eInputAttachment, 1, vk::ShaderStageFlagBits::eFragment );
-    vk::DescriptorSetLayout descriptorSetLayout = device.createDescriptorSetLayout(
-      vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), layoutBinding ) );
+    vk::DescriptorSetLayoutBinding layoutBinding( 0, vk::DescriptorType::eInputAttachment, 1, vk::ShaderStageFlagBits::eFragment );
+    vk::DescriptorSetLayout        descriptorSetLayout =
+      device.createDescriptorSetLayout( vk::DescriptorSetLayoutCreateInfo( vk::DescriptorSetLayoutCreateFlags(), layoutBinding ) );
 
-    vk::PipelineLayout pipelineLayout = device.createPipelineLayout(
-      vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), descriptorSetLayout ) );
+    vk::PipelineLayout pipelineLayout = device.createPipelineLayout( vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), descriptorSetLayout ) );
 
     std::array<vk::AttachmentDescription, 2> attachments = {
       // First attachment is the color attachment - clear at the beginning of the renderpass and transition layout to
@@ -202,31 +179,26 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     };
     vk::AttachmentReference colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
-    vk::SubpassDescription  subPass(
-      vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
-    vk::RenderPass renderPass =
-      device.createRenderPass( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachments, subPass ) );
+    vk::SubpassDescription  subPass( vk::SubpassDescriptionFlags(), vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
+    vk::RenderPass          renderPass = device.createRenderPass( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachments, subPass ) );
 
     glslang::InitializeProcess();
-    vk::ShaderModule vertexShaderModule =
-      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText );
-    vk::ShaderModule fragmentShaderModule =
-      vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText );
+    vk::ShaderModule vertexShaderModule   = vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText );
+    vk::ShaderModule fragmentShaderModule = vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText );
     glslang::FinalizeProcess();
 
-    std::vector<vk::Framebuffer> framebuffers = vk::su::createFramebuffers(
-      device, renderPass, swapChainData.imageViews, inputAttachmentView, surfaceData.extent );
+    std::vector<vk::Framebuffer> framebuffers =
+      vk::su::createFramebuffers( device, renderPass, swapChainData.imageViews, inputAttachmentView, surfaceData.extent );
 
     vk::DescriptorPoolSize poolSize( vk::DescriptorType::eInputAttachment, 1 );
-    vk::DescriptorPool     descriptorPool = device.createDescriptorPool(
-      vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
+    vk::DescriptorPool     descriptorPool =
+      device.createDescriptorPool( vk::DescriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize ) );
 
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
     vk::DescriptorImageInfo inputImageInfo( nullptr, inputAttachmentView, vk::ImageLayout::eShaderReadOnlyOptimal );
-    vk::WriteDescriptorSet  writeDescriptorSet(
-      descriptorSet, 0, 0, vk::DescriptorType::eInputAttachment, inputImageInfo );
+    vk::WriteDescriptorSet  writeDescriptorSet( descriptorSet, 0, 0, vk::DescriptorType::eInputAttachment, inputImageInfo );
     device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     vk::PipelineCache pipelineCache    = device.createPipelineCache( vk::PipelineCacheCreateInfo() );
@@ -243,27 +215,21 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
 
-    vk::ResultValue<uint32_t> nexImage = device.acquireNextImage2KHR(
-      vk::AcquireNextImageInfoKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, {}, 1 ) );
+    vk::ResultValue<uint32_t> nexImage =
+      device.acquireNextImage2KHR( vk::AcquireNextImageInfoKHR( swapChainData.swapChain, UINT64_MAX, imageAcquiredSemaphore, {}, 1 ) );
     assert( nexImage.result == vk::Result::eSuccess );
     uint32_t currentBuffer = nexImage.value;
 
     vk::ClearValue clearValue;
     clearValue.color = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
     commandBuffer.beginRenderPass(
-      vk::RenderPassBeginInfo(
-        renderPass, framebuffers[currentBuffer], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValue ),
+      vk::RenderPassBeginInfo( renderPass, framebuffers[currentBuffer], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValue ),
       vk::SubpassContents::eInline );
     commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline );
     commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, descriptorSet, nullptr );
 
-    commandBuffer.setViewport( 0,
-                               vk::Viewport( 0.0f,
-                                             0.0f,
-                                             static_cast<float>( surfaceData.extent.width ),
-                                             static_cast<float>( surfaceData.extent.height ),
-                                             0.0f,
-                                             1.0f ) );
+    commandBuffer.setViewport(
+      0, vk::Viewport( 0.0f, 0.0f, static_cast<float>( surfaceData.extent.width ), static_cast<float>( surfaceData.extent.height ), 0.0f, 1.0f ) );
     commandBuffer.setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ) );
 
     commandBuffer.draw( 3, 1, 0, 0 );
@@ -278,9 +244,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     switch ( result )
     {
       case vk::Result::eSuccess: break;
-      case vk::Result::eSuboptimalKHR:
-        std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
-        break;
+      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

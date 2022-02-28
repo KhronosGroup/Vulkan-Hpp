@@ -46,9 +46,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT( VkInstance       
   return pfnVkCreateDebugUtilsMessengerEXT( instance, pCreateInfo, pAllocator, pMessenger );
 }
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance                    instance,
-                                                            VkDebugUtilsMessengerEXT      messenger,
-                                                            VkAllocationCallbacks const * pAllocator )
+VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance, VkDebugUtilsMessengerEXT messenger, VkAllocationCallbacks const * pAllocator )
 {
   return pfnVkDestroyDebugUtilsMessengerEXT( instance, messenger, pAllocator );
 }
@@ -86,10 +84,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
     for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message += std::string( "\t" ) + "Object " + std::to_string( i ) + "\n";
-      message += std::string( "\t\t" ) + "objectType   = " +
-                 vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) + "\n";
-      message +=
-        std::string( "\t\t" ) + "objectHandle = " + std::to_string( pCallbackData->pObjects[i].objectHandle ) + "\n";
+      message += std::string( "\t\t" ) + "objectType   = " + vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) + "\n";
+      message += std::string( "\t\t" ) + "objectHandle = " + std::to_string( pCallbackData->pObjects[i].objectHandle ) + "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
       {
         message += std::string( "\t\t" ) + "objectName   = <" + pCallbackData->pObjects[i].pObjectName + ">\n";
@@ -147,16 +143,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo, instanceLayerNames, instanceExtensionNames );
     vk::raii::Instance     instance( context, instanceCreateInfo );
 
-    pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+    pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
       exit( 1 );
     }
 
-    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>( instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -165,18 +159,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                          vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-    vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                                                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+    vk::DebugUtilsMessageTypeFlagsEXT    messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::DebugUtilsMessengerCreateInfoEXT  debugUtilsMessengerCreateInfoEXT(
-      {}, severityFlags, messageTypeFlags, &debugMessageFunc );
-    vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
+    vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc );
+    vk::raii::DebugUtilsMessengerEXT     debugUtilsMessenger( instance, debugUtilsMessengerCreateInfoEXT );
 
     vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
     // get the index of the first queue family that supports graphics
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     float                     queuePriority = 0.0f;
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, graphicsQueueFamilyIndex, 1, &queuePriority );
@@ -185,8 +176,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Create a vk::CommandPool (not a vk::raii::CommandPool, for testing purposes!)
     vk::CommandPoolCreateInfo commandPoolCreateInfo( {}, graphicsQueueFamilyIndex );
-    vk::CommandPool           commandPool =
-      ( *device ).createCommandPool( commandPoolCreateInfo, nullptr, *device.getDispatcher() );
+    vk::CommandPool           commandPool = ( *device ).createCommandPool( commandPoolCreateInfo, nullptr, *device.getDispatcher() );
 
     // The commandPool is not destroyed automatically (as it's not a UniqueCommandPool.
     // That is, the device is destroyed before the commmand pool and will trigger a validation error.

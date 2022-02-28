@@ -22,13 +22,9 @@ namespace vk
 {
   namespace su
   {
-    vk::ShaderModule createShaderModule( vk::Device const &      device,
-                                         vk::ShaderStageFlagBits shaderStage,
-                                         std::string const &     shaderText );
+    vk::ShaderModule createShaderModule( vk::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText );
 
-    bool GLSLtoSPV( const vk::ShaderStageFlagBits shaderType,
-                    std::string const &           glslShader,
-                    std::vector<unsigned int> &   spvShader );
+    bool GLSLtoSPV( const vk::ShaderStageFlagBits shaderType, std::string const & glslShader, std::vector<unsigned int> & spvShader );
   }  // namespace su
 }  // namespace vk
 

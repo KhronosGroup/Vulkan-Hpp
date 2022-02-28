@@ -40,8 +40,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       std::cout << lp.layerName << ":" << std::endl;
       std::cout << "\tVersion: " << lp.implementationVersion << std::endl;
-      std::cout << "\tAPI Version: (" << ( lp.specVersion >> 22 ) << "." << ( ( lp.specVersion >> 12 ) & 0x03FF ) << "."
-                << ( lp.specVersion & 0xFFF ) << ")" << std::endl;
+      std::cout << "\tAPI Version: (" << ( lp.specVersion >> 22 ) << "." << ( ( lp.specVersion >> 12 ) & 0x03FF ) << "." << ( lp.specVersion & 0xFFF ) << ")"
+                << std::endl;
       std::cout << "\tDescription: " << lp.description << std::endl;
       std::cout << std::endl;
     }

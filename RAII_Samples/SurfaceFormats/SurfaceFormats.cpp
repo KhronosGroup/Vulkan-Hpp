@@ -29,9 +29,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::raii::Context                   context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Context  context;
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -47,8 +46,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
-      std::vector<vk::SurfaceFormatKHR> surfaceFormats =
-        physicalDevices[i].getSurfaceFormatsKHR( *surfaceData.surface );
+      std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevices[i].getSurfaceFormatsKHR( *surfaceData.surface );
       for ( size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << "\tFormat " << j << "\n";

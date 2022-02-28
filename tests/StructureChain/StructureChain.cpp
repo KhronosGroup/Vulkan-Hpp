@@ -44,8 +44,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::DynamicLoader         dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-      dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
     VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
 
     vk::ApplicationInfo appInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
@@ -54,20 +53,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PhysicalDevice physicalDevice = instance->enumeratePhysicalDevices().front();
 
     // some valid StructureChains
-    vk::StructureChain<vk::PhysicalDeviceProperties2>                                                sc0;
-    const vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties>                sc1;
-    auto pdp = sc1.get<vk::PhysicalDeviceProperties2>();
+    vk::StructureChain<vk::PhysicalDeviceProperties2>                                       sc0;
+    const vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties> sc1;
+    auto                                                                                    pdp = sc1.get<vk::PhysicalDeviceProperties2>();
     unused( pdp );
-    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>      sc2;
-    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc3;
-    vk::StructureChain<vk::PhysicalDeviceProperties2,
-                       vk::PhysicalDeviceIDProperties,
-                       vk::PhysicalDeviceMaintenance3Properties>
-      sc4;
-    vk::StructureChain<vk::PhysicalDeviceProperties2,
-                       vk::PhysicalDeviceIDProperties,
-                       vk::PhysicalDevicePushDescriptorPropertiesKHR>
-      sc6;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceMaintenance3Properties>                                      sc2;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDevicePushDescriptorPropertiesKHR>                                 sc3;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDeviceMaintenance3Properties>      sc4;
+    vk::StructureChain<vk::PhysicalDeviceProperties2, vk::PhysicalDeviceIDProperties, vk::PhysicalDevicePushDescriptorPropertiesKHR> sc6;
     vk::StructureChain<vk::PhysicalDeviceProperties2,
                        vk::PhysicalDeviceIDProperties,
                        vk::PhysicalDeviceMaintenance3Properties,
@@ -125,14 +118,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     unused( a );
 
     // complex calls, getting StructureChain back
-    auto c = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
+    auto                          c  = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & c0 = c.get<vk::PhysicalDeviceFeatures2>();
     unused( c0 );
 
     auto t0 = c.get<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     unused( t0 );
 
-    auto d = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
+    auto                          d  = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVariablePointerFeatures>();
     vk::PhysicalDeviceFeatures2 & d0 = d.get<vk::PhysicalDeviceFeatures2>();
     unused( d0 );
     vk::PhysicalDeviceVariablePointerFeatures & d1 = d.get<vk::PhysicalDeviceVariablePointerFeatures>();
@@ -143,7 +136,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
     using AllocatorType  = std::vector<StructureChain>::allocator_type;
-    auto qfd = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>( VULKAN_HPP_DEFAULT_DISPATCHER );
+    auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>( VULKAN_HPP_DEFAULT_DISPATCHER );
     unused( qfd );
 
     // some tests with structures with allowDuplicate == true

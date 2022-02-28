@@ -91,13 +91,13 @@ namespace vk
       glm::vec3 const &    getUpVector() const;
       glm::u32vec2 const & getWindowSize() const;
       Action               mouseMove( glm::ivec2 const & position, MouseButton mouseButton, ModifierFlags & modifiers );
-      void setLookat( const glm::vec3 & cameraPosition, const glm::vec3 & centerPosition, const glm::vec3 & upVector );
-      void setMode( Mode mode );
-      void setMousePosition( glm::ivec2 const & position );
-      void setRoll( float roll );  // roll in radians
-      void setSpeed( float speed );
-      void setWindowSize( glm::ivec2 const & size );
-      void wheel( int value );
+      void                 setLookat( const glm::vec3 & cameraPosition, const glm::vec3 & centerPosition, const glm::vec3 & upVector );
+      void                 setMode( Mode mode );
+      void                 setMousePosition( glm::ivec2 const & position );
+      void                 setRoll( float roll );  // roll in radians
+      void                 setSpeed( float speed );
+      void                 setWindowSize( glm::ivec2 const & size );
+      void                 wheel( int value );
 
     private:
       void   dolly( glm::vec2 const & delta );

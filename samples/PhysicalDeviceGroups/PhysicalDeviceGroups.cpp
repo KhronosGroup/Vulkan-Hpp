@@ -29,8 +29,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     /* VULKAN_KEY_START */
@@ -61,21 +60,18 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
         // get the first index into queueFamiliyProperties which supports graphics
-        auto propertyIterator = std::find_if(
-          queueFamilyProperties.begin(), queueFamilyProperties.end(), []( vk::QueueFamilyProperties const & qfp ) {
-            return qfp.queueFlags & vk::QueueFlagBits::eGraphics;
-          } );
+        auto   propertyIterator         = std::find_if( queueFamilyProperties.begin(),
+                                              queueFamilyProperties.end(),
+                                              []( vk::QueueFamilyProperties const & qfp ) { return qfp.queueFlags & vk::QueueFlagBits::eGraphics; } );
         size_t graphicsQueueFamilyIndex = std::distance( queueFamilyProperties.begin(), propertyIterator );
         assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
         // create a Device
         float                     queuePriority = 0.0f;
-        vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-          vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-        vk::DeviceCreateInfo deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
+        vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
+        vk::DeviceCreateInfo      deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
 
-        vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo( groupProperties[i].physicalDeviceCount,
-                                                                     groupProperties[i].physicalDevices );
+        vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo( groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices );
         deviceCreateInfo.pNext = &deviceGroupDeviceCreateInfo;
 
         vk::Device device = physicalDevice.createDevice( deviceCreateInfo );

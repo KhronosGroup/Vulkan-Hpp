@@ -43,23 +43,19 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     vk::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 50, 50 ) );
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::Device device =
-      vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = vk::su::createCommandPool( device, graphicsAndPresentQueueFamilyIndex.first );
     vk::CommandBuffer commandBuffer =
-      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) )
-        .front();
+      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
 
     vk::Queue graphicsQueue = device.getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
     vk::Queue presentQueue  = device.getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
@@ -72,32 +68,28 @@ int main( int /*argc*/, char ** /*argv*/ )
     // See if we can use a linear tiled image for a texture, if not, we will need a staging buffer for the texture data
     bool needsStaging = !( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage );
 
-    vk::ImageCreateInfo imageCreateInfo(
-      vk::ImageCreateFlags(),
-      vk::ImageType::e2D,
-      format,
-      vk::Extent3D( surfaceData.extent, 1 ),
-      1,
-      1,
-      vk::SampleCountFlagBits::e1,
-      needsStaging ? vk::ImageTiling::eOptimal : vk::ImageTiling::eLinear,
-      vk::ImageUsageFlagBits::eSampled |
-        ( needsStaging ? vk::ImageUsageFlagBits::eTransferDst : vk::ImageUsageFlagBits() ),
-      vk::SharingMode::eExclusive,
-      {},
-      needsStaging ? vk::ImageLayout::eUndefined : vk::ImageLayout::ePreinitialized );
-    vk::Image image = device.createImage( imageCreateInfo );
+    vk::ImageCreateInfo imageCreateInfo( vk::ImageCreateFlags(),
+                                         vk::ImageType::e2D,
+                                         format,
+                                         vk::Extent3D( surfaceData.extent, 1 ),
+                                         1,
+                                         1,
+                                         vk::SampleCountFlagBits::e1,
+                                         needsStaging ? vk::ImageTiling::eOptimal : vk::ImageTiling::eLinear,
+                                         vk::ImageUsageFlagBits::eSampled | ( needsStaging ? vk::ImageUsageFlagBits::eTransferDst : vk::ImageUsageFlagBits() ),
+                                         vk::SharingMode::eExclusive,
+                                         {},
+                                         needsStaging ? vk::ImageLayout::eUndefined : vk::ImageLayout::ePreinitialized );
+    vk::Image           image = device.createImage( imageCreateInfo );
 
     vk::MemoryRequirements memoryRequirements = device.getImageMemoryRequirements( image );
     uint32_t               memoryTypeIndex    = vk::su::findMemoryType(
       physicalDevice.getMemoryProperties(),
       memoryRequirements.memoryTypeBits,
-      needsStaging ? vk::MemoryPropertyFlags()
-                                    : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
+      needsStaging ? vk::MemoryPropertyFlags() : ( vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent ) );
 
     // allocate memory
-    vk::DeviceMemory imageMemory =
-      device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
+    vk::DeviceMemory imageMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
 
     // bind memory
     device.bindImageMemory( image, imageMemory, 0 );
@@ -107,16 +99,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     if ( needsStaging )
     {
       // Need a staging buffer to map and copy texture into
-      textureBuffer =
-        device.createBuffer( vk::BufferCreateInfo( vk::BufferCreateFlags(),
-                                                   surfaceData.extent.width * surfaceData.extent.height * 4,
-                                                   vk::BufferUsageFlagBits::eTransferSrc ) );
+      textureBuffer = device.createBuffer(
+        vk::BufferCreateInfo( vk::BufferCreateFlags(), surfaceData.extent.width * surfaceData.extent.height * 4, vk::BufferUsageFlagBits::eTransferSrc ) );
 
       memoryRequirements = device.getBufferMemoryRequirements( textureBuffer );
-      memoryTypeIndex =
-        vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
-                                memoryRequirements.memoryTypeBits,
-                                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
+      memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(),
+                                                memoryRequirements.memoryTypeBits,
+                                                vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
 
       // allocate memory
       textureBufferMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
@@ -126,12 +115,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
     else
     {
-      vk::SubresourceLayout subresourceLayout =
-        device.getImageSubresourceLayout( image, vk::ImageSubresource( vk::ImageAspectFlagBits::eColor ) );
+      vk::SubresourceLayout subresourceLayout = device.getImageSubresourceLayout( image, vk::ImageSubresource( vk::ImageAspectFlagBits::eColor ) );
     }
 
-    void * data = device.mapMemory(
-      needsStaging ? textureBufferMemory : imageMemory, 0, memoryRequirements.size, vk::MemoryMapFlags() );
+    void * data = device.mapMemory( needsStaging ? textureBufferMemory : imageMemory, 0, memoryRequirements.size, vk::MemoryMapFlags() );
 
     // Checkerboard of 16x16 pixel squares
     unsigned char * pImageMemory = static_cast<unsigned char *>( data );
@@ -154,8 +141,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     if ( needsStaging )
     {
       // Since we're going to blit to the texture image, set its layout to eTransferDstOptimal
-      vk::su::setImageLayout(
-        commandBuffer, image, format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
+      vk::su::setImageLayout( commandBuffer, image, format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
       vk::BufferImageCopy copyRegion( 0,
                                       surfaceData.extent.width,
                                       surfaceData.extent.height,
@@ -164,14 +150,12 @@ int main( int /*argc*/, char ** /*argv*/ )
                                       vk::Extent3D( surfaceData.extent, 1 ) );
       commandBuffer.copyBufferToImage( textureBuffer, image, vk::ImageLayout::eTransferDstOptimal, copyRegion );
       // Set the layout for the texture image from eTransferDstOptimal to SHADER_READ_ONLY
-      vk::su::setImageLayout(
-        commandBuffer, image, format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
+      vk::su::setImageLayout( commandBuffer, image, format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
     }
     else
     {
       // If we can use the linear tiled image as a texture, just do it
-      vk::su::setImageLayout(
-        commandBuffer, image, format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal );
+      vk::su::setImageLayout( commandBuffer, image, format, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eShaderReadOnlyOptimal );
     }
 
     commandBuffer.end();
@@ -194,9 +178,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                              vk::BorderColor::eFloatOpaqueWhite );
     vk::Sampler           sampler = device.createSampler( samplerCreateInfo );
 
-    vk::ImageViewCreateInfo imageViewCreateInfo(
-      {}, image, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
-    vk::ImageView imageView = device.createImageView( imageViewCreateInfo );
+    vk::ImageViewCreateInfo imageViewCreateInfo( {}, image, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
+    vk::ImageView           imageView = device.createImageView( imageViewCreateInfo );
 
     /* VULKAN_KEY_END */
 

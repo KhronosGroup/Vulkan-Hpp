@@ -40,41 +40,35 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
     vk::raii::PhysicalDevice physicalDevice = std::move( vk::raii::PhysicalDevices( instance ).front() );
 
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
-    vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
+    uint32_t         graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    vk::raii::Device device                   = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex );
 
-    vk::raii::su::BufferData uniformBufferData(
-      physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
-    glm::mat4x4 mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
+    vk::raii::su::BufferData uniformBufferData( physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
+    glm::mat4x4              mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( vk::Extent2D( 0, 0 ) );
     vk::raii::su::copyToDevice( uniformBufferData.deviceMemory, mvpcMatrix );
 
-    vk::raii::DescriptorSetLayout descriptorSetLayout = vk::raii::su::makeDescriptorSetLayout(
-      device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
+    vk::raii::DescriptorSetLayout descriptorSetLayout =
+      vk::raii::su::makeDescriptorSetLayout( device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
 
     /* VULKAN_HPP_KEY_START */
 
     // create a descriptor pool
     vk::DescriptorPoolSize       poolSize( vk::DescriptorType::eUniformBuffer, 1 );
-    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo(
-      vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize );
-    vk::raii::DescriptorPool descriptorPool( device, descriptorPoolCreateInfo );
+    vk::DescriptorPoolCreateInfo descriptorPoolCreateInfo( vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize );
+    vk::raii::DescriptorPool     descriptorPool( device, descriptorPoolCreateInfo );
 
     // allocate a descriptor set
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
-    vk::raii::DescriptorSet       descriptorSet =
-      std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
+    vk::raii::DescriptorSet       descriptorSet = std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
 
     vk::DescriptorBufferInfo descriptorBufferInfo( *uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
-    vk::WriteDescriptorSet   writeDescriptorSet(
-      *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
+    vk::WriteDescriptorSet   writeDescriptorSet( *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
     device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     /* VULKAN_HPP_KEY_END */

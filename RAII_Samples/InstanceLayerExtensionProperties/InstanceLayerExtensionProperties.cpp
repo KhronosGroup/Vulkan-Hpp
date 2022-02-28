@@ -23,8 +23,7 @@
 
 struct PropertyData
 {
-  PropertyData( vk::LayerProperties const &                  layerProperties_,
-                std::vector<vk::ExtensionProperties> const & extensionProperties_ )
+  PropertyData( vk::LayerProperties const & layerProperties_, std::vector<vk::ExtensionProperties> const & extensionProperties_ )
     : layerProperties( layerProperties_ ), extensionProperties( extensionProperties_ )
   {}
 

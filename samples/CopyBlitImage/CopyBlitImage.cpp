@@ -29,8 +29,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
@@ -44,15 +43,12 @@ int main( int /*argc*/, char ** /*argv*/ )
       exit( -1 );
     }
 
-    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex =
-      vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    vk::Device device =
-      vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
+    std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
+    vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
     vk::CommandPool   commandPool = vk::su::createCommandPool( device, graphicsAndPresentQueueFamilyIndex.first );
     vk::CommandBuffer commandBuffer =
-      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) )
-        .front();
+      device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
 
     vk::Queue graphicsQueue = device.getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
     vk::Queue presentQueue  = device.getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
@@ -61,8 +57,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                          device,
                                          surfaceData.surface,
                                          surfaceData.extent,
-                                         vk::ImageUsageFlagBits::eColorAttachment |
-                                           vk::ImageUsageFlagBits::eTransferDst,
+                                         vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst,
                                          {},
                                          graphicsAndPresentQueueFamilyIndex.first,
                                          graphicsAndPresentQueueFamilyIndex.second );
@@ -70,25 +65,20 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 #if !defined( NDEBUG )
     vk::FormatProperties formatProperties = physicalDevice.getFormatProperties( swapChainData.colorFormat );
-    assert( ( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eBlitSrc ) &&
-            "Format cannot be used as transfer source" );
+    assert( ( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eBlitSrc ) && "Format cannot be used as transfer source" );
 #endif
 
     vk::Semaphore imageAcquiredSemaphore = device.createSemaphore( vk::SemaphoreCreateInfo() );
 
     // Get the index of the next available swapchain image:
-    vk::ResultValue<uint32_t> nextImage =
-      device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
+    vk::ResultValue<uint32_t> nextImage = device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore, nullptr );
     assert( nextImage.result == vk::Result::eSuccess );
     assert( nextImage.value < swapChainData.images.size() );
     uint32_t imageIndex = nextImage.value;
 
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
-    vk::su::setImageLayout( commandBuffer,
-                            swapChainData.images[imageIndex],
-                            swapChainData.colorFormat,
-                            vk::ImageLayout::eUndefined,
-                            vk::ImageLayout::eTransferDstOptimal );
+    vk::su::setImageLayout(
+      commandBuffer, swapChainData.images[imageIndex], swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal );
 
     // Create an image, map it, and write some values to the image
     vk::ImageCreateInfo imageCreateInfo( vk::ImageCreateFlags(),
@@ -104,18 +94,12 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::PhysicalDeviceMemoryProperties memoryProperties   = physicalDevice.getMemoryProperties();
     vk::MemoryRequirements             memoryRequirements = device.getImageMemoryRequirements( blitSourceImage );
-    uint32_t                           memoryTypeIndex    = vk::su::findMemoryType(
-      memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
+    uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
 
-    vk::DeviceMemory deviceMemory =
-      device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
+    vk::DeviceMemory deviceMemory = device.allocateMemory( vk::MemoryAllocateInfo( memoryRequirements.size, memoryTypeIndex ) );
     device.bindImageMemory( blitSourceImage, deviceMemory, 0 );
 
-    vk::su::setImageLayout( commandBuffer,
-                            blitSourceImage,
-                            swapChainData.colorFormat,
-                            vk::ImageLayout::eUndefined,
-                            vk::ImageLayout::eGeneral );
+    vk::su::setImageLayout( commandBuffer, blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral );
 
     commandBuffer.end();
 
@@ -128,8 +112,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     while ( device.waitForFences( commandFence, true, vk::su::FenceTimeout ) == vk::Result::eTimeout )
       ;
 
-    unsigned char * pImageMemory =
-      static_cast<unsigned char *>( device.mapMemory( deviceMemory, 0, memoryRequirements.size ) );
+    unsigned char * pImageMemory = static_cast<unsigned char *>( device.mapMemory( deviceMemory, 0, memoryRequirements.size ) );
 
     // Checkerboard of 8x8 pixel squares
     for ( uint32_t row = 0; row < surfaceData.extent.height; row++ )
@@ -153,27 +136,18 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
 
     // Intend to blit from this image, set the layout accordingly
-    vk::su::setImageLayout( commandBuffer,
-                            blitSourceImage,
-                            swapChainData.colorFormat,
-                            vk::ImageLayout::eGeneral,
-                            vk::ImageLayout::eTransferSrcOptimal );
+    vk::su::setImageLayout( commandBuffer, blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal );
 
     vk::Image blitDestinationImage = swapChainData.images[imageIndex];
 
     // Do a 32x32 blit to all of the dst image - should get big squares
     vk::ImageSubresourceLayers imageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 );
-    vk::ImageBlit              imageBlit(
-      imageSubresourceLayers,
-      { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( 32, 32, 1 ) } },
-      imageSubresourceLayers,
-      { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( surfaceData.extent.width, surfaceData.extent.height, 1 ) } } );
-    commandBuffer.blitImage( blitSourceImage,
-                             vk::ImageLayout::eTransferSrcOptimal,
-                             blitDestinationImage,
-                             vk::ImageLayout::eTransferDstOptimal,
-                             imageBlit,
-                             vk::Filter::eLinear );
+    vk::ImageBlit              imageBlit( imageSubresourceLayers,
+                             { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( 32, 32, 1 ) } },
+                             imageSubresourceLayers,
+                             { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( surfaceData.extent.width, surfaceData.extent.height, 1 ) } } );
+    commandBuffer.blitImage(
+      blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear );
 
     // Use a barrier to make sure the blit is finished before the copy starts
     vk::ImageMemoryBarrier memoryBarrier( vk::AccessFlagBits::eTransferWrite,
@@ -184,40 +158,23 @@ int main( int /*argc*/, char ** /*argv*/ )
                                           VK_QUEUE_FAMILY_IGNORED,
                                           blitDestinationImage,
                                           vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 ) );
-    commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eTransfer,
-                                   vk::PipelineStageFlagBits::eTransfer,
-                                   vk::DependencyFlags(),
-                                   nullptr,
-                                   nullptr,
-                                   memoryBarrier );
+    commandBuffer.pipelineBarrier(
+      vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer, vk::DependencyFlags(), nullptr, nullptr, memoryBarrier );
 
     // Do a image copy to part of the dst image - checks should stay small
-    vk::ImageCopy imageCopy( imageSubresourceLayers,
-                             vk::Offset3D(),
-                             imageSubresourceLayers,
-                             vk::Offset3D( 256, 256, 0 ),
-                             vk::Extent3D( 128, 128, 1 ) );
-    commandBuffer.copyImage( blitSourceImage,
-                             vk::ImageLayout::eTransferSrcOptimal,
-                             blitDestinationImage,
-                             vk::ImageLayout::eTransferDstOptimal,
-                             imageCopy );
+    vk::ImageCopy imageCopy( imageSubresourceLayers, vk::Offset3D(), imageSubresourceLayers, vk::Offset3D( 256, 256, 0 ), vk::Extent3D( 128, 128, 1 ) );
+    commandBuffer.copyImage( blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy );
 
-    vk::ImageMemoryBarrier prePresentBarrier(
-      vk::AccessFlagBits::eTransferWrite,
-      vk::AccessFlagBits::eMemoryRead,
-      vk::ImageLayout::eTransferDstOptimal,
-      vk::ImageLayout::ePresentSrcKHR,
-      VK_QUEUE_FAMILY_IGNORED,
-      VK_QUEUE_FAMILY_IGNORED,
-      swapChainData.images[imageIndex],
-      vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 ) );
-    commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eTransfer,
-                                   vk::PipelineStageFlagBits::eTopOfPipe,
-                                   vk::DependencyFlags(),
-                                   nullptr,
-                                   nullptr,
-                                   prePresentBarrier );
+    vk::ImageMemoryBarrier prePresentBarrier( vk::AccessFlagBits::eTransferWrite,
+                                              vk::AccessFlagBits::eMemoryRead,
+                                              vk::ImageLayout::eTransferDstOptimal,
+                                              vk::ImageLayout::ePresentSrcKHR,
+                                              VK_QUEUE_FAMILY_IGNORED,
+                                              VK_QUEUE_FAMILY_IGNORED,
+                                              swapChainData.images[imageIndex],
+                                              vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 ) );
+    commandBuffer.pipelineBarrier(
+      vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTopOfPipe, vk::DependencyFlags(), nullptr, nullptr, prePresentBarrier );
     commandBuffer.end();
 
     vk::Fence drawFence = device.createFence( {} );
@@ -233,9 +190,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     switch ( result )
     {
       case vk::Result::eSuccess: break;
-      case vk::Result::eSuboptimalKHR:
-        std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n";
-        break;
+      case vk::Result::eSuboptimalKHR: std::cout << "vk::Queue::presentKHR returned vk::Result::eSuboptimalKHR !\n"; break;
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );

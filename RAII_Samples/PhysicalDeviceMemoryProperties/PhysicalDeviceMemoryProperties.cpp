@@ -51,8 +51,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     vk::raii::Context  context;
-    vk::raii::Instance instance =
-      vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
+    vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, {}, VK_API_VERSION_1_1 );
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
@@ -65,18 +64,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       // some properties are only valid, if a corresponding extension is available!
-      std::vector<vk::ExtensionProperties> extensionProperties =
-        physicalDevices[i].enumerateDeviceExtensionProperties();
-      bool containsMemoryBudget = vk::su::contains( extensionProperties, "VK_EXT_memory_budget" );
+      std::vector<vk::ExtensionProperties> extensionProperties  = physicalDevices[i].enumerateDeviceExtensionProperties();
+      bool                                 containsMemoryBudget = vk::su::contains( extensionProperties, "VK_EXT_memory_budget" );
 
       std::cout << "PhysicalDevice " << i << " :\n";
-      auto memoryProperties2 =
-        physicalDevices[i]
-          .getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
-      vk::PhysicalDeviceMemoryProperties const & memoryProperties =
-        memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;
-      vk::PhysicalDeviceMemoryBudgetPropertiesEXT const & memoryBudgetProperties =
-        memoryProperties2.get<vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+      auto memoryProperties2 = physicalDevices[i].getMemoryProperties2<vk::PhysicalDeviceMemoryProperties2, vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
+      vk::PhysicalDeviceMemoryProperties const &          memoryProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryProperties2>().memoryProperties;
+      vk::PhysicalDeviceMemoryBudgetPropertiesEXT const & memoryBudgetProperties = memoryProperties2.get<vk::PhysicalDeviceMemoryBudgetPropertiesEXT>();
       std::cout << "memoryHeapCount: " << memoryProperties.memoryHeapCount << "\n";
       for ( uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++ )
       {

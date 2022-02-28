@@ -29,8 +29,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::Instance instance = vk::su::createInstance( AppName, EngineName );
 #if !defined( NDEBUG )
-    vk::DebugUtilsMessengerEXT debugUtilsMessenger =
-      instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
+    vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
     // enumerate the physicalDevices
@@ -40,16 +39,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
-      std::vector<vk::ExtensionProperties> extensionProperties =
-        physicalDevices[i].enumerateDeviceExtensionProperties();
+      std::vector<vk::ExtensionProperties> extensionProperties = physicalDevices[i].enumerateDeviceExtensionProperties();
       std::cout << "PhysicalDevice " << i << " : " << extensionProperties.size() << " extensions:\n";
 
       // sort the extensions alphabetically
       std::sort( extensionProperties.begin(),
                  extensionProperties.end(),
-                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) {
-                   return strcmp( a.extensionName, b.extensionName ) < 0;
-                 } );
+                 []( vk::ExtensionProperties const & a, vk::ExtensionProperties const & b ) { return strcmp( a.extensionName, b.extensionName ) < 0; } );
       for ( auto const & ep : extensionProperties )
       {
         std::cout << "\t" << ep.extensionName << ":" << std::endl;

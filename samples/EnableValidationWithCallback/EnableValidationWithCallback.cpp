@@ -46,9 +46,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT( VkInstance       
   return pfnVkCreateDebugUtilsMessengerEXT( instance, pCreateInfo, pAllocator, pMessenger );
 }
 
-VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance                    instance,
-                                                            VkDebugUtilsMessengerEXT      messenger,
-                                                            VkAllocationCallbacks const * pAllocator )
+VKAPI_ATTR void VKAPI_CALL vkDestroyDebugUtilsMessengerEXT( VkInstance instance, VkDebugUtilsMessengerEXT messenger, VkAllocationCallbacks const * pAllocator )
 {
   return pfnVkDestroyDebugUtilsMessengerEXT( instance, messenger, pAllocator );
 }
@@ -86,10 +84,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
     for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
       message += std::string( "\t" ) + "Object " + std::to_string( i ) + "\n";
-      message += std::string( "\t\t" ) + "objectType   = " +
-                 vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) + "\n";
-      message +=
-        std::string( "\t\t" ) + "objectHandle = " + std::to_string( pCallbackData->pObjects[i].objectHandle ) + "\n";
+      message += std::string( "\t\t" ) + "objectType   = " + vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) + "\n";
+      message += std::string( "\t\t" ) + "objectHandle = " + std::to_string( pCallbackData->pObjects[i].objectHandle ) + "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
       {
         message += std::string( "\t\t" ) + "objectName   = <" + pCallbackData->pObjects[i].pObjectName + ">\n";
@@ -109,11 +105,15 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
 bool checkLayers( std::vector<char const *> const & layers, std::vector<vk::LayerProperties> const & properties )
 {
   // return true if all layers are listed in the properties
-  return std::all_of( layers.begin(), layers.end(), [&properties]( char const * name ) {
-    return std::find_if( properties.begin(), properties.end(), [&name]( vk::LayerProperties const & property ) {
-             return strcmp( property.layerName, name ) == 0;
-           } ) != properties.end();
-  } );
+  return std::all_of( layers.begin(),
+                      layers.end(),
+                      [&properties]( char const * name )
+                      {
+                        return std::find_if( properties.begin(),
+                                             properties.end(),
+                                             [&name]( vk::LayerProperties const & property )
+                                             { return strcmp( property.layerName, name ) == 0; } ) != properties.end();
+                      } );
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -123,8 +123,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize the DipatchLoaderDynamic to use
     static vk::DynamicLoader  dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-      dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
     VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
 #endif
 
@@ -146,25 +145,22 @@ int main( int /*argc*/, char ** /*argv*/ )
     instanceExtensionNames.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
 
     vk::ApplicationInfo    applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-    vk::InstanceCreateInfo instanceCreateInfo(
-      vk::InstanceCreateFlags(), &applicationInfo, instanceLayerNames, instanceExtensionNames );
-    vk::Instance instance = vk::createInstance( instanceCreateInfo );
+    vk::InstanceCreateInfo instanceCreateInfo( vk::InstanceCreateFlags(), &applicationInfo, instanceLayerNames, instanceExtensionNames );
+    vk::Instance           instance = vk::createInstance( instanceCreateInfo );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize function pointers for instance
     VULKAN_HPP_DEFAULT_DISPATCHER.init( instance );
 #endif
 
-    pfnVkCreateDebugUtilsMessengerEXT =
-      reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
+    pfnVkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>( instance.getProcAddr( "vkCreateDebugUtilsMessengerEXT" ) );
     if ( !pfnVkCreateDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkCreateDebugUtilsMessengerEXT function." << std::endl;
       exit( 1 );
     }
 
-    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-      instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
+    pfnVkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>( instance.getProcAddr( "vkDestroyDebugUtilsMessengerEXT" ) );
     if ( !pfnVkDestroyDebugUtilsMessengerEXT )
     {
       std::cout << "GetInstanceProcAddr: Unable to find pfnVkDestroyDebugUtilsMessengerEXT function." << std::endl;
@@ -173,27 +169,22 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
                                                          vk::DebugUtilsMessageSeverityFlagBitsEXT::eError );
-    vk::DebugUtilsMessageTypeFlagsEXT     messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
-                                                        vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+    vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                         vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
-    vk::DebugUtilsMessengerEXT            debugUtilsMessenger = instance.createDebugUtilsMessengerEXT(
-      vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
+    vk::DebugUtilsMessengerEXT        debugUtilsMessenger =
+      instance.createDebugUtilsMessengerEXT( vk::DebugUtilsMessengerCreateInfoEXT( {}, severityFlags, messageTypeFlags, &debugMessageFunc ) );
 
     vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
 
     // get the index of the first queue family that supports graphics
-    uint32_t graphicsQueueFamilyIndex =
-      vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
+    uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
 
     float                     queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-      vk::DeviceQueueCreateFlags(), graphicsQueueFamilyIndex, 1, &queuePriority );
-    vk::Device device =
-      physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
+    vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), graphicsQueueFamilyIndex, 1, &queuePriority );
+    vk::Device                device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
 
     // Create a CommandPool and don't destroy it, for testing purposes!
-    vk::CommandPool commandPool =
-      device.createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
+    vk::CommandPool commandPool = device.createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), graphicsQueueFamilyIndex ) );
 
 #if true
     // The commandPool is not destroyed automatically

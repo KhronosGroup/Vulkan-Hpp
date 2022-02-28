@@ -861,8 +861,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The number of bits in this component, if not compressed, otherwise 0.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format,
-                                                                   uint8_t                      component )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
   {
     switch ( format )
     {
@@ -2499,8 +2498,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The name of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format,
-                                                                        uint8_t                      component )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
   {
     switch ( format )
     {
@@ -4513,8 +4511,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The numeric format of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format,
-                                                                                 uint8_t component )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
   {
     switch ( format )
     {
@@ -6527,8 +6524,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The plane this component lies in.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format,
-                                                                         uint8_t                      component )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
   {
     switch ( format )
     {
@@ -6764,8 +6760,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The single-plane format that this plane is compatible with.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format
-                                            planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
   {
     switch ( format )
     {
@@ -6955,8 +6950,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format,
-                                                                        uint8_t                      plane )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
   {
     switch ( format )
     {
@@ -7146,8 +7140,7 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format,
-                                                                       uint8_t                      plane )
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
   {
     switch ( format )
     {

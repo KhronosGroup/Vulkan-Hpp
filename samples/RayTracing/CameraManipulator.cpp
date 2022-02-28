@@ -105,15 +105,13 @@ namespace vk
       return m_windowSize;
     }
 
-    CameraManipulator::Action
-      CameraManipulator::mouseMove( glm::ivec2 const & position, MouseButton mouseButton, ModifierFlags & modifiers )
+    CameraManipulator::Action CameraManipulator::mouseMove( glm::ivec2 const & position, MouseButton mouseButton, ModifierFlags & modifiers )
     {
       Action curAction = Action::None;
       switch ( mouseButton )
       {
         case MouseButton::Left:
-          if ( ( ( modifiers & ModifierFlagBits::Ctrl ) && ( modifiers & ModifierFlagBits::Shift ) ) ||
-               ( modifiers & ModifierFlagBits::Alt ) )
+          if ( ( ( modifiers & ModifierFlagBits::Ctrl ) && ( modifiers & ModifierFlagBits::Shift ) ) || ( modifiers & ModifierFlagBits::Alt ) )
           {
             curAction = m_mode == Mode::Examine ? Action::LookAround : Action::Orbit;
           }
@@ -140,9 +138,7 @@ namespace vk
       return curAction;
     }
 
-    void CameraManipulator::setLookat( const glm::vec3 & cameraPosition,
-                                       const glm::vec3 & centerPosition,
-                                       const glm::vec3 & upVector )
+    void CameraManipulator::setLookat( const glm::vec3 & cameraPosition, const glm::vec3 & centerPosition, const glm::vec3 & upVector )
     {
       m_cameraPosition = cameraPosition;
       m_centerPosition = centerPosition;

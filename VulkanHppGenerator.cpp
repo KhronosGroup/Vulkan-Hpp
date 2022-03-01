@@ -5046,7 +5046,21 @@ std::string
 std::string VulkanHppGenerator::generateCommandVoid1Return(
   std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const
 {
-  if ( isHandleType( commandData.params[returnParam].type.type ) )
+  if ( commandData.params[returnParam].type.postfix == "**" )
+  {
+    // get a pointer to something
+    if ( commandData.params[returnParam].type.type == "void" )
+    {
+      std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
+      if ( vectorParams.empty() )
+      {
+        return generateCommandSetStandardEnhanced( definition,
+                                                   generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                                                   generateCommandVoidGetValue( name, commandData, initialSkipCount, definition, {}, returnParam ) );
+      }
+    }
+  }
+  else if ( isHandleType( commandData.params[returnParam].type.type ) )
   {
     std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
     if ( vectorParams.empty() )
@@ -8333,7 +8347,19 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
   {
     case 0: str = generateRAIIHandleCommandVoid0Return( commandIt, initialSkipCount, definition ); break;
     case 1:
-      if ( isHandleType( commandIt->second.params[returnParamIndices[0]].type.type ) )
+      if ( commandIt->second.params[returnParamIndices[0]].type.postfix == "**" )
+      {
+        // get a pointer to something
+        if ( commandIt->second.params[returnParamIndices[0]].type.type == "void" )
+        {
+          std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
+          if ( vectorParams.empty() )
+          {
+            str = generateRAIIHandleCommandVoid1ReturnValue( commandIt, initialSkipCount, vectorParams, returnParamIndices[0], definition );
+          }
+        }
+      }
+      else if ( isHandleType( commandIt->second.params[returnParamIndices[0]].type.type ) )
       {
         std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
         if ( vectorParams.empty() )

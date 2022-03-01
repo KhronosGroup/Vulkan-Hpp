@@ -59,7 +59,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Instance, Dispatch>( result, instance, VULKAN_HPP_NAMESPACE_STRING "::createInstanceUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Instance::destroy( const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
@@ -396,7 +396,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, device, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDeviceUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroy( const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
@@ -836,7 +836,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, memory, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateMemoryUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::freeMemory( VULKAN_HPP_NAMESPACE::DeviceMemory                memory,
@@ -1295,7 +1295,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::createFenceUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyFence( VULKAN_HPP_NAMESPACE::Fence                       fence,
@@ -1455,7 +1455,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, semaphore, VULKAN_HPP_NAMESPACE_STRING "::Device::createSemaphoreUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroySemaphore( VULKAN_HPP_NAMESPACE::Semaphore                   semaphore,
@@ -1547,7 +1547,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Event, Dispatch>( result, event, VULKAN_HPP_NAMESPACE_STRING "::Device::createEventUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyEvent( VULKAN_HPP_NAMESPACE::Event                       event,
@@ -1695,7 +1695,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, queryPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createQueryPoolUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyQueryPool( VULKAN_HPP_NAMESPACE::QueryPool                   queryPool,
@@ -1861,7 +1861,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Buffer, Dispatch>( result, buffer, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyBuffer( VULKAN_HPP_NAMESPACE::Buffer                      buffer,
@@ -1956,7 +1956,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, view, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferViewUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyBufferView( VULKAN_HPP_NAMESPACE::BufferView                  bufferView,
@@ -2048,7 +2048,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Image, Dispatch>( result, image, VULKAN_HPP_NAMESPACE_STRING "::Device::createImageUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyImage( VULKAN_HPP_NAMESPACE::Image                       image,
@@ -2170,7 +2170,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::ImageView, Dispatch>( result, view, VULKAN_HPP_NAMESPACE_STRING "::Device::createImageViewUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyImageView( VULKAN_HPP_NAMESPACE::ImageView                   imageView,
@@ -2265,7 +2265,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, shaderModule, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderModuleUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyShaderModule( VULKAN_HPP_NAMESPACE::ShaderModule                shaderModule,
@@ -2360,7 +2360,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, pipelineCache, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineCacheUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyPipelineCache( VULKAN_HPP_NAMESPACE::PipelineCache               pipelineCache,
@@ -2680,7 +2680,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                   deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache                     pipelineCache,
@@ -2863,7 +2863,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                   deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyPipeline( VULKAN_HPP_NAMESPACE::Pipeline                    pipeline,
@@ -2958,7 +2958,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, pipelineLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineLayoutUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyPipelineLayout( VULKAN_HPP_NAMESPACE::PipelineLayout              pipelineLayout,
@@ -3050,7 +3050,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Sampler, Dispatch>( result, sampler, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroySampler( VULKAN_HPP_NAMESPACE::Sampler                     sampler,
@@ -3145,7 +3145,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, setLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorSetLayoutUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyDescriptorSetLayout( VULKAN_HPP_NAMESPACE::DescriptorSetLayout         descriptorSetLayout,
@@ -3244,7 +3244,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, descriptorPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorPoolUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyDescriptorPool( VULKAN_HPP_NAMESPACE::DescriptorPool              descriptorPool,
@@ -3403,7 +3403,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, std::move( uniqueDescriptorSets ), VULKAN_HPP_NAMESPACE_STRING "::Device::allocateDescriptorSetsUnique" );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Result Device::freeDescriptorSets( VULKAN_HPP_NAMESPACE::DescriptorPool        descriptorPool,
@@ -3533,7 +3533,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, framebuffer, VULKAN_HPP_NAMESPACE_STRING "::Device::createFramebufferUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyFramebuffer( VULKAN_HPP_NAMESPACE::Framebuffer                 framebuffer,
@@ -3628,7 +3628,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPassUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyRenderPass( VULKAN_HPP_NAMESPACE::RenderPass                  renderPass,
@@ -3744,7 +3744,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, commandPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createCommandPoolUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyCommandPool( VULKAN_HPP_NAMESPACE::CommandPool                 commandPool,
@@ -3901,7 +3901,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, std::move( uniqueCommandBuffers ), VULKAN_HPP_NAMESPACE_STRING "::Device::allocateCommandBuffersUnique" );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::freeCommandBuffers( VULKAN_HPP_NAMESPACE::CommandPool           commandPool,
@@ -5577,7 +5577,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroySamplerYcbcrConversion( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion      ycbcrConversion,
@@ -5678,7 +5678,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyDescriptorUpdateTemplate( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate    descriptorUpdateTemplate,
@@ -5959,7 +5959,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2Unique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2( const VULKAN_HPP_NAMESPACE::RenderPassBeginInfo * pRenderPassBegin,
@@ -6271,7 +6271,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, privateDataSlot, VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyPrivateDataSlot( VULKAN_HPP_NAMESPACE::PrivateDataSlot             privateDataSlot,
@@ -7232,7 +7232,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, swapchain, VULKAN_HPP_NAMESPACE_STRING "::Device::createSwapchainKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroySwapchainKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR                swapchain,
@@ -7900,7 +7900,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, mode, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDisplayModeKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -7976,7 +7976,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   //=== VK_KHR_display_swapchain ===
 
@@ -8132,7 +8132,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<SwapchainKHR, Dispatch>( result, swapchain, VULKAN_HPP_NAMESPACE_STRING "::Device::createSharedSwapchainKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
@@ -8186,7 +8186,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createXlibSurfaceKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32
@@ -8205,7 +8205,7 @@ namespace VULKAN_HPP_NAMESPACE
     return d.vkGetPhysicalDeviceXlibPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &dpy, visualID );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_KHR*/
+#endif   /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
   //=== VK_KHR_xcb_surface ===
@@ -8259,7 +8259,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createXcbSurfaceKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getXcbPresentationSupportKHR( uint32_t           queueFamilyIndex,
@@ -8282,7 +8282,7 @@ namespace VULKAN_HPP_NAMESPACE
     return d.vkGetPhysicalDeviceXcbPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &connection, visual_id );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XCB_KHR*/
+#endif   /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
   //=== VK_KHR_wayland_surface ===
@@ -8336,7 +8336,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createWaylandSurfaceKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getWaylandPresentationSupportKHR( uint32_t            queueFamilyIndex,
@@ -8357,7 +8357,7 @@ namespace VULKAN_HPP_NAMESPACE
     return d.vkGetPhysicalDeviceWaylandPresentationSupportKHR( m_physicalDevice, queueFamilyIndex, &display );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
+#endif   /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   //=== VK_KHR_android_surface ===
@@ -8411,8 +8411,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createAndroidSurfaceKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_win32_surface ===
@@ -8466,7 +8466,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createWin32SurfaceKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getWin32PresentationSupportKHR( uint32_t queueFamilyIndex, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
@@ -8528,7 +8528,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, callback, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugReportCallbackEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Instance::destroyDebugReportCallbackEXT( VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT      callback,
@@ -8879,7 +8879,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, videoSession, VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyVideoSessionKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR             videoSession,
@@ -9095,7 +9095,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, videoSessionParameters, VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionParametersKHRUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9226,7 +9226,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdControlVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoCodingControlInfoKHR *>( &codingControlInfo ) );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
@@ -9248,7 +9248,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdDecodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoDecodeInfoKHR *>( &frameInfo ) );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_transform_feedback ===
 
@@ -9470,7 +9470,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, module, VULKAN_HPP_NAMESPACE_STRING "::Device::createCuModuleNVXUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::createCuFunctionNVX( const VULKAN_HPP_NAMESPACE::CuFunctionCreateInfoNVX * pCreateInfo,
@@ -9521,7 +9521,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, function, VULKAN_HPP_NAMESPACE_STRING "::Device::createCuFunctionNVXUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyCuModuleNVX( VULKAN_HPP_NAMESPACE::CuModuleNVX                 module,
@@ -9896,8 +9896,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createStreamDescriptorSurfaceGGPUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_GGP*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_GGP*/
 
   //=== VK_NV_external_memory_capabilities ===
 
@@ -9976,7 +9976,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, handle, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryWin32HandleNV" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif   /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_KHR_get_physical_device_properties2 ===
 
@@ -10398,8 +10398,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createViSurfaceNNUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_VI_NN*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_VI_NN*/
 
   //=== VK_KHR_maintenance1 ===
 
@@ -10571,7 +10571,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, memoryWin32HandleProperties, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryWin32HandlePropertiesKHR" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif   /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_KHR_external_memory_fd ===
 
@@ -10695,7 +10695,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, handle, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreWin32HandleKHR" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif   /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_KHR_external_semaphore_fd ===
 
@@ -10885,7 +10885,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyDescriptorUpdateTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate    descriptorUpdateTemplate,
@@ -11037,8 +11037,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getRandROutputDisplayEXTUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
 
   //=== VK_EXT_display_surface_counter ===
 
@@ -11139,7 +11139,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::registerEventEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::registerDisplayEventEXT( VULKAN_HPP_NAMESPACE::DisplayKHR                  display,
@@ -11196,7 +11196,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::registerDisplayEventEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getSwapchainCounterEXT( VULKAN_HPP_NAMESPACE::SwapchainKHR              swapchain,
@@ -11444,7 +11444,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2KHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::beginRenderPass2KHR( const VULKAN_HPP_NAMESPACE::RenderPassBeginInfo * pRenderPassBegin,
@@ -11604,7 +11604,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, handle, VULKAN_HPP_NAMESPACE_STRING "::Device::getFenceWin32HandleKHR" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif   /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_KHR_external_fence_fd ===
 
@@ -12237,8 +12237,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createIOSSurfaceMVKUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_IOS_MVK*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
   //=== VK_MVK_macos_surface ===
@@ -12292,8 +12292,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createMacOSSurfaceMVKUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_MACOS_MVK*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_MACOS_MVK*/
 
   //=== VK_EXT_debug_utils ===
 
@@ -12471,7 +12471,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, messenger, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugUtilsMessengerEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Instance::destroyDebugUtilsMessengerEXT( VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT      messenger,
@@ -12612,7 +12612,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, buffer, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryAndroidHardwareBufferANDROID" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#endif   /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   //=== VK_EXT_sample_locations ===
 
@@ -12838,7 +12838,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyAccelerationStructureKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureKHR    accelerationStructure,
@@ -13405,7 +13405,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroySamplerYcbcrConversionKHR( VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion      ycbcrConversion,
@@ -13550,7 +13550,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, validationCache, VULKAN_HPP_NAMESPACE_STRING "::Device::createValidationCacheEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyValidationCacheEXT( VULKAN_HPP_NAMESPACE::ValidationCacheEXT          validationCache,
@@ -13807,7 +13807,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureNVUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyAccelerationStructureNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV     accelerationStructure,
@@ -14197,7 +14197,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                   deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getRayTracingShaderGroupHandlesNV( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
@@ -14917,7 +14917,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, configuration, VULKAN_HPP_NAMESPACE_STRING "::Device::acquirePerformanceConfigurationINTELUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
@@ -15063,8 +15063,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createImagePipeSurfaceFUCHSIAUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_surface ===
@@ -15118,8 +15118,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createMetalSurfaceEXTUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_METAL_EXT*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_fragment_shading_rate ===
 
@@ -15644,7 +15644,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, modes, VULKAN_HPP_NAMESPACE_STRING "::Device::getGroupSurfacePresentModes2EXT" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#endif   /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_headless_surface ===
 
@@ -15697,7 +15697,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createHeadlessSurfaceEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   //=== VK_KHR_buffer_device_address ===
 
@@ -15991,7 +15991,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, deferredOperation, VULKAN_HPP_NAMESPACE_STRING "::Device::createDeferredOperationKHRUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyDeferredOperationKHR( VULKAN_HPP_NAMESPACE::DeferredOperationKHR        operation,
@@ -16498,7 +16498,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, indirectCommandsLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectCommandsLayoutNVUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyIndirectCommandsLayoutNV( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV    indirectCommandsLayout,
@@ -16604,7 +16604,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDrmDisplayEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   //=== VK_EXT_private_data ===
 
@@ -16657,7 +16657,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, privateDataSlot, VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotEXTUnique", deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyPrivateDataSlotEXT( VULKAN_HPP_NAMESPACE::PrivateDataSlot             privateDataSlot,
@@ -16754,7 +16754,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdEncodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoEncodeInfoKHR *>( &encodeInfo ) );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_synchronization2 ===
 
@@ -17102,8 +17102,8 @@ namespace VULKAN_HPP_NAMESPACE
       result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getWinrtDisplayNVUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif     /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
@@ -17157,7 +17157,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDirectFBSurfaceEXTUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getDirectFBPresentationSupportEXT( uint32_t         queueFamilyIndex,
@@ -17178,7 +17178,7 @@ namespace VULKAN_HPP_NAMESPACE
     return d.vkGetPhysicalDeviceDirectFBPresentationSupportEXT( m_physicalDevice, queueFamilyIndex, &dfb );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+#endif   /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
   //=== VK_KHR_ray_tracing_pipeline ===
 
@@ -17442,7 +17442,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                   deleter );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getRayTracingShaderGroupHandlesKHR( VULKAN_HPP_NAMESPACE::Pipeline pipeline,
@@ -17666,7 +17666,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, memoryZirconHandleProperties, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryZirconHandlePropertiesFUCHSIA" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#endif   /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_semaphore ===
@@ -17716,7 +17716,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, zirconHandle, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreZirconHandleFUCHSIA" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#endif   /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
@@ -17772,7 +17772,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, collection, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferCollectionFUCHSIAUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -17895,7 +17895,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValue( result, properties, VULKAN_HPP_NAMESPACE_STRING "::Device::getBufferCollectionPropertiesFUCHSIA" );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#endif   /*VK_USE_PLATFORM_FUCHSIA*/
 
   //=== VK_HUAWEI_subpass_shading ===
 
@@ -18060,7 +18060,7 @@ namespace VULKAN_HPP_NAMESPACE
       result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createScreenSurfaceQNXUnique", deleter );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE Bool32 PhysicalDevice::getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
@@ -18081,7 +18081,7 @@ namespace VULKAN_HPP_NAMESPACE
     return d.vkGetPhysicalDeviceScreenPresentationSupportQNX( m_physicalDevice, queueFamilyIndex, &window );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //=== VK_EXT_color_write_enable ===
 

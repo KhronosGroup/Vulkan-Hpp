@@ -15,12 +15,19 @@
 // VulkanHpp Samples : ArrayProxyNoTemporaries
 //                     Compile test on using vk::ArrayProxyNoTemporaries
 
+#if defined( _MSC_VER )
+// no need to ignore any warnings with MSVC
+#elif defined( __GNUC__ )
+#  if ( 9 <= __GNUC__ )
+#    pragma GCC diagnostic ignored "-Winit-list-lifetime"
+#  endif
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include "vulkan/vulkan.hpp"
 
 #include <iostream>
-
-static char const * AppName    = "ArrayProxyNoTemporaries";
-static char const * EngineName = "Vulkan.hpp";
 
 void fct( vk::ArrayProxyNoTemporaries<int> /*ap*/ ) {}
 

@@ -79,7 +79,7 @@ std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
   return result;
 }
 
-const std::set<std::string> altLens             = { "codeSize / 4", "(rasterizationSamples + 31) / 32", "2*VK_UUID_SIZE" };
+const std::set<std::string> altLens             = { "2*VK_UUID_SIZE", "codeSize / 4", "(rasterizationSamples + 31) / 32", "(samples + 31) / 32" };
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
 
 //
@@ -1263,9 +1263,11 @@ bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const &
 {
   return std::find_if_not( vectorParams.begin(),
                            vectorParams.end(),
-                           [&params]( std::pair<size_t, size_t> const & vpi ) {
+                           [&params]( std::pair<size_t, size_t> const & vpi )
+                           {
                              return params[vpi.second].type.isValue() &&
-                                    ( ( params[vpi.second].type.type == "uint32_t" ) || ( params[vpi.second].type.type == "VkDeviceSize" ) );
+                                    ( ( params[vpi.second].type.type == "uint32_t" ) || ( params[vpi.second].type.type == "VkDeviceSize" ) ||
+                                      ( params[vpi.second].type.type == "VkSampleCountFlagBits" ) );
                            } ) == vectorParams.end();
 }
 
@@ -2163,12 +2165,23 @@ std::map<size_t, size_t> VulkanHppGenerator::determineVectorParams( std::vector<
   {
     if ( !params[i].len.empty() )
     {
+      std::string len;
+      if ( altLens.find( params[i].len ) != altLens.end() )
+      {
+        check( params[i].len == "(samples + 31) / 32", params[i].xmlLine, "unknown command parameter len <" + params[i].len + ">" );
+        len = "samples";
+      }
+      else
+      {
+        len = params[i].len;
+      }
       for ( size_t j = 0; j < i; j++ )
       {
-        if ( ( params[j].name == params[i].len ) || isLenByStructMember( params[i].len, params[j] ) )
+        if ( ( params[j].name == len ) || isLenByStructMember( len, params[j] ) )
         {
           // add this parameter as a vector parameter, using the len-name parameter as the second value
           vectorParams.insert( std::make_pair( i, j ) );
+          break;
         }
       }
     }
@@ -5035,7 +5048,7 @@ std::string
   }
   else if ( allVectorSizesSupported( commandData.params, vectorParams ) )
   {
-    // All the vectorParams have a counter by value, of type "uint32_t" or "VkDeviceSize"
+    // All the vectorParams have a counter by value, of type "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits" (!)
     return generateCommandSetStandardEnhanced( definition,
                                                generateCommandStandard( name, commandData, initialSkipCount, definition ),
                                                generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams ) );
@@ -11567,21 +11580,34 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandsCommandParam( tiny
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes(
-    line,
-    attributes,
-    {},
-    { { "externsync", {} }, { "len", {} }, { "noautovalidity", { "true" } }, { "objecttype", { "objectType" } }, { "optional", { "false", "true" } } } );
+  checkAttributes( line,
+                   attributes,
+                   {},
+                   { { "altlen", {} },
+                     { "externsync", {} },
+                     { "len", {} },
+                     { "noautovalidity", { "true" } },
+                     { "objecttype", { "objectType" } },
+                     { "optional", { "false", "true" } } } );
 
   ParamData paramData( line );
   for ( auto attribute : attributes )
   {
-    if ( attribute.first == "len" )
+    if ( attribute.first == "altlen" )
     {
+      assert( paramData.len.empty() );
       paramData.len = attribute.second;
-      check( ( paramData.len == "null-terminated" ) || isParam( paramData.len, params ) || isLenByStructMember( paramData.len, params ),
-             line,
-             "command param len <" + paramData.len + "> is not recognized as a valid len value" );
+      check( altLens.find( paramData.len ) != altLens.end(), line, "member attribute <altlen> holds unknown value <" + paramData.len + ">" );
+    }
+    else if ( attribute.first == "len" )
+    {
+      if ( paramData.len.empty() )
+      {
+        paramData.len = attribute.second;
+        check( ( paramData.len == "null-terminated" ) || isParam( paramData.len, params ) || isLenByStructMember( paramData.len, params ),
+               line,
+               "command param len <" + paramData.len + "> is not recognized as a valid len value" );
+      }
     }
     else if ( attribute.first == "optional" )
     {
@@ -12822,8 +12848,7 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableProperty( int
     }
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -12871,8 +12896,7 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableStruct( int x
   {
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
+      std::vector<std::string> requires = tokenize( attribute.second, "," );
       for ( auto const & r : requires )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
@@ -13618,7 +13642,7 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
       check( memberData.len.size() == 1, line, "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
       check( altLens.find( memberData.len[0] ) != altLens.end(), line, "member attribute <altlen> holds unknown value <" + memberData.len[0] + ">" );
     }
-    if ( attribute.first == "len" )
+    else if ( attribute.first == "len" )
     {
       if ( memberData.len.empty() )
       {

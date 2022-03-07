@@ -14,24 +14,22 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-if (NOT TESTS_BUILD_ONLY_DYNAMIC)
-	project(FormatTraits)
+project(FormatTraits)
 
-	set(HEADERS
-	)
+set(HEADERS
+)
 
-	set(SOURCES
-	  FormatTraits.cpp
-	)
+set(SOURCES
+	FormatTraits.cpp
+)
 
-	source_group(headers FILES ${HEADERS})
-	source_group(sources FILES ${SOURCES})
+source_group(headers FILES ${HEADERS})
+source_group(sources FILES ${SOURCES})
 
-	add_executable(FormatTraits
-	  ${HEADERS}
-	  ${SOURCES}
-	)
+add_executable(FormatTraits
+	${HEADERS}
+	${SOURCES}
+)
 
-	set_target_properties(FormatTraits PROPERTIES FOLDER "Tests")
-	target_link_libraries(FormatTraits "${Vulkan_LIBRARIES}")
-endif()
+set_target_properties(FormatTraits PROPERTIES FOLDER "Tests")
+target_link_libraries(FormatTraits "${Vulkan_LIBRARIES}")

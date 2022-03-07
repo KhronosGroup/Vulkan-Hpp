@@ -19,7 +19,11 @@
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
+#if VULKAN_HPP_CPP_VERSION < 14
+  assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1 );
+#else
   static_assert( vk::blockSize( vk::Format::eR4G4UnormPack8 ) == 1, "Wrong blocksize !" );
+#endif
 
   vk::Format format = vk::Format::eR4G4UnormPack8;
   if ( vk::texelsPerBlock( format ) == 1 )
@@ -35,7 +39,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     format = vk::Format::eR4G4UnormPack8;
   }
 
+#if VULKAN_HPP_CPP_VERSION < 14
+  assert( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ) );
+#else
   static_assert( vk::isCompressed( vk::Format::eBc1RgbSrgbBlock ), "IsCompressed ?" );
+#endif
 
   assert( vk::packed( format ) == 8 );
 
@@ -45,7 +53,11 @@ int main( int /*argc*/, char ** /*argv*/ )
   }
 
   constexpr vk::Format constFormat = vk::Format::eR4G4UnormPack8;
+#if VULKAN_HPP_CPP_VERSION < 14
+  assert( vk::componentBits( constFormat, 1 ) == 4 );
+#else
   static_assert( vk::componentBits( constFormat, 1 ) == 4, "Wrong component bits !" );
+#endif
   assert( vk::componentCount( constFormat ) == 2 );
 
   if ( strcmp( vk::componentName( constFormat, 0 ), "R" ) == 0 )
@@ -55,7 +67,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   assert( std::string( vk::componentNumericFormat( constFormat, 1 ) ) == "UNORM" );
 
+#if VULKAN_HPP_CPP_VERSION < 14
+  assert( vk::componentPlaneIndex( constFormat, 8 ) == 0 );
+#else
   static_assert( vk::componentPlaneIndex( constFormat, 8 ) == 0, "Hoo" );
+#endif
 
   if ( vk::planeCount( format ) != 1 )
   {

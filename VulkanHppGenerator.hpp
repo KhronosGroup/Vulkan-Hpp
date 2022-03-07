@@ -490,8 +490,13 @@ private:
                                                         bool                             definition,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateCommandResultGetValue(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
+  std::string generateCommandResultGetValue( std::string const &              name,
+                                             CommandData const &              commandData,
+                                             size_t                           initialSkipCount,
+                                             bool                             definition,
+                                             std::map<size_t, size_t> const & vectorParams,
+                                             size_t                           returnParam,
+                                             bool                             singular ) const;
   std::string generateCommandResultGetVector( std::string const &              name,
                                               CommandData const &              commandData,
                                               size_t                           initialSkipCount,
@@ -525,12 +530,6 @@ private:
                                                                      bool                             definition,
                                                                      std::map<size_t, size_t> const & vectorParamIndices,
                                                                      size_t                           returnParam ) const;
-  std::string generateCommandResultGetVectorSingular( std::string const &              name,
-                                                      CommandData const &              commandData,
-                                                      size_t                           initialSkipCount,
-                                                      bool                             definition,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      size_t                           returnParam ) const;
   std::string
     generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string

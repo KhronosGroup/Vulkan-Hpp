@@ -9102,7 +9102,9 @@ std::string
     if ( !handle.second.secondLevelCommands.empty() )
     {
       assert( !handle.second.constructorIts.empty() );
+#if !defined( NDEBUG )
       auto constructorCommandIt = m_commands.find( handle.second.constructorIts.front()->first );
+#endif
       assert( ( constructorCommandIt != m_commands.end() ) && ( 1 < constructorCommandIt->second.params.size() ) );
       assert( std::next( constructorCommandIt->second.params.begin() )->type.type == "Vk" + parentType );
 
@@ -9729,7 +9731,9 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       assert( !handle.second.constructorIts.front()->second.params.empty() );
       auto const & frontType = handle.second.constructorIts.front()->second.params.front().type.type;
       assert( isHandleType( frontType ) );
+#if !defined( NDEBUG )
       auto handleIt = m_handles.find( "Vk" + parentType );
+#endif
       assert( handleIt != m_handles.end() );
       assert( handleIt->second.parent == frontType );
       std::string frontName = handle.second.constructorIts.front()->second.params.front().name;

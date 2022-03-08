@@ -5283,16 +5283,18 @@ std::string VulkanHppGenerator::generateCommandVoidGetChain(
 {
   assert( ( commandData.returnType == "void" ) && commandData.successCodes.empty() && commandData.errorCodes.empty() );
 
-  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, { returnParam }, false );
-  std::string      argumentList  = generateArgumentListEnhanced( commandData.params, skippedParams, {}, {}, definition, false, false, true );
-  std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  std::string      nodiscard     = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string      returnType    = stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
+  std::set<size_t> skippedParams     = determineSkippedParams( commandData.params, initialSkipCount, {}, { returnParam }, false );
+  std::set<size_t> templatedParams   = determineVoidPointerParams( commandData.params );
+  std::string      argumentList      = generateArgumentListEnhanced( commandData.params, skippedParams, {}, templatedParams, definition, false, false, true );
+  std::string      argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
+  std::string      commandName       = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
+  std::string      nodiscard         = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
+  std::string      returnType        = stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
 
   if ( definition )
   {
     std::string const functionTemplate =
-      R"(  template <typename X, typename Y, typename... Z, typename Dispatch>
+      R"(  template <${argumentTemplates}typename X, typename Y, typename... Z, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> ${className}${classSeparator}${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -5304,7 +5306,8 @@ std::string VulkanHppGenerator::generateCommandVoidGetChain(
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
-                             { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, {}, false ) },
+                             { "argumentTemplates", argumentTemplates },
+                             { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, false ) },
                              { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
                              { "classSeparator", commandData.handle.empty() ? "" : "::" },
                              { "commandName", commandName },
@@ -5315,10 +5318,10 @@ std::string VulkanHppGenerator::generateCommandVoidGetChain(
   else
   {
     std::string const functionTemplate =
-      R"(    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+      R"(    template <${argumentTemplates}typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;)";
 
-    return replaceWithMap( functionTemplate, { { "argumentList", argumentList }, { "commandName", commandName } } );
+    return replaceWithMap( functionTemplate, { { "argumentList", argumentList }, { "argumentTemplates", argumentTemplates }, { "commandName", commandName } } );
   }
 }
 
@@ -5334,12 +5337,12 @@ std::string VulkanHppGenerator::generateCommandVoidGetValue( std::string const &
   assert( vectorParams.empty() || ( vectorParams.find( returnParam ) == vectorParams.end() ) );
   assert( vectorParams.empty() || ( vectorParams.begin()->second != INVALID_INDEX ) );
 
-  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, { returnParam }, false );
+  std::set<size_t> skippedParams     = determineSkippedParams( commandData.params, initialSkipCount, {}, { returnParam }, false );
   std::set<size_t> templatedParams   = determineVoidPointerParams( commandData.params );
   std::string      argumentList      = generateArgumentListEnhanced( commandData.params, skippedParams, {}, templatedParams, definition, false, false, true );
   std::string      argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
   std::string      commandName       = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  std::string      returnType    = stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+  std::string      returnType        = stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
   bool             needsVectorSizeCheck =
     !vectorParams.empty() && isLenByStructMember( commandData.params[vectorParams.begin()->first].len, commandData.params[vectorParams.begin()->second] );
   std::string noexceptString = needsVectorSizeCheck ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";

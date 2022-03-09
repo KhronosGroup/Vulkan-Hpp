@@ -1,0 +1,95 @@
+﻿---
+AccessModifierOffset : -2
+AlignAfterOpenBracket : Align
+AlignConsecutiveAssignments : Consecutive
+AlignConsecutiveDeclarations : Consecutive
+AlignConsecutiveMacros : Consecutive
+AlignEscapedNewlines : Left
+AlignOperands : AlignAfterOperator
+AlignTrailingComments : true
+AllowAllArgumentsOnNextLine : true
+AllowAllConstructorInitializersOnNextLine : true
+AllowAllParametersOfDeclarationOnNextLine : true
+AllowShortBlocksOnASingleLine : Empty
+AllowShortCaseLabelsOnASingleLine : true
+AllowShortEnumsOnASingleLine : true
+AllowShortFunctionsOnASingleLine : Empty
+AllowShortIfStatementsOnASingleLine : Never
+AllowShortLambdasOnASingleLine : All
+AllowShortLoopsOnASingleLine : false
+AlwaysBreakAfterReturnType : None
+AlwaysBreakBeforeMultilineStrings : true
+AlwaysBreakTemplateDeclarations : Yes
+BinPackArguments : false
+BinPackParameters : false
+BitFieldColonSpacing : Both
+BraceWrapping :
+    AfterCaseLabel : true
+    AfterClass : true
+    AfterControlStatement : Always
+    AfterEnum : true
+    AfterFunction : true
+    AfterNamespace : true
+    AfterStruct : true
+    AfterUnion : true
+    AfterExternBlock : true
+    BeforeCatch : true
+    BeforeElse : true
+    BeforeLambdaBody : true
+    BeforeWhile : false
+    IndentBraces : false
+    SplitEmptyFunction : true
+    SplitEmptyRecord : true
+    SplitEmptyNamespace : true
+BreakBeforeBinaryOperators : None
+BreakBeforeBraces : Custom
+BreakBeforeTernaryOperators : true
+BreakConstructorInitializers : BeforeComma
+BreakInheritanceList : BeforeComma
+BreakStringLiterals : false
+ColumnLimit : 160
+CompactNamespaces : false
+ConstructorInitializerAllOnOneLineOrOnePerLine : true
+ConstructorInitializerIndentWidth : 2
+ContinuationIndentWidth : 2
+Cpp11BracedListStyle : false
+FixNamespaceComments : true
+IncludeBlocks : Regroup
+IndentCaseBlocks : true
+IndentCaseLabels : true
+IndentExternBlock : true
+IndentPPDirectives : AfterHash
+IndentWidth : 2
+IndentWrappedFunctionNames : true
+KeepEmptyLinesAtTheStartOfBlocks : false
+MaxEmptyLinesToKeep : 1
+NamespaceIndentation : All
+PointerAlignment : Middle
+ReflowComments : true
+SortIncludes : true
+SortUsingDeclarations : true
+SpaceAfterCStyleCast : false
+SpaceAfterLogicalNot : false
+SpaceAfterTemplateKeyword : true
+SpaceAroundPointerQualifiers : Both
+SpaceBeforeAssignmentOperators : true
+SpaceBeforeCaseColon : false
+SpaceBeforeCpp11BracedList : false
+SpaceBeforeCtorInitializerColon : true
+SpaceBeforeInheritanceColon : true
+SpaceBeforeParens : ControlStatements
+SpaceBeforeRangeBasedForLoopColon : true
+SpaceBeforeSquareBrackets : false
+SpaceInEmptyBlock : false
+SpaceInEmptyParentheses : false
+SpacesBeforeTrailingComments : 2
+SpacesInAngles : false
+SpacesInCStyleCastParentheses : false
+SpacesInConditionalStatement : true
+SpacesInContainerLiterals : false
+SpacesInParentheses : true
+SpacesInSquareBrackets : false
+Standard : Latest
+UseCRLF : true
+UseTab : Never
+...

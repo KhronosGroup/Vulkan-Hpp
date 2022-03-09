@@ -248,34 +248,40 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR ArrayProxy() VULKAN_HPP_NOEXCEPT
       : m_count( 0 )
       , m_ptr( nullptr )
-    {}
+    {
+    }
 
     VULKAN_HPP_CONSTEXPR ArrayProxy( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
       : m_count( 0 )
       , m_ptr( nullptr )
-    {}
+    {
+    }
 
     ArrayProxy( T & value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxy( typename std::remove_const<T>::type & value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
-    {}
+    {
+    }
 
     ArrayProxy( uint32_t count, T * ptr ) VULKAN_HPP_NOEXCEPT
       : m_count( count )
       , m_ptr( ptr )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxy( uint32_t count, typename std::remove_const<T>::type * ptr ) VULKAN_HPP_NOEXCEPT
       : m_count( count )
       , m_ptr( ptr )
-    {}
+    {
+    }
 
 #  if __GNUC__ >= 9
 #    pragma GCC diagnostic push
@@ -285,24 +291,28 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxy( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxy( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     ArrayProxy( std::initializer_list<T> & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxy( std::initializer_list<typename std::remove_const<T>::type> & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
 #  if __GNUC__ >= 9
 #    pragma GCC diagnostic pop
@@ -316,7 +326,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxy( V const & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
-    {}
+    {
+    }
 
     template <typename V,
               typename std::enable_if<std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
@@ -324,7 +335,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxy( V & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
-    {}
+    {
+    }
 
     const T * begin() const VULKAN_HPP_NOEXCEPT
     {
@@ -375,17 +387,20 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR ArrayProxyNoTemporaries() VULKAN_HPP_NOEXCEPT
       : m_count( 0 )
       , m_ptr( nullptr )
-    {}
+    {
+    }
 
     VULKAN_HPP_CONSTEXPR ArrayProxyNoTemporaries( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
       : m_count( 0 )
       , m_ptr( nullptr )
-    {}
+    {
+    }
 
     ArrayProxyNoTemporaries( T & value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
-    {}
+    {
+    }
 
     template <typename V>
     ArrayProxyNoTemporaries( V && value ) = delete;
@@ -394,7 +409,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( typename std::remove_const<T>::type & value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( typename std::remove_const<T>::type && value ) = delete;
@@ -402,18 +418,21 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( uint32_t count, T * ptr ) VULKAN_HPP_NOEXCEPT
       : m_count( count )
       , m_ptr( ptr )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( uint32_t count, typename std::remove_const<T>::type * ptr ) VULKAN_HPP_NOEXCEPT
       : m_count( count )
       , m_ptr( ptr )
-    {}
+    {
+    }
 
     ArrayProxyNoTemporaries( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     ArrayProxyNoTemporaries( std::initializer_list<T> const && list ) = delete;
 
@@ -421,7 +440,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const && list ) = delete;
@@ -429,7 +449,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( std::initializer_list<T> & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     ArrayProxyNoTemporaries( std::initializer_list<T> && list ) = delete;
 
@@ -437,7 +458,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )
       , m_ptr( list.begin() )
-    {}
+    {
+    }
 
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> && list ) = delete;
@@ -450,7 +472,8 @@ namespace VULKAN_HPP_NAMESPACE
     ArrayProxyNoTemporaries( V & v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
-    {}
+    {
+    }
 
     const T * begin() const VULKAN_HPP_NOEXCEPT
     {
@@ -630,12 +653,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_CONSTEXPR ArrayWrapper2D( std::array<std::array<T, M>, N> const & data ) VULKAN_HPP_NOEXCEPT
       : std::array<ArrayWrapper1D<T, M>, N>( *reinterpret_cast<std::array<ArrayWrapper1D<T, M>, N> const *>( &data ) )
-    {}
+    {
+    }
   };
 
   template <typename FlagBitsType>
   struct FlagTraits
-  {};
+  {
+  };
 
   template <typename BitType>
   class Flags
@@ -1003,22 +1028,26 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     template <int Index, typename T, int Which, typename, class First, class... Types>
     struct ChainElementIndex : ChainElementIndex<Index + 1, T, Which, void, Types...>
-    {};
+    {
+    };
 
     template <int Index, typename T, int Which, class First, class... Types>
     struct ChainElementIndex<Index, T, Which, typename std::enable_if<!std::is_same<T, First>::value, void>::type, First, Types...>
       : ChainElementIndex<Index + 1, T, Which, void, Types...>
-    {};
+    {
+    };
 
     template <int Index, typename T, int Which, class First, class... Types>
     struct ChainElementIndex<Index, T, Which, typename std::enable_if<std::is_same<T, First>::value, void>::type, First, Types...>
       : ChainElementIndex<Index + 1, T, Which - 1, void, Types...>
-    {};
+    {
+    };
 
     template <int Index, typename T, class First, class... Types>
     struct ChainElementIndex<Index, T, 0, typename std::enable_if<std::is_same<T, First>::value, void>::type, First, Types...>
       : std::integral_constant<int, Index>
-    {};
+    {
+    };
 
     bool isLinked( VkBaseInStructure const * pNext ) const VULKAN_HPP_NOEXCEPT
     {
@@ -1045,7 +1074,8 @@ namespace VULKAN_HPP_NAMESPACE
 
     template <size_t Index>
     typename std::enable_if<Index == 0, void>::type link() VULKAN_HPP_NOEXCEPT
-    {}
+    {
+    }
 
     void link( void * dstBase, void const * srcBase, VkBaseOutStructure * dst, VkBaseInStructure const * src )
     {
@@ -1095,14 +1125,16 @@ namespace VULKAN_HPP_NAMESPACE
     explicit UniqueHandle( Type const & value, Deleter const & deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
       : Deleter( deleter )
       , m_value( value )
-    {}
+    {
+    }
 
     UniqueHandle( UniqueHandle const & ) = delete;
 
     UniqueHandle( UniqueHandle && other ) VULKAN_HPP_NOEXCEPT
       : Deleter( std::move( static_cast<Deleter &>( other ) ) )
       , m_value( other.release() )
-    {}
+    {
+    }
 
     ~UniqueHandle() VULKAN_HPP_NOEXCEPT
     {
@@ -1208,7 +1240,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if !defined( NDEBUG )
       : m_valid( false )
 #endif
-    {}
+    {
+    }
 
 #if !defined( NDEBUG )
     size_t getVkHeaderVersion() const
@@ -5277,7 +5310,8 @@ namespace VULKAN_HPP_NAMESPACE
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
-    {}
+    {
+    }
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {
@@ -5314,7 +5348,8 @@ namespace VULKAN_HPP_NAMESPACE
                    Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
-    {}
+    {
+    }
 
     Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
     {
@@ -5346,7 +5381,8 @@ namespace VULKAN_HPP_NAMESPACE
       : m_owner( owner )
       , m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
-    {}
+    {
+    }
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {
@@ -5381,7 +5417,8 @@ namespace VULKAN_HPP_NAMESPACE
     ObjectRelease( OwnerType owner, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
       , m_dispatch( &dispatch )
-    {}
+    {
+    }
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {
@@ -5411,7 +5448,8 @@ namespace VULKAN_HPP_NAMESPACE
       : m_owner( owner )
       , m_pool( pool )
       , m_dispatch( &dispatch )
-    {}
+    {
+    }
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {
@@ -5454,7 +5492,8 @@ namespace std
 {
   template <>
   struct is_error_code_enum<VULKAN_HPP_NAMESPACE::Result> : public true_type
-  {};
+  {
+  };
 }  // namespace std
 #endif
 
@@ -5699,10 +5738,12 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     InvalidDrmFormatModifierPlaneLayoutEXTError( std::string const & message )
       : SystemError( make_error_code( Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT ), message )
-    {}
+    {
+    }
     InvalidDrmFormatModifierPlaneLayoutEXTError( char const * message )
       : SystemError( make_error_code( Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT ), message )
-    {}
+    {
+    }
   };
 
   class NotPermittedKHRError : public SystemError
@@ -5717,7 +5758,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     FullScreenExclusiveModeLostEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message )
-    {}
+    {
+    }
     FullScreenExclusiveModeLostEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
   };
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -5764,7 +5806,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename T>
   void ignore( T const & ) VULKAN_HPP_NOEXCEPT
-  {}
+  {
+  }
 
   template <typename T>
   struct ResultValue
@@ -5775,7 +5818,8 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValue( Result r, T & v )
 #endif
       : result( r ), value( v )
-    {}
+    {
+    }
 
 #ifdef VULKAN_HPP_HAS_NOEXCEPT
     ResultValue( Result r, T && v ) VULKAN_HPP_NOEXCEPT( VULKAN_HPP_NOEXCEPT( T( std::move( v ) ) ) )
@@ -5783,7 +5827,8 @@ namespace VULKAN_HPP_NAMESPACE
     ResultValue( Result r, T && v )
 #endif
       : result( r ), value( std::move( v ) )
-    {}
+    {
+    }
 
     Result result;
     T      value;
@@ -5831,7 +5876,8 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
       : result( r )
       , value( std::move( v ) )
-    {}
+    {
+    }
 
     std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple()
     {
@@ -5866,7 +5912,8 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
       : result( r )
       , value( std::move( v ) )
-    {}
+    {
+    }
 
     std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple()
     {

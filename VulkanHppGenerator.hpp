@@ -970,7 +970,8 @@ private:
   bool        isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool        isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool        isStructureChainAnchor( std::string const & type ) const;
-  std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices ) const;
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices,
+                                                                               std::set<size_t> const &         singularParams ) const;
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   void                                                   readCommandsCommand( tinyxml2::XMLElement const * element );
   ParamData                           readCommandsCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );

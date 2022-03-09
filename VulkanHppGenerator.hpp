@@ -151,7 +151,8 @@ private:
   {
     EnumValueData( int line, std::string const & name_, std::string const & protect_, std::string const & extension_, bool singleBit_ )
       : name( name_ ), extension( extension_ ), protect( protect_ ), singleBit( singleBit_ ), xmlLine( line )
-    {}
+    {
+    }
 
     std::string name;
     std::string extension;
@@ -201,7 +202,8 @@ private:
                    std::string const & platform_,
                    std::string const & promotedTo_ )
       : deprecatedBy( deprecatedBy_ ), number( number_ ), obsoletedBy( obsoletedBy_ ), platform( platform_ ), promotedTo( promotedTo_ ), xmlLine( line )
-    {}
+    {
+    }
 
     std::string              deprecatedBy;
     std::string              number;

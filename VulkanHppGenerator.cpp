@@ -2403,8 +2403,8 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             argumentList += ", ";
           }
           std::string type = ( templatedParams.find( sp ) != templatedParams.end() )
-                               ? ( stripPrefix( params[sp].name, "p" ) + "Type" )
-                               : ( ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) ) );
+                             ? ( stripPrefix( params[sp].name, "p" ) + "Type" )
+                             : ( ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) ) );
           argumentList += type + "Allocator & " + startLowerCase( type ) + "Allocator";
           encounteredArgument = true;
         }
@@ -2766,8 +2766,8 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     {
       assert( !param.optional );
       argument = ( templatedParams.find( paramIndex ) == templatedParams.end() )
-                   ? param.name
-                   : "reinterpret_cast<" + param.type.compose( "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )";
+                 ? param.name
+                 : "reinterpret_cast<" + param.type.compose( "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )";
     }
     else if ( param.optional )
     {
@@ -3429,9 +3429,9 @@ std::string VulkanHppGenerator::generateCommandResultEnumerateTwoVectors( std::s
             startLowerCase( stripPrefix( commandData.params[secondVectorParamIt->first].type.type, "Vk" ) ) + "Allocator ) )" )
         : "";
     std::string typenameCheck = withAllocators
-                                  ? ( ", typename B1, typename B2, typename std::enable_if<std::is_same<typename B1::value_type, " + templateTypeFirst +
-                                      ">::value && std::is_same<typename B2::value_type, " + templateTypeSecond + ">::value, int>::type " )
-                                  : "";
+                                ? ( ", typename B1, typename B2, typename std::enable_if<std::is_same<typename B1::value_type, " + templateTypeFirst +
+                                    ">::value && std::is_same<typename B2::value_type, " + templateTypeSecond + ">::value, int>::type " )
+                                : "";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
@@ -3688,8 +3688,8 @@ std::string VulkanHppGenerator::generateCommandResultGetValue( std::string const
   std::string noexceptString    = commandData.errorCodes.empty() ? " VULKAN_HPP_NOEXCEPT" : "";
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
   std::string dataType          = ( templatedParams.find( returnParam ) != templatedParams.end() )
-                                    ? ( stripPrefix( commandData.params[returnParam].name, "p" ) + "Type" )
-                                    : stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+                                  ? ( stripPrefix( commandData.params[returnParam].name, "p" ) + "Type" )
+                                  : stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
   std::string returnType        = generateReturnType( commandData.successCodes, dataType );
 
   if ( definition )
@@ -4051,9 +4051,9 @@ std::string VulkanHppGenerator::generateCommandResultGetVectorOfHandlesUnique( s
     ${nodiscard}${returnType} ${commandName}Unique( ${argumentList} ) const;)";
 
     std::string typenameCheck = withAllocator
-                                  ? ( ", typename B = " + handleType + "Allocator, typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<" +
-                                      handleType + ", Dispatch>>::value, int>::type = 0" )
-                                  : "";
+                                ? ( ", typename B = " + handleType + "Allocator, typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<" +
+                                    handleType + ", Dispatch>>::value, int>::type = 0" )
+                                : "";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
@@ -5143,8 +5143,8 @@ std::string VulkanHppGenerator::generateCommandVoidEnumerate( std::string const 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
   std::string commandName       = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
   std::string vectorElementType = ( templatedParams.find( vectorParamIndex.first ) == templatedParams.end() )
-                                    ? stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" )
-                                    : ( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) + "Type" );
+                                  ? stripPrefix( commandData.params[vectorParamIndex.first].type.type, "Vk" )
+                                  : ( stripPrefix( commandData.params[vectorParamIndex.first].name, "p" ) + "Type" );
 
   if ( definition )
   {
@@ -5204,9 +5204,9 @@ std::string VulkanHppGenerator::generateCommandVoidEnumerate( std::string const 
     VULKAN_HPP_NODISCARD std::vector<${vectorElementType}, ${vectorElementType}Allocator> ${commandName}( ${argumentList} ) const;)";
 
     std::string typenameCheck = withAllocators
-                                  ? ( ", typename B = " + vectorElementType + "Allocator, typename std::enable_if<std::is_same<typename B::value_type, " +
-                                      vectorElementType + ">::value, int>::type = 0" )
-                                  : "";
+                                ? ( ", typename B = " + vectorElementType + "Allocator, typename std::enable_if<std::is_same<typename B::value_type, " +
+                                    vectorElementType + ">::value, int>::type = 0" )
+                                : "";
 
     return replaceWithMap( functionTemplate,
                            { { "argumentList", argumentList },
@@ -5566,10 +5566,10 @@ std::string VulkanHppGenerator::generateEnhancedReturnType( CommandData const & 
   assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
   assert( commandData.successCodes.empty() || ( commandData.successCodes[0] == "VK_SUCCESS" ) );
   return ( commandData.params[returnParam].type.type == "void" ) ? "std::vector<uint8_t,Allocator>"         // the return parameter is a vector-type parameter
-         : isStructureChain                                      ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
+       : isStructureChain                                        ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
                                                                                                             // a vector of StrutureChains
-                            : "std::vector<" + stripPrefix( commandData.params[returnParam].type.type, "Vk" ) +
-                                ",Allocator>";  // for the other parameters, we use a vector of the pure type
+                          : "std::vector<" + stripPrefix( commandData.params[returnParam].type.type, "Vk" ) +
+                              ",Allocator>";  // for the other parameters, we use a vector of the pure type
 }
 
 std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const
@@ -6274,8 +6274,8 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
       ( valueIt != enumIt->second.values.end() ) ? generateEnumValueName( enumIt->first, valueIt->name, false, m_tags ) : "eUnknown";
 
     std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
-                                   ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher"
-                                   : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher";
+                                 ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher"
+                                 : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher";
 
     std::string getParent;
     if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) && ( handle.second.destructorIt != m_commands.end() ) )
@@ -7129,8 +7129,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
   {
     assert( commandIt->second.params[vectorParams.begin()->first].type.isNonConstPointer() );
     vectorElementType = ( vectorElementType == "void" )
-                          ? "uint8_t"
-                          : stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+                        ? "uint8_t"
+                        : stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
   }
 
   if ( definition )
@@ -7216,8 +7216,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
   {
     assert( commandIt->second.params[vectorParams.begin()->first].type.isNonConstPointer() );
     vectorElementType = ( vectorElementType == "void" )
-                          ? "uint8_t"
-                          : stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+                        ? "uint8_t"
+                        : stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
   }
 
   if ( definition )
@@ -8641,8 +8641,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid2ReturnEnumerateVal
   std::string      argumentTemplates = generateArgumentTemplates( commandIt->second.params, templatedParams, true );
   std::string      commandName       = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
   std::string      vectorElementType = ( templatedParams.find( vectorParams.begin()->first ) == templatedParams.end() )
-                                         ? stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" )
-                                         : ( stripPrefix( commandIt->second.params[vectorParams.begin()->first].name, "p" ) + "Type" );
+                                       ? stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" )
+                                       : ( stripPrefix( commandIt->second.params[vectorParams.begin()->first].name, "p" ) + "Type" );
 
   if ( definition )
   {
@@ -10997,8 +10997,8 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
                         structure.second.members.end(),
                         [memberIt]( MemberData const & member ) { return member.type == memberIt->type; } ) != structure.second.members.end() );
       std::string memberType = ( memberIt->arraySizes.empty() )
-                                 ? memberIt->type.compose( "VULKAN_HPP_NAMESPACE" )
-                                 : ( "const " + generateStandardArray( memberIt->type.compose( "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
+                               ? memberIt->type.compose( "VULKAN_HPP_NAMESPACE" )
+                               : ( "const " + generateStandardArray( memberIt->type.compose( "VULKAN_HPP_NAMESPACE" ), memberIt->arraySizes ) + "&" );
 
       // In a majority of cases this can be constexpr in C++11 as well, however, determining when exactly
       // that is the case is a lot more involved and probably not worth it.

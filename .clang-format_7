@@ -1,8 +1,8 @@
 ﻿---
 AccessModifierOffset : -2
 AlignAfterOpenBracket : Align
-AlignConsecutiveAssignments : true
-AlignConsecutiveDeclarations : true
+AlignConsecutiveAssignments : Consecutive
+AlignConsecutiveDeclarations : Consecutive
 AlignEscapedNewlines : Left
 AlignOperands : true
 AlignTrailingComments : true
@@ -28,10 +28,11 @@ BraceWrapping :
     AfterExternBlock : true
     BeforeCatch : true
     BeforeElse : true
+    BeforeWhile : false
     IndentBraces : false
-    SplitEmptyFunction : false
-    SplitEmptyRecord : false
-    SplitEmptyNamespace : false
+    SplitEmptyFunction : true
+    SplitEmptyRecord : true
+    SplitEmptyNamespace : true
 BreakBeforeBinaryOperators : None
 BreakBeforeBraces : Custom
 BreakBeforeTernaryOperators : true
@@ -69,7 +70,7 @@ SpaceInEmptyParentheses : false
 SpacesBeforeTrailingComments : 2
 SpacesInAngles : false
 SpacesInCStyleCastParentheses : false
-SpacesInContainerLiterals : true
+SpacesInContainerLiterals : false
 SpacesInParentheses : true
 SpacesInSquareBrackets : false
 Standard : Cpp11

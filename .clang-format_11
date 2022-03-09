@@ -1,11 +1,10 @@
 ﻿---
 AccessModifierOffset : -2
 AlignAfterOpenBracket : Align
-AlignConsecutiveAssignments : true
-AlignConsecutiveDeclarations : true
-AlignConsecutiveMacros : true
+AlignConsecutiveAssignments : Consecutive
+AlignConsecutiveDeclarations : Consecutive
+AlignConsecutiveMacros : Consecutive
 AlignEscapedNewlines : Left
-AlignOperands : true
 AlignTrailingComments : true
 AllowAllArgumentsOnNextLine : true
 AllowAllConstructorInitializersOnNextLine : true
@@ -14,7 +13,7 @@ AllowShortBlocksOnASingleLine : Empty
 AllowShortCaseLabelsOnASingleLine : true
 AllowShortFunctionsOnASingleLine : Empty
 AllowShortIfStatementsOnASingleLine : Never
-AllowShortLambdasOnASingleLine : Inline
+AllowShortLambdasOnASingleLine : All
 AllowShortLoopsOnASingleLine : false
 AlwaysBreakAfterReturnType : None
 AlwaysBreakBeforeMultilineStrings : true
@@ -34,10 +33,11 @@ BraceWrapping :
     BeforeCatch : true
     BeforeElse : true
     BeforeLambdaBody : true
+    BeforeWhile : false
     IndentBraces : false
-    SplitEmptyFunction : false
-    SplitEmptyRecord : false
-    SplitEmptyNamespace : false
+    SplitEmptyFunction : true
+    SplitEmptyRecord : true
+    SplitEmptyNamespace : true
 BreakBeforeBinaryOperators : None
 BreakBeforeBraces : Custom
 BreakBeforeTernaryOperators : true
@@ -80,7 +80,7 @@ SpacesBeforeTrailingComments : 2
 SpacesInAngles : false
 SpacesInCStyleCastParentheses : false
 SpacesInConditionalStatement : true
-SpacesInContainerLiterals : true
+SpacesInContainerLiterals : false
 SpacesInParentheses : true
 SpacesInSquareBrackets : false
 Standard : Latest

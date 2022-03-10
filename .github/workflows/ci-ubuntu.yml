@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Install libraries
-      run: sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
+      run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
 
     - name: Update Submodules
       run: git submodule update --init --recursive

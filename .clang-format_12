@@ -2,6 +2,7 @@
 AccessModifierOffset : -2
 AlignAfterOpenBracket : Align
 AlignConsecutiveAssignments : Consecutive
+AlignConsecutiveBitFields : Consecutive
 AlignConsecutiveDeclarations : Consecutive
 AlignConsecutiveMacros : Consecutive
 AlignEscapedNewlines : Left

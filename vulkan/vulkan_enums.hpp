@@ -8255,11 +8255,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-  template <ObjectType value>
-  struct cpp_type
-  {
-  };
-
   template <typename T>
   struct IndexTypeValue
   {

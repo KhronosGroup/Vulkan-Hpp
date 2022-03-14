@@ -16545,7 +16545,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #if defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: Formatting using ";
     std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" --version ";
-    std::system( commandString.c_str() );
+    (void)std::system( commandString.c_str() );
 #endif
 
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;

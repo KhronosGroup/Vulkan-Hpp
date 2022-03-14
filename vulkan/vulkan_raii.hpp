@@ -3517,7 +3517,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR getAccelerationStructureBuildSizesKHR(
         VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR                 buildType,
         const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR & buildInfo,
-        ArrayProxy<const uint32_t> const & maxPrimitiveCounts                   VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+        ArrayProxy<const uint32_t> const & maxPrimitiveCounts VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
 
       //=== VK_KHR_sampler_ycbcr_conversion ===
 
@@ -15014,10 +15014,19 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR
                                            Device::getAccelerationStructureBuildSizesKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR                 buildType,
                                                      const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR & buildInfo,
-                                                     ArrayProxy<const uint32_t> const & maxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT
+                                                     ArrayProxy<const uint32_t> const & maxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureBuildSizesKHR &&
                          "Function <vkGetAccelerationStructureBuildSizesKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
+
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+      VULKAN_HPP_ASSERT( maxPrimitiveCounts.size() == buildInfo.geometryCount );
+#  else
+      if ( maxPrimitiveCounts.size() != buildInfo.geometryCount )
+      {
+        throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureBuildSizesKHR: maxPrimitiveCounts.size() != buildInfo.geometryCount" );
+      }
+#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
 
       VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR sizeInfo;
       getDispatcher()->vkGetAccelerationStructureBuildSizesKHR( static_cast<VkDevice>( m_device ),

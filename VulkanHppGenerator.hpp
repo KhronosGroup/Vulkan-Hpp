@@ -648,14 +648,13 @@ private:
                                                    std::pair<size_t, size_t> const & vectorParamIndex,
                                                    std::vector<size_t> const &       returnParamIndices,
                                                    bool                              withAllocators ) const;
-  std::string generateCommandVoidGetChain(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t nonConstPointerIndex ) const;
   std::string generateCommandVoidGetValue( std::string const &              name,
                                            CommandData const &              commandData,
                                            size_t                           initialSkipCount,
                                            bool                             definition,
                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                           size_t                           returnParam ) const;
+                                           size_t                           returnParam,
+                                           bool                             chained ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string
@@ -972,7 +971,8 @@ private:
   bool        isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool        isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool        isStructureChainAnchor( std::string const & type ) const;
-  std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::map<size_t, size_t> const & vectorParamIndices,
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &   params,
+                                                                               std::map<size_t, size_t> const & vectorParamIndices,
                                                                                std::set<size_t> const &         singularParams ) const;
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   void                                                   readCommandsCommand( tinyxml2::XMLElement const * element );

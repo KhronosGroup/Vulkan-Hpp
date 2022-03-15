@@ -24,7 +24,7 @@ jobs:
       run: |
         git submodule update --init --recursive
         cd Vulkan-Headers
-        VK_HEADER_GIT_TAG=$(git describe --tags $(git rev-list --tags | grep 'v\d\.' | head -n1))
+        VK_HEADER_GIT_TAG=$(git describe --always --tags $(git rev-list --tags) | grep 'v[0-9]\.' | head -n1)
         echo "New revision of Vulkan-Headers: $VK_HEADER_GIT_TAG"
         git checkout $VK_HEADER_GIT_TAG
         echo "VK_HEADER_GIT_TAG=$VK_HEADER_GIT_TAG" >> $GITHUB_ENV

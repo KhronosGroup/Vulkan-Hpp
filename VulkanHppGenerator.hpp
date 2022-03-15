@@ -462,7 +462,9 @@ private:
                                      CommandData const &              commandData,
                                      size_t                           initialSkipCount,
                                      bool                             definition,
-                                     std::map<size_t, size_t> const & vectorParamIndices ) const;
+                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                     std::vector<size_t> const &      returnParams,
+                                     bool                             singular ) const;
   std::string generateCommandResultEnumerate( std::string const &               name,
                                               CommandData const &               commandData,
                                               size_t                            initialSkipCount,
@@ -492,13 +494,6 @@ private:
                                                         bool                             definition,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateCommandResultGetValue( std::string const &              name,
-                                             CommandData const &              commandData,
-                                             size_t                           initialSkipCount,
-                                             bool                             definition,
-                                             std::map<size_t, size_t> const & vectorParams,
-                                             size_t                           returnParam,
-                                             bool                             singular ) const;
   std::string generateCommandResultGetVector( std::string const &              name,
                                               CommandData const &              commandData,
                                               size_t                           initialSkipCount,
@@ -957,7 +952,8 @@ private:
                                                                CommandData const &                           commandData,
                                                                size_t                                        initialSkipCount,
                                                                std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                                               std::set<size_t> const &                      skippedParams ) const;
+                                                               std::set<size_t> const &                      skippedParams,
+                                                               bool                                          onlyThrows ) const;
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;

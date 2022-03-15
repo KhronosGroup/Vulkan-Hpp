@@ -3119,47 +3119,93 @@ std::string VulkanHppGenerator::generateCommandName( std::string const &        
   return commandName;
 }
 
-std::string VulkanHppGenerator::generateCommandResult(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::map<size_t, size_t> const & vectorParams ) const
+std::string VulkanHppGenerator::generateCommandResult( std::string const &              name,
+                                                       CommandData const &              commandData,
+                                                       size_t                           initialSkipCount,
+                                                       bool                             definition,
+                                                       std::map<size_t, size_t> const & vectorParams,
+                                                       std::vector<size_t> const &      returnParams,
+                                                       bool                             singular ) const
 {
-  std::set<size_t> skippedParams     = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, {}, false );
-  std::set<size_t> templatedParams   = determineVoidPointerParams( commandData.params );
-  std::string      argumentList      = generateArgumentListEnhanced( commandData.params, skippedParams, {}, templatedParams, definition, false, false, true );
-  std::string      argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
-  std::string      chainTemplates    = "";
-  std::string      commandName       = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  std::string      nodiscard         = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string      noexceptString    = commandData.errorCodes.empty() ? " VULKAN_HPP_NOEXCEPT" : "";
-  std::string      returnType        = ( 1 < commandData.successCodes.size() ) ? "Result" : "typename ResultValueType<void>::type";
+  assert( commandData.returnType == "VkResult" );
+  assert( returnParams.size() <= 1 );
+  assert( !singular || !returnParams.empty() );  // if singular is true, returnParams is not empty !
+
+  std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
+
+  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, returnParams, singular );
+  // special handling for vkGetMemoryHostPointerPropertiesEXT: here, we really need to stick with the const void * parameter !
+  std::set<size_t> templatedParams = ( name == "vkGetMemoryHostPointerPropertiesEXT" ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
+  std::set<size_t> singularParams;
+  if ( singular )
+  {
+    singularParams = determineSingularParams( returnParams[0], vectorParams );
+    commandName    = stripPluralS( commandName );
+  }
+
+  std::string argumentList = generateArgumentListEnhanced( commandData.params, skippedParams, singularParams, templatedParams, definition, false, false, true );
+  std::string argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
+  std::string chainTemplates    = "";
+  std::string nodiscard         = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
+  std::string noexceptString    = commandData.errorCodes.empty() ? " VULKAN_HPP_NOEXCEPT" : "";
+
+  std::string dataType;
+  if ( !returnParams.empty() )
+  {
+    dataType = ( templatedParams.find( returnParams[0] ) != templatedParams.end() )
+               ? ( stripPrefix( commandData.params[returnParams[0]].name, "p" ) + "Type" )
+               : stripPostfix( commandData.params[returnParams[0]].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
+  }
+  std::string returnType = generateReturnType( commandData.successCodes, dataType.empty() ? "void" : dataType );
 
   if ( definition )
   {
+    std::string dataDeclarations, dataResult;
+    if ( !returnParams.empty() )
+    {
+      std::string dataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+      if ( singular )
+      {
+        dataVariable = stripPluralS( dataVariable );
+      }
+
+      std::string const dataDeclarationTemplate = R"(${dataType} ${dataVariable};)";
+      dataDeclarations                          = replaceWithMap( dataDeclarationTemplate, { { "dataType", dataType }, { "dataVariable", dataVariable } } );
+
+      std::string const dataResultTemplate = R"(${dataVariable}, )";
+      dataResult                           = replaceWithMap( dataResultTemplate, { { "dataVariable", dataVariable } } );
+    }
+
     std::string const functionTemplate =
       R"(  template <${argumentTemplates}${chainTemplates}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+${vectorSizeCheck}
+    ${dataDeclarations}
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
+    return createResultValue( result, ${dataResult}VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
   })";
 
-    std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandData.params, vectorParams, {} );
+    std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandData.params, vectorParams, singularParams );
     return replaceWithMap(
       functionTemplate,
       { { "argumentList", argumentList },
         { "argumentTemplates", argumentTemplates },
-        { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, false ) },
+        { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, false ) },
         { "chainTemplates", chainTemplates },
         { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
         { "const", commandData.handle.empty() ? "" : " const" },
+        { "dataDeclarations", dataDeclarations },
+        { "dataResult", dataResult },
         { "nodiscard", nodiscard },
         { "noexcept", noexceptString },
         { "returnType", returnType },
         { "successCodeList", generateSuccessCodeList( commandData.successCodes ) },
         { "vectorSizeCheck",
-          vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams ) : "" },
+          vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams, false ) : "" },
         { "vkCommand", name } } );
   }
   else
@@ -3663,89 +3709,6 @@ std::string VulkanHppGenerator::generateCommandResultGetSingularAndValue( std::s
   }
 }
 
-std::string VulkanHppGenerator::generateCommandResultGetValue( std::string const &              name,
-                                                               CommandData const &              commandData,
-                                                               size_t                           initialSkipCount,
-                                                               bool                             definition,
-                                                               std::map<size_t, size_t> const & vectorParams,
-                                                               size_t                           returnParam,
-                                                               bool                             singular ) const
-{
-  assert( commandData.returnType == "VkResult" );
-
-  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, { returnParam }, singular );
-  // special handling for vkGetMemoryHostPointerPropertiesEXT: here, we really need to stick with the const void * parameter !
-  std::set<size_t> templatedParams = ( name == "vkGetMemoryHostPointerPropertiesEXT" ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
-  std::set<size_t> singularParams  = singular ? determineSingularParams( returnParam, vectorParams ) : std::set<size_t>();
-  std::string argumentList = generateArgumentListEnhanced( commandData.params, skippedParams, singularParams, templatedParams, definition, false, false, true );
-  std::string commandName  = generateCommandName( name, commandData.params, initialSkipCount, m_tags );
-  if ( singular )
-  {
-    commandName = stripPluralS( commandName );
-  }
-  std::string nodiscard         = generateNoDiscard( 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string noexceptString    = commandData.errorCodes.empty() ? " VULKAN_HPP_NOEXCEPT" : "";
-  std::string argumentTemplates = generateArgumentTemplates( commandData.params, templatedParams, false );
-  std::string dataType          = ( templatedParams.find( returnParam ) != templatedParams.end() )
-                                  ? ( stripPrefix( commandData.params[returnParam].name, "p" ) + "Type" )
-                                  : stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
-  std::string returnType        = generateReturnType( commandData.successCodes, dataType );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <${argumentTemplates}typename Dispatch>
-  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
-    ${dataType} ${dataVariable};
-    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, ${dataVariable}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
-  })";
-
-    std::string dataVariable = startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) );
-    if ( singular )
-    {
-      dataVariable = stripPluralS( dataVariable );
-    }
-    std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandData.params, vectorParams, singularParams );
-
-    return replaceWithMap(
-      functionTemplate,
-      { { "argumentList", argumentList },
-        { "argumentTemplates", argumentTemplates },
-        { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, false ) },
-        { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
-        { "classSeparator", commandData.handle.empty() ? "" : "::" },
-        { "const", commandData.handle.empty() ? "" : " const" },
-        { "commandName", commandName },
-        { "dataType", dataType },
-        { "dataVariable", dataVariable },
-        { "nodiscard", nodiscard },
-        { "noexcept", noexceptString },
-        { "returnType", returnType },
-        { "successCodeList", generateSuccessCodeList( commandData.successCodes ) },
-        { "vectorSizeCheck",
-          vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams ) : "" },
-        { "vkCommand", name } } );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <${argumentTemplates}typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}${returnType} ${commandName}( ${argumentList} )${const}${noexcept};)";
-
-    return replaceWithMap( functionTemplate,
-                           { { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
-                             { "commandName", commandName },
-                             { "const", commandData.handle.empty() ? "" : " const" },
-                             { "nodiscard", nodiscard },
-                             { "noexcept", noexceptString },
-                             { "returnType", returnType } } );
-  }
-}
-
 std::string VulkanHppGenerator::generateCommandResultGetVector( std::string const &              name,
                                                                 CommandData const &              commandData,
                                                                 size_t                           initialSkipCount,
@@ -4139,7 +4102,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessNoErrors( std::
       if ( constPointerParams.empty() )
       {
         return generateCommandSetStandardOrEnhanced( generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                                     generateCommandResult( name, commandData, initialSkipCount, definition, {} ) );
+                                                     generateCommandResult( name, commandData, initialSkipCount, definition, {}, {}, false ) );
       }
     }
   }
@@ -4178,7 +4141,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
             definition,
             generateCommandStandard( name, commandData, initialSkipCount, definition ),
             generateCommandResultGetVector( name, commandData, initialSkipCount, definition, vectorParams, returnParam ),
-            generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ) );
+            generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ) );
         }
       }
     }
@@ -4201,7 +4164,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
                 generateCommandStandard( name, commandData, initialSkipCount, definition ),
                 generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
                 generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
-                generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
+                generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ),
                 generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
                 generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
                 generateCommandResultGetVectorOfHandlesUniqueSingular( name, commandData, initialSkipCount, definition, vectorParams, returnParam ) );
@@ -4219,7 +4182,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
       return generateCommandSetStandardEnhanced(
         definition,
         generateCommandStandard( name, commandData, initialSkipCount, definition ),
-        generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ) );
+        generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false ) );
     }
   }
   return "";
@@ -4328,7 +4291,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors( std:
       if ( constPointerParams.empty() )
       {
         return generateCommandSetStandardOrEnhanced( generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                                     generateCommandResult( name, commandData, initialSkipCount, definition, {} ) );
+                                                     generateCommandResult( name, commandData, initialSkipCount, definition, {}, {}, false ) );
       }
     }
     else if ( vectorParams.size() == 1 )
@@ -4339,7 +4302,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors( std:
         {
           return generateCommandSetStandardEnhanced( definition,
                                                      generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                                     generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams ) );
+                                                     generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, {}, false ) );
         }
       }
     }
@@ -4392,7 +4355,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
     return generateCommandSetStandardEnhancedChained(
       definition,
       generateCommandStandard( name, commandData, initialSkipCount, definition ),
-      generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
+      generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false ),
       generateCommandResultGetChain( name, commandData, initialSkipCount, definition, returnParam ) );
   }
   return "";
@@ -4408,7 +4371,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
       return generateCommandSetStandardEnhancedUnique(
         definition,
         generateCommandStandard( name, commandData, initialSkipCount, definition ),
-        generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
+        generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false ),
         generateCommandResultGetHandleUnique( name, commandData, initialSkipCount, definition, returnParam ) );
       break;
     case 1:
@@ -4465,7 +4428,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
             generateCommandStandard( name, commandData, initialSkipCount, definition ),
             generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
             generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
-            generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
+            generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ),
             generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
             generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
             generateCommandResultGetVectorOfHandlesUniqueSingular( name, commandData, initialSkipCount, definition, vectorParams, returnParam ) );
@@ -4486,7 +4449,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
       return generateCommandSetStandardEnhanced(
         definition,
         generateCommandStandard( name, commandData, initialSkipCount, definition ),
-        generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ) );
+        generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false ) );
     case 2:
       return generateCommandResultSingleSuccessWithErrors1ReturnValue2Vectors( name, commandData, initialSkipCount, definition, returnParam, vectorParams );
       break;
@@ -4516,7 +4479,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
             generateCommandStandard( name, commandData, initialSkipCount, definition ),
             generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
             generateCommandResultGetVectorOfHandlesOrValues( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
-            generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ) );
+            generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ) );
         }
       }
     }
@@ -4534,7 +4497,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
       return generateCommandSetStandardEnhanced(
         definition,
         generateCommandStandard( name, commandData, initialSkipCount, definition ),
-        generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ) );
+        generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false ) );
       break;
     case 1:
       if ( returnParam == vectorParams.begin()->first )
@@ -4545,7 +4508,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
             definition,
             generateCommandStandard( name, commandData, initialSkipCount, definition ),
             generateCommandResultGetVector( name, commandData, initialSkipCount, definition, vectorParams, returnParam ),
-            generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ) );
+            generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ) );
         }
       }
       break;
@@ -4564,7 +4527,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
                   definition,
                   generateCommandStandard( name, commandData, initialSkipCount, definition ),
                   generateCommandResultGetVector( name, commandData, initialSkipCount, definition, vectorParams, returnParam ),
-                  generateCommandResultGetValue( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ) );
+                  generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true ) );
               }
             }
           }
@@ -4626,13 +4589,13 @@ std::string VulkanHppGenerator::generateCommandResultWithErrors0Return( std::str
   if ( vectorParams.empty() && determineConstPointerParams( commandData.params ).empty() )
   {
     return generateCommandSetStandardOrEnhanced( generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                                 generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams ) );
+                                                 generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, {}, false ) );
   }
   else if ( allVectorSizesSupported( commandData.params, vectorParams ) )
   {
     return generateCommandSetStandardEnhanced( definition,
                                                generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                                               generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams ) );
+                                               generateCommandResult( name, commandData, initialSkipCount, definition, vectorParams, {}, false ) );
   }
   return "";
 }
@@ -4887,7 +4850,9 @@ std::string VulkanHppGenerator::generateCommandSingle(
       R"(  template <${argumentTemplates}${chainTemplates}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+${vectorSizeCheck}
+    ${dataDeclarations}
     ${return}d.${vkCommand}( ${callArguments} );
   })";
 
@@ -4901,12 +4866,13 @@ std::string VulkanHppGenerator::generateCommandSingle(
         { "classSeparator", commandData.handle.empty() ? "" : "::" },
         { "commandName", commandName },
         { "const", commandData.handle.empty() ? "" : " const" },
+        { "dataDeclarations", "" },
         { "nodiscard", nodiscard },
         { "noexcept", noexceptString },
         { "return", returnCall },
         { "returnType", returnType },
         { "vectorSizeCheck",
-          vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams ) : "" },
+          vectorSizeCheck.first ? generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams, false ) : "" },
         { "vkCommand", name } } );
   }
   else
@@ -5329,24 +5295,25 @@ std::string VulkanHppGenerator::generateCommandVoidGetValue( std::string const &
 
   if ( definition )
   {
-    std::string chainData, returnVariable;
+    std::string dataDeclarations, returnVariable;
     if ( chained )
     {
-      returnVariable = "structureChain";
-
-      std::string const chainDataTemplate = R"(
+      std::string dataDeclarationsTemplate = R"(${returnType} ${returnVariable};
     ${dataType} & ${dataVariable} = ${returnVariable}.template get<${dataType}>();)";
 
-      chainData = replaceWithMap( chainDataTemplate,
-                                  {
-                                    { "dataType", stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" ) },
-                                    { "dataVariable", startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) ) },
-                                    { "returnVariable", returnVariable },
-                                  } );
+      returnVariable   = "structureChain";
+      dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
+                                         { { "dataType", stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" ) },
+                                           { "dataVariable", startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) ) },
+                                           { "returnType", returnType },
+                                           { "returnVariable", returnVariable } } );
     }
     else
     {
-      returnVariable = startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) );
+      std::string dataDeclarationsTemplate = R"(${returnType} ${returnVariable};)";
+
+      returnVariable   = startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) );
+      dataDeclarations = replaceWithMap( dataDeclarationsTemplate, { { "returnType", returnType }, { "returnVariable", returnVariable } } );
     }
 
     std::string className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
@@ -5355,15 +5322,16 @@ std::string VulkanHppGenerator::generateCommandVoidGetValue( std::string const &
     std::string vectorSizeCheckString;
     if ( vectorSizeCheck.first )
     {
-      vectorSizeCheckString = generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams );
+      vectorSizeCheckString = generateVectorSizeCheck( name, commandData, initialSkipCount, vectorSizeCheck.second, skippedParams, false );
     }
 
     std::string const functionTemplate =
       R"(  template <${argumentTemplates}${chainTemplates}typename Dispatch>
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );${vectorSizeCheck}
-    ${returnType} ${returnVariable};${chainData}
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+${vectorSizeCheck}
+    ${dataDeclarations}
     d.${vkCommand}( ${callArguments} );
     return ${returnVariable};
   })";
@@ -5372,12 +5340,12 @@ std::string VulkanHppGenerator::generateCommandVoidGetValue( std::string const &
                            { { "argumentList", argumentList },
                              { "argumentTemplates", argumentTemplates },
                              { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, false ) },
-                             { "chainData", chainData },
                              { "chainTemplates", chainTemplates },
                              { "className", className },
                              { "classSeparator", classSeparator },
                              { "commandName", commandName },
                              { "const", commandData.handle.empty() ? "" : " const" },
+                             { "dataDeclarations", dataDeclarations },
                              { "nodiscard", "VULKAN_HPP_NODISCARD " },
                              { "noexcept", noexceptString },
                              { "returnType", returnType },
@@ -6679,7 +6647,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessNoErr
     std::string const definitionTemplate =
       R"(
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     return static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
   }
 )";
@@ -6748,7 +6717,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
     std::string const definitionTemplate =
       R"(${argumentTemplates}
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result ${className}::${commandName}( ${argumentList} ) const
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
     {
@@ -7409,7 +7379,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessNoEr
     std::string const definitionTemplate =
       R"(
   VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     getDispatcher()->${vkCommand}( ${callArguments} );
   }
 )";
@@ -7478,7 +7449,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWith
     std::string const definitionTemplate =
       R"(${argumentTemplates}
   VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
     if ( ${failureCheck} )
     {
@@ -8203,7 +8175,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
     std::string const definitionTemplate =
       R"(${argumentTemplates}
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     return getDispatcher()->${vkCommand}( ${callArguments} );
   }
 )";
@@ -8211,7 +8184,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorType
     std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, templatedParams, true );
     std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {} );
     std::string                                            vectorSizeCheckString =
-      vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams ) : "";
+      vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams, true )
+                                                                       : "";
 
     return replaceWithMap( definitionTemplate,
                            { { "argumentList", argumentList },
@@ -8256,7 +8230,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorVkTy
     std::string const definitionTemplate =
       R"(
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     return static_cast<${returnType}>( getDispatcher()->${vkCommand}( ${callArguments} ) );
   }
 )";
@@ -8370,23 +8345,25 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid0Return( std::map<s
   std::set<size_t>         templatedParams = determineVoidPointerParams( commandIt->second.params );
   std::string argumentList = generateArgumentListEnhanced( commandIt->second.params, skippedParams, {}, templatedParams, definition, false, false, false );
   std::string commandName  = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
-  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {} );
-  std::string noexceptString    = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
-  std::string argumentTemplates = generateArgumentTemplates( commandIt->second.params, templatedParams, true );
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck   = needsVectorSizeCheck( commandIt->second.params, vectorParams, {} );
+  std::string                                            noexceptString    = vectorSizeCheck.first ? "" : "VULKAN_HPP_NOEXCEPT";
+  std::string                                            argumentTemplates = generateArgumentTemplates( commandIt->second.params, templatedParams, true );
 
   if ( definition )
   {
     std::string const definitionTemplate =
       R"(${argumentTemplates}
   VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     getDispatcher()->${vkCommand}( ${callArguments} );
   }
 )";
 
     std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, templatedParams, true );
     std::string vectorSizeCheckString =
-      vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams ) : "";
+      vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams, true )
+                            : "";
 
     return replaceWithMap( definitionTemplate,
                            { { "argumentList", argumentList },
@@ -8477,14 +8454,15 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid1ReturnValue( std::
   std::string      commandName   = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags );
   std::string      returnType    = stripPostfix( commandIt->second.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
   std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {} );
-  std::string noexceptString = vectorSizeCheck.first ? "VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS" : "VULKAN_HPP_NOEXCEPT";
+  std::string                                            noexceptString  = vectorSizeCheck.first ? "" : "VULKAN_HPP_NOEXCEPT";
 
   if ( definition )
   {
     std::string const definitionTemplate =
       R"(
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${functionPointerCheck}${vectorSizeCheck}
+  {${functionPointerCheck}
+${vectorSizeCheck}
     ${returnType} ${returnVariable};
     getDispatcher()->${vkCommand}( ${callArguments} );
     return ${returnVariable};
@@ -8500,7 +8478,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid1ReturnValue( std::
         { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
         { "noexcept", noexceptString },
         { "vectorSizeCheck",
-          vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams )
+          vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams, true )
                                 : "" },
         { "returnType", returnType },
         { "returnVariable", startLowerCase( stripPrefix( commandIt->second.params[returnParam].name, "p" ) ) },
@@ -11113,7 +11091,8 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
                                                          CommandData const &                           commandData,
                                                          size_t                                        initialSkipCount,
                                                          std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                                         std::set<size_t> const &                      skippedParams ) const
+                                                         std::set<size_t> const &                      skippedParams,
+                                                         bool                                          onlyThrows ) const
 {
   std::string const assertTemplate = "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() == ${secondVectorName}.size() );";
   std::string const assertTemplateVoid =
@@ -11203,15 +11182,13 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
   }
 
   std::string const sizeCheckTemplate =
-    R"#(
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    R"(#ifdef VULKAN_HPP_NO_EXCEPTIONS
 ${assertions}
 #else
 ${throws}
-#endif  /*VULKAN_HPP_NO_EXCEPTIONS*/
-)#";
+#endif  /*VULKAN_HPP_NO_EXCEPTIONS*/)";
 
-  return replaceWithMap( sizeCheckTemplate, { { "assertions", assertions }, { "throws", throws } } );
+  return onlyThrows ? throws : replaceWithMap( sizeCheckTemplate, { { "assertions", assertions }, { "throws", throws } } );
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const

@@ -3406,7 +3406,7 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_hdr_metadata ===
 
       void setHdrMetadataEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainKHR> const &   swapchains,
-                              ArrayProxy<const VULKAN_HPP_NAMESPACE::HdrMetadataEXT> const & metadata ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                              ArrayProxy<const VULKAN_HPP_NAMESPACE::HdrMetadataEXT> const & metadata ) const;
 
       //=== VK_KHR_create_renderpass2 ===
 
@@ -3514,10 +3514,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
         getAccelerationStructureCompatibilityKHR( const VULKAN_HPP_NAMESPACE::AccelerationStructureVersionInfoKHR & versionInfo ) const VULKAN_HPP_NOEXCEPT;
 
-      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR getAccelerationStructureBuildSizesKHR(
-        VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR                 buildType,
-        const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR & buildInfo,
-        ArrayProxy<const uint32_t> const & maxPrimitiveCounts VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR
+                           getAccelerationStructureBuildSizesKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR                 buildType,
+                                                                  const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR & buildInfo,
+                                                                  ArrayProxy<const uint32_t> const & maxPrimitiveCounts VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       //=== VK_KHR_sampler_ycbcr_conversion ===
 
@@ -4579,7 +4579,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       void bindVertexBuffers( uint32_t                                                   firstBinding,
                               ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
-                              ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                              ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets ) const;
 
       void draw( uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance ) const VULKAN_HPP_NOEXCEPT;
 
@@ -4750,7 +4750,7 @@ namespace VULKAN_HPP_NAMESPACE
                         VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stageMask VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
       void waitEvents2( ArrayProxy<const VULKAN_HPP_NAMESPACE::Event> const &          events,
-                        ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                        ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const;
 
       void pipelineBarrier2( const VULKAN_HPP_NAMESPACE::DependencyInfo & dependencyInfo ) const VULKAN_HPP_NOEXCEPT;
 
@@ -4783,12 +4783,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setScissorWithCount( ArrayProxy<const VULKAN_HPP_NAMESPACE::Rect2D> const & scissors ) const VULKAN_HPP_NOEXCEPT;
 
-      void bindVertexBuffers2( uint32_t                                                         firstBinding,
-                               ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &           buffers,
-                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const &       offsets,
-                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides
-                                 VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+      void bindVertexBuffers2( uint32_t                                                           firstBinding,
+                               ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &             buffers,
+                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const &         offsets,
+                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes   VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                               ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       void setDepthTestEnable( VULKAN_HPP_NAMESPACE::Bool32 depthTestEnable ) const VULKAN_HPP_NOEXCEPT;
 
@@ -4842,17 +4841,17 @@ namespace VULKAN_HPP_NAMESPACE
                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes
-                                              VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                                              VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       void beginTransformFeedbackEXT( uint32_t                                               firstCounterBuffer,
                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const & counterBuffers,
                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & counterBufferOffsets
-                                        VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                                        VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       void endTransformFeedbackEXT( uint32_t                                               firstCounterBuffer,
                                     ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const & counterBuffers,
                                     ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & counterBufferOffsets
-                                      VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                                      VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       void beginQueryIndexedEXT( VULKAN_HPP_NAMESPACE::QueryPool         queryPool,
                                  uint32_t                                query,
@@ -4954,15 +4953,14 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_acceleration_structure ===
 
-      void buildAccelerationStructuresKHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const &      infos,
-                                           ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildRangeInfoKHR * const> const & pBuildRangeInfos )
-        const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
-
       void
-        buildAccelerationStructuresIndirectKHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const & infos,
-                                                ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceAddress> const & indirectDeviceAddresses,
-                                                ArrayProxy<const uint32_t> const &                            indirectStrides,
-                                                ArrayProxy<const uint32_t * const> const & pMaxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+        buildAccelerationStructuresKHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const &      infos,
+                                        ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildRangeInfoKHR * const> const & pBuildRangeInfos ) const;
+
+      void buildAccelerationStructuresIndirectKHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const & infos,
+                                                   ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceAddress> const & indirectDeviceAddresses,
+                                                   ArrayProxy<const uint32_t> const &                            indirectStrides,
+                                                   ArrayProxy<const uint32_t * const> const &                    pMaxPrimitiveCounts ) const;
 
       void copyAccelerationStructureKHR( const VULKAN_HPP_NAMESPACE::CopyAccelerationStructureInfoKHR & info ) const VULKAN_HPP_NOEXCEPT;
 
@@ -5099,12 +5097,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setScissorWithCountEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Rect2D> const & scissors ) const VULKAN_HPP_NOEXCEPT;
 
-      void bindVertexBuffers2EXT( uint32_t                                                         firstBinding,
-                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &           buffers,
-                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const &       offsets,
-                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides
-                                    VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+      void bindVertexBuffers2EXT( uint32_t                                                           firstBinding,
+                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &             buffers,
+                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const &         offsets,
+                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes   VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const;
 
       void setDepthTestEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthTestEnable ) const VULKAN_HPP_NOEXCEPT;
 
@@ -5147,7 +5144,7 @@ namespace VULKAN_HPP_NAMESPACE
                            VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stageMask VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
       void waitEvents2KHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::Event> const &          events,
-                           ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS;
+                           ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const;
 
       void pipelineBarrier2KHR( const VULKAN_HPP_NAMESPACE::DependencyInfo & dependencyInfo ) const VULKAN_HPP_NOEXCEPT;
 
@@ -10960,20 +10957,14 @@ namespace VULKAN_HPP_NAMESPACE
                                              static_cast<VkIndexType>( indexType ) );
     }
 
-    VULKAN_HPP_INLINE void
-      CommandBuffer::bindVertexBuffers( uint32_t                                                   firstBinding,
-                                        ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
-                                        ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void CommandBuffer::bindVertexBuffers( uint32_t                                                   firstBinding,
+                                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
+                                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets ) const
     {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
-#  else
       if ( buffers.size() != offsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindVertexBuffers: buffers.size() != offsets.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBindVertexBuffers( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                firstBinding,
                                                buffers.size(),
@@ -11908,19 +11899,13 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkEvent>( event ), static_cast<VkPipelineStageFlags2>( stageMask ) );
     }
 
-    VULKAN_HPP_INLINE void
-      CommandBuffer::waitEvents2( ArrayProxy<const VULKAN_HPP_NAMESPACE::Event> const &          events,
-                                  ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void CommandBuffer::waitEvents2( ArrayProxy<const VULKAN_HPP_NAMESPACE::Event> const &          events,
+                                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const
     {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( events.size() == dependencyInfos.size() );
-#  else
       if ( events.size() != dependencyInfos.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::waitEvents2: events.size() != dependencyInfos.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdWaitEvents2( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                          events.size(),
                                          reinterpret_cast<const VkEvent *>( events.data() ),
@@ -12022,18 +12007,12 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkCommandBuffer>( m_commandBuffer ), scissors.size(), reinterpret_cast<const VkRect2D *>( scissors.data() ) );
     }
 
-    VULKAN_HPP_INLINE void
-      CommandBuffer::bindVertexBuffers2( uint32_t                                                   firstBinding,
-                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
-                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
-                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes,
-                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void CommandBuffer::bindVertexBuffers2( uint32_t                                                   firstBinding,
+                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
+                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
+                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes,
+                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides ) const
     {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
-      VULKAN_HPP_ASSERT( sizes.empty() || buffers.size() == sizes.size() );
-      VULKAN_HPP_ASSERT( strides.empty() || buffers.size() == strides.size() );
-#  else
       if ( buffers.size() != offsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindVertexBuffers2: buffers.size() != offsets.size()" );
@@ -12046,8 +12025,6 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindVertexBuffers2: buffers.size() != strides.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBindVertexBuffers2( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                 firstBinding,
                                                 buffers.size(),
@@ -12986,15 +12963,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
                                                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
                                                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes ) const
-      VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBindTransformFeedbackBuffersEXT &&
                          "Function <vkCmdBindTransformFeedbackBuffersEXT> needs extension <VK_EXT_transform_feedback> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
-      VULKAN_HPP_ASSERT( sizes.empty() || buffers.size() == sizes.size() );
-#  else
       if ( buffers.size() != offsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindTransformFeedbackBuffersEXT: buffers.size() != offsets.size()" );
@@ -13003,8 +12975,6 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindTransformFeedbackBuffersEXT: buffers.size() != sizes.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBindTransformFeedbackBuffersEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                              firstBinding,
                                                              buffers.size(),
@@ -13016,20 +12986,14 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE void CommandBuffer::beginTransformFeedbackEXT( uint32_t                                                   firstCounterBuffer,
                                                                      ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     counterBuffers,
                                                                      ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & counterBufferOffsets ) const
-      VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBeginTransformFeedbackEXT &&
                          "Function <vkCmdBeginTransformFeedbackEXT> needs extension <VK_EXT_transform_feedback> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( counterBufferOffsets.empty() || counterBuffers.size() == counterBufferOffsets.size() );
-#  else
       if ( !counterBufferOffsets.empty() && counterBuffers.size() != counterBufferOffsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::beginTransformFeedbackEXT: counterBuffers.size() != counterBufferOffsets.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBeginTransformFeedbackEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                        firstCounterBuffer,
                                                        counterBuffers.size(),
@@ -13040,20 +13004,14 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE void CommandBuffer::endTransformFeedbackEXT( uint32_t                                                   firstCounterBuffer,
                                                                    ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     counterBuffers,
                                                                    ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & counterBufferOffsets ) const
-      VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEndTransformFeedbackEXT &&
                          "Function <vkCmdEndTransformFeedbackEXT> needs extension <VK_EXT_transform_feedback> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( counterBufferOffsets.empty() || counterBuffers.size() == counterBufferOffsets.size() );
-#  else
       if ( !counterBufferOffsets.empty() && counterBuffers.size() != counterBufferOffsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::endTransformFeedbackEXT: counterBuffers.size() != counterBufferOffsets.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdEndTransformFeedbackEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                      firstCounterBuffer,
                                                      counterBuffers.size(),
@@ -14036,21 +13994,15 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_hdr_metadata ===
 
-    VULKAN_HPP_INLINE void
-      Device::setHdrMetadataEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainKHR> const &   swapchains,
-                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::HdrMetadataEXT> const & metadata ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void Device::setHdrMetadataEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainKHR> const &   swapchains,
+                                                      ArrayProxy<const VULKAN_HPP_NAMESPACE::HdrMetadataEXT> const & metadata ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkSetHdrMetadataEXT && "Function <vkSetHdrMetadataEXT> needs extension <VK_EXT_hdr_metadata> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( swapchains.size() == metadata.size() );
-#  else
       if ( swapchains.size() != metadata.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::setHdrMetadataEXT: swapchains.size() != metadata.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkSetHdrMetadataEXT( static_cast<VkDevice>( m_device ),
                                             swapchains.size(),
                                             reinterpret_cast<const VkSwapchainKHR *>( swapchains.data() ),
@@ -14751,20 +14703,14 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructuresKHR(
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const &      infos,
       ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildRangeInfoKHR * const> const & pBuildRangeInfos ) const
-      VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBuildAccelerationStructuresKHR &&
                          "Function <vkCmdBuildAccelerationStructuresKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( infos.size() == pBuildRangeInfos.size() );
-#  else
       if ( infos.size() != pBuildRangeInfos.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::buildAccelerationStructuresKHR: infos.size() != pBuildRangeInfos.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBuildAccelerationStructuresKHR(
         static_cast<VkCommandBuffer>( m_commandBuffer ),
         infos.size(),
@@ -14772,20 +14718,15 @@ namespace VULKAN_HPP_NAMESPACE
         reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR * const *>( pBuildRangeInfos.data() ) );
     }
 
-    VULKAN_HPP_INLINE void CommandBuffer::buildAccelerationStructuresIndirectKHR(
-      ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const & infos,
-      ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceAddress> const &                             indirectDeviceAddresses,
-      ArrayProxy<const uint32_t> const &                                                        indirectStrides,
-      ArrayProxy<const uint32_t * const> const & pMaxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void
+      CommandBuffer::buildAccelerationStructuresIndirectKHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR> const & infos,
+                                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceAddress> const & indirectDeviceAddresses,
+                                                             ArrayProxy<const uint32_t> const &                            indirectStrides,
+                                                             ArrayProxy<const uint32_t * const> const &                    pMaxPrimitiveCounts ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBuildAccelerationStructuresIndirectKHR &&
                          "Function <vkCmdBuildAccelerationStructuresIndirectKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( infos.size() == indirectDeviceAddresses.size() );
-      VULKAN_HPP_ASSERT( infos.size() == indirectStrides.size() );
-      VULKAN_HPP_ASSERT( infos.size() == pMaxPrimitiveCounts.size() );
-#  else
       if ( infos.size() != indirectDeviceAddresses.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING
@@ -14799,8 +14740,6 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::buildAccelerationStructuresIndirectKHR: infos.size() != pMaxPrimitiveCounts.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBuildAccelerationStructuresIndirectKHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                                     infos.size(),
                                                                     reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR *>( infos.data() ),
@@ -14816,6 +14755,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkBuildAccelerationStructuresKHR &&
                          "Function <vkBuildAccelerationStructuresKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
+
       if ( infos.size() != pBuildRangeInfos.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::buildAccelerationStructuresKHR: infos.size() != pBuildRangeInfos.size()" );
@@ -15014,20 +14954,15 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR
                                            Device::getAccelerationStructureBuildSizesKHR( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR                 buildType,
                                                      const VULKAN_HPP_NAMESPACE::AccelerationStructureBuildGeometryInfoKHR & buildInfo,
-                                                     ArrayProxy<const uint32_t> const & maxPrimitiveCounts ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+                                                     ArrayProxy<const uint32_t> const &                                      maxPrimitiveCounts ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureBuildSizesKHR &&
                          "Function <vkGetAccelerationStructureBuildSizesKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( maxPrimitiveCounts.size() == buildInfo.geometryCount );
-#  else
       if ( maxPrimitiveCounts.size() != buildInfo.geometryCount )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureBuildSizesKHR: maxPrimitiveCounts.size() != buildInfo.geometryCount" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR sizeInfo;
       getDispatcher()->vkGetAccelerationStructureBuildSizesKHR( static_cast<VkDevice>( m_device ),
                                                                 static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),
@@ -16256,21 +16191,15 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkCommandBuffer>( m_commandBuffer ), scissors.size(), reinterpret_cast<const VkRect2D *>( scissors.data() ) );
     }
 
-    VULKAN_HPP_INLINE void
-      CommandBuffer::bindVertexBuffers2EXT( uint32_t                                                   firstBinding,
-                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
-                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
-                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes,
-                                            ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides ) const VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
+    VULKAN_HPP_INLINE void CommandBuffer::bindVertexBuffers2EXT( uint32_t                                                   firstBinding,
+                                                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::Buffer> const &     buffers,
+                                                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & offsets,
+                                                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & sizes,
+                                                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::DeviceSize> const & strides ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBindVertexBuffers2EXT &&
                          "Function <vkCmdBindVertexBuffers2EXT> needs extension <VK_EXT_extended_dynamic_state> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( buffers.size() == offsets.size() );
-      VULKAN_HPP_ASSERT( sizes.empty() || buffers.size() == sizes.size() );
-      VULKAN_HPP_ASSERT( strides.empty() || buffers.size() == strides.size() );
-#  else
       if ( buffers.size() != offsets.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindVertexBuffers2EXT: buffers.size() != offsets.size()" );
@@ -16283,8 +16212,6 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::bindVertexBuffers2EXT: buffers.size() != strides.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdBindVertexBuffers2EXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                    firstBinding,
                                                    buffers.size(),
@@ -16681,19 +16608,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_INLINE void CommandBuffer::waitEvents2KHR( ArrayProxy<const VULKAN_HPP_NAMESPACE::Event> const &          events,
                                                           ArrayProxy<const VULKAN_HPP_NAMESPACE::DependencyInfo> const & dependencyInfos ) const
-      VULKAN_HPP_NOEXCEPT_WHEN_NO_EXCEPTIONS
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdWaitEvents2KHR && "Function <vkCmdWaitEvents2KHR> needs extension <VK_KHR_synchronization2> enabled!" );
 
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-      VULKAN_HPP_ASSERT( events.size() == dependencyInfos.size() );
-#  else
       if ( events.size() != dependencyInfos.size() )
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::CommandBuffer::waitEvents2KHR: events.size() != dependencyInfos.size()" );
       }
-#  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
-
       getDispatcher()->vkCmdWaitEvents2KHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                             events.size(),
                                             reinterpret_cast<const VkEvent *>( events.data() ),

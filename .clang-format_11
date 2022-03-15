@@ -1,11 +1,11 @@
 ﻿---
 AccessModifierOffset : -2
 AlignAfterOpenBracket : Align
-AlignConsecutiveAssignments : Consecutive
-AlignConsecutiveBitFields : Consecutive
-AlignConsecutiveDeclarations : Consecutive
-AlignConsecutiveMacros : Consecutive
+AlignConsecutiveAssignments : true
+AlignConsecutiveDeclarations : true
+AlignConsecutiveMacros : true
 AlignEscapedNewlines : Left
+AlignOperands : true
 AlignTrailingComments : true
 AllowAllArgumentsOnNextLine : true
 AllowAllConstructorInitializersOnNextLine : true
@@ -34,7 +34,6 @@ BraceWrapping :
     BeforeCatch : true
     BeforeElse : true
     BeforeLambdaBody : true
-    BeforeWhile : false
     IndentBraces : false
     SplitEmptyFunction : true
     SplitEmptyRecord : true

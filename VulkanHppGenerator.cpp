@@ -352,10 +352,6 @@ std::string VulkanHppGenerator::generateEnums() const
   //=============
 
 ${enums}
-
-  template<ObjectType value>
-  struct cpp_type
-  {};
 )";
 
   std::string           enums;
@@ -5917,12 +5913,6 @@ ${commands}
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED("vk::cpp_type is deprecated. Use vk::CppType instead.") cpp_type<ObjectType::${objTypeEnum}>
-  {
-    using type = VULKAN_HPP_NAMESPACE::${className};
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>

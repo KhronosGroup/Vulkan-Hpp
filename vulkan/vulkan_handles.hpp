@@ -1423,12 +1423,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SurfaceKHR>::value, "SurfaceKHR is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eSurfaceKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::SurfaceKHR;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSurfaceKHR>
   {
     using Type = VULKAN_HPP_NAMESPACE::SurfaceKHR;
@@ -1519,12 +1513,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT>::value,
                             "DebugReportCallbackEXT is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDebugReportCallbackEXT>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDebugReportCallbackEXT>
@@ -1619,12 +1607,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "DebugUtilsMessengerEXT is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDebugUtilsMessengerEXT>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDebugUtilsMessengerEXT>
   {
     using Type = VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT;
@@ -1704,12 +1686,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DisplayKHR ) == sizeof( VkDisplayKHR ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DisplayKHR>::value, "DisplayKHR is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDisplayKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DisplayKHR;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR>
@@ -1799,12 +1775,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SwapchainKHR>::value, "SwapchainKHR is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eSwapchainKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::SwapchainKHR;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSwapchainKHR>
   {
     using Type = VULKAN_HPP_NAMESPACE::SwapchainKHR;
@@ -1892,12 +1862,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Semaphore>::value, "Semaphore is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eSemaphore>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Semaphore;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSemaphore>
   {
     using Type = VULKAN_HPP_NAMESPACE::Semaphore;
@@ -1983,12 +1947,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Fence ) == sizeof( VkFence ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Fence>::value, "Fence is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eFence>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Fence;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eFence>
@@ -2083,12 +2041,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "PerformanceConfigurationINTEL is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePerformanceConfigurationINTEL>
-  {
-    using type = VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePerformanceConfigurationINTEL>
   {
     using Type = VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL;
@@ -2168,12 +2120,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueryPool ) == sizeof( VkQueryPool ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueryPool>::value, "QueryPool is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eQueryPool>
-  {
-    using type = VULKAN_HPP_NAMESPACE::QueryPool;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eQueryPool>
@@ -2261,12 +2207,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Buffer ) == sizeof( VkBuffer ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Buffer>::value, "Buffer is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eBuffer>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Buffer;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eBuffer>
@@ -2357,12 +2297,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "PipelineLayout is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePipelineLayout>
-  {
-    using type = VULKAN_HPP_NAMESPACE::PipelineLayout;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePipelineLayout>
   {
     using Type = VULKAN_HPP_NAMESPACE::PipelineLayout;
@@ -2449,12 +2383,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DescriptorSet ) == sizeof( VkDescriptorSet ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DescriptorSet>::value,
                             "DescriptorSet is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDescriptorSet>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DescriptorSet;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSet>
@@ -2544,12 +2472,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageView>::value, "ImageView is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eImageView>
-  {
-    using type = VULKAN_HPP_NAMESPACE::ImageView;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eImageView>
   {
     using Type = VULKAN_HPP_NAMESPACE::ImageView;
@@ -2637,12 +2559,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Pipeline>::value, "Pipeline is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePipeline>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Pipeline;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePipeline>
   {
     using Type = VULKAN_HPP_NAMESPACE::Pipeline;
@@ -2728,12 +2644,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Image ) == sizeof( VkImage ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Image>::value, "Image is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eImage>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Image;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eImage>
@@ -2828,12 +2738,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "AccelerationStructureNV is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eAccelerationStructureNV>
-  {
-    using type = VULKAN_HPP_NAMESPACE::AccelerationStructureNV;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eAccelerationStructureNV>
   {
     using Type = VULKAN_HPP_NAMESPACE::AccelerationStructureNV;
@@ -2926,12 +2830,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "DescriptorUpdateTemplate is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDescriptorUpdateTemplate>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorUpdateTemplate>
   {
     using Type = VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate;
@@ -3018,12 +2916,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Event ) == sizeof( VkEvent ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Event>::value, "Event is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eEvent>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Event;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eEvent>
@@ -3116,12 +3008,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR>::value,
                             "AccelerationStructureKHR is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eAccelerationStructureKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::AccelerationStructureKHR;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eAccelerationStructureKHR>
@@ -4946,12 +4832,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "CommandBuffer is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eCommandBuffer>
-  {
-    using type = VULKAN_HPP_NAMESPACE::CommandBuffer;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eCommandBuffer>
   {
     using Type = VULKAN_HPP_NAMESPACE::CommandBuffer;
@@ -5037,12 +4917,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DeviceMemory ) == sizeof( VkDeviceMemory ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DeviceMemory>::value, "DeviceMemory is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDeviceMemory>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DeviceMemory;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDeviceMemory>
@@ -5134,12 +5008,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "VideoSessionKHR is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eVideoSessionKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::VideoSessionKHR;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionKHR>
   {
     using Type = VULKAN_HPP_NAMESPACE::VideoSessionKHR;
@@ -5227,12 +5095,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "DeferredOperationKHR is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDeferredOperationKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DeferredOperationKHR;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDeferredOperationKHR>
   {
     using Type = VULKAN_HPP_NAMESPACE::DeferredOperationKHR;
@@ -5318,12 +5180,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA>::value,
                             "BufferCollectionFUCHSIA is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eBufferCollectionFUCHSIA>
-  {
-    using type = VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eBufferCollectionFUCHSIA>
@@ -5414,12 +5270,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BufferView>::value, "BufferView is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eBufferView>
-  {
-    using type = VULKAN_HPP_NAMESPACE::BufferView;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eBufferView>
   {
     using Type = VULKAN_HPP_NAMESPACE::BufferView;
@@ -5505,12 +5355,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CommandPool ) == sizeof( VkCommandPool ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CommandPool>::value, "CommandPool is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eCommandPool>
-  {
-    using type = VULKAN_HPP_NAMESPACE::CommandPool;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eCommandPool>
@@ -5601,12 +5445,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "PipelineCache is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePipelineCache>
-  {
-    using type = VULKAN_HPP_NAMESPACE::PipelineCache;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePipelineCache>
   {
     using Type = VULKAN_HPP_NAMESPACE::PipelineCache;
@@ -5693,12 +5531,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CuFunctionNVX ) == sizeof( VkCuFunctionNVX ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CuFunctionNVX>::value,
                             "CuFunctionNVX is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eCuFunctionNVX>
-  {
-    using type = VULKAN_HPP_NAMESPACE::CuFunctionNVX;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eCuFunctionNVX>
@@ -5788,12 +5620,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CuModuleNVX>::value, "CuModuleNVX is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eCuModuleNVX>
-  {
-    using type = VULKAN_HPP_NAMESPACE::CuModuleNVX;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eCuModuleNVX>
   {
     using Type = VULKAN_HPP_NAMESPACE::CuModuleNVX;
@@ -5880,12 +5706,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DescriptorPool ) == sizeof( VkDescriptorPool ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DescriptorPool>::value,
                             "DescriptorPool is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDescriptorPool>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DescriptorPool;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorPool>
@@ -5979,12 +5799,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "DescriptorSetLayout is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDescriptorSetLayout>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DescriptorSetLayout;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSetLayout>
   {
     using Type = VULKAN_HPP_NAMESPACE::DescriptorSetLayout;
@@ -6070,12 +5884,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Framebuffer ) == sizeof( VkFramebuffer ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Framebuffer>::value, "Framebuffer is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eFramebuffer>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Framebuffer;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eFramebuffer>
@@ -6170,12 +5978,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "IndirectCommandsLayoutNV is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eIndirectCommandsLayoutNV>
-  {
-    using type = VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eIndirectCommandsLayoutNV>
   {
     using Type = VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV;
@@ -6258,12 +6060,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "PrivateDataSlot is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePrivateDataSlot>
-  {
-    using type = VULKAN_HPP_NAMESPACE::PrivateDataSlot;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePrivateDataSlot>
   {
     using Type = VULKAN_HPP_NAMESPACE::PrivateDataSlot;
@@ -6344,12 +6140,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderPass ) == sizeof( VkRenderPass ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderPass>::value, "RenderPass is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eRenderPass>
-  {
-    using type = VULKAN_HPP_NAMESPACE::RenderPass;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eRenderPass>
@@ -6437,12 +6227,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Sampler ) == sizeof( VkSampler ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Sampler>::value, "Sampler is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eSampler>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Sampler;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSampler>
@@ -6537,12 +6321,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "SamplerYcbcrConversion is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eSamplerYcbcrConversion>
-  {
-    using type = VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion>
   {
     using Type = VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion;
@@ -6629,12 +6407,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ShaderModule ) == sizeof( VkShaderModule ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ShaderModule>::value, "ShaderModule is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eShaderModule>
-  {
-    using type = VULKAN_HPP_NAMESPACE::ShaderModule;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eShaderModule>
@@ -6725,12 +6497,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ValidationCacheEXT ) == sizeof( VkValidationCacheEXT ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ValidationCacheEXT>::value,
                             "ValidationCacheEXT is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eValidationCacheEXT>
-  {
-    using type = VULKAN_HPP_NAMESPACE::ValidationCacheEXT;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eValidationCacheEXT>
@@ -6824,12 +6590,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR>::value,
                             "VideoSessionParametersKHR is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eVideoSessionParametersKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eVideoSessionParametersKHR>
@@ -7059,12 +6819,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Queue ) == sizeof( VkQueue ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Queue>::value, "Queue is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eQueue>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Queue;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eQueue>
@@ -11464,12 +11218,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Device>::value, "Device is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDevice>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Device;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDevice>
   {
     using Type = VULKAN_HPP_NAMESPACE::Device;
@@ -11556,12 +11304,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DisplayModeKHR ) == sizeof( VkDisplayModeKHR ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DisplayModeKHR>::value,
                             "DisplayModeKHR is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eDisplayModeKHR>
-  {
-    using type = VULKAN_HPP_NAMESPACE::DisplayModeKHR;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDisplayModeKHR>
@@ -12873,12 +12615,6 @@ namespace VULKAN_HPP_NAMESPACE
                             "PhysicalDevice is not nothrow_move_constructible!" );
 
   template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::ePhysicalDevice>
-  {
-    using type = VULKAN_HPP_NAMESPACE::PhysicalDevice;
-  };
-
-  template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePhysicalDevice>
   {
     using Type = VULKAN_HPP_NAMESPACE::PhysicalDevice;
@@ -13566,12 +13302,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
   VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::Instance ) == sizeof( VkInstance ), "handle and wrapper have different size!" );
   VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::Instance>::value, "Instance is not nothrow_move_constructible!" );
-
-  template <>
-  struct VULKAN_HPP_DEPRECATED( "vk::cpp_type is deprecated. Use vk::CppType instead." ) cpp_type<ObjectType::eInstance>
-  {
-    using type = VULKAN_HPP_NAMESPACE::Instance;
-  };
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eInstance>

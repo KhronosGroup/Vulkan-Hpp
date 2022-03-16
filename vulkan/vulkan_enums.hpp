@@ -2635,6 +2635,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  enum class InstanceCreateFlagBits : VkInstanceCreateFlags
+  {
+    eEnumeratePortabilityKHR = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR
+  };
+
+  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case InstanceCreateFlagBits::eEnumeratePortabilityKHR: return "EnumeratePortabilityKHR";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   enum class InternalAllocationType
   {
     eExecutable = VK_INTERNAL_ALLOCATION_TYPE_EXECUTABLE
@@ -2794,15 +2808,6 @@ namespace VULKAN_HPP_NAMESPACE
       case SystemAllocationScope::eInstance: return "Instance";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
-  }
-
-  enum class InstanceCreateFlagBits
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits )
-  {
-    return "(void)";
   }
 
   enum class DeviceCreateFlagBits
@@ -8630,9 +8635,45 @@ namespace VULKAN_HPP_NAMESPACE
 
   using InstanceCreateFlags = Flags<InstanceCreateFlagBits>;
 
-  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags )
+  template <>
+  struct FlagTraits<InstanceCreateFlagBits>
   {
-    return "{}";
+    enum : VkFlags
+    {
+      allFlags = VkFlags( InstanceCreateFlagBits::eEnumeratePortabilityKHR )
+    };
+  };
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator|( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return InstanceCreateFlags( bit0 ) | bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator&( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return InstanceCreateFlags( bit0 ) & bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator^( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  {
+    return InstanceCreateFlags( bit0 ) ^ bit1;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator~( InstanceCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
+  {
+    return ~( InstanceCreateFlags( bits ) );
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & InstanceCreateFlagBits::eEnumeratePortabilityKHR )
+      result += "EnumeratePortabilityKHR | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   using MemoryHeapFlags = Flags<MemoryHeapFlagBits>;

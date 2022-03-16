@@ -1460,6 +1460,11 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdSetViewportShadingRatePaletteNV =
           PFN_vkCmdSetViewportShadingRatePaletteNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportShadingRatePaletteNV" ) );
         vkCmdSetCoarseSampleOrderNV = PFN_vkCmdSetCoarseSampleOrderNV( vkGetDeviceProcAddr( device, "vkCmdSetCoarseSampleOrderNV" ) );
+
+        //=== VK_VALVE_descriptor_set_host_mapping ===
+        vkGetDescriptorSetLayoutHostMappingInfoVALVE =
+          PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
+        vkGetDescriptorSetHostMappingVALVE = PFN_vkGetDescriptorSetHostMappingVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetHostMappingVALVE" ) );
       }
 
     public:
@@ -2141,6 +2146,10 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdBindShadingRateImageNV          vkCmdBindShadingRateImageNV          = 0;
       PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV = 0;
       PFN_vkCmdSetCoarseSampleOrderNV          vkCmdSetCoarseSampleOrderNV          = 0;
+
+      //=== VK_VALVE_descriptor_set_host_mapping ===
+      PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE = 0;
+      PFN_vkGetDescriptorSetHostMappingVALVE           vkGetDescriptorSetHostMappingVALVE           = 0;
     };
 
     //========================================
@@ -3739,6 +3748,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>
                            getImageSparseMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirements & info ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_VALVE_descriptor_set_host_mapping ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE getDescriptorSetLayoutHostMappingInfoVALVE(
+        const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE & bindingReference ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                                       m_device    = {};
@@ -6056,6 +6070,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       template <typename DataType>
       void updateWithTemplateKHR( VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate, DataType const & data ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_VALVE_descriptor_set_host_mapping ===
+
+      VULKAN_HPP_NODISCARD void * getHostMappingVALVE() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device         = {};
@@ -17340,6 +17358,31 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkSparseImageMemoryRequirements2 *>( sparseMemoryRequirements.data() ) );
       VULKAN_HPP_ASSERT( sparseMemoryRequirementCount == sparseMemoryRequirements.size() );
       return sparseMemoryRequirements;
+    }
+
+    //=== VK_VALVE_descriptor_set_host_mapping ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE Device::getDescriptorSetLayoutHostMappingInfoVALVE(
+      const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE & bindingReference ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorSetLayoutHostMappingInfoVALVE &&
+                         "Function <vkGetDescriptorSetLayoutHostMappingInfoVALVE> needs extension <VK_VALVE_descriptor_set_host_mapping> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE hostMapping;
+      getDispatcher()->vkGetDescriptorSetLayoutHostMappingInfoVALVE( static_cast<VkDevice>( m_device ),
+                                                                     reinterpret_cast<const VkDescriptorSetBindingReferenceVALVE *>( &bindingReference ),
+                                                                     reinterpret_cast<VkDescriptorSetLayoutHostMappingInfoVALVE *>( &hostMapping ) );
+      return hostMapping;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE void * DescriptorSet::getHostMappingVALVE() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorSetHostMappingVALVE &&
+                         "Function <vkGetDescriptorSetHostMappingVALVE> needs extension <VK_VALVE_descriptor_set_host_mapping> enabled!" );
+
+      void * pData;
+      getDispatcher()->vkGetDescriptorSetHostMappingVALVE( static_cast<VkDevice>( m_device ), static_cast<VkDescriptorSet>( m_descriptorSet ), &pData );
+      return pData;
     }
 
 #endif

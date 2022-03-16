@@ -398,7 +398,7 @@ private:
   std::vector<size_t> determineConstPointerParams( std::vector<ParamData> const & params ) const;
   size_t              determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   size_t              determineInitialSkipCount( std::string const & command ) const;
-  std::vector<size_t> determineReturnParamIndices( std::vector<ParamData> const & params ) const;
+  std::vector<size_t> determineReturnParams( std::vector<ParamData> const & params ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::map<std::string, CommandData>::const_iterator determineRAIIHandleDestructor( std::string const & handleType ) const;
@@ -621,7 +621,9 @@ private:
                                      CommandData const &              commandData,
                                      size_t                           initialSkipCount,
                                      bool                             definition,
-                                     std::map<size_t, size_t> const & vectorParamIndices ) const;
+                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                     std::vector<size_t> const &      returnParams,
+                                     bool                             chained ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
@@ -643,13 +645,6 @@ private:
                                                    std::pair<size_t, size_t> const & vectorParamIndex,
                                                    std::vector<size_t> const &       returnParamIndices,
                                                    bool                              withAllocators ) const;
-  std::string generateCommandVoidGetValue( std::string const &              name,
-                                           CommandData const &              commandData,
-                                           size_t                           initialSkipCount,
-                                           bool                             definition,
-                                           std::map<size_t, size_t> const & vectorParamIndices,
-                                           size_t                           returnParam,
-                                           bool                             chained ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string

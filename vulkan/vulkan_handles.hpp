@@ -554,6 +554,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
+  struct VideoDecodeCapabilitiesKHR;
   struct VideoDecodeInfoKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -1340,6 +1341,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pageable_device_local_memory ===
   struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
+
+  //=== VK_VALVE_descriptor_set_host_mapping ===
+  struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE;
+  struct DescriptorSetBindingReferenceVALVE;
+  struct DescriptorSetLayoutHostMappingInfoVALVE;
 
   //=== VK_QCOM_fragment_density_map_offset ===
   struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
@@ -11194,6 +11200,29 @@ namespace VULKAN_HPP_NAMESPACE
                          getImageSparseMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirements & info,
                                                               SparseImageMemoryRequirements2Allocator &                   sparseImageMemoryRequirements2Allocator,
                                                               Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_VALVE_descriptor_set_host_mapping ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getDescriptorSetLayoutHostMappingInfoVALVE( const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE * pBindingReference,
+                                                     VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE *  pHostMapping,
+                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE
+                         getDescriptorSetLayoutHostMappingInfoVALVE( const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE & bindingReference,
+                                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getDescriptorSetHostMappingVALVE( VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet,
+                                           void **                             ppData,
+                                           Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD void * getDescriptorSetHostMappingVALVE( VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet,
+                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT

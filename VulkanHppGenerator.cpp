@@ -14,6 +14,7 @@
 
 #include "VulkanHppGenerator.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <fstream>
 #include <regex>

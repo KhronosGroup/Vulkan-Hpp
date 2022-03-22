@@ -4886,7 +4886,7 @@ std::string VulkanHppGenerator::generateCommandSingle( std::string const &      
     }
     else
     {
-      std::string returnVariable; 
+      std::string returnVariable;
       if ( chained )
       {
         std::string dataDeclarationsTemplate = R"(${returnType} ${returnVariable};
@@ -6181,6 +6181,31 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
       getParent += "    }\n";
     }
 
+    std::string assignmentOperator, copyConstructor;
+    if ( handle.second.destructorIt == m_commands.end() )
+    {
+      // allow copy constructor and assignment operator for classes without destructor
+      std::string const copyConstructorTemplate =
+        R"(      ${handleType}( ${handleType} const & rhs ) : m_${handleName}( rhs.m_${handleName} ), m_dispatcher( rhs.m_dispatcher ) {})";
+      copyConstructor += replaceWithMap( copyConstructorTemplate, { { "handleName", handleName }, { "handleType", handleType } } );
+
+      std::string assignmentOperatorTemplate = R"(      ${handleType} & operator=( ${handleType} const & rhs )
+      {
+        m_${handleName} = rhs.m_${handleName};
+        m_dispatcher    = rhs.m_dispatcher;
+        return *this;
+      })";
+      assignmentOperator += replaceWithMap( assignmentOperatorTemplate, { { "handleName", handleName }, { "handleType", handleType } } );
+    }
+    else
+    {
+      std::string const copyConstructorTemplate = R"(      ${handleType}( ${handleType} const & ) = delete;)";
+      copyConstructor += replaceWithMap( copyConstructorTemplate, { { "handleType", handleType } } );
+
+      std::string const assignmentOperatorTemplate = R"(      ${handleType} & operator=( ${handleType} const & ) = delete;)";
+      assignmentOperator += replaceWithMap( assignmentOperatorTemplate, { { "handleType", handleType } } );
+    }
+
     const std::string handleTemplate = R"(
 ${enter}  class ${handleType}
   {
@@ -6200,11 +6225,11 @@ ${singularConstructors}
     }
 
     ${handleType}() = delete;
-    ${handleType}( ${handleType} const & ) = delete;
+${copyConstructor}
     ${handleType}( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
       : ${moveConstructorInitializerList}
     {}
-    ${handleType} & operator=( ${handleType} const & ) = delete;
+${assignmentOperator}
     ${handleType} & operator=( ${handleType} && rhs ) VULKAN_HPP_NOEXCEPT
     {
       if ( this != &rhs )
@@ -6245,7 +6270,9 @@ ${memberFunctionsDeclarations}
 ${leave})";
 
     str += replaceWithMap( handleTemplate,
-                           { { "clearMembers", clearMembers },
+                           { { "assignmentOperator", assignmentOperator },
+                             { "clearMembers", clearMembers },
+                             { "copyConstructor", copyConstructor },
                              { "debugReportObjectType", debugReportObjectType },
                              { "dispatcherType", dispatcherType },
                              { "enter", enter },
@@ -12750,9 +12777,8 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableProperty( int
     }
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
-      for ( auto const & r : requires )
+      std::vector<std::string> requiresAttribute = tokenize( attribute.second, "," );
+      for ( auto const & r : requiresAttribute )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
                xmlLine,
@@ -12799,9 +12825,8 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableStruct( int x
   {
     if ( attribute.first == "requires" )
     {
-      std::vector<std::string>
-      requires = tokenize( attribute.second, "," );
-      for ( auto const & r : requires )
+      std::vector<std::string> requiresAttribute = tokenize( attribute.second, "," );
+      for ( auto const & r : requiresAttribute )
       {
         check( ( m_features.find( r ) != m_features.end() ) || ( m_extensions.find( r ) != m_extensions.end() ),
                xmlLine,

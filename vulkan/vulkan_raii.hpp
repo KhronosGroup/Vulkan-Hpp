@@ -2593,15 +2593,20 @@ namespace VULKAN_HPP_NAMESPACE
         clear();
       }
 
-      PhysicalDevice()                         = delete;
-      PhysicalDevice( PhysicalDevice const & ) = delete;
+      PhysicalDevice() = delete;
+      PhysicalDevice( PhysicalDevice const & rhs ) : m_physicalDevice( rhs.m_physicalDevice ), m_dispatcher( rhs.m_dispatcher ) {}
       PhysicalDevice( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_physicalDevice, {} ) )
         , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
       {
       }
-      PhysicalDevice & operator=( PhysicalDevice const & ) = delete;
-      PhysicalDevice & operator                            =( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
+      PhysicalDevice & operator=( PhysicalDevice const & rhs )
+      {
+        m_physicalDevice = rhs.m_physicalDevice;
+        m_dispatcher     = rhs.m_dispatcher;
+        return *this;
+      }
+      PhysicalDevice & operator=( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -6694,16 +6699,21 @@ namespace VULKAN_HPP_NAMESPACE
         clear();
       }
 
-      DisplayModeKHR()                         = delete;
-      DisplayModeKHR( DisplayModeKHR const & ) = delete;
+      DisplayModeKHR() = delete;
+      DisplayModeKHR( DisplayModeKHR const & rhs ) : m_displayModeKHR( rhs.m_displayModeKHR ), m_dispatcher( rhs.m_dispatcher ) {}
       DisplayModeKHR( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
         : m_physicalDevice( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_physicalDevice, {} ) )
         , m_displayModeKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_displayModeKHR, {} ) )
         , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
       {
       }
-      DisplayModeKHR & operator=( DisplayModeKHR const & ) = delete;
-      DisplayModeKHR & operator                            =( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
+      DisplayModeKHR & operator=( DisplayModeKHR const & rhs )
+      {
+        m_displayModeKHR = rhs.m_displayModeKHR;
+        m_dispatcher     = rhs.m_dispatcher;
+        return *this;
+      }
+      DisplayModeKHR & operator=( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {
@@ -8461,15 +8471,20 @@ namespace VULKAN_HPP_NAMESPACE
         clear();
       }
 
-      Queue()                = delete;
-      Queue( Queue const & ) = delete;
+      Queue() = delete;
+      Queue( Queue const & rhs ) : m_queue( rhs.m_queue ), m_dispatcher( rhs.m_dispatcher ) {}
       Queue( Queue && rhs ) VULKAN_HPP_NOEXCEPT
         : m_queue( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_queue, {} ) )
         , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
       {
       }
-      Queue & operator=( Queue const & ) = delete;
-      Queue & operator                   =( Queue && rhs ) VULKAN_HPP_NOEXCEPT
+      Queue & operator=( Queue const & rhs )
+      {
+        m_queue      = rhs.m_queue;
+        m_dispatcher = rhs.m_dispatcher;
+        return *this;
+      }
+      Queue & operator=( Queue && rhs ) VULKAN_HPP_NOEXCEPT
       {
         if ( this != &rhs )
         {

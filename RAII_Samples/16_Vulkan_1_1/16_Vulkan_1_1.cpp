@@ -70,7 +70,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       {
         if ( desiredVersion <= pdh.getProperties().apiVersion )
         {
-          desiredPhysicalDevices.push_back( std::move( pdh ) );
+          desiredPhysicalDevices.push_back( pdh );
         }
       }
 

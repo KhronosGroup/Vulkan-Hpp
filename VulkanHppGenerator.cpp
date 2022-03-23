@@ -10278,12 +10278,18 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
       arguments += argument;
     }
 
-    // gather the initializers; skip member 'pNext' and members with exactly one legal value
-    if ( ( member.name != "pNext" ) && member.value.empty() )
+    // gather the initializers; skip members with exactly one legal value
+    if ( member.value.empty() )
     {
-      initializers += ( firstArgument ? ":" : "," ) + std::string( " " ) + member.name + "( " + member.name + "_ )";
+      initializers += std::string( firstArgument ? ": " : ", " ) + member.name + "( " + member.name + "_ )";
       firstArgument = false;
     }
+  }
+  auto pNextIt = std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) { return md.name == "pNext"; } );
+  if ( pNextIt != structData.second.members.end() )
+  {
+    // add pNext as a last optional argument to the constructor
+    arguments += std::string( listedArgument ? ", " : "" ) + pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr";
   }
 
   std::string str = replaceWithMap( constructors,
@@ -10323,8 +10329,13 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
     std::string templateHeader, sizeChecks;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
-      // gather the initializers; skip member 'pNext' and constant members
-      if ( ( mit->name != "pNext" ) && mit->value.empty() )
+      // gather the initializers
+      if ( mit->name == "pNext" )  // for pNext, we just get the initializer... the argument is added at the end
+      {
+        initializers += std::string( firstArgument ? ":" : "," ) + " pNext( pNext_ )";
+        firstArgument = false;
+      }
+      else if ( mit->value.empty() )  // skip constant members
       {
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
@@ -10376,6 +10387,15 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
         firstArgument = false;
       }
     }
+
+    auto pNextIt =
+      std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) { return md.name == "pNext"; } );
+    if ( pNextIt != structData.second.members.end() )
+    {
+      // add pNext as a last optional argument to the constructor
+      arguments += std::string( listedArgument ? ", " : "" ) + pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr";
+    }
+
     static const std::string constructorTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${templateHeader}    ${structName}( ${arguments} )

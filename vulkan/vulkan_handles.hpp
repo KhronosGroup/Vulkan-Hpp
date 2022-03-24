@@ -580,7 +580,6 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
   struct VideoEncodeH264CapabilitiesEXT;
-  struct VideoEncodeH264SessionCreateInfoEXT;
   struct VideoEncodeH264SessionParametersCreateInfoEXT;
   struct VideoEncodeH264SessionParametersAddInfoEXT;
   struct VideoEncodeH264VclFrameInfoEXT;
@@ -598,7 +597,6 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h265 ===
   struct VideoEncodeH265CapabilitiesEXT;
-  struct VideoEncodeH265SessionCreateInfoEXT;
   struct VideoEncodeH265SessionParametersCreateInfoEXT;
   struct VideoEncodeH265SessionParametersAddInfoEXT;
   struct VideoEncodeH265VclFrameInfoEXT;
@@ -617,7 +615,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_video_decode_h264 ===
   struct VideoDecodeH264ProfileEXT;
   struct VideoDecodeH264CapabilitiesEXT;
-  struct VideoDecodeH264SessionCreateInfoEXT;
   struct VideoDecodeH264SessionParametersCreateInfoEXT;
   struct VideoDecodeH264SessionParametersAddInfoEXT;
   struct VideoDecodeH264PictureInfoEXT;
@@ -950,7 +947,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_video_decode_h265 ===
   struct VideoDecodeH265ProfileEXT;
   struct VideoDecodeH265CapabilitiesEXT;
-  struct VideoDecodeH265SessionCreateInfoEXT;
   struct VideoDecodeH265SessionParametersCreateInfoEXT;
   struct VideoDecodeH265SessionParametersAddInfoEXT;
   struct VideoDecodeH265PictureInfoEXT;

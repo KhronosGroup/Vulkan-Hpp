@@ -106,8 +106,7 @@ namespace vk
 
       float                     queuePriority = 0.0f;
       vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, queueFamilyIndex, 1, &queuePriority );
-      vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures );
-      deviceCreateInfo.pNext = pNext;
+      vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures, pNext );
 
       vk::Device device = physicalDevice.createDevice( deviceCreateInfo );
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -768,7 +767,8 @@ namespace vk
                    vk::ImageLayout::eUndefined,
                    vk::MemoryPropertyFlagBits::eDeviceLocal,
                    vk::ImageAspectFlagBits::eDepth )
-    {}
+    {
+    }
 
     ImageData::ImageData( vk::PhysicalDevice const & physicalDevice,
                           vk::Device const &         device,
@@ -839,8 +839,8 @@ namespace vk
         swapchainExtent = surfaceCapabilities.currentExtent;
       }
       vk::SurfaceTransformFlagBitsKHR preTransform = ( surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity )
-                                                       ? vk::SurfaceTransformFlagBitsKHR::eIdentity
-                                                       : surfaceCapabilities.currentTransform;
+                                                     ? vk::SurfaceTransformFlagBitsKHR::eIdentity
+                                                     : surfaceCapabilities.currentTransform;
       vk::CompositeAlphaFlagBitsKHR   compositeAlpha =
         ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
           : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied ) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
@@ -887,7 +887,8 @@ namespace vk
 
     CheckerboardImageGenerator::CheckerboardImageGenerator( std::array<uint8_t, 3> const & rgb0, std::array<uint8_t, 3> const & rgb1 )
       : m_rgb0( rgb0 ), m_rgb1( rgb1 )
-    {}
+    {
+    }
 
     void CheckerboardImageGenerator::operator()( void * data, vk::Extent2D & extent ) const
     {

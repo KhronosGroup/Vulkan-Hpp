@@ -63,10 +63,10 @@ struct GeometryInstanceData
   }
 
   float    transform[12];                // Transform matrix, containing only the top 3 rows
-  uint32_t instanceId : 24;              // Instance index
-  uint32_t mask : 8;                     // Visibility mask
+  uint32_t instanceId     : 24;          // Instance index
+  uint32_t mask           : 8;           // Visibility mask
   uint32_t instanceOffset : 24;          // Index of the hit group which will be invoked when a ray hits the instance
-  uint32_t flags : 8;                    // Instance flags, such as culling
+  uint32_t flags          : 8;           // Instance flags, such as culling
   uint64_t accelerationStructureHandle;  // Opaque handle of the bottom-level acceleration structure
 };
 static_assert( sizeof( GeometryInstanceData ) == 64, "GeometryInstanceData structure compiles to incorrect size" );
@@ -961,8 +961,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::WriteDescriptorSet>           accelerationDescriptionSets;
     for ( size_t i = 0; i < rayTracingDescriptorSets.size(); i++ )
     {
-      accelerationDescriptionSets.emplace_back( rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType );
-      accelerationDescriptionSets.back().pNext = &writeDescriptorSetAcceleration;
+      accelerationDescriptionSets.emplace_back(
+        rayTracingDescriptorSets[i], 0, 0, 1, bindings[0].descriptorType, nullptr, nullptr, nullptr, &writeDescriptorSetAcceleration );
     }
     device.updateDescriptorSets( accelerationDescriptionSets, nullptr );
 

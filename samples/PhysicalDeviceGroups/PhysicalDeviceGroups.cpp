@@ -52,7 +52,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "subsetAllocation    = " << !!groupProperties[i].subsetAllocation << "\n";
       std::cout << "\n";
 
-      if ( 1 < groupProperties[i].physicalDeviceCount )
+      if ( 0 < groupProperties[i].physicalDeviceCount )
       {
         vk::PhysicalDevice physicalDevice = groupProperties[i].physicalDevices[0];
 
@@ -69,12 +69,10 @@ int main( int /*argc*/, char ** /*argv*/ )
         // create a Device
         float                     queuePriority = 0.0f;
         vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-        vk::DeviceCreateInfo      deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
+        vk::StructureChain<vk::DeviceCreateInfo, vk::DeviceGroupDeviceCreateInfo> deviceCreateInfoChain(
+          { {}, deviceQueueCreateInfo }, { groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices } );
 
-        vk::DeviceGroupDeviceCreateInfo deviceGroupDeviceCreateInfo( groupProperties[i].physicalDeviceCount, groupProperties[i].physicalDevices );
-        deviceCreateInfo.pNext = &deviceGroupDeviceCreateInfo;
-
-        vk::Device device = physicalDevice.createDevice( deviceCreateInfo );
+        vk::Device device = physicalDevice.createDevice( deviceCreateInfoChain.get<vk::DeviceCreateInfo>() );
 
         // ... and destroy it again
         device.destroy();

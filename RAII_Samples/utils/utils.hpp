@@ -308,7 +308,8 @@ namespace vk
                        vk::ImageLayout::eUndefined,
                        vk::MemoryPropertyFlagBits::eDeviceLocal,
                        vk::ImageAspectFlagBits::eDepth )
-        {}
+        {
+        }
       };
 
       struct SurfaceData
@@ -356,8 +357,8 @@ namespace vk
             swapchainExtent = surfaceCapabilities.currentExtent;
           }
           vk::SurfaceTransformFlagBitsKHR preTransform = ( surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity )
-                                                           ? vk::SurfaceTransformFlagBitsKHR::eIdentity
-                                                           : surfaceCapabilities.currentTransform;
+                                                         ? vk::SurfaceTransformFlagBitsKHR::eIdentity
+                                                         : surfaceCapabilities.currentTransform;
           vk::CompositeAlphaFlagBitsKHR   compositeAlpha =
             ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
               : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied ) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
@@ -591,8 +592,7 @@ namespace vk
 
         float                     queuePriority = 0.0f;
         vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), queueFamilyIndex, 1, &queuePriority );
-        vk::DeviceCreateInfo      deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures );
-        deviceCreateInfo.pNext = pNext;
+        vk::DeviceCreateInfo      deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures, pNext );
         return vk::raii::Device( physicalDevice, deviceCreateInfo );
       }
 

@@ -417,7 +417,6 @@ namespace VULKAN_HPP_NAMESPACE
     eImageViewAddressPropertiesNVX                 = VK_STRUCTURE_TYPE_IMAGE_VIEW_ADDRESS_PROPERTIES_NVX,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     eVideoEncodeH264CapabilitiesEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_CAPABILITIES_EXT,
-    eVideoEncodeH264SessionCreateInfoEXT           = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_CREATE_INFO_EXT,
     eVideoEncodeH264SessionParametersCreateInfoEXT = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_CREATE_INFO_EXT,
     eVideoEncodeH264SessionParametersAddInfoEXT    = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_SESSION_PARAMETERS_ADD_INFO_EXT,
     eVideoEncodeH264VclFrameInfoEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_VCL_FRAME_INFO_EXT,
@@ -429,7 +428,6 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeH264RateControlLayerInfoEXT        = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_RATE_CONTROL_LAYER_INFO_EXT,
     eVideoEncodeH264ReferenceListsEXT              = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H264_REFERENCE_LISTS_EXT,
     eVideoEncodeH265CapabilitiesEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_CAPABILITIES_EXT,
-    eVideoEncodeH265SessionCreateInfoEXT           = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_CREATE_INFO_EXT,
     eVideoEncodeH265SessionParametersCreateInfoEXT = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT,
     eVideoEncodeH265SessionParametersAddInfoEXT    = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT,
     eVideoEncodeH265VclFrameInfoEXT                = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_VCL_FRAME_INFO_EXT,
@@ -441,7 +439,6 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeH265RateControlInfoEXT             = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_INFO_EXT,
     eVideoEncodeH265RateControlLayerInfoEXT        = VK_STRUCTURE_TYPE_VIDEO_ENCODE_H265_RATE_CONTROL_LAYER_INFO_EXT,
     eVideoDecodeH264CapabilitiesEXT                = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_CAPABILITIES_EXT,
-    eVideoDecodeH264SessionCreateInfoEXT           = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_SESSION_CREATE_INFO_EXT,
     eVideoDecodeH264PictureInfoEXT                 = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PICTURE_INFO_EXT,
     eVideoDecodeH264MvcEXT                         = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_MVC_EXT,
     eVideoDecodeH264ProfileEXT                     = VK_STRUCTURE_TYPE_VIDEO_DECODE_H264_PROFILE_EXT,
@@ -626,7 +623,6 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderCorePropertiesAMD               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     eVideoDecodeH265CapabilitiesEXT                = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_CAPABILITIES_EXT,
-    eVideoDecodeH265SessionCreateInfoEXT           = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_CREATE_INFO_EXT,
     eVideoDecodeH265SessionParametersCreateInfoEXT = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_CREATE_INFO_EXT,
     eVideoDecodeH265SessionParametersAddInfoEXT    = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_SESSION_PARAMETERS_ADD_INFO_EXT,
     eVideoDecodeH265ProfileEXT                     = VK_STRUCTURE_TYPE_VIDEO_DECODE_H265_PROFILE_EXT,
@@ -1276,7 +1272,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageViewAddressPropertiesNVX: return "ImageViewAddressPropertiesNVX";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoEncodeH264CapabilitiesEXT: return "VideoEncodeH264CapabilitiesEXT";
-      case StructureType::eVideoEncodeH264SessionCreateInfoEXT: return "VideoEncodeH264SessionCreateInfoEXT";
       case StructureType::eVideoEncodeH264SessionParametersCreateInfoEXT: return "VideoEncodeH264SessionParametersCreateInfoEXT";
       case StructureType::eVideoEncodeH264SessionParametersAddInfoEXT: return "VideoEncodeH264SessionParametersAddInfoEXT";
       case StructureType::eVideoEncodeH264VclFrameInfoEXT: return "VideoEncodeH264VclFrameInfoEXT";
@@ -1288,7 +1283,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeH264RateControlLayerInfoEXT: return "VideoEncodeH264RateControlLayerInfoEXT";
       case StructureType::eVideoEncodeH264ReferenceListsEXT: return "VideoEncodeH264ReferenceListsEXT";
       case StructureType::eVideoEncodeH265CapabilitiesEXT: return "VideoEncodeH265CapabilitiesEXT";
-      case StructureType::eVideoEncodeH265SessionCreateInfoEXT: return "VideoEncodeH265SessionCreateInfoEXT";
       case StructureType::eVideoEncodeH265SessionParametersCreateInfoEXT: return "VideoEncodeH265SessionParametersCreateInfoEXT";
       case StructureType::eVideoEncodeH265SessionParametersAddInfoEXT: return "VideoEncodeH265SessionParametersAddInfoEXT";
       case StructureType::eVideoEncodeH265VclFrameInfoEXT: return "VideoEncodeH265VclFrameInfoEXT";
@@ -1300,7 +1294,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoEncodeH265RateControlInfoEXT: return "VideoEncodeH265RateControlInfoEXT";
       case StructureType::eVideoEncodeH265RateControlLayerInfoEXT: return "VideoEncodeH265RateControlLayerInfoEXT";
       case StructureType::eVideoDecodeH264CapabilitiesEXT: return "VideoDecodeH264CapabilitiesEXT";
-      case StructureType::eVideoDecodeH264SessionCreateInfoEXT: return "VideoDecodeH264SessionCreateInfoEXT";
       case StructureType::eVideoDecodeH264PictureInfoEXT: return "VideoDecodeH264PictureInfoEXT";
       case StructureType::eVideoDecodeH264MvcEXT: return "VideoDecodeH264MvcEXT";
       case StructureType::eVideoDecodeH264ProfileEXT: return "VideoDecodeH264ProfileEXT";
@@ -1485,7 +1478,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoDecodeH265CapabilitiesEXT: return "VideoDecodeH265CapabilitiesEXT";
-      case StructureType::eVideoDecodeH265SessionCreateInfoEXT: return "VideoDecodeH265SessionCreateInfoEXT";
       case StructureType::eVideoDecodeH265SessionParametersCreateInfoEXT: return "VideoDecodeH265SessionParametersCreateInfoEXT";
       case StructureType::eVideoDecodeH265SessionParametersAddInfoEXT: return "VideoDecodeH265SessionParametersAddInfoEXT";
       case StructureType::eVideoDecodeH265ProfileEXT: return "VideoDecodeH265ProfileEXT";
@@ -6323,22 +6315,6 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  enum class VideoEncodeH264CreateFlagBitsEXT : VkVideoEncodeH264CreateFlagsEXT
-  {
-    eDefault   = VK_VIDEO_ENCODE_H264_CREATE_DEFAULT_EXT,
-    eReserved0 = VK_VIDEO_ENCODE_H264_CREATE_RESERVED_0_BIT_EXT
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CreateFlagBitsEXT value )
-  {
-    switch ( value )
-    {
-      case VideoEncodeH264CreateFlagBitsEXT::eDefault: return "Default";
-      case VideoEncodeH264CreateFlagBitsEXT::eReserved0: return "Reserved0";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
   enum class VideoEncodeH264RateControlStructureFlagBitsEXT : VkVideoEncodeH264RateControlStructureFlagsEXT
   {
     eUnknown = VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_UNKNOWN_EXT,
@@ -6512,15 +6488,6 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
-
-  enum class VideoEncodeH265CreateFlagBitsEXT : VkVideoEncodeH265CreateFlagsEXT
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CreateFlagBitsEXT )
-  {
-    return "(void)";
-  }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6542,15 +6509,6 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes: return "InterlacedSeparatePlanes";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
-  }
-
-  enum class VideoDecodeH264CreateFlagBitsEXT : VkVideoDecodeH264CreateFlagsEXT
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264CreateFlagBitsEXT )
-  {
-    return "(void)";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -7424,19 +7382,6 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
-
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  //=== VK_EXT_video_decode_h265 ===
-
-  enum class VideoDecodeH265CreateFlagBitsEXT : VkVideoDecodeH265CreateFlagsEXT
-  {
-  };
-
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH265CreateFlagBitsEXT )
-  {
-    return "(void)";
-  }
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_global_priority ===
 
@@ -13458,52 +13403,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
-  using VideoEncodeH264CreateFlagsEXT = Flags<VideoEncodeH264CreateFlagBitsEXT>;
-
-  template <>
-  struct FlagTraits<VideoEncodeH264CreateFlagBitsEXT>
-  {
-    enum : VkFlags
-    {
-      allFlags = VkFlags( VideoEncodeH264CreateFlagBitsEXT::eDefault ) | VkFlags( VideoEncodeH264CreateFlagBitsEXT::eReserved0 )
-    };
-  };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CreateFlagsEXT operator|( VideoEncodeH264CreateFlagBitsEXT bit0,
-                                                                                  VideoEncodeH264CreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CreateFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CreateFlagsEXT operator&( VideoEncodeH264CreateFlagBitsEXT bit0,
-                                                                                  VideoEncodeH264CreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CreateFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CreateFlagsEXT operator^( VideoEncodeH264CreateFlagBitsEXT bit0,
-                                                                                  VideoEncodeH264CreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CreateFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CreateFlagsEXT operator~( VideoEncodeH264CreateFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH264CreateFlagsEXT( bits ) );
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CreateFlagsEXT value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & VideoEncodeH264CreateFlagBitsEXT::eReserved0 )
-      result += "Reserved0 | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
   using VideoEncodeH264RateControlStructureFlagsEXT = Flags<VideoEncodeH264RateControlStructureFlagBitsEXT>;
 
   template <>
@@ -13765,13 +13664,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
-  using VideoEncodeH265CreateFlagsEXT = Flags<VideoEncodeH265CreateFlagBitsEXT>;
-
-  VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CreateFlagsEXT )
-  {
-    return "{}";
-  }
-
   using VideoEncodeH265CtbSizeFlagsEXT = Flags<VideoEncodeH265CtbSizeFlagBitsEXT>;
 
   template <>
@@ -13979,13 +13871,6 @@ namespace VULKAN_HPP_NAMESPACE
       result += "InterlacedSeparatePlanes | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
-  using VideoDecodeH264CreateFlagsEXT = Flags<VideoDecodeH264CreateFlagBitsEXT>;
-
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264CreateFlagsEXT )
-  {
-    return "{}";
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -14693,17 +14578,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return "{}";
   }
-
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-  //=== VK_EXT_video_decode_h265 ===
-
-  using VideoDecodeH265CreateFlagsEXT = Flags<VideoDecodeH265CreateFlagBitsEXT>;
-
-  VULKAN_HPP_INLINE std::string to_string( VideoDecodeH265CreateFlagsEXT )
-  {
-    return "{}";
-  }
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===

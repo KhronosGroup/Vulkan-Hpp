@@ -414,6 +414,11 @@ private:
   std::string                                        findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
   std::vector<MemberData>::const_iterator            findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator            findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
+  std::string                                        generateAllocatorTemplates( CommandData const &              commandData,
+                                                                                 std::vector<size_t> const &      returnParams,
+                                                                                 std::map<size_t, size_t> const & vectorParams,
+                                                                                 bool                             definition,
+                                                                                 bool                             singular ) const;
   std::string                                        generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                                                                    std::set<size_t> const &       skippedParams,
                                                                                    std::set<size_t> const &       singularParams,
@@ -500,13 +505,6 @@ private:
                                                       std::map<size_t, size_t> const & vectorParamIndices,
                                                       std::vector<size_t> const &      returnParam,
                                                       bool                             withAllocator ) const;
-  std::string generateCommandResultGetVectorOfHandlesOrValues( std::string const &              name,
-                                                               CommandData const &              commandData,
-                                                               size_t                           initialSkipCount,
-                                                               bool                             definition,
-                                                               std::map<size_t, size_t> const & vectorParamIndices,
-                                                               size_t                           returnParam,
-                                                               bool                             withAllocator ) const;
   std::string generateCommandResultGetVectorOfHandlesUnique( std::string const &              name,
                                                              CommandData const &              commandData,
                                                              size_t                           initialSkipCount,
@@ -623,6 +621,7 @@ private:
                                      std::map<size_t, size_t> const & vectorParamIndices,
                                      std::vector<size_t> const &      returnParams,
                                      bool                             singular,
+                                     bool                             withAllocator,
                                      bool                             chained ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
@@ -648,6 +647,9 @@ private:
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDataDeclarations( CommandData const &              commandData,
                                         std::vector<size_t> const &      returnParams,
+                                        std::map<size_t, size_t> const & vectorParams,
+                                        bool                             singular,
+                                        bool                             withAllocator,
                                         bool                             chained,
                                         std::vector<std::string> const & dataTypes,
                                         std::string const &              returnType,
@@ -946,7 +948,13 @@ private:
   std::string
     generateResultCheck( CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName ) const;
   std::string generateReturnStatement( CommandData const & commandData, std::string const & returnVariable, std::string const & dataType ) const;
-  std::string generateReturnType( CommandData const & commandData, std::vector<size_t> const & returnParams, bool chained, std::string const & dataType ) const;
+  std::string generateReturnType( CommandData const &              commandData,
+                                  std::vector<size_t> const &      returnParams,
+                                  std::map<size_t, size_t> const & vectorParams,
+                                  bool                             singular,
+                                  bool                             unique,
+                                  bool                             chained,
+                                  std::string const &              dataType ) const;
   std::string generateReturnVariable( CommandData const & commandData, std::vector<size_t> const & returnParams, bool chained, bool singular ) const;
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
@@ -967,6 +975,12 @@ private:
   std::string                         generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
   std::string                         generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateSuccessCodeList( std::vector<std::string> const & successCodes ) const;
+  std::string                         generateTypenameCheck( CommandData const &              commandData,
+                                                             std::vector<size_t> const &      returnParams,
+                                                             std::map<size_t, size_t> const & vectorParams,
+                                                             bool                             definition,
+                                                             bool                             singular,
+                                                             bool                             withAllocator ) const;
   std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
   std::string                         generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,
@@ -989,7 +1003,8 @@ private:
   bool        isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool        isStructureChainAnchor( std::string const & type ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &   params,
-                                                                               std::map<size_t, size_t> const & vectorParamIndices,
+                                                                               std::map<size_t, size_t> const & vectorParams,
+                                                                               std::vector<size_t> const &      returnParams,
                                                                                std::set<size_t> const &         singularParams ) const;
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   void                                                   readCommandsCommand( tinyxml2::XMLElement const * element );

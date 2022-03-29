@@ -458,13 +458,6 @@ private:
                                    std::vector<ParamData> const & params,
                                    size_t                         initialSkipCount,
                                    std::set<std::string> const &  tags ) const;
-  std::string generateCommandResult( std::string const &              name,
-                                     CommandData const &              commandData,
-                                     size_t                           initialSkipCount,
-                                     bool                             definition,
-                                     std::map<size_t, size_t> const & vectorParamIndices,
-                                     std::vector<size_t> const &      returnParams,
-                                     bool                             singular ) const;
   std::string generateCommandResultEnumerate( std::string const &               name,
                                               CommandData const &               commandData,
                                               size_t                            initialSkipCount,
@@ -629,6 +622,7 @@ private:
                                      bool                             definition,
                                      std::map<size_t, size_t> const & vectorParamIndices,
                                      std::vector<size_t> const &      returnParams,
+                                     bool                             singular,
                                      bool                             chained ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
@@ -652,6 +646,12 @@ private:
                                                    std::vector<size_t> const &       returnParamIndices,
                                                    bool                              withAllocators ) const;
   std::string generateConstexprString( std::string const & structName ) const;
+  std::string generateDataDeclarations( CommandData const &              commandData,
+                                        std::vector<size_t> const &      returnParams,
+                                        bool                             chained,
+                                        std::vector<std::string> const & dataTypes,
+                                        std::string const &              returnType,
+                                        std::string const &              returnVariable ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string
     generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, CommandData const & commandData, std::string const & firstArg ) const;
@@ -942,6 +942,12 @@ private:
                                                  size_t                                        initialSkipCount,
                                                  std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                                  std::set<size_t> const &                      skippedParams ) const;
+  std::string generateResultAssignment( CommandData const & commandData ) const;
+  std::string
+    generateResultCheck( CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName ) const;
+  std::string generateReturnStatement( CommandData const & commandData, std::string const & returnVariable, std::string const & dataType ) const;
+  std::string generateReturnType( CommandData const & commandData, std::vector<size_t> const & returnParams, bool chained, std::string const & dataType ) const;
+  std::string generateReturnVariable( CommandData const & commandData, std::vector<size_t> const & returnParams, bool chained, bool singular ) const;
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;

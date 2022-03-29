@@ -13748,7 +13748,7 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
     checkAttributes( line,
                      attributes,
                      { { "category", { isUnion ? "union" : "struct" } }, { "name", {} } },
-                     { { "allowduplicate", { "true" } }, { "comment", {} }, { "returnedonly", { "true" } }, { "structextends", {} } } );
+                     { { "allowduplicate", { "false", "true" } }, { "comment", {} }, { "returnedonly", { "true" } }, { "structextends", {} } } );
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
     checkElements( line, children, {}, { "member", "comment" } );
 
@@ -13760,8 +13760,7 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
     {
       if ( attribute.first == "allowduplicate" )
       {
-        assert( attribute.second == "true" );
-        allowDuplicate = true;
+        allowDuplicate = ( attribute.second == "true" );
       }
       else if ( attribute.first == "category" )
       {

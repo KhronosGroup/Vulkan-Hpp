@@ -1193,6 +1193,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct QueueFamilyCheckpointProperties2NV;
   struct CheckpointData2NV;
 
+  //=== VK_EXT_graphics_pipeline_library ===
+  struct PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT;
+  struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT;
+  struct GraphicsPipelineLibraryCreateInfoEXT;
+
   //=== VK_KHR_shader_subgroup_uniform_control_flow ===
   struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR;
 
@@ -1320,6 +1325,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_color_write_enable ===
   struct PhysicalDeviceColorWriteEnableFeaturesEXT;
   struct PipelineColorWriteCreateInfoEXT;
+
+  //=== VK_EXT_primitives_generated_query ===
+  struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT;
 
   //=== VK_EXT_image_view_min_lod ===
   struct PhysicalDeviceImageViewMinLodFeaturesEXT;

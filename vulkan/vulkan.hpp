@@ -6018,6 +6018,23 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   template <typename T, typename D>
+  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T, D>> createResultValue(
+    Result result, T & data, char const * message, std::initializer_list<Result> successCodes, typename UniqueHandleTraits<T, D>::deleter const & deleter )
+  {
+#  ifdef VULKAN_HPP_NO_EXCEPTIONS
+    ignore( message );
+    ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
+#  else
+    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
+    {
+      throwResultException( result, message );
+    }
+#  endif
+    return ResultValue<UniqueHandle<T, D>>( result, UniqueHandle<T, D>( data, deleter ) );
+  }
+
+  template <typename T, typename D>
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>>>::type
     createResultValue( Result result, std::vector<UniqueHandle<T, D>> && data, char const * message )
   {

@@ -644,6 +644,13 @@ private:
                                                    std::pair<size_t, size_t> const & vectorParamIndex,
                                                    std::vector<size_t> const &       returnParamIndices,
                                                    bool                              withAllocators ) const;
+  std::string generateCommandVoidGetVector( std::string const &              name,
+                                            CommandData const &              commandData,
+                                            size_t                           initialSkipCount,
+                                            bool                             definition,
+                                            std::map<size_t, size_t> const & vectorParamIndices,
+                                            size_t                           returnParam,
+                                            bool                             withAllocator ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDataDeclarations( CommandData const &              commandData,
                                         std::vector<size_t> const &      returnParams,
@@ -862,6 +869,11 @@ private:
                                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
                                                                                  size_t                                             returnParam,
                                                                                  bool                                               definition ) const;
+  std::string                         generateRAIIHandleCommandVoid1ReturnVector( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                  size_t                                             initialSkipCount,
+                                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
+                                                                                  size_t                                             returnParam,
+                                                                                  bool                                               definition ) const;
   std::string                         generateRAIIHandleCommandVoid2ReturnEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                           size_t                                             initialSkipCount,
                                                                                           std::map<size_t, size_t> const &                   vectorParamIndices,

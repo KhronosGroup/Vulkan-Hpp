@@ -5265,7 +5265,7 @@ std::string VulkanHppGenerator::generateCommandVoidGetVector( std::string const 
   ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    std::vector<${dataType},${dataTypeAllocator}> ${dataName}( ${dataSize}${vectorAllocator} ) );
+    std::vector<${dataType},${dataTypeAllocator}> ${dataName}( ${dataSize}${vectorAllocator} );
     Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
     return createResultValue( result, ${dataName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );
   })";

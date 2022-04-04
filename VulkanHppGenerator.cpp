@@ -16875,14 +16875,14 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     return ResultValue<UniqueHandle<T, D>>( result, UniqueHandle<T, D>( data, deleter ) );
   }
 
-  template <typename T, typename D>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>>>::type
-    createResultValue( Result result, std::vector<UniqueHandle<T, D>> && data, char const * message )
+  template <typename T, typename D, typename Allocator = std::allocator<UniqueHandle<T, D>>>
+  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>, Allocator>>::type
+    createResultValue( Result result, std::vector<UniqueHandle<T, D>, Allocator> && data, char const * message )
   {
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore( message );
     VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
-    return ResultValue<std::vector<UniqueHandle<T, D>>>( result, std::move( data ) );
+    return ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>( result, std::move( data ) );
 #  else
     if ( result != Result::eSuccess )
     {
@@ -16892,16 +16892,13 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
   }
 
-  template <typename T, typename D>
-  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<T, D>>>
-                    createResultValue( Result                             result,
-                                       std::vector<UniqueHandle<T, D>> && data,
-                                       char const *                       message,
-                                       std::initializer_list<Result>      successCodes )
+  template <typename T, typename D, typename Allocator = std::allocator<UniqueHandle<T, D>>>
+  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>
+    createResultValue( Result result, std::vector<UniqueHandle<T, D>, Allocator> && data, char const * message, std::initializer_list<Result> successCodes )
   {
 #  ifdef VULKAN_HPP_NO_EXCEPTIONS
     ignore( message );
-    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+    ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
 #  else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
@@ -16909,7 +16906,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
       throwResultException( result, message );
     }
 #  endif
-    return ResultValue<std::vector<UniqueHandle<T, D>>>( result, std::move( data ) );
+    return ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>( result, std::move( data ) );
   }
 #endif
 
@@ -16984,16 +16981,8 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 
     std::string filename = ( argc == 1 ) ? VK_SPEC : argv[1];
 
-    std::cout << "VulkanHppGenerator: Loading " << filename << std::endl;
-    tinyxml2::XMLError error = doc.LoadFile( filename.c_str() );
-    if ( error != tinyxml2::XML_SUCCESS )
-    {
-      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << toString( error ) << ">" << std::endl;
-      return -1;
-    }
-
 #if defined( CLANG_FORMAT_EXECUTABLE )
-    std::cout << "VulkanHppGenerator: Formatting using ";
+    std::cout << "VulkanHppGenerator: Found ";
     std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" --version ";
     int         ret           = std::system( commandString.c_str() );
     if ( ret != 0 )
@@ -17001,6 +16990,14 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
       std::cout << "VulkanHppGenerator: failed to determine clang_format version with error <" << ret << ">\n";
     }
 #endif
+
+    std::cout << "VulkanHppGenerator: Loading " << filename << std::endl;
+    tinyxml2::XMLError error = doc.LoadFile( filename.c_str() );
+    if ( error != tinyxml2::XML_SUCCESS )
+    {
+      std::cout << "VulkanHppGenerator: failed to load file " << filename << " with error <" << toString( error ) << ">" << std::endl;
+      return -1;
+    }
 
     std::cout << "VulkanHppGenerator: Parsing " << filename << std::endl;
     VulkanHppGenerator generator( doc );

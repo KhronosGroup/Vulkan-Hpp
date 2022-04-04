@@ -25,6 +25,11 @@
 static std::string AppName    = "UniqueHandle";
 static std::string EngineName = "Vulkan.hpp";
 
+template <typename T>
+class MyAllocator : public std::allocator<T>
+{
+};
+
 vk::UniqueDescriptorSetLayout createDescriptorSetLayoutUnique( vk::Device const &                                                                  device,
                                                                std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
                                                                vk::DescriptorSetLayoutCreateFlags                                                  flags = {} )
@@ -259,6 +264,13 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a GraphicsPipeline
     vk::UniquePipeline graphicsPipeline = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo ).value;
+
+    vk::UniquePipeline graphicsPipeline2 =
+      std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic, MyAllocator<vk::UniquePipeline>>( *pipelineCache, graphicsPipelineCreateInfo )
+                   .value[0] );
+
+    vk::UniquePipeline graphicsPipeline3 =
+      std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
 
     // destroy the non-Unique surface used here
     instance->destroySurfaceKHR( surfaceData.surface );

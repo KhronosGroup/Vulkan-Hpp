@@ -874,6 +874,11 @@ private:
                                                                                   std::map<size_t, size_t> const &                   vectorParamIndices,
                                                                                   size_t                                             returnParam,
                                                                                   bool                                               definition ) const;
+  std::string                         generateRAIIHandleCommandVoid1ReturnVoidVectorSingular( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                              size_t                                             initialSkipCount,
+                                                                                              std::map<size_t, size_t> const &                   vectorParamIndices,
+                                                                                              size_t                                             returnParam,
+                                                                                              bool                                               definition ) const;
   std::string                         generateRAIIHandleCommandVoid2ReturnEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                           size_t                                             initialSkipCount,
                                                                                           std::map<size_t, size_t> const &                   vectorParamIndices,

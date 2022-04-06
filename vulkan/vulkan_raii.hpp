@@ -15949,7 +15949,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
         getDispatcher()->vkWaitForPresentKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), presentId, timeout ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) )
+      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) &&
+           ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
       {
         throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::waitForPresent" );
       }

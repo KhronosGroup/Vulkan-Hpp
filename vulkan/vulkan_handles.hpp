@@ -1339,6 +1339,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct MultiDrawInfoEXT;
   struct MultiDrawIndexedInfoEXT;
 
+  //=== VK_EXT_image_2d_view_of_3d ===
+  struct PhysicalDeviceImage2DViewOf3DFeaturesEXT;
+
   //=== VK_EXT_border_color_swizzle ===
   struct PhysicalDeviceBorderColorSwizzleFeaturesEXT;
   struct SamplerBorderColorComponentMappingCreateInfoEXT;

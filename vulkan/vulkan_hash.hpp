@@ -6906,6 +6906,21 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceImage2DViewOf3DFeaturesEXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceImage2DViewOf3DFeaturesEXT const & physicalDeviceImage2DViewOf3DFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImage2DViewOf3DFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImage2DViewOf3DFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImage2DViewOf3DFeaturesEXT.image2DViewOf3D );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceImage2DViewOf3DFeaturesEXT.sampler2DViewOf3D );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceImageDrmFormatModifierInfoEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceImageDrmFormatModifierInfoEXT const & physicalDeviceImageDrmFormatModifierInfoEXT ) const
@@ -11709,8 +11724,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.flags );
-      VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.codedOffset );
-      VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.codedExtent );
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.srcBuffer );
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.srcBufferOffset );
       VULKAN_HPP_HASH_COMBINE( seed, videoDecodeInfoKHR.srcBufferRange );
@@ -12245,7 +12258,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.flags );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.qualityLevel );
-      VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.codedExtent );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.dstBitstreamBuffer );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.dstBitstreamBufferOffset );
       VULKAN_HPP_HASH_COMBINE( seed, videoEncodeInfoKHR.dstBitstreamBufferMaxRange );

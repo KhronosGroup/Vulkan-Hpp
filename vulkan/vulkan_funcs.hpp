@@ -15901,7 +15901,7 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult result = d.vkWaitForPresentKHR( m_device, static_cast<VkSwapchainKHR>( swapchain ), presentId, timeout );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
                  VULKAN_HPP_NAMESPACE_STRING "::Device::waitForPresentKHR",
-                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout } );
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
     return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

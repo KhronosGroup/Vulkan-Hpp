@@ -5983,22 +5983,6 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
   }
 
-  template <typename T>
-  VULKAN_HPP_INLINE ResultValue<T> createResultValue( Result result, T & data, char const * message, std::initializer_list<Result> successCodes )
-  {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore( message );
-    ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
-    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
-#else
-    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
-    {
-      throwResultException( result, message );
-    }
-#endif
-    return ResultValue<T>( result, std::move( data ) );
-  }
-
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename T, typename D>
   VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T, D>>::type

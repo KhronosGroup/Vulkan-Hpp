@@ -1847,20 +1847,21 @@ namespace VULKAN_HPP_NAMESPACE
                                  Dispatch const &                       d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result = static_cast<Result>( d.vkGetQueryPoolResults( m_device,
-                                                                  static_cast<VkQueryPool>( queryPool ),
-                                                                  firstQuery,
-                                                                  queryCount,
-                                                                  data.size() * sizeof( DataType ),
-                                                                  reinterpret_cast<void *>( data.data() ),
-                                                                  static_cast<VkDeviceSize>( stride ),
-                                                                  static_cast<VkQueryResultFlags>( flags ) ) );
-    return createResultValue( result,
-                              data,
-                              VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults",
-                              { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
+    VkResult                                 result = d.vkGetQueryPoolResults( m_device,
+                                               static_cast<VkQueryPool>( queryPool ),
+                                               firstQuery,
+                                               queryCount,
+                                               data.size() * sizeof( DataType ),
+                                               reinterpret_cast<void *>( data.data() ),
+                                               static_cast<VkDeviceSize>( stride ),
+                                               static_cast<VkQueryResultFlags>( flags ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
+    return ResultValue<std::vector<DataType, DataTypeAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>
@@ -13621,17 +13622,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                       Dispatch const &                                                         d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result =
-      static_cast<Result>( d.vkWriteAccelerationStructuresPropertiesKHR( m_device,
-                                                                         accelerationStructures.size(),
-                                                                         reinterpret_cast<const VkAccelerationStructureKHR *>( accelerationStructures.data() ),
-                                                                         static_cast<VkQueryType>( queryType ),
-                                                                         data.size() * sizeof( DataType ),
-                                                                         reinterpret_cast<void *>( data.data() ),
-                                                                         stride ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::writeAccelerationStructuresPropertiesKHR" );
+    VkResult                                 result = d.vkWriteAccelerationStructuresPropertiesKHR( m_device,
+                                                                    accelerationStructures.size(),
+                                                                    reinterpret_cast<const VkAccelerationStructureKHR *>( accelerationStructures.data() ),
+                                                                    static_cast<VkQueryType>( queryType ),
+                                                                    data.size() * sizeof( DataType ),
+                                                                    reinterpret_cast<void *>( data.data() ),
+                                                                    stride );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::writeAccelerationStructuresPropertiesKHR" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>
@@ -13835,6 +13837,7 @@ namespace VULKAN_HPP_NAMESPACE
       throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureBuildSizesKHR: maxPrimitiveCounts.size() != buildInfo.geometryCount" );
     }
 #  endif /*VULKAN_HPP_NO_EXCEPTIONS*/
+
     VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR sizeInfo;
     d.vkGetAccelerationStructureBuildSizesKHR( m_device,
                                                static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),
@@ -14740,11 +14743,13 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result = static_cast<Result>( d.vkGetRayTracingShaderGroupHandlesNV(
-      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingShaderGroupHandlesNV" );
+    VkResult                                 result = d.vkGetRayTracingShaderGroupHandlesNV(
+      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingShaderGroupHandlesNV" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>
@@ -14778,11 +14783,13 @@ namespace VULKAN_HPP_NAMESPACE
     Device::getAccelerationStructureHandleNV( VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure, size_t dataSize, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result = static_cast<Result>( d.vkGetAccelerationStructureHandleNV(
-      m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureHandleNV" );
+    VkResult                                 result = d.vkGetAccelerationStructureHandleNV(
+      m_device, static_cast<VkAccelerationStructureNV>( accelerationStructure ), data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureHandleNV" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>
@@ -18093,11 +18100,13 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result = static_cast<Result>( d.vkGetRayTracingShaderGroupHandlesKHR(
-      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingShaderGroupHandlesKHR" );
+    VkResult                                 result = d.vkGetRayTracingShaderGroupHandlesKHR(
+      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingShaderGroupHandlesKHR" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>
@@ -18134,11 +18143,13 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Pipeline pipeline, uint32_t firstGroup, uint32_t groupCount, size_t dataSize, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
     std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
-    Result                                   result = static_cast<Result>( d.vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(
-      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingCaptureReplayShaderGroupHandlesKHR" );
+    VkResult                                 result = d.vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(
+      m_device, static_cast<VkPipeline>( pipeline ), firstGroup, groupCount, data.size() * sizeof( DataType ), reinterpret_cast<void *>( data.data() ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getRayTracingCaptureReplayShaderGroupHandlesKHR" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename DataType, typename Dispatch>

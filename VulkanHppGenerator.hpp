@@ -414,8 +414,8 @@ private:
   std::string                                        findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
   std::vector<MemberData>::const_iterator            findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator            findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
-  std::string                                        generateAllocatorTemplates( CommandData const &              commandData,
-                                                                                 std::vector<size_t> const &      returnParams,
+  std::string                                        generateAllocatorTemplates( std::vector<size_t> const &      returnParams,
+                                                                                 std::vector<std::string> const & returnDataTypes,
                                                                                  std::map<size_t, size_t> const & vectorParams,
                                                                                  bool                             definition,
                                                                                  bool                             singular ) const;
@@ -492,12 +492,6 @@ private:
                                                         bool                             definition,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         std::map<size_t, size_t> const & vectorParamIndices ) const;
-  std::string generateCommandResultGetVector( std::string const &              name,
-                                              CommandData const &              commandData,
-                                              size_t                           initialSkipCount,
-                                              bool                             definition,
-                                              std::map<size_t, size_t> const & vectorParamIndices,
-                                              size_t                           returnParam ) const;
   std::string generateCommandResultGetVectorAndValue( std::string const &              name,
                                                       CommandData const &              commandData,
                                                       size_t                           initialSkipCount,
@@ -648,12 +642,19 @@ private:
   std::string generateDataDeclarations( CommandData const &              commandData,
                                         std::vector<size_t> const &      returnParams,
                                         std::map<size_t, size_t> const & vectorParams,
+                                        std::set<size_t> const &         templatedParams,
                                         bool                             singular,
                                         bool                             withAllocator,
                                         bool                             chained,
                                         std::vector<std::string> const & dataTypes,
                                         std::string const &              returnType,
                                         std::string const &              returnVariable ) const;
+  std::string generateDataSizeChecks( CommandData const &              commandData,
+                                      std::vector<size_t> const &      returnParams,
+                                      std::vector<std::string> const & returnParamTypes,
+                                      std::map<size_t, size_t> const & vectorParams,
+                                      std::set<size_t> const &         templatedParams,
+                                      bool                             singular ) const;
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string
     generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, CommandData const & commandData, std::string const & firstArg ) const;
@@ -1002,16 +1003,20 @@ private:
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
-  std::string getVectorSize( std::vector<ParamData> const & params, std::map<size_t, size_t> const & vectorParamIndices, size_t returnParam ) const;
-  bool        hasParentHandle( std::string const & handle, std::string const & parent ) const;
-  bool        isDeviceCommand( CommandData const & commandData ) const;
-  bool        isHandleType( std::string const & type ) const;
-  bool        isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool        isLenByStructMember( std::string const & name, ParamData const & param ) const;
-  bool        isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
-  bool        isParam( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool        isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
-  bool        isStructureChainAnchor( std::string const & type ) const;
+  std::string                         getVectorSize( std::vector<ParamData> const &   params,
+                                                     std::map<size_t, size_t> const & vectorParamIndices,
+                                                     size_t                           returnParam,
+                                                     std::string const &              returnParamType,
+                                                     std::set<size_t> const &         templatedParams ) const;
+  bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
+  bool                                isDeviceCommand( CommandData const & commandData ) const;
+  bool                                isHandleType( std::string const & type ) const;
+  bool                                isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool                                isLenByStructMember( std::string const & name, ParamData const & param ) const;
+  bool isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
+  bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
+  bool isStructureChainAnchor( std::string const & type ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &   params,
                                                                                std::map<size_t, size_t> const & vectorParams,
                                                                                std::vector<size_t> const &      returnParams,

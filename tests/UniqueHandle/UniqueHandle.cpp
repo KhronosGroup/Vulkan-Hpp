@@ -274,6 +274,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique( {} );
 
+    vk::UniqueSwapchainKHR swapchain = device->createSharedSwapchainKHRUnique( {} );
+
     // destroy the non-Unique surface used here
     instance->destroySurfaceKHR( surfaceData.surface );
   }

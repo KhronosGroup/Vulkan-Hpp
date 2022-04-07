@@ -462,7 +462,9 @@ private:
   std::string generateCommandName( std::string const &            vulkanCommandName,
                                    std::vector<ParamData> const & params,
                                    size_t                         initialSkipCount,
-                                   std::set<std::string> const &  tags ) const;
+                                   std::set<std::string> const &  tags,
+                                   bool                           singular,
+                                   bool                           unique ) const;
   std::string generateCommandResultEnumerate( std::string const &               name,
                                               CommandData const &               commandData,
                                               size_t                            initialSkipCount,
@@ -483,8 +485,6 @@ private:
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         bool                             withAllocators ) const;
   std::string generateCommandResultGetChain(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultGetHandleUnique(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
   std::string generateCommandResultGetSingularAndValue( std::string const &              name,
                                                         CommandData const &              commandData,
@@ -616,7 +616,8 @@ private:
                                      std::vector<size_t> const &      returnParams,
                                      bool                             singular,
                                      bool                             withAllocator,
-                                     bool                             chained ) const;
+                                     bool                             chained,
+                                     bool                             unique ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
@@ -677,10 +678,11 @@ private:
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string
-                                      generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
-                                                              std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
-                                                              bool mutualExclusiveLens ) const;
-  std::string                         generateName( TypeInfo const & typeInfo ) const;
+              generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
+                                      std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
+                                      bool mutualExclusiveLens ) const;
+  std::string generateName( TypeInfo const & typeInfo ) const;
+  std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn, std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
   std::string
@@ -958,7 +960,14 @@ private:
   std::string generateResultAssignment( CommandData const & commandData ) const;
   std::string
     generateResultCheck( CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName ) const;
-  std::string generateReturnStatement( CommandData const & commandData, std::string const & returnVariable, std::string const & dataType ) const;
+  std::string generateReturnStatement( std::string const & commandName,
+                                       CommandData const & commandData,
+                                       std::string const & returnVariable,
+                                       std::string const & returnType,
+                                       std::string const & dataType,
+                                       size_t              initialSkipCount,
+                                       size_t              returnParam,
+                                       bool                unique ) const;
   std::string generateReturnType( CommandData const &              commandData,
                                   std::vector<size_t> const &      returnParams,
                                   std::map<size_t, size_t> const & vectorParams,

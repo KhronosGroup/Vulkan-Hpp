@@ -50,13 +50,15 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::InstanceCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d )
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Instance instance;
-    Result                         result = static_cast<Result>(
+    VkResult                       result =
       d.vkCreateInstance( reinterpret_cast<const VkInstanceCreateInfo *>( &createInfo ),
                           reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                          reinterpret_cast<VkInstance *>( &instance ) ) );
-    ObjectDestroy<NoParent, Dispatch> deleter( allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Instance, Dispatch>( result, instance, VULKAN_HPP_NAMESPACE_STRING "::createInstanceUnique", deleter );
+                          reinterpret_cast<VkInstance *>( &instance ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::createInstanceUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Instance, Dispatch>( instance, ObjectDestroy<NoParent, Dispatch>( allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -404,15 +406,16 @@ namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Device device;
-    Result                       result = static_cast<Result>(
+    VkResult                     result =
       d.vkCreateDevice( m_physicalDevice,
                         reinterpret_cast<const VkDeviceCreateInfo *>( &createInfo ),
                         reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                        reinterpret_cast<VkDevice *>( &device ) ) );
-    ObjectDestroy<NoParent, Dispatch> deleter( allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Device, Dispatch>(
-      result, device, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDeviceUnique", deleter );
+                        reinterpret_cast<VkDevice *>( &device ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDeviceUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Device, Dispatch>( device, ObjectDestroy<NoParent, Dispatch>( allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -854,15 +857,16 @@ namespace VULKAN_HPP_NAMESPACE
                                   Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DeviceMemory memory;
-    Result                             result = static_cast<Result>(
+    VkResult                           result =
       d.vkAllocateMemory( m_device,
                           reinterpret_cast<const VkMemoryAllocateInfo *>( &allocateInfo ),
                           reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                          reinterpret_cast<VkDeviceMemory *>( &memory ) ) );
-    ObjectFree<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DeviceMemory, Dispatch>(
-      result, memory, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateMemoryUnique", deleter );
+                          reinterpret_cast<VkDeviceMemory *>( &memory ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::allocateMemoryUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DeviceMemory, Dispatch>( memory, ObjectFree<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -1331,14 +1335,16 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::FenceCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Fence fence;
-    Result                      result = static_cast<Result>(
+    VkResult                    result =
       d.vkCreateFence( m_device,
                        reinterpret_cast<const VkFenceCreateInfo *>( &createInfo ),
                        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                       reinterpret_cast<VkFence *>( &fence ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::createFenceUnique", deleter );
+                       reinterpret_cast<VkFence *>( &fence ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createFenceUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( fence, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -1502,15 +1508,17 @@ namespace VULKAN_HPP_NAMESPACE
                                    Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Semaphore semaphore;
-    Result                          result = static_cast<Result>(
+    VkResult                        result =
       d.vkCreateSemaphore( m_device,
                            reinterpret_cast<const VkSemaphoreCreateInfo *>( &createInfo ),
                            reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                           reinterpret_cast<VkSemaphore *>( &semaphore ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Semaphore, Dispatch>(
-      result, semaphore, VULKAN_HPP_NAMESPACE_STRING "::Device::createSemaphoreUnique", deleter );
+                           reinterpret_cast<VkSemaphore *>( &semaphore ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createSemaphoreUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::Semaphore, Dispatch>( semaphore, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -1597,14 +1605,16 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::EventCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Event event;
-    Result                      result = static_cast<Result>(
+    VkResult                    result =
       d.vkCreateEvent( m_device,
                        reinterpret_cast<const VkEventCreateInfo *>( &createInfo ),
                        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                       reinterpret_cast<VkEvent *>( &event ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Event, Dispatch>( result, event, VULKAN_HPP_NAMESPACE_STRING "::Device::createEventUnique", deleter );
+                       reinterpret_cast<VkEvent *>( &event ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createEventUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Event, Dispatch>( event, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -1755,15 +1765,17 @@ namespace VULKAN_HPP_NAMESPACE
                                    Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::QueryPool queryPool;
-    Result                          result = static_cast<Result>(
+    VkResult                        result =
       d.vkCreateQueryPool( m_device,
                            reinterpret_cast<const VkQueryPoolCreateInfo *>( &createInfo ),
                            reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                           reinterpret_cast<VkQueryPool *>( &queryPool ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::QueryPool, Dispatch>(
-      result, queryPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createQueryPoolUnique", deleter );
+                           reinterpret_cast<VkQueryPool *>( &queryPool ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createQueryPoolUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::QueryPool, Dispatch>( queryPool, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -1926,14 +1938,16 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::BufferCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Buffer buffer;
-    Result                       result = static_cast<Result>(
+    VkResult                     result =
       d.vkCreateBuffer( m_device,
                         reinterpret_cast<const VkBufferCreateInfo *>( &createInfo ),
                         reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                        reinterpret_cast<VkBuffer *>( &buffer ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Buffer, Dispatch>( result, buffer, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferUnique", deleter );
+                        reinterpret_cast<VkBuffer *>( &buffer ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Buffer, Dispatch>( buffer, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -2024,15 +2038,16 @@ namespace VULKAN_HPP_NAMESPACE
                                     Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::BufferView view;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateBufferView( m_device,
                             reinterpret_cast<const VkBufferViewCreateInfo *>( &createInfo ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                            reinterpret_cast<VkBufferView *>( &view ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::BufferView, Dispatch>(
-      result, view, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferViewUnique", deleter );
+                            reinterpret_cast<VkBufferView *>( &view ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferViewUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::BufferView, Dispatch>( view, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -2119,14 +2134,16 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::ImageCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Image image;
-    Result                      result = static_cast<Result>(
+    VkResult                    result =
       d.vkCreateImage( m_device,
                        reinterpret_cast<const VkImageCreateInfo *>( &createInfo ),
                        reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                       reinterpret_cast<VkImage *>( &image ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Image, Dispatch>( result, image, VULKAN_HPP_NAMESPACE_STRING "::Device::createImageUnique", deleter );
+                       reinterpret_cast<VkImage *>( &image ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createImageUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Image, Dispatch>( image, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -2247,14 +2264,16 @@ namespace VULKAN_HPP_NAMESPACE
                                    Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::ImageView view;
-    Result                          result = static_cast<Result>(
+    VkResult                        result =
       d.vkCreateImageView( m_device,
                            reinterpret_cast<const VkImageViewCreateInfo *>( &createInfo ),
                            reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                           reinterpret_cast<VkImageView *>( &view ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::ImageView, Dispatch>( result, view, VULKAN_HPP_NAMESPACE_STRING "::Device::createImageViewUnique", deleter );
+                           reinterpret_cast<VkImageView *>( &view ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createImageViewUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::ImageView, Dispatch>( view, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -2345,15 +2364,17 @@ namespace VULKAN_HPP_NAMESPACE
                                       Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::ShaderModule shaderModule;
-    Result                             result = static_cast<Result>(
+    VkResult                           result =
       d.vkCreateShaderModule( m_device,
                               reinterpret_cast<const VkShaderModuleCreateInfo *>( &createInfo ),
                               reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                              reinterpret_cast<VkShaderModule *>( &shaderModule ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::ShaderModule, Dispatch>(
-      result, shaderModule, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderModuleUnique", deleter );
+                              reinterpret_cast<VkShaderModule *>( &shaderModule ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderModuleUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderModule, Dispatch>( shaderModule, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -2444,15 +2465,17 @@ namespace VULKAN_HPP_NAMESPACE
                                        Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache;
-    Result                              result = static_cast<Result>(
+    VkResult                            result =
       d.vkCreatePipelineCache( m_device,
                                reinterpret_cast<const VkPipelineCacheCreateInfo *>( &createInfo ),
                                reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                               reinterpret_cast<VkPipelineCache *>( &pipelineCache ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::PipelineCache, Dispatch>(
-      result, pipelineCache, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineCacheUnique", deleter );
+                               reinterpret_cast<VkPipelineCache *>( &pipelineCache ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineCacheUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::PipelineCache, Dispatch>( pipelineCache, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3056,15 +3079,17 @@ namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::PipelineLayout pipelineLayout;
-    Result                               result = static_cast<Result>(
+    VkResult                             result =
       d.vkCreatePipelineLayout( m_device,
                                 reinterpret_cast<const VkPipelineLayoutCreateInfo *>( &createInfo ),
                                 reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                reinterpret_cast<VkPipelineLayout *>( &pipelineLayout ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::PipelineLayout, Dispatch>(
-      result, pipelineLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineLayoutUnique", deleter );
+                                reinterpret_cast<VkPipelineLayout *>( &pipelineLayout ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineLayoutUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::PipelineLayout, Dispatch>( pipelineLayout, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3151,14 +3176,16 @@ namespace VULKAN_HPP_NAMESPACE
     const VULKAN_HPP_NAMESPACE::SamplerCreateInfo & createInfo, Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Sampler sampler;
-    Result                        result = static_cast<Result>(
+    VkResult                      result =
       d.vkCreateSampler( m_device,
                          reinterpret_cast<const VkSamplerCreateInfo *>( &createInfo ),
                          reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                         reinterpret_cast<VkSampler *>( &sampler ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Sampler, Dispatch>( result, sampler, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerUnique", deleter );
+                         reinterpret_cast<VkSampler *>( &sampler ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Sampler, Dispatch>( sampler, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3249,15 +3276,17 @@ namespace VULKAN_HPP_NAMESPACE
                                              Dispatch const &                                            d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DescriptorSetLayout setLayout;
-    Result                                    result = static_cast<Result>( d.vkCreateDescriptorSetLayout(
+    VkResult                                  result = d.vkCreateDescriptorSetLayout(
       m_device,
       reinterpret_cast<const VkDescriptorSetLayoutCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDescriptorSetLayout *>( &setLayout ) ) );
-    ObjectDestroy<Device, Dispatch>           deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DescriptorSetLayout, Dispatch>(
-      result, setLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorSetLayoutUnique", deleter );
+      reinterpret_cast<VkDescriptorSetLayout *>( &setLayout ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorSetLayoutUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSetLayout, Dispatch>( setLayout, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3352,15 +3381,17 @@ namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DescriptorPool descriptorPool;
-    Result                               result = static_cast<Result>(
+    VkResult                             result =
       d.vkCreateDescriptorPool( m_device,
                                 reinterpret_cast<const VkDescriptorPoolCreateInfo *>( &createInfo ),
                                 reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                reinterpret_cast<VkDescriptorPool *>( &descriptorPool ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DescriptorPool, Dispatch>(
-      result, descriptorPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorPoolUnique", deleter );
+                                reinterpret_cast<VkDescriptorPool *>( &descriptorPool ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorPoolUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorPool, Dispatch>( descriptorPool, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3644,15 +3675,17 @@ namespace VULKAN_HPP_NAMESPACE
                                      Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::Framebuffer framebuffer;
-    Result                            result = static_cast<Result>(
+    VkResult                          result =
       d.vkCreateFramebuffer( m_device,
                              reinterpret_cast<const VkFramebufferCreateInfo *>( &createInfo ),
                              reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                             reinterpret_cast<VkFramebuffer *>( &framebuffer ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Framebuffer, Dispatch>(
-      result, framebuffer, VULKAN_HPP_NAMESPACE_STRING "::Device::createFramebufferUnique", deleter );
+                             reinterpret_cast<VkFramebuffer *>( &framebuffer ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createFramebufferUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::Framebuffer, Dispatch>( framebuffer, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3743,15 +3776,17 @@ namespace VULKAN_HPP_NAMESPACE
                                     Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::RenderPass renderPass;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateRenderPass( m_device,
                             reinterpret_cast<const VkRenderPassCreateInfo *>( &createInfo ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                            reinterpret_cast<VkRenderPass *>( &renderPass ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>(
-      result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPassUnique", deleter );
+                            reinterpret_cast<VkRenderPass *>( &renderPass ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPassUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>( renderPass, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -3865,15 +3900,17 @@ namespace VULKAN_HPP_NAMESPACE
                                      Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::CommandPool commandPool;
-    Result                            result = static_cast<Result>(
+    VkResult                          result =
       d.vkCreateCommandPool( m_device,
                              reinterpret_cast<const VkCommandPoolCreateInfo *>( &createInfo ),
                              reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                             reinterpret_cast<VkCommandPool *>( &commandPool ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::CommandPool, Dispatch>(
-      result, commandPool, VULKAN_HPP_NAMESPACE_STRING "::Device::createCommandPoolUnique", deleter );
+                             reinterpret_cast<VkCommandPool *>( &commandPool ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createCommandPoolUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::CommandPool, Dispatch>( commandPool, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -5762,15 +5799,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion ycbcrConversion;
-    Result                                       result = static_cast<Result>( d.vkCreateSamplerYcbcrConversion(
+    VkResult                                     result = d.vkCreateSamplerYcbcrConversion(
       m_device,
       reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ) ) );
-    ObjectDestroy<Device, Dispatch>              deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion, Dispatch>(
-      result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionUnique", deleter );
+      reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion, Dispatch>( ycbcrConversion, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -5866,15 +5905,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate;
-    Result                                         result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplate(
+    VkResult                                       result = d.vkCreateDescriptorUpdateTemplate(
       m_device,
       reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDescriptorUpdateTemplate *>( &descriptorUpdateTemplate ) ) );
-    ObjectDestroy<Device, Dispatch>                deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate, Dispatch>(
-      result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateUnique", deleter );
+      reinterpret_cast<VkDescriptorUpdateTemplate *>( &descriptorUpdateTemplate ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate, Dispatch>(
+                                    descriptorUpdateTemplate, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -6162,15 +6203,17 @@ namespace VULKAN_HPP_NAMESPACE
                                      Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::RenderPass renderPass;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateRenderPass2( m_device,
                              reinterpret_cast<const VkRenderPassCreateInfo2 *>( &createInfo ),
                              reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                             reinterpret_cast<VkRenderPass *>( &renderPass ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>(
-      result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2Unique", deleter );
+                             reinterpret_cast<VkRenderPass *>( &renderPass ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2Unique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>( renderPass, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -6494,15 +6537,17 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot;
-    Result                                result = static_cast<Result>(
+    VkResult                              result =
       d.vkCreatePrivateDataSlot( m_device,
                                  reinterpret_cast<const VkPrivateDataSlotCreateInfo *>( &createInfo ),
                                  reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                 reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::PrivateDataSlot, Dispatch>(
-      result, privateDataSlot, VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotUnique", deleter );
+                                 reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::PrivateDataSlot, Dispatch>( privateDataSlot, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -7489,15 +7534,17 @@ namespace VULKAN_HPP_NAMESPACE
                                       Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain;
-    Result                             result = static_cast<Result>(
+    VkResult                           result =
       d.vkCreateSwapchainKHR( m_device,
                               reinterpret_cast<const VkSwapchainCreateInfoKHR *>( &createInfo ),
                               reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                              reinterpret_cast<VkSwapchainKHR *>( &swapchain ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>(
-      result, swapchain, VULKAN_HPP_NAMESPACE_STRING "::Device::createSwapchainKHRUnique", deleter );
+                              reinterpret_cast<VkSwapchainKHR *>( &swapchain ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createSwapchainKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>( swapchain, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8169,16 +8216,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DisplayModeKHR mode;
-    Result                               result = static_cast<Result>(
+    VkResult                             result =
       d.vkCreateDisplayModeKHR( m_physicalDevice,
                                 static_cast<VkDisplayKHR>( display ),
                                 reinterpret_cast<const VkDisplayModeCreateInfoKHR *>( &createInfo ),
                                 reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                reinterpret_cast<VkDisplayModeKHR *>( &mode ) ) );
-    ObjectDestroy<PhysicalDevice, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DisplayModeKHR, Dispatch>(
-      result, mode, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDisplayModeKHRUnique", deleter );
+                                reinterpret_cast<VkDisplayModeKHR *>( &mode ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDisplayModeKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayModeKHR, Dispatch>( mode, ObjectDestroy<PhysicalDevice, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8250,15 +8299,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateDisplayPlaneSurfaceKHR(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateDisplayPlaneSurfaceKHR(
       m_instance,
       reinterpret_cast<const VkDisplaySurfaceCreateInfoKHR *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDisplayPlaneSurfaceKHRUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createDisplayPlaneSurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8464,15 +8515,17 @@ namespace VULKAN_HPP_NAMESPACE
                                           Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateXlibSurfaceKHR( m_instance,
                                 reinterpret_cast<const VkXlibSurfaceCreateInfoKHR *>( &createInfo ),
                                 reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createXlibSurfaceKHRUnique", deleter );
+                                reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createXlibSurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8542,15 +8595,17 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateXcbSurfaceKHR( m_instance,
                                reinterpret_cast<const VkXcbSurfaceCreateInfoKHR *>( &createInfo ),
                                reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                               reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createXcbSurfaceKHRUnique", deleter );
+                               reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createXcbSurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8624,15 +8679,17 @@ namespace VULKAN_HPP_NAMESPACE
                                              Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateWaylandSurfaceKHR(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateWaylandSurfaceKHR(
       m_instance,
       reinterpret_cast<const VkWaylandSurfaceCreateInfoKHR *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createWaylandSurfaceKHRUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createWaylandSurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8703,15 +8760,17 @@ namespace VULKAN_HPP_NAMESPACE
                                              Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateAndroidSurfaceKHR(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateAndroidSurfaceKHR(
       m_instance,
       reinterpret_cast<const VkAndroidSurfaceCreateInfoKHR *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createAndroidSurfaceKHRUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createAndroidSurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8760,15 +8819,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateWin32SurfaceKHR( m_instance,
                                  reinterpret_cast<const VkWin32SurfaceCreateInfoKHR *>( &createInfo ),
                                  reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createWin32SurfaceKHRUnique", deleter );
+                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createWin32SurfaceKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -8824,15 +8885,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT callback;
-    Result                                       result = static_cast<Result>( d.vkCreateDebugReportCallbackEXT(
+    VkResult                                     result = d.vkCreateDebugReportCallbackEXT(
       m_instance,
       reinterpret_cast<const VkDebugReportCallbackCreateInfoEXT *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDebugReportCallbackEXT *>( &callback ) ) );
-    ObjectDestroy<Instance, Dispatch>            deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT, Dispatch>(
-      result, callback, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugReportCallbackEXTUnique", deleter );
+      reinterpret_cast<VkDebugReportCallbackEXT *>( &callback ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugReportCallbackEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT, Dispatch>( callback, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -9188,15 +9251,17 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::VideoSessionKHR videoSession;
-    Result                                result = static_cast<Result>(
+    VkResult                              result =
       d.vkCreateVideoSessionKHR( m_device,
                                  reinterpret_cast<const VkVideoSessionCreateInfoKHR *>( &createInfo ),
                                  reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                 reinterpret_cast<VkVideoSessionKHR *>( &videoSession ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::VideoSessionKHR, Dispatch>(
-      result, videoSession, VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionKHRUnique", deleter );
+                                 reinterpret_cast<VkVideoSessionKHR *>( &videoSession ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionKHR, Dispatch>( videoSession, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -9409,15 +9474,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                    Dispatch const &                                                  d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR videoSessionParameters;
-    Result                                          result = static_cast<Result>( d.vkCreateVideoSessionParametersKHR(
+    VkResult                                        result = d.vkCreateVideoSessionParametersKHR(
       m_device,
       reinterpret_cast<const VkVideoSessionParametersCreateInfoKHR *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkVideoSessionParametersKHR *>( &videoSessionParameters ) ) );
-    ObjectDestroy<Device, Dispatch>                 deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR, Dispatch>(
-      result, videoSessionParameters, VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionParametersKHRUnique", deleter );
+      reinterpret_cast<VkVideoSessionParametersKHR *>( &videoSessionParameters ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createVideoSessionParametersKHRUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR, Dispatch>(
+                                    videoSessionParameters, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -9793,15 +9860,16 @@ namespace VULKAN_HPP_NAMESPACE
                                      Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::CuModuleNVX module;
-    Result                            result = static_cast<Result>(
+    VkResult                          result =
       d.vkCreateCuModuleNVX( m_device,
                              reinterpret_cast<const VkCuModuleCreateInfoNVX *>( &createInfo ),
                              reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                             reinterpret_cast<VkCuModuleNVX *>( &module ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::CuModuleNVX, Dispatch>(
-      result, module, VULKAN_HPP_NAMESPACE_STRING "::Device::createCuModuleNVXUnique", deleter );
+                             reinterpret_cast<VkCuModuleNVX *>( &module ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createCuModuleNVXUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::CuModuleNVX, Dispatch>( module, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -9846,15 +9914,17 @@ namespace VULKAN_HPP_NAMESPACE
                                        Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::CuFunctionNVX function;
-    Result                              result = static_cast<Result>(
+    VkResult                            result =
       d.vkCreateCuFunctionNVX( m_device,
                                reinterpret_cast<const VkCuFunctionCreateInfoNVX *>( &createInfo ),
                                reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                               reinterpret_cast<VkCuFunctionNVX *>( &function ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::CuFunctionNVX, Dispatch>(
-      result, function, VULKAN_HPP_NAMESPACE_STRING "::Device::createCuFunctionNVXUnique", deleter );
+                               reinterpret_cast<VkCuFunctionNVX *>( &function ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createCuFunctionNVXUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::CuFunctionNVX, Dispatch>( function, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -10234,15 +10304,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                       Dispatch const &                                                   d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateStreamDescriptorSurfaceGGP(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateStreamDescriptorSurfaceGGP(
       m_instance,
       reinterpret_cast<const VkStreamDescriptorSurfaceCreateInfoGGP *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createStreamDescriptorSurfaceGGPUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createStreamDescriptorSurfaceGGPUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -10761,15 +10833,17 @@ namespace VULKAN_HPP_NAMESPACE
                                        Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateViSurfaceNN( m_instance,
                              reinterpret_cast<const VkViSurfaceCreateInfoNN *>( &createInfo ),
                              reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                             reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createViSurfaceNNUnique", deleter );
+                             reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createViSurfaceNNUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11269,15 +11343,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                      Dispatch const &                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate descriptorUpdateTemplate;
-    Result                                         result = static_cast<Result>( d.vkCreateDescriptorUpdateTemplateKHR(
+    VkResult                                       result = d.vkCreateDescriptorUpdateTemplateKHR(
       m_device,
       reinterpret_cast<const VkDescriptorUpdateTemplateCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDescriptorUpdateTemplate *>( &descriptorUpdateTemplate ) ) );
-    ObjectDestroy<Device, Dispatch>                deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate, Dispatch>(
-      result, descriptorUpdateTemplate, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateKHRUnique", deleter );
+      reinterpret_cast<VkDescriptorUpdateTemplate *>( &descriptorUpdateTemplate ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorUpdateTemplateKHRUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate, Dispatch>(
+                                    descriptorUpdateTemplate, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11432,11 +11508,12 @@ namespace VULKAN_HPP_NAMESPACE
                        PhysicalDevice::getRandROutputDisplayEXTUnique( Display & dpy, RROutput rrOutput, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DisplayKHR display;
-    Result result = static_cast<Result>( d.vkGetRandROutputDisplayEXT( m_physicalDevice, &dpy, rrOutput, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
-    ObjectRelease<PhysicalDevice, Dispatch> deleter( *this, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>(
-      result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getRandROutputDisplayEXTUnique", deleter );
+    VkResult                         result = d.vkGetRandROutputDisplayEXT( m_physicalDevice, &dpy, rrOutput, reinterpret_cast<VkDisplayKHR *>( &display ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getRandROutputDisplayEXTUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>( display, ObjectRelease<PhysicalDevice, Dispatch>( *this, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11537,14 +11614,16 @@ namespace VULKAN_HPP_NAMESPACE
                                     Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::Fence     fence;
-    Result                          result = static_cast<Result>( d.vkRegisterDeviceEventEXT(
+
+    VULKAN_HPP_NAMESPACE::Fence fence;
+    VkResult                    result = d.vkRegisterDeviceEventEXT(
       m_device,
       reinterpret_cast<const VkDeviceEventInfoEXT *>( &deviceEventInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkFence *>( &fence ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::registerEventEXTUnique", deleter );
+      reinterpret_cast<VkFence *>( &fence ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::registerEventEXTUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( fence, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11594,16 +11673,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::Fence     fence;
-    Result                          result = static_cast<Result>( d.vkRegisterDisplayEventEXT(
+
+    VULKAN_HPP_NAMESPACE::Fence fence;
+    VkResult                    result = d.vkRegisterDisplayEventEXT(
       m_device,
       static_cast<VkDisplayKHR>( display ),
       reinterpret_cast<const VkDisplayEventInfoEXT *>( &displayEventInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkFence *>( &fence ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::Fence, Dispatch>(
-      result, fence, VULKAN_HPP_NAMESPACE_STRING "::Device::registerDisplayEventEXTUnique", deleter );
+      reinterpret_cast<VkFence *>( &fence ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::registerDisplayEventEXTUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::Fence, Dispatch>( fence, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -11850,15 +11930,17 @@ namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::RenderPass renderPass;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateRenderPass2KHR( m_device,
                                 reinterpret_cast<const VkRenderPassCreateInfo2 *>( &createInfo ),
                                 reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                reinterpret_cast<VkRenderPass *>( &renderPass ) ) );
-    ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>(
-      result, renderPass, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2KHRUnique", deleter );
+                                reinterpret_cast<VkRenderPass *>( &renderPass ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2KHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::RenderPass, Dispatch>( renderPass, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -12666,15 +12748,17 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateIOSSurfaceMVK( m_instance,
                                reinterpret_cast<const VkIOSSurfaceCreateInfoMVK *>( &createInfo ),
                                reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                               reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createIOSSurfaceMVKUnique", deleter );
+                               reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createIOSSurfaceMVKUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -12723,15 +12807,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateMacOSSurfaceMVK( m_instance,
                                  reinterpret_cast<const VkMacOSSurfaceCreateInfoMVK *>( &createInfo ),
                                  reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createMacOSSurfaceMVKUnique", deleter );
+                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createMacOSSurfaceMVKUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -12912,15 +12998,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT messenger;
-    Result                                       result = static_cast<Result>( d.vkCreateDebugUtilsMessengerEXT(
+    VkResult                                     result = d.vkCreateDebugUtilsMessengerEXT(
       m_instance,
       reinterpret_cast<const VkDebugUtilsMessengerCreateInfoEXT *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDebugUtilsMessengerEXT *>( &messenger ) ) );
-    ObjectDestroy<Instance, Dispatch>            deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT, Dispatch>(
-      result, messenger, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugUtilsMessengerEXTUnique", deleter );
+      reinterpret_cast<VkDebugUtilsMessengerEXT *>( &messenger ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugUtilsMessengerEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT, Dispatch>( messenger, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -13298,15 +13386,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::AccelerationStructureKHR accelerationStructure;
-    Result                                         result = static_cast<Result>( d.vkCreateAccelerationStructureKHR(
+    VkResult                                       result = d.vkCreateAccelerationStructureKHR(
       m_device,
       reinterpret_cast<const VkAccelerationStructureCreateInfoKHR *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkAccelerationStructureKHR *>( &accelerationStructure ) ) );
-    ObjectDestroy<Device, Dispatch>                deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR, Dispatch>(
-      result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureKHRUnique", deleter );
+      reinterpret_cast<VkAccelerationStructureKHR *>( &accelerationStructure ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::AccelerationStructureKHR, Dispatch>( accelerationStructure, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -13892,15 +13982,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                    Dispatch const &                                               d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion ycbcrConversion;
-    Result                                       result = static_cast<Result>( d.vkCreateSamplerYcbcrConversionKHR(
+    VkResult                                     result = d.vkCreateSamplerYcbcrConversionKHR(
       m_device,
       reinterpret_cast<const VkSamplerYcbcrConversionCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ) ) );
-    ObjectDestroy<Device, Dispatch>              deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion, Dispatch>(
-      result, ycbcrConversion, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionKHRUnique", deleter );
+      reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversionKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion, Dispatch>( ycbcrConversion, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -14044,15 +14136,17 @@ namespace VULKAN_HPP_NAMESPACE
                                             Dispatch const &                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::ValidationCacheEXT validationCache;
-    Result                                   result = static_cast<Result>( d.vkCreateValidationCacheEXT(
+    VkResult                                 result = d.vkCreateValidationCacheEXT(
       m_device,
       reinterpret_cast<const VkValidationCacheCreateInfoEXT *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkValidationCacheEXT *>( &validationCache ) ) );
-    ObjectDestroy<Device, Dispatch>          deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::ValidationCacheEXT, Dispatch>(
-      result, validationCache, VULKAN_HPP_NAMESPACE_STRING "::Device::createValidationCacheEXTUnique", deleter );
+      reinterpret_cast<VkValidationCacheEXT *>( &validationCache ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createValidationCacheEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::ValidationCacheEXT, Dispatch>( validationCache, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -14309,15 +14403,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                  Dispatch const &                                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::AccelerationStructureNV accelerationStructure;
-    Result                                        result = static_cast<Result>( d.vkCreateAccelerationStructureNV(
+    VkResult                                      result = d.vkCreateAccelerationStructureNV(
       m_device,
       reinterpret_cast<const VkAccelerationStructureCreateInfoNV *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkAccelerationStructureNV *>( &accelerationStructure ) ) );
-    ObjectDestroy<Device, Dispatch>               deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::AccelerationStructureNV, Dispatch>(
-      result, accelerationStructure, VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureNVUnique", deleter );
+      reinterpret_cast<VkAccelerationStructureNV *>( &accelerationStructure ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createAccelerationStructureNVUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::AccelerationStructureNV, Dispatch>( accelerationStructure, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -15459,14 +15555,15 @@ namespace VULKAN_HPP_NAMESPACE
                                                         Dispatch const &                                                       d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL configuration;
-    Result                                              result =
-      static_cast<Result>( d.vkAcquirePerformanceConfigurationINTEL( m_device,
-                                                                     reinterpret_cast<const VkPerformanceConfigurationAcquireInfoINTEL *>( &acquireInfo ),
-                                                                     reinterpret_cast<VkPerformanceConfigurationINTEL *>( &configuration ) ) );
-    ObjectRelease<Device, Dispatch> deleter( *this, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL, Dispatch>(
-      result, configuration, VULKAN_HPP_NAMESPACE_STRING "::Device::acquirePerformanceConfigurationINTELUnique", deleter );
+    VkResult                                            result = d.vkAcquirePerformanceConfigurationINTEL( m_device,
+                                                                reinterpret_cast<const VkPerformanceConfigurationAcquireInfoINTEL *>( &acquireInfo ),
+                                                                reinterpret_cast<VkPerformanceConfigurationINTEL *>( &configuration ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::acquirePerformanceConfigurationINTELUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL, Dispatch>( configuration, ObjectRelease<Device, Dispatch>( *this, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -15614,15 +15711,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                    Dispatch const &                                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateImagePipeSurfaceFUCHSIA(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateImagePipeSurfaceFUCHSIA(
       m_instance,
       reinterpret_cast<const VkImagePipeSurfaceCreateInfoFUCHSIA *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createImagePipeSurfaceFUCHSIAUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createImagePipeSurfaceFUCHSIAUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -15671,15 +15770,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
-    Result                           result = static_cast<Result>(
+    VkResult                         result =
       d.vkCreateMetalSurfaceEXT( m_instance,
                                  reinterpret_cast<const VkMetalSurfaceCreateInfoEXT *>( &createInfo ),
                                  reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createMetalSurfaceEXTUnique", deleter );
+                                 reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createMetalSurfaceEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16265,15 +16366,17 @@ namespace VULKAN_HPP_NAMESPACE
                                               Dispatch const &                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateHeadlessSurfaceEXT(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateHeadlessSurfaceEXT(
       m_instance,
       reinterpret_cast<const VkHeadlessSurfaceCreateInfoEXT *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createHeadlessSurfaceEXTUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createHeadlessSurfaceEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -16573,14 +16676,16 @@ namespace VULKAN_HPP_NAMESPACE
                        Device::createDeferredOperationKHRUnique( Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation;
-    Result                                     result = static_cast<Result>( d.vkCreateDeferredOperationKHR(
+    VkResult                                   result = d.vkCreateDeferredOperationKHR(
       m_device,
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkDeferredOperationKHR *>( &deferredOperation ) ) );
-    ObjectDestroy<Device, Dispatch>            deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DeferredOperationKHR, Dispatch>(
-      result, deferredOperation, VULKAN_HPP_NAMESPACE_STRING "::Device::createDeferredOperationKHRUnique", deleter );
+      reinterpret_cast<VkDeferredOperationKHR *>( &deferredOperation ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createDeferredOperationKHRUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::DeferredOperationKHR, Dispatch>( deferredOperation, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17089,15 +17194,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                   Dispatch const &                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV indirectCommandsLayout;
-    Result                                         result = static_cast<Result>( d.vkCreateIndirectCommandsLayoutNV(
+    VkResult                                       result = d.vkCreateIndirectCommandsLayoutNV(
       m_device,
       reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoNV *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkIndirectCommandsLayoutNV *>( &indirectCommandsLayout ) ) );
-    ObjectDestroy<Device, Dispatch>                deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV, Dispatch>(
-      result, indirectCommandsLayout, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectCommandsLayoutNVUnique", deleter );
+      reinterpret_cast<VkIndirectCommandsLayoutNV *>( &indirectCommandsLayout ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectCommandsLayoutNVUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV, Dispatch>(
+                                    indirectCommandsLayout, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17205,11 +17312,12 @@ namespace VULKAN_HPP_NAMESPACE
                        PhysicalDevice::getDrmDisplayEXTUnique( int32_t drmFd, uint32_t connectorId, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DisplayKHR display;
-    Result result = static_cast<Result>( d.vkGetDrmDisplayEXT( m_physicalDevice, drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
-    ObjectRelease<PhysicalDevice, Dispatch> deleter( *this, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>(
-      result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDrmDisplayEXTUnique", deleter );
+    VkResult                         result = d.vkGetDrmDisplayEXT( m_physicalDevice, drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( &display ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDrmDisplayEXTUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>( display, ObjectRelease<PhysicalDevice, Dispatch>( *this, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17256,15 +17364,17 @@ namespace VULKAN_HPP_NAMESPACE
                                             Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot;
-    Result                                result = static_cast<Result>( d.vkCreatePrivateDataSlotEXT(
+    VkResult                              result = d.vkCreatePrivateDataSlotEXT(
       m_device,
       reinterpret_cast<const VkPrivateDataSlotCreateInfo *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ) ) );
-    ObjectDestroy<Device, Dispatch>       deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::PrivateDataSlot, Dispatch>(
-      result, privateDataSlot, VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotEXTUnique", deleter );
+      reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlotEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::PrivateDataSlot, Dispatch>( privateDataSlot, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17724,11 +17834,12 @@ namespace VULKAN_HPP_NAMESPACE
                        PhysicalDevice::getWinrtDisplayNVUnique( uint32_t deviceRelativeId, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::DisplayKHR display;
-    Result result = static_cast<Result>( d.vkGetWinrtDisplayNV( m_physicalDevice, deviceRelativeId, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
-    ObjectRelease<PhysicalDevice, Dispatch> deleter( *this, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>(
-      result, display, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getWinrtDisplayNVUnique", deleter );
+    VkResult                         result = d.vkGetWinrtDisplayNV( m_physicalDevice, deviceRelativeId, reinterpret_cast<VkDisplayKHR *>( &display ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getWinrtDisplayNVUnique" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                  UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>( display, ObjectRelease<PhysicalDevice, Dispatch>( *this, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -17777,15 +17888,17 @@ namespace VULKAN_HPP_NAMESPACE
                                               Dispatch const &                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateDirectFBSurfaceEXT(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateDirectFBSurfaceEXT(
       m_instance,
       reinterpret_cast<const VkDirectFBSurfaceCreateInfoEXT *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDirectFBSurfaceEXTUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createDirectFBSurfaceEXTUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -18417,15 +18530,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                  Dispatch const &                                                d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA collection;
-    Result                                        result = static_cast<Result>( d.vkCreateBufferCollectionFUCHSIA(
+    VkResult                                      result = d.vkCreateBufferCollectionFUCHSIA(
       m_device,
       reinterpret_cast<const VkBufferCollectionCreateInfoFUCHSIA *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkBufferCollectionFUCHSIA *>( &collection ) ) );
-    ObjectDestroy<Device, Dispatch>               deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA, Dispatch>(
-      result, collection, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferCollectionFUCHSIAUnique", deleter );
+      reinterpret_cast<VkBufferCollectionFUCHSIA *>( &collection ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferCollectionFUCHSIAUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA, Dispatch>( collection, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -18718,15 +18833,17 @@ namespace VULKAN_HPP_NAMESPACE
                                             Dispatch const &                                          d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    VULKAN_HPP_NAMESPACE::SurfaceKHR  surface;
-    Result                            result = static_cast<Result>( d.vkCreateScreenSurfaceQNX(
+
+    VULKAN_HPP_NAMESPACE::SurfaceKHR surface;
+    VkResult                         result = d.vkCreateScreenSurfaceQNX(
       m_instance,
       reinterpret_cast<const VkScreenSurfaceCreateInfoQNX *>( &createInfo ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
-      reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
-    ObjectDestroy<Instance, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>(
-      result, surface, VULKAN_HPP_NAMESPACE_STRING "::Instance::createScreenSurfaceQNXUnique", deleter );
+      reinterpret_cast<VkSurfaceKHR *>( &surface ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Instance::createScreenSurfaceQNXUnique" );
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR, Dispatch>( surface, ObjectDestroy<Instance, Dispatch>( *this, allocator, d ) ) );
   }
 #    endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

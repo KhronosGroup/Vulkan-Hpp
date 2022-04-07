@@ -272,6 +272,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniquePipeline graphicsPipeline3 =
       std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
 
+    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique( {} );
+
     // destroy the non-Unique surface used here
     instance->destroySurfaceKHR( surfaceData.surface );
   }

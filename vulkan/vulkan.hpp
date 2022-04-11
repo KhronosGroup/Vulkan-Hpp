@@ -6053,23 +6053,34 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif
 
-  template <typename T>
-  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T & data )
-  {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
-    return ResultValue<T>( result, std::move( data ) );
-#else
-    ignore( result );
-    return std::move( data );
-#endif
-  }
-
   VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
     return result;
 #else
     ignore( result );
+#endif
+  }
+
+  template <typename T>
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T & data )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    return ResultValue<T>( result, data );
+#else
+    ignore( result );
+    return data;
+#endif
+  }
+
+  template <typename T>
+  VULKAN_HPP_INLINE typename ResultValueType<T>::type createResultValueType( Result result, T && data )
+  {
+#ifdef VULKAN_HPP_NO_EXCEPTIONS
+    return ResultValue<T>( result, std::move( data ) );
+#else
+    ignore( result );
+    return std::move( data );
 #endif
   }
 

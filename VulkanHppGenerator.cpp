@@ -3743,66 +3743,6 @@ std::string VulkanHppGenerator::generateCommandResultGetVectorOfHandlesUnique( s
   }
 }
 
-std::string VulkanHppGenerator::generateCommandResultGetVectorOfHandlesUniqueSingular( std::string const &              name,
-                                                                                       CommandData const &              commandData,
-                                                                                       size_t                           initialSkipCount,
-                                                                                       bool                             definition,
-                                                                                       std::map<size_t, size_t> const & vectorParams,
-                                                                                       size_t                           returnParam ) const
-{
-  assert( ( vectorParams.size() == 2 ) && ( vectorParams.begin()->second == std::next( vectorParams.begin() )->second ) );
-  assert( commandData.params[vectorParams.begin()->second].type.isValue() );
-
-  std::set<size_t> skippedParams  = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, { returnParam }, true );
-  std::set<size_t> singularParams = determineSingularParams( returnParam, vectorParams );
-  std::string      argumentList   = generateArgumentListEnhanced( commandData.params, skippedParams, singularParams, {}, definition, false, false, true );
-  std::string      commandName    = generateCommandName( name, commandData.params, initialSkipCount, m_tags, true, true );
-  std::string      nodiscard      = generateNoDiscard( true, 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string      handleType     = stripPrefix( commandData.params[returnParam].type.type, "Vk" );
-  std::string      returnType     = generateReturnType( commandData, { returnParam }, vectorParams, true, true, false, handleType );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <typename Dispatch>
-  ${nodiscard}VULKAN_HPP_INLINE ${returnType} ${className}${classSeparator}${commandName}( ${argumentList} ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    ${handleType} ${handleName};
-    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    ObjectDestroy<${className}, Dispatch> deleter( *this, allocator, d );
-    return createResultValue<${handleType}, Dispatch>( result, ${handleName}, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList}, deleter );
-  })";
-
-    return replaceWithMap( functionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, {}, false ) },
-                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
-                             { "classSeparator", commandData.handle.empty() ? "" : "::" },
-                             { "commandName", commandName },
-                             { "handleName", stripPluralS( startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) ) ) },
-                             { "handleType", handleType },
-                             { "nodiscard", nodiscard },
-                             { "returnType", returnType },
-                             { "successCodeList", generateSuccessCodeList( commandData.successCodes ) },
-                             { "vkCommand", name } } );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    ${nodiscard}${returnType} ${commandName}( ${argumentList} ) const;)";
-
-    return replaceWithMap( functionTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName },
-                             { "nodiscard", nodiscard },
-                             { "returnType", returnType },
-                           } );
-  }
-}
-
 std::string VulkanHppGenerator::generateCommandResultMultiSuccessNoErrors( std::string const & name,
                                                                            CommandData const & commandData,
                                                                            size_t              initialSkipCount,
@@ -3925,7 +3865,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
                 generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, false ),
                 generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
                 generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
-                generateCommandResultGetVectorOfHandlesUniqueSingular( name, commandData, initialSkipCount, definition, vectorParams, returnParam ) );
+                generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, true ) );
             }
           }
         }
@@ -4207,7 +4147,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
             generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, false ),
             generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, false ),
             generateCommandResultGetVectorOfHandlesUnique( name, commandData, initialSkipCount, definition, vectorParams, returnParam, true ),
-            generateCommandResultGetVectorOfHandlesUniqueSingular( name, commandData, initialSkipCount, definition, vectorParams, returnParam ) );
+            generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, true ) );
         }
       }
     }
@@ -10197,10 +10137,17 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
     }
     else
     {
-      assert( !unique );
       if ( returnVariable.empty() )
       {
+        assert( !unique );
         returnStatement = "return static_cast<VULKAN_HPP_NAMESPACE::" + stripPrefix( commandData.returnType, "Vk" ) + ">( result );";
+      }
+      else if ( unique )
+      {
+        assert( returnParam != INVALID_INDEX );
+        assert( beginsWith( returnType, "ResultValue<" ) && endsWith( returnType, ">" ) );
+        returnStatement = "return " + returnType + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), UniqueHandle<" + dataType + ", Dispatch>( " +
+                          returnVariable + ", " + generateObjectDeleter( commandName, commandData, initialSkipCount, returnParam ) + " ) );";
       }
       else
       {
@@ -16807,43 +16754,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
   }
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename T, typename D>
-  VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<T,D>>::type createResultValue( Result result, T & data, char const * message, typename UniqueHandleTraits<T,D>::deleter const & deleter )
-  {
-#ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore(message);
-    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
-    return ResultValue<UniqueHandle<T,D>>( result, UniqueHandle<T,D>(data, deleter ) );
-#else
-    if ( result != Result::eSuccess )
-    {
-      throwResultException( result, message );
-    }
-    return UniqueHandle<T,D>(data, deleter );
-#endif
-  }
-
-  template <typename T, typename D>
-  VULKAN_HPP_INLINE ResultValue<UniqueHandle<T, D>>
-                    createResultValue( Result                                             result,
-                                       T &                                                data,
-                                       char const *                                       message,
-                                       std::initializer_list<Result>                      successCodes,
-                                       typename UniqueHandleTraits<T, D>::deleter const & deleter )
-  {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore( message );
-    ignore(successCodes);   // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
-    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
-#  else
-    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
-    {
-      throwResultException( result, message );
-    }
-#  endif
-    return ResultValue<UniqueHandle<T, D>>( result, UniqueHandle<T, D>( data, deleter ) );
-  }
-
   template <typename T, typename D, typename Allocator = std::allocator<UniqueHandle<T, D>>>
   VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>, Allocator>>::type
     createResultValue( Result result, std::vector<UniqueHandle<T, D>, Allocator> && data, char const * message )

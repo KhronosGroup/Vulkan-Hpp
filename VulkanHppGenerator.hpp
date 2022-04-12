@@ -506,12 +506,6 @@ private:
                                                              std::map<size_t, size_t> const & vectorParamIndices,
                                                              size_t                           returnParam,
                                                              bool                             withAllocator ) const;
-  std::string generateCommandResultGetVectorOfHandlesUniqueSingular( std::string const &              name,
-                                                                     CommandData const &              commandData,
-                                                                     size_t                           initialSkipCount,
-                                                                     bool                             definition,
-                                                                     std::map<size_t, size_t> const & vectorParamIndices,
-                                                                     size_t                           returnParam ) const;
   std::string
     generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandResultMultiSuccessNoErrors0Return( std::string const & name,

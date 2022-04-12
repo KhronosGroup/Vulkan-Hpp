@@ -7961,7 +7961,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                         PipelineAllocator &                                                        pipelineAllocator,
                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<Pipeline, Dispatch>>
+    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>
                          createGraphicsPipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                 pipelineCache,
                                                        const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo &            createInfo,
                                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -8017,7 +8017,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        PipelineAllocator &                                                       pipelineAllocator,
                                                        Dispatch const & d                                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<Pipeline, Dispatch>>
+    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>
                          createComputePipelineUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                 pipelineCache,
                                                       const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo &             createInfo,
                                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -9080,7 +9080,7 @@ namespace VULKAN_HPP_NAMESPACE
                                        SwapchainKHRAllocator &                                                swapchainKHRAllocator,
                                        Dispatch const & d                                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<SwapchainKHR, Dispatch>>::type
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>::type
       createSharedSwapchainKHRUnique( const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR &                createInfo,
                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                       Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -10293,7 +10293,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             PipelineAllocator &                                                            pipelineAllocator,
                                                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<Pipeline, Dispatch>>
+    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>
                          createRayTracingPipelineNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                 pipelineCache,
                                                            const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV &        createInfo,
                                                            Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -10921,7 +10921,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              PipelineAllocator &                                                             pipelineAllocator,
                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<Pipeline, Dispatch>>
+    VULKAN_HPP_NODISCARD ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>
                          createRayTracingPipelineKHRUnique( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                          deferredOperation,
                                                             VULKAN_HPP_NAMESPACE::PipelineCache                                 pipelineCache,
                                                             const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR &       createInfo,

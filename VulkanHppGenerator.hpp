@@ -486,12 +486,6 @@ private:
                                                         bool                             withAllocators ) const;
   std::string generateCommandResultGetChain(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultGetSingularAndValue( std::string const &              name,
-                                                        CommandData const &              commandData,
-                                                        size_t                           initialSkipCount,
-                                                        bool                             definition,
-                                                        std::vector<size_t> const &      returnParamIndices,
-                                                        std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateCommandResultGetVectorAndValue( std::string const &              name,
                                                       CommandData const &              commandData,
                                                       size_t                           initialSkipCount,

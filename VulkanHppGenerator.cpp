@@ -3445,51 +3445,6 @@ std::string VulkanHppGenerator::generateCommandResultEnumerateTwoVectors( std::s
   }
 }
 
-std::string VulkanHppGenerator::generateCommandResultGetChain(
-  std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const
-{
-  assert( !commandData.handle.empty() && ( commandData.returnType == "VkResult" ) && !commandData.errorCodes.empty() );
-
-  std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, {}, { returnParam }, false );
-  std::string      argumentList  = generateArgumentListEnhanced( commandData.params, skippedParams, {}, {}, definition, false, false, true );
-  std::string      commandName   = generateCommandName( name, commandData.params, initialSkipCount, m_tags, false, false );
-  std::string      nodiscard     = generateNoDiscard( true, 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
-  std::string      returnType    = stripPostfix( commandData.params[returnParam].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(  template <typename X, typename Y, typename... Z, typename Dispatch>
-  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type ${className}${classSeparator}${commandName}( ${argumentList} ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    StructureChain<X, Y, Z...> structureChain;
-    ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
-    Result result = static_cast<Result>( d.${vkCommand}( ${callArguments} ) );
-    return createResultValue( result, structureChain, VULKAN_HPP_NAMESPACE_STRING"::${className}${classSeparator}${commandName}"${successCodeList} );
-  })";
-
-    return replaceWithMap( functionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, {}, false ) },
-                             { "className", initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "" },
-                             { "classSeparator", commandData.handle.empty() ? "" : "::" },
-                             { "commandName", commandName },
-                             { "returnVariable", startLowerCase( stripPrefix( commandData.params[returnParam].name, "p" ) ) },
-                             { "returnType", returnType },
-                             { "successCodeList", generateSuccessCodeList( commandData.successCodes ) },
-                             { "vkCommand", name } } );
-  }
-  else
-  {
-    std::string const functionTemplate =
-      R"(    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<StructureChain<X, Y, Z...>>::type ${commandName}( ${argumentList} ) const;)";
-
-    return replaceWithMap( functionTemplate, { { "argumentList", argumentList }, { "commandName", commandName } } );
-  }
-}
-
 std::string VulkanHppGenerator::generateCommandResultGetVectorAndValue( std::string const &              name,
                                                                         CommandData const &              commandData,
                                                                         size_t                           initialSkipCount,
@@ -4007,7 +3962,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
       definition,
       generateCommandStandard( name, commandData, initialSkipCount, definition ),
       generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false, false, false, false ),
-      generateCommandResultGetChain( name, commandData, initialSkipCount, definition, returnParam ) );
+      generateCommandSingle( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false, false, true, false ) );
   }
   return "";
 }
@@ -5030,7 +4985,7 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
     case 1:
       if ( chained )
       {
-        assert( commandData.returnType == "void" );
+        assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
         assert( vectorParams.empty() );
         std::string const dataDeclarationsTemplate = R"(${returnType} ${returnVariable};
     ${dataType} & ${dataVariable} = ${returnVariable}.template get<${dataType}>();)";
@@ -5038,7 +4993,7 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
         dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
                                            { { "dataType", dataTypes[0] },
                                              { "dataVariable", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                             { "returnType", returnType },
+                                             { "returnType", ( commandData.returnType == "void" ) ? returnType : "StructureChain<X, Y, Z...>" },
                                              { "returnVariable", returnVariable } } );
       }
       else
@@ -10129,9 +10084,14 @@ std::string VulkanHppGenerator::generateReturnType( CommandData const &         
   std::string returnType;
   if ( chained )
   {
-    assert( ( commandData.returnType == "void" ) && ( returnParams.size() == 1 ) );
+    assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
+    assert( returnParams.size() == 1 );
     assert( isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) );
     returnType = "StructureChain<X, Y, Z...>";
+    if ( commandData.returnType == "VkResult" )
+    {
+      returnType = "typename ResultValueType<" + returnType + ">::type";
+    }
   }
   else if ( commandData.returnType == "VkResult" )
   {

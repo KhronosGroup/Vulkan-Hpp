@@ -3051,17 +3051,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandBuffer;
 
   public:
-    VULKAN_HPP_CONSTEXPR         CommandBuffer() = default;
-    VULKAN_HPP_CONSTEXPR         CommandBuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT CommandBuffer( VkCommandBuffer commandBuffer ) VULKAN_HPP_NOEXCEPT : m_commandBuffer( commandBuffer ) {}
+    VULKAN_HPP_CONSTEXPR CommandBuffer() = default;
+    VULKAN_HPP_CONSTEXPR CommandBuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    CommandBuffer( VkCommandBuffer commandBuffer ) VULKAN_HPP_NOEXCEPT : m_commandBuffer( commandBuffer ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
     CommandBuffer & operator=( VkCommandBuffer commandBuffer ) VULKAN_HPP_NOEXCEPT
     {
       m_commandBuffer = commandBuffer;
       return *this;
     }
-#endif
 
     CommandBuffer & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
@@ -4822,7 +4820,7 @@ namespace VULKAN_HPP_NAMESPACE
                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCommandBuffer() const VULKAN_HPP_NOEXCEPT
+    operator VkCommandBuffer() const VULKAN_HPP_NOEXCEPT
     {
       return m_commandBuffer;
     }
@@ -6628,17 +6626,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueue;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Queue() = default;
-    VULKAN_HPP_CONSTEXPR         Queue( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT Queue( VkQueue queue ) VULKAN_HPP_NOEXCEPT : m_queue( queue ) {}
+    VULKAN_HPP_CONSTEXPR Queue() = default;
+    VULKAN_HPP_CONSTEXPR Queue( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    Queue( VkQueue queue ) VULKAN_HPP_NOEXCEPT : m_queue( queue ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
     Queue & operator=( VkQueue queue ) VULKAN_HPP_NOEXCEPT
     {
       m_queue = queue;
       return *this;
     }
-#endif
 
     Queue & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
@@ -6812,7 +6808,7 @@ namespace VULKAN_HPP_NAMESPACE
       getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkQueue() const VULKAN_HPP_NOEXCEPT
+    operator VkQueue() const VULKAN_HPP_NOEXCEPT
     {
       return m_queue;
     }
@@ -7120,17 +7116,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDevice;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Device() = default;
-    VULKAN_HPP_CONSTEXPR         Device( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT Device( VkDevice device ) VULKAN_HPP_NOEXCEPT : m_device( device ) {}
+    VULKAN_HPP_CONSTEXPR Device() = default;
+    VULKAN_HPP_CONSTEXPR Device( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    Device( VkDevice device ) VULKAN_HPP_NOEXCEPT : m_device( device ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
     Device & operator=( VkDevice device ) VULKAN_HPP_NOEXCEPT
     {
       m_device = device;
       return *this;
     }
-#endif
 
     Device & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
@@ -11224,7 +11218,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDevice() const VULKAN_HPP_NOEXCEPT
+    operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {
       return m_device;
     }
@@ -11372,17 +11366,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePhysicalDevice;
 
   public:
-    VULKAN_HPP_CONSTEXPR         PhysicalDevice() = default;
-    VULKAN_HPP_CONSTEXPR         PhysicalDevice( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT PhysicalDevice( VkPhysicalDevice physicalDevice ) VULKAN_HPP_NOEXCEPT : m_physicalDevice( physicalDevice ) {}
+    VULKAN_HPP_CONSTEXPR PhysicalDevice() = default;
+    VULKAN_HPP_CONSTEXPR PhysicalDevice( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    PhysicalDevice( VkPhysicalDevice physicalDevice ) VULKAN_HPP_NOEXCEPT : m_physicalDevice( physicalDevice ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
     PhysicalDevice & operator=( VkPhysicalDevice physicalDevice ) VULKAN_HPP_NOEXCEPT
     {
       m_physicalDevice = physicalDevice;
       return *this;
     }
-#endif
 
     PhysicalDevice & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
@@ -12619,7 +12611,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT
+    operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT
     {
       return m_physicalDevice;
     }
@@ -12695,17 +12687,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eInstance;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Instance() = default;
-    VULKAN_HPP_CONSTEXPR         Instance( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT Instance( VkInstance instance ) VULKAN_HPP_NOEXCEPT : m_instance( instance ) {}
+    VULKAN_HPP_CONSTEXPR Instance() = default;
+    VULKAN_HPP_CONSTEXPR Instance( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    Instance( VkInstance instance ) VULKAN_HPP_NOEXCEPT : m_instance( instance ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
     Instance & operator=( VkInstance instance ) VULKAN_HPP_NOEXCEPT
     {
       m_instance = instance;
       return *this;
     }
-#endif
 
     Instance & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
@@ -13308,7 +13298,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif     /*VK_USE_PLATFORM_SCREEN_QNX*/
 
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkInstance() const VULKAN_HPP_NOEXCEPT
+    operator VkInstance() const VULKAN_HPP_NOEXCEPT
     {
       return m_instance;
     }

@@ -89,7 +89,7 @@ const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_
 VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
 {
   // insert the default "handle" without class (for createInstance, and such)
-  m_handles.insert( std::make_pair( "", HandleData( {}, "", 0 ) ) );
+  m_handles.insert( std::make_pair( "", HandleData( {}, "", false, 0 ) ) );
 
   // read the document and check its correctness
   int                                       line     = document.GetLineNum();
@@ -5503,6 +5503,10 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
       usingAlias += "  using " + stripPrefix( handleData.second.alias, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) + ";\n";
     }
 
+    const std::string typesafeExplicitKeyword = handleData.second.isDispatchable ? "" : "VULKAN_HPP_TYPESAFE_EXPLICIT ";
+    const std::string typesafeConversionConditional = handleData.second.isDispatchable ? "" : "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)\n";
+    const std::string typesafeConversionConditionalEnd = handleData.second.isDispatchable ? "" : "#endif\n";
+
     static const std::string templateString = R"(
 ${enter}  class ${className}
   {
@@ -5517,18 +5521,16 @@ ${enter}  class ${className}
     VULKAN_HPP_CONSTEXPR ${className}() = default;
     VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {}
-    VULKAN_HPP_TYPESAFE_EXPLICIT ${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
+    ${typesafeExplicitKeyword}${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
       : m_${memberName}( ${memberName} )
     {}
 
-#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)
-    ${className} & operator=(Vk${className} ${memberName}) VULKAN_HPP_NOEXCEPT
+${typesafeConversionConditional}    ${className} & operator=(Vk${className} ${memberName}) VULKAN_HPP_NOEXCEPT
     {
       m_${memberName} = ${memberName};
       return *this;
     }
-#endif
-
+${typesafeConversionConditionalEnd}
     ${className} & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       m_${memberName} = {};
@@ -5554,7 +5556,7 @@ ${enter}  class ${className}
     }
 #endif
 ${commands}
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator Vk${className}() const VULKAN_HPP_NOEXCEPT
+    ${typesafeExplicitKeyword}operator Vk${className}() const VULKAN_HPP_NOEXCEPT
     {
       return m_${memberName};
     }
@@ -5599,7 +5601,10 @@ ${usingAlias}${leave})";
                              { "leave", leave },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
                              { "objTypeEnum", generateEnumValueName( enumIt->first, valueIt->name, false, m_tags ) },
-                             { "usingAlias", usingAlias } } );
+                             { "usingAlias", usingAlias },
+                             { "typesafeExplicitKeyword", typesafeExplicitKeyword },
+                             { "typesafeConversionConditional", typesafeConversionConditional },
+                             { "typesafeConversionConditionalEnd", typesafeConversionConditionalEnd } } );
   }
 
   listedHandles.insert( handleData.first );
@@ -13703,6 +13708,7 @@ void VulkanHppGenerator::readTypesTypeHandle( tinyxml2::XMLElement const * eleme
     NameData nameData;
     TypeInfo typeInfo;
     std::tie( nameData, typeInfo ) = readNameAndType( element );
+    const bool isDispatchable      = typeInfo.type == "VK_DEFINE_HANDLE";
 
     check( beginsWith( nameData.name, "Vk" ), line, "name <" + nameData.name + "> does not begin with <Vk>" );
     check( nameData.arraySizes.empty(), line, "name <" + nameData.name + "> with unsupported arraySizes" );
@@ -13714,7 +13720,7 @@ void VulkanHppGenerator::readTypesTypeHandle( tinyxml2::XMLElement const * eleme
     check( !objTypeEnum.empty(), line, "handle <" + nameData.name + "> does not specify attribute \"objtypeenum\"" );
 
     check( parent.find( ',' ) == std::string::npos, line, "mulitple parents specified for handle <" + nameData.name + ">" );
-    check( m_handles.insert( std::make_pair( nameData.name, HandleData( parent, objTypeEnum, line ) ) ).second,
+    check( m_handles.insert( std::make_pair( nameData.name, HandleData( parent, objTypeEnum, isDispatchable, line ) ) ).second,
            line,
            "handle <" + nameData.name + "> already specified" );
     check( m_types.insert( std::make_pair( nameData.name, TypeCategory::Handle ) ).second, line, "handle <" + nameData.name + "> already specified as a type" );
@@ -16900,7 +16906,7 @@ namespace VULKAN_HPP_NAMESPACE
            " , \"Wrong VK_HEADER_VERSION!\" );\n"
            "\n";
     str +=
-      "// 32-bit vulkan is not typesafe for handles, so don't allow copy constructors on this platform by default.\n"
+      "// 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.\n"
       "// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION\n" +
       generator.getTypesafeCheck() +
       "\n"

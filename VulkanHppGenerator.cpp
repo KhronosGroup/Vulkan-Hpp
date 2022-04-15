@@ -14851,6 +14851,18 @@ int main( int argc, char ** argv )
       , m_ptr( ptr )
     {}
 
+    template <std::size_t C>
+    ArrayProxy( T (& ptr)[C] ) VULKAN_HPP_NOEXCEPT
+      : m_count( C )
+      , m_ptr( ptr )
+    {}
+
+    template <std::size_t C, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxy( typename std::remove_const<T>::type (& ptr)[C] ) VULKAN_HPP_NOEXCEPT
+      : m_count( C )
+      , m_ptr( ptr )
+    {}
+
 #  if __GNUC__ >= 9
 #    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Winit-list-lifetime"
@@ -14985,6 +14997,24 @@ int main( int argc, char ** argv )
       : m_count( count )
       , m_ptr( ptr )
     {}
+
+    template <std::size_t C>
+    ArrayProxyNoTemporaries( T (& ptr)[C] ) VULKAN_HPP_NOEXCEPT
+      : m_count( C )
+      , m_ptr( ptr )
+    {}
+
+    template <std::size_t C>
+    ArrayProxyNoTemporaries( T (&& ptr)[C] ) = delete;
+
+    template <std::size_t C, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( typename std::remove_const<T>::type (& ptr)[C] ) VULKAN_HPP_NOEXCEPT
+      : m_count( C )
+      , m_ptr( ptr )
+    {}
+
+    template <std::size_t C, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( typename std::remove_const<T>::type (&& ptr)[C] ) = delete;
 
     ArrayProxyNoTemporaries( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( list.size() ) )

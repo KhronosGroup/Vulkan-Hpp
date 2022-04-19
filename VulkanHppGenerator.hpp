@@ -272,7 +272,10 @@ private:
 
   struct HandleData
   {
-    HandleData( std::string const & p, std::string const & objType, int line ) : objTypeEnum( objType ), parent( p ), xmlLine( line ) {}
+    HandleData( std::string const & p, std::string const & objType, bool isDispatchable, int line )
+      : objTypeEnum( objType ), parent( p ), isDispatchable( isDispatchable ), xmlLine( line )
+    {
+    }
 
     std::string           alias;
     std::set<std::string> childrenHandles;
@@ -282,6 +285,7 @@ private:
     std::string           objTypeEnum;
     std::string           parent;
     std::set<std::string> secondLevelCommands;
+    bool                  isDispatchable;
     int                   xmlLine;
 
     // RAII data

@@ -38,6 +38,18 @@ int getInt()
   return 1;
 }
 
+int( &&getArrayReference() )[2]
+{
+  static int arr[2] = { 1, 2 };
+  return std::move( arr );
+}
+
+int const( &&getConstArrayReference() )[2]
+{
+  static int const arr[2] = { 1, 2 };
+  return std::move( arr );
+}
+
 std::array<int, 2> getArray()
 {
   return { 1, 2 };
@@ -98,6 +110,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fct(i1);   // not supported: ArrayProxyNoTemporaries<const int&>(const int &)
     fctc( i1 );
 
+    // vk::ArrayProxyNoTemporaries<const int> ap1 = 1;   // not supported: ArrayProxyNoTemporaries<const int>::ArrayProxyNoTemporaries<T,0>(int &&)
+
+    vk::ArrayProxyNoTemporaries<const int> ap2 = i0;
+    assert( ap2.size() == 1 );
+    vk::ArrayProxyNoTemporaries<const int> ap3 = i1;
+    assert( ap3.size() == 1 );
+
     // count, T *
     int * i0p = &i0;
     fct( { 1, i0p } );
@@ -107,6 +126,32 @@ int main( int /*argc*/, char ** /*argv*/ )
     int const * i1p = &i1;
     // fct({ 1, i1p });   // not supported: cannot convert argument 1 from 'initializer list' to 'vk::ArrayProxyNoTemporaries<int>'
     fctc( { 1, i1p } );
+
+    vk::ArrayProxyNoTemporaries<const int> ap4 = { 1, i0p };
+    assert( ap4.size() == 1 );
+    vk::ArrayProxyNoTemporaries<const int> ap5 = { 1, i1p };
+    assert( ap5.size() == 1 );
+
+    // T[count]
+    int ia0[2] = { 0, 1 };
+    fct( ia0 );
+    fctc( ia0 );
+
+    // const T[count]
+    const int ia1[2] = { 0, 1 };
+    // fct( ia1 );   // not supported: cannot convert argument 1 from 'const int [2]' to 'vk::ArrayProxyNoTemporaries<int>'
+    fctc( ia1 );
+
+    vk::ArrayProxyNoTemporaries<const int> ap6 = ia0;
+    assert( ap6.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap7 = ia1;
+    assert( ap7.size() == 2 );
+
+    // getArrayReference
+    // fct( getConstArrayReference() );    // not supported
+    // fctc( getConstArrayReference() );   // not supported
+    // fct( getArrayReference() );         // not supported
+    // fctc( getArrayReference() );        // not supported
 
     // std::array<T,N>
     std::array<int, 2> sa0 = { 0, 1 };
@@ -135,21 +180,22 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fctc( getArray() );        // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<int,2>>(V &&)
 
     // from std::array constructors
-    vk::ArrayProxyNoTemporaries<int> ap2 = sa0;
-    assert( ap2.size() == 2 );
-    // vk::ArrayProxyNoTemporaries<int> ap3 = sa1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<const
-    // int,2>&>(V) vk::ArrayProxyNoTemporaries<int> ap4 = sa2;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
-    // std::array<int,2>&>(V) vk::ArrayProxyNoTemporaries<int> ap5 = sa3;  // not supported: attempting to reference a deleted function:
+    vk::ArrayProxyNoTemporaries<int> ap8 = sa0;
+    assert( ap8.size() == 2 );
+
+    // vk::ArrayProxyNoTemporaries<int> ap9 = sa1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<std::array<const
+    // int,2>&>(V) vk::ArrayProxyNoTemporaries<int> ap10 = sa2;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
+    // std::array<int,2>&>(V) vk::ArrayProxyNoTemporaries<int> ap11 = sa3;  // not supported: attempting to reference a deleted function:
     // ArrayProxyNoTemporaries<const std::array<const int,2>&>(V)
 
-    vk::ArrayProxyNoTemporaries<const int> ap6 = sa0;
-    assert( ap6.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap7 = sa1;
-    assert( ap7.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap8 = sa2;
-    assert( ap8.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap9 = sa3;
-    assert( ap9.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap12 = sa0;
+    assert( ap12.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap13 = sa1;
+    assert( ap13.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap14 = sa2;
+    assert( ap14.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap15 = sa3;
+    assert( ap15.size() == 2 );
 
     // std::vector<T>
     std::vector<int> sv0 = { 0, 1 };
@@ -161,11 +207,6 @@ int main( int /*argc*/, char ** /*argv*/ )
     // fct(sv1); // not supported:  attempting to reference a deleted function: ArrayProxyNoTemporaries<const std::vector<int,std::allocator<int>>&>(V)
     fctc( sv1 );
 
-    vk::ArrayProxyNoTemporaries<int> ap10 = sv0;
-    assert( ap10.size() == 2 );
-    // vk::ArrayProxyNoTemporaries<int> ap11 = sv1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
-    // std::vector<int,std::allocator<int>>&>(V)
-
     // getVector
     // fct( getConstVector() );    // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
     // std::vector<int,std::allocator<int>>>(V &&) fctc( getConstVector() );   // not supported: attempting to reference a deleted function:
@@ -173,10 +214,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     // function: ArrayProxyNoTemporaries<std::vector<int,std::allocator<int>>>(V &&) fctc( getVector() );        // not supported: attempting to reference a
     // deleted function: ArrayProxyNoTemporaries<std::vector<int,std::allocator<int>>>(V &&)
 
-    vk::ArrayProxyNoTemporaries<const int> ap12 = sv0;
-    assert( ap12.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap13 = sv1;
-    assert( ap13.size() == 2 );
+    vk::ArrayProxyNoTemporaries<int> ap16 = sv0;
+    assert( ap16.size() == 2 );
+
+    // vk::ArrayProxyNoTemporaries<int> ap17 = sv1;  // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
+    // std::vector<int,std::allocator<int>>&>(V)
+
+    vk::ArrayProxyNoTemporaries<const int> ap18 = sv0;
+    assert( ap18.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap19 = sv1;
+    assert( ap19.size() == 2 );
 
     // std::initializer_list
     fct( {} );
@@ -217,20 +264,25 @@ int main( int /*argc*/, char ** /*argv*/ )
     // deleted function: ArrayProxyNoTemporaries(std::initializer_list<int> &&) fctc( getInitializerList() );         // not supported: attempting to reference
     // a deleted function: ArrayProxyNoTemporaries<T,0>(std::initializer_list<int> &&)
 
-    // vk::ArrayProxyNoTemporaries<int> ap14 = il1;   // not supported: cannot convert from 'const int *' to 'int *'
-    // vk::ArrayProxyNoTemporaries<int> ap15 = il2;   // not supported: attempting to reference a deleted function:
-    // ArrayProxyNoTemporaries<std::initializer_list<T>&>(V) vk::ArrayProxyNoTemporaries<int> ap16 = il3;   // not supported: cannot convert from 'const int *'
-    // to 'int *' vk::ArrayProxyNoTemporaries<int> ap17 = il4;   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
+    // vk::ArrayProxyNoTemporaries<int> ap20 = il1;   // not supported: cannot convert from 'const int *' to 'int *'
+    // vk::ArrayProxyNoTemporaries<int> ap21 = il2;   // not supported: attempting to reference a deleted function:
+    // ArrayProxyNoTemporaries<std::initializer_list<T>&>(V) vk::ArrayProxyNoTemporaries<int> ap22 = il3;   // not supported: cannot convert from 'const int *'
+    // to 'int *' vk::ArrayProxyNoTemporaries<int> ap23 = il4;   // not supported: attempting to reference a deleted function: ArrayProxyNoTemporaries<const
     // std::initializer_list<T>&>(V)
 
-    vk::ArrayProxyNoTemporaries<const int> ap18 = il1;
-    assert( ap18.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap19 = il2;
-    assert( ap19.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap20 = il3;
-    assert( ap20.size() == 2 );
-    vk::ArrayProxyNoTemporaries<const int> ap21 = il4;
-    assert( ap21.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap24 = {};
+    assert( ap24.size() == 0 );
+
+    //vk::ArrayProxyNoTemporaries<const int> ap25 = { 0, 1 };   // not supported
+
+    vk::ArrayProxyNoTemporaries<const int> ap26 = il1;
+    assert( ap26.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap27 = il2;
+    assert( ap27.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap28 = il3;
+    assert( ap28.size() == 2 );
+    vk::ArrayProxyNoTemporaries<const int> ap29 = il4;
+    assert( ap29.size() == 2 );
   }
   catch ( vk::SystemError const & err )
   {

@@ -185,6 +185,10 @@ c.setScissor(0, scissorRect);
 // pass a temporary value.
 c.setScissor(0, { { 0, 0 },{ 640, 480 } });
 
+// pass a fixed size array
+vk::Rect2D scissorRects[2] = { { { 0, 0 }, { 320, 240 } }, { { 320, 240 }, { 320, 240 } } };
+c.setScissor(0, scissorRects);
+
 // generate a std::initializer_list using two rectangles from the stack. This might generate a copy of the rectangles.
 vk::Rect2D scissorRect1 = { { 0, 0 },{ 320, 240 } };
 vk::Rect2D scissorRect2 = { { 320, 240 },{ 320, 240 } };

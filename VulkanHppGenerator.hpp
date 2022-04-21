@@ -505,13 +505,6 @@ private:
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         bool                             withAllocators ) const;
-  std::string generateCommandResultGetVectorAndValue( std::string const &              name,
-                                                      CommandData const &              commandData,
-                                                      size_t                           initialSkipCount,
-                                                      bool                             definition,
-                                                      std::map<size_t, size_t> const & vectorParamIndices,
-                                                      std::vector<size_t> const &      returnParam,
-                                                      bool                             withAllocator ) const;
   std::string generateCommandResultGetVectorOfHandlesUnique( std::string const &              name,
                                                              CommandData const &              commandData,
                                                              size_t                           initialSkipCount,

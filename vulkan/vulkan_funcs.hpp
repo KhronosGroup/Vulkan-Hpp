@@ -15246,13 +15246,15 @@ namespace VULKAN_HPP_NAMESPACE
     Device::getCalibratedTimestampsEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data(
       std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
     std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data.first;
     uint64_t &                                 maxDeviation = data.second;
-    Result                                     result       = static_cast<Result>( d.vkGetCalibratedTimestampsEXT(
-      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
+    VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename Uint64_tAllocator,
@@ -15265,13 +15267,15 @@ namespace VULKAN_HPP_NAMESPACE
                                         Dispatch const &                                                           d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
     std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data(
       std::piecewise_construct, std::forward_as_tuple( timestampInfos.size(), uint64_tAllocator ), std::forward_as_tuple( 0 ) );
     std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data.first;
     uint64_t &                                 maxDeviation = data.second;
-    Result                                     result       = static_cast<Result>( d.vkGetCalibratedTimestampsEXT(
-      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation ) );
-    return createResultValue( result, data, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
+    VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
   }
 
   template <typename Dispatch>

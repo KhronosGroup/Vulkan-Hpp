@@ -6232,7 +6232,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class VideoEncodeH264CapabilityFlagBitsEXT : VkVideoEncodeH264CapabilityFlagsEXT
   {
-    eDirect8X8Inference          = VK_VIDEO_ENCODE_H264_CAPABILITY_DIRECT_8X8_INFERENCE_BIT_EXT,
+    eDirect8X8InferenceEnabled   = VK_VIDEO_ENCODE_H264_CAPABILITY_DIRECT_8X8_INFERENCE_ENABLED_BIT_EXT,
+    eDirect8X8InferenceDisabled  = VK_VIDEO_ENCODE_H264_CAPABILITY_DIRECT_8X8_INFERENCE_DISABLED_BIT_EXT,
     eSeparateColourPlane         = VK_VIDEO_ENCODE_H264_CAPABILITY_SEPARATE_COLOUR_PLANE_BIT_EXT,
     eQpprimeYZeroTransformBypass = VK_VIDEO_ENCODE_H264_CAPABILITY_QPPRIME_Y_ZERO_TRANSFORM_BYPASS_BIT_EXT,
     eScalingLists                = VK_VIDEO_ENCODE_H264_CAPABILITY_SCALING_LISTS_BIT_EXT,
@@ -6254,14 +6255,16 @@ namespace VULKAN_HPP_NAMESPACE
     eMultipleSlicePerFrame       = VK_VIDEO_ENCODE_H264_CAPABILITY_MULTIPLE_SLICE_PER_FRAME_BIT_EXT,
     eSliceMbCount                = VK_VIDEO_ENCODE_H264_CAPABILITY_SLICE_MB_COUNT_BIT_EXT,
     eRowUnalignedSlice           = VK_VIDEO_ENCODE_H264_CAPABILITY_ROW_UNALIGNED_SLICE_BIT_EXT,
-    eDifferentSliceType          = VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_EXT
+    eDifferentSliceType          = VK_VIDEO_ENCODE_H264_CAPABILITY_DIFFERENT_SLICE_TYPE_BIT_EXT,
+    eBFrameInL1List              = VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_EXT
   };
 
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagBitsEXT value )
   {
     switch ( value )
     {
-      case VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8Inference: return "Direct8X8Inference";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceEnabled: return "Direct8X8InferenceEnabled";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceDisabled: return "Direct8X8InferenceDisabled";
       case VideoEncodeH264CapabilityFlagBitsEXT::eSeparateColourPlane: return "SeparateColourPlane";
       case VideoEncodeH264CapabilityFlagBitsEXT::eQpprimeYZeroTransformBypass: return "QpprimeYZeroTransformBypass";
       case VideoEncodeH264CapabilityFlagBitsEXT::eScalingLists: return "ScalingLists";
@@ -6284,6 +6287,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VideoEncodeH264CapabilityFlagBitsEXT::eSliceMbCount: return "SliceMbCount";
       case VideoEncodeH264CapabilityFlagBitsEXT::eRowUnalignedSlice: return "RowUnalignedSlice";
       case VideoEncodeH264CapabilityFlagBitsEXT::eDifferentSliceType: return "DifferentSliceType";
+      case VideoEncodeH264CapabilityFlagBitsEXT::eBFrameInL1List: return "BFrameInL1List";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8349,12 +8353,12 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( FormatFeatureFlagBits::eDisjoint ) | VkFlags( FormatFeatureFlagBits::eCositedChromaSamples ) |
                  VkFlags( FormatFeatureFlagBits::eSampledImageFilterMinmax ) | VkFlags( FormatFeatureFlagBits::eSampledImageFilterCubicIMG )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( FormatFeatureFlagBits::eVideoDecodeOutputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoDecodeDpbKHR )
+                 | VkFlags( FormatFeatureFlagBits::eVideoDecodeOutputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR ) | VkFlags( FormatFeatureFlagBits::eFragmentDensityMapEXT ) |
+                 | VkFlags( FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR ) | VkFlags( FormatFeatureFlagBits::eFragmentDensityMapEXT ) |
                  VkFlags( FormatFeatureFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( FormatFeatureFlagBits::eVideoEncodeInputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoEncodeDpbKHR )
+                 | VkFlags( FormatFeatureFlagBits::eVideoEncodeInputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -8549,15 +8553,15 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageUsageFlagBits::eDepthStencilAttachment ) | VkFlags( ImageUsageFlagBits::eTransientAttachment ) |
                  VkFlags( ImageUsageFlagBits::eInputAttachment )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
+                 | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
+                 | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
     };
   };
 
@@ -8790,7 +8794,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueueFlagBits::eGraphics ) | VkFlags( QueueFlagBits::eCompute ) | VkFlags( QueueFlagBits::eTransfer ) |
                  VkFlags( QueueFlagBits::eSparseBinding ) | VkFlags( QueueFlagBits::eProtected )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
+                 | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9400,7 +9404,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueryResultFlagBits::e64 ) | VkFlags( QueryResultFlagBits::eWait ) | VkFlags( QueryResultFlagBits::eWithAvailability ) |
                  VkFlags( QueryResultFlagBits::ePartial )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueryResultFlagBits::eWithStatusKHR )
+                 | VkFlags( QueryResultFlagBits::eWithStatusKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9513,13 +9517,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BufferUsageFlagBits::eIndexBuffer ) | VkFlags( BufferUsageFlagBits::eVertexBuffer ) |
                  VkFlags( BufferUsageFlagBits::eIndirectBuffer ) | VkFlags( BufferUsageFlagBits::eShaderDeviceAddress )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
+                 | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
                  VkFlags( BufferUsageFlagBits::eConditionalRenderingEXT ) | VkFlags( BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR ) |
                  VkFlags( BufferUsageFlagBits::eAccelerationStructureStorageKHR ) | VkFlags( BufferUsageFlagBits::eShaderBindingTableKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -11190,13 +11194,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Heap ) |
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Resource ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eDmaBufEXT )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
 
@@ -11524,7 +11528,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt ) | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence ) |
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eSyncFd )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
+                 | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     };
   };
@@ -11922,9 +11926,9 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( PipelineStageFlagBits2::eClear ) | VkFlags64( PipelineStageFlagBits2::eIndexInput ) |
                  VkFlags64( PipelineStageFlagBits2::eVertexAttributeInput ) | VkFlags64( PipelineStageFlagBits2::ePreRasterizationShaders )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
+                 | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
+                 | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
                  VkFlags64( PipelineStageFlagBits2::eCommandPreprocessNV ) | VkFlags64( PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eAccelerationStructureBuildKHR ) | VkFlags64( PipelineStageFlagBits2::eRayTracingShaderKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eFragmentDensityProcessEXT ) | VkFlags64( PipelineStageFlagBits2::eTaskShaderNV ) |
@@ -12058,10 +12062,10 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( AccessFlagBits2::eShaderSampledRead ) | VkFlags64( AccessFlagBits2::eShaderStorageRead ) |
                  VkFlags64( AccessFlagBits2::eShaderStorageWrite )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
+                 | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
                  VkFlags64( AccessFlagBits2::eVideoEncodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoEncodeWriteKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
+                 | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
                  VkFlags64( AccessFlagBits2::eTransformFeedbackCounterWriteEXT ) | VkFlags64( AccessFlagBits2::eConditionalRenderingReadEXT ) |
                  VkFlags64( AccessFlagBits2::eCommandPreprocessReadNV ) | VkFlags64( AccessFlagBits2::eCommandPreprocessWriteNV ) |
                  VkFlags64( AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR ) | VkFlags64( AccessFlagBits2::eAccelerationStructureReadKHR ) |
@@ -12295,14 +12299,14 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( FormatFeatureFlagBits2::eStorageReadWithoutFormat ) | VkFlags64( FormatFeatureFlagBits2::eStorageWriteWithoutFormat ) |
                  VkFlags64( FormatFeatureFlagBits2::eSampledImageDepthComparison )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
+                 | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
                  VkFlags64( FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV )
+                 | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV )
     };
   };
 
@@ -12826,7 +12830,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eInvalid )
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
+                 | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
                  VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
@@ -13302,7 +13306,8 @@ namespace VULKAN_HPP_NAMESPACE
     enum : VkFlags
     {
       allFlags =
-        VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8Inference ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eSeparateColourPlane ) |
+        VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceEnabled ) |
+        VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceDisabled ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eSeparateColourPlane ) |
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eQpprimeYZeroTransformBypass ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eScalingLists ) |
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eHrdCompliance ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eChromaQpOffset ) |
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eSecondChromaQpOffset ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::ePicInitQpMinus26 ) |
@@ -13313,7 +13318,7 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterEnabled ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDeblockingFilterPartial ) |
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDisableDirectSpatialMvPred ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eMultipleSlicePerFrame ) |
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eSliceMbCount ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eRowUnalignedSlice ) |
-        VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDifferentSliceType )
+        VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDifferentSliceType ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eBFrameInL1List )
     };
   };
 
@@ -13346,8 +13351,10 @@ namespace VULKAN_HPP_NAMESPACE
       return "{}";
 
     std::string result;
-    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8Inference )
-      result += "Direct8X8Inference | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceEnabled )
+      result += "Direct8X8InferenceEnabled | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDirect8X8InferenceDisabled )
+      result += "Direct8X8InferenceDisabled | ";
     if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eSeparateColourPlane )
       result += "SeparateColourPlane | ";
     if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eQpprimeYZeroTransformBypass )
@@ -13392,6 +13399,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "RowUnalignedSlice | ";
     if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eDifferentSliceType )
       result += "DifferentSliceType | ";
+    if ( value & VideoEncodeH264CapabilityFlagBitsEXT::eBFrameInL1List )
+      result += "BFrameInL1List | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }

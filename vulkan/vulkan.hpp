@@ -6017,42 +6017,6 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
   }
 
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename T, typename D, typename Allocator = std::allocator<UniqueHandle<T, D>>>
-  VULKAN_HPP_INLINE typename ResultValueType<std::vector<UniqueHandle<T, D>, Allocator>>::type
-    createResultValue( Result result, std::vector<UniqueHandle<T, D>, Allocator> && data, char const * message )
-  {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore( message );
-    VULKAN_HPP_ASSERT_ON_RESULT( result == Result::eSuccess );
-    return ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>( result, std::move( data ) );
-#  else
-    if ( result != Result::eSuccess )
-    {
-      throwResultException( result, message );
-    }
-    return std::move( data );
-#  endif
-  }
-
-  template <typename T, typename D, typename Allocator = std::allocator<UniqueHandle<T, D>>>
-  VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>
-    createResultValue( Result result, std::vector<UniqueHandle<T, D>, Allocator> && data, char const * message, std::initializer_list<Result> successCodes )
-  {
-#  ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore( message );
-    ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
-    VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );
-#  else
-    if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
-    {
-      throwResultException( result, message );
-    }
-#  endif
-    return ResultValue<std::vector<UniqueHandle<T, D>, Allocator>>( result, std::move( data ) );
-  }
-#endif
-
   VULKAN_HPP_INLINE typename ResultValueType<void>::type createResultValueType( Result result )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS

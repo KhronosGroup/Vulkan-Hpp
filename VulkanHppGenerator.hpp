@@ -422,7 +422,8 @@ private:
                                                                                  std::vector<std::string> const & returnDataTypes,
                                                                                  std::map<size_t, size_t> const & vectorParams,
                                                                                  bool                             definition,
-                                                                                 bool                             singular ) const;
+                                                                                 bool                             singular,
+                                                                                 bool                             unique ) const;
   std::string                                        generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                                                                    std::set<size_t> const &       skippedParams,
                                                                                    std::set<size_t> const &       singularParams,
@@ -505,13 +506,6 @@ private:
                                                         std::map<size_t, size_t> const & vectorParamIndices,
                                                         std::vector<size_t> const &      returnParamIndices,
                                                         bool                             withAllocators ) const;
-  std::string generateCommandResultGetVectorOfHandlesUnique( std::string const &              name,
-                                                             CommandData const &              commandData,
-                                                             size_t                           initialSkipCount,
-                                                             bool                             definition,
-                                                             std::map<size_t, size_t> const & vectorParamIndices,
-                                                             size_t                           returnParam,
-                                                             bool                             withAllocator ) const;
   std::string
     generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandResultMultiSuccessNoErrors0Return( std::string const & name,
@@ -630,9 +624,18 @@ private:
                                         bool                             singular,
                                         bool                             withAllocator,
                                         bool                             chained,
+                                        bool                             unique,
                                         std::vector<std::string> const & dataTypes,
                                         std::string const &              returnType,
                                         std::string const &              returnVariable ) const;
+  std::string generateDataPreparation( CommandData const &              commandData,
+                                       size_t                           initialSkipCount,
+                                       std::vector<size_t> const &      returnParams,
+                                       std::map<size_t, size_t> const & vectorParams,
+                                       std::set<size_t> const &         templatedParams,
+                                       bool                             singular,
+                                       bool                             withAllocator,
+                                       bool                             unique ) const;
   std::string generateDataSizeChecks( CommandData const &              commandData,
                                       std::vector<size_t> const &      returnParams,
                                       std::vector<std::string> const & returnParamTypes,
@@ -987,7 +990,8 @@ private:
                                                              std::map<size_t, size_t> const & vectorParams,
                                                              bool                             definition,
                                                              bool                             singular,
-                                                             bool                             withAllocator ) const;
+                                                             bool                             withAllocator,
+                                                             bool                             unique ) const;
   std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
   std::string                         generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,

@@ -7940,17 +7940,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                  Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                        pipelineCache,
                                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
                                                         Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator        VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
               typename B                 = PipelineAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<Pipeline, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                        pipelineCache,
                                                         ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
                                                         Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                  allocator,
@@ -7996,17 +7997,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                 Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                       pipelineCache,
                                                        ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
                                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator       VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                        Dispatch const & d                                                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
               typename B                 = PipelineAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<Pipeline, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                       pipelineCache,
                                                        ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
                                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                 allocator,
@@ -8241,15 +8243,16 @@ namespace VULKAN_HPP_NAMESPACE
                               DescriptorSetAllocator &                                descriptorSetAllocator,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename DescriptorSetAllocator = std::allocator<UniqueHandle<DescriptorSet, Dispatch>>>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
+    template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename DescriptorSetAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
       allocateDescriptorSetsUnique( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename DescriptorSetAllocator = std::allocator<UniqueHandle<DescriptorSet, Dispatch>>,
+              typename DescriptorSetAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>,
               typename B                      = DescriptorSetAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<DescriptorSet, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
       allocateDescriptorSetsUnique( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
                                     DescriptorSetAllocator &                                descriptorSetAllocator,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -8460,15 +8463,16 @@ namespace VULKAN_HPP_NAMESPACE
                               CommandBufferAllocator &                                commandBufferAllocator,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename CommandBufferAllocator = std::allocator<UniqueHandle<CommandBuffer, Dispatch>>>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
+    template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename CommandBufferAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
       allocateCommandBuffersUnique( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename CommandBufferAllocator = std::allocator<UniqueHandle<CommandBuffer, Dispatch>>,
+              typename CommandBufferAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>,
               typename B                      = CommandBufferAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<CommandBuffer, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
       allocateCommandBuffersUnique( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
                                     CommandBufferAllocator &                                commandBufferAllocator,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -9061,16 +9065,17 @@ namespace VULKAN_HPP_NAMESPACE
                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                 Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename SwapchainKHRAllocator = std::allocator<UniqueHandle<SwapchainKHR, Dispatch>>>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
+    template <typename Dispatch              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename SwapchainKHRAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHRUnique( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator    VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                        Dispatch const & d                                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename SwapchainKHRAllocator = std::allocator<UniqueHandle<SwapchainKHR, Dispatch>>,
+              typename SwapchainKHRAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>,
               typename B                     = SwapchainKHRAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<SwapchainKHR, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHRUnique( ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>              allocator,
                                        SwapchainKHRAllocator &                                                swapchainKHRAllocator,
@@ -10272,17 +10277,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                      Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                      Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                            pipelineCache,
                                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
                                                             Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                             Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
               typename B                 = PipelineAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<Pipeline, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                            pipelineCache,
                                                             ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
                                                             Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                      allocator,
@@ -10898,18 +10904,19 @@ namespace VULKAN_HPP_NAMESPACE
                                                       Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                       Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE, typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createRayTracingPipelinesKHRUnique( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                      deferredOperation,
                                                              VULKAN_HPP_NAMESPACE::PipelineCache                                             pipelineCache,
                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> const & createInfos,
                                                              Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                              Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<Pipeline, Dispatch>>,
+              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
               typename B                 = PipelineAllocator,
               typename std::enable_if<std::is_same<typename B::value_type, UniqueHandle<Pipeline, Dispatch>>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<Pipeline, Dispatch>, PipelineAllocator>>
+    VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createRayTracingPipelinesKHRUnique( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                      deferredOperation,
                                                              VULKAN_HPP_NAMESPACE::PipelineCache                                             pipelineCache,
                                                              ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoKHR> const & createInfos,

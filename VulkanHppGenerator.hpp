@@ -423,7 +423,8 @@ private:
                                                                                  std::map<size_t, size_t> const & vectorParams,
                                                                                  bool                             definition,
                                                                                  bool                             singular,
-                                                                                 bool                             unique ) const;
+                                                                                 bool                             unique,
+                                                                                 bool                             chained ) const;
   std::string                                        generateArgumentListEnhanced( std::vector<ParamData> const & params,
                                                                                    std::set<size_t> const &       skippedParams,
                                                                                    std::set<size_t> const &       singularParams,
@@ -466,7 +467,10 @@ private:
                                     std::map<size_t, size_t> const & vectorParams,
                                     size_t                           initialSkipCount,
                                     std::set<size_t> const &         singularParams,
-                                    std::set<size_t> const &         templatedParams ) const;
+                                    std::set<size_t> const &         templatedParams,
+                                    bool                             withAllocator,
+                                    bool                             chained ) const;
+  std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string
     generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
@@ -609,13 +613,6 @@ private:
     generateCommandVoid1Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
   std::string generateCommandVoid2Return(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
-  std::string generateCommandVoidEnumerateChained( std::string const &               name,
-                                                   CommandData const &               commandData,
-                                                   size_t                            initialSkipCount,
-                                                   bool                              definition,
-                                                   std::pair<size_t, size_t> const & vectorParamIndex,
-                                                   std::vector<size_t> const &       returnParamIndices,
-                                                   bool                              withAllocators ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDataDeclarations( CommandData const &              commandData,
                                         std::vector<size_t> const &      returnParams,
@@ -635,7 +632,8 @@ private:
                                        std::set<size_t> const &         templatedParams,
                                        bool                             singular,
                                        bool                             withAllocator,
-                                       bool                             unique ) const;
+                                       bool                             unique,
+                                       bool                             chained ) const;
   std::string generateDataSizeChecks( CommandData const &              commandData,
                                       std::vector<size_t> const &      returnParams,
                                       std::vector<std::string> const & returnParamTypes,
@@ -991,7 +989,8 @@ private:
                                                              bool                             definition,
                                                              bool                             singular,
                                                              bool                             withAllocator,
-                                                             bool                             unique ) const;
+                                                             bool                             unique,
+                                                             bool                             chained ) const;
   std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
   std::string                         generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,

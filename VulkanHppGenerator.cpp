@@ -1805,6 +1805,36 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
 {
   for ( auto const & member : members )
   {
+    // check that all member types are required in some feature or extension
+    check(
+      !beginsWith( member.type.type, "Vk" ) ||
+        ( std::find_if( m_features.begin(),
+                        m_features.end(),
+                        [&member]( std::pair<std::string, FeatureData> const & fd )
+                        {
+                          return std::find_if( fd.second.requireData.begin(),
+                                               fd.second.requireData.end(),
+                                               [&member]( RequireData const & rd ) {
+                                                 return std::find_if( rd.types.begin(),
+                                                                      rd.types.end(),
+                                                                      [&member]( std::string const & t ) { return t == member.type.type; } ) != rd.types.end();
+                                               } ) != fd.second.requireData.end();
+                        } ) != m_features.end() ) ||
+        ( std::find_if( m_extensions.begin(),
+                        m_extensions.end(),
+                        [&member]( std::pair<std::string, ExtensionData> const & ed )
+                        {
+                          return std::find_if( ed.second.requireData.begin(),
+                                               ed.second.requireData.end(),
+                                               [&member]( RequireData const & rd ) {
+                                                 return std::find_if( rd.types.begin(),
+                                                                      rd.types.end(),
+                                                                      [&member]( std::string const & t ) { return t == member.type.type; } ) != rd.types.end();
+                                               } ) != ed.second.requireData.end();
+                        } ) != m_extensions.end() ),
+      member.xmlLine,
+      "struct member type <" + member.type.type + "> used in struct <" + structureName + "> is never listed for any feature or extension" );
+
     // if a member specifies a selector, that member is a union and the selector is an enum
     // check that there's a 1-1 connection between the specified selections and the values of that enum
     if ( !member.selector.empty() )

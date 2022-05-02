@@ -710,12 +710,15 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Create a Device with ray tracing support (besides some other extensions needed) and needed features
     auto       supportedFeatures = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
-    vk::Device device =
-      vk::su::createDevice( physicalDevice,
-                            graphicsAndPresentQueueFamilyIndex.first,
-                            { VK_KHR_SWAPCHAIN_EXTENSION_NAME, VK_NV_RAY_TRACING_EXTENSION_NAME, VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME },
-                            &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
-                            &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
+    vk::Device device            = vk::su::createDevice( physicalDevice,
+                                              graphicsAndPresentQueueFamilyIndex.first,
+                                              { VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+                                                VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
+                                                VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
+                                                VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                                VK_NV_RAY_TRACING_EXTENSION_NAME },
+                                              &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
+                                              &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
 
     // setup stuff per frame
     std::array<PerFrameData, IMGUI_VK_QUEUED_FRAMES> perFrameData;
@@ -876,11 +879,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
-    vk::su::updateDescriptorSets(
-      device,
-      descriptorSet,
-      { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} }, { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, {} } },
-      textures );
+    vk::su::updateDescriptorSets( device,
+                                  descriptorSet,
+                                  { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} },
+                                    { vk::DescriptorType::eStorageBuffer, materialBufferData.buffer, VK_WHOLE_SIZE, {} } },
+                                  textures );
 
     // RayTracing specific stuff
 
@@ -972,10 +975,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     {
       vk::su::updateDescriptorSets( device,
                                     rayTracingDescriptorSets[i],
-                                    { { bindings[2].descriptorType, uniformBufferData.buffer, {} },
-                                      { bindings[3].descriptorType, vertexBufferData.buffer, {} },
-                                      { bindings[4].descriptorType, indexBufferData.buffer, {} },
-                                      { bindings[5].descriptorType, materialBufferData.buffer, {} } },
+                                    { { bindings[2].descriptorType, uniformBufferData.buffer, VK_WHOLE_SIZE, {} },
+                                      { bindings[3].descriptorType, vertexBufferData.buffer, VK_WHOLE_SIZE, {} },
+                                      { bindings[4].descriptorType, indexBufferData.buffer, VK_WHOLE_SIZE, {} },
+                                      { bindings[5].descriptorType, materialBufferData.buffer, VK_WHOLE_SIZE, {} } },
                                     textures,
                                     2 );
     }

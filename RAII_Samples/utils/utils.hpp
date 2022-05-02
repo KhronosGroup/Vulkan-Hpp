@@ -815,11 +815,12 @@ namespace vk
           ;
       }
 
-      void updateDescriptorSets( vk::raii::Device const &                                                                                    device,
-                                 vk::raii::DescriptorSet const &                                                                             descriptorSet,
-                                 std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::raii::BufferView const *>> const & bufferData,
-                                 vk::raii::su::TextureData const &                                                                           textureData,
-                                 uint32_t                                                                                                    bindingOffset = 0 )
+      void updateDescriptorSets(
+        vk::raii::Device const &                                                                                                    device,
+        vk::raii::DescriptorSet const &                                                                                             descriptorSet,
+        std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::DeviceSize, vk::raii::BufferView const *>> const & bufferData,
+        vk::raii::su::TextureData const &                                                                                           textureData,
+        uint32_t                                                                                                                    bindingOffset = 0 )
       {
         std::vector<vk::DescriptorBufferInfo> bufferInfos;
         bufferInfos.reserve( bufferData.size() );
@@ -827,16 +828,16 @@ namespace vk
         std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
         writeDescriptorSets.reserve( bufferData.size() + 1 );
         uint32_t dstBinding = bindingOffset;
-        for ( auto const & bhd : bufferData )
+        for ( auto const & bd : bufferData )
         {
-          bufferInfos.emplace_back( *std::get<1>( bhd ), 0, VK_WHOLE_SIZE );
+          bufferInfos.emplace_back( *std::get<1>( bd ), 0, std::get<2>( bd ) );
           vk::BufferView bufferView;
-          if ( std::get<2>( bhd ) )
+          if ( std::get<3>( bd ) )
           {
-            bufferView = **std::get<2>( bhd );
+            bufferView = **std::get<3>( bd );
           }
           writeDescriptorSets.emplace_back(
-            *descriptorSet, dstBinding++, 0, 1, std::get<0>( bhd ), nullptr, &bufferInfos.back(), std::get<2>( bhd ) ? &bufferView : nullptr );
+            *descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), std::get<3>( bd ) ? &bufferView : nullptr );
         }
 
         vk::DescriptorImageInfo imageInfo( *textureData.sampler, *textureData.imageData.imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
@@ -845,11 +846,12 @@ namespace vk
         device.updateDescriptorSets( writeDescriptorSets, nullptr );
       }
 
-      void updateDescriptorSets( vk::raii::Device const &                                                                                    device,
-                                 vk::raii::DescriptorSet const &                                                                             descriptorSet,
-                                 std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::raii::BufferView const *>> const & bufferData,
-                                 std::vector<vk::raii::su::TextureData> const &                                                              textureData,
-                                 uint32_t                                                                                                    bindingOffset = 0 )
+      void updateDescriptorSets(
+        vk::raii::Device const &                                                                                                    device,
+        vk::raii::DescriptorSet const &                                                                                             descriptorSet,
+        std::vector<std::tuple<vk::DescriptorType, vk::raii::Buffer const &, vk::DeviceSize, vk::raii::BufferView const *>> const & bufferData,
+        std::vector<vk::raii::su::TextureData> const &                                                                              textureData,
+        uint32_t                                                                                                                    bindingOffset = 0 )
       {
         std::vector<vk::DescriptorBufferInfo> bufferInfos;
         bufferInfos.reserve( bufferData.size() );
@@ -857,16 +859,16 @@ namespace vk
         std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
         writeDescriptorSets.reserve( bufferData.size() + ( textureData.empty() ? 0 : 1 ) );
         uint32_t dstBinding = bindingOffset;
-        for ( auto const & bhd : bufferData )
+        for ( auto const & bd : bufferData )
         {
-          bufferInfos.emplace_back( *std::get<1>( bhd ), 0, VK_WHOLE_SIZE );
+          bufferInfos.emplace_back( *std::get<1>( bd ), 0, std::get<2>( bd ) );
           vk::BufferView bufferView;
-          if ( std::get<2>( bhd ) )
+          if ( std::get<3>( bd ) )
           {
-            bufferView = **std::get<2>( bhd );
+            bufferView = **std::get<3>( bd );
           }
           writeDescriptorSets.emplace_back(
-            *descriptorSet, dstBinding++, 0, 1, std::get<0>( bhd ), nullptr, &bufferInfos.back(), std::get<2>( bhd ) ? &bufferView : nullptr );
+            *descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), std::get<3>( bd ) ? &bufferView : nullptr );
         }
 
         std::vector<vk::DescriptorImageInfo> imageInfos;

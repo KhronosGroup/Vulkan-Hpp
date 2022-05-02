@@ -129,9 +129,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::DescriptorSets               descriptorSets( device, descriptorSetAllocateInfo );
     assert( descriptorSets.size() == 2 );
 
-    vk::raii::su::updateDescriptorSets( device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } }, greenTextureData );
     vk::raii::su::updateDescriptorSets(
-      device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } }, checkeredTextureData );
+      device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, greenTextureData );
+    vk::raii::su::updateDescriptorSets(
+      device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, checkeredTextureData );
 
     /* VULKAN_KEY_START */
 

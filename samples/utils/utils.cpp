@@ -680,11 +680,11 @@ namespace vk
       device.destroyFence( fence );
     }
 
-    void updateDescriptorSets( vk::Device const &                                                                              device,
-                               vk::DescriptorSet const &                                                                       descriptorSet,
-                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::BufferView const &>> const & bufferData,
-                               vk::su::TextureData const &                                                                     textureData,
-                               uint32_t                                                                                        bindingOffset )
+    void updateDescriptorSets( vk::Device const &                                                                                              device,
+                               vk::DescriptorSet const &                                                                                       descriptorSet,
+                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
+                               vk::su::TextureData const &                                                                                     textureData,
+                               uint32_t                                                                                                        bindingOffset )
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve( bufferData.size() );
@@ -694,8 +694,8 @@ namespace vk
       uint32_t dstBinding = bindingOffset;
       for ( auto const & bd : bufferData )
       {
-        bufferInfos.emplace_back( std::get<1>( bd ), 0, VK_WHOLE_SIZE );
-        writeDescriptorSets.emplace_back( descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), &std::get<2>( bd ) );
+        bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
+        writeDescriptorSets.emplace_back( descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), &std::get<3>( bd ) );
       }
 
       vk::DescriptorImageInfo imageInfo( textureData.sampler, textureData.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
@@ -704,11 +704,11 @@ namespace vk
       device.updateDescriptorSets( writeDescriptorSets, nullptr );
     }
 
-    void updateDescriptorSets( vk::Device const &                                                                              device,
-                               vk::DescriptorSet const &                                                                       descriptorSet,
-                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::BufferView const &>> const & bufferData,
-                               std::vector<vk::su::TextureData> const &                                                        textureData,
-                               uint32_t                                                                                        bindingOffset )
+    void updateDescriptorSets( vk::Device const &                                                                                              device,
+                               vk::DescriptorSet const &                                                                                       descriptorSet,
+                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
+                               std::vector<vk::su::TextureData> const &                                                                        textureData,
+                               uint32_t                                                                                                        bindingOffset )
     {
       std::vector<vk::DescriptorBufferInfo> bufferInfos;
       bufferInfos.reserve( bufferData.size() );
@@ -718,8 +718,8 @@ namespace vk
       uint32_t dstBinding = bindingOffset;
       for ( auto const & bd : bufferData )
       {
-        bufferInfos.emplace_back( std::get<1>( bd ), 0, VK_WHOLE_SIZE );
-        writeDescriptorSets.emplace_back( descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), &std::get<2>( bd ) );
+        bufferInfos.emplace_back( std::get<1>( bd ), 0, std::get<2>( bd ) );
+        writeDescriptorSets.emplace_back( descriptorSet, dstBinding++, 0, 1, std::get<0>( bd ), nullptr, &bufferInfos.back(), &std::get<3>( bd ) );
       }
 
       std::vector<vk::DescriptorImageInfo> imageInfos;

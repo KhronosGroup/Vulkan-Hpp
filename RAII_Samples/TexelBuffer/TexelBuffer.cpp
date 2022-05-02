@@ -127,7 +127,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::DescriptorPool descriptorPool = vk::raii::su::makeDescriptorPool( device, { { vk::DescriptorType::eUniformTexelBuffer, 1 } } );
     vk::raii::DescriptorSet  descriptorSet  = std::move( vk::raii::DescriptorSets( device, { *descriptorPool, *descriptorSetLayout } ).front() );
 
-    vk::raii::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, &texelBufferView } }, {} );
+    vk::raii::su::updateDescriptorSets(
+      device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, VK_WHOLE_SIZE, &texelBufferView } }, {} );
 
     vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
     vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline(

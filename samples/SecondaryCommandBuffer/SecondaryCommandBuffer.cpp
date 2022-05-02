@@ -129,8 +129,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::vector<vk::DescriptorSet>         descriptorSets = device.allocateDescriptorSets( descriptorSetAllocateInfo );
     assert( descriptorSets.size() == 2 );
 
-    vk::su::updateDescriptorSets( device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } }, greenTextureData );
-    vk::su::updateDescriptorSets( device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, {} } }, checkeredTextureData );
+    vk::su::updateDescriptorSets(
+      device, descriptorSets[0], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, greenTextureData );
+    vk::su::updateDescriptorSets(
+      device, descriptorSets[1], { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, checkeredTextureData );
 
     /* VULKAN_KEY_START */
 

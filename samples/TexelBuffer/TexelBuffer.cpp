@@ -124,7 +124,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorPool            descriptorPool = vk::su::createDescriptorPool( device, { { vk::DescriptorType::eUniformTexelBuffer, 1 } } );
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
-    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, texelBufferView } }, {} );
+    vk::su::updateDescriptorSets(
+      device, descriptorSet, { { vk::DescriptorType::eUniformTexelBuffer, texelBufferData.buffer, VK_WHOLE_SIZE, texelBufferView } }, {} );
 
     vk::PipelineCache pipelineCache    = device.createPipelineCache( vk::PipelineCacheCreateInfo() );
     vk::Pipeline      graphicsPipeline = vk::su::createGraphicsPipeline( device,

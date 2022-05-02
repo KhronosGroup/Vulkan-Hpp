@@ -131,7 +131,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, descriptorSetLayout );
     vk::DescriptorSet             descriptorSet = device.allocateDescriptorSets( descriptorSetAllocateInfo ).front();
 
-    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, {} } }, {} );
+    vk::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, bufferSize, {} } }, {} );
 
     vk::PipelineCache pipelineCache    = device.createPipelineCache( vk::PipelineCacheCreateInfo() );
     vk::Pipeline      graphicsPipeline = vk::su::createGraphicsPipeline( device,

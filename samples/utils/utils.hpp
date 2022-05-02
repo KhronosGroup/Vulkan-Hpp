@@ -298,8 +298,8 @@ namespace vk
       void setImage( vk::Device const & device, vk::CommandBuffer const & commandBuffer, ImageGenerator const & imageGenerator )
       {
         void * data = needsStaging
-                        ? device.mapMemory( stagingBufferData->deviceMemory, 0, device.getBufferMemoryRequirements( stagingBufferData->buffer ).size )
-                        : device.mapMemory( imageData->deviceMemory, 0, device.getImageMemoryRequirements( imageData->image ).size );
+                      ? device.mapMemory( stagingBufferData->deviceMemory, 0, device.getBufferMemoryRequirements( stagingBufferData->buffer ).size )
+                      : device.mapMemory( imageData->deviceMemory, 0, device.getImageMemoryRequirements( imageData->image ).size );
         imageGenerator( data, extent );
         device.unmapMemory( needsStaging ? stagingBufferData->deviceMemory : imageData->deviceMemory );
 
@@ -429,16 +429,16 @@ namespace vk
     vk::PresentModeKHR   pickPresentMode( std::vector<vk::PresentModeKHR> const & presentModes );
     vk::SurfaceFormatKHR pickSurfaceFormat( std::vector<vk::SurfaceFormatKHR> const & formats );
     void                 submitAndWait( vk::Device const & device, vk::Queue const & queue, vk::CommandBuffer const & commandBuffer );
-    void                 updateDescriptorSets( vk::Device const &                                                                              device,
-                                               vk::DescriptorSet const &                                                                       descriptorSet,
-                                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::BufferView const &>> const & bufferData,
-                                               vk::su::TextureData const &                                                                     textureData,
-                                               uint32_t                                                                                        bindingOffset = 0 );
-    void                 updateDescriptorSets( vk::Device const &                                                                              device,
-                                               vk::DescriptorSet const &                                                                       descriptorSet,
-                                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::BufferView const &>> const & bufferData,
-                                               std::vector<vk::su::TextureData> const &                                                        textureData,
-                                               uint32_t                                                                                        bindingOffset = 0 );
+    void                 updateDescriptorSets( vk::Device const &                                                                                              device,
+                                               vk::DescriptorSet const &                                                                                       descriptorSet,
+                                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
+                                               vk::su::TextureData const &                                                                                     textureData,
+                                               uint32_t bindingOffset = 0 );
+    void                 updateDescriptorSets( vk::Device const &                                                                                              device,
+                                               vk::DescriptorSet const &                                                                                       descriptorSet,
+                                               std::vector<std::tuple<vk::DescriptorType, vk::Buffer const &, vk::DeviceSize, vk::BufferView const &>> const & bufferData,
+                                               std::vector<vk::su::TextureData> const &                                                                        textureData,
+                                               uint32_t bindingOffset = 0 );
 
   }  // namespace su
 }  // namespace vk

@@ -137,7 +137,8 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::makeDescriptorPool( device, { { vk::DescriptorType::eUniformBuffer, 1 }, { vk::DescriptorType::eCombinedImageSampler, 1 } } );
     vk::raii::DescriptorSet descriptorSet = std::move( vk::raii::DescriptorSets( device, { *descriptorPool, *descriptorSetLayout } ).front() );
 
-    vk::raii::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, nullptr } }, { textureData } );
+    vk::raii::su::updateDescriptorSets(
+      device, descriptorSet, { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, nullptr } }, { textureData } );
 
     /* VULKAN_KEY_START */
 

@@ -497,19 +497,6 @@ private:
                                    std::set<std::string> const &  tags,
                                    bool                           singular,
                                    bool                           unique ) const;
-  std::string generateCommandResultEnumerateChained( std::string const &               name,
-                                                     CommandData const &               commandData,
-                                                     size_t                            initialSkipCount,
-                                                     bool                              definition,
-                                                     std::pair<size_t, size_t> const & vectorParamIndices,
-                                                     bool                              withAllocators ) const;
-  std::string generateCommandResultEnumerateTwoVectors( std::string const &              name,
-                                                        CommandData const &              commandData,
-                                                        size_t                           initialSkipCount,
-                                                        bool                             definition,
-                                                        std::map<size_t, size_t> const & vectorParamIndices,
-                                                        std::vector<size_t> const &      returnParamIndices,
-                                                        bool                             withAllocators ) const;
   std::string
     generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandResultMultiSuccessNoErrors0Return( std::string const & name,

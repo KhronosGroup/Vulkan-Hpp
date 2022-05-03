@@ -635,7 +635,6 @@ private:
   std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
-  std::string generateEnhancedReturnType( CommandData const & commandData, size_t returnParam, bool isStructureChain ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,

@@ -652,16 +652,6 @@ With this define you can specify whether the ```DispatchLoaderDynamic``` is impo
 With this define you can include a reflection mechanism on the vk-structures. It adds a function ```reflect``` that returns a tuple-version of the structure. That tuple then could easily be iterated. But at least for now, that feature takes lots of compile-time resources, so currently it is recommended to enable that feature only if you're willing to pay that price.
 
 
-## Deprecated elements
-
-There are a couple of elements in vulkan.hpp that are marked as deprecated (with C++14 and above):
-
-The implicit cast operators on ```vk::ResultValue``` are potentially wrong under certain circumstances. You should access the value explicitly as the member of the ```vk::ResultValue``` instead
-	
-The type traits ```cpp_type<ObjectType::eObjectTypeID>``` are replaced by the more general type traits ```CppType<Type, Type::eTypeID>```.
-
-All those elements will be removed around November 2021.
-
 ## See Also
 
 Feel free to submit a PR to add to this list.

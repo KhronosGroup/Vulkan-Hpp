@@ -5885,32 +5885,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return std::tuple<Result &, T &>( result, value );
     }
-
-#if !defined( VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST )
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator T const &() const & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator T &() & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator T const &&() const && VULKAN_HPP_NOEXCEPT
-    {
-      return std::move( value );
-    }
-
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator T &&() && VULKAN_HPP_NOEXCEPT
-    {
-      return std::move( value );
-    }
-#endif
   };
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
@@ -5931,20 +5905,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return std::make_tuple( result, std::move( value ) );
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST )
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator UniqueHandle<Type, Dispatch> &() & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
-    {
-      return std::move( value );
-    }
-#  endif
 
     Result                       result;
     UniqueHandle<Type, Dispatch> value;
@@ -5970,14 +5930,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     Result                                    result;
     std::vector<UniqueHandle<Type, Dispatch>> value;
-
-#  if !defined( VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST )
-    VULKAN_HPP_DEPRECATED( "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>() VULKAN_HPP_NOEXCEPT
-    {
-      return std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>( result, value );
-    }
-#  endif
   };
 #endif
 

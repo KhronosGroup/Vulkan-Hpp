@@ -5019,23 +5019,6 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateEnhancedReturnType( CommandData const & commandData, size_t returnParam, bool isStructureChain ) const
-{
-  assert( ( returnParam == INVALID_INDEX ) || ( returnParam < commandData.params.size() ) );
-
-  std::string enhancedReturnType;
-  assert( returnParam != INVALID_INDEX );
-  // if there is a return parameter, we think returnType is always "void" or "VkResult"
-  // -> we can return that parameter
-  assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
-  assert( commandData.successCodes.empty() || ( commandData.successCodes[0] == "VK_SUCCESS" ) );
-  return ( commandData.params[returnParam].type.type == "void" ) ? "std::vector<uint8_t,Allocator>"         // the return parameter is a vector-type parameter
-       : isStructureChain                                        ? "std::vector<StructureChain,Allocator>"  // for structureChain returns, it's just
-                                                                                                            // a vector of StrutureChains
-                          : "std::vector<" + stripPrefix( commandData.params[returnParam].type.type, "Vk" ) +
-                              ",Allocator>";  // for the other parameters, we use a vector of the pure type
-}
-
 std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const
 {
   std::string bitmask;
@@ -16505,32 +16488,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     T       value;
 
     operator std::tuple<Result&, T&>() VULKAN_HPP_NOEXCEPT { return std::tuple<Result&, T&>(result, value); }
-
-#if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T const & () const & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T& () & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T const && () const && VULKAN_HPP_NOEXCEPT
-    {
-      return std::move( value );
-    }
-
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator T&& () && VULKAN_HPP_NOEXCEPT
-    {
-      return std::move( value );
-    }
-#endif
   };
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
@@ -16550,20 +16507,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
     {
       return std::make_tuple( result, std::move( value ) );
     }
-
-#  if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator UniqueHandle<Type, Dispatch>& () & VULKAN_HPP_NOEXCEPT
-    {
-      return value;
-    }
-
-    VULKAN_HPP_DEPRECATED("Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue.")
-    operator UniqueHandle<Type, Dispatch>() VULKAN_HPP_NOEXCEPT
-    {
-      return std::move(value);
-    }
-#  endif
 
     Result                        result;
     UniqueHandle<Type, Dispatch>  value;
@@ -16588,15 +16531,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 
     Result                                    result;
     std::vector<UniqueHandle<Type, Dispatch>> value;
-
-#  if !defined(VULKAN_HPP_DISABLE_IMPLICIT_RESULT_VALUE_CAST)
-    VULKAN_HPP_DEPRECATED(
-      "Implicit-cast operators on vk::ResultValue are deprecated. Explicitly access the value as member of ResultValue." )
-    operator std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>() VULKAN_HPP_NOEXCEPT
-    {
-      return std::tuple<Result &, std::vector<UniqueHandle<Type, Dispatch>> &>( result, value );
-    }
-#  endif
   };
 #endif
 

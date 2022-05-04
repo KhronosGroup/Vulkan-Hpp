@@ -396,11 +396,27 @@ private:
   void        checkHandleCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
-  bool containsArray( std::string const & type ) const;
-  bool containsFloatingPoints( std::vector<MemberData> const & members ) const;
-  bool containsUnion( std::string const & type ) const;
-  std::vector<size_t> determineConstPointerParams( std::vector<ParamData> const & params ) const;
-  size_t              determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
+  std::string              combineDataTypes( std::map<size_t, size_t> const & vectorParams,
+                                             std::vector<size_t> const &      returnParams,
+                                             bool                             singular,
+                                             bool                             enumerating,
+                                             std::vector<std::string> const & dataTypes ) const;
+  bool                     containsArray( std::string const & type ) const;
+  bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
+  bool                     containsUnion( std::string const & type ) const;
+  std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;
+  std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
+                                               std::map<size_t, size_t> const &                   vectorParams,
+                                               std::vector<size_t> const &                        returnParams,
+                                               std::set<size_t> const &                           templatedParams ) const;
+  size_t                   determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
+  bool                     determineEnumeration( std::map<size_t, size_t> const & vectorParams,
+                                                 std::vector<size_t> const &      returnParams
+#if !defined( NDEBUG )
+                             ,
+                             std::vector<std::string> const & successCodes
+#endif
+  ) const;
   size_t              determineInitialSkipCount( std::string const & command ) const;
   std::vector<size_t> determineReturnParams( std::vector<ParamData> const & params ) const;
   std::vector<std::map<std::string, CommandData>::const_iterator>
@@ -418,7 +434,7 @@ private:
   std::string                                        findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
   std::vector<MemberData>::const_iterator            findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator            findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
-  std::string                                        generateAllocatorTemplates( std::vector<size_t> const &      returnParams,
+  std::pair<std::string, std::string>                generateAllocatorTemplates( std::vector<size_t> const &      returnParams,
                                                                                  std::vector<std::string> const & returnDataTypes,
                                                                                  std::map<size_t, size_t> const & vectorParams,
                                                                                  bool                             definition,
@@ -940,13 +956,15 @@ private:
                                        size_t              returnParam,
                                        bool                unique,
                                        bool                enumerating ) const;
-  std::string generateReturnType( CommandData const &              commandData,
-                                  std::vector<size_t> const &      returnParams,
+  std::string generateReturnType( CommandData const &         commandData,
+                                  std::vector<size_t> const & returnParams,
+#if !defined( NDEBUG )
                                   std::map<size_t, size_t> const & vectorParams,
                                   bool                             singular,
-                                  bool                             unique,
-                                  bool                             chained,
-                                  std::string const &              dataType ) const;
+#endif
+                                  bool                unique,
+                                  bool                chained,
+                                  std::string const & dataType ) const;
   std::string generateReturnVariable( CommandData const &              commandData,
                                       std::vector<size_t> const &      returnParams,
                                       std::map<size_t, size_t> const & vectorParams,

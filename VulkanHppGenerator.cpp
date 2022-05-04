@@ -3032,7 +3032,6 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                                       size_t                           initialSkipCount,
                                                       std::set<size_t> const &         singularParams,
                                                       std::set<size_t> const &         templatedParams,
-                                                      bool                             withAllocator,
                                                       bool                             chained ) const
 {
   // if at least one returnParam is a size value of a vector param (and no singular params), we need two calls
@@ -3058,26 +3057,54 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
       // chained data needs some more handling!!
       std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
 
-      const std::string callSequenceTemplate =
-        R"(d.${vkCommand}( ${firstCallArguments} );
-    std::vector<StructureChain, StructureChainAllocator> structureChains( ${counterName}${structureChainAllocator} );
-    std::vector<${vectorElementType}> ${vectorName}( ${counterName} );
+      if ( commandData.returnType == "VkResult" )
+      {
+        const std::string callSequenceTemplate = R"(VkResult result;
+    do
+    {
+      result = d.${vkCommand}( ${firstCallArguments} );
+      if ( ( result == VK_SUCCESS ) && ${counterName} )
+      {
+        structureChains.resize( ${counterName} );
+        ${vectorName}.resize( ${counterName} );
+        for ( ${counterType} i = 0; i < ${counterName}; i++ )
+        {
+          ${vectorName}[i].pNext = structureChains[i].template get<${vectorElementType}>().pNext;
+        }
+        result = d.${vkCommand}( ${secondCallArguments} );
+      }
+    } while ( result == VK_INCOMPLETE );)";
+
+        return replaceWithMap( callSequenceTemplate,
+                               { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
+                                 { "counterType", commandData.params[vectorParamIt->second].type.type },
+                                 { "firstCallArguments", firstCallArguments },
+                                 { "secondCallArguments", secondCallArguments },
+                                 { "vectorElementType", vectorElementType },
+                                 { "vectorName", vectorName },
+                                 { "vkCommand", name } } );
+      }
+      else
+      {
+        const std::string callSequenceTemplate =
+          R"(d.${vkCommand}( ${firstCallArguments} );
+    structureChains.resize( ${counterName} );
+    ${vectorName}.resize( ${counterName} );
     for ( ${counterType} i = 0; i < ${counterName}; i++ )
     {
       ${vectorName}[i].pNext = structureChains[i].template get<${vectorElementType}>().pNext;
     }
-    d.${vkCommand}( ${secondCallArguments} );
-    VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );)";
+    d.${vkCommand}( ${secondCallArguments} );)";
 
-      return replaceWithMap( callSequenceTemplate,
-                             { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
-                               { "counterType", commandData.params[vectorParamIt->second].type.type },
-                               { "firstCallArguments", firstCallArguments },
-                               { "secondCallArguments", secondCallArguments },
-                               { "structureChainAllocator", withAllocator ? ( ", structureChainAllocator" ) : "" },
-                               { "vectorElementType", vectorElementType },
-                               { "vectorName", vectorName },
-                               { "vkCommand", name } } );
+        return replaceWithMap( callSequenceTemplate,
+                               { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
+                                 { "counterType", commandData.params[vectorParamIt->second].type.type },
+                                 { "firstCallArguments", firstCallArguments },
+                                 { "secondCallArguments", secondCallArguments },
+                                 { "vectorElementType", vectorElementType },
+                                 { "vectorName", vectorName },
+                                 { "vkCommand", name } } );
+      }
     }
     else if ( commandData.returnType == "VkResult" )
     {
@@ -3434,7 +3461,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
       commandData, initialSkipCount, returnParams, vectorParams, templatedParams, singular, withAllocator, unique, chained, enumerating );
     std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
     std::string callSequence =
-      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, withAllocator, chained );
+      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chained );
     std::string resultCheck     = generateResultCheck( commandData, className, classSeparator, commandName, enumerating );
     std::string returnStatement = generateReturnStatement(
       name, commandData, returnVariable, returnType, dataType, initialSkipCount, returnParams.empty() ? INVALID_INDEX : returnParams[0], unique, enumerating );
@@ -3705,7 +3732,27 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
   {
     if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
     {
-      if ( !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+      if ( isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+      {
+        std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
+        if ( vectorParams.size() == 1 )
+        {
+          if ( returnParams[0] == vectorParams.begin()->second )
+          {
+            if ( returnParams[1] == vectorParams.begin()->first )
+            {
+              return generateCommandSetStandardEnhancedWithAllocatorChained(
+                definition,
+                generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, false, false, false ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, true, false, false ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, false, true, false ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, true, true, false ) );
+            }
+          }
+        }
+      }
+      else
       {
         std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
         if ( vectorParams.size() == 1 )
@@ -4642,11 +4689,18 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
         assert( vectorParamIt != vectorParams.end() );
         assert( vectorParamIt->second == returnParams[0] );
 
-        std::string const dataDeclarationTemplate = R"(${counterType} ${counterName};)";
+        std::string const dataDeclarationTemplate = R"(std::vector<StructureChain, StructureChainAllocator> structureChains${structureChainAllocator};
+    std::vector<${vectorElementType}> ${vectorName};
+    ${counterType} ${counterName};)";
 
-        dataDeclarations = replaceWithMap(
-          dataDeclarationTemplate,
-          { { "counterName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) }, { "counterType", dataTypes[0] } } );
+        dataDeclarations = replaceWithMap( dataDeclarationTemplate,
+                                           {
+                                             { "counterName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
+                                             { "counterType", dataTypes[0] },
+                                             { "structureChainAllocator", withAllocator ? ( "( structureChainAllocator )" ) : "" },
+                                             { "vectorElementType", dataTypes[1] },
+                                             { "vectorName", startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) ) },
+                                           } );
       }
       else
       {
@@ -4784,17 +4838,39 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
 
       std::string vectorElementType = stripPostfix( commandData.params[vectorParamIt->first].type.compose( "VULKAN_HPP_NAMESPACE" ), " *" );
 
-      std::string const dataPreparationTemplate =
-        R"(for ( ${counterType} i = 0; i < ${counterName}; i++ )
+      if ( enumerating )
+      {
+        std::string const dataPreparationTemplate =
+          R"(VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
+      if ( ${counterName} < ${vectorName}.size() )
+      {
+        structureChains.resize( ${counterName} );
+      }
+      for ( ${counterType} i = 0; i < ${counterName}; i++ )
+      {
+        structureChains[i].template get<${vectorElementType}>() = ${vectorName}[i];
+      })";
+
+        return replaceWithMap( dataPreparationTemplate,
+                               { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
+                                 { "counterType", commandData.params[vectorParamIt->second].type.type },
+                                 { "vectorElementType", vectorElementType },
+                                 { "vectorName", vectorName } } );
+      }
+      else
+      {
+        std::string const dataPreparationTemplate =
+          R"(for ( ${counterType} i = 0; i < ${counterName}; i++ )
     {
       structureChains[i].template get<${vectorElementType}>() = ${vectorName}[i];
     })";
 
-      return replaceWithMap( dataPreparationTemplate,
-                             { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
-                               { "counterType", commandData.params[vectorParamIt->second].type.type },
-                               { "vectorElementType", vectorElementType },
-                               { "vectorName", vectorName } } );
+        return replaceWithMap( dataPreparationTemplate,
+                               { { "counterName", startLowerCase( stripPrefix( commandData.params[vectorParamIt->second].name, "p" ) ) },
+                                 { "counterType", commandData.params[vectorParamIt->second].type.type },
+                                 { "vectorElementType", vectorElementType },
+                                 { "vectorName", vectorName } } );
+      }
     }
     else if ( enumerating )
     {
@@ -9961,7 +10037,8 @@ std::string VulkanHppGenerator::generateReturnType( CommandData const &         
     else
     {
       assert( returnParams.size() == 2 );
-      assert( commandData.returnType == "void" );
+      assert( ( commandData.returnType == "void" ) ||
+              ( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) );
       auto vectorIt = vectorParams.find( returnParams[1] );
       assert( ( vectorIt != vectorParams.end() ) && ( vectorIt->second == returnParams[0] ) );
       returnType = "std::vector<StructureChain, StructureChainAllocator>";

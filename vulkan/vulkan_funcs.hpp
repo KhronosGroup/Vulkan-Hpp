@@ -5715,18 +5715,24 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    uint32_t queueFamilyPropertyCount;
+    std::vector<StructureChain, StructureChainAllocator>      structureChains;
+    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties;
+    uint32_t                                                  queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
-    std::vector<StructureChain, StructureChainAllocator>      structureChains( queueFamilyPropertyCount );
-    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties( queueFamilyPropertyCount );
+    structureChains.resize( queueFamilyPropertyCount );
+    queueFamilyProperties.resize( queueFamilyPropertyCount );
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       queueFamilyProperties[i].pNext = structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>().pNext;
     }
     d.vkGetPhysicalDeviceQueueFamilyProperties2(
       m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2 *>( queueFamilyProperties.data() ) );
-    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
 
+    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
+    if ( queueFamilyPropertyCount < queueFamilyProperties.size() )
+    {
+      structureChains.resize( queueFamilyPropertyCount );
+    }
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>() = queueFamilyProperties[i];
@@ -5744,18 +5750,24 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    uint32_t queueFamilyPropertyCount;
+    std::vector<StructureChain, StructureChainAllocator>      structureChains( structureChainAllocator );
+    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties;
+    uint32_t                                                  queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
-    std::vector<StructureChain, StructureChainAllocator>      structureChains( queueFamilyPropertyCount, structureChainAllocator );
-    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties( queueFamilyPropertyCount );
+    structureChains.resize( queueFamilyPropertyCount );
+    queueFamilyProperties.resize( queueFamilyPropertyCount );
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       queueFamilyProperties[i].pNext = structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>().pNext;
     }
     d.vkGetPhysicalDeviceQueueFamilyProperties2(
       m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2 *>( queueFamilyProperties.data() ) );
-    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
 
+    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
+    if ( queueFamilyPropertyCount < queueFamilyProperties.size() )
+    {
+      structureChains.resize( queueFamilyPropertyCount );
+    }
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>() = queueFamilyProperties[i];
@@ -10819,18 +10831,24 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    uint32_t queueFamilyPropertyCount;
+    std::vector<StructureChain, StructureChainAllocator>      structureChains;
+    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties;
+    uint32_t                                                  queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
-    std::vector<StructureChain, StructureChainAllocator>      structureChains( queueFamilyPropertyCount );
-    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties( queueFamilyPropertyCount );
+    structureChains.resize( queueFamilyPropertyCount );
+    queueFamilyProperties.resize( queueFamilyPropertyCount );
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       queueFamilyProperties[i].pNext = structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>().pNext;
     }
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR(
       m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2 *>( queueFamilyProperties.data() ) );
-    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
 
+    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
+    if ( queueFamilyPropertyCount < queueFamilyProperties.size() )
+    {
+      structureChains.resize( queueFamilyPropertyCount );
+    }
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>() = queueFamilyProperties[i];
@@ -10848,18 +10866,24 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    uint32_t queueFamilyPropertyCount;
+    std::vector<StructureChain, StructureChainAllocator>      structureChains( structureChainAllocator );
+    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties;
+    uint32_t                                                  queueFamilyPropertyCount;
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR( m_physicalDevice, &queueFamilyPropertyCount, nullptr );
-    std::vector<StructureChain, StructureChainAllocator>      structureChains( queueFamilyPropertyCount, structureChainAllocator );
-    std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2> queueFamilyProperties( queueFamilyPropertyCount );
+    structureChains.resize( queueFamilyPropertyCount );
+    queueFamilyProperties.resize( queueFamilyPropertyCount );
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       queueFamilyProperties[i].pNext = structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>().pNext;
     }
     d.vkGetPhysicalDeviceQueueFamilyProperties2KHR(
       m_physicalDevice, &queueFamilyPropertyCount, reinterpret_cast<VkQueueFamilyProperties2 *>( queueFamilyProperties.data() ) );
-    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
 
+    VULKAN_HPP_ASSERT( queueFamilyPropertyCount <= queueFamilyProperties.size() );
+    if ( queueFamilyPropertyCount < queueFamilyProperties.size() )
+    {
+      structureChains.resize( queueFamilyPropertyCount );
+    }
     for ( uint32_t i = 0; i < queueFamilyPropertyCount; i++ )
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>() = queueFamilyProperties[i];

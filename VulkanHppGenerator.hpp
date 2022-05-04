@@ -474,7 +474,6 @@ private:
                                     size_t                           initialSkipCount,
                                     std::set<size_t> const &         singularParams,
                                     std::set<size_t> const &         templatedParams,
-                                    bool                             withAllocator,
                                     bool                             chained ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;

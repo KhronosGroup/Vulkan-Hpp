@@ -4656,173 +4656,176 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
                                                           std::string const &              returnVariable ) const
 {
   assert( dataTypes.size() == returnParams.size() );
+
   std::string dataDeclarations;
   switch ( returnParams.size() )
   {
     case 0: break;
     case 1:
-      if ( chained )
       {
-        assert( ( commandData.returnType == "void" ) || ( commandData.returnType == "VkResult" ) );
-        assert( vectorParams.empty() );
-        std::string const dataDeclarationsTemplate = R"(${returnType} ${returnVariable};
-    ${dataType} & ${dataVariable} = ${returnVariable}.template get<${dataType}>();)";
-
-        dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
-                                           { { "dataType", dataTypes[0] },
-                                             { "dataVariable", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                             { "returnType", ( commandData.returnType == "void" ) ? returnType : "StructureChain<X, Y, Z...>" },
-                                             { "returnVariable", returnVariable } } );
-      }
-      else
-      {
-        if ( singular || ( vectorParams.find( returnParams[0] ) == vectorParams.end() ) )
+        auto vectorParamIt = vectorParams.find( returnParams[0] );
+        if ( !chained )
         {
-          std::string const dataDeclarationsTemplate = R"(${dataType} ${dataVariable};)";
-          dataDeclarations = replaceWithMap( dataDeclarationsTemplate, { { "dataType", dataTypes[0] }, { "dataVariable", returnVariable } } );
+          if ( ( vectorParamIt == vectorParams.end() ) || singular )
+          {
+            std::string const dataDeclarationsTemplate = R"(${returnType} ${returnVariable};)";
+
+            dataDeclarations = replaceWithMap( dataDeclarationsTemplate, { { "returnType", dataType }, { "returnVariable", returnVariable } } );
+          }
+          else
+          {
+            std::string allocator         = stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) + "Allocator";
+            std::string dataTypeAllocator = !unique ? ( ", " + startUpperCase( allocator ) ) : "";
+            std::string vectorAllocator   = ( withAllocator && !unique ) ? ( ", " + startLowerCase( allocator ) ) : "";
+            std::string vectorSize        = getVectorSize( commandData.params, vectorParams, returnParams[0], dataTypes[0], templatedParams );
+
+            std::string const dataDeclarationsTemplate =
+              R"(std::vector<${dataType}${dataTypeAllocator}> ${returnVariable}( ${vectorSize}${vectorAllocator} );)";
+
+            dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
+                                               { { "dataType", dataTypes[0] },
+                                                 { "dataTypeAllocator", dataTypeAllocator },
+                                                 { "returnVariable", returnVariable },
+                                                 { "vectorAllocator", vectorAllocator },
+                                                 { "vectorSize", vectorSize } } );
+          }
         }
         else
         {
-          std::string dataTypeAllocator = startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
-          std::string vectorSize        = getVectorSize( commandData.params, vectorParams, returnParams[0], dataTypes[0], templatedParams );
+          assert( ( vectorParamIt == vectorParams.end() ) || singular );
 
-          std::string const dataDeclarationsTemplate = R"(std::vector<${dataType}${dataTypeAllocator}> ${dataVariable}( ${vectorSize}${vectorAllocator} );)";
-          dataDeclarations                           = replaceWithMap( dataDeclarationsTemplate,
+          std::string dataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+
+          std::string const dataDeclarationsTemplate = R"(${returnType} ${returnVariable};
+    ${dataType} & ${dataVariable} = ${returnVariable}.template get<${dataType}>();)";
+
+          dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
                                              { { "dataType", dataTypes[0] },
-                                               { "dataTypeAllocator", unique ? "" : ( ", " + dataTypeAllocator ) },
-                                               { "dataVariable", returnVariable },
-                                               { "vectorAllocator", ( withAllocator && !unique ) ? ( ", " + startLowerCase( dataTypeAllocator ) ) : "" },
-                                               { "vectorSize", vectorSize } } );
+                                               { "dataVariable", dataVariable },
+                                               { "returnType", ( commandData.returnType == "void" ) ? returnType : "StructureChain<X, Y, Z...>" },
+                                               { "returnVariable", returnVariable } } );
         }
       }
       break;
     case 2:
-      if ( chained )
       {
-        assert( !singular );
-        assert( returnParams.size() == 2 );
-        assert( vectorParams.find( returnParams[0] ) == vectorParams.end() );
-        auto vectorParamIt = vectorParams.find( returnParams[1] );
-        assert( vectorParamIt != vectorParams.end() );
-        assert( vectorParamIt->second == returnParams[0] );
-
-        std::string const dataDeclarationTemplate = R"(std::vector<StructureChain, StructureChainAllocator> structureChains${structureChainAllocator};
-    std::vector<${vectorElementType}> ${vectorName};
-    ${counterType} ${counterName};)";
-
-        dataDeclarations = replaceWithMap( dataDeclarationTemplate,
-                                           {
-                                             { "counterName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                             { "counterType", dataTypes[0] },
-                                             { "structureChainAllocator", withAllocator ? ( "( structureChainAllocator )" ) : "" },
-                                             { "vectorElementType", dataTypes[1] },
-                                             { "vectorName", startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) ) },
-                                           } );
-      }
-      else
-      {
-        auto vectorParamIt = vectorParams.find( returnParams[0] );
-        if ( vectorParamIt == vectorParams.end() || singular )
+        if ( vectorParams.size() == 1 )
         {
-          vectorParamIt = vectorParams.find( returnParams[1] );
-          if ( vectorParamIt == vectorParams.end() )
+          assert( ( returnParams[0] == vectorParams.begin()->second ) && ( returnParams[1] == vectorParams.begin()->first ) && !singular && !unique );
+
+          std::string counterVariable = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+          if ( !chained )
           {
-            assert( vectorParams.empty() || singular );
-            std::string dataNames[2];
-            for ( size_t i = 0; i < returnParams.size(); ++i )
-            {
-              dataNames[i] = startLowerCase( stripPrefix( commandData.params[returnParams[i]].name, "p" ) );
-              if ( vectorParams.find( returnParams[i] ) != vectorParams.end() )
-              {
-                assert( singular );
-                dataNames[i] = stripPluralS( dataNames[i] );
-              }
-            }
-
-            std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data;
-    ${firstDataType} & ${firstDataName} = data.first;
-    ${secondDataType} & ${secondDataName} = data.second;)";
-
-            dataDeclarations = replaceWithMap( dataDeclarationTemplate,
-                                               { { "firstDataName", dataNames[0] },
-                                                 { "firstDataType", dataTypes[0] },
-                                                 { "secondDataName", dataNames[1] },
-                                                 { "secondDataType", dataTypes[1] } } );
-          }
-          else
-          {
-            assert( !singular );
-            assert( vectorParamIt->second == returnParams[0] );
-            assert( commandData.params[returnParams[0]].type.isNonConstPointer() );
-
             std::string vectorAllocator =
               withAllocator ? ( "( " + startLowerCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator )" ) : "";
 
-            std::string const dataDeclarationTemplate = R"(${returnType} ${vectorName}${vectorAllocator};
-    ${counterType} ${counterName};)";
+            std::string const dataDeclarationTemplate = R"(${returnType} ${returnVariable}${vectorAllocator};
+    ${counterType} ${counterVariable};)";
 
             dataDeclarations = replaceWithMap( dataDeclarationTemplate,
-                                               { { "counterName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                                 { "counterType", dataTypes[0] },
+                                               { { "counterType", dataTypes[0] },
+                                                 { "counterVariable", counterVariable },
                                                  { "returnType", dataType },
-                                                 { "vectorAllocator", vectorAllocator },
-                                                 { "vectorName", returnVariable } } );
+                                                 { "returnVariable", returnVariable },
+                                                 { "vectorAllocator", vectorAllocator } } );
+          }
+          else
+          {
+            std::string structureChainAllocator = withAllocator ? ( "( structureChainAllocator )" ) : "";
+            std::string vectorVariable          = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
+
+            std::string const dataDeclarationTemplate = R"(std::vector<StructureChain, StructureChainAllocator> structureChains${structureChainAllocator};
+    std::vector<${vectorElementType}> ${vectorVariable};
+    ${counterType} ${counterVariable};)";
+
+            dataDeclarations = replaceWithMap( dataDeclarationTemplate,
+                                               {
+                                                 { "counterType", dataTypes[0] },
+                                                 { "counterVariable", counterVariable },
+                                                 { "structureChainAllocator", structureChainAllocator },
+                                                 { "vectorElementType", dataTypes[1] },
+                                                 { "vectorVariable", vectorVariable },
+                                               } );
           }
         }
         else
         {
-          assert( vectorParams.find( returnParams[1] ) == vectorParams.end() );
-          assert( vectorParamIt != vectorParams.begin() );
-          assert( vectorParamIt->second != returnParams[1] );
+          assert( ( vectorParams.size() == 2 ) && ( returnParams[0] == std::next( vectorParams.begin() )->first ) &&
+                  ( vectorParams.find( returnParams[1] ) == vectorParams.end() ) && !chained && !unique );
 
-          std::string allocatorType = startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
-          std::string vectorSize    = startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) + ".size()";
+          std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+          std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
+          if ( singular )
+          {
+            firstDataVariable = stripPluralS( firstDataVariable );
 
-          std::string const dataDeclarationTemplate =
-            R"(std::pair<std::vector<${vectorElementType}, ${allocatorType}>,${valueType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
-    std::vector<${vectorElementType}, ${allocatorType}> & ${vectorName} = data.first;
-    ${valueType} & ${valueName} = data.second;)";
+            std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data;
+    ${firstDataType} & ${firstDataVariable} = data.first;
+    ${secondDataType} & ${secondDataVariable} = data.second;)";
 
-          dataDeclarations = replaceWithMap( dataDeclarationTemplate,
-                                             { { "allocateInitializer", withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "" },
-                                               { "allocatorType", allocatorType },
-                                               { "valueName", startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) ) },
-                                               { "valueType", dataTypes[1] },
-                                               { "vectorElementType", dataTypes[0] },
-                                               { "vectorName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                               { "vectorSize", vectorSize } } );
+            dataDeclarations = replaceWithMap( dataDeclarationTemplate,
+                                               { { "firstDataType", dataTypes[0] },
+                                                 { "firstDataVariable", firstDataVariable },
+                                                 { "secondDataType", dataTypes[1] },
+                                                 { "secondDataVariable", secondDataVariable } } );
+          }
+          else
+          {
+            std::string allocatorType       = startUpperCase( stripPrefix( dataTypes[0], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+            std::string allocateInitializer = withAllocator ? ( ", " + startLowerCase( allocatorType ) ) : "";
+            std::string vectorSize          = startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) + ".size()";
+
+            std::string const dataDeclarationTemplate =
+              R"(std::pair<std::vector<${firstDataType}, ${allocatorType}>,${secondDataType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
+    std::vector<${firstDataType}, ${allocatorType}> & ${firstDataVariable} = data.first;
+    ${secondDataType} & ${secondDataVariable} = data.second;)";
+
+            dataDeclarations = replaceWithMap( dataDeclarationTemplate,
+                                               { { "allocateInitializer", allocateInitializer },
+                                                 { "allocatorType", allocatorType },
+                                                 { "firstDataType", dataTypes[0] },
+                                                 { "firstDataVariable", firstDataVariable },
+                                                 { "secondDataType", dataTypes[1] },
+                                                 { "secondDataVariable", secondDataVariable },
+                                                 { "vectorSize", vectorSize } } );
+          }
         }
       }
       break;
-    default:
+    case 3:
       {
-        assert( ( vectorParams.size() == 2 ) && ( vectorParams.begin()->first == returnParams[1] ) && ( vectorParams.begin()->second == returnParams[0] ) &&
-                ( std::next( vectorParams.begin() )->first == returnParams[2] ) && ( std::next( vectorParams.begin() )->second == returnParams[0] ) );
+        assert( ( vectorParams.size() == 2 ) && ( returnParams[0] == vectorParams.begin()->second ) && ( returnParams[1] == vectorParams.begin()->first ) &&
+                ( returnParams[2] == std::next( vectorParams.begin() )->first ) && ( returnParams[0] == std::next( vectorParams.begin() )->second ) &&
+                templatedParams.empty() && !singular && !chained && !unique );
 
+        std::string counterVariable           = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
         std::string firstVectorAllocatorType  = startUpperCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+        std::string firstVectorVariable       = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
         std::string secondVectorAllocatorType = startUpperCase( stripPrefix( dataTypes[2], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+        std::string secondVectorVariable      = startLowerCase( stripPrefix( commandData.params[returnParams[2]].name, "p" ) );
         std::string pairConstructor = withAllocator ? ( "( std::piecewise_construct, std::forward_as_tuple( " + startLowerCase( firstVectorAllocatorType ) +
                                                         " ), std::forward_as_tuple( " + startLowerCase( secondVectorAllocatorType ) + " ) )" )
                                                     : "";
 
         std::string const dataDeclarationsTemplate =
           R"(std::pair<std::vector<${firstVectorElementType}, ${firstVectorAllocatorType}>, std::vector<${secondVectorElementType}, ${secondVectorAllocatorType}>> data${pairConstructor};
-    std::vector<${firstVectorElementType}, ${firstVectorAllocatorType}> & ${firstVectorName} = data.first;
-    std::vector<${secondVectorElementType}, ${secondVectorAllocatorType}> & ${secondVectorName} = data.second;
-    ${counterType} ${counterName};)";
+    std::vector<${firstVectorElementType}, ${firstVectorAllocatorType}> & ${firstVectorVariable} = data.first;
+    std::vector<${secondVectorElementType}, ${secondVectorAllocatorType}> & ${secondVectorVariable} = data.second;
+    ${counterType} ${counterVariable};)";
 
         dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
-                                           { { "counterName", startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) ) },
-                                             { "counterType", dataTypes[0] },
+                                           { { "counterType", dataTypes[0] },
+                                             { "counterVariable", counterVariable },
                                              { "firstVectorAllocatorType", firstVectorAllocatorType },
                                              { "firstVectorElementType", dataTypes[1] },
-                                             { "firstVectorName", startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) ) },
+                                             { "firstVectorVariable", firstVectorVariable },
                                              { "pairConstructor", pairConstructor },
                                              { "secondVectorAllocatorType", secondVectorAllocatorType },
                                              { "secondVectorElementType", dataTypes[2] },
-                                             { "secondVectorName", startLowerCase( stripPrefix( commandData.params[returnParams[2]].name, "p" ) ) } } );
+                                             { "secondVectorVariable", secondVectorVariable } } );
       }
       break;
+    default: assert( false ); break;
   }
   return dataDeclarations;
 }

@@ -1121,6 +1121,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_pipeline_executable_properties ===
   struct PhysicalDevicePipelineExecutablePropertiesFeaturesKHR;
   struct PipelineInfoKHR;
+  using PipelineInfoEXT = PipelineInfoKHR;
   struct PipelineExecutablePropertiesKHR;
   struct PipelineExecutableInfoKHR;
   union PipelineExecutableStatisticValueKHR;
@@ -1229,6 +1230,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_workgroup_memory_explicit_layout ===
   struct PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR;
 
+  //=== VK_EXT_image_compression_control ===
+  struct PhysicalDeviceImageCompressionControlFeaturesEXT;
+  struct ImageCompressionControlEXT;
+  struct SubresourceLayout2EXT;
+  struct ImageSubresource2EXT;
+  struct ImageCompressionPropertiesEXT;
+
   //=== VK_EXT_4444_formats ===
   struct PhysicalDevice4444FormatsFeaturesEXT;
 
@@ -1314,6 +1322,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct MemoryGetRemoteAddressInfoNV;
   struct PhysicalDeviceExternalMemoryRDMAFeaturesNV;
 
+  //=== VK_EXT_pipeline_properties ===
+  struct PipelinePropertiesIdentifierEXT;
+  struct PhysicalDevicePipelinePropertiesFeaturesEXT;
+
   //=== VK_EXT_extended_dynamic_state2 ===
   struct PhysicalDeviceExtendedDynamicState2FeaturesEXT;
 
@@ -1328,6 +1340,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_primitives_generated_query ===
   struct PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT;
+
+  //=== VK_KHR_ray_tracing_maintenance1 ===
+  struct PhysicalDeviceRayTracingMaintenance1FeaturesKHR;
+  struct TraceRaysIndirectCommand2KHR;
 
   //=== VK_EXT_image_view_min_lod ===
   struct PhysicalDeviceImageViewMinLodFeaturesEXT;
@@ -1361,6 +1377,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_linear_color_attachment ===
   struct PhysicalDeviceLinearColorAttachmentFeaturesNV;
+
+  //=== VK_EXT_image_compression_control_swapchain ===
+  struct PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT;
+
+  //=== VK_EXT_subpass_merge_feedback ===
+  struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXT;
+  struct RenderPassCreationControlEXT;
+  struct RenderPassCreationFeedbackInfoEXT;
+  struct RenderPassSubpassFeedbackInfoEXT;
 
   //===============
   //=== HANDLEs ===
@@ -4783,6 +4808,12 @@ namespace VULKAN_HPP_NAMESPACE
     void setColorWriteEnableEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables,
                                  Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_KHR_ray_tracing_maintenance1 ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void traceRaysIndirect2KHR( VULKAN_HPP_NAMESPACE::DeviceAddress indirectDeviceAddress,
+                                Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_EXT_multi_draw ===
 
@@ -10871,6 +10902,26 @@ namespace VULKAN_HPP_NAMESPACE
                                                      Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+    //=== VK_EXT_image_compression_control ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT * pSubresource,
+                                        VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT *      pLayout,
+                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
+                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
+                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
+                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     //=== VK_KHR_ray_tracing_pipeline ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -11146,6 +11197,21 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::RemoteAddressNV>::type
       getMemoryRemoteAddressNV( const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo,
                                 Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_EXT_pipeline_properties ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT * pPipelineInfo,
+                                                          VULKAN_HPP_NAMESPACE::BaseOutStructure *      pPipelineProperties,
+                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::BaseOutStructure>::type
+      getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
+      getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     //=== VK_EXT_pageable_device_local_memory ===
@@ -12343,6 +12409,21 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR, SurfaceFormat2KHRAllocator>>::type
       getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                              SurfaceFormat2KHRAllocator &                                surfaceFormat2KHRAllocator,
+                             Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename StructureChain,
+              typename StructureChainAllocator = std::allocator<StructureChain>,
+              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
+      getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
+                             Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename StructureChain,
+              typename StructureChainAllocator                                                                 = std::allocator<StructureChain>,
+              typename Dispatch                                                                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B1                                                                                      = StructureChainAllocator,
+              typename std::enable_if<std::is_same<typename B1::value_type, StructureChain>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
+      getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
+                             StructureChainAllocator &                                   structureChainAllocator,
                              Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 

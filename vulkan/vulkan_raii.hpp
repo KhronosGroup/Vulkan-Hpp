@@ -972,6 +972,9 @@ namespace VULKAN_HPP_NAMESPACE
         if ( !vkResetQueryPool )
           vkResetQueryPool = vkResetQueryPoolEXT;
 
+        //=== VK_EXT_image_compression_control ===
+        vkGetImageSubresourceLayout2EXT = PFN_vkGetImageSubresourceLayout2EXT( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2EXT" ) );
+
         //=== VK_EXT_image_drm_format_modifier ===
         vkGetImageDrmFormatModifierPropertiesEXT =
           PFN_vkGetImageDrmFormatModifierPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetImageDrmFormatModifierPropertiesEXT" ) );
@@ -985,6 +988,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_EXT_pageable_device_local_memory ===
         vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
+
+        //=== VK_EXT_pipeline_properties ===
+        vkGetPipelinePropertiesEXT = PFN_vkGetPipelinePropertiesEXT( vkGetDeviceProcAddr( device, "vkGetPipelinePropertiesEXT" ) );
 
         //=== VK_EXT_private_data ===
         vkCreatePrivateDataSlotEXT = PFN_vkCreatePrivateDataSlotEXT( vkGetDeviceProcAddr( device, "vkCreatePrivateDataSlotEXT" ) );
@@ -1301,6 +1307,9 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_KHR_push_descriptor ===
         vkCmdPushDescriptorSetKHR = PFN_vkCmdPushDescriptorSetKHR( vkGetDeviceProcAddr( device, "vkCmdPushDescriptorSetKHR" ) );
+
+        //=== VK_KHR_ray_tracing_maintenance1 ===
+        vkCmdTraceRaysIndirect2KHR = PFN_vkCmdTraceRaysIndirect2KHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysIndirect2KHR" ) );
 
         //=== VK_KHR_ray_tracing_pipeline ===
         vkCmdTraceRaysKHR              = PFN_vkCmdTraceRaysKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysKHR" ) );
@@ -1764,6 +1773,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_host_query_reset ===
       PFN_vkResetQueryPoolEXT vkResetQueryPoolEXT = 0;
 
+      //=== VK_EXT_image_compression_control ===
+      PFN_vkGetImageSubresourceLayout2EXT vkGetImageSubresourceLayout2EXT = 0;
+
       //=== VK_EXT_image_drm_format_modifier ===
       PFN_vkGetImageDrmFormatModifierPropertiesEXT vkGetImageDrmFormatModifierPropertiesEXT = 0;
 
@@ -1776,6 +1788,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_pageable_device_local_memory ===
       PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
+
+      //=== VK_EXT_pipeline_properties ===
+      PFN_vkGetPipelinePropertiesEXT vkGetPipelinePropertiesEXT = 0;
 
       //=== VK_EXT_private_data ===
       PFN_vkCreatePrivateDataSlotEXT  vkCreatePrivateDataSlotEXT  = 0;
@@ -2003,6 +2018,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_push_descriptor ===
       PFN_vkCmdPushDescriptorSetKHR vkCmdPushDescriptorSetKHR = 0;
+
+      //=== VK_KHR_ray_tracing_maintenance1 ===
+      PFN_vkCmdTraceRaysIndirect2KHR vkCmdTraceRaysIndirect2KHR = 0;
 
       //=== VK_KHR_ray_tracing_pipeline ===
       PFN_vkCmdTraceRaysKHR                                 vkCmdTraceRaysKHR                                 = 0;
@@ -2882,6 +2900,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>
                            getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD std::vector<StructureChain<X, Y, Z...>>
+                           getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
+
       //=== VK_KHR_get_display_properties2 ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR> getDisplayProperties2KHR() const;
@@ -3734,6 +3756,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::RemoteAddressNV
                            getMemoryRemoteAddressNV( const VULKAN_HPP_NAMESPACE::MemoryGetRemoteAddressInfoNV & memoryGetRemoteAddressInfo ) const;
+
+      //=== VK_EXT_pipeline_properties ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::BaseOutStructure getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const;
 
       //=== VK_KHR_maintenance4 ===
 
@@ -5242,6 +5271,10 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_color_write_enable ===
 
       void setColorWriteEnableEXT( ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_KHR_ray_tracing_maintenance1 ===
+
+      void traceRaysIndirect2KHR( VULKAN_HPP_NAMESPACE::DeviceAddress indirectDeviceAddress ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_multi_draw ===
 
@@ -7264,6 +7297,15 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_image_drm_format_modifier ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT getDrmFormatModifierPropertiesEXT() const;
+
+      //=== VK_EXT_image_compression_control ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
+                           getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
+                           getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
@@ -14326,6 +14368,55 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceFormats;
     }
 
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain<X, Y, Z...>>
+      PhysicalDevice::getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR &&
+                         "Function <vkGetPhysicalDeviceSurfaceFormats2KHR> needs extension <VK_KHR_get_surface_capabilities2> enabled!" );
+
+      std::vector<StructureChain<X, Y, Z...>>              returnVector;
+      std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR> surfaceFormats;
+      uint32_t                                             surfaceFormatCount;
+      VULKAN_HPP_NAMESPACE::Result                         result;
+      do
+      {
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                  reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
+                                                                  &surfaceFormatCount,
+                                                                  nullptr ) );
+        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && surfaceFormatCount )
+        {
+          returnVector.resize( surfaceFormatCount );
+          surfaceFormats.resize( surfaceFormatCount );
+          for ( uint32_t i = 0; i < surfaceFormatCount; i++ )
+          {
+            surfaceFormats[i].pNext = returnVector[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>().pNext;
+          }
+          result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+            getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                    reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
+                                                                    &surfaceFormatCount,
+                                                                    reinterpret_cast<VkSurfaceFormat2KHR *>( surfaceFormats.data() ) ) );
+        }
+      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceFormats2KHR" );
+      }
+      VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
+      if ( surfaceFormatCount < surfaceFormats.size() )
+      {
+        returnVector.resize( surfaceFormatCount );
+      }
+      for ( uint32_t i = 0; i < surfaceFormatCount; i++ )
+      {
+        returnVector[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>() = surfaceFormats[i];
+      }
+      return surfaceFormats;
+    }
+
     //=== VK_KHR_get_display_properties2 ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR> PhysicalDevice::getDisplayProperties2KHR() const
@@ -16780,6 +16871,38 @@ namespace VULKAN_HPP_NAMESPACE
                                               reinterpret_cast<const VkResolveImageInfo2 *>( &resolveImageInfo ) );
     }
 
+    //=== VK_EXT_image_compression_control ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
+      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
+                         "Function <vkGetImageSubresourceLayout2EXT> needs extension <VK_EXT_image_compression_control> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT layout;
+      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
+                                                        static_cast<VkImage>( m_image ),
+                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
+                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
+      return layout;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
+                         "Function <vkGetImageSubresourceLayout2EXT> needs extension <VK_EXT_image_compression_control> enabled!" );
+
+      StructureChain<X, Y, Z...>                    structureChain;
+      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT & layout = structureChain.template get<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>();
+      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
+                                                        static_cast<VkImage>( m_image ),
+                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
+                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
+      return structureChain;
+    }
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===
 
@@ -17182,6 +17305,42 @@ namespace VULKAN_HPP_NAMESPACE
       return address;
     }
 
+    //=== VK_EXT_pipeline_properties ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::BaseOutStructure
+                                           Device::getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelinePropertiesEXT &&
+                         "Function <vkGetPipelinePropertiesEXT> needs extension <VK_EXT_pipeline_properties> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::BaseOutStructure pipelineProperties;
+      VULKAN_HPP_NAMESPACE::Result           result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                     reinterpret_cast<const VkPipelineInfoEXT *>( &pipelineInfo ),
+                                                     reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
+      }
+      return pipelineProperties;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const
+    {
+      StructureChain<X, Y, Z...>               structureChain;
+      VULKAN_HPP_NAMESPACE::BaseOutStructure & pipelineProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::BaseOutStructure>();
+      VULKAN_HPP_NAMESPACE::Result             result             = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                     reinterpret_cast<const VkPipelineInfoEXT *>( &pipelineInfo ),
+                                                     reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
+      }
+      return structureChain;
+    }
+
     //=== VK_EXT_extended_dynamic_state2 ===
 
     VULKAN_HPP_INLINE void CommandBuffer::setPatchControlPointsEXT( uint32_t patchControlPoints ) const VULKAN_HPP_NOEXCEPT
@@ -17254,6 +17413,16 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdSetColorWriteEnableEXT(
         static_cast<VkCommandBuffer>( m_commandBuffer ), colorWriteEnables.size(), reinterpret_cast<const VkBool32 *>( colorWriteEnables.data() ) );
+    }
+
+    //=== VK_KHR_ray_tracing_maintenance1 ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::traceRaysIndirect2KHR( VULKAN_HPP_NAMESPACE::DeviceAddress indirectDeviceAddress ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdTraceRaysIndirect2KHR &&
+                         "Function <vkCmdTraceRaysIndirect2KHR> needs extension <VK_KHR_ray_tracing_maintenance1> enabled!" );
+
+      getDispatcher()->vkCmdTraceRaysIndirect2KHR( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( indirectDeviceAddress ) );
     }
 
     //=== VK_EXT_multi_draw ===

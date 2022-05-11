@@ -681,17 +681,14 @@ private:
   std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
                                                 size_t                                             initialSkipCount,
-                                                size_t                                             returnParam,
-                                                bool                                               definition ) const;
+                                                std::vector<size_t>                                returnParams,
+                                                std::map<size_t, size_t> const &                   vectorParams,
+                                                bool                                               definition,
+                                                bool                                               singular ) const;
   std::string generateRAIIHandleCommandFactoryArgumentList( std::vector<ParamData> const & params,
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
-  std::string generateRAIIHandleCommandFactorySingular( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                        size_t                                             initialSkipCount,
-                                                        std::vector<size_t> const &                        returnParamIndices,
-                                                        std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                        bool                                               definition ) const;
   std::string generateRAIIHandleCommandFactoryVector( std::map<std::string, CommandData>::const_iterator commandIt,
                                                       size_t                                             initialSkipCount,
                                                       std::vector<size_t> const &                        returnParamIndices,

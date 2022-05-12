@@ -689,11 +689,6 @@ private:
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
-  std::string generateRAIIHandleCommandFactoryVector( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                      size_t                                             initialSkipCount,
-                                                      std::vector<size_t> const &                        returnParamIndices,
-                                                      std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                      bool                                               definition ) const;
   std::string generateRAIIHandleCommandResult( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                    size_t                                             initialSkipCount,

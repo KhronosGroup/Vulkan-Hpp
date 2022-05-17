@@ -679,6 +679,10 @@ private:
                                   std::set<std::string> const &              specialFunctions ) const;
   std::string generateRAIIHandleCommand( std::string const & command, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
+  std::string generateRAIIHandleCommandEnhanced( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                 size_t                                             initialSkipCount,
+                                                 std::map<size_t, size_t> const &                   vectorParamIndices,
+                                                 bool                                               definition ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
                                                 size_t                                             initialSkipCount,
                                                 std::vector<size_t>                                returnParams,
@@ -763,10 +767,6 @@ private:
   std::string generateRAIIHandleCommandResultSingleSuccessNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                     size_t                                             initialSkipCount,
                                                                     bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessNoErrors0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                           size_t                                             initialSkipCount,
-                                                                           std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                           bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                       size_t                                             initialSkipCount,
                                                                       bool                                               definition ) const;
@@ -832,8 +832,6 @@ private:
                                                                   std::map<size_t, size_t> const &                   vectorParamIndices,
                                                                   bool                                               definition ) const;
   std::string generateRAIIHandleCommandVoid( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
-  std::string
-    generateRAIIHandleCommandVoid0Return( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::string                         generateRAIIHandleCommandVoid1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                  size_t                                             initialSkipCount,
                                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,

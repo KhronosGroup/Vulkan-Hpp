@@ -5339,7 +5339,7 @@ std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const 
   if ( m_extensions.find( referencedIn ) != m_extensions.end() )
   {
     std::string message  = "Function <" + function + "> needs extension <" + referencedIn + "> enabled!";
-    functionPointerCheck = "\n      VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );\n";
+    functionPointerCheck = "VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );";
   }
   return functionPointerCheck;
 }
@@ -6117,6 +6117,63 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     }
   }
   return functionDeclarations;
+}
+
+std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                   size_t                                             initialSkipCount,
+                                                                   std::map<size_t, size_t> const &                   vectorParams,
+                                                                   bool                                               definition ) const
+{
+  std::set<size_t> skippedParams     = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, {}, false );
+  std::set<size_t> templatedParams   = determineVoidPointerParams( commandIt->second.params );
+  std::string      argumentTemplates = generateArgumentTemplates( commandIt->second.params, {}, vectorParams, templatedParams, true );
+  std::string      argumentList =
+    generateArgumentListEnhanced( commandIt->second.params, {}, vectorParams, skippedParams, {}, templatedParams, definition, false, false, false );
+  std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
+  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {}, {} );
+  std::string                                            noexceptString  = vectorSizeCheck.first ? "" : "VULKAN_HPP_NOEXCEPT";
+
+  if ( definition )
+  {
+    std::string const definitionTemplate =
+      R"(
+  ${argumentTemplates}
+  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+  {
+${functionPointerCheck}
+${vectorSizeCheck}
+    getDispatcher()->${vkCommand}( ${callArguments} );
+  }
+)";
+
+    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, templatedParams, true );
+    std::string vectorSizeCheckString =
+      vectorSizeCheck.first ? generateRAIIHandleVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams )
+                            : "";
+
+    return replaceWithMap( definitionTemplate,
+                           { { "argumentList", argumentList },
+                             { "argumentTemplates", argumentTemplates },
+                             { "callArguments", callArguments },
+                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
+                             { "commandName", commandName },
+                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
+                             { "noexcept", noexceptString },
+                             { "vectorSizeCheck", vectorSizeCheckString },
+                             { "vkCommand", commandIt->first } } );
+  }
+  else
+  {
+    std::string const declarationTemplate =
+      R"(
+    ${argumentTemplates}
+    void ${commandName}( ${argumentList} ) const ${noexcept};
+)";
+
+    return replaceWithMap(
+      declarationTemplate,
+      { { "argumentList", argumentList }, { "argumentTemplates", argumentTemplates }, { "commandName", commandName }, { "noexcept", noexceptString } } );
+  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
@@ -7157,60 +7214,9 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessNoEr
   std::vector<size_t> returnParams = determineReturnParams( commandIt->second.params );
   if ( returnParams.empty() )
   {
-    return generateRAIIHandleCommandResultSingleSuccessNoErrors0Return(
-      commandIt, initialSkipCount, determineVectorParams( commandIt->second.params ), definition );
+    return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, determineVectorParams( commandIt->second.params ), definition );
   }
   return "";
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessNoErrors0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                             size_t                           initialSkipCount,
-                                                                                             std::map<size_t, size_t> const & vectorParams,
-                                                                                             bool                             definition ) const
-{
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, {}, false );
-  std::string argumentList = generateArgumentListEnhanced( commandIt->second.params, {}, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  std::string commandName  = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-
-  if ( definition )
-  {
-    std::string const definitionTemplate =
-      R"(
-  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}
-${vectorSizeCheck}
-    getDispatcher()->${vkCommand}( ${callArguments} );
-  }
-)";
-
-    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {}, {} );
-    std::string                                            vectorSizeCheckString =
-      vectorSizeCheck.first ? generateRAIIHandleVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams )
-                                                                       : "";
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "vectorSizeCheck", vectorSizeCheckString },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-    void ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;
-)";
-
-    return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName },
-                           } );
-  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
@@ -8092,7 +8098,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
   std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
   switch ( returnParams.size() )
   {
-    case 0: str = generateRAIIHandleCommandVoid0Return( commandIt, initialSkipCount, definition ); break;
+    case 0: str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, vectorParams, definition ); break;
     case 1:
       if ( commandIt->second.params[returnParams[0]].type.postfix == "**" )
       {
@@ -8164,62 +8170,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
       break;
   }
   return str;
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleCommandVoid0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                      size_t                                             initialSkipCount,
-                                                                      bool                                               definition ) const
-{
-  std::map<size_t, size_t> vectorParams    = determineVectorParams( commandIt->second.params );
-  std::set<size_t>         skippedParams   = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, {}, false );
-  std::set<size_t>         templatedParams = determineVoidPointerParams( commandIt->second.params );
-  std::string              argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, {}, vectorParams, skippedParams, {}, templatedParams, definition, false, false, false );
-  std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-  std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {}, {} );
-  std::string                                            noexceptString  = vectorSizeCheck.first ? "" : "VULKAN_HPP_NOEXCEPT";
-  std::string argumentTemplates = generateArgumentTemplates( commandIt->second.params, {}, vectorParams, templatedParams, true );
-
-  if ( definition )
-  {
-    std::string const definitionTemplate =
-      R"(
-  ${argumentTemplates}
-  VULKAN_HPP_INLINE void ${className}::${commandName}( ${argumentList} ) const ${noexcept}
-  {${functionPointerCheck}
-${vectorSizeCheck}
-    getDispatcher()->${vkCommand}( ${callArguments} );
-  }
-)";
-
-    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, templatedParams, true );
-    std::string vectorSizeCheckString =
-      vectorSizeCheck.first ? generateVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams, true )
-                            : "";
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "noexcept", noexceptString },
-                             { "vectorSizeCheck", vectorSizeCheckString },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-    ${argumentTemplates}
-    void ${commandName}( ${argumentList} ) const ${noexcept};
-)";
-
-    return replaceWithMap(
-      declarationTemplate,
-      { { "argumentList", argumentList }, { "argumentTemplates", argumentTemplates }, { "commandName", commandName }, { "noexcept", noexceptString } } );
-  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandVoid1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
@@ -16421,8 +16371,8 @@ int main( int argc, char ** argv )
 #include <string>
 #include <system_error>
 #include <tuple>
-#include <utility>
 #include <type_traits>
+#include <utility>
 #include <vulkan/vulkan.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>

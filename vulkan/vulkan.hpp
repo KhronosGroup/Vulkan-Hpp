@@ -38,6 +38,7 @@
 #include <system_error>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vulkan/vulkan.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>

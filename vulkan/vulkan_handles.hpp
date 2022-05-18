@@ -1199,6 +1199,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT;
   struct GraphicsPipelineLibraryCreateInfoEXT;
 
+  //=== VK_AMD_shader_early_and_late_fragment_tests ===
+  struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT;
+
   //=== VK_KHR_shader_subgroup_uniform_control_flow ===
   struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR;
 

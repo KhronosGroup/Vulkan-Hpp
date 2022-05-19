@@ -819,10 +819,6 @@ private:
                                                                                              std::vector<size_t> const &      returnParamIndices,
                                                                                              bool                             definition ) const;
   std::string generateRAIIHandleCommandValue( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
-  std::string generateRAIIHandleCommandValue0Return0VectorVkType( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                  size_t                                             initialSkipCount,
-                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                  bool                                               definition ) const;
   std::string generateRAIIHandleCommandVoid( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandVoid1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                          size_t                                             initialSkipCount,

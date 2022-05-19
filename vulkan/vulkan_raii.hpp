@@ -11882,8 +11882,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceAddress
                                            Device::getBufferAddress( const VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfo & info ) const VULKAN_HPP_NOEXCEPT
     {
-      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>(
-        getDispatcher()->vkGetBufferDeviceAddress( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) ) );
+      VkDeviceAddress result =
+        getDispatcher()->vkGetBufferDeviceAddress( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
@@ -12669,8 +12670,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceXlibPresentationSupportKHR &&
                          "Function <vkGetPhysicalDeviceXlibPresentationSupportKHR> needs extension <VK_KHR_xlib_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
-        getDispatcher()->vkGetPhysicalDeviceXlibPresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &dpy, visualID ) );
+      VkBool32 result =
+        getDispatcher()->vkGetPhysicalDeviceXlibPresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &dpy, visualID );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
@@ -12690,8 +12692,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceXcbPresentationSupportKHR &&
                          "Function <vkGetPhysicalDeviceXcbPresentationSupportKHR> needs extension <VK_KHR_xcb_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( getDispatcher()->vkGetPhysicalDeviceXcbPresentationSupportKHR(
-        static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &connection, visual_id ) );
+      VkBool32 result = getDispatcher()->vkGetPhysicalDeviceXcbPresentationSupportKHR(
+        static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &connection, visual_id );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
 
@@ -12711,8 +12714,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceWaylandPresentationSupportKHR &&
                          "Function <vkGetPhysicalDeviceWaylandPresentationSupportKHR> needs extension <VK_KHR_wayland_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
-        getDispatcher()->vkGetPhysicalDeviceWaylandPresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &display ) );
+      VkBool32 result =
+        getDispatcher()->vkGetPhysicalDeviceWaylandPresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &display );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
@@ -12743,8 +12747,8 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceWin32PresentationSupportKHR &&
                          "Function <vkGetPhysicalDeviceWin32PresentationSupportKHR> needs extension <VK_KHR_win32_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
-        getDispatcher()->vkGetPhysicalDeviceWin32PresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex ) );
+      VkBool32 result = getDispatcher()->vkGetPhysicalDeviceWin32PresentationSupportKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
@@ -14993,8 +14997,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureDeviceAddressKHR &&
                          "Function <vkGetAccelerationStructureDeviceAddressKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( getDispatcher()->vkGetAccelerationStructureDeviceAddressKHR(
-        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAccelerationStructureDeviceAddressInfoKHR *>( &info ) ) );
+      VkDeviceAddress result = getDispatcher()->vkGetAccelerationStructureDeviceAddressKHR(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAccelerationStructureDeviceAddressInfoKHR *>( &info ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( result );
     }
 
     VULKAN_HPP_INLINE void
@@ -15929,8 +15934,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetBufferDeviceAddressEXT &&
                          "Function <vkGetBufferDeviceAddressEXT> needs extension <VK_EXT_buffer_device_address> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>(
-        getDispatcher()->vkGetBufferDeviceAddressEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) ) );
+      VkDeviceAddress result =
+        getDispatcher()->vkGetBufferDeviceAddressEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( result );
     }
 
     //=== VK_EXT_tooling_info ===
@@ -16163,8 +16169,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetBufferDeviceAddressKHR &&
                          "Function <vkGetBufferDeviceAddressKHR> needs extension <VK_KHR_buffer_device_address> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>(
-        getDispatcher()->vkGetBufferDeviceAddressKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) ) );
+      VkDeviceAddress result =
+        getDispatcher()->vkGetBufferDeviceAddressKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkBufferDeviceAddressInfo *>( &info ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t
@@ -16871,8 +16878,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceDirectFBPresentationSupportEXT &&
                          "Function <vkGetPhysicalDeviceDirectFBPresentationSupportEXT> needs extension <VK_EXT_directfb_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
-        getDispatcher()->vkGetPhysicalDeviceDirectFBPresentationSupportEXT( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &dfb ) );
+      VkBool32 result =
+        getDispatcher()->vkGetPhysicalDeviceDirectFBPresentationSupportEXT( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &dfb );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
@@ -17015,8 +17023,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetRayTracingShaderGroupStackSizeKHR &&
                          "Function <vkGetRayTracingShaderGroupStackSizeKHR> needs extension <VK_KHR_ray_tracing_pipeline> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::DeviceSize>( getDispatcher()->vkGetRayTracingShaderGroupStackSizeKHR(
-        static_cast<VkDevice>( m_device ), static_cast<VkPipeline>( m_pipeline ), group, static_cast<VkShaderGroupShaderKHR>( groupShader ) ) );
+      VkDeviceSize result = getDispatcher()->vkGetRayTracingShaderGroupStackSizeKHR(
+        static_cast<VkDevice>( m_device ), static_cast<VkPipeline>( m_pipeline ), group, static_cast<VkShaderGroupShaderKHR>( groupShader ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceSize>( result );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::setRayTracingPipelineStackSizeKHR( uint32_t pipelineStackSize ) const VULKAN_HPP_NOEXCEPT
@@ -17319,8 +17328,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceScreenPresentationSupportQNX &&
                          "Function <vkGetPhysicalDeviceScreenPresentationSupportQNX> needs extension <VK_QNX_screen_surface> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>(
-        getDispatcher()->vkGetPhysicalDeviceScreenPresentationSupportQNX( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &window ) );
+      VkBool32 result =
+        getDispatcher()->vkGetPhysicalDeviceScreenPresentationSupportQNX( static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &window );
+      return static_cast<VULKAN_HPP_NAMESPACE::Bool32>( result );
     }
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 

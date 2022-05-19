@@ -7979,70 +7979,10 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue( std::map<std::st
     std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
     if ( vectorParams.empty() )
     {
-      if ( beginsWith( commandIt->second.returnType, "Vk" ) )
-      {
-        return generateRAIIHandleCommandValue0Return0VectorVkType( commandIt, initialSkipCount, vectorParams, definition );
-      }
-      else
-      {
-        return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition );
-      }
+      return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition );
     }
   }
   return "";
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleCommandValue0Return0VectorVkType( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                    size_t                                             initialSkipCount,
-                                                                                    std::map<size_t, size_t> const &                   vectorParams,
-                                                                                    bool                                               definition ) const
-{
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, {}, false );
-  std::string argumentList = generateArgumentListEnhanced( commandIt->second.params, {}, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  std::string commandName  = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-  std::string returnType   = generateNamespacedType( commandIt->second.returnType );
-
-  if ( definition )
-  {
-    std::string const definitionTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ${returnType} ${className}::${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT
-  {${functionPointerCheck}
-${vectorSizeCheck}
-    return static_cast<${returnType}>( getDispatcher()->${vkCommand}( ${callArguments} ) );
-  }
-)";
-
-    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::pair<bool, std::map<size_t, std::vector<size_t>>> vectorSizeCheck = needsVectorSizeCheck( commandIt->second.params, vectorParams, {}, {} );
-    std::string                                            vectorSizeCheckString =
-      vectorSizeCheck.first ? generateRAIIHandleVectorSizeCheck( commandIt->first, commandIt->second, initialSkipCount, vectorSizeCheck.second, skippedParams )
-                                                                       : "";
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "returnType", returnType },
-                             { "vectorSizeCheck", vectorSizeCheckString },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD ${returnType} ${commandName}( ${argumentList} ) const VULKAN_HPP_NOEXCEPT;
-)";
-
-    return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName },
-                             { "returnType", returnType },
-                           } );
-  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::string, CommandData>::const_iterator commandIt,

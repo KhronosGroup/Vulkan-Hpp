@@ -825,11 +825,6 @@ private:
                                                          std::map<size_t, size_t> const &                   vectorParamIndices,
                                                          size_t                                             returnParam,
                                                          bool                                               definition ) const;
-  std::string generateRAIIHandleCommandVoid1ReturnValue( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                         size_t                                             initialSkipCount,
-                                                         std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                         size_t                                             returnParam,
-                                                         bool                                               definition ) const;
   std::string generateRAIIHandleCommandVoid1ReturnVector( std::map<std::string, CommandData>::const_iterator commandIt,
                                                           size_t                                             initialSkipCount,
                                                           std::map<size_t, size_t> const &                   vectorParamIndices,

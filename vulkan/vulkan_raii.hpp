@@ -15043,6 +15043,7 @@ namespace VULKAN_HPP_NAMESPACE
       {
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::getAccelerationStructureBuildSizesKHR: maxPrimitiveCounts.size() != buildInfo.geometryCount" );
       }
+
       VULKAN_HPP_NAMESPACE::AccelerationStructureBuildSizesInfoKHR sizeInfo;
       getDispatcher()->vkGetAccelerationStructureBuildSizesKHR( static_cast<VkDevice>( m_device ),
                                                                 static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),

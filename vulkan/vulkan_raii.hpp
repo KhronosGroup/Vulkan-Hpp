@@ -16367,8 +16367,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeferredOperationResultKHR &&
                          "Function <vkGetDeferredOperationResultKHR> needs extension <VK_KHR_deferred_host_operations> enabled!" );
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetDeferredOperationResultKHR( static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_operation ) ) );
+      VkResult result =
+        getDispatcher()->vkGetDeferredOperationResultKHR( static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_operation ) );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result DeferredOperationKHR::join() const

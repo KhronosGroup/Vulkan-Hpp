@@ -762,10 +762,6 @@ private:
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                       size_t                                             initialSkipCount,
                                                                       bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors0Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                             size_t                                             initialSkipCount,
-                                                                             std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                             bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                   size_t                                             initialSkipCount,
                                                                                   std::map<size_t, size_t> const &                   vectorParamIndices,
@@ -924,9 +920,10 @@ private:
                                        size_t              initialSkipCount,
                                        size_t              returnParam,
                                        bool                unique,
-                                       bool                enumerating ) const;
+                                       bool                enumerating,
+                                       bool                raii ) const;
   std::string generateReturnType(
-    CommandData const & commandData, std::vector<size_t> const & returnParams, bool unique, bool chained, std::string const & dataType ) const;
+    CommandData const & commandData, std::vector<size_t> const & returnParams, bool unique, bool chained, bool raii, std::string const & dataType ) const;
   std::string generateReturnVariable( CommandData const &              commandData,
                                       std::vector<size_t> const &      returnParams,
                                       std::map<size_t, size_t> const & vectorParams,

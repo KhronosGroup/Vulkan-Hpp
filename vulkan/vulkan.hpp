@@ -120,7 +120,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 214, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 215, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -9008,24 +9008,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  //=== VK_NV_fragment_shader_barycentric ===
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesNV, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_NV_shader_image_footprint ===
   template <>
   struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, PhysicalDeviceFeatures2>
@@ -9992,7 +9974,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_AMD_shader_early_and_late_fragment_tests ===
   template <>
-  struct StructExtends<PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT, PhysicalDeviceFeatures2>
+  struct StructExtends<PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD, PhysicalDeviceFeatures2>
   {
     enum
     {
@@ -10000,7 +9982,33 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT, DeviceCreateInfo>
+  struct StructExtends<PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_fragment_shader_barycentric ===
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFragmentShaderBarycentricPropertiesKHR, PhysicalDeviceProperties2>
   {
     enum
     {

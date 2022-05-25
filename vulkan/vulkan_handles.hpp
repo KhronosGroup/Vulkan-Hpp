@@ -983,9 +983,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceMeshShaderPropertiesNV;
   struct DrawMeshTasksIndirectCommandNV;
 
-  //=== VK_NV_fragment_shader_barycentric ===
-  struct PhysicalDeviceFragmentShaderBarycentricFeaturesNV;
-
   //=== VK_NV_shader_image_footprint ===
   struct PhysicalDeviceShaderImageFootprintFeaturesNV;
 
@@ -1200,7 +1197,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct GraphicsPipelineLibraryCreateInfoEXT;
 
   //=== VK_AMD_shader_early_and_late_fragment_tests ===
-  struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesEXT;
+  struct PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD;
+
+  //=== VK_KHR_fragment_shader_barycentric ===
+  struct PhysicalDeviceFragmentShaderBarycentricFeaturesKHR;
+  using PhysicalDeviceFragmentShaderBarycentricFeaturesNV = PhysicalDeviceFragmentShaderBarycentricFeaturesKHR;
+  struct PhysicalDeviceFragmentShaderBarycentricPropertiesKHR;
 
   //=== VK_KHR_shader_subgroup_uniform_control_flow ===
   struct PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR;

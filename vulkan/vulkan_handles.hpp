@@ -1390,7 +1390,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXT;
   struct RenderPassCreationControlEXT;
   struct RenderPassCreationFeedbackInfoEXT;
+  struct RenderPassCreationFeedbackCreateInfoEXT;
   struct RenderPassSubpassFeedbackInfoEXT;
+  struct RenderPassSubpassFeedbackCreateInfoEXT;
 
   //===============
   //=== HANDLEs ===

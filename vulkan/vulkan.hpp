@@ -120,7 +120,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 215, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 216, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -10904,7 +10904,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassCreationFeedbackInfoEXT, RenderPassCreateInfo2>
+  struct StructExtends<RenderPassCreationFeedbackCreateInfoEXT, RenderPassCreateInfo2>
   {
     enum
     {
@@ -10912,23 +10912,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<RenderPassCreationFeedbackInfoEXT, RenderPassCreationControlEXT>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<RenderPassSubpassFeedbackInfoEXT, SubpassDescription2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<RenderPassSubpassFeedbackInfoEXT, RenderPassCreationControlEXT>
+  struct StructExtends<RenderPassSubpassFeedbackCreateInfoEXT, SubpassDescription2>
   {
     enum
     {

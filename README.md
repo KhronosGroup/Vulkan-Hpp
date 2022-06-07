@@ -347,7 +347,7 @@ if (shaderResult1.result != VK_SUCCESS)
 vk::Result result;
 vk::ShaderModule shaderModule2;
 std::tie(result, shaderModule2)  = device.createShaderModule({...} /* createInfo temporary */);
-if (shaderResult2.result != VK_SUCCESS)
+if (result != VK_SUCCESS)
 {
   handle error code;
   cleanup?

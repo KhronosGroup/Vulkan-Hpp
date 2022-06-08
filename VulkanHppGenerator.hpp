@@ -450,6 +450,7 @@ private:
                                          std::vector<size_t> const &      returnParams,
                                          std::map<size_t, size_t> const & vectorParams,
                                          std::set<size_t> const &         templatedParams,
+                                         bool                             chained,
                                          bool                             complete ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
@@ -678,7 +679,8 @@ private:
                                                  size_t                                             initialSkipCount,
                                                  std::vector<size_t> const &                        returnParams,
                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                 bool                                               definition ) const;
+                                                 bool                                               definition,
+                                                 bool                                               chained ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
                                                 size_t                                             initialSkipCount,
                                                 std::vector<size_t> const &                        returnParams,
@@ -812,11 +814,6 @@ private:
                                                                                              bool                             definition ) const;
   std::string generateRAIIHandleCommandValue( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandVoid( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
-  std::string generateRAIIHandleCommandVoid1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                         size_t                                             initialSkipCount,
-                                                         std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                         size_t                                             returnParam,
-                                                         bool                                               definition ) const;
   std::string generateRAIIHandleCommandVoid1ReturnVector( std::map<std::string, CommandData>::const_iterator commandIt,
                                                           size_t                                             initialSkipCount,
                                                           std::map<size_t, size_t> const &                   vectorParamIndices,

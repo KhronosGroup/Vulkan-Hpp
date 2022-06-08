@@ -11440,6 +11440,7 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetImageMemoryRequirements2( static_cast<VkDevice>( m_device ),
                                                       reinterpret_cast<const VkImageMemoryRequirementsInfo2 *>( &info ),
                                                       reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -11463,6 +11464,7 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetBufferMemoryRequirements2( static_cast<VkDevice>( m_device ),
                                                        reinterpret_cast<const VkBufferMemoryRequirementsInfo2 *>( &info ),
                                                        reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -11497,6 +11499,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2 & features = structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2>();
       getDispatcher()->vkGetPhysicalDeviceFeatures2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                      reinterpret_cast<VkPhysicalDeviceFeatures2 *>( &features ) );
+
       return structureChain;
     }
 
@@ -11516,6 +11519,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2 & properties = structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2>();
       getDispatcher()->vkGetPhysicalDeviceProperties2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                        reinterpret_cast<VkPhysicalDeviceProperties2 *>( &properties ) );
+
       return structureChain;
     }
 
@@ -11537,6 +11541,7 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::FormatProperties2 & formatProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::FormatProperties2>();
       getDispatcher()->vkGetPhysicalDeviceFormatProperties2(
         static_cast<VkPhysicalDevice>( m_physicalDevice ), static_cast<VkFormat>( format ), reinterpret_cast<VkFormatProperties2 *>( &formatProperties ) );
+
       return structureChain;
     }
 
@@ -11625,6 +11630,7 @@ namespace VULKAN_HPP_NAMESPACE
         structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2>();
       getDispatcher()->vkGetPhysicalDeviceMemoryProperties2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                              reinterpret_cast<VkPhysicalDeviceMemoryProperties2 *>( &memoryProperties ) );
+
       return structureChain;
     }
 
@@ -11734,6 +11740,7 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetDescriptorSetLayoutSupport( static_cast<VkDevice>( m_device ),
                                                         reinterpret_cast<const VkDescriptorSetLayoutCreateInfo *>( &createInfo ),
                                                         reinterpret_cast<VkDescriptorSetLayoutSupport *>( &support ) );
+
       return structureChain;
     }
 
@@ -12144,6 +12151,7 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetDeviceBufferMemoryRequirements( static_cast<VkDevice>( m_device ),
                                                             reinterpret_cast<const VkDeviceBufferMemoryRequirements *>( &info ),
                                                             reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -12167,6 +12175,7 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetDeviceImageMemoryRequirements( static_cast<VkDevice>( m_device ),
                                                            reinterpret_cast<const VkDeviceImageMemoryRequirements *>( &info ),
                                                            reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -13299,10 +13308,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceFeatures2KHR &&
                          "Function <vkGetPhysicalDeviceFeatures2KHR> needs extension <VK_KHR_get_physical_device_properties2> enabled!" );
+
       StructureChain<X, Y, Z...>                      structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2 & features = structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceFeatures2>();
       getDispatcher()->vkGetPhysicalDeviceFeatures2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                         reinterpret_cast<VkPhysicalDeviceFeatures2 *>( &features ) );
+
       return structureChain;
     }
 
@@ -13323,10 +13334,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceProperties2KHR &&
                          "Function <vkGetPhysicalDeviceProperties2KHR> needs extension <VK_KHR_get_physical_device_properties2> enabled!" );
+
       StructureChain<X, Y, Z...>                        structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2 & properties = structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceProperties2>();
       getDispatcher()->vkGetPhysicalDeviceProperties2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                           reinterpret_cast<VkPhysicalDeviceProperties2 *>( &properties ) );
+
       return structureChain;
     }
 
@@ -13349,10 +13362,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceFormatProperties2KHR &&
                          "Function <vkGetPhysicalDeviceFormatProperties2KHR> needs extension <VK_KHR_get_physical_device_properties2> enabled!" );
+
       StructureChain<X, Y, Z...>                structureChain;
       VULKAN_HPP_NAMESPACE::FormatProperties2 & formatProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::FormatProperties2>();
       getDispatcher()->vkGetPhysicalDeviceFormatProperties2KHR(
         static_cast<VkPhysicalDevice>( m_physicalDevice ), static_cast<VkFormat>( format ), reinterpret_cast<VkFormatProperties2 *>( &formatProperties ) );
+
       return structureChain;
     }
 
@@ -13447,11 +13462,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceMemoryProperties2KHR &&
                          "Function <vkGetPhysicalDeviceMemoryProperties2KHR> needs extension <VK_KHR_get_physical_device_properties2> enabled!" );
+
       StructureChain<X, Y, Z...>                              structureChain;
       VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2 & memoryProperties =
         structureChain.template get<VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryProperties2>();
       getDispatcher()->vkGetPhysicalDeviceMemoryProperties2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                                 reinterpret_cast<VkPhysicalDeviceMemoryProperties2 *>( &memoryProperties ) );
+
       return structureChain;
     }
 
@@ -14651,11 +14668,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageMemoryRequirements2KHR &&
                          "Function <vkGetImageMemoryRequirements2KHR> needs extension <VK_KHR_get_memory_requirements2> enabled!" );
+
       StructureChain<X, Y, Z...>                  structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
       getDispatcher()->vkGetImageMemoryRequirements2KHR( static_cast<VkDevice>( m_device ),
                                                          reinterpret_cast<const VkImageMemoryRequirementsInfo2 *>( &info ),
                                                          reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -14679,11 +14698,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetBufferMemoryRequirements2KHR &&
                          "Function <vkGetBufferMemoryRequirements2KHR> needs extension <VK_KHR_get_memory_requirements2> enabled!" );
+
       StructureChain<X, Y, Z...>                  structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
       getDispatcher()->vkGetBufferMemoryRequirements2KHR( static_cast<VkDevice>( m_device ),
                                                           reinterpret_cast<const VkBufferMemoryRequirementsInfo2 *>( &info ),
                                                           reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -15165,11 +15186,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetAccelerationStructureMemoryRequirementsNV &&
                          "Function <vkGetAccelerationStructureMemoryRequirementsNV> needs extension <VK_NV_ray_tracing> enabled!" );
+
       StructureChain<X, Y, Z...>                     structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2KHR>();
       getDispatcher()->vkGetAccelerationStructureMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
                                                                        reinterpret_cast<const VkAccelerationStructureMemoryRequirementsInfoNV *>( &info ),
                                                                        reinterpret_cast<VkMemoryRequirements2KHR *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -15390,11 +15413,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorSetLayoutSupportKHR &&
                          "Function <vkGetDescriptorSetLayoutSupportKHR> needs extension <VK_KHR_maintenance3> enabled!" );
+
       StructureChain<X, Y, Z...>                         structureChain;
       VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport & support = structureChain.template get<VULKAN_HPP_NAMESPACE::DescriptorSetLayoutSupport>();
       getDispatcher()->vkGetDescriptorSetLayoutSupportKHR( static_cast<VkDevice>( m_device ),
                                                            reinterpret_cast<const VkDescriptorSetLayoutCreateInfo *>( &createInfo ),
                                                            reinterpret_cast<VkDescriptorSetLayoutSupport *>( &support ) );
+
       return structureChain;
     }
 
@@ -16424,11 +16449,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetGeneratedCommandsMemoryRequirementsNV &&
                          "Function <vkGetGeneratedCommandsMemoryRequirementsNV> needs extension <VK_NV_device_generated_commands> enabled!" );
+
       StructureChain<X, Y, Z...>                  structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
       getDispatcher()->vkGetGeneratedCommandsMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
                                                                    reinterpret_cast<const VkGeneratedCommandsMemoryRequirementsInfoNV *>( &info ),
                                                                    reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -16726,12 +16753,14 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
                          "Function <vkGetImageSubresourceLayout2EXT> needs extension <VK_EXT_image_compression_control> enabled!" );
+
       StructureChain<X, Y, Z...>                    structureChain;
       VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT & layout = structureChain.template get<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>();
       getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
                                                         static_cast<VkImage>( m_image ),
                                                         reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
                                                         reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
+
       return structureChain;
     }
 
@@ -17307,11 +17336,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR &&
                          "Function <vkGetDeviceBufferMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
       StructureChain<X, Y, Z...>                  structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
       getDispatcher()->vkGetDeviceBufferMemoryRequirementsKHR( static_cast<VkDevice>( m_device ),
                                                                reinterpret_cast<const VkDeviceBufferMemoryRequirements *>( &info ),
                                                                reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 
@@ -17335,11 +17366,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR &&
                          "Function <vkGetDeviceImageMemoryRequirementsKHR> needs extension <VK_KHR_maintenance4> enabled!" );
+
       StructureChain<X, Y, Z...>                  structureChain;
       VULKAN_HPP_NAMESPACE::MemoryRequirements2 & memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
       getDispatcher()->vkGetDeviceImageMemoryRequirementsKHR( static_cast<VkDevice>( m_device ),
                                                               reinterpret_cast<const VkDeviceImageMemoryRequirements *>( &info ),
                                                               reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
       return structureChain;
     }
 

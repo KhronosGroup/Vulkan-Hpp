@@ -982,6 +982,11 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_EXT_line_rasterization ===
         vkCmdSetLineStippleEXT = PFN_vkCmdSetLineStippleEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleEXT" ) );
 
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+        //=== VK_EXT_metal_objects ===
+        vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetDeviceProcAddr( device, "vkExportMetalObjectsEXT" ) );
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
         //=== VK_EXT_multi_draw ===
         vkCmdDrawMultiEXT        = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
         vkCmdDrawMultiIndexedEXT = PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
@@ -1781,6 +1786,13 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_line_rasterization ===
       PFN_vkCmdSetLineStippleEXT vkCmdSetLineStippleEXT = 0;
+
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+      //=== VK_EXT_metal_objects ===
+      PFN_vkExportMetalObjectsEXT vkExportMetalObjectsEXT = 0;
+#  else
+      PFN_dummy vkExportMetalObjectsEXT_placeholder                           = 0;
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_EXT_multi_draw ===
       PFN_vkCmdDrawMultiEXT        vkCmdDrawMultiEXT        = 0;
@@ -3711,6 +3723,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD uint64_t getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                        uint64_t                              objectHandle,
                                                        VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot ) const VULKAN_HPP_NOEXCEPT;
+
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+      //=== VK_EXT_metal_objects ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ExportMetalObjectsInfoEXT exportMetalObjectsEXT() const VULKAN_HPP_NOEXCEPT;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> exportMetalObjectsEXT() const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
       //=== VK_KHR_ray_tracing_pipeline ===
 
@@ -16482,6 +16503,32 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdEncodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkVideoEncodeInfoKHR *>( &encodeInfo ) );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
+    //=== VK_EXT_metal_objects ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ExportMetalObjectsInfoEXT Device::exportMetalObjectsEXT() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkExportMetalObjectsEXT && "Function <vkExportMetalObjectsEXT> needs extension <VK_EXT_metal_objects> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::ExportMetalObjectsInfoEXT metalObjectsInfo;
+      getDispatcher()->vkExportMetalObjectsEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<VkExportMetalObjectsInfoEXT *>( &metalObjectsInfo ) );
+
+      return metalObjectsInfo;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...> Device::exportMetalObjectsEXT() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkExportMetalObjectsEXT && "Function <vkExportMetalObjectsEXT> needs extension <VK_EXT_metal_objects> enabled!" );
+
+      StructureChain<X, Y, Z...>                        structureChain;
+      VULKAN_HPP_NAMESPACE::ExportMetalObjectsInfoEXT & metalObjectsInfo = structureChain.template get<VULKAN_HPP_NAMESPACE::ExportMetalObjectsInfoEXT>();
+      getDispatcher()->vkExportMetalObjectsEXT( static_cast<VkDevice>( m_device ), reinterpret_cast<VkExportMetalObjectsInfoEXT *>( &metalObjectsInfo ) );
+
+      return structureChain;
+    }
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
     //=== VK_KHR_synchronization2 ===
 

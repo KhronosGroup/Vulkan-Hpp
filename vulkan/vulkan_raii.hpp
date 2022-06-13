@@ -10570,25 +10570,22 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Fence::getStatus() const
     {
-      VULKAN_HPP_NAMESPACE::Result result =
-        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetFenceStatus( static_cast<VkDevice>( m_device ), static_cast<VkFence>( m_fence ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eNotReady ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Fence::getStatus" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkGetFenceStatus( static_cast<VkDevice>( m_device ), static_cast<VkFence>( m_fence ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Fence::getStatus",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
       Device::waitForFences( ArrayProxy<const VULKAN_HPP_NAMESPACE::Fence> const & fences, VULKAN_HPP_NAMESPACE::Bool32 waitAll, uint64_t timeout ) const
     {
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkWaitForFences(
-        static_cast<VkDevice>( m_device ), fences.size(), reinterpret_cast<const VkFence *>( fences.data() ), static_cast<VkBool32>( waitAll ), timeout ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitForFences" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkWaitForFences(
+        static_cast<VkDevice>( m_device ), fences.size(), reinterpret_cast<const VkFence *>( fences.data() ), static_cast<VkBool32>( waitAll ), timeout );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::waitForFences",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::Semaphore
@@ -10607,13 +10604,11 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Event::getStatus() const
     {
-      VULKAN_HPP_NAMESPACE::Result result =
-        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetEventStatus( static_cast<VkDevice>( m_device ), static_cast<VkEvent>( m_event ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eEventSet ) && ( result != VULKAN_HPP_NAMESPACE::Result::eEventReset ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Event::getStatus" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkGetEventStatus( static_cast<VkDevice>( m_device ), static_cast<VkEvent>( m_event ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Event::getStatus",
+                   { VULKAN_HPP_NAMESPACE::Result::eEventSet, VULKAN_HPP_NAMESPACE::Result::eEventReset } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_INLINE void Event::set() const
@@ -11830,13 +11825,12 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Device::waitSemaphores( const VULKAN_HPP_NAMESPACE::SemaphoreWaitInfo & waitInfo,
                                                                                                 uint64_t                                        timeout ) const
     {
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkWaitSemaphores( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkSemaphoreWaitInfo *>( &waitInfo ), timeout ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitSemaphores" );
-      }
-      return result;
+      VkResult result =
+        getDispatcher()->vkWaitSemaphores( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkSemaphoreWaitInfo *>( &waitInfo ), timeout );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::waitSemaphores",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_INLINE void Device::signalSemaphore( const VULKAN_HPP_NAMESPACE::SemaphoreSignalInfo & signalInfo ) const
@@ -12366,13 +12360,11 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkQueuePresentKHR && "Function <vkQueuePresentKHR> needs extension <VK_KHR_swapchain> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkQueuePresentKHR( static_cast<VkQueue>( m_queue ), reinterpret_cast<const VkPresentInfoKHR *>( &presentInfo ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkQueuePresentKHR( static_cast<VkQueue>( m_queue ), reinterpret_cast<const VkPresentInfoKHR *>( &presentInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR Device::getGroupPresentCapabilitiesKHR() const
@@ -14016,13 +14008,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetSwapchainStatusKHR &&
                          "Function <vkGetSwapchainStatusKHR> needs extension <VK_KHR_shared_presentable_image> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetSwapchainStatusKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::getStatus" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkGetSwapchainStatusKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::getStatus",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     //=== VK_KHR_external_fence_capabilities ===
@@ -14736,18 +14726,18 @@ namespace VULKAN_HPP_NAMESPACE
         throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::Device::buildAccelerationStructuresKHR: infos.size() != pBuildRangeInfos.size()" );
       }
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkBuildAccelerationStructuresKHR(
+      VkResult result = getDispatcher()->vkBuildAccelerationStructuresKHR(
         static_cast<VkDevice>( m_device ),
         static_cast<VkDeferredOperationKHR>( deferredOperation ),
         infos.size(),
         reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR *>( infos.data() ),
-        reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR * const *>( pBuildRangeInfos.data() ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::buildAccelerationStructuresKHR" );
-      }
-      return result;
+        reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR * const *>( pBuildRangeInfos.data() ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::buildAccelerationStructuresKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
@@ -14757,16 +14747,15 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkCopyAccelerationStructureKHR &&
                          "Function <vkCopyAccelerationStructureKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkCopyAccelerationStructureKHR( static_cast<VkDevice>( m_device ),
-                                                         static_cast<VkDeferredOperationKHR>( deferredOperation ),
-                                                         reinterpret_cast<const VkCopyAccelerationStructureInfoKHR *>( &info ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::copyAccelerationStructureKHR" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkCopyAccelerationStructureKHR( static_cast<VkDevice>( m_device ),
+                                                                         static_cast<VkDeferredOperationKHR>( deferredOperation ),
+                                                                         reinterpret_cast<const VkCopyAccelerationStructureInfoKHR *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyAccelerationStructureKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
@@ -14776,16 +14765,16 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkCopyAccelerationStructureToMemoryKHR &&
                          "Function <vkCopyAccelerationStructureToMemoryKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      VkResult result =
         getDispatcher()->vkCopyAccelerationStructureToMemoryKHR( static_cast<VkDevice>( m_device ),
                                                                  static_cast<VkDeferredOperationKHR>( deferredOperation ),
-                                                                 reinterpret_cast<const VkCopyAccelerationStructureToMemoryInfoKHR *>( &info ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::copyAccelerationStructureToMemoryKHR" );
-      }
-      return result;
+                                                                 reinterpret_cast<const VkCopyAccelerationStructureToMemoryInfoKHR *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyAccelerationStructureToMemoryKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
@@ -14795,16 +14784,16 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkCopyMemoryToAccelerationStructureKHR &&
                          "Function <vkCopyMemoryToAccelerationStructureKHR> needs extension <VK_KHR_acceleration_structure> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      VkResult result =
         getDispatcher()->vkCopyMemoryToAccelerationStructureKHR( static_cast<VkDevice>( m_device ),
                                                                  static_cast<VkDeferredOperationKHR>( deferredOperation ),
-                                                                 reinterpret_cast<const VkCopyMemoryToAccelerationStructureInfoKHR *>( &info ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::copyMemoryToAccelerationStructureKHR" );
-      }
-      return result;
+                                                                 reinterpret_cast<const VkCopyMemoryToAccelerationStructureInfoKHR *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyMemoryToAccelerationStructureKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     template <typename DataType>
@@ -15607,13 +15596,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkWaitSemaphoresKHR && "Function <vkWaitSemaphoresKHR> needs extension <VK_KHR_timeline_semaphore> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkWaitSemaphoresKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkSemaphoreWaitInfo *>( &waitInfo ), timeout ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::waitSemaphoresKHR" );
-      }
-      return result;
+      VkResult result =
+        getDispatcher()->vkWaitSemaphoresKHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkSemaphoreWaitInfo *>( &waitInfo ), timeout );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::waitSemaphoresKHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     VULKAN_HPP_INLINE void Device::signalSemaphoreKHR( const VULKAN_HPP_NAMESPACE::SemaphoreSignalInfo & signalInfo ) const
@@ -15841,14 +15829,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkWaitForPresentKHR && "Function <vkWaitForPresentKHR> needs extension <VK_KHR_present_wait> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkWaitForPresentKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), presentId, timeout ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::waitForPresent" );
-      }
-      return result;
+      VkResult result =
+        getDispatcher()->vkWaitForPresentKHR( static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), presentId, timeout );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::waitForPresent",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eTimeout, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     //=== VK_NV_cooperative_matrix ===
@@ -16231,14 +16217,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkDeferredOperationJoinKHR &&
                          "Function <vkDeferredOperationJoinKHR> needs extension <VK_KHR_deferred_host_operations> enabled!" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkDeferredOperationJoinKHR( static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_operation ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eThreadDoneKHR ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eThreadIdleKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::DeferredOperationKHR::join" );
-      }
-      return result;
+      VkResult result = getDispatcher()->vkDeferredOperationJoinKHR( static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( m_operation ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::DeferredOperationKHR::join",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eThreadDoneKHR, VULKAN_HPP_NAMESPACE::Result::eThreadIdleKHR } );
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
     }
 
     //=== VK_KHR_pipeline_executable_properties ===

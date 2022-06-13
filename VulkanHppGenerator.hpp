@@ -402,6 +402,7 @@ private:
                                              bool                             enumerating,
                                              std::vector<std::string> const & dataTypes ) const;
   bool                     containsArray( std::string const & type ) const;
+  bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                     containsUnion( std::string const & type ) const;
   std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;

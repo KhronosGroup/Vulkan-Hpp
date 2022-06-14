@@ -400,7 +400,8 @@ private:
                                              std::vector<size_t> const &      returnParams,
                                              bool                             singular,
                                              bool                             enumerating,
-                                             std::vector<std::string> const & dataTypes ) const;
+                                             std::vector<std::string> const & dataTypes,
+                                             bool                             raii ) const;
   bool                     containsArray( std::string const & type ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
@@ -812,11 +813,6 @@ private:
                                                                       size_t                                             returnParam,
                                                                       bool                                               definition ) const;
   std::string generateRAIIHandleCommandVoid2ReturnEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                  size_t                                             initialSkipCount,
-                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                  std::vector<size_t> const &                        returnParamIndices,
-                                                                  bool                                               definition ) const;
-  std::string generateRAIIHandleCommandVoid2ReturnEnumerateValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                   size_t                                             initialSkipCount,
                                                                   std::map<size_t, size_t> const &                   vectorParamIndices,
                                                                   std::vector<size_t> const &                        returnParamIndices,

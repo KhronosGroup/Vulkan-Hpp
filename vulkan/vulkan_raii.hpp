@@ -12340,20 +12340,21 @@ namespace VULKAN_HPP_NAMESPACE
       SwapchainKHR::acquireNextImage( uint64_t timeout, VULKAN_HPP_NAMESPACE::Semaphore semaphore, VULKAN_HPP_NAMESPACE::Fence fence ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireNextImageKHR && "Function <vkAcquireNextImageKHR> needs extension <VK_KHR_swapchain> enabled!" );
-      uint32_t                     imageIndex;
-      VULKAN_HPP_NAMESPACE::Result result =
-        static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkAcquireNextImageKHR( static_cast<VkDevice>( m_device ),
-                                                                                           static_cast<VkSwapchainKHR>( m_swapchain ),
-                                                                                           timeout,
-                                                                                           static_cast<VkSemaphore>( semaphore ),
-                                                                                           static_cast<VkFence>( fence ),
-                                                                                           &imageIndex ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eNotReady ) && ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::acquireNextImage" );
-      }
-      return std::make_pair( result, imageIndex );
+
+      uint32_t imageIndex;
+      VkResult result = getDispatcher()->vkAcquireNextImageKHR( static_cast<VkDevice>( m_device ),
+                                                                static_cast<VkSwapchainKHR>( m_swapchain ),
+                                                                timeout,
+                                                                static_cast<VkSemaphore>( semaphore ),
+                                                                static_cast<VkFence>( fence ),
+                                                                &imageIndex );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::acquireNextImage",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eTimeout,
+                     VULKAN_HPP_NAMESPACE::Result::eNotReady,
+                     VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Queue::presentKHR( const VULKAN_HPP_NAMESPACE::PresentInfoKHR & presentInfo ) const
@@ -12433,15 +12434,17 @@ namespace VULKAN_HPP_NAMESPACE
                                            Device::acquireNextImage2KHR( const VULKAN_HPP_NAMESPACE::AcquireNextImageInfoKHR & acquireInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireNextImage2KHR && "Function <vkAcquireNextImage2KHR> needs extension <VK_KHR_swapchain> enabled!" );
-      uint32_t                     imageIndex;
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkAcquireNextImage2KHR(
-        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAcquireNextImageInfoKHR *>( &acquireInfo ), &imageIndex ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eTimeout ) &&
-           ( result != VULKAN_HPP_NAMESPACE::Result::eNotReady ) && ( result != VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR" );
-      }
-      return std::make_pair( result, imageIndex );
+
+      uint32_t imageIndex;
+      VkResult result = getDispatcher()->vkAcquireNextImage2KHR(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAcquireNextImageInfoKHR *>( &acquireInfo ), &imageIndex );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::acquireNextImage2KHR",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eTimeout,
+                     VULKAN_HPP_NAMESPACE::Result::eNotReady,
+                     VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
     }
 
     //=== VK_KHR_display ===
@@ -17030,14 +17033,14 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI &&
                          "Function <vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI> needs extension <VK_HUAWEI_subpass_shading> enabled!" );
+
       VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
-      VULKAN_HPP_NAMESPACE::Result   result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
-        static_cast<VkDevice>( m_device ), static_cast<VkRenderPass>( m_renderPass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eIncomplete ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI" );
-      }
-      return std::make_pair( result, maxWorkgroupSize );
+      VkResult                       result = getDispatcher()->vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
+        static_cast<VkDevice>( m_device ), static_cast<VkRenderPass>( m_renderPass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), maxWorkgroupSize );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::subpassShadingHUAWEI() const VULKAN_HPP_NOEXCEPT

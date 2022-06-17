@@ -36,37 +36,45 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class Result
   {
-    eSuccess                                     = VK_SUCCESS,
-    eNotReady                                    = VK_NOT_READY,
-    eTimeout                                     = VK_TIMEOUT,
-    eEventSet                                    = VK_EVENT_SET,
-    eEventReset                                  = VK_EVENT_RESET,
-    eIncomplete                                  = VK_INCOMPLETE,
-    eErrorOutOfHostMemory                        = VK_ERROR_OUT_OF_HOST_MEMORY,
-    eErrorOutOfDeviceMemory                      = VK_ERROR_OUT_OF_DEVICE_MEMORY,
-    eErrorInitializationFailed                   = VK_ERROR_INITIALIZATION_FAILED,
-    eErrorDeviceLost                             = VK_ERROR_DEVICE_LOST,
-    eErrorMemoryMapFailed                        = VK_ERROR_MEMORY_MAP_FAILED,
-    eErrorLayerNotPresent                        = VK_ERROR_LAYER_NOT_PRESENT,
-    eErrorExtensionNotPresent                    = VK_ERROR_EXTENSION_NOT_PRESENT,
-    eErrorFeatureNotPresent                      = VK_ERROR_FEATURE_NOT_PRESENT,
-    eErrorIncompatibleDriver                     = VK_ERROR_INCOMPATIBLE_DRIVER,
-    eErrorTooManyObjects                         = VK_ERROR_TOO_MANY_OBJECTS,
-    eErrorFormatNotSupported                     = VK_ERROR_FORMAT_NOT_SUPPORTED,
-    eErrorFragmentedPool                         = VK_ERROR_FRAGMENTED_POOL,
-    eErrorUnknown                                = VK_ERROR_UNKNOWN,
-    eErrorOutOfPoolMemory                        = VK_ERROR_OUT_OF_POOL_MEMORY,
-    eErrorInvalidExternalHandle                  = VK_ERROR_INVALID_EXTERNAL_HANDLE,
-    eErrorFragmentation                          = VK_ERROR_FRAGMENTATION,
-    eErrorInvalidOpaqueCaptureAddress            = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS,
-    ePipelineCompileRequired                     = VK_PIPELINE_COMPILE_REQUIRED,
-    eErrorSurfaceLostKHR                         = VK_ERROR_SURFACE_LOST_KHR,
-    eErrorNativeWindowInUseKHR                   = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
-    eSuboptimalKHR                               = VK_SUBOPTIMAL_KHR,
-    eErrorOutOfDateKHR                           = VK_ERROR_OUT_OF_DATE_KHR,
-    eErrorIncompatibleDisplayKHR                 = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eErrorValidationFailedEXT                    = VK_ERROR_VALIDATION_FAILED_EXT,
-    eErrorInvalidShaderNV                        = VK_ERROR_INVALID_SHADER_NV,
+    eSuccess                          = VK_SUCCESS,
+    eNotReady                         = VK_NOT_READY,
+    eTimeout                          = VK_TIMEOUT,
+    eEventSet                         = VK_EVENT_SET,
+    eEventReset                       = VK_EVENT_RESET,
+    eIncomplete                       = VK_INCOMPLETE,
+    eErrorOutOfHostMemory             = VK_ERROR_OUT_OF_HOST_MEMORY,
+    eErrorOutOfDeviceMemory           = VK_ERROR_OUT_OF_DEVICE_MEMORY,
+    eErrorInitializationFailed        = VK_ERROR_INITIALIZATION_FAILED,
+    eErrorDeviceLost                  = VK_ERROR_DEVICE_LOST,
+    eErrorMemoryMapFailed             = VK_ERROR_MEMORY_MAP_FAILED,
+    eErrorLayerNotPresent             = VK_ERROR_LAYER_NOT_PRESENT,
+    eErrorExtensionNotPresent         = VK_ERROR_EXTENSION_NOT_PRESENT,
+    eErrorFeatureNotPresent           = VK_ERROR_FEATURE_NOT_PRESENT,
+    eErrorIncompatibleDriver          = VK_ERROR_INCOMPATIBLE_DRIVER,
+    eErrorTooManyObjects              = VK_ERROR_TOO_MANY_OBJECTS,
+    eErrorFormatNotSupported          = VK_ERROR_FORMAT_NOT_SUPPORTED,
+    eErrorFragmentedPool              = VK_ERROR_FRAGMENTED_POOL,
+    eErrorUnknown                     = VK_ERROR_UNKNOWN,
+    eErrorOutOfPoolMemory             = VK_ERROR_OUT_OF_POOL_MEMORY,
+    eErrorInvalidExternalHandle       = VK_ERROR_INVALID_EXTERNAL_HANDLE,
+    eErrorFragmentation               = VK_ERROR_FRAGMENTATION,
+    eErrorInvalidOpaqueCaptureAddress = VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS,
+    ePipelineCompileRequired          = VK_PIPELINE_COMPILE_REQUIRED,
+    eErrorSurfaceLostKHR              = VK_ERROR_SURFACE_LOST_KHR,
+    eErrorNativeWindowInUseKHR        = VK_ERROR_NATIVE_WINDOW_IN_USE_KHR,
+    eSuboptimalKHR                    = VK_SUBOPTIMAL_KHR,
+    eErrorOutOfDateKHR                = VK_ERROR_OUT_OF_DATE_KHR,
+    eErrorIncompatibleDisplayKHR      = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
+    eErrorValidationFailedEXT         = VK_ERROR_VALIDATION_FAILED_EXT,
+    eErrorInvalidShaderNV             = VK_ERROR_INVALID_SHADER_NV,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eErrorImageUsageNotSupportedKHR            = VK_ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR,
+    eErrorVideoPictureLayoutNotSupportedKHR    = VK_ERROR_VIDEO_PICTURE_LAYOUT_NOT_SUPPORTED_KHR,
+    eErrorVideoProfileOperationNotSupportedKHR = VK_ERROR_VIDEO_PROFILE_OPERATION_NOT_SUPPORTED_KHR,
+    eErrorVideoProfileFormatNotSupportedKHR    = VK_ERROR_VIDEO_PROFILE_FORMAT_NOT_SUPPORTED_KHR,
+    eErrorVideoProfileCodecNotSupportedKHR     = VK_ERROR_VIDEO_PROFILE_CODEC_NOT_SUPPORTED_KHR,
+    eErrorVideoStdVersionNotSupportedKHR       = VK_ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
     eErrorNotPermittedKHR                        = VK_ERROR_NOT_PERMITTED_KHR,
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -122,6 +130,14 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
       case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
       case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case Result::eErrorImageUsageNotSupportedKHR: return "ErrorImageUsageNotSupportedKHR";
+      case Result::eErrorVideoPictureLayoutNotSupportedKHR: return "ErrorVideoPictureLayoutNotSupportedKHR";
+      case Result::eErrorVideoProfileOperationNotSupportedKHR: return "ErrorVideoProfileOperationNotSupportedKHR";
+      case Result::eErrorVideoProfileFormatNotSupportedKHR: return "ErrorVideoProfileFormatNotSupportedKHR";
+      case Result::eErrorVideoProfileCodecNotSupportedKHR: return "ErrorVideoProfileCodecNotSupportedKHR";
+      case Result::eErrorVideoStdVersionNotSupportedKHR: return "ErrorVideoStdVersionNotSupportedKHR";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
       case Result::eErrorNotPermittedKHR: return "ErrorNotPermittedKHR";
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -8583,12 +8599,12 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( FormatFeatureFlagBits::eDisjoint ) | VkFlags( FormatFeatureFlagBits::eCositedChromaSamples ) |
                  VkFlags( FormatFeatureFlagBits::eSampledImageFilterMinmax ) | VkFlags( FormatFeatureFlagBits::eSampledImageFilterCubicIMG )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( FormatFeatureFlagBits::eVideoDecodeOutputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoDecodeDpbKHR )
+                 | VkFlags( FormatFeatureFlagBits::eVideoDecodeOutputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR ) | VkFlags( FormatFeatureFlagBits::eFragmentDensityMapEXT ) |
+                 | VkFlags( FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR ) | VkFlags( FormatFeatureFlagBits::eFragmentDensityMapEXT ) |
                  VkFlags( FormatFeatureFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( FormatFeatureFlagBits::eVideoEncodeInputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoEncodeDpbKHR )
+                 | VkFlags( FormatFeatureFlagBits::eVideoEncodeInputKHR ) | VkFlags( FormatFeatureFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -8783,15 +8799,15 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageUsageFlagBits::eDepthStencilAttachment ) | VkFlags( ImageUsageFlagBits::eTransientAttachment ) |
                  VkFlags( ImageUsageFlagBits::eInputAttachment )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
+                 | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
+                 | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
     };
   };
 
@@ -9024,7 +9040,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueueFlagBits::eGraphics ) | VkFlags( QueueFlagBits::eCompute ) | VkFlags( QueueFlagBits::eTransfer ) |
                  VkFlags( QueueFlagBits::eSparseBinding ) | VkFlags( QueueFlagBits::eProtected )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
+                 | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9634,7 +9650,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueryResultFlagBits::e64 ) | VkFlags( QueryResultFlagBits::eWait ) | VkFlags( QueryResultFlagBits::eWithAvailability ) |
                  VkFlags( QueryResultFlagBits::ePartial )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueryResultFlagBits::eWithStatusKHR )
+                 | VkFlags( QueryResultFlagBits::eWithStatusKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9747,13 +9763,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BufferUsageFlagBits::eIndexBuffer ) | VkFlags( BufferUsageFlagBits::eVertexBuffer ) |
                  VkFlags( BufferUsageFlagBits::eIndirectBuffer ) | VkFlags( BufferUsageFlagBits::eShaderDeviceAddress )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
+                 | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
                  VkFlags( BufferUsageFlagBits::eConditionalRenderingEXT ) | VkFlags( BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR ) |
                  VkFlags( BufferUsageFlagBits::eAccelerationStructureStorageKHR ) | VkFlags( BufferUsageFlagBits::eShaderBindingTableKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -11427,13 +11443,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Heap ) |
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Resource ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eDmaBufEXT )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
 
@@ -11761,7 +11777,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt ) | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence ) |
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eSyncFd )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
+                 | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     };
   };
@@ -12159,9 +12175,9 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( PipelineStageFlagBits2::eClear ) | VkFlags64( PipelineStageFlagBits2::eIndexInput ) |
                  VkFlags64( PipelineStageFlagBits2::eVertexAttributeInput ) | VkFlags64( PipelineStageFlagBits2::ePreRasterizationShaders )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
+                 | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
+                 | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
                  VkFlags64( PipelineStageFlagBits2::eCommandPreprocessNV ) | VkFlags64( PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eAccelerationStructureBuildKHR ) | VkFlags64( PipelineStageFlagBits2::eRayTracingShaderKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eFragmentDensityProcessEXT ) | VkFlags64( PipelineStageFlagBits2::eTaskShaderNV ) |
@@ -12297,10 +12313,10 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( AccessFlagBits2::eShaderSampledRead ) | VkFlags64( AccessFlagBits2::eShaderStorageRead ) |
                  VkFlags64( AccessFlagBits2::eShaderStorageWrite )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
+                 | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
                  VkFlags64( AccessFlagBits2::eVideoEncodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoEncodeWriteKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
+                 | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
                  VkFlags64( AccessFlagBits2::eTransformFeedbackCounterWriteEXT ) | VkFlags64( AccessFlagBits2::eConditionalRenderingReadEXT ) |
                  VkFlags64( AccessFlagBits2::eCommandPreprocessReadNV ) | VkFlags64( AccessFlagBits2::eCommandPreprocessWriteNV ) |
                  VkFlags64( AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR ) | VkFlags64( AccessFlagBits2::eAccelerationStructureReadKHR ) |
@@ -12537,14 +12553,14 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( FormatFeatureFlagBits2::eStorageReadWithoutFormat ) | VkFlags64( FormatFeatureFlagBits2::eStorageWriteWithoutFormat ) |
                  VkFlags64( FormatFeatureFlagBits2::eSampledImageDepthComparison )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
+                 | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
                  VkFlags64( FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV )
+                 | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV )
     };
   };
 
@@ -13068,7 +13084,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eInvalid )
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
+                 | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
                  VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };

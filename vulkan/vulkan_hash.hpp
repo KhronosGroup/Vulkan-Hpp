@@ -9134,40 +9134,6 @@ namespace std
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VideoProfileKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoProfileKHR const & videoProfileKHR ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.videoCodecOperation );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.chromaSubsampling );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.lumaBitDepth );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.chromaBitDepth );
-      return seed;
-    }
-  };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VideoProfilesKHR>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoProfilesKHR const & videoProfilesKHR ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.profileCount );
-      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.pProfiles );
-      return seed;
-    }
-  };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoFormatInfoKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoFormatInfoKHR const & physicalDeviceVideoFormatInfoKHR ) const VULKAN_HPP_NOEXCEPT
@@ -9176,7 +9142,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoFormatInfoKHR.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoFormatInfoKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoFormatInfoKHR.imageUsage );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVideoFormatInfoKHR.pVideoProfiles );
       return seed;
     }
   };
@@ -10461,7 +10426,7 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyQueryResultStatusProperties2KHR.sType );
       VULKAN_HPP_HASH_COMBINE( seed, queueFamilyQueryResultStatusProperties2KHR.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyQueryResultStatusProperties2KHR.supported );
+      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyQueryResultStatusProperties2KHR.queryResultStatusSupport );
       return seed;
     }
   };
@@ -12800,6 +12765,11 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.sType );
       VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.format );
+      VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.componentMapping );
+      VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.imageCreateFlags );
+      VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.imageType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.imageTiling );
+      VULKAN_HPP_HASH_COMBINE( seed, videoFormatPropertiesKHR.imageUsageFlags );
       return seed;
     }
   };
@@ -12816,6 +12786,40 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, videoGetMemoryPropertiesKHR.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, videoGetMemoryPropertiesKHR.memoryBindIndex );
       VULKAN_HPP_HASH_COMBINE( seed, videoGetMemoryPropertiesKHR.pMemoryRequirements );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoProfileKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoProfileKHR const & videoProfileKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.videoCodecOperation );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.chromaSubsampling );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.lumaBitDepth );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfileKHR.chromaBitDepth );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::VideoProfilesKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::VideoProfilesKHR const & videoProfilesKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.profileCount );
+      VULKAN_HPP_HASH_COMBINE( seed, videoProfilesKHR.pProfiles );
       return seed;
     }
   };

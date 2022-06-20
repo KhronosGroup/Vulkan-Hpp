@@ -695,6 +695,10 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename FlagBitsType>
   struct FlagTraits
   {
+    enum : typename std::underlying_type<FlagBitsType>::type
+    {
+      allFlags = typename std::underlying_type<FlagBitsType>::type()
+    };
   };
 
   template <typename BitType>

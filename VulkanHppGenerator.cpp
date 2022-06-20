@@ -10315,7 +10315,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
   if ( member.type.type != "VkStructureType" )  // filter out StructureType, which is supposed to be immutable !
   {
     static const std::string templateString = R"(
-    ${constexpr}${structureName} & set${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
+    ${constexpr}${structureName} & ${operation}${MemberName}( ${memberType} ${reference}${memberName}_ ) VULKAN_HPP_NOEXCEPT
     {
       ${assignment};
       return *this;
@@ -10325,6 +10325,8 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     std::string memberType         = member.arraySizes.empty() ? member.type.compose( "VULKAN_HPP_NAMESPACE" )
                                                                : generateStandardArray( member.type.compose( "VULKAN_HPP_NAMESPACE" ), member.arraySizes );
     bool        isReinterpretation = !member.bitCount.empty() && beginsWith( member.type.type, "Vk" );
+    bool        isBitmask = m_bitmasks.find(member.type.type) != m_bitmasks.end() && member.len.empty();
+
     std::string assignment;
     if ( isReinterpretation )
     {
@@ -10337,13 +10339,57 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
 
     str +=
       replaceWithMap( templateString,
-                      { { "assignment", assignment },
+                      { { "operation", "set" },
+                        { "assignment", assignment },
                         { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
                         { "memberName", member.name },
                         { "MemberName", startUpperCase( member.name ) },
                         { "memberType", memberType },
                         { "reference", ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) ) ? "const & " : "" },
                         { "structureName", structureName } } );
+
+    if (isBitmask)
+    {
+      // Add flag
+      if ( isReinterpretation )
+      {
+        assignment = member.name + " |= " + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
+      }
+      else
+      {
+        assignment = member.name + " |= " + member.name + "_";
+      }
+      str +=
+        replaceWithMap( templateString,
+                        { { "operation", "add" },
+                          { "assignment", assignment },
+                          { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
+                          { "memberName", member.name },
+                          { "MemberName", startUpperCase( member.name ) },
+                          { "memberType", memberType },
+                          { "reference", ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) ) ? "const & " : "" },
+                          { "structureName", structureName } } );
+
+      // Remove flag
+      if ( isReinterpretation )
+      {
+        assignment = member.name + " &= ~" + "*reinterpret_cast<" + member.type.type + "*>(&" + member.name + "_)";
+      }
+      else
+      {
+        assignment = member.name + " &= ~" + member.name + "_";
+      }
+      str +=
+        replaceWithMap( templateString,
+                        { { "operation", "remove" },
+                          { "assignment", assignment },
+                          { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
+                          { "memberName", member.name },
+                          { "MemberName", startUpperCase( member.name ) },
+                          { "memberType", memberType },
+                          { "reference", ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) ) ? "const & " : "" },
+                          { "structureName", structureName } } );
+    }
 
     if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) &&
          ( ( altLens.find( member.len[0] ) == altLens.end() ) || ( member.len[0] == "codeSize / 4" ) ) )
@@ -14564,7 +14610,12 @@ int main( int argc, char ** argv )
   static const std::string classFlags = R"(
   template <typename FlagBitsType>
   struct FlagTraits
-  {};
+  {
+    enum : typename std::underlying_type<FlagBitsType>::type
+    {
+      allFlags = typename std::underlying_type<FlagBitsType>::type()
+    };
+  };
 
   template <typename BitType>
   class Flags

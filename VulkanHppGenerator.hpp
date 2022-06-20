@@ -683,7 +683,8 @@ private:
                                                  std::vector<size_t> const &                        returnParams,
                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
                                                  bool                                               definition,
-                                                 bool                                               chained ) const;
+                                                 bool                                               chained,
+                                                 bool                                               singular ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
                                                 size_t                                             initialSkipCount,
                                                 std::vector<size_t> const &                        returnParams,
@@ -786,11 +787,6 @@ private:
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,
                                                                              std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2ReturnValueSingularValue( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                               size_t                           initialSkipCount,
-                                                                                               bool                             definition,
-                                                                                               std::vector<size_t> const &      returnParamIndices,
-                                                                                               std::map<size_t, size_t> const & vectorParamIndices ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2ReturnValueVectorValue( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                              size_t                           initialSkipCount,
                                                                                              std::map<size_t, size_t> const & vectorParamIndices,

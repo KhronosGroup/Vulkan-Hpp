@@ -401,6 +401,7 @@ private:
                                              bool                             singular,
                                              bool                             enumerating,
                                              std::vector<std::string> const & dataTypes,
+                                             bool                             unique,
                                              bool                             raii ) const;
   bool                     containsArray( std::string const & type ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
@@ -781,11 +782,6 @@ private:
                                                                                          std::map<size_t, size_t> const &                   vectorParamIndices,
                                                                                          size_t                                             returnParam,
                                                                                          bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoidVector( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                       size_t                                             initialSkipCount,
-                                                                                       std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                                       size_t                                             returnParam,
-                                                                                       bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,

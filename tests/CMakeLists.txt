@@ -32,6 +32,8 @@ endif(MSVC)
 
 if (WIN32)
   add_definitions(-DNOMINMAX -DVK_USE_PLATFORM_WIN32_KHR)
+elseif(APPLE)
+  add_definitions(-DVK_USE_PLATFORM_MACOS_MVK)
 elseif(UNIX)
   add_definitions(-DVK_USE_PLATFORM_XLIB_KHR)
 endif()

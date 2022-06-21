@@ -10659,19 +10659,19 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
       std::vector<DataType> data( dataSize / sizeof( DataType ) );
-      Result                result = static_cast<Result>( getDispatcher()->vkGetQueryPoolResults( static_cast<VkDevice>( m_device ),
-                                                                                   static_cast<VkQueryPool>( m_queryPool ),
-                                                                                   firstQuery,
-                                                                                   queryCount,
-                                                                                   data.size() * sizeof( DataType ),
-                                                                                   reinterpret_cast<void *>( data.data() ),
-                                                                                   static_cast<VkDeviceSize>( stride ),
-                                                                                   static_cast<VkQueryResultFlags>( flags ) ) );
-      if ( ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( result != VULKAN_HPP_NAMESPACE::Result::eNotReady ) )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::QueryPool::getResults" );
-      }
-      return std::make_pair( result, data );
+      VkResult              result = getDispatcher()->vkGetQueryPoolResults( static_cast<VkDevice>( m_device ),
+                                                                static_cast<VkQueryPool>( m_queryPool ),
+                                                                firstQuery,
+                                                                queryCount,
+                                                                data.size() * sizeof( DataType ),
+                                                                reinterpret_cast<void *>( data.data() ),
+                                                                static_cast<VkDeviceSize>( stride ),
+                                                                static_cast<VkQueryResultFlags>( flags ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::QueryPool::getResults",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
+
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
     }
 
     template <typename DataType>

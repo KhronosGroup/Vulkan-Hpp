@@ -23,9 +23,14 @@ jobs:
 
     - name: Update Submodules
       run: git submodule update --init --recursive
+
+    - name: Install Ninja
+      uses: ashutoshvarma/setup-ninja@master
+      with:
+        version: 1.11.0
       
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build
+      run: cmake -B ${{github.workspace}}/build -GNinja
             -DSAMPLES_BUILD=ON
             -DSAMPLES_BUILD_ONLY_DYNAMIC=ON
             -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON
@@ -37,4 +42,4 @@ jobs:
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
             
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}} --parallel

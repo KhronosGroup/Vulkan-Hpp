@@ -41,6 +41,7 @@ jobs:
             -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
             -DVULKAN_HPP_RUN_GENERATOR=ON
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
-            
+            -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+
     - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}} --parallel
+      run: cmake --build ${{github.workspace}}/build --parallel

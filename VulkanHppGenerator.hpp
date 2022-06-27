@@ -411,7 +411,8 @@ private:
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, size_t> const &                   vectorParams,
                                                std::vector<size_t> const &                        returnParams,
-                                               std::set<size_t> const &                           templatedParams ) const;
+                                               std::set<size_t> const &                           templatedParams,
+                                               bool                                               raii ) const;
   size_t                   determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   bool                     determineEnumeration( std::map<size_t, size_t> const & vectorParams, std::vector<size_t> const & returnParams ) const;
   size_t                   determineInitialSkipCount( std::string const & command ) const;
@@ -725,11 +726,6 @@ private:
                                                                             size_t                                             initialSkipCount,
                                                                             bool                                               definition,
                                                                             std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                            size_t                                             initialSkipCount,
-                                                                                            std::map<size_t, size_t> const & vectorParamIndices,
-                                                                                            std::vector<size_t> const &      returnParamIndices,
-                                                                                            bool                             definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                                  size_t                           initialSkipCount,
                                                                                                  std::map<size_t, size_t> const & vectorParamIndices,

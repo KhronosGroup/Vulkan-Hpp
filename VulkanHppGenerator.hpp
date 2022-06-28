@@ -455,7 +455,7 @@ private:
                                          std::map<size_t, size_t> const & vectorParams,
                                          std::set<size_t> const &         templatedParams,
                                          bool                             chained,
-                                         bool                             complete ) const;
+                                         bool                             raii ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateCallArgumentsEnhanced( CommandData const &      commandData,
@@ -726,11 +726,6 @@ private:
                                                                             size_t                                             initialSkipCount,
                                                                             bool                                               definition,
                                                                             std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return1VectorEnumerateChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                                 size_t                           initialSkipCount,
-                                                                                                 std::map<size_t, size_t> const & vectorParamIndices,
-                                                                                                 std::vector<size_t> const &      returnParamIndices,
-                                                                                                 bool                             definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2ReturnValues( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                   size_t                                             initialSkipCount,
                                                                                   std::map<size_t, size_t> const &                   vectorParams,

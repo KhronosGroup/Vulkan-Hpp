@@ -2913,9 +2913,8 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>
                            getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 
-      template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD std::vector<StructureChain<X, Y, Z...>>
-                           getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
+      template <typename StructureChain>
+      VULKAN_HPP_NODISCARD std::vector<StructureChain> getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const;
 
       //=== VK_KHR_get_display_properties2 ===
 
@@ -14206,52 +14205,48 @@ namespace VULKAN_HPP_NAMESPACE
       return surfaceFormats;
     }
 
-    template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain<X, Y, Z...>>
+    template <typename StructureChain>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain>
       PhysicalDevice::getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR &&
                          "Function <vkGetPhysicalDeviceSurfaceFormats2KHR> needs extension <VK_KHR_get_surface_capabilities2> enabled!" );
-      std::vector<StructureChain<X, Y, Z...>>              returnVector;
+
+      std::vector<StructureChain>                          structureChains;
       std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR> surfaceFormats;
       uint32_t                                             surfaceFormatCount;
-      VULKAN_HPP_NAMESPACE::Result                         result;
+      VkResult                                             result;
       do
       {
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-          getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
-                                                                  reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
-                                                                  &surfaceFormatCount,
-                                                                  nullptr ) );
-        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && surfaceFormatCount )
+        result = getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                         reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
+                                                                         &surfaceFormatCount,
+                                                                         nullptr );
+        if ( ( result == VK_SUCCESS ) && surfaceFormatCount )
         {
-          returnVector.resize( surfaceFormatCount );
+          structureChains.resize( surfaceFormatCount );
           surfaceFormats.resize( surfaceFormatCount );
           for ( uint32_t i = 0; i < surfaceFormatCount; i++ )
           {
-            surfaceFormats[i].pNext = returnVector[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>().pNext;
+            surfaceFormats[i].pNext = structureChains[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>().pNext;
           }
-          result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-            getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
-                                                                    reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
-                                                                    &surfaceFormatCount,
-                                                                    reinterpret_cast<VkSurfaceFormat2KHR *>( surfaceFormats.data() ) ) );
+          result = getDispatcher()->vkGetPhysicalDeviceSurfaceFormats2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                           reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
+                                                                           &surfaceFormatCount,
+                                                                           reinterpret_cast<VkSurfaceFormat2KHR *>( surfaceFormats.data() ) );
         }
-      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceFormats2KHR" );
-      }
+      } while ( result == VK_INCOMPLETE );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceFormats2KHR" );
       VULKAN_HPP_ASSERT( surfaceFormatCount <= surfaceFormats.size() );
       if ( surfaceFormatCount < surfaceFormats.size() )
       {
-        returnVector.resize( surfaceFormatCount );
+        structureChains.resize( surfaceFormatCount );
       }
       for ( uint32_t i = 0; i < surfaceFormatCount; i++ )
       {
-        returnVector[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>() = surfaceFormats[i];
+        structureChains[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>() = surfaceFormats[i];
       }
-      return surfaceFormats;
+      return structureChains;
     }
 
     //=== VK_KHR_get_display_properties2 ===

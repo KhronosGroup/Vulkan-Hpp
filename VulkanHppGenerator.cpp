@@ -4824,19 +4824,25 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
                 ( returnParams[2] == std::next( vectorParams.begin() )->first ) && ( returnParams[0] == std::next( vectorParams.begin() )->second ) &&
                 templatedParams.empty() && !singular && !chained && !unique );
 
-        std::string counterVariable           = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
-        std::string firstVectorAllocatorType  = startUpperCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
-        std::string firstVectorVariable       = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
-        std::string secondVectorAllocatorType = startUpperCase( stripPrefix( dataTypes[2], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
-        std::string secondVectorVariable      = startLowerCase( stripPrefix( commandData.params[returnParams[2]].name, "p" ) );
-        std::string pairConstructor = withAllocator ? ( "( std::piecewise_construct, std::forward_as_tuple( " + startLowerCase( firstVectorAllocatorType ) +
-                                                        " ), std::forward_as_tuple( " + startLowerCase( secondVectorAllocatorType ) + " ) )" )
+        std::string counterVariable      = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
+        std::string firstVectorVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
+        std::string secondVectorVariable = startLowerCase( stripPrefix( commandData.params[returnParams[2]].name, "p" ) );
+        std::string firstVectorAllocatorType, secondVectorAllocatorType, pairConstructor;
+        if ( !raii )
+        {
+          firstVectorAllocatorType  = startUpperCase( stripPrefix( dataTypes[1], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+          secondVectorAllocatorType = startUpperCase( stripPrefix( dataTypes[2], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
+          pairConstructor           = withAllocator ? ( "( std::piecewise_construct, std::forward_as_tuple( " + startLowerCase( firstVectorAllocatorType ) +
+                                              " ), std::forward_as_tuple( " + startLowerCase( secondVectorAllocatorType ) + " ) )" )
                                                     : "";
+          firstVectorAllocatorType  = ", " + firstVectorAllocatorType;
+          secondVectorAllocatorType = ", " + secondVectorAllocatorType;
+        }
 
         std::string const dataDeclarationsTemplate =
-          R"(std::pair<std::vector<${firstVectorElementType}, ${firstVectorAllocatorType}>, std::vector<${secondVectorElementType}, ${secondVectorAllocatorType}>> data${pairConstructor};
-    std::vector<${firstVectorElementType}, ${firstVectorAllocatorType}> & ${firstVectorVariable} = data.first;
-    std::vector<${secondVectorElementType}, ${secondVectorAllocatorType}> & ${secondVectorVariable} = data.second;
+          R"(std::pair<std::vector<${firstVectorElementType}${firstVectorAllocatorType}>, std::vector<${secondVectorElementType}${secondVectorAllocatorType}>> data${pairConstructor};
+    std::vector<${firstVectorElementType}${firstVectorAllocatorType}> & ${firstVectorVariable} = data.first;
+    std::vector<${secondVectorElementType}${secondVectorAllocatorType}> & ${secondVectorVariable} = data.second;
     ${counterType} ${counterVariable};)";
 
         dataDeclarations = replaceWithMap( dataDeclarationsTemplate,
@@ -6860,8 +6866,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
                   if ( ( commandIt->second.successCodes.size() == 2 ) && ( commandIt->second.successCodes[0] == "VK_SUCCESS" ) &&
                        ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
                   {
-                    return generateRAIIHandleCommandResultMultiSuccessWithErrors3Return2VectorEnumerate(
-                      commandIt, initialSkipCount, vectorParams, returnParams, definition );
+                    return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
                   }
                 }
               }
@@ -6872,90 +6877,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
     }
   }
   return "";
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithErrors3Return2VectorEnumerate(
-  std::map<std::string, CommandData>::const_iterator commandIt,
-  size_t                                             initialSkipCount,
-  std::map<size_t, size_t> const &                   vectorParams,
-  std::vector<size_t> const &                        returnParams,
-  bool                                               definition ) const
-{
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, returnParams, false );
-  std::string      argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, returnParams, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  auto        firstVectorParamIt  = vectorParams.begin();
-  auto        secondVectorParamIt = std::next( firstVectorParamIt );
-  std::string commandName         = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-  std::string counterName         = startLowerCase( stripPrefix( stripPluralS( commandIt->second.params[firstVectorParamIt->second].name ), "p" ) );
-  std::string firstType           = stripPrefix( commandIt->second.params[firstVectorParamIt->first].type.type, "Vk" );
-  std::string secondType          = stripPrefix( commandIt->second.params[secondVectorParamIt->first].type.type, "Vk" );
-
-  if ( definition )
-  {
-    const std::string definitionTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<${firstType}>, std::vector<${secondType}>> ${className}::${commandName}( ${argumentList} ) const
-  {${functionPointerCheck}
-    std::pair<std::vector<${firstType}>, std::vector<${secondType}>> data;
-    std::vector<${firstType}> & ${firstVectorName} = data.first;
-    std::vector<${secondType}> & ${secondVectorName} = data.second;
-    ${counterType} ${counterName};
-    VULKAN_HPP_NAMESPACE::Result result;
-    do
-    {
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${firstCallArguments} ) );
-      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && counterCount )
-      {
-        ${firstVectorName}.resize( ${counterName} );
-        ${secondVectorName}.resize( ${counterName} );
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${secondCallArguments} ) );
-        VULKAN_HPP_ASSERT( ${counterName} <= ${firstVectorName}.size() );
-      }
-    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-    if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( ${counterName} < ${firstVectorName}.size() ) )
-    {
-      ${firstVectorName}.resize( ${counterName} );
-      ${secondVectorName}.resize( ${counterName} );
-    }
-    if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-    {
-      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
-    }
-    return data;
-  }
-)";
-
-    std::string firstCallArguments  = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, true, {}, {}, true );
-    std::string firstVectorName     = startLowerCase( stripPrefix( commandIt->second.params[firstVectorParamIt->first].name, "p" ) );
-    std::string secondCallArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::string secondVectorName    = startLowerCase( stripPrefix( commandIt->second.params[secondVectorParamIt->first].name, "p" ) );
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "counterName", counterName },
-                             { "counterType", commandIt->second.params[firstVectorParamIt->second].type.type },
-                             { "firstCallArguments", firstCallArguments },
-                             { "firstType", firstType },
-                             { "firstVectorName", firstVectorName },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "secondCallArguments", secondCallArguments },
-                             { "secondType", secondType },
-                             { "secondVectorName", secondVectorName },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-    VULKAN_HPP_NODISCARD std::pair<std::vector<${firstType}>, std::vector<${secondType}>> ${commandName}( ${argumentList} ) const;
-)";
-
-    return replaceWithMap( declarationTemplate,
-                           { { "argumentList", argumentList }, { "commandName", commandName }, { "firstType", firstType }, { "secondType", secondType } } );
-  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,

@@ -2894,8 +2894,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_performance_query ===
 
-      VULKAN_HPP_NODISCARD std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>>
-                           enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex ) const;
+      VULKAN_HPP_NODISCARD
+        std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>, std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>>
+        enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex ) const;
 
       VULKAN_HPP_NODISCARD uint32_t getQueueFamilyPerformanceQueryPassesKHR(
         const VULKAN_HPP_NAMESPACE::QueryPoolPerformanceCreateInfoKHR & performanceQueryCreateInfo ) const VULKAN_HPP_NOEXCEPT;
@@ -14066,41 +14067,41 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_KHR_performance_query ===
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>>
-                                           PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex ) const
+    VULKAN_HPP_NODISCARD
+      VULKAN_HPP_INLINE std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>, std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>>
+                        PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR( uint32_t queueFamilyIndex ) const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR &&
                          "Function <vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR> needs extension <VK_KHR_performance_query> enabled!" );
-      std::pair<std::vector<PerformanceCounterKHR>, std::vector<PerformanceCounterDescriptionKHR>> data;
-      std::vector<PerformanceCounterKHR> &                                                         counters            = data.first;
-      std::vector<PerformanceCounterDescriptionKHR> &                                              counterDescriptions = data.second;
-      uint32_t                                                                                     counterCount;
-      VULKAN_HPP_NAMESPACE::Result                                                                 result;
+
+      std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>, std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>> data;
+      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> &            counters            = data.first;
+      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR> & counterDescriptions = data.second;
+      uint32_t                                                              counterCount;
+      VkResult                                                              result;
       do
       {
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(
-          static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &counterCount, nullptr, nullptr ) );
-        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && counterCount )
+        result = getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ), queueFamilyIndex, &counterCount, nullptr, nullptr );
+        if ( ( result == VK_SUCCESS ) && counterCount )
         {
           counters.resize( counterCount );
           counterDescriptions.resize( counterCount );
-          result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(
+          result = getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR(
             static_cast<VkPhysicalDevice>( m_physicalDevice ),
             queueFamilyIndex,
             &counterCount,
             reinterpret_cast<VkPerformanceCounterKHR *>( counters.data() ),
-            reinterpret_cast<VkPerformanceCounterDescriptionKHR *>( counterDescriptions.data() ) ) );
-          VULKAN_HPP_ASSERT( counterCount <= counters.size() );
+            reinterpret_cast<VkPerformanceCounterDescriptionKHR *>( counterDescriptions.data() ) );
         }
-      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ( counterCount < counters.size() ) )
+      } while ( result == VK_INCOMPLETE );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR" );
+      VULKAN_HPP_ASSERT( counterCount <= counters.size() );
+      if ( counterCount < counters.size() )
       {
         counters.resize( counterCount );
         counterDescriptions.resize( counterCount );
-      }
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::enumerateQueueFamilyPerformanceQueryCountersKHR" );
       }
       return data;
     }

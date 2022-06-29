@@ -6816,66 +6816,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWith
   return "";
 }
 
-std::string
-  VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                          size_t                                             initialSkipCount,
-                                                                                          std::map<size_t, size_t> const &                   vectorParams,
-                                                                                          std::vector<size_t> const &                        returnParams,
-                                                                                          bool                                               definition ) const
-{
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, returnParams, false );
-  std::string      argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, returnParams, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  std::string commandName = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-
-  if ( definition )
-  {
-    std::string const functionTemplate =
-      R"(
-  template <typename X, typename Y, typename... Z>
-  VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> ${className}::${commandName}( ${argumentList} ) const
-  {
-    StructureChain<X, Y, Z...> structureChain;
-    ${returnType} & ${returnVariable} = structureChain.template get<${returnType}>();
-    VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
-    if ( ${failureCheck} )
-    {
-      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
-    }
-    return structureChain;
-  }
-)";
-
-    std::string callArguments  = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::string returnType     = stripPostfix( commandIt->second.params[returnParams[0]].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
-    std::string returnVariable = startLowerCase( stripPrefix( commandIt->second.params[returnParams[0]].name, "p" ) );
-
-    return replaceWithMap( functionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "failureCheck", generateFailureCheck( commandIt->second.successCodes ) },
-                             { "returnVariable", returnVariable },
-                             { "returnType", returnType },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-  template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> ${commandName}( ${argumentList} ) const;
-)";
-
-    return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName },
-                           } );
-  }
-}
-
 std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWithErrors1Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                                size_t initialSkipCount,
                                                                                                bool   definition,
@@ -6955,7 +6895,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWith
     if ( vectorParams.empty() )
     {
       str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, false, false );
-      str += generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( commandIt, initialSkipCount, vectorParams, { returnParam }, definition );
+      str += generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, true, false );
     }
   }
   else

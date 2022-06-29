@@ -11552,19 +11552,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
-                         PhysicalDevice::getImageFormatProperties2( const VULKAN_HPP_NAMESPACE::PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      PhysicalDevice::getImageFormatProperties2( const VULKAN_HPP_NAMESPACE::PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
     {
       StructureChain<X, Y, Z...>                     structureChain;
       VULKAN_HPP_NAMESPACE::ImageFormatProperties2 & imageFormatProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::ImageFormatProperties2>();
-      VULKAN_HPP_NAMESPACE::Result                   result                = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      VkResult                                       result =
         getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                                     reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2 *>( &imageFormatInfo ),
-                                                                    reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2" );
-      }
+                                                                    reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2" );
+
       return structureChain;
     }
 
@@ -12769,18 +12767,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile ) const
     {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR &&
+                         "Function <vkGetPhysicalDeviceVideoCapabilitiesKHR> needs extension <VK_KHR_video_queue> enabled!" );
+
       StructureChain<X, Y, Z...>                   structureChain;
       VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR & capabilities = structureChain.template get<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>();
-      VULKAN_HPP_NAMESPACE::Result                 result       = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
-                                                                  reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ),
-                                                                  reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
-      }
+      VkResult result = getDispatcher()->vkGetPhysicalDeviceVideoCapabilitiesKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                                  reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ),
+                                                                                  reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
+
       return structureChain;
     }
 
@@ -13323,19 +13322,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
-                         PhysicalDevice::getImageFormatProperties2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      PhysicalDevice::getImageFormatProperties2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceImageFormatInfo2 & imageFormatInfo ) const
     {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2KHR &&
+                         "Function <vkGetPhysicalDeviceImageFormatProperties2KHR> needs extension <VK_KHR_get_physical_device_properties2> enabled!" );
+
       StructureChain<X, Y, Z...>                     structureChain;
       VULKAN_HPP_NAMESPACE::ImageFormatProperties2 & imageFormatProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::ImageFormatProperties2>();
-      VULKAN_HPP_NAMESPACE::Result                   result                = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+      VkResult                                       result =
         getDispatcher()->vkGetPhysicalDeviceImageFormatProperties2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
                                                                        reinterpret_cast<const VkPhysicalDeviceImageFormatInfo2 *>( &imageFormatInfo ),
-                                                                       reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2KHR" );
-      }
+                                                                       reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2KHR" );
+
       return structureChain;
     }
 
@@ -14156,19 +14156,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...>
-                         PhysicalDevice::getSurfaceCapabilities2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+      PhysicalDevice::getSurfaceCapabilities2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo ) const
     {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceSurfaceCapabilities2KHR &&
+                         "Function <vkGetPhysicalDeviceSurfaceCapabilities2KHR> needs extension <VK_KHR_get_surface_capabilities2> enabled!" );
+
       StructureChain<X, Y, Z...>                      structureChain;
       VULKAN_HPP_NAMESPACE::SurfaceCapabilities2KHR & surfaceCapabilities = structureChain.template get<VULKAN_HPP_NAMESPACE::SurfaceCapabilities2KHR>();
-      VULKAN_HPP_NAMESPACE::Result                    result              = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetPhysicalDeviceSurfaceCapabilities2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
-                                                                     reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
-                                                                     reinterpret_cast<VkSurfaceCapabilities2KHR *>( &surfaceCapabilities ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilities2KHR" );
-      }
+      VkResult result = getDispatcher()->vkGetPhysicalDeviceSurfaceCapabilities2KHR( static_cast<VkPhysicalDevice>( m_physicalDevice ),
+                                                                                     reinterpret_cast<const VkPhysicalDeviceSurfaceInfo2KHR *>( &surfaceInfo ),
+                                                                                     reinterpret_cast<VkSurfaceCapabilities2KHR *>( &surfaceCapabilities ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilities2KHR" );
+
       return structureChain;
     }
 
@@ -14483,17 +14483,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           Device::getAndroidHardwareBufferPropertiesANDROID( const struct AHardwareBuffer & buffer ) const
     {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetAndroidHardwareBufferPropertiesANDROID &&
+        "Function <vkGetAndroidHardwareBufferPropertiesANDROID> needs extension <VK_ANDROID_external_memory_android_hardware_buffer> enabled!" );
+
       StructureChain<X, Y, Z...>                                     structureChain;
       VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID & properties =
         structureChain.template get<VULKAN_HPP_NAMESPACE::AndroidHardwareBufferPropertiesANDROID>();
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetAndroidHardwareBufferPropertiesANDROID(
-        static_cast<VkDevice>( m_device ), &buffer, reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID *>( &properties ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getAndroidHardwareBufferPropertiesANDROID" );
-      }
+      VkResult result = getDispatcher()->vkGetAndroidHardwareBufferPropertiesANDROID(
+        static_cast<VkDevice>( m_device ), &buffer, reinterpret_cast<VkAndroidHardwareBufferPropertiesANDROID *>( &properties ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getAndroidHardwareBufferPropertiesANDROID" );
+
       return structureChain;
     }
 
@@ -17029,18 +17032,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> Device::getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
+                                           Device::getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const
     {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelinePropertiesEXT &&
+                         "Function <vkGetPipelinePropertiesEXT> needs extension <VK_EXT_pipeline_properties> enabled!" );
+
       StructureChain<X, Y, Z...>               structureChain;
       VULKAN_HPP_NAMESPACE::BaseOutStructure & pipelineProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::BaseOutStructure>();
-      VULKAN_HPP_NAMESPACE::Result             result             = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
-                                                     reinterpret_cast<const VkPipelineInfoEXT *>( &pipelineInfo ),
-                                                     reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) ) );
-      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        throwResultException( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
-      }
+      VkResult                                 result             = getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                     reinterpret_cast<const VkPipelineInfoEXT *>( &pipelineInfo ),
+                                                                     reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
+
       return structureChain;
     }
 

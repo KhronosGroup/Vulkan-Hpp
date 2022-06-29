@@ -741,11 +741,6 @@ private:
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                       size_t                                             initialSkipCount,
                                                                       bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                  size_t                                             initialSkipCount,
-                                                                                  std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                                  std::vector<size_t> const &                        returnParamIndices,
-                                                                                  bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,

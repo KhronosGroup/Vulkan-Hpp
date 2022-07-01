@@ -1014,6 +1014,11 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_EXT_sample_locations ===
         vkCmdSetSampleLocationsEXT = PFN_vkCmdSetSampleLocationsEXT( vkGetDeviceProcAddr( device, "vkCmdSetSampleLocationsEXT" ) );
 
+        //=== VK_EXT_shader_module_identifier ===
+        vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleIdentifierEXT" ) );
+        vkGetShaderModuleCreateInfoIdentifierEXT =
+          PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
+
         //=== VK_EXT_transform_feedback ===
         vkCmdBindTransformFeedbackBuffersEXT =
           PFN_vkCmdBindTransformFeedbackBuffersEXT( vkGetDeviceProcAddr( device, "vkCmdBindTransformFeedbackBuffersEXT" ) );
@@ -1812,6 +1817,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_sample_locations ===
       PFN_vkCmdSetSampleLocationsEXT vkCmdSetSampleLocationsEXT = 0;
+
+      //=== VK_EXT_shader_module_identifier ===
+      PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
+      PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
 
       //=== VK_EXT_transform_feedback ===
       PFN_vkCmdBindTransformFeedbackBuffersEXT vkCmdBindTransformFeedbackBuffersEXT = 0;
@@ -3782,9 +3791,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::BaseOutStructure getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const;
 
-      template <typename X, typename Y, typename... Z>
-      VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const;
-
       //=== VK_KHR_maintenance4 ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
@@ -3808,6 +3814,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE getDescriptorSetLayoutHostMappingInfoVALVE(
         const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE & bindingReference ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_shader_module_identifier ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT
+                           getShaderModuleCreateInfoIdentifierEXT( const VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                                       m_device    = {};
@@ -9214,6 +9225,10 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_allocator, rhs.m_allocator );
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
+
+      //=== VK_EXT_shader_module_identifier ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT getIdentifierEXT() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device       = {};
@@ -17031,23 +17046,6 @@ namespace VULKAN_HPP_NAMESPACE
       return pipelineProperties;
     }
 
-    template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE StructureChain<X, Y, Z...>
-                                           Device::getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelinePropertiesEXT &&
-                         "Function <vkGetPipelinePropertiesEXT> needs extension <VK_EXT_pipeline_properties> enabled!" );
-
-      StructureChain<X, Y, Z...>               structureChain;
-      VULKAN_HPP_NAMESPACE::BaseOutStructure & pipelineProperties = structureChain.template get<VULKAN_HPP_NAMESPACE::BaseOutStructure>();
-      VkResult                                 result             = getDispatcher()->vkGetPipelinePropertiesEXT( static_cast<VkDevice>( m_device ),
-                                                                     reinterpret_cast<const VkPipelineInfoEXT *>( &pipelineInfo ),
-                                                                     reinterpret_cast<VkBaseOutStructure *>( &pipelineProperties ) );
-      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getPipelinePropertiesEXT" );
-
-      return structureChain;
-    }
-
     //=== VK_EXT_extended_dynamic_state2 ===
 
     VULKAN_HPP_INLINE void CommandBuffer::setPatchControlPointsEXT( uint32_t patchControlPoints ) const VULKAN_HPP_NOEXCEPT
@@ -17289,6 +17287,34 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetDescriptorSetHostMappingVALVE( static_cast<VkDevice>( m_device ), static_cast<VkDescriptorSet>( m_descriptorSet ), &pData );
 
       return pData;
+    }
+
+    //=== VK_EXT_shader_module_identifier ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT ShaderModule::getIdentifierEXT() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetShaderModuleIdentifierEXT &&
+                         "Function <vkGetShaderModuleIdentifierEXT> needs extension <VK_EXT_shader_module_identifier> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT identifier;
+      getDispatcher()->vkGetShaderModuleIdentifierEXT(
+        static_cast<VkDevice>( m_device ), static_cast<VkShaderModule>( m_shaderModule ), reinterpret_cast<VkShaderModuleIdentifierEXT *>( &identifier ) );
+
+      return identifier;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT
+      Device::getShaderModuleCreateInfoIdentifierEXT( const VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetShaderModuleCreateInfoIdentifierEXT &&
+                         "Function <vkGetShaderModuleCreateInfoIdentifierEXT> needs extension <VK_EXT_shader_module_identifier> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT identifier;
+      getDispatcher()->vkGetShaderModuleCreateInfoIdentifierEXT( static_cast<VkDevice>( m_device ),
+                                                                 reinterpret_cast<const VkShaderModuleCreateInfo *>( &createInfo ),
+                                                                 reinterpret_cast<VkShaderModuleIdentifierEXT *>( &identifier ) );
+
+      return identifier;
     }
 
 #endif

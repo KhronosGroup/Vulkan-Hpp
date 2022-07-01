@@ -120,7 +120,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 218, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 219, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5305,6 +5305,20 @@ namespace VULKAN_HPP_NAMESPACE
     void vkGetDescriptorSetHostMappingVALVE( VkDevice device, VkDescriptorSet descriptorSet, void ** ppData ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetDescriptorSetHostMappingVALVE( device, descriptorSet, ppData );
+    }
+
+    //=== VK_EXT_shader_module_identifier ===
+
+    void vkGetShaderModuleIdentifierEXT( VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT * pIdentifier ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetShaderModuleIdentifierEXT( device, shaderModule, pIdentifier );
+    }
+
+    void vkGetShaderModuleCreateInfoIdentifierEXT( VkDevice                         device,
+                                                   const VkShaderModuleCreateInfo * pCreateInfo,
+                                                   VkShaderModuleIdentifierEXT *    pIdentifier ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetShaderModuleCreateInfoIdentifierEXT( device, pCreateInfo, pIdentifier );
     }
   };
 #endif
@@ -10654,14 +10668,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pipeline_properties ===
   template <>
-  struct StructExtends<PipelinePropertiesIdentifierEXT, BaseOutStructure>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
   struct StructExtends<PhysicalDevicePipelinePropertiesFeaturesEXT, PhysicalDeviceFeatures2>
   {
     enum
@@ -10671,6 +10677,48 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDevicePipelinePropertiesFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_multisampled_render_to_single_sampled ===
+  template <>
+  struct StructExtends<PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SubpassResolvePerformanceQueryEXT, FormatProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MultisampledRenderToSingleSampledInfoEXT, SubpassDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MultisampledRenderToSingleSampledInfoEXT, RenderingInfo>
   {
     enum
     {
@@ -11021,6 +11069,40 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<RenderPassSubpassFeedbackCreateInfoEXT, SubpassDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_shader_module_identifier ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderModuleIdentifierFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderModuleIdentifierFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceShaderModuleIdentifierPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PipelineShaderStageModuleIdentifierCreateInfoEXT, PipelineShaderStageCreateInfo>
   {
     enum
     {
@@ -12076,6 +12158,10 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_VALVE_descriptor_set_host_mapping ===
     PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE = 0;
     PFN_vkGetDescriptorSetHostMappingVALVE           vkGetDescriptorSetHostMappingVALVE           = 0;
+
+    //=== VK_EXT_shader_module_identifier ===
+    PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
+    PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -13263,6 +13349,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetDescriptorSetLayoutHostMappingInfoVALVE =
         PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
       vkGetDescriptorSetHostMappingVALVE = PFN_vkGetDescriptorSetHostMappingVALVE( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetHostMappingVALVE" ) );
+
+      //=== VK_EXT_shader_module_identifier ===
+      vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleIdentifierEXT" ) );
+      vkGetShaderModuleCreateInfoIdentifierEXT =
+        PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -14099,6 +14190,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetDescriptorSetLayoutHostMappingInfoVALVE =
         PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
       vkGetDescriptorSetHostMappingVALVE = PFN_vkGetDescriptorSetHostMappingVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetHostMappingVALVE" ) );
+
+      //=== VK_EXT_shader_module_identifier ===
+      vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleIdentifierEXT" ) );
+      vkGetShaderModuleCreateInfoIdentifierEXT =
+        PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
     }
   };
 }  // namespace VULKAN_HPP_NAMESPACE

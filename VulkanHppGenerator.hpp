@@ -177,9 +177,9 @@ private:
 
   struct RequireData
   {
-    RequireData( int line, std::string const & title_ ) : title( title_ ), xmlLine( line ) {}
+    RequireData( int line, std::string const & titles_ );
 
-    std::string              title;
+    std::vector<std::string> titles;
     std::vector<std::string> commands;
     std::vector<std::string> types;
     int                      xmlLine;

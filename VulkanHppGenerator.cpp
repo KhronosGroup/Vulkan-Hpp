@@ -1914,6 +1914,19 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
   }
 }
 
+void VulkanHppGenerator::checkValidStructs( int line, std::map<std::string, std::string> const & attributes ) const
+{
+  auto it = attributes.find( "validstructs" );
+  if ( it != attributes.end() )
+  {
+    std::vector<std::string> validStructs = tokenize( it->second, "," );
+    for ( auto const & vs : validStructs )
+    {
+      check( m_structures.find( vs ) != m_structures.end(), line, "unknown struct <" + vs + "> listed in attribute <validstructs>" );
+    }
+  }
+}
+
 std::string VulkanHppGenerator::combineDataTypes( std::map<size_t, size_t> const & vectorParams,
                                                   std::vector<size_t> const &      returnParams,
                                                   bool                             singular,
@@ -10556,7 +10569,9 @@ VulkanHppGenerator::ParamData VulkanHppGenerator::readCommandsCommandParam( tiny
                      { "len", {} },
                      { "noautovalidity", { "true" } },
                      { "objecttype", { "objectType" } },
-                     { "optional", { "false", "true" } } } );
+                     { "optional", { "false", "true" } },
+                     { "validstructs", {} } } );
+  checkValidStructs( line, attributes );
 
   ParamData paramData( line );
   for ( auto attribute : attributes )
@@ -12572,7 +12587,7 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
                    { { "altlen", {} },
                      { "externsync", { "true" } },
                      { "len", {} },
-                     { "limittype", { "bitmask", "max", "min", "noauto", "range", "struct" } },
+                     { "limittype", { "bitmask", "bits", "exact", "max", "min", "mul", "noauto", "pot", "range", "struct" } },
                      { "noautovalidity", { "true" } },
                      { "objecttype", { "objectType" } },
                      { "optional", { "false", "true" } },

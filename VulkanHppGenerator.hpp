@@ -396,6 +396,7 @@ private:
   void        checkHandleCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
+  void checkValidStructs( int line, std::map<std::string, std::string> const & attributes ) const;
   std::string              combineDataTypes( std::map<size_t, size_t> const & vectorParams,
                                              std::vector<size_t> const &      returnParams,
                                              bool                             singular,

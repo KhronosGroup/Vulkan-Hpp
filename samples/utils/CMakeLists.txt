@@ -36,6 +36,8 @@ add_library(utils
   ${HEADERS}
 )
 
+add_dependencies(utils VulkanHppGenerator)
+
 target_link_libraries(utils PUBLIC glm)
 target_link_libraries(utils PUBLIC glfw)
 target_link_libraries(utils PUBLIC glslang)

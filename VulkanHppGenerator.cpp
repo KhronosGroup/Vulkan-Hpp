@@ -1681,9 +1681,15 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     // check for existence of any requirement
     for ( auto const & require : extension.second.requireData )
     {
-      check( require.title.empty() || ( m_features.find( require.title ) != m_features.end() ) || ( m_extensions.find( require.title ) != m_extensions.end() ),
-             require.xmlLine,
-             "extension <" + extension.first + "> lists an unknown require <" + require.title + ">" );
+      if ( !require.titles.empty() )
+      {
+        for ( auto const & title : require.titles )
+        {
+          check( ( m_features.find( title ) != m_features.end() ) || ( m_extensions.find( title ) != m_extensions.end() ),
+                 require.xmlLine,
+                 "extension <" + extension.first + "> lists an unknown require <" + title + ">" );
+        }
+      }
     }
   }
 }
@@ -11062,7 +11068,9 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
       requireTitle = attribute.second;
       check( std::find_if( extensionIt->second.requireData.begin(),
                            extensionIt->second.requireData.end(),
-                           [&requireTitle]( RequireData const & rd ) { return rd.title == requireTitle; } ) == extensionIt->second.requireData.end(),
+                           [&requireTitle]( RequireData const & rd ) {
+                             return std::find( rd.titles.begin(), rd.titles.end(), requireTitle ) != rd.titles.end();
+                           } ) == extensionIt->second.requireData.end(),
              line,
              "required extension <" + requireTitle + "> already listed" );
     }
@@ -12909,6 +12917,8 @@ std::string VulkanHppGenerator::TypeInfo::compose( std::string const & nameSpace
          ( nameSpace.empty() ? type : ( ( ( type.substr( 0, 2 ) == "Vk" ) ? ( nameSpace + "::" ) : "" ) + stripPrefix( type, "Vk" ) ) ) +
          ( postfix.empty() ? "" : " " ) + postfix;
 }
+
+VulkanHppGenerator::RequireData::RequireData( int line, std::string const & titles_ ) : titles( tokenize( titles_, "," ) ), xmlLine( line ) {}
 
 //
 // VulkanHppGenerator local functions

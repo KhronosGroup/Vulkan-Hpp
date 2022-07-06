@@ -34,6 +34,6 @@ if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
   )
   
   set_target_properties(InstanceLayerProperties PROPERTIES FOLDER "Samples")
-  target_link_libraries(InstanceLayerProperties "${Vulkan_LIBRARIES}")
+  target_link_libraries(InstanceLayerProperties PRIVATE utils)
 
 endif()

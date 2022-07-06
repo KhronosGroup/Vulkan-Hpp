@@ -32,7 +32,8 @@ add_executable(StructureChain
 )
 
 if (UNIX)
-  target_link_libraries(StructureChain "-ldl")
+  target_link_libraries(StructureChain PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
 set_target_properties(StructureChain PROPERTIES FOLDER "Tests")
+target_link_libraries(StructureChain PRIVATE utils)

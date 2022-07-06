@@ -36,7 +36,7 @@ add_library(utils
   ${HEADERS}
 )
 
-if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
+if (VULKAN_HPP_RUN_GENERATOR)
   add_dependencies(utils build_vulkan_hpp)
 endif()
 

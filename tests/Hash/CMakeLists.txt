@@ -33,5 +33,5 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 	)
 
 	set_target_properties(Hash PROPERTIES FOLDER "Tests")
-	target_link_libraries(Hash "${Vulkan_LIBRARIES}")
+	target_link_libraries(Hash PRIVATE utils)
 endif()

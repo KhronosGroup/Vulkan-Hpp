@@ -32,4 +32,4 @@ add_executable(FormatTraits
 )
 
 set_target_properties(FormatTraits PROPERTIES FOLDER "Tests")
-target_link_libraries(FormatTraits "${Vulkan_LIBRARIES}")
+target_link_libraries(FormatTraits PRIVATE utils)

@@ -34,11 +34,10 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
     )
 
   if (UNIX)
-    target_link_libraries(DispatchLoaderStatic "-ldl")
+    target_link_libraries(DispatchLoaderStatic PRIVATE ${CMAKE_DL_LIBS})
   endif()
 
-  target_link_libraries(DispatchLoaderStatic "${Vulkan_LIBRARIES}")
-
   set_target_properties(DispatchLoaderStatic PROPERTIES FOLDER "Tests")
+  target_link_libraries(DispatchLoaderStatic PRIVATE utils)
 
 endif()

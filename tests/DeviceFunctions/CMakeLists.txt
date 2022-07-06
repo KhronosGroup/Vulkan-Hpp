@@ -33,5 +33,5 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 	)
 
 	set_target_properties(DeviceFunctions PROPERTIES FOLDER "Tests")
-	target_link_libraries(DeviceFunctions "${Vulkan_LIBRARIES}")
+	target_link_libraries(DeviceFunctions PRIVATE utils)
 endif()

@@ -34,6 +34,6 @@ if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
   )
   
   set_target_properties(InstanceVersion PROPERTIES FOLDER "Samples")
-  target_link_libraries(InstanceVersion "${Vulkan_LIBRARIES}")
+  target_link_libraries(InstanceVersion PRIVATE utils)
 
 endif()

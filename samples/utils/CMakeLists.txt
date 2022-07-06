@@ -36,7 +36,9 @@ add_library(utils
   ${HEADERS}
 )
 
-add_dependencies(utils VulkanHppGenerator)
+if (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP)
+  add_dependencies(utils build_vulkan_hpp)
+endif()
 
 target_link_libraries(utils PUBLIC glm)
 target_link_libraries(utils PUBLIC glfw)

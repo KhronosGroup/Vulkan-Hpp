@@ -10,7 +10,7 @@ jobs:
       matrix:
         build_type: [Debug, Release]
         compiler:
-          - {cxx: "g++-11", c: "gcc-11"}
+          - {cxx: "g++-11", c: "clang"}
           - {cxx: "clang++", c: "clang"}
         cxx_standard: [11, 14, 17, 20]
 

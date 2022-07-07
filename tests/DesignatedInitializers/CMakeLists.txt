@@ -35,5 +35,5 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 	)
 
 	set_target_properties(DesignatedInitializers PROPERTIES FOLDER "Tests")
-	target_link_libraries(DesignatedInitializers "${Vulkan_LIBRARIES}")
+	target_link_libraries(DesignatedInitializers PRIVATE utils)
 endif()

@@ -36,6 +36,10 @@ add_library(utils
   ${HEADERS}
 )
 
+if (VULKAN_HPP_RUN_GENERATOR)
+  add_dependencies(utils build_vulkan_hpp)
+endif()
+
 target_link_libraries(utils PUBLIC glm)
 target_link_libraries(utils PUBLIC glfw)
 target_link_libraries(utils PUBLIC glslang)

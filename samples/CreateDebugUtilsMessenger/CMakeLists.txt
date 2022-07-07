@@ -34,6 +34,6 @@ if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
   )
   
   set_target_properties(CreateDebugUtilsMessenger PROPERTIES FOLDER "Samples")
-  target_link_libraries(CreateDebugUtilsMessenger "${Vulkan_LIBRARIES}")
+  target_link_libraries(CreateDebugUtilsMessenger PRIVATE utils)
 
 endif()

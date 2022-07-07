@@ -32,7 +32,8 @@ add_library(UniqueHandleDefaultArguments
 )
 
 if (UNIX)
-  target_link_libraries(UniqueHandleDefaultArguments "-ldl")
+  target_link_libraries(UniqueHandleDefaultArguments PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
 set_target_properties(UniqueHandleDefaultArguments PROPERTIES FOLDER "Tests")
+target_link_libraries(UniqueHandleDefaultArguments PRIVATE utils)

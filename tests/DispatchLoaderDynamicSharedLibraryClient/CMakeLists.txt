@@ -33,10 +33,11 @@ add_executable(DispatchLoaderDynamicSharedLibraryClient
 
 target_compile_definitions(DispatchLoaderDynamicSharedLibraryClient PRIVATE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 VULKAN_HPP_STORAGE_SHARED)
 
-target_link_libraries(DispatchLoaderDynamicSharedLibraryClient DispatchLoaderDynamicSharedLibrary)
+target_link_libraries(DispatchLoaderDynamicSharedLibraryClient PRIVATE DispatchLoaderDynamicSharedLibrary)
 
 if (UNIX)
-  target_link_libraries(DispatchLoaderDynamicSharedLibraryClient "-ldl")
+  target_link_libraries(DispatchLoaderDynamicSharedLibraryClient PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
 set_target_properties(DispatchLoaderDynamicSharedLibraryClient PROPERTIES FOLDER "Tests")
+target_link_libraries(DispatchLoaderDynamicSharedLibraryClient PRIVATE utils)

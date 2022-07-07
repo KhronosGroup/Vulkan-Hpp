@@ -32,7 +32,8 @@ add_executable(DispatchLoaderDynamic
   )
 
 if (UNIX)
-  target_link_libraries(DispatchLoaderDynamic "-ldl")
+  target_link_libraries(DispatchLoaderDynamic PRIVATE ${CMAKE_DL_LIBS})
 endif()
 
 set_target_properties(DispatchLoaderDynamic PROPERTIES FOLDER "Tests")
+target_link_libraries(DispatchLoaderDynamic PRIVATE utils)

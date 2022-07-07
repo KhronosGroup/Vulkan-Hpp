@@ -33,5 +33,5 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 	)
 
 	set_target_properties(ArrayProxy PROPERTIES FOLDER "Tests")
-	target_link_libraries(ArrayProxy "${Vulkan_LIBRARIES}")
+	target_link_libraries(ArrayProxy PRIVATE utils)
 endif()

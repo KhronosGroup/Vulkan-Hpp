@@ -9050,20 +9050,22 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
   std::string compareBody, spaceshipOperator, spaceshipOperatorIf, spaceshipOperatorElse, spaceshipOperatorEndif;
   if ( nonDefaultCompare )
   {
-    assert( !containsFuncPointer( structData.first ) );
     compareBody = "      return " + compareMembers + ";";
 
-    static const std::string spaceshipOperatorTemplate =
-      R"(    ${ordering} operator<=>( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
+    if ( !containsFuncPointer( structData.first ) )
+    {
+      static const std::string spaceshipOperatorTemplate =
+        R"(    ${ordering} operator<=>( ${name} const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
 ${spaceshipMembers}
       return ${ordering}::equivalent;
     })";
-    spaceshipOperatorIf = "#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)";
-    spaceshipOperator =
-      replaceWithMap( spaceshipOperatorTemplate, { { "name", structName }, { "ordering", spaceshipOrdering }, { "spaceshipMembers", spaceshipMembers } } );
-    spaceshipOperatorElse  = "#endif\n";
-    spaceshipOperatorEndif = "";
+      spaceshipOperatorIf = "#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)";
+      spaceshipOperator =
+        replaceWithMap( spaceshipOperatorTemplate, { { "name", structName }, { "ordering", spaceshipOrdering }, { "spaceshipMembers", spaceshipMembers } } );
+      spaceshipOperatorElse  = "#endif\n";
+      spaceshipOperatorEndif = "";
+    }
   }
   else
   {

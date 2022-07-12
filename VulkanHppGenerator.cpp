@@ -3894,33 +3894,51 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors( std:
                                                                             size_t              initialSkipCount,
                                                                             bool                definition ) const
 {
-  std::vector<size_t> returnParams = determineReturnParams( commandData.params );
-  if ( returnParams.empty() )
+  std::vector<size_t>      returnParams = determineReturnParams( commandData.params );
+  std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
+  switch ( returnParams.size() )
   {
-    std::map<size_t, size_t> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.empty() )
-    {
-      std::vector<size_t> constPointerParams = determineConstPointerParams( commandData.params );
-      if ( constPointerParams.empty() )
+    case 0:
+      switch ( vectorParams.size() )
       {
-        return generateCommandSetStandardOrEnhanced(
-          generateCommandStandard( name, commandData, initialSkipCount, definition ),
-          generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, false, false, false, false ) );
+        case 0:
+          {
+            std::vector<size_t> constPointerParams = determineConstPointerParams( commandData.params );
+            if ( constPointerParams.empty() )
+            {
+              return generateCommandSetStandardOrEnhanced(
+                generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, false, false, false, false ) );
+            }
+          }
+          break;
+        case 1:
+          if ( commandData.params[vectorParams.begin()->second].type.isValue() )
+          {
+            if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
+            {
+              return generateCommandSetStandardEnhanced(
+                definition,
+                generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, {}, false, false, false, false ) );
+            }
+          }
+          break;
       }
-    }
-    else if ( vectorParams.size() == 1 )
-    {
-      if ( commandData.params[vectorParams.begin()->second].type.isValue() )
+      break;
+    case 1:
+      if ( vectorParams.empty() )
       {
-        if ( isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
+        if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
+             !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
         {
           return generateCommandSetStandardEnhanced(
             definition,
             generateCommandStandard( name, commandData, initialSkipCount, definition ),
-            generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, {}, false, false, false, false ) );
+            generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, false, false, false ) );
         }
       }
-    }
+      break;
   }
   return "";
 }
@@ -6810,10 +6828,10 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessNoEr
                                                                                       bool                                               definition ) const
 {
   std::vector<size_t> returnParams = determineReturnParams( commandIt->second.params );
-  if ( returnParams.empty() )
+  if ( returnParams.size() < 2 )
   {
-    return generateRAIIHandleCommandEnhanced(
-      commandIt, initialSkipCount, returnParams, determineVectorParams( commandIt->second.params ), definition, false, false );
+    std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
+    return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
   }
   return "";
 }
@@ -8505,14 +8523,14 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
     if ( ( commandData.successCodes.size() == 1 ) || enumerating )
     {
       assert( commandData.successCodes[0] == "VK_SUCCESS" );
-      if ( raii )
+      if ( raii || commandData.errorCodes.empty() )
       {
         if ( !returnVariable.empty() )
         {
           returnStatement = "return " + returnVariable + ";";
         }
       }
-      else if ( !commandData.errorCodes.empty() )
+      else
       {
         if ( returnVariable.empty() )
         {
@@ -8660,7 +8678,7 @@ std::string VulkanHppGenerator::generateReturnType(
     {
       assert(
         ( ( commandData.successCodes.size() == 1 ) || ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) ) &&
-        !commandData.errorCodes.empty() && ( returnParams.size() <= 3 ) );
+        ( returnParams.size() <= 3 ) );
       returnType = raii ? modifiedDataType : ( "typename ResultValueType<" + modifiedDataType + ">::type" );
     }
   }

@@ -706,11 +706,6 @@ private:
                                                                           size_t                                             initialSkipCount,
                                                                           bool                                               definition,
                                                                           std::vector<size_t> const &                        returnParams ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessNoErrors2Return1VectorEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                          size_t                                             initialSkipCount,
-                                                                                          std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                                          std::vector<size_t> const &                        returnParamIndices,
-                                                                                          bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                      size_t                                             initialSkipCount,
                                                                      bool                                               definition ) const;

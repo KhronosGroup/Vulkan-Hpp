@@ -6437,9 +6437,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessNoErr
             if ( ( commandIt->second.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandIt->second.params[returnParams[1]].type.type ) &&
                  !isStructureChainAnchor( commandIt->second.params[returnParams[1]].type.type ) )
             {
-              std::string str = generateRAIIHandleCommandResultMultiSuccessNoErrors2Return1VectorEnumerate(
-                commandIt, initialSkipCount, vectorParams, returnParams, definition );
-              return str;
+              return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
             }
           }
         }
@@ -6447,94 +6445,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessNoErr
     }
   }
   return "";
-}
-
-std::string
-  VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessNoErrors2Return1VectorEnumerate( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                                  size_t                           initialSkipCount,
-                                                                                                  std::map<size_t, size_t> const & vectorParams,
-                                                                                                  std::vector<size_t> const &      returnParams,
-                                                                                                  bool                             definition ) const
-{
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, returnParams, false );
-  std::string      argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, returnParams, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  std::string commandName       = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-  std::string vectorElementType = commandIt->second.params[vectorParams.begin()->first].type.type;
-  if ( !isHandleType( vectorElementType ) )
-  {
-    assert( commandIt->second.params[vectorParams.begin()->first].type.isNonConstPointer() );
-    vectorElementType = ( vectorElementType == "void" )
-                        ? "uint8_t"
-                        : stripPostfix( commandIt->second.params[vectorParams.begin()->first].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
-  }
-
-  if ( definition )
-  {
-    const std::string definitionTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<${vectorElementType}> ${className}::${commandName}( ${argumentList} ) const
-  {${functionPointerCheck}
-    std::vector<${vectorElementType}> ${vectorName};
-    ${counterType} ${counterName};
-    VULKAN_HPP_NAMESPACE::Result result;
-    do
-    {
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${firstCallArguments} ) );
-      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && ${counterName} )
-      {
-        ${vectorName}.resize( ${counterName} );
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${secondCallArguments} ) );
-      }
-    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-    if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
-    {
-      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
-    }
-    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
-    {
-      VULKAN_HPP_ASSERT( ${counterName} <= ${vectorName}.size() );
-      if ( ${counterName} < ${vectorName}.size() )
-      {
-        ${vectorName}.resize( ${counterName} );
-      }
-    }
-    return ${vectorName};
-  }
-)";
-
-    std::string counterName         = startLowerCase( stripPrefix( commandIt->second.params[vectorParams.begin()->second].name, "p" ) );
-    std::string firstCallArguments  = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, true, {}, {}, true );
-    std::string secondCallArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::string vectorName          = startLowerCase( stripPrefix( commandIt->second.params[vectorParams.begin()->first].name, "p" ) );
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "className", initialSkipCount ? stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) : "Context" },
-                             { "commandName", commandName },
-                             { "counterName", counterName },
-                             { "counterType", commandIt->second.params[vectorParams.begin()->second].type.type },
-                             { "firstCallArguments", firstCallArguments },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "secondCallArguments", secondCallArguments },
-                             { "vectorElementType", vectorElementType },
-                             { "vectorName", vectorName },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-    VULKAN_HPP_NODISCARD std::vector<${vectorElementType}> ${commandName}( ${argumentList} ) const;
-)";
-
-    return replaceWithMap( declarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "commandName", commandName },
-                             { "vectorElementType", vectorElementType },
-                           } );
-  }
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,

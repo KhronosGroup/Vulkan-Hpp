@@ -722,11 +722,6 @@ private:
                                                                             size_t                                             initialSkipCount,
                                                                             bool                                               definition,
                                                                             std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2ReturnValues( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                  size_t                                             initialSkipCount,
-                                                                                  std::map<size_t, size_t> const &                   vectorParams,
-                                                                                  std::vector<size_t> const &                        returnParams,
-                                                                                  bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultMultiSuccessWithErrors3Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                             size_t                                             initialSkipCount,
                                                                             bool                                               definition,

@@ -674,6 +674,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageViewASTCDecodeModeEXT;
   struct PhysicalDeviceASTCDecodeFeaturesEXT;
 
+  //=== VK_EXT_pipeline_robustness ===
+  struct PhysicalDevicePipelineRobustnessFeaturesEXT;
+  struct PhysicalDevicePipelineRobustnessPropertiesEXT;
+  struct PipelineRobustnessCreateInfoEXT;
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_external_memory_win32 ===
   struct ImportMemoryWin32HandleInfoKHR;

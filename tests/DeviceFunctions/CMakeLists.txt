@@ -15,6 +15,9 @@
 cmake_minimum_required(VERSION 3.2)
 
 if (NOT TESTS_BUILD_ONLY_DYNAMIC)
+
+	find_package(Vulkan REQUIRED)
+
 	project(DeviceFunctions)
 
 	set(HEADERS
@@ -33,5 +36,5 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 	)
 
 	set_target_properties(DeviceFunctions PROPERTIES FOLDER "Tests")
-	target_link_libraries(DeviceFunctions PRIVATE utils)
+	target_link_libraries(DeviceFunctions PRIVATE utils "${Vulkan_LIBRARIES}")
 endif()

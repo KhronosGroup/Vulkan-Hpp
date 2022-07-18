@@ -6588,110 +6588,37 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
        ( commandIt->second.successCodes[1] == "VK_INCOMPLETE" ) )
   {
     std::map<size_t, size_t> vectorParams = determineVectorParams( commandIt->second.params );
-    switch ( vectorParams.size() )
+    if ( vectorParams.size() == 1 )
     {
-      case 0:
-        if ( ( commandIt->second.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandIt->second.params[returnParams[0]].type.type ) &&
-             !isStructureChainAnchor( commandIt->second.params[returnParams[0]].type.type ) )
+      if ( returnParams[0] == vectorParams.begin()->second )
+      {
+        if ( returnParams[1] == vectorParams.begin()->first )
         {
-          if ( ( commandIt->second.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandIt->second.params[returnParams[1]].type.type ) &&
-               !isStructureChainAnchor( commandIt->second.params[returnParams[1]].type.type ) )
+          if ( ( commandIt->second.params[returnParams[0]].type.type == "uint32_t" ) || ( commandIt->second.params[returnParams[0]].type.type == "size_t" ) )
           {
-            return generateRAIIHandleCommandResultMultiSuccessWithErrors2ReturnValues( commandIt, initialSkipCount, vectorParams, returnParams, definition );
-          }
-        }
-        break;
-      case 1:
-        if ( returnParams[0] == vectorParams.begin()->second )
-        {
-          if ( returnParams[1] == vectorParams.begin()->first )
-          {
-            if ( ( commandIt->second.params[returnParams[0]].type.type == "uint32_t" ) || ( commandIt->second.params[returnParams[0]].type.type == "size_t" ) )
+            // needs some very special handling of "vkGetSwapchainImagesKHR" !!
+            if ( isHandleType( commandIt->second.params[returnParams[1]].type.type ) && ( commandIt->first != "vkGetSwapchainImagesKHR" ) )
             {
-              // needs some very special handling of "vkGetSwapchainImagesKHR" !!
-              if ( isHandleType( commandIt->second.params[returnParams[1]].type.type ) && ( commandIt->first != "vkGetSwapchainImagesKHR" ) )
+              return generateRAIIHandleCommandFactory( commandIt, initialSkipCount, returnParams, vectorParams, definition, false );
+            }
+            else
+            {
+              std::string str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
+              if ( isStructureChainAnchor( commandIt->second.params[returnParams[1]].type.type ) )
               {
-                return generateRAIIHandleCommandFactory( commandIt, initialSkipCount, returnParams, vectorParams, definition, false );
+                str += generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, true, false );
               }
-              else
-              {
-                std::string str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
-                if ( isStructureChainAnchor( commandIt->second.params[returnParams[1]].type.type ) )
-                {
-                  str += generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, true, false );
-                }
-                return str;
-              }
+              return str;
             }
           }
         }
-        break;
-      default: assert( false ); break;
+      }
     }
   }
   return "";
 }
 
-std::string
-  VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithErrors2ReturnValues( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                          size_t                                             initialSkipCount,
-                                                                                          std::map<size_t, size_t> const &                   vectorParams,
-                                                                                          std::vector<size_t> const &                        returnParams,
-                                                                                          bool                                               definition ) const
-{
-  assert( returnParams.size() == 2 );
-  std::set<size_t> skippedParams = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, returnParams, false );
-  std::string      argumentList =
-    generateArgumentListEnhanced( commandIt->second.params, returnParams, vectorParams, skippedParams, {}, {}, definition, false, false, false );
-  std::string commandName    = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, false, false );
-  std::string firstDataType  = stripPostfix( commandIt->second.params[returnParams[0]].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
-  std::string secondDataType = stripPostfix( commandIt->second.params[returnParams[1]].type.compose( "VULKAN_HPP_NAMESPACE" ), "*" );
 
-  if ( definition )
-  {
-    std::string const definitionTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::tuple<VULKAN_HPP_NAMESPACE::Result, ${firstDataType}, ${secondDataType}> ${className}::${commandName}( ${argumentList} ) const
-  {${functionPointerCheck}
-    ${firstDataType} ${firstDataName};
-    ${secondDataType} ${secondDataName};
-    VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${vkCommand}( ${callArguments} ) );
-    if ( ${failureCheck} )
-    {
-      throwResultException( result, VULKAN_HPP_NAMESPACE_STRING"::${className}::${commandName}" );
-    }
-    return std::make_tuple( result, ${firstDataName},${secondDataName} );
-  }
-)";
-
-    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, {}, {}, true );
-    std::string valueName     = startLowerCase( stripPrefix( commandIt->second.params[returnParams[0]].name, "p" ) );
-
-    return replaceWithMap( definitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "failureCheck", generateFailureCheck( commandIt->second.successCodes ) },
-                             { "firstDataName", startLowerCase( stripPrefix( commandIt->second.params[returnParams[0]].name, "p" ) ) },
-                             { "firstDataType", firstDataType },
-                             { "functionPointerCheck", generateFunctionPointerCheck( commandIt->first, commandIt->second.referencedIn ) },
-                             { "secondDataName", startLowerCase( stripPrefix( commandIt->second.params[returnParams[1]].name, "p" ) ) },
-                             { "secondDataType", secondDataType },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const declarationTemplate =
-      R"(
-  VULKAN_HPP_NODISCARD std::tuple<VULKAN_HPP_NAMESPACE::Result, ${firstDataType}, ${secondDataType}> ${commandName}( ${argumentList} ) const;
-)";
-
-    return replaceWithMap(
-      declarationTemplate,
-      { { "argumentList", argumentList }, { "commandName", commandName }, { "firstDataType", firstDataType }, { "secondDataType", secondDataType } } );
-  }
-}
 
 std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithErrors3Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                                               size_t                      initialSkipCount,

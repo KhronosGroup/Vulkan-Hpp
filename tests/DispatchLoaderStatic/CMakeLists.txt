@@ -16,6 +16,8 @@ cmake_minimum_required(VERSION 3.2)
 
 if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 
+  find_package(Vulkan REQUIRED)
+
   project(DispatchLoaderStatic)
 
   set(HEADERS
@@ -38,6 +40,6 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
   endif()
 
   set_target_properties(DispatchLoaderStatic PROPERTIES FOLDER "Tests")
-  target_link_libraries(DispatchLoaderStatic PRIVATE utils)
+  target_link_libraries(DispatchLoaderStatic PRIVATE utils "${Vulkan_LIBRARIES}")
 
 endif()

@@ -9198,12 +9198,12 @@ ${allowDuplicate}
 ${typeValue}
 ${constructorAndSetters}
 
-    explicit operator Vk${structureType} const &() const VULKAN_HPP_NOEXCEPT
+    operator Vk${structureType} const &() const VULKAN_HPP_NOEXCEPT
     {
       return *reinterpret_cast<const Vk${structureType}*>( this );
     }
 
-    explicit operator Vk${structureType} &() VULKAN_HPP_NOEXCEPT
+    operator Vk${structureType} &() VULKAN_HPP_NOEXCEPT
     {
       return *reinterpret_cast<Vk${structureType}*>( this );
     }

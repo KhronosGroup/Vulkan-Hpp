@@ -26,6 +26,100 @@ static char const * EngineName = "Vulkan.hpp";
 PFN_vkCreateDebugUtilsMessengerEXT  pfnVkCreateDebugUtilsMessengerEXT;
 PFN_vkDestroyDebugUtilsMessengerEXT pfnVkDestroyDebugUtilsMessengerEXT;
 
+#if defined( VULKAN_HPP_NO_TO_STRING )
+namespace local
+{
+  std::string to_string( vk::DebugUtilsMessageSeverityFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose: return "Verbose";
+      case vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo: return "Info";
+      case vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning: return "Warning";
+      case vk::DebugUtilsMessageSeverityFlagBitsEXT::eError: return "Error";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  std::string to_string( vk::DebugUtilsMessageTypeFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral )
+      result += "General | ";
+    if ( value & vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation )
+      result += "Validation | ";
+    if ( value & vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance )
+      result += "Performance | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  std::string to_string( vk::ObjectType value )
+  {
+    switch ( value )
+    {
+      case vk::ObjectType::eUnknown: return "Unknown";
+      case vk::ObjectType::eInstance: return "Instance";
+      case vk::ObjectType::ePhysicalDevice: return "PhysicalDevice";
+      case vk::ObjectType::eDevice: return "Device";
+      case vk::ObjectType::eQueue: return "Queue";
+      case vk::ObjectType::eSemaphore: return "Semaphore";
+      case vk::ObjectType::eCommandBuffer: return "CommandBuffer";
+      case vk::ObjectType::eFence: return "Fence";
+      case vk::ObjectType::eDeviceMemory: return "DeviceMemory";
+      case vk::ObjectType::eBuffer: return "Buffer";
+      case vk::ObjectType::eImage: return "Image";
+      case vk::ObjectType::eEvent: return "Event";
+      case vk::ObjectType::eQueryPool: return "QueryPool";
+      case vk::ObjectType::eBufferView: return "BufferView";
+      case vk::ObjectType::eImageView: return "ImageView";
+      case vk::ObjectType::eShaderModule: return "ShaderModule";
+      case vk::ObjectType::ePipelineCache: return "PipelineCache";
+      case vk::ObjectType::ePipelineLayout: return "PipelineLayout";
+      case vk::ObjectType::eRenderPass: return "RenderPass";
+      case vk::ObjectType::ePipeline: return "Pipeline";
+      case vk::ObjectType::eDescriptorSetLayout: return "DescriptorSetLayout";
+      case vk::ObjectType::eSampler: return "Sampler";
+      case vk::ObjectType::eDescriptorPool: return "DescriptorPool";
+      case vk::ObjectType::eDescriptorSet: return "DescriptorSet";
+      case vk::ObjectType::eFramebuffer: return "Framebuffer";
+      case vk::ObjectType::eCommandPool: return "CommandPool";
+      case vk::ObjectType::eSamplerYcbcrConversion: return "SamplerYcbcrConversion";
+      case vk::ObjectType::eDescriptorUpdateTemplate: return "DescriptorUpdateTemplate";
+      case vk::ObjectType::ePrivateDataSlot: return "PrivateDataSlot";
+      case vk::ObjectType::eSurfaceKHR: return "SurfaceKHR";
+      case vk::ObjectType::eSwapchainKHR: return "SwapchainKHR";
+      case vk::ObjectType::eDisplayKHR: return "DisplayKHR";
+      case vk::ObjectType::eDisplayModeKHR: return "DisplayModeKHR";
+      case vk::ObjectType::eDebugReportCallbackEXT: return "DebugReportCallbackEXT";
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case vk::ObjectType::eVideoSessionKHR: return "VideoSessionKHR";
+      case vk::ObjectType::eVideoSessionParametersKHR: return "VideoSessionParametersKHR";
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case vk::ObjectType::eCuModuleNVX: return "CuModuleNVX";
+      case vk::ObjectType::eCuFunctionNVX: return "CuFunctionNVX";
+      case vk::ObjectType::eDebugUtilsMessengerEXT: return "DebugUtilsMessengerEXT";
+      case vk::ObjectType::eAccelerationStructureKHR: return "AccelerationStructureKHR";
+      case vk::ObjectType::eValidationCacheEXT: return "ValidationCacheEXT";
+      case vk::ObjectType::eAccelerationStructureNV: return "AccelerationStructureNV";
+      case vk::ObjectType::ePerformanceConfigurationINTEL: return "PerformanceConfigurationINTEL";
+      case vk::ObjectType::eDeferredOperationKHR: return "DeferredOperationKHR";
+      case vk::ObjectType::eIndirectCommandsLayoutNV: return "IndirectCommandsLayoutNV";
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+      case vk::ObjectType::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+}  // namespace local
+using local::to_string;
+#else
+using vk::to_string;
+#endif
+
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugUtilsMessengerEXT( VkInstance                                 instance,
                                                                const VkDebugUtilsMessengerCreateInfoEXT * pCreateInfo,
                                                                const VkAllocationCallbacks *              pAllocator,
@@ -46,50 +140,38 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugMessageFunc( VkDebugUtilsMessageSeverityFlag
 {
   std::ostringstream message;
 
-  message << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
-          << vk::to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
-  message << "\t"
-          << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
-  message << "\t"
-          << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
-  message << "\t"
-          << "message         = <" << pCallbackData->pMessage << ">\n";
+  message << to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
+          << to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
+  message << std::string( "\t" ) << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
+  message << std::string( "\t" ) << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
+  message << std::string( "\t" ) << "message         = <" << pCallbackData->pMessage << ">\n";
   if ( 0 < pCallbackData->queueLabelCount )
   {
-    message << "\t"
-            << "Queue Labels:\n";
+    message << std::string( "\t" ) << "Queue Labels:\n";
     for ( uint32_t i = 0; i < pCallbackData->queueLabelCount; i++ )
     {
-      message << "\t\t"
-              << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
+      message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
     }
   }
   if ( 0 < pCallbackData->cmdBufLabelCount )
   {
-    message << "\t"
-            << "CommandBuffer Labels:\n";
+    message << std::string( "\t" ) << "CommandBuffer Labels:\n";
     for ( uint32_t i = 0; i < pCallbackData->cmdBufLabelCount; i++ )
     {
-      message << "\t\t"
-              << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
+      message << std::string( "\t\t" ) << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
     }
   }
   if ( 0 < pCallbackData->objectCount )
   {
-    message << "\t"
-            << "Objects:\n";
+    message << std::string( "\t" ) << "Objects:\n";
     for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
     {
-      message << "\t\t"
-              << "Object " << i << "\n";
-      message << "\t\t\t"
-              << "objectType   = " << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
-      message << "\t\t\t"
-              << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
+      message << std::string( "\t\t" ) << "Object " << i << "\n";
+      message << std::string( "\t\t\t" ) << "objectType   = " << to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
+      message << std::string( "\t\t\t" ) << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
       if ( pCallbackData->pObjects[i].pObjectName )
       {
-        message << "\t\t\t"
-                << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
+        message << std::string( "\t\t\t" ) << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
       }
     }
   }

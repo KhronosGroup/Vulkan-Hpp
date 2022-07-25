@@ -5624,7 +5624,11 @@ namespace VULKAN_HPP_NAMESPACE
     }
     virtual std::string message( int ev ) const override
     {
-      return to_string( static_cast<Result>( ev ) );
+#  if defined( VULKAN_HPP_NO_TO_STRING )
+      return std::to_string( ev );
+#  else
+      return VULKAN_HPP_NAMESPACE::to_string( static_cast<VULKAN_HPP_NAMESPACE::Result>( ev ) );
+#  endif
     }
   };
 

@@ -551,6 +551,13 @@ With the additional header `vulkan_hash.hpp`, you get specializations of `std::h
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
 When you configure your project using CMake, you can enable TESTS_BUILD to add some test projects to your solution. Those tests are just compilation tests and are not required to run.
 
+### Compile time issues
+As vulkan.hpp is pretty big, some compilers might need some time to digest all that stuff. In order to potentially reduce the time needed to compile that header, a couple of defines will be introduced, that allow you to hide certain features. Whenever you don't need that corresponding feature, defining that value might improve your compile time.
+Currently, there are just two such defines:
+- ```VULKAN_HPP_NO_SPACESHIP_OPERATOR```, which removes the spaceship operator on structures (available with C++20)
+- ```VULKAN_HPP_NO_TO_STRING```, which removes the various vk::to_string functions on enums and bitmasks.
+- ```VULKAN_HPP_USE_REFLECT```, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
+
 ## Configuration Options
 
 There are a couple of defines you can use to control the feature set and behaviour of vulkan.hpp:
@@ -614,6 +621,10 @@ This is set to be the compiler-dependent attribute used to mark functions as inl
 #### VULKAN_HPP_NAMESPACE
 
 By default, the namespace used with vulkan.hpp is ```vk```. By defining ```VULKAN_HPP_NAMESPACE``` before including vulkan.hpp, you can adjust this.
+
+#### VULKAN_HPP_NO_TO_STRING
+
+By default, there are functions ```vk::to_string``` for enums and bitmasks. If you don't need that functionality, you can define ```VULKAN_HPP_NO_TO_STRING``` to spare some compilation time.
 
 #### VULKAN_HPP_NO_CONSTRUCTORS
 

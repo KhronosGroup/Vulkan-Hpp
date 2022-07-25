@@ -873,6 +873,9 @@ namespace VULKAN_HPP_NAMESPACE
     eSubpassFragmentDensityMapOffsetEndInfoQCOM                = VK_STRUCTURE_TYPE_SUBPASS_FRAGMENT_DENSITY_MAP_OFFSET_END_INFO_QCOM,
     ePhysicalDeviceLinearColorAttachmentFeaturesNV             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINEAR_COLOR_ATTACHMENT_FEATURES_NV,
     ePhysicalDeviceImageCompressionControlSwapchainFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_COMPRESSION_CONTROL_SWAPCHAIN_FEATURES_EXT,
+    ePhysicalDeviceImageProcessingFeaturesQCOM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM,
+    ePhysicalDeviceImageProcessingPropertiesQCOM               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM,
+    eImageViewSampleWeightCreateInfoQCOM                       = VK_STRUCTURE_TYPE_IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM,
     ePhysicalDeviceSubpassMergeFeedbackFeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBPASS_MERGE_FEEDBACK_FEATURES_EXT,
     eRenderPassCreationControlEXT                              = VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_CONTROL_EXT,
     eRenderPassCreationFeedbackCreateInfoEXT                   = VK_STRUCTURE_TYPE_RENDER_PASS_CREATION_FEEDBACK_CREATE_INFO_EXT,
@@ -881,6 +884,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderModuleIdentifierPropertiesEXT         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_MODULE_IDENTIFIER_PROPERTIES_EXT,
     ePipelineShaderStageModuleIdentifierCreateInfoEXT          = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_MODULE_IDENTIFIER_CREATE_INFO_EXT,
     eShaderModuleIdentifierEXT                                 = VK_STRUCTURE_TYPE_SHADER_MODULE_IDENTIFIER_EXT,
+    ePhysicalDeviceTilePropertiesFeaturesQCOM                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TILE_PROPERTIES_FEATURES_QCOM,
+    eTilePropertiesQCOM                                        = VK_STRUCTURE_TYPE_TILE_PROPERTIES_QCOM,
     eAttachmentDescription2KHR                                 = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentDescriptionStencilLayoutKHR                     = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                                   = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
@@ -1775,6 +1780,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM: return "SubpassFragmentDensityMapOffsetEndInfoQCOM";
       case StructureType::ePhysicalDeviceLinearColorAttachmentFeaturesNV: return "PhysicalDeviceLinearColorAttachmentFeaturesNV";
       case StructureType::ePhysicalDeviceImageCompressionControlSwapchainFeaturesEXT: return "PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT";
+      case StructureType::ePhysicalDeviceImageProcessingFeaturesQCOM: return "PhysicalDeviceImageProcessingFeaturesQCOM";
+      case StructureType::ePhysicalDeviceImageProcessingPropertiesQCOM: return "PhysicalDeviceImageProcessingPropertiesQCOM";
+      case StructureType::eImageViewSampleWeightCreateInfoQCOM: return "ImageViewSampleWeightCreateInfoQCOM";
       case StructureType::ePhysicalDeviceSubpassMergeFeedbackFeaturesEXT: return "PhysicalDeviceSubpassMergeFeedbackFeaturesEXT";
       case StructureType::eRenderPassCreationControlEXT: return "RenderPassCreationControlEXT";
       case StructureType::eRenderPassCreationFeedbackCreateInfoEXT: return "RenderPassCreationFeedbackCreateInfoEXT";
@@ -1783,6 +1791,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderModuleIdentifierPropertiesEXT: return "PhysicalDeviceShaderModuleIdentifierPropertiesEXT";
       case StructureType::ePipelineShaderStageModuleIdentifierCreateInfoEXT: return "PipelineShaderStageModuleIdentifierCreateInfoEXT";
       case StructureType::eShaderModuleIdentifierEXT: return "ShaderModuleIdentifierEXT";
+      case StructureType::ePhysicalDeviceTilePropertiesFeaturesQCOM: return "PhysicalDeviceTilePropertiesFeaturesQCOM";
+      case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -2709,6 +2719,8 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeDpbKHR = VK_IMAGE_USAGE_VIDEO_ENCODE_DPB_BIT_KHR,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     eInvocationMaskHUAWEI = VK_IMAGE_USAGE_INVOCATION_MASK_BIT_HUAWEI,
+    eSampleWeightQCOM     = VK_IMAGE_USAGE_SAMPLE_WEIGHT_BIT_QCOM,
+    eSampleBlockMatchQCOM = VK_IMAGE_USAGE_SAMPLE_BLOCK_MATCH_BIT_QCOM,
     eShadingRateImageNV   = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV
   };
 
@@ -2737,6 +2749,8 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case ImageUsageFlagBits::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
+      case ImageUsageFlagBits::eSampleWeightQCOM: return "SampleWeightQCOM";
+      case ImageUsageFlagBits::eSampleBlockMatchQCOM: return "SampleBlockMatchQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4267,7 +4281,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eSubsampledEXT                     = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
     eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT,
-    eNonSeamlessCubeMapEXT             = VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT
+    eNonSeamlessCubeMapEXT             = VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT,
+    eImageProcessingQCOM               = VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM
   };
 
   VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlagBits value )
@@ -4277,6 +4292,7 @@ namespace VULKAN_HPP_NAMESPACE
       case SamplerCreateFlagBits::eSubsampledEXT: return "SubsampledEXT";
       case SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT: return "SubsampledCoarseReconstructionEXT";
       case SamplerCreateFlagBits::eNonSeamlessCubeMapEXT: return "NonSeamlessCubeMapEXT";
+      case SamplerCreateFlagBits::eImageProcessingQCOM: return "ImageProcessingQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4352,6 +4368,8 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureKHR = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR,
     eAccelerationStructureNV  = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV,
     eMutableVALVE             = VK_DESCRIPTOR_TYPE_MUTABLE_VALVE,
+    eSampleWeightImageQCOM    = VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM,
+    eBlockMatchImageQCOM      = VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM,
     eInlineUniformBlockEXT    = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT
   };
 
@@ -4374,6 +4392,8 @@ namespace VULKAN_HPP_NAMESPACE
       case DescriptorType::eAccelerationStructureKHR: return "AccelerationStructureKHR";
       case DescriptorType::eAccelerationStructureNV: return "AccelerationStructureNV";
       case DescriptorType::eMutableVALVE: return "MutableVALVE";
+      case DescriptorType::eSampleWeightImageQCOM: return "SampleWeightImageQCOM";
+      case DescriptorType::eBlockMatchImageQCOM: return "BlockMatchImageQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5659,6 +5679,10 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeDpbKHR   = VK_FORMAT_FEATURE_2_VIDEO_ENCODE_DPB_BIT_KHR,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     eLinearColorAttachmentNV    = VK_FORMAT_FEATURE_2_LINEAR_COLOR_ATTACHMENT_BIT_NV,
+    eWeightImageQCOM            = VK_FORMAT_FEATURE_2_WEIGHT_IMAGE_BIT_QCOM,
+    eWeightSampledImageQCOM     = VK_FORMAT_FEATURE_2_WEIGHT_SAMPLED_IMAGE_BIT_QCOM,
+    eBlockMatchingQCOM          = VK_FORMAT_FEATURE_2_BLOCK_MATCHING_BIT_QCOM,
+    eBoxFilterSampledQCOM       = VK_FORMAT_FEATURE_2_BOX_FILTER_SAMPLED_BIT_QCOM,
     eSampledImageFilterCubicEXT = VK_FORMAT_FEATURE_2_SAMPLED_IMAGE_FILTER_CUBIC_BIT_EXT
   };
   using FormatFeatureFlagBits2KHR = FormatFeatureFlagBits2;
@@ -5707,6 +5731,10 @@ namespace VULKAN_HPP_NAMESPACE
       case FormatFeatureFlagBits2::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case FormatFeatureFlagBits2::eLinearColorAttachmentNV: return "LinearColorAttachmentNV";
+      case FormatFeatureFlagBits2::eWeightImageQCOM: return "WeightImageQCOM";
+      case FormatFeatureFlagBits2::eWeightSampledImageQCOM: return "WeightSampledImageQCOM";
+      case FormatFeatureFlagBits2::eBlockMatchingQCOM: return "BlockMatchingQCOM";
+      case FormatFeatureFlagBits2::eBoxFilterSampledQCOM: return "BoxFilterSampledQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8867,15 +8895,16 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageUsageFlagBits::eDepthStencilAttachment ) | VkFlags( ImageUsageFlagBits::eTransientAttachment ) |
                  VkFlags( ImageUsageFlagBits::eInputAttachment )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
+                 | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
+                 | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI )
+                 | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI ) | VkFlags( ImageUsageFlagBits::eSampleWeightQCOM ) |
+                 VkFlags( ImageUsageFlagBits::eSampleBlockMatchQCOM )
     };
   };
 
@@ -8943,6 +8972,10 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & ImageUsageFlagBits::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
+    if ( value & ImageUsageFlagBits::eSampleWeightQCOM )
+      result += "SampleWeightQCOM | ";
+    if ( value & ImageUsageFlagBits::eSampleBlockMatchQCOM )
+      result += "SampleBlockMatchQCOM | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -9108,7 +9141,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueueFlagBits::eGraphics ) | VkFlags( QueueFlagBits::eCompute ) | VkFlags( QueueFlagBits::eTransfer ) |
                  VkFlags( QueueFlagBits::eSparseBinding ) | VkFlags( QueueFlagBits::eProtected )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
+                 | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9718,7 +9751,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueryResultFlagBits::e64 ) | VkFlags( QueryResultFlagBits::eWait ) | VkFlags( QueryResultFlagBits::eWithAvailability ) |
                  VkFlags( QueryResultFlagBits::ePartial )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( QueryResultFlagBits::eWithStatusKHR )
+                 | VkFlags( QueryResultFlagBits::eWithStatusKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9831,13 +9864,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BufferUsageFlagBits::eIndexBuffer ) | VkFlags( BufferUsageFlagBits::eVertexBuffer ) |
                  VkFlags( BufferUsageFlagBits::eIndirectBuffer ) | VkFlags( BufferUsageFlagBits::eShaderDeviceAddress )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
+                 | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
                  VkFlags( BufferUsageFlagBits::eConditionalRenderingEXT ) | VkFlags( BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR ) |
                  VkFlags( BufferUsageFlagBits::eAccelerationStructureStorageKHR ) | VkFlags( BufferUsageFlagBits::eShaderBindingTableKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
+                 | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -10541,7 +10574,7 @@ namespace VULKAN_HPP_NAMESPACE
     enum : VkFlags
     {
       allFlags = VkFlags( SamplerCreateFlagBits::eSubsampledEXT ) | VkFlags( SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT ) |
-                 VkFlags( SamplerCreateFlagBits::eNonSeamlessCubeMapEXT )
+                 VkFlags( SamplerCreateFlagBits::eNonSeamlessCubeMapEXT ) | VkFlags( SamplerCreateFlagBits::eImageProcessingQCOM )
     };
   };
 
@@ -10577,6 +10610,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "SubsampledCoarseReconstructionEXT | ";
     if ( value & SamplerCreateFlagBits::eNonSeamlessCubeMapEXT )
       result += "NonSeamlessCubeMapEXT | ";
+    if ( value & SamplerCreateFlagBits::eImageProcessingQCOM )
+      result += "ImageProcessingQCOM | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -11511,13 +11546,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Heap ) |
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Resource ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eDmaBufEXT )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-               | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
+                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
 
@@ -11845,7 +11880,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt ) | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence ) |
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eSyncFd )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-               | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
+                 | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     };
   };
@@ -12243,9 +12278,9 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( PipelineStageFlagBits2::eClear ) | VkFlags64( PipelineStageFlagBits2::eIndexInput ) |
                  VkFlags64( PipelineStageFlagBits2::eVertexAttributeInput ) | VkFlags64( PipelineStageFlagBits2::ePreRasterizationShaders )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
+                 | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
+                 | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
                  VkFlags64( PipelineStageFlagBits2::eCommandPreprocessNV ) | VkFlags64( PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eAccelerationStructureBuildKHR ) | VkFlags64( PipelineStageFlagBits2::eRayTracingShaderKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eFragmentDensityProcessEXT ) | VkFlags64( PipelineStageFlagBits2::eTaskShaderNV ) |
@@ -12381,10 +12416,10 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( AccessFlagBits2::eShaderSampledRead ) | VkFlags64( AccessFlagBits2::eShaderStorageRead ) |
                  VkFlags64( AccessFlagBits2::eShaderStorageWrite )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
+                 | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
                  VkFlags64( AccessFlagBits2::eVideoEncodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoEncodeWriteKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
+                 | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
                  VkFlags64( AccessFlagBits2::eTransformFeedbackCounterWriteEXT ) | VkFlags64( AccessFlagBits2::eConditionalRenderingReadEXT ) |
                  VkFlags64( AccessFlagBits2::eCommandPreprocessReadNV ) | VkFlags64( AccessFlagBits2::eCommandPreprocessWriteNV ) |
                  VkFlags64( AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR ) | VkFlags64( AccessFlagBits2::eAccelerationStructureReadKHR ) |
@@ -12621,14 +12656,16 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( FormatFeatureFlagBits2::eStorageReadWithoutFormat ) | VkFlags64( FormatFeatureFlagBits2::eStorageWriteWithoutFormat ) |
                  VkFlags64( FormatFeatureFlagBits2::eSampledImageDepthComparison )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
+                 | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
                  VkFlags64( FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
+                 | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-               | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV )
+                 | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV ) | VkFlags64( FormatFeatureFlagBits2::eWeightImageQCOM ) |
+                 VkFlags64( FormatFeatureFlagBits2::eWeightSampledImageQCOM ) | VkFlags64( FormatFeatureFlagBits2::eBlockMatchingQCOM ) |
+                 VkFlags64( FormatFeatureFlagBits2::eBoxFilterSampledQCOM )
     };
   };
 
@@ -12734,6 +12771,14 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & FormatFeatureFlagBits2::eLinearColorAttachmentNV )
       result += "LinearColorAttachmentNV | ";
+    if ( value & FormatFeatureFlagBits2::eWeightImageQCOM )
+      result += "WeightImageQCOM | ";
+    if ( value & FormatFeatureFlagBits2::eWeightSampledImageQCOM )
+      result += "WeightSampledImageQCOM | ";
+    if ( value & FormatFeatureFlagBits2::eBlockMatchingQCOM )
+      result += "BlockMatchingQCOM | ";
+    if ( value & FormatFeatureFlagBits2::eBoxFilterSampledQCOM )
+      result += "BoxFilterSampledQCOM | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -13152,7 +13197,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eInvalid )
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
+                 | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
                  VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };

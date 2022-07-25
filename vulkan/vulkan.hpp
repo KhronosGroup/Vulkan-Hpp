@@ -120,7 +120,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 221, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 222, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5319,6 +5319,23 @@ namespace VULKAN_HPP_NAMESPACE
                                                    VkShaderModuleIdentifierEXT *    pIdentifier ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetShaderModuleCreateInfoIdentifierEXT( device, pCreateInfo, pIdentifier );
+    }
+
+    //=== VK_QCOM_tile_properties ===
+
+    VkResult vkGetFramebufferTilePropertiesQCOM( VkDevice               device,
+                                                 VkFramebuffer          framebuffer,
+                                                 uint32_t *             pPropertiesCount,
+                                                 VkTilePropertiesQCOM * pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetFramebufferTilePropertiesQCOM( device, framebuffer, pPropertiesCount, pProperties );
+    }
+
+    VkResult vkGetDynamicRenderingTilePropertiesQCOM( VkDevice                device,
+                                                      const VkRenderingInfo * pRenderingInfo,
+                                                      VkTilePropertiesQCOM *  pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDynamicRenderingTilePropertiesQCOM( device, pRenderingInfo, pProperties );
     }
   };
 #endif
@@ -11092,6 +11109,40 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_QCOM_image_processing ===
+  template <>
+  struct StructExtends<ImageViewSampleWeightCreateInfoQCOM, ImageViewCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceImageProcessingFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceImageProcessingFeaturesQCOM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceImageProcessingPropertiesQCOM, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_subpass_merge_feedback ===
   template <>
   struct StructExtends<PhysicalDeviceSubpassMergeFeedbackFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11169,6 +11220,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PipelineShaderStageModuleIdentifierCreateInfoEXT, PipelineShaderStageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_QCOM_tile_properties ===
+  template <>
+  struct StructExtends<PhysicalDeviceTilePropertiesFeaturesQCOM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceTilePropertiesFeaturesQCOM, DeviceCreateInfo>
   {
     enum
     {
@@ -12228,6 +12297,10 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_shader_module_identifier ===
     PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
     PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
+
+    //=== VK_QCOM_tile_properties ===
+    PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
+    PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -13420,6 +13493,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleIdentifierEXT" ) );
       vkGetShaderModuleCreateInfoIdentifierEXT =
         PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
+
+      //=== VK_QCOM_tile_properties ===
+      vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetFramebufferTilePropertiesQCOM" ) );
+      vkGetDynamicRenderingTilePropertiesQCOM =
+        PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -14261,6 +14339,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleIdentifierEXT" ) );
       vkGetShaderModuleCreateInfoIdentifierEXT =
         PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
+
+      //=== VK_QCOM_tile_properties ===
+      vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );
+      vkGetDynamicRenderingTilePropertiesQCOM =
+        PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
     }
   };
 }  // namespace VULKAN_HPP_NAMESPACE

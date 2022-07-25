@@ -1480,6 +1480,11 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkCmdSetViewportShadingRatePaletteNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportShadingRatePaletteNV" ) );
         vkCmdSetCoarseSampleOrderNV = PFN_vkCmdSetCoarseSampleOrderNV( vkGetDeviceProcAddr( device, "vkCmdSetCoarseSampleOrderNV" ) );
 
+        //=== VK_QCOM_tile_properties ===
+        vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );
+        vkGetDynamicRenderingTilePropertiesQCOM =
+          PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
+
         //=== VK_VALVE_descriptor_set_host_mapping ===
         vkGetDescriptorSetLayoutHostMappingInfoVALVE =
           PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
@@ -2185,6 +2190,10 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdBindShadingRateImageNV          vkCmdBindShadingRateImageNV          = 0;
       PFN_vkCmdSetViewportShadingRatePaletteNV vkCmdSetViewportShadingRatePaletteNV = 0;
       PFN_vkCmdSetCoarseSampleOrderNV          vkCmdSetCoarseSampleOrderNV          = 0;
+
+      //=== VK_QCOM_tile_properties ===
+      PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
+      PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
 
       //=== VK_VALVE_descriptor_set_host_mapping ===
       PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE = 0;
@@ -3819,6 +3828,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT
                            getShaderModuleCreateInfoIdentifierEXT( const VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_QCOM_tile_properties ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::TilePropertiesQCOM
+                           getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                                       m_device    = {};
@@ -7202,6 +7216,10 @@ namespace VULKAN_HPP_NAMESPACE
         std::swap( m_allocator, rhs.m_allocator );
         std::swap( m_dispatcher, rhs.m_dispatcher );
       }
+
+      //=== VK_QCOM_tile_properties ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM> getTilePropertiesQCOM() const;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device      = {};
@@ -17315,6 +17333,52 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  reinterpret_cast<VkShaderModuleIdentifierEXT *>( &identifier ) );
 
       return identifier;
+    }
+
+    //=== VK_QCOM_tile_properties ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM> Framebuffer::getTilePropertiesQCOM() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetFramebufferTilePropertiesQCOM &&
+                         "Function <vkGetFramebufferTilePropertiesQCOM> needs extension <VK_QCOM_tile_properties> enabled!" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM> properties;
+      uint32_t                                              propertiesCount;
+      VkResult                                              result;
+      do
+      {
+        result = getDispatcher()->vkGetFramebufferTilePropertiesQCOM(
+          static_cast<VkDevice>( m_device ), static_cast<VkFramebuffer>( m_framebuffer ), &propertiesCount, nullptr );
+        if ( ( result == VK_SUCCESS ) && propertiesCount )
+        {
+          properties.resize( propertiesCount );
+          result = getDispatcher()->vkGetFramebufferTilePropertiesQCOM( static_cast<VkDevice>( m_device ),
+                                                                        static_cast<VkFramebuffer>( m_framebuffer ),
+                                                                        &propertiesCount,
+                                                                        reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) );
+        }
+      } while ( result == VK_INCOMPLETE );
+
+      VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
+      if ( propertiesCount < properties.size() )
+      {
+        properties.resize( propertiesCount );
+      }
+      return properties;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::TilePropertiesQCOM
+      Device::getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDynamicRenderingTilePropertiesQCOM &&
+                         "Function <vkGetDynamicRenderingTilePropertiesQCOM> needs extension <VK_QCOM_tile_properties> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::TilePropertiesQCOM properties;
+      getDispatcher()->vkGetDynamicRenderingTilePropertiesQCOM( static_cast<VkDevice>( m_device ),
+                                                                reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ),
+                                                                reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
+
+      return properties;
     }
 
 #endif

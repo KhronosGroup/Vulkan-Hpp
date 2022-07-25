@@ -1415,6 +1415,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_image_compression_control_swapchain ===
   struct PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT;
 
+  //=== VK_QCOM_image_processing ===
+  struct ImageViewSampleWeightCreateInfoQCOM;
+  struct PhysicalDeviceImageProcessingFeaturesQCOM;
+  struct PhysicalDeviceImageProcessingPropertiesQCOM;
+
   //=== VK_EXT_subpass_merge_feedback ===
   struct PhysicalDeviceSubpassMergeFeedbackFeaturesEXT;
   struct RenderPassCreationControlEXT;
@@ -1428,6 +1433,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceShaderModuleIdentifierPropertiesEXT;
   struct PipelineShaderStageModuleIdentifierCreateInfoEXT;
   struct ShaderModuleIdentifierEXT;
+
+  //=== VK_QCOM_tile_properties ===
+  struct PhysicalDeviceTilePropertiesFeaturesQCOM;
+  struct TilePropertiesQCOM;
 
   //===============
   //=== HANDLEs ===
@@ -11374,6 +11383,39 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT
                          getShaderModuleCreateInfoIdentifierEXT( const VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo & createInfo,
                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    //=== VK_QCOM_tile_properties ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer          framebuffer,
+                                                                  uint32_t *                                 pPropertiesCount,
+                                                                  VULKAN_HPP_NAMESPACE::TilePropertiesQCOM * pProperties,
+                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename TilePropertiesQCOMAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM>,
+              typename Dispatch                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
+      getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer framebuffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename TilePropertiesQCOMAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM>,
+              typename Dispatch                    = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B1                          = TilePropertiesQCOMAllocator,
+              typename std::enable_if<std::is_same<typename B1::value_type, TilePropertiesQCOM>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
+      getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer framebuffer,
+                                        TilePropertiesQCOMAllocator &     tilePropertiesQCOMAllocator,
+                                        Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    Result getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo * pRenderingInfo,
+                                                  VULKAN_HPP_NAMESPACE::TilePropertiesQCOM *  pProperties,
+                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::TilePropertiesQCOM
+                         getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo,
+                                                                Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     operator VkDevice() const VULKAN_HPP_NOEXCEPT

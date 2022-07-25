@@ -19865,5 +19865,106 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_QCOM_tile_properties ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer          framebuffer,
+                                                                                          uint32_t *                                 pPropertiesCount,
+                                                                                          VULKAN_HPP_NAMESPACE::TilePropertiesQCOM * pProperties,
+                                                                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetFramebufferTilePropertiesQCOM(
+      m_device, static_cast<VkFramebuffer>( framebuffer ), pPropertiesCount, reinterpret_cast<VkTilePropertiesQCOM *>( pProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename TilePropertiesQCOMAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
+                       Device::getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer framebuffer, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator> properties;
+    uint32_t                                                                           propertiesCount;
+    VkResult                                                                           result;
+    do
+    {
+      result = d.vkGetFramebufferTilePropertiesQCOM( m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && propertiesCount )
+      {
+        properties.resize( propertiesCount );
+        result = d.vkGetFramebufferTilePropertiesQCOM(
+          m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+
+    VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
+    if ( propertiesCount < properties.size() )
+    {
+      properties.resize( propertiesCount );
+    }
+    return properties;
+  }
+
+  template <typename TilePropertiesQCOMAllocator,
+            typename Dispatch,
+            typename B1,
+            typename std::enable_if<std::is_same<typename B1::value_type, TilePropertiesQCOM>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
+                       Device::getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer framebuffer,
+                                              TilePropertiesQCOMAllocator &     tilePropertiesQCOMAllocator,
+                                              Dispatch const &                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator> properties( tilePropertiesQCOMAllocator );
+    uint32_t                                                                           propertiesCount;
+    VkResult                                                                           result;
+    do
+    {
+      result = d.vkGetFramebufferTilePropertiesQCOM( m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && propertiesCount )
+      {
+        properties.resize( propertiesCount );
+        result = d.vkGetFramebufferTilePropertiesQCOM(
+          m_device, static_cast<VkFramebuffer>( framebuffer ), &propertiesCount, reinterpret_cast<VkTilePropertiesQCOM *>( properties.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+
+    VULKAN_HPP_ASSERT( propertiesCount <= properties.size() );
+    if ( propertiesCount < properties.size() )
+    {
+      properties.resize( propertiesCount );
+    }
+    return properties;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE Result Device::getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo * pRenderingInfo,
+                                                                          VULKAN_HPP_NAMESPACE::TilePropertiesQCOM *  pProperties,
+                                                                          Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetDynamicRenderingTilePropertiesQCOM(
+      m_device, reinterpret_cast<const VkRenderingInfo *>( pRenderingInfo ), reinterpret_cast<VkTilePropertiesQCOM *>( pProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::TilePropertiesQCOM
+    Device::getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::TilePropertiesQCOM properties;
+    d.vkGetDynamicRenderingTilePropertiesQCOM(
+      m_device, reinterpret_cast<const VkRenderingInfo *>( &renderingInfo ), reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
+
+    return properties;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

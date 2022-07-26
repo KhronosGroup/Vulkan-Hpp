@@ -86,30 +86,6 @@ if (NOT DEFINED VulkanHeaders_INCLUDE_DIR)
     set(VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   endif()
 endif()
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
-string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp vulkan_enums_hpp)
-string(REPLACE "\\" "\\\\" vulkan_enums_hpp ${vulkan_enums_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp vulkan_format_traits_hpp)
-string(REPLACE "\\" "\\\\" vulkan_format_traits_hpp ${vulkan_format_traits_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp vulkan_funcs_hpp)
-string(REPLACE "\\" "\\\\" vulkan_funcs_hpp ${vulkan_funcs_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp vulkan_handles_hpp)
-string(REPLACE "\\" "\\\\" vulkan_handles_hpp ${vulkan_handles_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp vulkan_structs_hpp)
-string(REPLACE "\\" "\\\\" vulkan_structs_hpp ${vulkan_structs_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp vulkan_hash_hpp)
-string(REPLACE "\\" "\\\\" vulkan_hash_hpp ${vulkan_hash_hpp})
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_raii_hpp)
-string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
-add_definitions(-DVULKAN_HPP_FILE="${vulkan_hpp}"
-                -DVULKAN_ENUMS_HPP_FILE="${vulkan_enums_hpp}"
-                -DVULKAN_FORMAT_TRAITS_HPP_FILE="${vulkan_format_traits_hpp}"
-                -DVULKAN_FUNCS_HPP_FILE="${vulkan_funcs_hpp}"
-                -DVULKAN_HANDLES_HPP_FILE="${vulkan_handles_hpp}"
-                -DVULKAN_STRUCTS_HPP_FILE="${vulkan_structs_hpp}"
-                -DVULKAN_HASH_HPP_FILE="${vulkan_hash_hpp}"
-                -DVULKAN_RAII_HPP_FILE="${vulkan_raii_hpp}")
 include_directories(${VulkanHeaders_INCLUDE_DIR})
 
 set(HEADERS
@@ -145,27 +121,56 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
-set_property(TARGET VulkanHppGenerator PROPERTY CXX_STANDARD 17)
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
+string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp vulkan_enums_hpp)
+string(REPLACE "\\" "\\\\" vulkan_enums_hpp ${vulkan_enums_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp vulkan_format_traits_hpp)
+string(REPLACE "\\" "\\\\" vulkan_format_traits_hpp ${vulkan_format_traits_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp vulkan_funcs_hpp)
+string(REPLACE "\\" "\\\\" vulkan_funcs_hpp ${vulkan_funcs_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp vulkan_handles_hpp)
+string(REPLACE "\\" "\\\\" vulkan_handles_hpp ${vulkan_handles_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp vulkan_hash_hpp)
+string(REPLACE "\\" "\\\\" vulkan_hash_hpp ${vulkan_hash_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_raii_hpp)
+string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp vulkan_structs_hpp)
+string(REPLACE "\\" "\\\\" vulkan_structs_hpp ${vulkan_structs_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp vulkan_to_string_hpp)
+string(REPLACE "\\" "\\\\" vulkan_to_string_hpp ${vulkan_to_string_hpp})
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+				-DVULKAN_HPP_FILE="${vulkan_hpp}"
+                -DVULKAN_ENUMS_HPP_FILE="${vulkan_enums_hpp}"
+                -DVULKAN_FORMAT_TRAITS_HPP_FILE="${vulkan_format_traits_hpp}"
+                -DVULKAN_FUNCS_HPP_FILE="${vulkan_funcs_hpp}"
+                -DVULKAN_HANDLES_HPP_FILE="${vulkan_handles_hpp}"
+                -DVULKAN_HASH_HPP_FILE="${vulkan_hash_hpp}"
+                -DVULKAN_RAII_HPP_FILE="${vulkan_raii_hpp}"
+                -DVULKAN_STRUCTS_HPP_FILE="${vulkan_structs_hpp}"
+				-DVULKAN_TO_STRING_HPP_FILE="${vulkan_to_string_hpp}")
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if(MSVC)
-  target_compile_options(VulkanHppGenerator PRIVATE /W4 /WX)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
   if (MSVC_VER GREATER_EQUAL 1910)
-   target_compile_options(VulkanHppGenerator PRIVATE /permissive-)
+   target_compile_options(${PROJECT_NAME} PRIVATE /permissive-)
   endif()
 else(MSVC)
-  target_compile_options(VulkanHppGenerator PRIVATE -Wall -Wextra -pedantic -Werror)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 endif(MSVC)
 
-target_include_directories(VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR})
 
 option (VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF)
 if (VULKAN_HPP_RUN_GENERATOR)
   add_custom_command(
-    COMMAND VulkanHppGenerator
+    COMMAND ${PROJECT_NAME}
     OUTPUT "${vulkan_hpp}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    COMMENT "run VulkanHppGenerator"
-    DEPENDS VulkanHppGenerator "${vk_spec}")
+    COMMENT "run ${PROJECT_NAME}"
+    DEPENDS ${PROJECT_NAME} "${vk_spec}")
 
   add_custom_target(build_vulkan_hpp ALL
     DEPENDS "${vulkan_hpp}" "${vk_spec}")

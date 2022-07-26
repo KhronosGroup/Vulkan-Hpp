@@ -38,6 +38,7 @@
 #include <numeric>
 #include <random>
 #include <sstream>
+#include <vulkan/vulkan_to_string.hpp>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #define GLM_FORCE_RADIANS
@@ -53,71 +54,6 @@
 
 static char const * AppName    = "RayTracing";
 static char const * EngineName = "Vulkan.hpp";
-
-#if defined( VULKAN_HPP_NO_TO_STRING )
-namespace local
-{
-  std::string to_string( vk::Result value )
-  {
-    switch ( value )
-    {
-      case vk::Result::eSuccess: return "Success";
-      case vk::Result::eNotReady: return "NotReady";
-      case vk::Result::eTimeout: return "Timeout";
-      case vk::Result::eEventSet: return "EventSet";
-      case vk::Result::eEventReset: return "EventReset";
-      case vk::Result::eIncomplete: return "Incomplete";
-      case vk::Result::eErrorOutOfHostMemory: return "ErrorOutOfHostMemory";
-      case vk::Result::eErrorOutOfDeviceMemory: return "ErrorOutOfDeviceMemory";
-      case vk::Result::eErrorInitializationFailed: return "ErrorInitializationFailed";
-      case vk::Result::eErrorDeviceLost: return "ErrorDeviceLost";
-      case vk::Result::eErrorMemoryMapFailed: return "ErrorMemoryMapFailed";
-      case vk::Result::eErrorLayerNotPresent: return "ErrorLayerNotPresent";
-      case vk::Result::eErrorExtensionNotPresent: return "ErrorExtensionNotPresent";
-      case vk::Result::eErrorFeatureNotPresent: return "ErrorFeatureNotPresent";
-      case vk::Result::eErrorIncompatibleDriver: return "ErrorIncompatibleDriver";
-      case vk::Result::eErrorTooManyObjects: return "ErrorTooManyObjects";
-      case vk::Result::eErrorFormatNotSupported: return "ErrorFormatNotSupported";
-      case vk::Result::eErrorFragmentedPool: return "ErrorFragmentedPool";
-      case vk::Result::eErrorUnknown: return "ErrorUnknown";
-      case vk::Result::eErrorOutOfPoolMemory: return "ErrorOutOfPoolMemory";
-      case vk::Result::eErrorInvalidExternalHandle: return "ErrorInvalidExternalHandle";
-      case vk::Result::eErrorFragmentation: return "ErrorFragmentation";
-      case vk::Result::eErrorInvalidOpaqueCaptureAddress: return "ErrorInvalidOpaqueCaptureAddress";
-      case vk::Result::ePipelineCompileRequired: return "PipelineCompileRequired";
-      case vk::Result::eErrorSurfaceLostKHR: return "ErrorSurfaceLostKHR";
-      case vk::Result::eErrorNativeWindowInUseKHR: return "ErrorNativeWindowInUseKHR";
-      case vk::Result::eSuboptimalKHR: return "SuboptimalKHR";
-      case vk::Result::eErrorOutOfDateKHR: return "ErrorOutOfDateKHR";
-      case vk::Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
-      case vk::Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
-      case vk::Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-      case vk::Result::eErrorImageUsageNotSupportedKHR: return "ErrorImageUsageNotSupportedKHR";
-      case vk::Result::eErrorVideoPictureLayoutNotSupportedKHR: return "ErrorVideoPictureLayoutNotSupportedKHR";
-      case vk::Result::eErrorVideoProfileOperationNotSupportedKHR: return "ErrorVideoProfileOperationNotSupportedKHR";
-      case vk::Result::eErrorVideoProfileFormatNotSupportedKHR: return "ErrorVideoProfileFormatNotSupportedKHR";
-      case vk::Result::eErrorVideoProfileCodecNotSupportedKHR: return "ErrorVideoProfileCodecNotSupportedKHR";
-      case vk::Result::eErrorVideoStdVersionNotSupportedKHR: return "ErrorVideoStdVersionNotSupportedKHR";
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case vk::Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
-      case vk::Result::eErrorNotPermittedKHR: return "ErrorNotPermittedKHR";
-#  if defined( VK_USE_PLATFORM_WIN32_KHR )
-      case vk::Result::eErrorFullScreenExclusiveModeLostEXT: return "ErrorFullScreenExclusiveModeLostEXT";
-#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
-      case vk::Result::eThreadIdleKHR: return "ThreadIdleKHR";
-      case vk::Result::eThreadDoneKHR: return "ThreadDoneKHR";
-      case vk::Result::eOperationDeferredKHR: return "OperationDeferredKHR";
-      case vk::Result::eOperationNotDeferredKHR: return "OperationNotDeferredKHR";
-      case vk::Result::eErrorCompressionExhaustedEXT: return "ErrorCompressionExhaustedEXT";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-}  // namespace local
-using local::to_string;
-#else
-using vk::to_string;
-#endif
 
 struct GeometryInstanceData
 {
@@ -588,7 +524,7 @@ static void check_vk_result( VkResult err )
 {
   if ( err != 0 )
   {
-    std::cerr << AppName << ": Vulkan error " << to_string( static_cast<vk::Result>( err ) );
+    std::cerr << AppName << ": Vulkan error " << vk::to_string( static_cast<vk::Result>( err ) );
     if ( err < 0 )
     {
       abort();

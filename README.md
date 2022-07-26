@@ -553,7 +553,7 @@ When you configure your project using CMake, you can enable TESTS_BUILD to add s
 
 ### Compile time issues
 As vulkan.hpp is pretty big, some compilers might need some time to digest all that stuff. In order to potentially reduce the time needed to compile that header, a couple of defines will be introduced, that allow you to hide certain features. Whenever you don't need that corresponding feature, defining that value might improve your compile time.
-Currently, there are just two such defines:
+Currently, there are just a couple of such defines:
 - ```VULKAN_HPP_NO_SPACESHIP_OPERATOR```, which removes the spaceship operator on structures (available with C++20)
 - ```VULKAN_HPP_NO_TO_STRING```, which removes the various vk::to_string functions on enums and bitmasks.
 - ```VULKAN_HPP_USE_REFLECT```, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
@@ -624,7 +624,7 @@ By default, the namespace used with vulkan.hpp is ```vk```. By defining ```VULKA
 
 #### VULKAN_HPP_NO_TO_STRING
 
-By default, there are functions ```vk::to_string``` for enums and bitmasks. If you don't need that functionality, you can define ```VULKAN_HPP_NO_TO_STRING``` to spare some compilation time.
+By default, the file vulkan_to_string.hpp is included by vulkan.hpp and provides functions ```vk::to_string``` for enums and bitmasks. If you don't need those functions, you can define VULKAN_HPP_NO_TO_STRING to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include vulkan_to_string.hpp there.
 
 #### VULKAN_HPP_NO_CONSTRUCTORS
 

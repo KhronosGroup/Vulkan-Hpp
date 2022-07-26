@@ -16,110 +16,15 @@
 //                     Get queue family properties per physical device.
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_to_string.hpp>
 
 static char const * AppName    = "PhysicalDeviceQueueFamilyProperties";
 static char const * EngineName = "Vulkan.hpp";
-
-#if defined( VULKAN_HPP_NO_TO_STRING )
-namespace local
-{
-  std::string to_string( vk::PipelineStageFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::PipelineStageFlagBits::eTopOfPipe )
-      result += "TopOfPipe | ";
-    if ( value & vk::PipelineStageFlagBits::eDrawIndirect )
-      result += "DrawIndirect | ";
-    if ( value & vk::PipelineStageFlagBits::eVertexInput )
-      result += "VertexInput | ";
-    if ( value & vk::PipelineStageFlagBits::eVertexShader )
-      result += "VertexShader | ";
-    if ( value & vk::PipelineStageFlagBits::eTessellationControlShader )
-      result += "TessellationControlShader | ";
-    if ( value & vk::PipelineStageFlagBits::eTessellationEvaluationShader )
-      result += "TessellationEvaluationShader | ";
-    if ( value & vk::PipelineStageFlagBits::eGeometryShader )
-      result += "GeometryShader | ";
-    if ( value & vk::PipelineStageFlagBits::eFragmentShader )
-      result += "FragmentShader | ";
-    if ( value & vk::PipelineStageFlagBits::eEarlyFragmentTests )
-      result += "EarlyFragmentTests | ";
-    if ( value & vk::PipelineStageFlagBits::eLateFragmentTests )
-      result += "LateFragmentTests | ";
-    if ( value & vk::PipelineStageFlagBits::eColorAttachmentOutput )
-      result += "ColorAttachmentOutput | ";
-    if ( value & vk::PipelineStageFlagBits::eComputeShader )
-      result += "ComputeShader | ";
-    if ( value & vk::PipelineStageFlagBits::eTransfer )
-      result += "Transfer | ";
-    if ( value & vk::PipelineStageFlagBits::eBottomOfPipe )
-      result += "BottomOfPipe | ";
-    if ( value & vk::PipelineStageFlagBits::eHost )
-      result += "Host | ";
-    if ( value & vk::PipelineStageFlagBits::eAllGraphics )
-      result += "AllGraphics | ";
-    if ( value & vk::PipelineStageFlagBits::eAllCommands )
-      result += "AllCommands | ";
-    if ( value & vk::PipelineStageFlagBits::eTransformFeedbackEXT )
-      result += "TransformFeedbackEXT | ";
-    if ( value & vk::PipelineStageFlagBits::eConditionalRenderingEXT )
-      result += "ConditionalRenderingEXT | ";
-    if ( value & vk::PipelineStageFlagBits::eAccelerationStructureBuildKHR )
-      result += "AccelerationStructureBuildKHR | ";
-    if ( value & vk::PipelineStageFlagBits::eRayTracingShaderKHR )
-      result += "RayTracingShaderKHR | ";
-    if ( value & vk::PipelineStageFlagBits::eTaskShaderNV )
-      result += "TaskShaderNV | ";
-    if ( value & vk::PipelineStageFlagBits::eMeshShaderNV )
-      result += "MeshShaderNV | ";
-    if ( value & vk::PipelineStageFlagBits::eFragmentDensityProcessEXT )
-      result += "FragmentDensityProcessEXT | ";
-    if ( value & vk::PipelineStageFlagBits::eFragmentShadingRateAttachmentKHR )
-      result += "FragmentShadingRateAttachmentKHR | ";
-    if ( value & vk::PipelineStageFlagBits::eCommandPreprocessNV )
-      result += "CommandPreprocessNV | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
-  std::string to_string( vk::QueueFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::QueueFlagBits::eGraphics )
-      result += "Graphics | ";
-    if ( value & vk::QueueFlagBits::eCompute )
-      result += "Compute | ";
-    if ( value & vk::QueueFlagBits::eTransfer )
-      result += "Transfer | ";
-    if ( value & vk::QueueFlagBits::eSparseBinding )
-      result += "SparseBinding | ";
-    if ( value & vk::QueueFlagBits::eProtected )
-      result += "Protected | ";
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-    if ( value & vk::QueueFlagBits::eVideoDecodeKHR )
-      result += "VideoDecodeKHR | ";
-    if ( value & vk::QueueFlagBits::eVideoEncodeKHR )
-      result += "VideoEncodeKHR | ";
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-}  // namespace local
-using local::to_string;
-#else
-using vk::to_string;
-#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -152,7 +57,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << std::string( "\t" ) << "QueueFamily " << j << " :" << std::endl;
         vk::QueueFamilyProperties const & properties = queueFamilyProperties2[j].get<vk::QueueFamilyProperties2>().queueFamilyProperties;
         std::cout << std::string( "\t\t" ) << "QueueFamilyProperties:" << std::endl;
-        std::cout << std::string( "\t\t\t" ) << "queueFlags                  = " << to_string( properties.queueFlags ) << std::endl;
+        std::cout << std::string( "\t\t\t" ) << "queueFlags                  = " << vk::to_string( properties.queueFlags ) << std::endl;
         std::cout << std::string( "\t\t\t" ) << "queueCount                  = " << properties.queueCount << std::endl;
         std::cout << std::string( "\t\t\t" ) << "timestampValidBits          = " << properties.timestampValidBits << std::endl;
         std::cout << std::string( "\t\t\t" ) << "minImageTransferGranularity = " << properties.minImageTransferGranularity.width << " x "
@@ -163,7 +68,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         {
           vk::QueueFamilyCheckpointPropertiesNV const & checkpointProperties = queueFamilyProperties2[j].get<vk::QueueFamilyCheckpointPropertiesNV>();
           std::cout << std::string( "\t\t" ) << "CheckPointPropertiesNV:" << std::endl;
-          std::cout << std::string( "\t\t\t" ) << "checkpointExecutionStageMask  = " << to_string( checkpointProperties.checkpointExecutionStageMask )
+          std::cout << std::string( "\t\t\t" ) << "checkpointExecutionStageMask  = " << vk::to_string( checkpointProperties.checkpointExecutionStageMask )
                     << std::endl;
           std::cout << std::endl;
         }

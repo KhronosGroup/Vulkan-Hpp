@@ -16,224 +16,15 @@
 //                     Get properties per physical device.
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_to_string.hpp>
 
 static char const * AppName    = "PhysicalDeviceProperties";
 static char const * EngineName = "Vulkan.hpp";
-
-#if defined( VULKAN_HPP_NO_TO_STRING )
-namespace local
-{
-  std::string to_string( vk::DriverId value )
-  {
-    switch ( value )
-    {
-      case vk::DriverId::eAmdProprietary: return "AmdProprietary";
-      case vk::DriverId::eAmdOpenSource: return "AmdOpenSource";
-      case vk::DriverId::eMesaRadv: return "MesaRadv";
-      case vk::DriverId::eNvidiaProprietary: return "NvidiaProprietary";
-      case vk::DriverId::eIntelProprietaryWindows: return "IntelProprietaryWindows";
-      case vk::DriverId::eIntelOpenSourceMESA: return "IntelOpenSourceMESA";
-      case vk::DriverId::eImaginationProprietary: return "ImaginationProprietary";
-      case vk::DriverId::eQualcommProprietary: return "QualcommProprietary";
-      case vk::DriverId::eArmProprietary: return "ArmProprietary";
-      case vk::DriverId::eGoogleSwiftshader: return "GoogleSwiftshader";
-      case vk::DriverId::eGgpProprietary: return "GgpProprietary";
-      case vk::DriverId::eBroadcomProprietary: return "BroadcomProprietary";
-      case vk::DriverId::eMesaLlvmpipe: return "MesaLlvmpipe";
-      case vk::DriverId::eMoltenvk: return "Moltenvk";
-      case vk::DriverId::eCoreaviProprietary: return "CoreaviProprietary";
-      case vk::DriverId::eJuiceProprietary: return "JuiceProprietary";
-      case vk::DriverId::eVerisiliconProprietary: return "VerisiliconProprietary";
-      case vk::DriverId::eMesaTurnip: return "MesaTurnip";
-      case vk::DriverId::eMesaV3Dv: return "MesaV3Dv";
-      case vk::DriverId::eMesaPanvk: return "MesaPanvk";
-      case vk::DriverId::eSamsungProprietary: return "SamsungProprietary";
-      case vk::DriverId::eMesaVenus: return "MesaVenus";
-      case vk::DriverId::eMesaDozen: return "MesaDozen";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  std::string to_string( vk::PhysicalDeviceType value )
-  {
-    switch ( value )
-    {
-      case vk::PhysicalDeviceType::eOther: return "Other";
-      case vk::PhysicalDeviceType::eIntegratedGpu: return "IntegratedGpu";
-      case vk::PhysicalDeviceType::eDiscreteGpu: return "DiscreteGpu";
-      case vk::PhysicalDeviceType::eVirtualGpu: return "VirtualGpu";
-      case vk::PhysicalDeviceType::eCpu: return "Cpu";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  std::string to_string( vk::PointClippingBehavior value )
-  {
-    switch ( value )
-    {
-      case vk::PointClippingBehavior::eAllClipPlanes: return "AllClipPlanes";
-      case vk::PointClippingBehavior::eUserClipPlanesOnly: return "UserClipPlanesOnly";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  std::string to_string( vk::ResolveModeFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::ResolveModeFlagBits::eSampleZero )
-      result += "SampleZero | ";
-    if ( value & vk::ResolveModeFlagBits::eAverage )
-      result += "Average | ";
-    if ( value & vk::ResolveModeFlagBits::eMin )
-      result += "Min | ";
-    if ( value & vk::ResolveModeFlagBits::eMax )
-      result += "Max | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
-  std::string to_string( vk::SampleCountFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::SampleCountFlagBits::e1 )
-      result += "1 | ";
-    if ( value & vk::SampleCountFlagBits::e2 )
-      result += "2 | ";
-    if ( value & vk::SampleCountFlagBits::e4 )
-      result += "4 | ";
-    if ( value & vk::SampleCountFlagBits::e8 )
-      result += "8 | ";
-    if ( value & vk::SampleCountFlagBits::e16 )
-      result += "16 | ";
-    if ( value & vk::SampleCountFlagBits::e32 )
-      result += "32 | ";
-    if ( value & vk::SampleCountFlagBits::e64 )
-      result += "64 | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
-  std::string to_string( vk::ShaderCorePropertiesFlagsAMD )
-  {
-    return "{}";
-  }
-
-  std::string to_string( vk::ShaderFloatControlsIndependence value )
-  {
-    switch ( value )
-    {
-      case vk::ShaderFloatControlsIndependence::e32BitOnly: return "32BitOnly";
-      case vk::ShaderFloatControlsIndependence::eAll: return "All";
-      case vk::ShaderFloatControlsIndependence::eNone: return "None";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  std::string to_string( vk::ShaderStageFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::ShaderStageFlagBits::eVertex )
-      result += "Vertex | ";
-    if ( value & vk::ShaderStageFlagBits::eTessellationControl )
-      result += "TessellationControl | ";
-    if ( value & vk::ShaderStageFlagBits::eTessellationEvaluation )
-      result += "TessellationEvaluation | ";
-    if ( value & vk::ShaderStageFlagBits::eGeometry )
-      result += "Geometry | ";
-    if ( value & vk::ShaderStageFlagBits::eFragment )
-      result += "Fragment | ";
-    if ( value & vk::ShaderStageFlagBits::eCompute )
-      result += "Compute | ";
-    if ( value & vk::ShaderStageFlagBits::eRaygenKHR )
-      result += "RaygenKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eAnyHitKHR )
-      result += "AnyHitKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eClosestHitKHR )
-      result += "ClosestHitKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eMissKHR )
-      result += "MissKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eIntersectionKHR )
-      result += "IntersectionKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eCallableKHR )
-      result += "CallableKHR | ";
-    if ( value & vk::ShaderStageFlagBits::eTaskNV )
-      result += "TaskNV | ";
-    if ( value & vk::ShaderStageFlagBits::eMeshNV )
-      result += "MeshNV | ";
-    if ( value & vk::ShaderStageFlagBits::eSubpassShadingHUAWEI )
-      result += "SubpassShadingHUAWEI | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-
-  std::string to_string( vk::SubgroupFeatureFlags value )
-  {
-    if ( !value )
-      return "{}";
-
-    std::string result;
-    if ( value & vk::SubgroupFeatureFlagBits::eBasic )
-      result += "Basic | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eVote )
-      result += "Vote | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eArithmetic )
-      result += "Arithmetic | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eBallot )
-      result += "Ballot | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eShuffle )
-      result += "Shuffle | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eShuffleRelative )
-      result += "ShuffleRelative | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eClustered )
-      result += "Clustered | ";
-    if ( value & vk::SubgroupFeatureFlagBits::eQuad )
-      result += "Quad | ";
-    if ( value & vk::SubgroupFeatureFlagBits::ePartitionedNV )
-      result += "PartitionedNV | ";
-
-    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
-  }
-}  // namespace local
-using local::to_string;
-#else
-using vk::to_string;
-#endif
-
-#if defined( VULKAN_HPP_NO_TO_STRING )
-namespace local
-{
-  std::string to_string( vk::VendorId value )
-  {
-    switch ( value )
-    {
-      case vk::VendorId::eVIV: return "VIV";
-      case vk::VendorId::eVSI: return "VSI";
-      case vk::VendorId::eKazan: return "Kazan";
-      case vk::VendorId::eCodeplay: return "Codeplay";
-      case vk::VendorId::eMESA: return "MESA";
-      case vk::VendorId::ePocl: return "Pocl";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-}  // namespace local
-using local::to_string;
-#else
-using vk::to_string;
-#endif
 
 std::string decodeAPIVersion( uint32_t apiVersion )
 {
@@ -269,7 +60,7 @@ std::string decodeVendorID( uint32_t vendorID )
   else
   {
     // above 0x10000 should be vkVendorIDs
-    return to_string( vk::VendorId( vendorID ) );
+    return vk::to_string( vk::VendorId( vendorID ) );
   }
 }
 
@@ -369,20 +160,20 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << std::string( "\t\t" ) << "driverVersion     = " << decodeDriverVersion( properties.driverVersion, properties.vendorID ) << "\n";
       std::cout << std::string( "\t\t" ) << "vendorID          = " << decodeVendorID( properties.vendorID ) << "\n";
       std::cout << std::string( "\t\t" ) << "deviceID          = " << properties.deviceID << "\n";
-      std::cout << std::string( "\t\t" ) << "deviceType        = " << to_string( properties.deviceType ) << "\n";
+      std::cout << std::string( "\t\t" ) << "deviceType        = " << vk::to_string( properties.deviceType ) << "\n";
       std::cout << std::string( "\t\t" ) << "deviceName        = " << properties.deviceName << "\n";
       std::cout << std::string( "\t\t" ) << "pipelineCacheUUID = " << vk::su::UUID( properties.pipelineCacheUUID ) << "\n";
       std::cout << std::string( "\t\t" ) << "limits:\n";
       std::cout << std::string( "\t\t\t" ) << "bufferImageGranularity                          = " << properties.limits.bufferImageGranularity << "\n";
       std::cout << std::string( "\t\t\t" ) << "discreteQueuePriorities                         = " << properties.limits.discreteQueuePriorities << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "framebufferColorSampleCounts                    = " << to_string( properties.limits.framebufferColorSampleCounts ) << "\n";
+                << "framebufferColorSampleCounts                    = " << vk::to_string( properties.limits.framebufferColorSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "framebufferDepthSampleCounts                    = " << to_string( properties.limits.framebufferDepthSampleCounts ) << "\n";
+                << "framebufferDepthSampleCounts                    = " << vk::to_string( properties.limits.framebufferDepthSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "framebufferNoAttachmentsSampleCounts            = " << to_string( properties.limits.framebufferNoAttachmentsSampleCounts ) << "\n";
+                << "framebufferNoAttachmentsSampleCounts            = " << vk::to_string( properties.limits.framebufferNoAttachmentsSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "framebufferStencilSampleCounts                  = " << to_string( properties.limits.framebufferStencilSampleCounts ) << "\n";
+                << "framebufferStencilSampleCounts                  = " << vk::to_string( properties.limits.framebufferStencilSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" ) << "lineWidthGranularity                            = " << properties.limits.lineWidthGranularity << "\n";
       std::cout << std::string( "\t\t\t" ) << "lineWidthRange                                  = "
                 << "[" << properties.limits.lineWidthRange[0] << ", " << properties.limits.lineWidthRange[1] << "]"
@@ -499,17 +290,17 @@ int main( int /*argc*/, char ** /*argv*/ )
                 << "[" << properties.limits.pointSizeRange[0] << ", " << properties.limits.pointSizeRange[1] << "]"
                 << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "sampledImageColorSampleCounts                   = " << to_string( properties.limits.sampledImageColorSampleCounts ) << "\n";
+                << "sampledImageColorSampleCounts                   = " << vk::to_string( properties.limits.sampledImageColorSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "sampledImageDepthSampleCounts                   = " << to_string( properties.limits.sampledImageDepthSampleCounts ) << "\n";
+                << "sampledImageDepthSampleCounts                   = " << vk::to_string( properties.limits.sampledImageDepthSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "sampledImageIntegerSampleCounts                 = " << to_string( properties.limits.sampledImageIntegerSampleCounts ) << "\n";
+                << "sampledImageIntegerSampleCounts                 = " << vk::to_string( properties.limits.sampledImageIntegerSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" )
-                << "sampledImageStencilSampleCounts                 = " << to_string( properties.limits.sampledImageStencilSampleCounts ) << "\n";
+                << "sampledImageStencilSampleCounts                 = " << vk::to_string( properties.limits.sampledImageStencilSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" ) << "sparseAddressSpaceSize                          = " << properties.limits.sparseAddressSpaceSize << "\n";
       std::cout << std::string( "\t\t\t" ) << "standardSampleLocations                         = " << !!properties.limits.standardSampleLocations << "\n";
-      std::cout << std::string( "\t\t\t" ) << "storageImageSampleCounts                        = " << to_string( properties.limits.storageImageSampleCounts )
-                << "\n";
+      std::cout << std::string( "\t\t\t" )
+                << "storageImageSampleCounts                        = " << vk::to_string( properties.limits.storageImageSampleCounts ) << "\n";
       std::cout << std::string( "\t\t\t" ) << "strictLines                                     = " << !!properties.limits.strictLines << "\n";
       std::cout << std::string( "\t\t\t" ) << "subPixelInterpolationOffsetBits                 = " << properties.limits.subPixelInterpolationOffsetBits << "\n";
       std::cout << std::string( "\t\t\t" ) << "subPixelPrecisionBits                           = " << properties.limits.subPixelPrecisionBits << "\n";
@@ -586,7 +377,7 @@ int main( int /*argc*/, char ** /*argv*/ )
           properties2.get<vk::PhysicalDeviceCooperativeMatrixPropertiesNV>();
         std::cout << std::string( "\t" ) << "CooperativeMatrixProperties:\n";
         std::cout << std::string( "\t\t" )
-                  << "cooperativeMatrixSupportedStages  = " << to_string( cooperativeMatrixProperties.cooperativeMatrixSupportedStages ) << "\n";
+                  << "cooperativeMatrixSupportedStages  = " << vk::to_string( cooperativeMatrixProperties.cooperativeMatrixSupportedStages ) << "\n";
         std::cout << "\n";
       }
 
@@ -597,9 +388,9 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << std::string( "\t" ) << "DepthStencilResolveProperties:\n";
         std::cout << std::string( "\t\t" ) << "independentResolve            = " << !!depthStencilResolveProperties.independentResolve << "\n";
         std::cout << std::string( "\t\t" ) << "independentResolveNone        = " << !!depthStencilResolveProperties.independentResolveNone << "\n";
-        std::cout << std::string( "\t\t" ) << "supportedDepthResolveModes    = " << to_string( depthStencilResolveProperties.supportedDepthResolveModes )
+        std::cout << std::string( "\t\t" ) << "supportedDepthResolveModes    = " << vk::to_string( depthStencilResolveProperties.supportedDepthResolveModes )
                   << "\n";
-        std::cout << std::string( "\t\t" ) << "supportedStencilResolveModes  = " << to_string( depthStencilResolveProperties.supportedStencilResolveModes )
+        std::cout << std::string( "\t\t" ) << "supportedStencilResolveModes  = " << vk::to_string( depthStencilResolveProperties.supportedStencilResolveModes )
                   << "\n";
         std::cout << "\n";
       }
@@ -676,7 +467,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       {
         vk::PhysicalDeviceDriverPropertiesKHR const & driverProperties = properties2.get<vk::PhysicalDeviceDriverPropertiesKHR>();
         std::cout << std::string( "\t" ) << "DriverProperties:\n";
-        std::cout << std::string( "\t\t" ) << "driverID            = " << to_string( driverProperties.driverID ) << "\n";
+        std::cout << std::string( "\t\t" ) << "driverID            = " << vk::to_string( driverProperties.driverID ) << "\n";
         std::cout << std::string( "\t\t" ) << "driverName          = " << driverProperties.driverName << "\n";
         std::cout << std::string( "\t\t" ) << "driverInfo          = " << driverProperties.driverInfo << "\n";
         std::cout << std::string( "\t\t" ) << "conformanceVersion  = " << static_cast<uint32_t>( driverProperties.conformanceVersion.major ) << "."
@@ -699,9 +490,9 @@ int main( int /*argc*/, char ** /*argv*/ )
       {
         vk::PhysicalDeviceFloatControlsPropertiesKHR const & floatControlsProperties = properties2.get<vk::PhysicalDeviceFloatControlsPropertiesKHR>();
         std::cout << std::string( "\t" ) << "FloatControlsProperties:\n";
-        std::cout << std::string( "\t\t" ) << "denormBehaviorIndependence            = " << to_string( floatControlsProperties.denormBehaviorIndependence )
+        std::cout << std::string( "\t\t" ) << "denormBehaviorIndependence            = " << vk::to_string( floatControlsProperties.denormBehaviorIndependence )
                   << "\n";
-        std::cout << std::string( "\t\t" ) << "roundingModeIndependence              = " << to_string( floatControlsProperties.roundingModeIndependence )
+        std::cout << std::string( "\t\t" ) << "roundingModeIndependence              = " << vk::to_string( floatControlsProperties.roundingModeIndependence )
                   << "\n";
         std::cout << std::string( "\t\t" ) << "shaderDenormFlushToZeroFloat16        = " << !!floatControlsProperties.shaderDenormFlushToZeroFloat16 << "\n";
         std::cout << std::string( "\t\t" ) << "shaderDenormFlushToZeroFloat32        = " << !!floatControlsProperties.shaderDenormFlushToZeroFloat32 << "\n";
@@ -836,7 +627,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       {
         vk::PhysicalDevicePointClippingProperties const & pointClippingProperties = properties2.get<vk::PhysicalDevicePointClippingProperties>();
         std::cout << std::string( "\t" ) << "PointClippingProperties:\n";
-        std::cout << std::string( "\t\t" ) << "pointClippingBehavior = " << to_string( pointClippingProperties.pointClippingBehavior ) << "\n";
+        std::cout << std::string( "\t\t" ) << "pointClippingBehavior = " << vk::to_string( pointClippingProperties.pointClippingBehavior ) << "\n";
         std::cout << "\n";
       }
 
@@ -879,7 +670,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                   << "[" << sampleLocationProperties.sampleLocationCoordinateRange[0] << ", " << sampleLocationProperties.sampleLocationCoordinateRange[1]
                   << "]"
                   << "\n";
-        std::cout << std::string( "\t\t" ) << "sampleLocationSampleCounts    = " << to_string( sampleLocationProperties.sampleLocationSampleCounts ) << "\n";
+        std::cout << std::string( "\t\t" ) << "sampleLocationSampleCounts    = " << vk::to_string( sampleLocationProperties.sampleLocationSampleCounts )
+                  << "\n";
         std::cout << std::string( "\t\t" ) << "sampleLocationSubPixelBits    = " << sampleLocationProperties.sampleLocationSubPixelBits << "\n";
         std::cout << std::string( "\t\t" ) << "variableSampleLocations       = " << !!sampleLocationProperties.variableSampleLocations << "\n";
         std::cout << "\n";
@@ -902,7 +694,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         vk::PhysicalDeviceShaderCoreProperties2AMD const & shaderCoreProperties2 = properties2.get<vk::PhysicalDeviceShaderCoreProperties2AMD>();
         std::cout << std::string( "\t" ) << "ShaderCoreProperties2:\n";
         std::cout << std::string( "\t\t" ) << "activeComputeUnitCount  = " << shaderCoreProperties2.activeComputeUnitCount << "\n";
-        std::cout << std::string( "\t\t" ) << "shaderCoreFeatures      = " << to_string( shaderCoreProperties2.shaderCoreFeatures ) << "\n";
+        std::cout << std::string( "\t\t" ) << "shaderCoreFeatures      = " << vk::to_string( shaderCoreProperties2.shaderCoreFeatures ) << "\n";
         std::cout << "\n";
       }
 
@@ -952,8 +744,8 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << std::string( "\t" ) << "SubgroupProperties:\n";
       std::cout << std::string( "\t\t" ) << "quadOperationsInAllStages = " << !!subgroupProperties.quadOperationsInAllStages << "\n";
       std::cout << std::string( "\t\t" ) << "subgroupSize              = " << subgroupProperties.subgroupSize << "\n";
-      std::cout << std::string( "\t\t" ) << "supportedOperations       = " << to_string( subgroupProperties.supportedOperations ) << "\n";
-      std::cout << std::string( "\t\t" ) << "supportedStages           = " << to_string( subgroupProperties.supportedStages ) << "\n";
+      std::cout << std::string( "\t\t" ) << "supportedOperations       = " << vk::to_string( subgroupProperties.supportedOperations ) << "\n";
+      std::cout << std::string( "\t\t" ) << "supportedStages           = " << vk::to_string( subgroupProperties.supportedStages ) << "\n";
       std::cout << "\n";
 
       if ( vk::su::contains( extensionProperties, "VK_EXT_subgroup_size_control" ) )
@@ -964,7 +756,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         std::cout << std::string( "\t\t" ) << "maxComputeWorkgroupSubgroups  = " << subgroupSizeControlProperties.maxComputeWorkgroupSubgroups << "\n";
         std::cout << std::string( "\t\t" ) << "maxSubgroupSize               = " << subgroupSizeControlProperties.maxSubgroupSize << "\n";
         std::cout << std::string( "\t\t" ) << "minSubgroupSize               = " << subgroupSizeControlProperties.minSubgroupSize << "\n";
-        std::cout << std::string( "\t\t" ) << "requiredSubgroupSizeStages    = " << to_string( subgroupSizeControlProperties.requiredSubgroupSizeStages )
+        std::cout << std::string( "\t\t" ) << "requiredSubgroupSizeStages    = " << vk::to_string( subgroupSizeControlProperties.requiredSubgroupSizeStages )
                   << "\n";
         std::cout << "\n";
       }

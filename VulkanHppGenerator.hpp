@@ -27,10 +27,12 @@ public:
 
   std::string         generateBaseTypes() const;
   std::string         generateBitmasks() const;
+  std::string         generateBitmasksToString() const;
   std::string         generateCommandDefinitions() const;
   std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
+  std::string         generateEnumsToString() const;
   std::string         generateFormatTraits() const;
   std::string         generateHandles() const;
   std::string         generateHandleHashStructures() const;
@@ -459,6 +461,8 @@ private:
                                          bool                             raii ) const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
+  std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
+  std::string generateBitmaskToString( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateCallArgumentsEnhanced( CommandData const &      commandData,
                                              size_t                   initialSkipCount,
                                              bool                     nonConstPointerAsNullptr,
@@ -654,6 +658,7 @@ private:
                                                     std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
+  std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,
                                        std::vector<std::string> const &   arraySizes,
                                        std::vector<EnumValueData> const & values,

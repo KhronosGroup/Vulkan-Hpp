@@ -16,34 +16,14 @@
 //                     Enumerate physical devices
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iomanip>
 #include <iostream>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_to_string.hpp>
 
 static char const * AppName    = "EnumerateDevicesAdvanced";
 static char const * EngineName = "Vulkan.hpp";
-
-#if defined( VULKAN_HPP_NO_TO_STRING )
-namespace local
-{
-  std::string to_string( vk::PhysicalDeviceType value )
-  {
-    switch ( value )
-    {
-      case vk::PhysicalDeviceType::eOther: return "Other";
-      case vk::PhysicalDeviceType::eIntegratedGpu: return "IntegratedGpu";
-      case vk::PhysicalDeviceType::eDiscreteGpu: return "DiscreteGpu";
-      case vk::PhysicalDeviceType::eVirtualGpu: return "VirtualGpu";
-      case vk::PhysicalDeviceType::eCpu: return "Cpu";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-}  // namespace local
-using local::to_string;
-#else
-using vk::to_string;
-#endif
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -76,7 +56,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "deviceId: " << std::setw( 6 ) << properties.deviceID << '\n';
       std::cout << std::noshowbase << std::right << std::setfill( ' ' ) << std::dec;
 
-      std::cout << "deviceType: " << to_string( properties.deviceType ) << "\n";
+      std::cout << "deviceType: " << vk::to_string( properties.deviceType ) << "\n";
 
       std::cout << "deviceName: " << properties.deviceName << '\n';
 

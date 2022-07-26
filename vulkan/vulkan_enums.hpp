@@ -95,6 +95,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineCompileRequiredEXT          = VK_PIPELINE_COMPILE_REQUIRED_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( Result value )
   {
     switch ( value )
@@ -130,19 +131,19 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
       case Result::eErrorValidationFailedEXT: return "ErrorValidationFailedEXT";
       case Result::eErrorInvalidShaderNV: return "ErrorInvalidShaderNV";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case Result::eErrorImageUsageNotSupportedKHR: return "ErrorImageUsageNotSupportedKHR";
       case Result::eErrorVideoPictureLayoutNotSupportedKHR: return "ErrorVideoPictureLayoutNotSupportedKHR";
       case Result::eErrorVideoProfileOperationNotSupportedKHR: return "ErrorVideoProfileOperationNotSupportedKHR";
       case Result::eErrorVideoProfileFormatNotSupportedKHR: return "ErrorVideoProfileFormatNotSupportedKHR";
       case Result::eErrorVideoProfileCodecNotSupportedKHR: return "ErrorVideoProfileCodecNotSupportedKHR";
       case Result::eErrorVideoStdVersionNotSupportedKHR: return "ErrorVideoStdVersionNotSupportedKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
       case Result::eErrorNotPermittedKHR: return "ErrorNotPermittedKHR";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case Result::eErrorFullScreenExclusiveModeLostEXT: return "ErrorFullScreenExclusiveModeLostEXT";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case Result::eThreadIdleKHR: return "ThreadIdleKHR";
       case Result::eThreadDoneKHR: return "ThreadDoneKHR";
       case Result::eOperationDeferredKHR: return "OperationDeferredKHR";
@@ -151,6 +152,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class StructureType
   {
@@ -1057,6 +1059,7 @@ namespace VULKAN_HPP_NAMESPACE
     eWriteDescriptorSetInlineUniformBlockEXT                   = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET_INLINE_UNIFORM_BLOCK_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StructureType value )
   {
     switch ( value )
@@ -1288,27 +1291,27 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDisplayModeCreateInfoKHR: return "DisplayModeCreateInfoKHR";
       case StructureType::eDisplaySurfaceCreateInfoKHR: return "DisplaySurfaceCreateInfoKHR";
       case StructureType::eDisplayPresentInfoKHR: return "DisplayPresentInfoKHR";
-#if defined( VK_USE_PLATFORM_XLIB_KHR )
+#  if defined( VK_USE_PLATFORM_XLIB_KHR )
       case StructureType::eXlibSurfaceCreateInfoKHR: return "XlibSurfaceCreateInfoKHR";
-#endif /*VK_USE_PLATFORM_XLIB_KHR*/
-#if defined( VK_USE_PLATFORM_XCB_KHR )
+#  endif /*VK_USE_PLATFORM_XLIB_KHR*/
+#  if defined( VK_USE_PLATFORM_XCB_KHR )
       case StructureType::eXcbSurfaceCreateInfoKHR: return "XcbSurfaceCreateInfoKHR";
-#endif /*VK_USE_PLATFORM_XCB_KHR*/
-#if defined( VK_USE_PLATFORM_WAYLAND_KHR )
+#  endif /*VK_USE_PLATFORM_XCB_KHR*/
+#  if defined( VK_USE_PLATFORM_WAYLAND_KHR )
       case StructureType::eWaylandSurfaceCreateInfoKHR: return "WaylandSurfaceCreateInfoKHR";
-#endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       case StructureType::eAndroidSurfaceCreateInfoKHR: return "AndroidSurfaceCreateInfoKHR";
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eWin32SurfaceCreateInfoKHR: return "Win32SurfaceCreateInfoKHR";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eDebugReportCallbackCreateInfoEXT: return "DebugReportCallbackCreateInfoEXT";
       case StructureType::ePipelineRasterizationStateRasterizationOrderAMD: return "PipelineRasterizationStateRasterizationOrderAMD";
       case StructureType::eDebugMarkerObjectNameInfoEXT: return "DebugMarkerObjectNameInfoEXT";
       case StructureType::eDebugMarkerObjectTagInfoEXT: return "DebugMarkerObjectTagInfoEXT";
       case StructureType::eDebugMarkerMarkerInfoEXT: return "DebugMarkerMarkerInfoEXT";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoProfileKHR: return "VideoProfileKHR";
       case StructureType::eVideoCapabilitiesKHR: return "VideoCapabilitiesKHR";
       case StructureType::eVideoPictureResourceKHR: return "VideoPictureResourceKHR";
@@ -1328,7 +1331,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eQueueFamilyQueryResultStatusProperties2KHR: return "QueueFamilyQueryResultStatusProperties2KHR";
       case StructureType::eVideoDecodeInfoKHR: return "VideoDecodeInfoKHR";
       case StructureType::eVideoDecodeCapabilitiesKHR: return "VideoDecodeCapabilitiesKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eDedicatedAllocationImageCreateInfoNV: return "DedicatedAllocationImageCreateInfoNV";
       case StructureType::eDedicatedAllocationBufferCreateInfoNV: return "DedicatedAllocationBufferCreateInfoNV";
       case StructureType::eDedicatedAllocationMemoryAllocateInfoNV: return "DedicatedAllocationMemoryAllocateInfoNV";
@@ -1340,7 +1343,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eCuLaunchInfoNVX: return "CuLaunchInfoNVX";
       case StructureType::eImageViewHandleInfoNVX: return "ImageViewHandleInfoNVX";
       case StructureType::eImageViewAddressPropertiesNVX: return "ImageViewAddressPropertiesNVX";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoEncodeH264CapabilitiesEXT: return "VideoEncodeH264CapabilitiesEXT";
       case StructureType::eVideoEncodeH264SessionParametersCreateInfoEXT: return "VideoEncodeH264SessionParametersCreateInfoEXT";
       case StructureType::eVideoEncodeH264SessionParametersAddInfoEXT: return "VideoEncodeH264SessionParametersAddInfoEXT";
@@ -1370,48 +1373,48 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eVideoDecodeH264SessionParametersCreateInfoEXT: return "VideoDecodeH264SessionParametersCreateInfoEXT";
       case StructureType::eVideoDecodeH264SessionParametersAddInfoEXT: return "VideoDecodeH264SessionParametersAddInfoEXT";
       case StructureType::eVideoDecodeH264DpbSlotInfoEXT: return "VideoDecodeH264DpbSlotInfoEXT";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eTextureLodGatherFormatPropertiesAMD: return "TextureLodGatherFormatPropertiesAMD";
       case StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR: return "RenderingFragmentShadingRateAttachmentInfoKHR";
       case StructureType::eRenderingFragmentDensityMapAttachmentInfoEXT: return "RenderingFragmentDensityMapAttachmentInfoEXT";
       case StructureType::eAttachmentSampleCountInfoAMD: return "AttachmentSampleCountInfoAMD";
       case StructureType::eMultiviewPerViewAttributesInfoNVX: return "MultiviewPerViewAttributesInfoNVX";
-#if defined( VK_USE_PLATFORM_GGP )
+#  if defined( VK_USE_PLATFORM_GGP )
       case StructureType::eStreamDescriptorSurfaceCreateInfoGGP: return "StreamDescriptorSurfaceCreateInfoGGP";
-#endif /*VK_USE_PLATFORM_GGP*/
+#  endif /*VK_USE_PLATFORM_GGP*/
       case StructureType::ePhysicalDeviceCornerSampledImageFeaturesNV: return "PhysicalDeviceCornerSampledImageFeaturesNV";
       case StructureType::eExternalMemoryImageCreateInfoNV: return "ExternalMemoryImageCreateInfoNV";
       case StructureType::eExportMemoryAllocateInfoNV: return "ExportMemoryAllocateInfoNV";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eImportMemoryWin32HandleInfoNV: return "ImportMemoryWin32HandleInfoNV";
       case StructureType::eExportMemoryWin32HandleInfoNV: return "ExportMemoryWin32HandleInfoNV";
       case StructureType::eWin32KeyedMutexAcquireReleaseInfoNV: return "Win32KeyedMutexAcquireReleaseInfoNV";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eValidationFlagsEXT: return "ValidationFlagsEXT";
-#if defined( VK_USE_PLATFORM_VI_NN )
+#  if defined( VK_USE_PLATFORM_VI_NN )
       case StructureType::eViSurfaceCreateInfoNN: return "ViSurfaceCreateInfoNN";
-#endif /*VK_USE_PLATFORM_VI_NN*/
+#  endif /*VK_USE_PLATFORM_VI_NN*/
       case StructureType::eImageViewAstcDecodeModeEXT: return "ImageViewAstcDecodeModeEXT";
       case StructureType::ePhysicalDeviceAstcDecodeFeaturesEXT: return "PhysicalDeviceAstcDecodeFeaturesEXT";
       case StructureType::ePipelineRobustnessCreateInfoEXT: return "PipelineRobustnessCreateInfoEXT";
       case StructureType::ePhysicalDevicePipelineRobustnessFeaturesEXT: return "PhysicalDevicePipelineRobustnessFeaturesEXT";
       case StructureType::ePhysicalDevicePipelineRobustnessPropertiesEXT: return "PhysicalDevicePipelineRobustnessPropertiesEXT";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eImportMemoryWin32HandleInfoKHR: return "ImportMemoryWin32HandleInfoKHR";
       case StructureType::eExportMemoryWin32HandleInfoKHR: return "ExportMemoryWin32HandleInfoKHR";
       case StructureType::eMemoryWin32HandlePropertiesKHR: return "MemoryWin32HandlePropertiesKHR";
       case StructureType::eMemoryGetWin32HandleInfoKHR: return "MemoryGetWin32HandleInfoKHR";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eImportMemoryFdInfoKHR: return "ImportMemoryFdInfoKHR";
       case StructureType::eMemoryFdPropertiesKHR: return "MemoryFdPropertiesKHR";
       case StructureType::eMemoryGetFdInfoKHR: return "MemoryGetFdInfoKHR";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eWin32KeyedMutexAcquireReleaseInfoKHR: return "Win32KeyedMutexAcquireReleaseInfoKHR";
       case StructureType::eImportSemaphoreWin32HandleInfoKHR: return "ImportSemaphoreWin32HandleInfoKHR";
       case StructureType::eExportSemaphoreWin32HandleInfoKHR: return "ExportSemaphoreWin32HandleInfoKHR";
       case StructureType::eD3D12FenceSubmitInfoKHR: return "D3D12FenceSubmitInfoKHR";
       case StructureType::eSemaphoreGetWin32HandleInfoKHR: return "SemaphoreGetWin32HandleInfoKHR";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eImportSemaphoreFdInfoKHR: return "ImportSemaphoreFdInfoKHR";
       case StructureType::eSemaphoreGetFdInfoKHR: return "SemaphoreGetFdInfoKHR";
       case StructureType::ePhysicalDevicePushDescriptorPropertiesKHR: return "PhysicalDevicePushDescriptorPropertiesKHR";
@@ -1436,11 +1439,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineRasterizationDepthClipStateCreateInfoEXT: return "PipelineRasterizationDepthClipStateCreateInfoEXT";
       case StructureType::eHdrMetadataEXT: return "HdrMetadataEXT";
       case StructureType::eSharedPresentSurfaceCapabilitiesKHR: return "SharedPresentSurfaceCapabilitiesKHR";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eImportFenceWin32HandleInfoKHR: return "ImportFenceWin32HandleInfoKHR";
       case StructureType::eExportFenceWin32HandleInfoKHR: return "ExportFenceWin32HandleInfoKHR";
       case StructureType::eFenceGetWin32HandleInfoKHR: return "FenceGetWin32HandleInfoKHR";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eImportFenceFdInfoKHR: return "ImportFenceFdInfoKHR";
       case StructureType::eFenceGetFdInfoKHR: return "FenceGetFdInfoKHR";
       case StructureType::ePhysicalDevicePerformanceQueryFeaturesKHR: return "PhysicalDevicePerformanceQueryFeaturesKHR";
@@ -1458,18 +1461,18 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDisplayModeProperties2KHR: return "DisplayModeProperties2KHR";
       case StructureType::eDisplayPlaneInfo2KHR: return "DisplayPlaneInfo2KHR";
       case StructureType::eDisplayPlaneCapabilities2KHR: return "DisplayPlaneCapabilities2KHR";
-#if defined( VK_USE_PLATFORM_IOS_MVK )
+#  if defined( VK_USE_PLATFORM_IOS_MVK )
       case StructureType::eIosSurfaceCreateInfoMVK: return "IosSurfaceCreateInfoMVK";
-#endif /*VK_USE_PLATFORM_IOS_MVK*/
-#if defined( VK_USE_PLATFORM_MACOS_MVK )
+#  endif /*VK_USE_PLATFORM_IOS_MVK*/
+#  if defined( VK_USE_PLATFORM_MACOS_MVK )
       case StructureType::eMacosSurfaceCreateInfoMVK: return "MacosSurfaceCreateInfoMVK";
-#endif /*VK_USE_PLATFORM_MACOS_MVK*/
+#  endif /*VK_USE_PLATFORM_MACOS_MVK*/
       case StructureType::eDebugUtilsObjectNameInfoEXT: return "DebugUtilsObjectNameInfoEXT";
       case StructureType::eDebugUtilsObjectTagInfoEXT: return "DebugUtilsObjectTagInfoEXT";
       case StructureType::eDebugUtilsLabelEXT: return "DebugUtilsLabelEXT";
       case StructureType::eDebugUtilsMessengerCallbackDataEXT: return "DebugUtilsMessengerCallbackDataEXT";
       case StructureType::eDebugUtilsMessengerCreateInfoEXT: return "DebugUtilsMessengerCreateInfoEXT";
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       case StructureType::eAndroidHardwareBufferUsageANDROID: return "AndroidHardwareBufferUsageANDROID";
       case StructureType::eAndroidHardwareBufferPropertiesANDROID: return "AndroidHardwareBufferPropertiesANDROID";
       case StructureType::eAndroidHardwareBufferFormatPropertiesANDROID: return "AndroidHardwareBufferFormatPropertiesANDROID";
@@ -1477,7 +1480,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryGetAndroidHardwareBufferInfoANDROID: return "MemoryGetAndroidHardwareBufferInfoANDROID";
       case StructureType::eExternalFormatANDROID: return "ExternalFormatANDROID";
       case StructureType::eAndroidHardwareBufferFormatProperties2ANDROID: return "AndroidHardwareBufferFormatProperties2ANDROID";
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       case StructureType::eSampleLocationsInfoEXT: return "SampleLocationsInfoEXT";
       case StructureType::eRenderPassSampleLocationsBeginInfoEXT: return "RenderPassSampleLocationsBeginInfoEXT";
       case StructureType::ePipelineSampleLocationsStateCreateInfoEXT: return "PipelineSampleLocationsStateCreateInfoEXT";
@@ -1519,10 +1522,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDrmFormatModifierPropertiesList2EXT: return "DrmFormatModifierPropertiesList2EXT";
       case StructureType::eValidationCacheCreateInfoEXT: return "ValidationCacheCreateInfoEXT";
       case StructureType::eShaderModuleValidationCacheCreateInfoEXT: return "ShaderModuleValidationCacheCreateInfoEXT";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::ePhysicalDevicePortabilitySubsetFeaturesKHR: return "PhysicalDevicePortabilitySubsetFeaturesKHR";
       case StructureType::ePhysicalDevicePortabilitySubsetPropertiesKHR: return "PhysicalDevicePortabilitySubsetPropertiesKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::ePipelineViewportShadingRateImageStateCreateInfoNV: return "PipelineViewportShadingRateImageStateCreateInfoNV";
       case StructureType::ePhysicalDeviceShadingRateImageFeaturesNV: return "PhysicalDeviceShadingRateImageFeaturesNV";
       case StructureType::ePhysicalDeviceShadingRateImagePropertiesNV: return "PhysicalDeviceShadingRateImagePropertiesNV";
@@ -1549,14 +1552,14 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineCompilerControlCreateInfoAMD: return "PipelineCompilerControlCreateInfoAMD";
       case StructureType::eCalibratedTimestampInfoEXT: return "CalibratedTimestampInfoEXT";
       case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoDecodeH265CapabilitiesEXT: return "VideoDecodeH265CapabilitiesEXT";
       case StructureType::eVideoDecodeH265SessionParametersCreateInfoEXT: return "VideoDecodeH265SessionParametersCreateInfoEXT";
       case StructureType::eVideoDecodeH265SessionParametersAddInfoEXT: return "VideoDecodeH265SessionParametersAddInfoEXT";
       case StructureType::eVideoDecodeH265ProfileEXT: return "VideoDecodeH265ProfileEXT";
       case StructureType::eVideoDecodeH265PictureInfoEXT: return "VideoDecodeH265PictureInfoEXT";
       case StructureType::eVideoDecodeH265DpbSlotInfoEXT: return "VideoDecodeH265DpbSlotInfoEXT";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eDeviceQueueGlobalPriorityCreateInfoKHR: return "DeviceQueueGlobalPriorityCreateInfoKHR";
       case StructureType::ePhysicalDeviceGlobalPriorityQueryFeaturesKHR: return "PhysicalDeviceGlobalPriorityQueryFeaturesKHR";
       case StructureType::eQueueFamilyGlobalPriorityPropertiesKHR: return "QueueFamilyGlobalPriorityPropertiesKHR";
@@ -1564,9 +1567,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
       case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT: return "PhysicalDeviceVertexAttributeDivisorFeaturesEXT";
-#if defined( VK_USE_PLATFORM_GGP )
+#  if defined( VK_USE_PLATFORM_GGP )
       case StructureType::ePresentFrameTokenGGP: return "PresentFrameTokenGGP";
-#endif /*VK_USE_PLATFORM_GGP*/
+#  endif /*VK_USE_PLATFORM_GGP*/
       case StructureType::ePhysicalDeviceComputeShaderDerivativesFeaturesNV: return "PhysicalDeviceComputeShaderDerivativesFeaturesNV";
       case StructureType::ePhysicalDeviceMeshShaderFeaturesNV: return "PhysicalDeviceMeshShaderFeaturesNV";
       case StructureType::ePhysicalDeviceMeshShaderPropertiesNV: return "PhysicalDeviceMeshShaderPropertiesNV";
@@ -1585,12 +1588,12 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT: return "PhysicalDevicePciBusInfoPropertiesEXT";
       case StructureType::eDisplayNativeHdrSurfaceCapabilitiesAMD: return "DisplayNativeHdrSurfaceCapabilitiesAMD";
       case StructureType::eSwapchainDisplayNativeHdrCreateInfoAMD: return "SwapchainDisplayNativeHdrCreateInfoAMD";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case StructureType::eImagepipeSurfaceCreateInfoFUCHSIA: return "ImagepipeSurfaceCreateInfoFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
-#if defined( VK_USE_PLATFORM_METAL_EXT )
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
       case StructureType::eMetalSurfaceCreateInfoEXT: return "MetalSurfaceCreateInfoEXT";
-#endif /*VK_USE_PLATFORM_METAL_EXT*/
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::ePhysicalDeviceFragmentDensityMapFeaturesEXT: return "PhysicalDeviceFragmentDensityMapFeaturesEXT";
       case StructureType::ePhysicalDeviceFragmentDensityMapPropertiesEXT: return "PhysicalDeviceFragmentDensityMapPropertiesEXT";
       case StructureType::eRenderPassFragmentDensityMapCreateInfoEXT: return "RenderPassFragmentDensityMapCreateInfoEXT";
@@ -1622,11 +1625,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceProvokingVertexFeaturesEXT: return "PhysicalDeviceProvokingVertexFeaturesEXT";
       case StructureType::ePipelineRasterizationProvokingVertexStateCreateInfoEXT: return "PipelineRasterizationProvokingVertexStateCreateInfoEXT";
       case StructureType::ePhysicalDeviceProvokingVertexPropertiesEXT: return "PhysicalDeviceProvokingVertexPropertiesEXT";
-#if defined( VK_USE_PLATFORM_WIN32_KHR )
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
       case StructureType::eSurfaceFullScreenExclusiveInfoEXT: return "SurfaceFullScreenExclusiveInfoEXT";
       case StructureType::eSurfaceCapabilitiesFullScreenExclusiveEXT: return "SurfaceCapabilitiesFullScreenExclusiveEXT";
       case StructureType::eSurfaceFullScreenExclusiveWin32InfoEXT: return "SurfaceFullScreenExclusiveWin32InfoEXT";
-#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
       case StructureType::eHeadlessSurfaceCreateInfoEXT: return "HeadlessSurfaceCreateInfoEXT";
       case StructureType::ePhysicalDeviceLineRasterizationFeaturesEXT: return "PhysicalDeviceLineRasterizationFeaturesEXT";
       case StructureType::ePipelineRasterizationLineStateCreateInfoEXT: return "PipelineRasterizationLineStateCreateInfoEXT";
@@ -1665,15 +1668,15 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineLibraryCreateInfoKHR: return "PipelineLibraryCreateInfoKHR";
       case StructureType::ePresentIdKHR: return "PresentIdKHR";
       case StructureType::ePhysicalDevicePresentIdFeaturesKHR: return "PhysicalDevicePresentIdFeaturesKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case StructureType::eVideoEncodeInfoKHR: return "VideoEncodeInfoKHR";
       case StructureType::eVideoEncodeRateControlInfoKHR: return "VideoEncodeRateControlInfoKHR";
       case StructureType::eVideoEncodeRateControlLayerInfoKHR: return "VideoEncodeRateControlLayerInfoKHR";
       case StructureType::eVideoEncodeCapabilitiesKHR: return "VideoEncodeCapabilitiesKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::ePhysicalDeviceDiagnosticsConfigFeaturesNV: return "PhysicalDeviceDiagnosticsConfigFeaturesNV";
       case StructureType::eDeviceDiagnosticsConfigCreateInfoNV: return "DeviceDiagnosticsConfigCreateInfoNV";
-#if defined( VK_USE_PLATFORM_METAL_EXT )
+#  if defined( VK_USE_PLATFORM_METAL_EXT )
       case StructureType::eExportMetalObjectCreateInfoEXT: return "ExportMetalObjectCreateInfoEXT";
       case StructureType::eExportMetalObjectsInfoEXT: return "ExportMetalObjectsInfoEXT";
       case StructureType::eExportMetalDeviceInfoEXT: return "ExportMetalDeviceInfoEXT";
@@ -1686,7 +1689,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImportMetalIoSurfaceInfoEXT: return "ImportMetalIoSurfaceInfoEXT";
       case StructureType::eExportMetalSharedEventInfoEXT: return "ExportMetalSharedEventInfoEXT";
       case StructureType::eImportMetalSharedEventInfoEXT: return "ImportMetalSharedEventInfoEXT";
-#endif /*VK_USE_PLATFORM_METAL_EXT*/
+#  endif /*VK_USE_PLATFORM_METAL_EXT*/
       case StructureType::eQueueFamilyCheckpointProperties2NV: return "QueueFamilyCheckpointProperties2NV";
       case StructureType::eCheckpointData2NV: return "CheckpointData2NV";
       case StructureType::ePhysicalDeviceGraphicsPipelineLibraryFeaturesEXT: return "PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT";
@@ -1715,9 +1718,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDevice4444FormatsFeaturesEXT: return "PhysicalDevice4444FormatsFeaturesEXT";
       case StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM: return "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM";
       case StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT: return "PhysicalDeviceRgba10X6FormatsFeaturesEXT";
-#if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
+#  if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       case StructureType::eDirectfbSurfaceCreateInfoEXT: return "DirectfbSurfaceCreateInfoEXT";
-#endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
+#  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
       case StructureType::ePhysicalDeviceMutableDescriptorTypeFeaturesVALVE: return "PhysicalDeviceMutableDescriptorTypeFeaturesVALVE";
       case StructureType::eMutableDescriptorTypeCreateInfoVALVE: return "MutableDescriptorTypeCreateInfoVALVE";
       case StructureType::ePhysicalDeviceVertexInputDynamicStateFeaturesEXT: return "PhysicalDeviceVertexInputDynamicStateFeaturesEXT";
@@ -1727,7 +1730,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDepthClipControlFeaturesEXT: return "PhysicalDeviceDepthClipControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClipControlCreateInfoEXT: return "PipelineViewportDepthClipControlCreateInfoEXT";
       case StructureType::ePhysicalDevicePrimitiveTopologyListRestartFeaturesEXT: return "PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case StructureType::eImportMemoryZirconHandleInfoFUCHSIA: return "ImportMemoryZirconHandleInfoFUCHSIA";
       case StructureType::eMemoryZirconHandlePropertiesFUCHSIA: return "MemoryZirconHandlePropertiesFUCHSIA";
       case StructureType::eMemoryGetZirconHandleInfoFUCHSIA: return "MemoryGetZirconHandleInfoFUCHSIA";
@@ -1743,7 +1746,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageFormatConstraintsInfoFUCHSIA: return "ImageFormatConstraintsInfoFUCHSIA";
       case StructureType::eSysmemColorSpaceFUCHSIA: return "SysmemColorSpaceFUCHSIA";
       case StructureType::eBufferCollectionConstraintsInfoFUCHSIA: return "BufferCollectionConstraintsInfoFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
       case StructureType::eSubpassShadingPipelineCreateInfoHUAWEI: return "SubpassShadingPipelineCreateInfoHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingFeaturesHUAWEI: return "PhysicalDeviceSubpassShadingFeaturesHUAWEI";
       case StructureType::ePhysicalDeviceSubpassShadingPropertiesHUAWEI: return "PhysicalDeviceSubpassShadingPropertiesHUAWEI";
@@ -1756,9 +1759,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSubpassResolvePerformanceQueryEXT: return "SubpassResolvePerformanceQueryEXT";
       case StructureType::eMultisampledRenderToSingleSampledInfoEXT: return "MultisampledRenderToSingleSampledInfoEXT";
       case StructureType::ePhysicalDeviceExtendedDynamicState2FeaturesEXT: return "PhysicalDeviceExtendedDynamicState2FeaturesEXT";
-#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case StructureType::eScreenSurfaceCreateInfoQNX: return "ScreenSurfaceCreateInfoQNX";
-#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       case StructureType::ePhysicalDeviceColorWriteEnableFeaturesEXT: return "PhysicalDeviceColorWriteEnableFeaturesEXT";
       case StructureType::ePipelineColorWriteCreateInfoEXT: return "PipelineColorWriteCreateInfoEXT";
       case StructureType::ePhysicalDevicePrimitivesGeneratedQueryFeaturesEXT: return "PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT";
@@ -1796,12 +1799,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineCacheHeaderVersion
   {
     eOne = VK_PIPELINE_CACHE_HEADER_VERSION_ONE
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheHeaderVersion value )
   {
     switch ( value )
@@ -1810,6 +1815,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ObjectType
   {
@@ -1868,6 +1874,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSamplerYcbcrConversionKHR   = VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ObjectType value )
   {
     switch ( value )
@@ -1906,10 +1913,10 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::eDisplayKHR: return "DisplayKHR";
       case ObjectType::eDisplayModeKHR: return "DisplayModeKHR";
       case ObjectType::eDebugReportCallbackEXT: return "DebugReportCallbackEXT";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case ObjectType::eVideoSessionKHR: return "VideoSessionKHR";
       case ObjectType::eVideoSessionParametersKHR: return "VideoSessionParametersKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case ObjectType::eCuModuleNVX: return "CuModuleNVX";
       case ObjectType::eCuFunctionNVX: return "CuFunctionNVX";
       case ObjectType::eDebugUtilsMessengerEXT: return "DebugUtilsMessengerEXT";
@@ -1919,12 +1926,13 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::ePerformanceConfigurationINTEL: return "PerformanceConfigurationINTEL";
       case ObjectType::eDeferredOperationKHR: return "DeferredOperationKHR";
       case ObjectType::eIndirectCommandsLayoutNV: return "IndirectCommandsLayoutNV";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case ObjectType::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class VendorId
   {
@@ -1936,6 +1944,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePocl     = VK_VENDOR_ID_POCL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VendorId value )
   {
     switch ( value )
@@ -1949,6 +1958,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class Format
   {
@@ -2255,6 +2265,7 @@ namespace VULKAN_HPP_NAMESPACE
     eR12X4UnormPack16KHR                     = VK_FORMAT_R12X4_UNORM_PACK16_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( Format value )
   {
     switch ( value )
@@ -2509,6 +2520,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FormatFeatureFlagBits : VkFormatFeatureFlags
   {
@@ -2562,6 +2574,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTransferSrcKHR                                             = VK_FORMAT_FEATURE_TRANSFER_SRC_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits value )
   {
     switch ( value )
@@ -2590,21 +2603,22 @@ namespace VULKAN_HPP_NAMESPACE
       case FormatFeatureFlagBits::eDisjoint: return "Disjoint";
       case FormatFeatureFlagBits::eCositedChromaSamples: return "CositedChromaSamples";
       case FormatFeatureFlagBits::eSampledImageFilterMinmax: return "SampledImageFilterMinmax";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case FormatFeatureFlagBits::eVideoDecodeOutputKHR: return "VideoDecodeOutputKHR";
       case FormatFeatureFlagBits::eVideoDecodeDpbKHR: return "VideoDecodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR: return "AccelerationStructureVertexBufferKHR";
       case FormatFeatureFlagBits::eSampledImageFilterCubicEXT: return "SampledImageFilterCubicEXT";
       case FormatFeatureFlagBits::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
       case FormatFeatureFlagBits::eFragmentShadingRateAttachmentKHR: return "FragmentShadingRateAttachmentKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case FormatFeatureFlagBits::eVideoEncodeInputKHR: return "VideoEncodeInputKHR";
       case FormatFeatureFlagBits::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageCreateFlagBits : VkImageCreateFlags
   {
@@ -2634,6 +2648,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSplitInstanceBindRegionsKHR          = VK_IMAGE_CREATE_SPLIT_INSTANCE_BIND_REGIONS_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCreateFlagBits value )
   {
     switch ( value )
@@ -2659,6 +2674,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageTiling
   {
@@ -2667,6 +2683,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDrmFormatModifierEXT = VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageTiling value )
   {
     switch ( value )
@@ -2677,6 +2694,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageType
   {
@@ -2685,6 +2703,7 @@ namespace VULKAN_HPP_NAMESPACE
     e3D = VK_IMAGE_TYPE_3D
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageType value )
   {
     switch ( value )
@@ -2695,6 +2714,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageUsageFlagBits : VkImageUsageFlags
   {
@@ -2724,6 +2744,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShadingRateImageNV   = VK_IMAGE_USAGE_SHADING_RATE_IMAGE_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageUsageFlagBits value )
   {
     switch ( value )
@@ -2736,30 +2757,32 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eDepthStencilAttachment: return "DepthStencilAttachment";
       case ImageUsageFlagBits::eTransientAttachment: return "TransientAttachment";
       case ImageUsageFlagBits::eInputAttachment: return "InputAttachment";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case ImageUsageFlagBits::eVideoDecodeDstKHR: return "VideoDecodeDstKHR";
       case ImageUsageFlagBits::eVideoDecodeSrcKHR: return "VideoDecodeSrcKHR";
       case ImageUsageFlagBits::eVideoDecodeDpbKHR: return "VideoDecodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case ImageUsageFlagBits::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
       case ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR: return "FragmentShadingRateAttachmentKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case ImageUsageFlagBits::eVideoEncodeDstKHR: return "VideoEncodeDstKHR";
       case ImageUsageFlagBits::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
       case ImageUsageFlagBits::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case ImageUsageFlagBits::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
       case ImageUsageFlagBits::eSampleWeightQCOM: return "SampleWeightQCOM";
       case ImageUsageFlagBits::eSampleBlockMatchQCOM: return "SampleBlockMatchQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class InstanceCreateFlagBits : VkInstanceCreateFlags
   {
     eEnumeratePortabilityKHR = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlagBits value )
   {
     switch ( value )
@@ -2768,12 +2791,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class InternalAllocationType
   {
     eExecutable = VK_INTERNAL_ALLOCATION_TYPE_EXECUTABLE
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( InternalAllocationType value )
   {
     switch ( value )
@@ -2782,6 +2807,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class MemoryHeapFlagBits : VkMemoryHeapFlags
   {
@@ -2790,6 +2816,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMultiInstanceKHR = VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlagBits value )
   {
     switch ( value )
@@ -2799,6 +2826,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class MemoryPropertyFlagBits : VkMemoryPropertyFlags
   {
@@ -2813,6 +2841,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRdmaCapableNV     = VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlagBits value )
   {
     switch ( value )
@@ -2829,6 +2858,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PhysicalDeviceType
   {
@@ -2839,6 +2869,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCpu           = VK_PHYSICAL_DEVICE_TYPE_CPU
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceType value )
   {
     switch ( value )
@@ -2851,6 +2882,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueueFlagBits : VkQueueFlags
   {
@@ -2865,6 +2897,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueueFlagBits value )
   {
     switch ( value )
@@ -2874,13 +2907,14 @@ namespace VULKAN_HPP_NAMESPACE
       case QueueFlagBits::eTransfer: return "Transfer";
       case QueueFlagBits::eSparseBinding: return "SparseBinding";
       case QueueFlagBits::eProtected: return "Protected";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case QueueFlagBits::eVideoDecodeKHR: return "VideoDecodeKHR";
       case QueueFlagBits::eVideoEncodeKHR: return "VideoEncodeKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SampleCountFlagBits : VkSampleCountFlags
   {
@@ -2893,6 +2927,7 @@ namespace VULKAN_HPP_NAMESPACE
     e64 = VK_SAMPLE_COUNT_64_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SampleCountFlagBits value )
   {
     switch ( value )
@@ -2907,6 +2942,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SystemAllocationScope
   {
@@ -2917,6 +2953,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInstance = VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SystemAllocationScope value )
   {
     switch ( value )
@@ -2929,15 +2966,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DeviceCreateFlagBits
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineStageFlagBits : VkPipelineStageFlags
   {
@@ -2974,6 +3014,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShadingRateImageNV               = VK_PIPELINE_STAGE_SHADING_RATE_IMAGE_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits value )
   {
     switch ( value )
@@ -3008,15 +3049,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class MemoryMapFlagBits : VkMemoryMapFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class ImageAspectFlagBits : VkImageAspectFlags
   {
@@ -3038,6 +3082,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePlane2KHR       = VK_IMAGE_ASPECT_PLANE_2_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlagBits value )
   {
     switch ( value )
@@ -3057,6 +3102,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SparseImageFormatFlagBits : VkSparseImageFormatFlags
   {
@@ -3065,6 +3111,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNonstandardBlockSize = VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlagBits value )
   {
     switch ( value )
@@ -3075,12 +3122,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SparseMemoryBindFlagBits : VkSparseMemoryBindFlags
   {
     eMetadata = VK_SPARSE_MEMORY_BIND_METADATA_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlagBits value )
   {
     switch ( value )
@@ -3089,12 +3138,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FenceCreateFlagBits : VkFenceCreateFlags
   {
     eSignaled = VK_FENCE_CREATE_SIGNALED_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FenceCreateFlagBits value )
   {
     switch ( value )
@@ -3103,15 +3154,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SemaphoreCreateFlagBits : VkSemaphoreCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class EventCreateFlagBits : VkEventCreateFlags
   {
@@ -3119,6 +3173,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDeviceOnlyKHR = VK_EVENT_CREATE_DEVICE_ONLY_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( EventCreateFlagBits value )
   {
     switch ( value )
@@ -3127,6 +3182,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryPipelineStatisticFlagBits : VkQueryPipelineStatisticFlags
   {
@@ -3143,6 +3199,7 @@ namespace VULKAN_HPP_NAMESPACE
     eComputeShaderInvocations                = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlagBits value )
   {
     switch ( value )
@@ -3161,6 +3218,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryResultFlagBits : VkQueryResultFlags
   {
@@ -3173,6 +3231,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryResultFlagBits value )
   {
     switch ( value )
@@ -3181,12 +3240,13 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryResultFlagBits::eWait: return "Wait";
       case QueryResultFlagBits::eWithAvailability: return "WithAvailability";
       case QueryResultFlagBits::ePartial: return "Partial";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case QueryResultFlagBits::eWithStatusKHR: return "WithStatusKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryType
   {
@@ -3210,6 +3270,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureSizeKHR                             = VK_QUERY_TYPE_ACCELERATION_STRUCTURE_SIZE_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryType value )
   {
     switch ( value )
@@ -3217,33 +3278,36 @@ namespace VULKAN_HPP_NAMESPACE
       case QueryType::eOcclusion: return "Occlusion";
       case QueryType::ePipelineStatistics: return "PipelineStatistics";
       case QueryType::eTimestamp: return "Timestamp";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case QueryType::eResultStatusOnlyKHR: return "ResultStatusOnlyKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case QueryType::eTransformFeedbackStreamEXT: return "TransformFeedbackStreamEXT";
       case QueryType::ePerformanceQueryKHR: return "PerformanceQueryKHR";
       case QueryType::eAccelerationStructureCompactedSizeKHR: return "AccelerationStructureCompactedSizeKHR";
       case QueryType::eAccelerationStructureSerializationSizeKHR: return "AccelerationStructureSerializationSizeKHR";
       case QueryType::eAccelerationStructureCompactedSizeNV: return "AccelerationStructureCompactedSizeNV";
       case QueryType::ePerformanceQueryINTEL: return "PerformanceQueryINTEL";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case QueryType::eVideoEncodeBitstreamBufferRangeKHR: return "VideoEncodeBitstreamBufferRangeKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case QueryType::ePrimitivesGeneratedEXT: return "PrimitivesGeneratedEXT";
       case QueryType::eAccelerationStructureSerializationBottomLevelPointersKHR: return "AccelerationStructureSerializationBottomLevelPointersKHR";
       case QueryType::eAccelerationStructureSizeKHR: return "AccelerationStructureSizeKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryPoolCreateFlagBits
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class BufferCreateFlagBits : VkBufferCreateFlags
   {
@@ -3256,6 +3320,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDeviceAddressCaptureReplayKHR = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferCreateFlagBits value )
   {
     switch ( value )
@@ -3268,6 +3333,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class BufferUsageFlagBits : VkBufferUsageFlags
   {
@@ -3300,6 +3366,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShaderDeviceAddressKHR = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits value )
   {
     switch ( value )
@@ -3314,23 +3381,24 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits::eVertexBuffer: return "VertexBuffer";
       case BufferUsageFlagBits::eIndirectBuffer: return "IndirectBuffer";
       case BufferUsageFlagBits::eShaderDeviceAddress: return "ShaderDeviceAddress";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits::eVideoDecodeSrcKHR: return "VideoDecodeSrcKHR";
       case BufferUsageFlagBits::eVideoDecodeDstKHR: return "VideoDecodeDstKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case BufferUsageFlagBits::eTransformFeedbackBufferEXT: return "TransformFeedbackBufferEXT";
       case BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
       case BufferUsageFlagBits::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
       case BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR: return "AccelerationStructureBuildInputReadOnlyKHR";
       case BufferUsageFlagBits::eAccelerationStructureStorageKHR: return "AccelerationStructureStorageKHR";
       case BufferUsageFlagBits::eShaderBindingTableKHR: return "ShaderBindingTableKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits::eVideoEncodeDstKHR: return "VideoEncodeDstKHR";
       case BufferUsageFlagBits::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SharingMode
   {
@@ -3338,6 +3406,7 @@ namespace VULKAN_HPP_NAMESPACE
     eConcurrent = VK_SHARING_MODE_CONCURRENT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SharingMode value )
   {
     switch ( value )
@@ -3347,15 +3416,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class BufferViewCreateFlagBits : VkBufferViewCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class ImageLayout
   {
@@ -3401,6 +3473,7 @@ namespace VULKAN_HPP_NAMESPACE
     eStencilReadOnlyOptimalKHR                = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageLayout value )
   {
     switch ( value )
@@ -3423,22 +3496,23 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageLayout::eReadOnlyOptimal: return "ReadOnlyOptimal";
       case ImageLayout::eAttachmentOptimal: return "AttachmentOptimal";
       case ImageLayout::ePresentSrcKHR: return "PresentSrcKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case ImageLayout::eVideoDecodeDstKHR: return "VideoDecodeDstKHR";
       case ImageLayout::eVideoDecodeSrcKHR: return "VideoDecodeSrcKHR";
       case ImageLayout::eVideoDecodeDpbKHR: return "VideoDecodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case ImageLayout::eSharedPresentKHR: return "SharedPresentKHR";
       case ImageLayout::eFragmentDensityMapOptimalEXT: return "FragmentDensityMapOptimalEXT";
       case ImageLayout::eFragmentShadingRateAttachmentOptimalKHR: return "FragmentShadingRateAttachmentOptimalKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case ImageLayout::eVideoEncodeDstKHR: return "VideoEncodeDstKHR";
       case ImageLayout::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
       case ImageLayout::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ComponentSwizzle
   {
@@ -3451,6 +3525,7 @@ namespace VULKAN_HPP_NAMESPACE
     eA        = VK_COMPONENT_SWIZZLE_A
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ComponentSwizzle value )
   {
     switch ( value )
@@ -3465,6 +3540,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageViewCreateFlagBits : VkImageViewCreateFlags
   {
@@ -3472,6 +3548,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFragmentDensityMapDeferredEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlagBits value )
   {
     switch ( value )
@@ -3481,6 +3558,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageViewType
   {
@@ -3493,6 +3571,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCubeArray = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageViewType value )
   {
     switch ( value )
@@ -3507,15 +3586,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ShaderModuleCreateFlagBits : VkShaderModuleCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class BlendFactor
   {
@@ -3540,6 +3622,7 @@ namespace VULKAN_HPP_NAMESPACE
     eOneMinusSrc1Alpha     = VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BlendFactor value )
   {
     switch ( value )
@@ -3566,6 +3649,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class BlendOp
   {
@@ -3622,6 +3706,7 @@ namespace VULKAN_HPP_NAMESPACE
     eBlueEXT             = VK_BLEND_OP_BLUE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BlendOp value )
   {
     switch ( value )
@@ -3680,6 +3765,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ColorComponentFlagBits : VkColorComponentFlags
   {
@@ -3689,6 +3775,7 @@ namespace VULKAN_HPP_NAMESPACE
     eA = VK_COLOR_COMPONENT_A_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ColorComponentFlagBits value )
   {
     switch ( value )
@@ -3700,6 +3787,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CompareOp
   {
@@ -3713,6 +3801,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAlways         = VK_COMPARE_OP_ALWAYS
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CompareOp value )
   {
     switch ( value )
@@ -3728,6 +3817,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CullModeFlagBits : VkCullModeFlags
   {
@@ -3737,6 +3827,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFrontAndBack = VK_CULL_MODE_FRONT_AND_BACK
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CullModeFlagBits value )
   {
     switch ( value )
@@ -3748,6 +3839,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DynamicState
   {
@@ -3805,6 +3897,7 @@ namespace VULKAN_HPP_NAMESPACE
     eViewportWithCountEXT           = VK_DYNAMIC_STATE_VIEWPORT_WITH_COUNT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DynamicState value )
   {
     switch ( value )
@@ -3849,6 +3942,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FrontFace
   {
@@ -3856,6 +3950,7 @@ namespace VULKAN_HPP_NAMESPACE
     eClockwise        = VK_FRONT_FACE_CLOCKWISE
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FrontFace value )
   {
     switch ( value )
@@ -3865,6 +3960,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class LogicOp
   {
@@ -3886,6 +3982,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSet          = VK_LOGIC_OP_SET
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( LogicOp value )
   {
     switch ( value )
@@ -3909,6 +4006,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
@@ -3944,6 +4042,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR = VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlagBits value )
   {
     switch ( value )
@@ -3975,6 +4074,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineShaderStageCreateFlagBits : VkPipelineShaderStageCreateFlags
   {
@@ -3984,6 +4084,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRequireFullSubgroupsEXT     = VK_PIPELINE_SHADER_STAGE_CREATE_REQUIRE_FULL_SUBGROUPS_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlagBits value )
   {
     switch ( value )
@@ -3993,6 +4094,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PolygonMode
   {
@@ -4002,6 +4104,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFillRectangleNV = VK_POLYGON_MODE_FILL_RECTANGLE_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PolygonMode value )
   {
     switch ( value )
@@ -4013,6 +4116,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PrimitiveTopology
   {
@@ -4029,6 +4133,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePatchList                  = VK_PRIMITIVE_TOPOLOGY_PATCH_LIST
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PrimitiveTopology value )
   {
     switch ( value )
@@ -4047,6 +4152,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ShaderStageFlagBits : VkShaderStageFlags
   {
@@ -4075,6 +4181,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRaygenNV               = VK_SHADER_STAGE_RAYGEN_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderStageFlagBits value )
   {
     switch ( value )
@@ -4099,6 +4206,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class StencilOp
   {
@@ -4112,6 +4220,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDecrementAndWrap  = VK_STENCIL_OP_DECREMENT_AND_WRAP
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StencilOp value )
   {
     switch ( value )
@@ -4127,6 +4236,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class VertexInputRate
   {
@@ -4134,6 +4244,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInstance = VK_VERTEX_INPUT_RATE_INSTANCE
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VertexInputRate value )
   {
     switch ( value )
@@ -4143,69 +4254,84 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineDynamicStateCreateFlagBits : VkPipelineDynamicStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineInputAssemblyStateCreateFlagBits : VkPipelineInputAssemblyStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineMultisampleStateCreateFlagBits : VkPipelineMultisampleStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineRasterizationStateCreateFlagBits : VkPipelineRasterizationStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineTessellationStateCreateFlagBits : VkPipelineTessellationStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineVertexInputStateCreateFlagBits : VkPipelineVertexInputStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineViewportStateCreateFlagBits : VkPipelineViewportStateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class BorderColor
   {
@@ -4219,6 +4345,7 @@ namespace VULKAN_HPP_NAMESPACE
     eIntCustomEXT          = VK_BORDER_COLOR_INT_CUSTOM_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BorderColor value )
   {
     switch ( value )
@@ -4234,6 +4361,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class Filter
   {
@@ -4243,6 +4371,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCubicIMG = VK_FILTER_CUBIC_IMG
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( Filter value )
   {
     switch ( value )
@@ -4253,6 +4382,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerAddressMode
   {
@@ -4264,6 +4394,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMirrorClampToEdgeKHR = VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerAddressMode value )
   {
     switch ( value )
@@ -4276,6 +4407,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerCreateFlagBits : VkSamplerCreateFlags
   {
@@ -4285,6 +4417,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImageProcessingQCOM               = VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlagBits value )
   {
     switch ( value )
@@ -4296,6 +4429,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerMipmapMode
   {
@@ -4303,6 +4437,7 @@ namespace VULKAN_HPP_NAMESPACE
     eLinear  = VK_SAMPLER_MIPMAP_MODE_LINEAR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerMipmapMode value )
   {
     switch ( value )
@@ -4312,6 +4447,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorPoolCreateFlagBits : VkDescriptorPoolCreateFlags
   {
@@ -4321,6 +4457,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlagBits value )
   {
     switch ( value )
@@ -4331,6 +4468,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorSetLayoutCreateFlagBits : VkDescriptorSetLayoutCreateFlags
   {
@@ -4340,6 +4478,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlagBits value )
   {
     switch ( value )
@@ -4350,6 +4489,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorType
   {
@@ -4373,6 +4513,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInlineUniformBlockEXT    = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorType value )
   {
     switch ( value )
@@ -4397,15 +4538,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorPoolResetFlagBits : VkDescriptorPoolResetFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class AccessFlagBits : VkAccessFlags
   {
@@ -4444,6 +4588,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShadingRateImageReadNV               = VK_ACCESS_SHADING_RATE_IMAGE_READ_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccessFlagBits value )
   {
     switch ( value )
@@ -4480,12 +4625,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AttachmentDescriptionFlagBits : VkAttachmentDescriptionFlags
   {
     eMayAlias = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlagBits value )
   {
     switch ( value )
@@ -4494,6 +4641,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AttachmentLoadOp
   {
@@ -4503,6 +4651,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNoneEXT  = VK_ATTACHMENT_LOAD_OP_NONE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AttachmentLoadOp value )
   {
     switch ( value )
@@ -4514,6 +4663,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AttachmentStoreOp
   {
@@ -4525,6 +4675,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNoneQCOM = VK_ATTACHMENT_STORE_OP_NONE_QCOM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AttachmentStoreOp value )
   {
     switch ( value )
@@ -4535,6 +4686,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DependencyFlagBits : VkDependencyFlags
   {
@@ -4545,6 +4697,7 @@ namespace VULKAN_HPP_NAMESPACE
     eViewLocalKHR   = VK_DEPENDENCY_VIEW_LOCAL_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DependencyFlagBits value )
   {
     switch ( value )
@@ -4555,6 +4708,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FramebufferCreateFlagBits : VkFramebufferCreateFlags
   {
@@ -4562,6 +4716,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImagelessKHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlagBits value )
   {
     switch ( value )
@@ -4570,6 +4725,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineBindPoint
   {
@@ -4580,6 +4736,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRayTracingNV         = VK_PIPELINE_BIND_POINT_RAY_TRACING_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineBindPoint value )
   {
     switch ( value )
@@ -4591,12 +4748,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class RenderPassCreateFlagBits : VkRenderPassCreateFlags
   {
     eTransformQCOM = VK_RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlagBits value )
   {
     switch ( value )
@@ -4605,6 +4764,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SubpassDescriptionFlagBits : VkSubpassDescriptionFlags
   {
@@ -4617,6 +4777,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRasterizationOrderAttachmentStencilAccessARM = VK_SUBPASS_DESCRIPTION_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlagBits value )
   {
     switch ( value )
@@ -4631,6 +4792,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandPoolCreateFlagBits : VkCommandPoolCreateFlags
   {
@@ -4639,6 +4801,7 @@ namespace VULKAN_HPP_NAMESPACE
     eProtected          = VK_COMMAND_POOL_CREATE_PROTECTED_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlagBits value )
   {
     switch ( value )
@@ -4649,12 +4812,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandPoolResetFlagBits : VkCommandPoolResetFlags
   {
     eReleaseResources = VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlagBits value )
   {
     switch ( value )
@@ -4663,6 +4828,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandBufferLevel
   {
@@ -4670,6 +4836,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSecondary = VK_COMMAND_BUFFER_LEVEL_SECONDARY
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandBufferLevel value )
   {
     switch ( value )
@@ -4679,12 +4846,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandBufferResetFlagBits : VkCommandBufferResetFlags
   {
     eReleaseResources = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlagBits value )
   {
     switch ( value )
@@ -4693,6 +4862,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandBufferUsageFlagBits : VkCommandBufferUsageFlags
   {
@@ -4701,6 +4871,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSimultaneousUse    = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlagBits value )
   {
     switch ( value )
@@ -4711,12 +4882,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryControlFlagBits : VkQueryControlFlags
   {
     ePrecise = VK_QUERY_CONTROL_PRECISE_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryControlFlagBits value )
   {
     switch ( value )
@@ -4725,6 +4898,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class IndexType
   {
@@ -4735,6 +4909,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNoneNV   = VK_INDEX_TYPE_NONE_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndexType value )
   {
     switch ( value )
@@ -4746,6 +4921,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class StencilFaceFlagBits : VkStencilFaceFlags
   {
@@ -4755,6 +4931,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVkStencilFrontAndBack = VK_STENCIL_FRONT_AND_BACK
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StencilFaceFlagBits value )
   {
     switch ( value )
@@ -4765,6 +4942,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SubpassContents
   {
@@ -4772,6 +4950,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSecondaryCommandBuffers = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubpassContents value )
   {
     switch ( value )
@@ -4781,6 +4960,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_VERSION_1_1 ===
 
@@ -4797,6 +4977,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePartitionedNV   = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlagBits value )
   {
     switch ( value )
@@ -4813,6 +4994,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PeerMemoryFeatureFlagBits : VkPeerMemoryFeatureFlags
   {
@@ -4823,6 +5005,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using PeerMemoryFeatureFlagBitsKHR = PeerMemoryFeatureFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PeerMemoryFeatureFlagBits value )
   {
     switch ( value )
@@ -4834,6 +5017,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class MemoryAllocateFlagBits : VkMemoryAllocateFlags
   {
@@ -4843,6 +5027,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using MemoryAllocateFlagBitsKHR = MemoryAllocateFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlagBits value )
   {
     switch ( value )
@@ -4853,15 +5038,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CommandPoolTrimFlagBits : VkCommandPoolTrimFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolTrimFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PointClippingBehavior
   {
@@ -4870,6 +5058,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using PointClippingBehaviorKHR = PointClippingBehavior;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PointClippingBehavior value )
   {
     switch ( value )
@@ -4879,6 +5068,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class TessellationDomainOrigin
   {
@@ -4887,6 +5077,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using TessellationDomainOriginKHR = TessellationDomainOrigin;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( TessellationDomainOrigin value )
   {
     switch ( value )
@@ -4896,12 +5087,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DeviceQueueCreateFlagBits : VkDeviceQueueCreateFlags
   {
     eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
   {
     switch ( value )
@@ -4910,6 +5103,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerYcbcrModelConversion
   {
@@ -4921,6 +5115,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SamplerYcbcrModelConversionKHR = SamplerYcbcrModelConversion;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrModelConversion value )
   {
     switch ( value )
@@ -4933,6 +5128,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerYcbcrRange
   {
@@ -4941,6 +5137,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SamplerYcbcrRangeKHR = SamplerYcbcrRange;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerYcbcrRange value )
   {
     switch ( value )
@@ -4950,6 +5147,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ChromaLocation
   {
@@ -4958,6 +5156,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ChromaLocationKHR = ChromaLocation;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ChromaLocation value )
   {
     switch ( value )
@@ -4967,6 +5166,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorUpdateTemplateType
   {
@@ -4975,6 +5175,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using DescriptorUpdateTemplateTypeKHR = DescriptorUpdateTemplateType;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateType value )
   {
     switch ( value )
@@ -4984,15 +5185,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorUpdateTemplateCreateFlagBits : VkDescriptorUpdateTemplateCreateFlags
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class ExternalMemoryHandleTypeFlagBits : VkExternalMemoryHandleTypeFlags
   {
@@ -5016,6 +5220,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalMemoryHandleTypeFlagBitsKHR = ExternalMemoryHandleTypeFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBits value )
   {
     switch ( value )
@@ -5028,18 +5233,19 @@ namespace VULKAN_HPP_NAMESPACE
       case ExternalMemoryHandleTypeFlagBits::eD3D12Heap: return "D3D12Heap";
       case ExternalMemoryHandleTypeFlagBits::eD3D12Resource: return "D3D12Resource";
       case ExternalMemoryHandleTypeFlagBits::eDmaBufEXT: return "DmaBufEXT";
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
       case ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID: return "AndroidHardwareBufferANDROID";
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       case ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT: return "HostAllocationEXT";
       case ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT: return "HostMappedForeignMemoryEXT";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA: return "ZirconVmoFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
       case ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV: return "RdmaAddressNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalMemoryFeatureFlagBits : VkExternalMemoryFeatureFlags
   {
@@ -5049,6 +5255,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalMemoryFeatureFlagBitsKHR = ExternalMemoryFeatureFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBits value )
   {
     switch ( value )
@@ -5059,6 +5266,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalFenceHandleTypeFlagBits : VkExternalFenceHandleTypeFlags
   {
@@ -5069,6 +5277,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalFenceHandleTypeFlagBitsKHR = ExternalFenceHandleTypeFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalFenceHandleTypeFlagBits value )
   {
     switch ( value )
@@ -5080,6 +5289,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalFenceFeatureFlagBits : VkExternalFenceFeatureFlags
   {
@@ -5088,6 +5298,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalFenceFeatureFlagBitsKHR = ExternalFenceFeatureFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlagBits value )
   {
     switch ( value )
@@ -5097,6 +5308,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FenceImportFlagBits : VkFenceImportFlags
   {
@@ -5104,6 +5316,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using FenceImportFlagBitsKHR = FenceImportFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FenceImportFlagBits value )
   {
     switch ( value )
@@ -5112,6 +5325,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SemaphoreImportFlagBits : VkSemaphoreImportFlags
   {
@@ -5119,6 +5333,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SemaphoreImportFlagBitsKHR = SemaphoreImportFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlagBits value )
   {
     switch ( value )
@@ -5127,6 +5342,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalSemaphoreHandleTypeFlagBits : VkExternalSemaphoreHandleTypeFlags
   {
@@ -5142,6 +5358,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalSemaphoreHandleTypeFlagBitsKHR = ExternalSemaphoreHandleTypeFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlagBits value )
   {
     switch ( value )
@@ -5151,12 +5368,13 @@ namespace VULKAN_HPP_NAMESPACE
       case ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt: return "OpaqueWin32Kmt";
       case ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence: return "D3D12Fence";
       case ExternalSemaphoreHandleTypeFlagBits::eSyncFd: return "SyncFd";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA: return "ZirconEventFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalSemaphoreFeatureFlagBits : VkExternalSemaphoreFeatureFlags
   {
@@ -5165,6 +5383,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ExternalSemaphoreFeatureFlagBitsKHR = ExternalSemaphoreFeatureFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreFeatureFlagBits value )
   {
     switch ( value )
@@ -5174,6 +5393,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_VERSION_1_2 ===
 
@@ -5205,6 +5425,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using DriverIdKHR = DriverId;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DriverId value )
   {
     switch ( value )
@@ -5235,6 +5456,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ShaderFloatControlsIndependence
   {
@@ -5244,6 +5466,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ShaderFloatControlsIndependenceKHR = ShaderFloatControlsIndependence;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderFloatControlsIndependence value )
   {
     switch ( value )
@@ -5254,6 +5477,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DescriptorBindingFlagBits : VkDescriptorBindingFlags
   {
@@ -5264,6 +5488,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using DescriptorBindingFlagBitsEXT = DescriptorBindingFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlagBits value )
   {
     switch ( value )
@@ -5275,6 +5500,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ResolveModeFlagBits : VkResolveModeFlags
   {
@@ -5286,6 +5512,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ResolveModeFlagBitsKHR = ResolveModeFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ResolveModeFlagBits value )
   {
     switch ( value )
@@ -5298,6 +5525,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SamplerReductionMode
   {
@@ -5307,6 +5535,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SamplerReductionModeEXT = SamplerReductionMode;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerReductionMode value )
   {
     switch ( value )
@@ -5317,6 +5546,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SemaphoreType
   {
@@ -5325,6 +5555,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SemaphoreTypeKHR = SemaphoreType;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreType value )
   {
     switch ( value )
@@ -5334,6 +5565,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SemaphoreWaitFlagBits : VkSemaphoreWaitFlags
   {
@@ -5341,6 +5573,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SemaphoreWaitFlagBitsKHR = SemaphoreWaitFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlagBits value )
   {
     switch ( value )
@@ -5349,6 +5582,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_VERSION_1_3 ===
 
@@ -5360,6 +5594,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using PipelineCreationFeedbackFlagBitsEXT = PipelineCreationFeedbackFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlagBits value )
   {
     switch ( value )
@@ -5370,6 +5605,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ToolPurposeFlagBits : VkToolPurposeFlags
   {
@@ -5383,6 +5619,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using ToolPurposeFlagBitsEXT = ToolPurposeFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlagBits value )
   {
     switch ( value )
@@ -5397,16 +5634,19 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PrivateDataSlotCreateFlagBits : VkPrivateDataSlotCreateFlags
   {
   };
   using PrivateDataSlotCreateFlagBitsEXT = PrivateDataSlotCreateFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PrivateDataSlotCreateFlagBits )
   {
     return "(void)";
   }
+#endif
 
   enum class PipelineStageFlagBits2 : VkPipelineStageFlags2
   {
@@ -5458,6 +5698,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using PipelineStageFlagBits2KHR = PipelineStageFlagBits2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits2 value )
   {
     switch ( value )
@@ -5487,10 +5728,10 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2::eIndexInput: return "IndexInput";
       case PipelineStageFlagBits2::eVertexAttributeInput: return "VertexAttributeInput";
       case PipelineStageFlagBits2::ePreRasterizationShaders: return "PreRasterizationShaders";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case PipelineStageFlagBits2::eVideoDecodeKHR: return "VideoDecodeKHR";
       case PipelineStageFlagBits2::eVideoEncodeKHR: return "VideoEncodeKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case PipelineStageFlagBits2::eTransformFeedbackEXT: return "TransformFeedbackEXT";
       case PipelineStageFlagBits2::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
       case PipelineStageFlagBits2::eCommandPreprocessNV: return "CommandPreprocessNV";
@@ -5506,6 +5747,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AccessFlagBits2 : VkAccessFlags2
   {
@@ -5555,6 +5797,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using AccessFlagBits2KHR = AccessFlagBits2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccessFlagBits2 value )
   {
     switch ( value )
@@ -5580,12 +5823,12 @@ namespace VULKAN_HPP_NAMESPACE
       case AccessFlagBits2::eShaderSampledRead: return "ShaderSampledRead";
       case AccessFlagBits2::eShaderStorageRead: return "ShaderStorageRead";
       case AccessFlagBits2::eShaderStorageWrite: return "ShaderStorageWrite";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case AccessFlagBits2::eVideoDecodeReadKHR: return "VideoDecodeReadKHR";
       case AccessFlagBits2::eVideoDecodeWriteKHR: return "VideoDecodeWriteKHR";
       case AccessFlagBits2::eVideoEncodeReadKHR: return "VideoEncodeReadKHR";
       case AccessFlagBits2::eVideoEncodeWriteKHR: return "VideoEncodeWriteKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case AccessFlagBits2::eTransformFeedbackWriteEXT: return "TransformFeedbackWriteEXT";
       case AccessFlagBits2::eTransformFeedbackCounterReadEXT: return "TransformFeedbackCounterReadEXT";
       case AccessFlagBits2::eTransformFeedbackCounterWriteEXT: return "TransformFeedbackCounterWriteEXT";
@@ -5602,6 +5845,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class SubmitFlagBits : VkSubmitFlags
   {
@@ -5609,6 +5853,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using SubmitFlagBitsKHR = SubmitFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubmitFlagBits value )
   {
     switch ( value )
@@ -5617,6 +5862,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class RenderingFlagBits : VkRenderingFlags
   {
@@ -5626,6 +5872,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using RenderingFlagBitsKHR = RenderingFlagBits;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RenderingFlagBits value )
   {
     switch ( value )
@@ -5636,6 +5883,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FormatFeatureFlagBits2 : VkFormatFeatureFlags2
   {
@@ -5687,6 +5935,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using FormatFeatureFlagBits2KHR = FormatFeatureFlagBits2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlagBits2 value )
   {
     switch ( value )
@@ -5719,17 +5968,17 @@ namespace VULKAN_HPP_NAMESPACE
       case FormatFeatureFlagBits2::eStorageReadWithoutFormat: return "StorageReadWithoutFormat";
       case FormatFeatureFlagBits2::eStorageWriteWithoutFormat: return "StorageWriteWithoutFormat";
       case FormatFeatureFlagBits2::eSampledImageDepthComparison: return "SampledImageDepthComparison";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case FormatFeatureFlagBits2::eVideoDecodeOutputKHR: return "VideoDecodeOutputKHR";
       case FormatFeatureFlagBits2::eVideoDecodeDpbKHR: return "VideoDecodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR: return "AccelerationStructureVertexBufferKHR";
       case FormatFeatureFlagBits2::eFragmentDensityMapEXT: return "FragmentDensityMapEXT";
       case FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR: return "FragmentShadingRateAttachmentKHR";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
       case FormatFeatureFlagBits2::eVideoEncodeInputKHR: return "VideoEncodeInputKHR";
       case FormatFeatureFlagBits2::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case FormatFeatureFlagBits2::eLinearColorAttachmentNV: return "LinearColorAttachmentNV";
       case FormatFeatureFlagBits2::eWeightImageQCOM: return "WeightImageQCOM";
       case FormatFeatureFlagBits2::eWeightSampledImageQCOM: return "WeightSampledImageQCOM";
@@ -5738,6 +5987,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_KHR_surface ===
 
@@ -5754,6 +6004,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInherit                   = VK_SURFACE_TRANSFORM_INHERIT_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagBitsKHR value )
   {
     switch ( value )
@@ -5770,6 +6021,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PresentModeKHR
   {
@@ -5781,6 +6033,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSharedContinuousRefresh = VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PresentModeKHR value )
   {
     switch ( value )
@@ -5794,6 +6047,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ColorSpaceKHR
   {
@@ -5817,6 +6071,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDciP3LinearEXT            = VK_COLOR_SPACE_DCI_P3_LINEAR_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ColorSpaceKHR value )
   {
     switch ( value )
@@ -5840,6 +6095,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CompositeAlphaFlagBitsKHR : VkCompositeAlphaFlagsKHR
   {
@@ -5849,6 +6105,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInherit        = VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagBitsKHR value )
   {
     switch ( value )
@@ -5860,6 +6117,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_KHR_swapchain ===
 
@@ -5870,6 +6128,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMutableFormat            = VK_SWAPCHAIN_CREATE_MUTABLE_FORMAT_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagBitsKHR value )
   {
     switch ( value )
@@ -5880,6 +6139,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DeviceGroupPresentModeFlagBitsKHR : VkDeviceGroupPresentModeFlagsKHR
   {
@@ -5889,6 +6149,7 @@ namespace VULKAN_HPP_NAMESPACE
     eLocalMultiDevice = VK_DEVICE_GROUP_PRESENT_MODE_LOCAL_MULTI_DEVICE_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagBitsKHR value )
   {
     switch ( value )
@@ -5900,6 +6161,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_KHR_display ===
 
@@ -5911,6 +6173,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePerPixelPremultiplied = VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagBitsKHR value )
   {
     switch ( value )
@@ -5922,24 +6185,29 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DisplayModeCreateFlagBitsKHR : VkDisplayModeCreateFlagsKHR
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#endif
 
   enum class DisplaySurfaceCreateFlagBitsKHR : VkDisplaySurfaceCreateFlagsKHR
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
@@ -5948,10 +6216,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
@@ -5961,10 +6231,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
@@ -5974,10 +6246,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
@@ -5987,10 +6261,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -6000,10 +6276,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_debug_report ===
@@ -6017,6 +6295,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDebug              = VK_DEBUG_REPORT_DEBUG_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugReportFlagBitsEXT value )
   {
     switch ( value )
@@ -6029,6 +6308,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DebugReportObjectTypeEXT
   {
@@ -6079,6 +6359,7 @@ namespace VULKAN_HPP_NAMESPACE
     eValidationCache             = VK_DEBUG_REPORT_OBJECT_TYPE_VALIDATION_CACHE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugReportObjectTypeEXT value )
   {
     switch ( value )
@@ -6121,12 +6402,13 @@ namespace VULKAN_HPP_NAMESPACE
       case DebugReportObjectTypeEXT::eCuFunctionNVX: return "CuFunctionNVX";
       case DebugReportObjectTypeEXT::eAccelerationStructureKHR: return "AccelerationStructureKHR";
       case DebugReportObjectTypeEXT::eAccelerationStructureNV: return "AccelerationStructureNV";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
       case DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_AMD_rasterization_order ===
 
@@ -6136,6 +6418,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRelaxed = VK_RASTERIZATION_ORDER_RELAXED_AMD
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RasterizationOrderAMD value )
   {
     switch ( value )
@@ -6145,6 +6428,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
@@ -6160,20 +6444,22 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodecOperationFlagBitsKHR value )
   {
     switch ( value )
     {
       case VideoCodecOperationFlagBitsKHR::eInvalid: return "Invalid";
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
       case VideoCodecOperationFlagBitsKHR::eEncodeH264EXT: return "EncodeH264EXT";
       case VideoCodecOperationFlagBitsKHR::eEncodeH265EXT: return "EncodeH265EXT";
       case VideoCodecOperationFlagBitsKHR::eDecodeH264EXT: return "DecodeH264EXT";
       case VideoCodecOperationFlagBitsKHR::eDecodeH265EXT: return "DecodeH265EXT";
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoChromaSubsamplingFlagBitsKHR : VkVideoChromaSubsamplingFlagsKHR
   {
@@ -6184,6 +6470,7 @@ namespace VULKAN_HPP_NAMESPACE
     e444        = VK_VIDEO_CHROMA_SUBSAMPLING_444_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoChromaSubsamplingFlagBitsKHR value )
   {
     switch ( value )
@@ -6196,6 +6483,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoComponentBitDepthFlagBitsKHR : VkVideoComponentBitDepthFlagsKHR
   {
@@ -6205,6 +6493,7 @@ namespace VULKAN_HPP_NAMESPACE
     e12      = VK_VIDEO_COMPONENT_BIT_DEPTH_12_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoComponentBitDepthFlagBitsKHR value )
   {
     switch ( value )
@@ -6216,6 +6505,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoCapabilityFlagBitsKHR : VkVideoCapabilityFlagsKHR
   {
@@ -6223,6 +6513,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSeparateReferenceImages = VK_VIDEO_CAPABILITY_SEPARATE_REFERENCE_IMAGES_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCapabilityFlagBitsKHR value )
   {
     switch ( value )
@@ -6232,6 +6523,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoSessionCreateFlagBitsKHR : VkVideoSessionCreateFlagsKHR
   {
@@ -6239,6 +6531,7 @@ namespace VULKAN_HPP_NAMESPACE
     eProtectedContent = VK_VIDEO_SESSION_CREATE_PROTECTED_CONTENT_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoSessionCreateFlagBitsKHR value )
   {
     switch ( value )
@@ -6248,6 +6541,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoCodingControlFlagBitsKHR : VkVideoCodingControlFlagsKHR
   {
@@ -6255,6 +6549,7 @@ namespace VULKAN_HPP_NAMESPACE
     eReset   = VK_VIDEO_CODING_CONTROL_RESET_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodingControlFlagBitsKHR value )
   {
     switch ( value )
@@ -6264,6 +6559,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoCodingQualityPresetFlagBitsKHR : VkVideoCodingQualityPresetFlagsKHR
   {
@@ -6272,6 +6568,7 @@ namespace VULKAN_HPP_NAMESPACE
     eQuality = VK_VIDEO_CODING_QUALITY_PRESET_QUALITY_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodingQualityPresetFlagBitsKHR value )
   {
     switch ( value )
@@ -6282,6 +6579,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class QueryResultStatusKHR
   {
@@ -6290,6 +6588,7 @@ namespace VULKAN_HPP_NAMESPACE
     eComplete = VK_QUERY_RESULT_STATUS_COMPLETE_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryResultStatusKHR value )
   {
     switch ( value )
@@ -6300,24 +6599,29 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoBeginCodingFlagBitsKHR : VkVideoBeginCodingFlagsKHR
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoBeginCodingFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 
   enum class VideoEndCodingFlagBitsKHR : VkVideoEndCodingFlagsKHR
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEndCodingFlagBitsKHR )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6330,6 +6634,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDpbAndOutputDistinct = VK_VIDEO_DECODE_CAPABILITY_DPB_AND_OUTPUT_DISTINCT_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeCapabilityFlagBitsKHR value )
   {
     switch ( value )
@@ -6340,6 +6645,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoDecodeFlagBitsKHR : VkVideoDecodeFlagsKHR
   {
@@ -6347,6 +6653,7 @@ namespace VULKAN_HPP_NAMESPACE
     eReserved0 = VK_VIDEO_DECODE_RESERVED_0_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeFlagBitsKHR value )
   {
     switch ( value )
@@ -6356,6 +6663,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_transform_feedback ===
@@ -6364,10 +6672,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
@@ -6401,6 +6711,7 @@ namespace VULKAN_HPP_NAMESPACE
     eBFrameInL1List              = VK_VIDEO_ENCODE_H264_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagBitsEXT value )
   {
     switch ( value )
@@ -6433,6 +6744,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH264InputModeFlagBitsEXT : VkVideoEncodeH264InputModeFlagsEXT
   {
@@ -6441,6 +6753,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNonVcl = VK_VIDEO_ENCODE_H264_INPUT_MODE_NON_VCL_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264InputModeFlagBitsEXT value )
   {
     switch ( value )
@@ -6451,6 +6764,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH264OutputModeFlagBitsEXT : VkVideoEncodeH264OutputModeFlagsEXT
   {
@@ -6459,6 +6773,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNonVcl = VK_VIDEO_ENCODE_H264_OUTPUT_MODE_NON_VCL_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264OutputModeFlagBitsEXT value )
   {
     switch ( value )
@@ -6469,6 +6784,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH264RateControlStructureFlagBitsEXT : VkVideoEncodeH264RateControlStructureFlagsEXT
   {
@@ -6477,6 +6793,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDyadic  = VK_VIDEO_ENCODE_H264_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264RateControlStructureFlagBitsEXT value )
   {
     switch ( value )
@@ -6487,6 +6804,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6522,6 +6840,7 @@ namespace VULKAN_HPP_NAMESPACE
     eBFrameInL1List                  = VK_VIDEO_ENCODE_H265_CAPABILITY_B_FRAME_IN_L1_LIST_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagBitsEXT value )
   {
     switch ( value )
@@ -6555,6 +6874,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH265InputModeFlagBitsEXT : VkVideoEncodeH265InputModeFlagsEXT
   {
@@ -6563,6 +6883,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNonVcl       = VK_VIDEO_ENCODE_H265_INPUT_MODE_NON_VCL_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265InputModeFlagBitsEXT value )
   {
     switch ( value )
@@ -6573,6 +6894,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH265OutputModeFlagBitsEXT : VkVideoEncodeH265OutputModeFlagsEXT
   {
@@ -6581,6 +6903,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNonVcl       = VK_VIDEO_ENCODE_H265_OUTPUT_MODE_NON_VCL_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265OutputModeFlagBitsEXT value )
   {
     switch ( value )
@@ -6591,6 +6914,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH265CtbSizeFlagBitsEXT : VkVideoEncodeH265CtbSizeFlagsEXT
   {
@@ -6599,6 +6923,7 @@ namespace VULKAN_HPP_NAMESPACE
     e64 = VK_VIDEO_ENCODE_H265_CTB_SIZE_64_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CtbSizeFlagBitsEXT value )
   {
     switch ( value )
@@ -6609,6 +6934,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH265TransformBlockSizeFlagBitsEXT : VkVideoEncodeH265TransformBlockSizeFlagsEXT
   {
@@ -6618,6 +6944,7 @@ namespace VULKAN_HPP_NAMESPACE
     e32 = VK_VIDEO_ENCODE_H265_TRANSFORM_BLOCK_SIZE_32_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265TransformBlockSizeFlagBitsEXT value )
   {
     switch ( value )
@@ -6629,6 +6956,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeH265RateControlStructureFlagBitsEXT : VkVideoEncodeH265RateControlStructureFlagsEXT
   {
@@ -6637,6 +6965,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDyadic  = VK_VIDEO_ENCODE_H265_RATE_CONTROL_STRUCTURE_DYADIC_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265RateControlStructureFlagBitsEXT value )
   {
     switch ( value )
@@ -6647,6 +6976,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6659,6 +6989,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInterlacedSeparatePlanes   = VK_VIDEO_DECODE_H264_PICTURE_LAYOUT_INTERLACED_SEPARATE_PLANES_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagBitsEXT value )
   {
     switch ( value )
@@ -6669,6 +7000,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_AMD_shader_info ===
@@ -6680,6 +7012,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDisassembly = VK_SHADER_INFO_TYPE_DISASSEMBLY_AMD
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderInfoTypeAMD value )
   {
     switch ( value )
@@ -6690,6 +7023,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
@@ -6698,10 +7032,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagBitsGGP )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_GGP*/
 
   //=== VK_NV_external_memory_capabilities ===
@@ -6714,6 +7050,7 @@ namespace VULKAN_HPP_NAMESPACE
     eD3D11ImageKmt  = VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D11_IMAGE_KMT_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagBitsNV value )
   {
     switch ( value )
@@ -6725,6 +7062,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ExternalMemoryFeatureFlagBitsNV : VkExternalMemoryFeatureFlagsNV
   {
@@ -6733,6 +7071,7 @@ namespace VULKAN_HPP_NAMESPACE
     eImportable    = VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagBitsNV value )
   {
     switch ( value )
@@ -6743,6 +7082,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_EXT_validation_flags ===
 
@@ -6752,6 +7092,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShaders = VK_VALIDATION_CHECK_SHADERS_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationCheckEXT value )
   {
     switch ( value )
@@ -6761,6 +7102,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_VI_NN )
   //=== VK_NN_vi_surface ===
@@ -6769,10 +7111,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagBitsNN )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
   //=== VK_EXT_pipeline_robustness ===
@@ -6785,6 +7129,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRobustBufferAccess2 = VK_PIPELINE_ROBUSTNESS_BUFFER_BEHAVIOR_ROBUST_BUFFER_ACCESS_2_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRobustnessBufferBehaviorEXT value )
   {
     switch ( value )
@@ -6796,6 +7141,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineRobustnessImageBehaviorEXT
   {
@@ -6805,6 +7151,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRobustImageAccess2 = VK_PIPELINE_ROBUSTNESS_IMAGE_BEHAVIOR_ROBUST_IMAGE_ACCESS_2_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRobustnessImageBehaviorEXT value )
   {
     switch ( value )
@@ -6816,6 +7163,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_EXT_conditional_rendering ===
 
@@ -6824,6 +7172,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInverted = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagBitsEXT value )
   {
     switch ( value )
@@ -6832,6 +7181,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_EXT_display_surface_counter ===
 
@@ -6840,6 +7190,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVblank = VK_SURFACE_COUNTER_VBLANK_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagBitsEXT value )
   {
     switch ( value )
@@ -6848,6 +7199,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_EXT_display_control ===
 
@@ -6858,6 +7210,7 @@ namespace VULKAN_HPP_NAMESPACE
     eOn      = VK_DISPLAY_POWER_STATE_ON_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayPowerStateEXT value )
   {
     switch ( value )
@@ -6868,12 +7221,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DeviceEventTypeEXT
   {
     eDisplayHotplug = VK_DEVICE_EVENT_TYPE_DISPLAY_HOTPLUG_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceEventTypeEXT value )
   {
     switch ( value )
@@ -6882,12 +7237,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DisplayEventTypeEXT
   {
     eFirstPixelOut = VK_DISPLAY_EVENT_TYPE_FIRST_PIXEL_OUT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayEventTypeEXT value )
   {
     switch ( value )
@@ -6896,6 +7253,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_viewport_swizzle ===
 
@@ -6911,6 +7269,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNegativeW = VK_VIEWPORT_COORDINATE_SWIZZLE_NEGATIVE_W_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ViewportCoordinateSwizzleNV value )
   {
     switch ( value )
@@ -6926,15 +7285,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineViewportSwizzleStateCreateFlagBitsNV : VkPipelineViewportSwizzleStateCreateFlagsNV
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_discard_rectangles ===
 
@@ -6944,6 +7306,7 @@ namespace VULKAN_HPP_NAMESPACE
     eExclusive = VK_DISCARD_RECTANGLE_MODE_EXCLUSIVE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DiscardRectangleModeEXT value )
   {
     switch ( value )
@@ -6953,15 +7316,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineDiscardRectangleStateCreateFlagBitsEXT : VkPipelineDiscardRectangleStateCreateFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_conservative_rasterization ===
 
@@ -6972,6 +7338,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUnderestimate = VK_CONSERVATIVE_RASTERIZATION_MODE_UNDERESTIMATE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ConservativeRasterizationModeEXT value )
   {
     switch ( value )
@@ -6982,15 +7349,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineRasterizationConservativeStateCreateFlagBitsEXT : VkPipelineRasterizationConservativeStateCreateFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_depth_clip_enable ===
 
@@ -6998,10 +7368,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_KHR_performance_query ===
 
@@ -7011,6 +7383,7 @@ namespace VULKAN_HPP_NAMESPACE
     eConcurrentlyImpacted = VK_PERFORMANCE_COUNTER_DESCRIPTION_CONCURRENTLY_IMPACTED_BIT_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagBitsKHR value )
   {
     switch ( value )
@@ -7020,6 +7393,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceCounterScopeKHR
   {
@@ -7031,6 +7405,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVkQueryScopeRenderPass    = VK_QUERY_SCOPE_RENDER_PASS_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceCounterScopeKHR value )
   {
     switch ( value )
@@ -7041,6 +7416,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceCounterStorageKHR
   {
@@ -7052,6 +7428,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFloat64 = VK_PERFORMANCE_COUNTER_STORAGE_FLOAT64_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceCounterStorageKHR value )
   {
     switch ( value )
@@ -7065,6 +7442,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceCounterUnitKHR
   {
@@ -7081,6 +7459,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCycles         = VK_PERFORMANCE_COUNTER_UNIT_CYCLES_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceCounterUnitKHR value )
   {
     switch ( value )
@@ -7099,15 +7478,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AcquireProfilingLockFlagBitsKHR : VkAcquireProfilingLockFlagsKHR
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagBitsKHR )
   {
     return "(void)";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_IOS_MVK )
   //=== VK_MVK_ios_surface ===
@@ -7116,10 +7498,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagBitsMVK )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
@@ -7129,10 +7513,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagBitsMVK )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
   //=== VK_EXT_debug_utils ===
@@ -7145,6 +7531,7 @@ namespace VULKAN_HPP_NAMESPACE
     eError   = VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagBitsEXT value )
   {
     switch ( value )
@@ -7156,6 +7543,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DebugUtilsMessageTypeFlagBitsEXT : VkDebugUtilsMessageTypeFlagsEXT
   {
@@ -7164,6 +7552,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePerformance = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagBitsEXT value )
   {
     switch ( value )
@@ -7174,24 +7563,29 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DebugUtilsMessengerCallbackDataFlagBitsEXT : VkDebugUtilsMessengerCallbackDataFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   enum class DebugUtilsMessengerCreateFlagBitsEXT : VkDebugUtilsMessengerCreateFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_blend_operation_advanced ===
 
@@ -7202,6 +7596,7 @@ namespace VULKAN_HPP_NAMESPACE
     eConjoint     = VK_BLEND_OVERLAP_CONJOINT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BlendOverlapEXT value )
   {
     switch ( value )
@@ -7212,6 +7607,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_fragment_coverage_to_color ===
 
@@ -7219,10 +7615,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_KHR_acceleration_structure ===
 
@@ -7234,6 +7632,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using AccelerationStructureTypeNV = AccelerationStructureTypeKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureTypeKHR value )
   {
     switch ( value )
@@ -7244,6 +7643,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AccelerationStructureBuildTypeKHR
   {
@@ -7252,6 +7652,7 @@ namespace VULKAN_HPP_NAMESPACE
     eHostOrDevice = VK_ACCELERATION_STRUCTURE_BUILD_TYPE_HOST_OR_DEVICE_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureBuildTypeKHR value )
   {
     switch ( value )
@@ -7262,6 +7663,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class GeometryFlagBitsKHR : VkGeometryFlagsKHR
   {
@@ -7270,6 +7672,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using GeometryFlagBitsNV = GeometryFlagBitsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GeometryFlagBitsKHR value )
   {
     switch ( value )
@@ -7279,6 +7682,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class GeometryInstanceFlagBitsKHR : VkGeometryInstanceFlagsKHR
   {
@@ -7292,6 +7696,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using GeometryInstanceFlagBitsNV = GeometryInstanceFlagBitsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagBitsKHR value )
   {
     switch ( value )
@@ -7303,6 +7708,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class BuildAccelerationStructureFlagBitsKHR : VkBuildAccelerationStructureFlagsKHR
   {
@@ -7315,6 +7721,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using BuildAccelerationStructureFlagBitsNV = BuildAccelerationStructureFlagBitsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagBitsKHR value )
   {
     switch ( value )
@@ -7328,6 +7735,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CopyAccelerationStructureModeKHR
   {
@@ -7338,6 +7746,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using CopyAccelerationStructureModeNV = CopyAccelerationStructureModeKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CopyAccelerationStructureModeKHR value )
   {
     switch ( value )
@@ -7349,6 +7758,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class GeometryTypeKHR
   {
@@ -7358,6 +7768,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using GeometryTypeNV = GeometryTypeKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GeometryTypeKHR value )
   {
     switch ( value )
@@ -7368,6 +7779,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AccelerationStructureCompatibilityKHR
   {
@@ -7375,6 +7787,7 @@ namespace VULKAN_HPP_NAMESPACE
     eIncompatible = VK_ACCELERATION_STRUCTURE_COMPATIBILITY_INCOMPATIBLE_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCompatibilityKHR value )
   {
     switch ( value )
@@ -7384,6 +7797,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AccelerationStructureCreateFlagBitsKHR : VkAccelerationStructureCreateFlagsKHR
   {
@@ -7391,6 +7805,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMotionNV                   = VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCreateFlagBitsKHR value )
   {
     switch ( value )
@@ -7400,6 +7815,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class BuildAccelerationStructureModeKHR
   {
@@ -7407,6 +7823,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUpdate = VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureModeKHR value )
   {
     switch ( value )
@@ -7416,6 +7833,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_framebuffer_mixed_samples ===
 
@@ -7427,6 +7845,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRgba  = VK_COVERAGE_MODULATION_MODE_RGBA_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CoverageModulationModeNV value )
   {
     switch ( value )
@@ -7438,15 +7857,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineCoverageModulationStateCreateFlagBitsNV : VkPipelineCoverageModulationStateCreateFlagsNV
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_validation_cache ===
 
@@ -7455,6 +7877,7 @@ namespace VULKAN_HPP_NAMESPACE
     eOne = VK_VALIDATION_CACHE_HEADER_VERSION_ONE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheHeaderVersionEXT value )
   {
     switch ( value )
@@ -7463,15 +7886,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ValidationCacheCreateFlagBitsEXT : VkValidationCacheCreateFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_NV_shading_rate_image ===
 
@@ -7491,6 +7917,7 @@ namespace VULKAN_HPP_NAMESPACE
     e1InvocationPer4X4Pixels = VK_SHADING_RATE_PALETTE_ENTRY_1_INVOCATION_PER_4X4_PIXELS_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShadingRatePaletteEntryNV value )
   {
     switch ( value )
@@ -7510,6 +7937,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class CoarseSampleOrderTypeNV
   {
@@ -7519,6 +7947,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSampleMajor = VK_COARSE_SAMPLE_ORDER_TYPE_SAMPLE_MAJOR_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CoarseSampleOrderTypeNV value )
   {
     switch ( value )
@@ -7530,6 +7959,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_ray_tracing ===
 
@@ -7540,6 +7970,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUpdateScratch = VK_ACCELERATION_STRUCTURE_MEMORY_REQUIREMENTS_TYPE_UPDATE_SCRATCH_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMemoryRequirementsTypeNV value )
   {
     switch ( value )
@@ -7550,6 +7981,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_AMD_pipeline_compiler_control ===
 
@@ -7557,10 +7989,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagBitsAMD )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_calibrated_timestamps ===
 
@@ -7572,6 +8006,7 @@ namespace VULKAN_HPP_NAMESPACE
     eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( TimeDomainEXT value )
   {
     switch ( value )
@@ -7583,6 +8018,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_KHR_global_priority ===
 
@@ -7595,6 +8031,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueueGlobalPriorityKHR value )
   {
     switch ( value )
@@ -7606,6 +8043,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_AMD_memory_overallocation_behavior ===
 
@@ -7616,6 +8054,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDisallowed = VK_MEMORY_OVERALLOCATION_BEHAVIOR_DISALLOWED_AMD
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryOverallocationBehaviorAMD value )
   {
     switch ( value )
@@ -7626,6 +8065,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_INTEL_performance_query ===
 
@@ -7634,6 +8074,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCommandQueueMetricsDiscoveryActivated = VK_PERFORMANCE_CONFIGURATION_TYPE_COMMAND_QUEUE_METRICS_DISCOVERY_ACTIVATED_INTEL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceConfigurationTypeINTEL value )
   {
     switch ( value )
@@ -7642,12 +8083,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class QueryPoolSamplingModeINTEL
   {
     eManual = VK_QUERY_POOL_SAMPLING_MODE_MANUAL_INTEL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryPoolSamplingModeINTEL value )
   {
     switch ( value )
@@ -7656,6 +8099,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceOverrideTypeINTEL
   {
@@ -7663,6 +8107,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFlushGpuCaches = VK_PERFORMANCE_OVERRIDE_TYPE_FLUSH_GPU_CACHES_INTEL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceOverrideTypeINTEL value )
   {
     switch ( value )
@@ -7672,6 +8117,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceParameterTypeINTEL
   {
@@ -7679,6 +8125,7 @@ namespace VULKAN_HPP_NAMESPACE
     eStreamMarkerValidBits = VK_PERFORMANCE_PARAMETER_TYPE_STREAM_MARKER_VALID_BITS_INTEL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceParameterTypeINTEL value )
   {
     switch ( value )
@@ -7688,6 +8135,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PerformanceValueTypeINTEL
   {
@@ -7698,6 +8146,7 @@ namespace VULKAN_HPP_NAMESPACE
     eString = VK_PERFORMANCE_VALUE_TYPE_STRING_INTEL
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceValueTypeINTEL value )
   {
     switch ( value )
@@ -7710,6 +8159,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===
@@ -7718,10 +8168,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagBitsFUCHSIA )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
@@ -7731,10 +8183,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_KHR_fragment_shading_rate ===
@@ -7748,6 +8202,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMul     = VK_FRAGMENT_SHADING_RATE_COMBINER_OP_MUL_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateCombinerOpKHR value )
   {
     switch ( value )
@@ -7760,6 +8215,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_AMD_shader_core_properties2 ===
 
@@ -7767,10 +8223,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagBitsAMD )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_validation_features ===
 
@@ -7783,6 +8241,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSynchronizationValidation     = VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationFeatureEnableEXT value )
   {
     switch ( value )
@@ -7795,6 +8254,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ValidationFeatureDisableEXT
   {
@@ -7808,6 +8268,7 @@ namespace VULKAN_HPP_NAMESPACE
     eShaderValidationCache = VK_VALIDATION_FEATURE_DISABLE_SHADER_VALIDATION_CACHE_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationFeatureDisableEXT value )
   {
     switch ( value )
@@ -7823,6 +8284,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_cooperative_matrix ===
 
@@ -7834,6 +8296,7 @@ namespace VULKAN_HPP_NAMESPACE
     eQueueFamily = VK_SCOPE_QUEUE_FAMILY_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ScopeNV value )
   {
     switch ( value )
@@ -7845,6 +8308,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ComponentTypeNV
   {
@@ -7861,6 +8325,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUint64  = VK_COMPONENT_TYPE_UINT64_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ComponentTypeNV value )
   {
     switch ( value )
@@ -7879,6 +8344,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_coverage_reduction_mode ===
 
@@ -7888,6 +8354,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTruncate = VK_COVERAGE_REDUCTION_MODE_TRUNCATE_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CoverageReductionModeNV value )
   {
     switch ( value )
@@ -7897,15 +8364,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineCoverageReductionStateCreateFlagBitsNV : VkPipelineCoverageReductionStateCreateFlagsNV
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_provoking_vertex ===
 
@@ -7915,6 +8385,7 @@ namespace VULKAN_HPP_NAMESPACE
     eLastVertex  = VK_PROVOKING_VERTEX_MODE_LAST_VERTEX_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ProvokingVertexModeEXT value )
   {
     switch ( value )
@@ -7924,6 +8395,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_EXT_full_screen_exclusive ===
@@ -7936,6 +8408,7 @@ namespace VULKAN_HPP_NAMESPACE
     eApplicationControlled = VK_FULL_SCREEN_EXCLUSIVE_APPLICATION_CONTROLLED_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FullScreenExclusiveEXT value )
   {
     switch ( value )
@@ -7947,6 +8420,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_headless_surface ===
@@ -7955,10 +8429,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_line_rasterization ===
 
@@ -7970,6 +8446,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRectangularSmooth = VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( LineRasterizationModeEXT value )
   {
     switch ( value )
@@ -7981,6 +8458,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_KHR_pipeline_executable_properties ===
 
@@ -7992,6 +8470,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFloat64 = VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_FLOAT64_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineExecutableStatisticFormatKHR value )
   {
     switch ( value )
@@ -8003,6 +8482,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_device_generated_commands ===
 
@@ -8011,6 +8491,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFlagFrontface = VK_INDIRECT_STATE_FLAG_FRONTFACE_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndirectStateFlagBitsNV value )
   {
     switch ( value )
@@ -8019,6 +8500,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class IndirectCommandsTokenTypeNV
   {
@@ -8032,6 +8514,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDrawTasks    = VK_INDIRECT_COMMANDS_TOKEN_TYPE_DRAW_TASKS_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndirectCommandsTokenTypeNV value )
   {
     switch ( value )
@@ -8047,6 +8530,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class IndirectCommandsLayoutUsageFlagBitsNV : VkIndirectCommandsLayoutUsageFlagsNV
   {
@@ -8055,6 +8539,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUnorderedSequences = VK_INDIRECT_COMMANDS_LAYOUT_USAGE_UNORDERED_SEQUENCES_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagBitsNV value )
   {
     switch ( value )
@@ -8065,6 +8550,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_EXT_device_memory_report ===
 
@@ -8077,6 +8563,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAllocationFailed = VK_DEVICE_MEMORY_REPORT_EVENT_TYPE_ALLOCATION_FAILED_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportEventTypeEXT value )
   {
     switch ( value )
@@ -8089,15 +8576,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class DeviceMemoryReportFlagBitsEXT : VkDeviceMemoryReportFlagsEXT
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportFlagBitsEXT )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_pipeline_creation_cache_control ===
 
@@ -8107,6 +8597,7 @@ namespace VULKAN_HPP_NAMESPACE
     eExternallySynchronizedEXT = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
   {
     switch ( value )
@@ -8115,6 +8606,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
@@ -8125,6 +8617,7 @@ namespace VULKAN_HPP_NAMESPACE
     eReserved0 = VK_VIDEO_ENCODE_RESERVED_0_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeFlagBitsKHR value )
   {
     switch ( value )
@@ -8134,6 +8627,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeCapabilityFlagBitsKHR : VkVideoEncodeCapabilityFlagsKHR
   {
@@ -8141,6 +8635,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePrecedingExternallyEncodedBytes = VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeCapabilityFlagBitsKHR value )
   {
     switch ( value )
@@ -8150,6 +8645,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeRateControlFlagBitsKHR : VkVideoEncodeRateControlFlagsKHR
   {
@@ -8157,6 +8653,7 @@ namespace VULKAN_HPP_NAMESPACE
     eReserved0 = VK_VIDEO_ENCODE_RATE_CONTROL_RESERVED_0_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlFlagBitsKHR value )
   {
     switch ( value )
@@ -8166,6 +8663,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class VideoEncodeRateControlModeFlagBitsKHR : VkVideoEncodeRateControlModeFlagsKHR
   {
@@ -8174,6 +8672,7 @@ namespace VULKAN_HPP_NAMESPACE
     eVbr  = VK_VIDEO_ENCODE_RATE_CONTROL_MODE_VBR_BIT_KHR
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlModeFlagBitsKHR value )
   {
     switch ( value )
@@ -8184,6 +8683,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===
@@ -8196,6 +8696,7 @@ namespace VULKAN_HPP_NAMESPACE
     eEnableShaderErrorReporting = VK_DEVICE_DIAGNOSTICS_CONFIG_ENABLE_SHADER_ERROR_REPORTING_BIT_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceDiagnosticsConfigFlagBitsNV value )
   {
     switch ( value )
@@ -8207,6 +8708,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
@@ -8221,6 +8723,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMetalSharedEvent  = VK_EXPORT_METAL_OBJECT_TYPE_METAL_SHARED_EVENT_BIT_EXT
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExportMetalObjectTypeFlagBitsEXT value )
   {
     switch ( value )
@@ -8234,6 +8737,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_EXT_graphics_pipeline_library ===
@@ -8246,6 +8750,7 @@ namespace VULKAN_HPP_NAMESPACE
     eFragmentOutputInterface = VK_GRAPHICS_PIPELINE_LIBRARY_FRAGMENT_OUTPUT_INTERFACE_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GraphicsPipelineLibraryFlagBitsEXT value )
   {
     switch ( value )
@@ -8257,12 +8762,14 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineLayoutCreateFlagBits : VkPipelineLayoutCreateFlags
   {
     eIndependentSetsEXT = VK_PIPELINE_LAYOUT_CREATE_INDEPENDENT_SETS_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlagBits value )
   {
     switch ( value )
@@ -8271,6 +8778,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_fragment_shading_rate_enums ===
 
@@ -8290,6 +8798,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNoInvocations           = VK_FRAGMENT_SHADING_RATE_NO_INVOCATIONS_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateNV value )
   {
     switch ( value )
@@ -8309,6 +8818,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class FragmentShadingRateTypeNV
   {
@@ -8316,6 +8826,7 @@ namespace VULKAN_HPP_NAMESPACE
     eEnums        = VK_FRAGMENT_SHADING_RATE_TYPE_ENUMS_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateTypeNV value )
   {
     switch ( value )
@@ -8325,6 +8836,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_NV_ray_tracing_motion_blur ===
 
@@ -8335,6 +8847,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSrtMotion    = VK_ACCELERATION_STRUCTURE_MOTION_INSTANCE_TYPE_SRT_MOTION_NV
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceTypeNV value )
   {
     switch ( value )
@@ -8345,24 +8858,29 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class AccelerationStructureMotionInfoFlagBitsNV : VkAccelerationStructureMotionInfoFlagsNV
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   enum class AccelerationStructureMotionInstanceFlagBitsNV : VkAccelerationStructureMotionInstanceFlagsNV
   {
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagBitsNV )
   {
     return "(void)";
   }
+#endif
 
   //=== VK_EXT_image_compression_control ===
 
@@ -8374,6 +8892,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDisabled          = VK_IMAGE_COMPRESSION_DISABLED_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFlagBitsEXT value )
   {
     switch ( value )
@@ -8385,6 +8904,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ImageCompressionFixedRateFlagBitsEXT : VkImageCompressionFixedRateFlagsEXT
   {
@@ -8415,6 +8935,7 @@ namespace VULKAN_HPP_NAMESPACE
     e24Bpc = VK_IMAGE_COMPRESSION_FIXED_RATE_24BPC_BIT_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFixedRateFlagBitsEXT value )
   {
     switch ( value )
@@ -8447,6 +8968,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   //=== VK_ARM_rasterization_order_attachment_access ===
 
@@ -8455,6 +8977,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRasterizationOrderAttachmentAccessARM = VK_PIPELINE_COLOR_BLEND_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_ACCESS_BIT_ARM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlagBits value )
   {
     switch ( value )
@@ -8463,6 +8986,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class PipelineDepthStencilStateCreateFlagBits : VkPipelineDepthStencilStateCreateFlags
   {
@@ -8470,6 +8994,7 @@ namespace VULKAN_HPP_NAMESPACE
     eRasterizationOrderAttachmentStencilAccessARM = VK_PIPELINE_DEPTH_STENCIL_STATE_CREATE_RASTERIZATION_ORDER_ATTACHMENT_STENCIL_ACCESS_BIT_ARM
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlagBits value )
   {
     switch ( value )
@@ -8479,6 +9004,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
@@ -8487,10 +9013,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DirectFBSurfaceCreateFlagBitsEXT )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
   //=== VK_KHR_ray_tracing_pipeline ===
@@ -8503,6 +9031,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
   using RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RayTracingShaderGroupTypeKHR value )
   {
     switch ( value )
@@ -8513,6 +9042,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   enum class ShaderGroupShaderKHR
   {
@@ -8522,6 +9052,7 @@ namespace VULKAN_HPP_NAMESPACE
     eIntersection = VK_SHADER_GROUP_SHADER_INTERSECTION_KHR
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderGroupShaderKHR value )
   {
     switch ( value )
@@ -8533,6 +9064,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
@@ -8546,6 +9078,7 @@ namespace VULKAN_HPP_NAMESPACE
     eProtectedOptional = VK_IMAGE_CONSTRAINTS_INFO_PROTECTED_OPTIONAL_FUCHSIA
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageConstraintsInfoFlagBitsFUCHSIA value )
   {
     switch ( value )
@@ -8558,15 +9091,18 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#  endif
 
   enum class ImageFormatConstraintsFlagBitsFUCHSIA : VkImageFormatConstraintsFlagsFUCHSIA
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageFormatConstraintsFlagBitsFUCHSIA )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -8576,10 +9112,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ScreenSurfaceCreateFlagBitsQNX )
   {
     return "(void)";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //=== VK_EXT_subpass_merge_feedback ===
@@ -8602,6 +9140,7 @@ namespace VULKAN_HPP_NAMESPACE
     eNotMergedUnspecified                 = VK_SUBPASS_MERGE_STATUS_NOT_MERGED_UNSPECIFIED_EXT
   };
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubpassMergeStatusEXT value )
   {
     switch ( value )
@@ -8623,6 +9162,7 @@ namespace VULKAN_HPP_NAMESPACE
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
+#endif
 
   template <typename T>
   struct IndexTypeValue
@@ -8722,6 +9262,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FormatFeatureFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlags value )
   {
     if ( !value )
@@ -8774,12 +9315,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += "CositedChromaSamples | ";
     if ( value & FormatFeatureFlagBits::eSampledImageFilterMinmax )
       result += "SampledImageFilterMinmax | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & FormatFeatureFlagBits::eVideoDecodeOutputKHR )
       result += "VideoDecodeOutputKHR | ";
     if ( value & FormatFeatureFlagBits::eVideoDecodeDpbKHR )
       result += "VideoDecodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & FormatFeatureFlagBits::eAccelerationStructureVertexBufferKHR )
       result += "AccelerationStructureVertexBufferKHR | ";
     if ( value & FormatFeatureFlagBits::eSampledImageFilterCubicEXT )
@@ -8788,15 +9329,16 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FragmentDensityMapEXT | ";
     if ( value & FormatFeatureFlagBits::eFragmentShadingRateAttachmentKHR )
       result += "FragmentShadingRateAttachmentKHR | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & FormatFeatureFlagBits::eVideoEncodeInputKHR )
       result += "VideoEncodeInputKHR | ";
     if ( value & FormatFeatureFlagBits::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ImageCreateFlags = Flags<ImageCreateFlagBits>;
 
@@ -8837,6 +9379,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCreateFlags value )
   {
     if ( !value )
@@ -8882,6 +9425,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ImageUsageFlags = Flags<ImageUsageFlagBits>;
 
@@ -8895,15 +9439,15 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageUsageFlagBits::eDepthStencilAttachment ) | VkFlags( ImageUsageFlagBits::eTransientAttachment ) |
                  VkFlags( ImageUsageFlagBits::eInputAttachment )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
+               | VkFlags( ImageUsageFlagBits::eVideoDecodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoDecodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
+               | VkFlags( ImageUsageFlagBits::eFragmentDensityMapEXT ) | VkFlags( ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
+               | VkFlags( ImageUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( ImageUsageFlagBits::eVideoEncodeSrcKHR ) |
                  VkFlags( ImageUsageFlagBits::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI ) | VkFlags( ImageUsageFlagBits::eSampleWeightQCOM ) |
+               | VkFlags( ImageUsageFlagBits::eInvocationMaskHUAWEI ) | VkFlags( ImageUsageFlagBits::eSampleWeightQCOM ) |
                  VkFlags( ImageUsageFlagBits::eSampleBlockMatchQCOM )
     };
   };
@@ -8928,6 +9472,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageUsageFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageUsageFlags value )
   {
     if ( !value )
@@ -8950,26 +9495,26 @@ namespace VULKAN_HPP_NAMESPACE
       result += "TransientAttachment | ";
     if ( value & ImageUsageFlagBits::eInputAttachment )
       result += "InputAttachment | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & ImageUsageFlagBits::eVideoDecodeDstKHR )
       result += "VideoDecodeDstKHR | ";
     if ( value & ImageUsageFlagBits::eVideoDecodeSrcKHR )
       result += "VideoDecodeSrcKHR | ";
     if ( value & ImageUsageFlagBits::eVideoDecodeDpbKHR )
       result += "VideoDecodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & ImageUsageFlagBits::eFragmentDensityMapEXT )
       result += "FragmentDensityMapEXT | ";
     if ( value & ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
       result += "FragmentShadingRateAttachmentKHR | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & ImageUsageFlagBits::eVideoEncodeDstKHR )
       result += "VideoEncodeDstKHR | ";
     if ( value & ImageUsageFlagBits::eVideoEncodeSrcKHR )
       result += "VideoEncodeSrcKHR | ";
     if ( value & ImageUsageFlagBits::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & ImageUsageFlagBits::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
     if ( value & ImageUsageFlagBits::eSampleWeightQCOM )
@@ -8979,6 +9524,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using InstanceCreateFlags = Flags<InstanceCreateFlagBits>;
 
@@ -9011,6 +9557,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( InstanceCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( InstanceCreateFlags value )
   {
     if ( !value )
@@ -9022,6 +9569,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using MemoryHeapFlags = Flags<MemoryHeapFlagBits>;
 
@@ -9054,6 +9602,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( MemoryHeapFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryHeapFlags value )
   {
     if ( !value )
@@ -9067,6 +9616,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits>;
 
@@ -9103,6 +9653,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( MemoryPropertyFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryPropertyFlags value )
   {
     if ( !value )
@@ -9130,6 +9681,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using QueueFlags = Flags<QueueFlagBits>;
 
@@ -9141,7 +9693,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueueFlagBits::eGraphics ) | VkFlags( QueueFlagBits::eCompute ) | VkFlags( QueueFlagBits::eTransfer ) |
                  VkFlags( QueueFlagBits::eSparseBinding ) | VkFlags( QueueFlagBits::eProtected )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
+               | VkFlags( QueueFlagBits::eVideoDecodeKHR ) | VkFlags( QueueFlagBits::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9166,6 +9718,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueueFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueueFlags value )
   {
     if ( !value )
@@ -9182,15 +9735,16 @@ namespace VULKAN_HPP_NAMESPACE
       result += "SparseBinding | ";
     if ( value & QueueFlagBits::eProtected )
       result += "Protected | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & QueueFlagBits::eVideoDecodeKHR )
       result += "VideoDecodeKHR | ";
     if ( value & QueueFlagBits::eVideoEncodeKHR )
       result += "VideoEncodeKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SampleCountFlags = Flags<SampleCountFlagBits>;
 
@@ -9225,6 +9779,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SampleCountFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SampleCountFlags value )
   {
     if ( !value )
@@ -9248,13 +9803,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DeviceCreateFlags = Flags<DeviceCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
 
@@ -9287,6 +9845,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DeviceQueueCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlags value )
   {
     if ( !value )
@@ -9298,6 +9857,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineStageFlags = Flags<PipelineStageFlagBits>;
 
@@ -9342,6 +9902,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineStageFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags value )
   {
     if ( !value )
@@ -9403,13 +9964,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using MemoryMapFlags = Flags<MemoryMapFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags )
   {
     return "{}";
   }
+#endif
 
   using ImageAspectFlags = Flags<ImageAspectFlagBits>;
 
@@ -9446,6 +10010,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageAspectFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlags value )
   {
     if ( !value )
@@ -9477,6 +10042,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits>;
 
@@ -9510,6 +10076,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SparseImageFormatFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SparseImageFormatFlags value )
   {
     if ( !value )
@@ -9525,6 +10092,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits>;
 
@@ -9557,6 +10125,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SparseMemoryBindFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SparseMemoryBindFlags value )
   {
     if ( !value )
@@ -9568,6 +10137,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using FenceCreateFlags = Flags<FenceCreateFlagBits>;
 
@@ -9600,6 +10170,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FenceCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FenceCreateFlags value )
   {
     if ( !value )
@@ -9611,13 +10182,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using EventCreateFlags = Flags<EventCreateFlagBits>;
 
@@ -9650,6 +10224,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( EventCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( EventCreateFlags value )
   {
     if ( !value )
@@ -9661,6 +10236,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
 
@@ -9702,6 +10278,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueryPipelineStatisticFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryPipelineStatisticFlags value )
   {
     if ( !value )
@@ -9733,13 +10310,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryPoolCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using QueryResultFlags = Flags<QueryResultFlagBits>;
 
@@ -9751,7 +10331,7 @@ namespace VULKAN_HPP_NAMESPACE
       allFlags = VkFlags( QueryResultFlagBits::e64 ) | VkFlags( QueryResultFlagBits::eWait ) | VkFlags( QueryResultFlagBits::eWithAvailability ) |
                  VkFlags( QueryResultFlagBits::ePartial )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( QueryResultFlagBits::eWithStatusKHR )
+               | VkFlags( QueryResultFlagBits::eWithStatusKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9776,6 +10356,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueryResultFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryResultFlags value )
   {
     if ( !value )
@@ -9790,13 +10371,14 @@ namespace VULKAN_HPP_NAMESPACE
       result += "WithAvailability | ";
     if ( value & QueryResultFlagBits::ePartial )
       result += "Partial | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & QueryResultFlagBits::eWithStatusKHR )
       result += "WithStatusKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using BufferCreateFlags = Flags<BufferCreateFlagBits>;
 
@@ -9831,6 +10413,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( BufferCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferCreateFlags value )
   {
     if ( !value )
@@ -9850,6 +10433,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits>;
 
@@ -9864,13 +10448,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BufferUsageFlagBits::eIndexBuffer ) | VkFlags( BufferUsageFlagBits::eVertexBuffer ) |
                  VkFlags( BufferUsageFlagBits::eIndirectBuffer ) | VkFlags( BufferUsageFlagBits::eShaderDeviceAddress )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
+               | VkFlags( BufferUsageFlagBits::eVideoDecodeSrcKHR ) | VkFlags( BufferUsageFlagBits::eVideoDecodeDstKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
+               | VkFlags( BufferUsageFlagBits::eTransformFeedbackBufferEXT ) | VkFlags( BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT ) |
                  VkFlags( BufferUsageFlagBits::eConditionalRenderingEXT ) | VkFlags( BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR ) |
                  VkFlags( BufferUsageFlagBits::eAccelerationStructureStorageKHR ) | VkFlags( BufferUsageFlagBits::eShaderBindingTableKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
+               | VkFlags( BufferUsageFlagBits::eVideoEncodeDstKHR ) | VkFlags( BufferUsageFlagBits::eVideoEncodeSrcKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
@@ -9895,6 +10479,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( BufferUsageFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferUsageFlags value )
   {
     if ( !value )
@@ -9921,12 +10506,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += "IndirectBuffer | ";
     if ( value & BufferUsageFlagBits::eShaderDeviceAddress )
       result += "ShaderDeviceAddress | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & BufferUsageFlagBits::eVideoDecodeSrcKHR )
       result += "VideoDecodeSrcKHR | ";
     if ( value & BufferUsageFlagBits::eVideoDecodeDstKHR )
       result += "VideoDecodeDstKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & BufferUsageFlagBits::eTransformFeedbackBufferEXT )
       result += "TransformFeedbackBufferEXT | ";
     if ( value & BufferUsageFlagBits::eTransformFeedbackCounterBufferEXT )
@@ -9939,22 +10524,25 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AccelerationStructureStorageKHR | ";
     if ( value & BufferUsageFlagBits::eShaderBindingTableKHR )
       result += "ShaderBindingTableKHR | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & BufferUsageFlagBits::eVideoEncodeDstKHR )
       result += "VideoEncodeDstKHR | ";
     if ( value & BufferUsageFlagBits::eVideoEncodeSrcKHR )
       result += "VideoEncodeSrcKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BufferViewCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits>;
 
@@ -9987,6 +10575,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageViewCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageViewCreateFlags value )
   {
     if ( !value )
@@ -10000,13 +10589,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderModuleCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
 
@@ -10042,6 +10634,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineCacheCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlags value )
   {
     if ( !value )
@@ -10053,6 +10646,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ColorComponentFlags = Flags<ColorComponentFlagBits>;
 
@@ -10086,6 +10680,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ColorComponentFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ColorComponentFlags value )
   {
     if ( !value )
@@ -10103,6 +10698,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CullModeFlags = Flags<CullModeFlagBits>;
 
@@ -10136,6 +10732,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CullModeFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CullModeFlags value )
   {
     if ( !value )
@@ -10149,6 +10746,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits>;
 
@@ -10184,6 +10782,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineColorBlendStateCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineColorBlendStateCreateFlags value )
   {
     if ( !value )
@@ -10195,6 +10794,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
 
@@ -10239,6 +10839,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCreateFlags value )
   {
     if ( !value )
@@ -10296,6 +10897,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits>;
 
@@ -10332,6 +10934,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineDepthStencilStateCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDepthStencilStateCreateFlags value )
   {
     if ( !value )
@@ -10345,20 +10948,25 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDynamicStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits>;
 
@@ -10394,6 +11002,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineLayoutCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlags value )
   {
     if ( !value )
@@ -10405,20 +11014,25 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineMultisampleStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits>;
 
@@ -10454,6 +11068,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PipelineShaderStageCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineShaderStageCreateFlags value )
   {
     if ( !value )
@@ -10467,27 +11082,34 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineTessellationStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineVertexInputStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportStateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using ShaderStageFlags = Flags<ShaderStageFlagBits>;
 
@@ -10526,6 +11148,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ShaderStageFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderStageFlags value )
   {
     if ( !value )
@@ -10565,6 +11188,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SamplerCreateFlags = Flags<SamplerCreateFlagBits>;
 
@@ -10598,6 +11222,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SamplerCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SamplerCreateFlags value )
   {
     if ( !value )
@@ -10615,6 +11240,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits>;
 
@@ -10651,6 +11277,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DescriptorPoolCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolCreateFlags value )
   {
     if ( !value )
@@ -10666,13 +11293,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorPoolResetFlags )
   {
     return "{}";
   }
+#endif
 
   using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits>;
 
@@ -10709,6 +11339,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DescriptorSetLayoutCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorSetLayoutCreateFlags value )
   {
     if ( !value )
@@ -10724,6 +11355,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using AccessFlags = Flags<AccessFlagBits>;
 
@@ -10767,6 +11399,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( AccessFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccessFlags value )
   {
     if ( !value )
@@ -10832,6 +11465,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits>;
 
@@ -10867,6 +11501,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( AttachmentDescriptionFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AttachmentDescriptionFlags value )
   {
     if ( !value )
@@ -10878,6 +11513,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DependencyFlags = Flags<DependencyFlagBits>;
 
@@ -10910,6 +11546,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DependencyFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DependencyFlags value )
   {
     if ( !value )
@@ -10925,6 +11562,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits>;
 
@@ -10957,6 +11595,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( FramebufferCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FramebufferCreateFlags value )
   {
     if ( !value )
@@ -10968,6 +11607,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits>;
 
@@ -11000,6 +11640,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( RenderPassCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RenderPassCreateFlags value )
   {
     if ( !value )
@@ -11011,6 +11652,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits>;
 
@@ -11050,6 +11692,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SubpassDescriptionFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubpassDescriptionFlags value )
   {
     if ( !value )
@@ -11073,6 +11716,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits>;
 
@@ -11106,6 +11750,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CommandPoolCreateFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolCreateFlags value )
   {
     if ( !value )
@@ -11121,6 +11766,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits>;
 
@@ -11153,6 +11799,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CommandPoolResetFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolResetFlags value )
   {
     if ( !value )
@@ -11164,6 +11811,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits>;
 
@@ -11199,6 +11847,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CommandBufferResetFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandBufferResetFlags value )
   {
     if ( !value )
@@ -11210,6 +11859,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits>;
 
@@ -11246,6 +11896,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CommandBufferUsageFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandBufferUsageFlags value )
   {
     if ( !value )
@@ -11261,6 +11912,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using QueryControlFlags = Flags<QueryControlFlagBits>;
 
@@ -11293,6 +11945,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( QueryControlFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( QueryControlFlags value )
   {
     if ( !value )
@@ -11304,6 +11957,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using StencilFaceFlags = Flags<StencilFaceFlagBits>;
 
@@ -11336,6 +11990,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( StencilFaceFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StencilFaceFlags value )
   {
     if ( !value )
@@ -11349,6 +12004,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_VERSION_1_1 ===
 
@@ -11386,6 +12042,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SubgroupFeatureFlags( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubgroupFeatureFlags value )
   {
     if ( !value )
@@ -11413,6 +12070,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits>;
 
@@ -11448,6 +12106,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PeerMemoryFeatureFlags value )
   {
     if ( !value )
@@ -11465,6 +12124,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits>;
 
@@ -11500,6 +12160,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MemoryAllocateFlags value )
   {
     if ( !value )
@@ -11515,24 +12176,29 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits>;
 
   using CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CommandPoolTrimFlags )
   {
     return "{}";
   }
+#endif
 
   using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits>;
 
   using DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorUpdateTemplateCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits>;
 
@@ -11546,13 +12212,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D11TextureKmt ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Heap ) |
                  VkFlags( ExternalMemoryHandleTypeFlagBits::eD3D12Resource ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eDmaBufEXT )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
+               | VkFlags( ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
+               | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
+               | VkFlags( ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-                 | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
+               | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
 
@@ -11581,6 +12247,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlags value )
   {
     if ( !value )
@@ -11603,23 +12270,24 @@ namespace VULKAN_HPP_NAMESPACE
       result += "D3D12Resource | ";
     if ( value & ExternalMemoryHandleTypeFlagBits::eDmaBufEXT )
       result += "DmaBufEXT | ";
-#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
     if ( value & ExternalMemoryHandleTypeFlagBits::eAndroidHardwareBufferANDROID )
       result += "AndroidHardwareBufferANDROID | ";
-#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
     if ( value & ExternalMemoryHandleTypeFlagBits::eHostAllocationEXT )
       result += "HostAllocationEXT | ";
     if ( value & ExternalMemoryHandleTypeFlagBits::eHostMappedForeignMemoryEXT )
       result += "HostMappedForeignMemoryEXT | ";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     if ( value & ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA )
       result += "ZirconVmoFUCHSIA | ";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
     if ( value & ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
       result += "RdmaAddressNV | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits>;
 
@@ -11658,6 +12326,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlags value )
   {
     if ( !value )
@@ -11673,6 +12342,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits>;
 
@@ -11711,6 +12381,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalFenceHandleTypeFlags value )
   {
     if ( !value )
@@ -11728,6 +12399,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits>;
 
@@ -11765,6 +12437,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalFenceFeatureFlags value )
   {
     if ( !value )
@@ -11778,6 +12451,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using FenceImportFlags = Flags<FenceImportFlagBits>;
 
@@ -11812,6 +12486,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using FenceImportFlagsKHR = FenceImportFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FenceImportFlags value )
   {
     if ( !value )
@@ -11823,6 +12498,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits>;
 
@@ -11857,6 +12533,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SemaphoreImportFlagsKHR = SemaphoreImportFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreImportFlags value )
   {
     if ( !value )
@@ -11868,6 +12545,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits>;
 
@@ -11880,7 +12558,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32Kmt ) | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eD3D12Fence ) |
                  VkFlags( ExternalSemaphoreHandleTypeFlagBits::eSyncFd )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-                 | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
+               | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     };
   };
@@ -11910,6 +12588,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreHandleTypeFlags value )
   {
     if ( !value )
@@ -11926,13 +12605,14 @@ namespace VULKAN_HPP_NAMESPACE
       result += "D3D12Fence | ";
     if ( value & ExternalSemaphoreHandleTypeFlagBits::eSyncFd )
       result += "SyncFd | ";
-#if defined( VK_USE_PLATFORM_FUCHSIA )
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
     if ( value & ExternalSemaphoreHandleTypeFlagBits::eZirconEventFUCHSIA )
       result += "ZirconEventFUCHSIA | ";
-#endif /*VK_USE_PLATFORM_FUCHSIA*/
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits>;
 
@@ -11970,6 +12650,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalSemaphoreFeatureFlags value )
   {
     if ( !value )
@@ -11983,6 +12664,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_VERSION_1_2 ===
 
@@ -12020,6 +12702,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using DescriptorBindingFlagsEXT = DescriptorBindingFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DescriptorBindingFlags value )
   {
     if ( !value )
@@ -12037,6 +12720,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ResolveModeFlags = Flags<ResolveModeFlagBits>;
 
@@ -12072,6 +12756,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ResolveModeFlagsKHR = ResolveModeFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ResolveModeFlags value )
   {
     if ( !value )
@@ -12089,6 +12774,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SemaphoreWaitFlags = Flags<SemaphoreWaitFlagBits>;
 
@@ -12123,6 +12809,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SemaphoreWaitFlagsKHR = SemaphoreWaitFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SemaphoreWaitFlags value )
   {
     if ( !value )
@@ -12134,6 +12821,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_VERSION_1_3 ===
 
@@ -12174,6 +12862,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PipelineCreationFeedbackFlagsEXT = PipelineCreationFeedbackFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCreationFeedbackFlags value )
   {
     if ( !value )
@@ -12189,6 +12878,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ToolPurposeFlags = Flags<ToolPurposeFlagBits>;
 
@@ -12225,6 +12915,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ToolPurposeFlagsEXT = ToolPurposeFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ToolPurposeFlags value )
   {
     if ( !value )
@@ -12248,15 +12939,18 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using PrivateDataSlotCreateFlags = Flags<PrivateDataSlotCreateFlagBits>;
 
   using PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PrivateDataSlotCreateFlags )
   {
     return "{}";
   }
+#endif
 
   using PipelineStageFlags2 = Flags<PipelineStageFlagBits2>;
 
@@ -12278,9 +12972,9 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( PipelineStageFlagBits2::eClear ) | VkFlags64( PipelineStageFlagBits2::eIndexInput ) |
                  VkFlags64( PipelineStageFlagBits2::eVertexAttributeInput ) | VkFlags64( PipelineStageFlagBits2::ePreRasterizationShaders )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
+               | VkFlags64( PipelineStageFlagBits2::eVideoDecodeKHR ) | VkFlags64( PipelineStageFlagBits2::eVideoEncodeKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
+               | VkFlags64( PipelineStageFlagBits2::eTransformFeedbackEXT ) | VkFlags64( PipelineStageFlagBits2::eConditionalRenderingEXT ) |
                  VkFlags64( PipelineStageFlagBits2::eCommandPreprocessNV ) | VkFlags64( PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eAccelerationStructureBuildKHR ) | VkFlags64( PipelineStageFlagBits2::eRayTracingShaderKHR ) |
                  VkFlags64( PipelineStageFlagBits2::eFragmentDensityProcessEXT ) | VkFlags64( PipelineStageFlagBits2::eTaskShaderNV ) |
@@ -12311,6 +13005,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PipelineStageFlags2KHR = PipelineStageFlags2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags2 value )
   {
     if ( !value )
@@ -12365,12 +13060,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += "VertexAttributeInput | ";
     if ( value & PipelineStageFlagBits2::ePreRasterizationShaders )
       result += "PreRasterizationShaders | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & PipelineStageFlagBits2::eVideoDecodeKHR )
       result += "VideoDecodeKHR | ";
     if ( value & PipelineStageFlagBits2::eVideoEncodeKHR )
       result += "VideoEncodeKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & PipelineStageFlagBits2::eTransformFeedbackEXT )
       result += "TransformFeedbackEXT | ";
     if ( value & PipelineStageFlagBits2::eConditionalRenderingEXT )
@@ -12398,6 +13093,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using AccessFlags2 = Flags<AccessFlagBits2>;
 
@@ -12416,10 +13112,10 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( AccessFlagBits2::eShaderSampledRead ) | VkFlags64( AccessFlagBits2::eShaderStorageRead ) |
                  VkFlags64( AccessFlagBits2::eShaderStorageWrite )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
+               | VkFlags64( AccessFlagBits2::eVideoDecodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoDecodeWriteKHR ) |
                  VkFlags64( AccessFlagBits2::eVideoEncodeReadKHR ) | VkFlags64( AccessFlagBits2::eVideoEncodeWriteKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
+               | VkFlags64( AccessFlagBits2::eTransformFeedbackWriteEXT ) | VkFlags64( AccessFlagBits2::eTransformFeedbackCounterReadEXT ) |
                  VkFlags64( AccessFlagBits2::eTransformFeedbackCounterWriteEXT ) | VkFlags64( AccessFlagBits2::eConditionalRenderingReadEXT ) |
                  VkFlags64( AccessFlagBits2::eCommandPreprocessReadNV ) | VkFlags64( AccessFlagBits2::eCommandPreprocessWriteNV ) |
                  VkFlags64( AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR ) | VkFlags64( AccessFlagBits2::eAccelerationStructureReadKHR ) |
@@ -12451,6 +13147,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using AccessFlags2KHR = AccessFlags2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccessFlags2 value )
   {
     if ( !value )
@@ -12497,7 +13194,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "ShaderStorageRead | ";
     if ( value & AccessFlagBits2::eShaderStorageWrite )
       result += "ShaderStorageWrite | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & AccessFlagBits2::eVideoDecodeReadKHR )
       result += "VideoDecodeReadKHR | ";
     if ( value & AccessFlagBits2::eVideoDecodeWriteKHR )
@@ -12506,7 +13203,7 @@ namespace VULKAN_HPP_NAMESPACE
       result += "VideoEncodeReadKHR | ";
     if ( value & AccessFlagBits2::eVideoEncodeWriteKHR )
       result += "VideoEncodeWriteKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & AccessFlagBits2::eTransformFeedbackWriteEXT )
       result += "TransformFeedbackWriteEXT | ";
     if ( value & AccessFlagBits2::eTransformFeedbackCounterReadEXT )
@@ -12536,6 +13233,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using SubmitFlags = Flags<SubmitFlagBits>;
 
@@ -12570,6 +13268,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SubmitFlagsKHR = SubmitFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SubmitFlags value )
   {
     if ( !value )
@@ -12581,6 +13280,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using RenderingFlags = Flags<RenderingFlagBits>;
 
@@ -12616,6 +13316,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using RenderingFlagsKHR = RenderingFlags;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( RenderingFlags value )
   {
     if ( !value )
@@ -12631,6 +13332,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using FormatFeatureFlags2 = Flags<FormatFeatureFlagBits2>;
 
@@ -12656,14 +13358,14 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( FormatFeatureFlagBits2::eStorageReadWithoutFormat ) | VkFlags64( FormatFeatureFlagBits2::eStorageWriteWithoutFormat ) |
                  VkFlags64( FormatFeatureFlagBits2::eSampledImageDepthComparison )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
+               | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeOutputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
+               | VkFlags64( FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR ) | VkFlags64( FormatFeatureFlagBits2::eFragmentDensityMapEXT ) |
                  VkFlags64( FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
+               | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeInputKHR ) | VkFlags64( FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                 | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV ) | VkFlags64( FormatFeatureFlagBits2::eWeightImageQCOM ) |
+               | VkFlags64( FormatFeatureFlagBits2::eLinearColorAttachmentNV ) | VkFlags64( FormatFeatureFlagBits2::eWeightImageQCOM ) |
                  VkFlags64( FormatFeatureFlagBits2::eWeightSampledImageQCOM ) | VkFlags64( FormatFeatureFlagBits2::eBlockMatchingQCOM ) |
                  VkFlags64( FormatFeatureFlagBits2::eBoxFilterSampledQCOM )
     };
@@ -12691,6 +13393,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using FormatFeatureFlags2KHR = FormatFeatureFlags2;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( FormatFeatureFlags2 value )
   {
     if ( !value )
@@ -12751,24 +13454,24 @@ namespace VULKAN_HPP_NAMESPACE
       result += "StorageWriteWithoutFormat | ";
     if ( value & FormatFeatureFlagBits2::eSampledImageDepthComparison )
       result += "SampledImageDepthComparison | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & FormatFeatureFlagBits2::eVideoDecodeOutputKHR )
       result += "VideoDecodeOutputKHR | ";
     if ( value & FormatFeatureFlagBits2::eVideoDecodeDpbKHR )
       result += "VideoDecodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & FormatFeatureFlagBits2::eAccelerationStructureVertexBufferKHR )
       result += "AccelerationStructureVertexBufferKHR | ";
     if ( value & FormatFeatureFlagBits2::eFragmentDensityMapEXT )
       result += "FragmentDensityMapEXT | ";
     if ( value & FormatFeatureFlagBits2::eFragmentShadingRateAttachmentKHR )
       result += "FragmentShadingRateAttachmentKHR | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & FormatFeatureFlagBits2::eVideoEncodeInputKHR )
       result += "VideoEncodeInputKHR | ";
     if ( value & FormatFeatureFlagBits2::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & FormatFeatureFlagBits2::eLinearColorAttachmentNV )
       result += "LinearColorAttachmentNV | ";
     if ( value & FormatFeatureFlagBits2::eWeightImageQCOM )
@@ -12782,6 +13485,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_KHR_surface ===
 
@@ -12817,6 +13521,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( CompositeAlphaFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( CompositeAlphaFlagsKHR value )
   {
     if ( !value )
@@ -12834,6 +13539,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_KHR_swapchain ===
 
@@ -12872,6 +13578,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SwapchainCreateFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SwapchainCreateFlagsKHR value )
   {
     if ( !value )
@@ -12887,6 +13594,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR>;
 
@@ -12923,6 +13631,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DeviceGroupPresentModeFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceGroupPresentModeFlagsKHR value )
   {
     if ( !value )
@@ -12940,15 +13649,18 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_KHR_display ===
 
   using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayModeCreateFlagsKHR )
   {
     return "{}";
   }
+#endif
 
   using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR>;
 
@@ -12985,6 +13697,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DisplayPlaneAlphaFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplayPlaneAlphaFlagsKHR value )
   {
     if ( !value )
@@ -13002,13 +13715,16 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DisplaySurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#endif
 
   using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR>;
 
@@ -13048,6 +13764,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SurfaceTransformFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SurfaceTransformFlagsKHR value )
   {
     if ( !value )
@@ -13075,16 +13792,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
 
   using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( XlibSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
@@ -13092,10 +13812,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( XcbSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
@@ -13103,10 +13825,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( WaylandSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
@@ -13114,10 +13838,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AndroidSurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -13125,10 +13851,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( Win32SurfaceCreateFlagsKHR )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_debug_report ===
@@ -13165,6 +13893,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DebugReportFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugReportFlagsEXT value )
   {
     if ( !value )
@@ -13184,6 +13913,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
@@ -13197,7 +13927,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eInvalid )
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
-                 | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
+               | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
                  VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
@@ -13226,13 +13956,14 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoCodecOperationFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodecOperationFlagsKHR value )
   {
     if ( !value )
       return "{}";
 
     std::string result;
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+#    if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & VideoCodecOperationFlagBitsKHR::eEncodeH264EXT )
       result += "EncodeH264EXT | ";
     if ( value & VideoCodecOperationFlagBitsKHR::eEncodeH265EXT )
@@ -13241,10 +13972,11 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DecodeH264EXT | ";
     if ( value & VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
       result += "DecodeH265EXT | ";
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+#    endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoChromaSubsamplingFlagsKHR = Flags<VideoChromaSubsamplingFlagBitsKHR>;
 
@@ -13282,6 +14014,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoChromaSubsamplingFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoChromaSubsamplingFlagsKHR value )
   {
     if ( !value )
@@ -13299,6 +14032,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoComponentBitDepthFlagsKHR = Flags<VideoComponentBitDepthFlagBitsKHR>;
 
@@ -13335,6 +14069,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoComponentBitDepthFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoComponentBitDepthFlagsKHR value )
   {
     if ( !value )
@@ -13350,6 +14085,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoCapabilityFlagsKHR = Flags<VideoCapabilityFlagBitsKHR>;
 
@@ -13385,6 +14121,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoCapabilityFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCapabilityFlagsKHR value )
   {
     if ( !value )
@@ -13398,6 +14135,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoSessionCreateFlagsKHR = Flags<VideoSessionCreateFlagBitsKHR>;
 
@@ -13433,6 +14171,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoSessionCreateFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoSessionCreateFlagsKHR value )
   {
     if ( !value )
@@ -13444,20 +14183,25 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoBeginCodingFlagsKHR = Flags<VideoBeginCodingFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoBeginCodingFlagsKHR )
   {
     return "{}";
   }
+#  endif
 
   using VideoEndCodingFlagsKHR = Flags<VideoEndCodingFlagBitsKHR>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEndCodingFlagsKHR )
   {
     return "{}";
   }
+#  endif
 
   using VideoCodingControlFlagsKHR = Flags<VideoCodingControlFlagBitsKHR>;
 
@@ -13493,6 +14237,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoCodingControlFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodingControlFlagsKHR value )
   {
     if ( !value )
@@ -13504,6 +14249,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoCodingQualityPresetFlagsKHR = Flags<VideoCodingQualityPresetFlagBitsKHR>;
 
@@ -13540,6 +14286,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoCodingQualityPresetFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoCodingQualityPresetFlagsKHR value )
   {
     if ( !value )
@@ -13555,6 +14302,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -13595,6 +14343,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoDecodeCapabilityFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeCapabilityFlagsKHR value )
   {
     if ( !value )
@@ -13608,6 +14357,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoDecodeFlagsKHR = Flags<VideoDecodeFlagBitsKHR>;
 
@@ -13640,6 +14390,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoDecodeFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeFlagsKHR value )
   {
     if ( !value )
@@ -13651,16 +14402,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_transform_feedback ===
 
   using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationStateStreamCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
@@ -13712,6 +14466,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH264CapabilityFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264CapabilityFlagsEXT value )
   {
     if ( !value )
@@ -13771,6 +14526,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH264InputModeFlagsEXT = Flags<VideoEncodeH264InputModeFlagBitsEXT>;
 
@@ -13807,6 +14563,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH264InputModeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264InputModeFlagsEXT value )
   {
     if ( !value )
@@ -13822,6 +14579,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH264OutputModeFlagsEXT = Flags<VideoEncodeH264OutputModeFlagBitsEXT>;
 
@@ -13858,6 +14616,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH264OutputModeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264OutputModeFlagsEXT value )
   {
     if ( !value )
@@ -13873,6 +14632,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH264RateControlStructureFlagsEXT = Flags<VideoEncodeH264RateControlStructureFlagBitsEXT>;
 
@@ -13910,6 +14670,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH264RateControlStructureFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH264RateControlStructureFlagsEXT value )
   {
     if ( !value )
@@ -13923,6 +14684,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -13976,6 +14738,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265CapabilityFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CapabilityFlagsEXT value )
   {
     if ( !value )
@@ -14037,6 +14800,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH265InputModeFlagsEXT = Flags<VideoEncodeH265InputModeFlagBitsEXT>;
 
@@ -14073,6 +14837,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265InputModeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265InputModeFlagsEXT value )
   {
     if ( !value )
@@ -14088,6 +14853,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH265OutputModeFlagsEXT = Flags<VideoEncodeH265OutputModeFlagBitsEXT>;
 
@@ -14124,6 +14890,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265OutputModeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265OutputModeFlagsEXT value )
   {
     if ( !value )
@@ -14139,6 +14906,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH265CtbSizeFlagsEXT = Flags<VideoEncodeH265CtbSizeFlagBitsEXT>;
 
@@ -14175,6 +14943,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265CtbSizeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265CtbSizeFlagsEXT value )
   {
     if ( !value )
@@ -14190,6 +14959,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH265TransformBlockSizeFlagsEXT = Flags<VideoEncodeH265TransformBlockSizeFlagBitsEXT>;
 
@@ -14227,6 +14997,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265TransformBlockSizeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265TransformBlockSizeFlagsEXT value )
   {
     if ( !value )
@@ -14244,6 +15015,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeH265RateControlStructureFlagsEXT = Flags<VideoEncodeH265RateControlStructureFlagBitsEXT>;
 
@@ -14281,6 +15053,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeH265RateControlStructureFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeH265RateControlStructureFlagsEXT value )
   {
     if ( !value )
@@ -14294,6 +15067,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -14335,6 +15109,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoDecodeH264PictureLayoutFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagsEXT value )
   {
     if ( !value )
@@ -14348,6 +15123,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_GGP )
@@ -14355,10 +15131,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( StreamDescriptorSurfaceCreateFlagsGGP )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_GGP*/
 
   //=== VK_NV_external_memory_capabilities ===
@@ -14398,6 +15176,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalMemoryHandleTypeFlagsNV( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryHandleTypeFlagsNV value )
   {
     if ( !value )
@@ -14415,6 +15194,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV>;
 
@@ -14451,6 +15231,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExternalMemoryFeatureFlagsNV( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExternalMemoryFeatureFlagsNV value )
   {
     if ( !value )
@@ -14466,16 +15247,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_VI_NN )
   //=== VK_NN_vi_surface ===
 
   using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ViSurfaceCreateFlagsNN )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
   //=== VK_EXT_conditional_rendering ===
@@ -14514,6 +15298,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ConditionalRenderingFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ConditionalRenderingFlagsEXT value )
   {
     if ( !value )
@@ -14525,6 +15310,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_EXT_display_surface_counter ===
 
@@ -14559,6 +15345,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( SurfaceCounterFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( SurfaceCounterFlagsEXT value )
   {
     if ( !value )
@@ -14570,42 +15357,51 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_NV_viewport_swizzle ===
 
   using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineViewportSwizzleStateCreateFlagsNV )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_discard_rectangles ===
 
   using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineDiscardRectangleStateCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_conservative_rasterization ===
 
   using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationConservativeStateCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_depth_clip_enable ===
 
   using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineRasterizationDepthClipStateCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_KHR_performance_query ===
 
@@ -14644,6 +15440,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( PerformanceCounterDescriptionFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PerformanceCounterDescriptionFlagsKHR value )
   {
     if ( !value )
@@ -14657,23 +15454,28 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AcquireProfilingLockFlagsKHR )
   {
     return "{}";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_IOS_MVK )
   //=== VK_MVK_ios_surface ===
 
   using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IOSSurfaceCreateFlagsMVK )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
@@ -14681,10 +15483,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MacOSSurfaceCreateFlagsMVK )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
   //=== VK_EXT_debug_utils ===
@@ -14724,6 +15528,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DebugUtilsMessageSeverityFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageSeverityFlagsEXT value )
   {
     if ( !value )
@@ -14741,6 +15546,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT>;
 
@@ -14777,6 +15583,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DebugUtilsMessageTypeFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessageTypeFlagsEXT value )
   {
     if ( !value )
@@ -14792,29 +15599,36 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCallbackDataFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DebugUtilsMessengerCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_NV_fragment_coverage_to_color ===
 
   using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageToColorStateCreateFlagsNV )
   {
     return "{}";
   }
+#endif
 
   //=== VK_KHR_acceleration_structure ===
 
@@ -14851,6 +15665,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using GeometryFlagsNV = GeometryFlagsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GeometryFlagsKHR value )
   {
     if ( !value )
@@ -14864,6 +15679,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using GeometryInstanceFlagsKHR = Flags<GeometryInstanceFlagBitsKHR>;
 
@@ -14902,6 +15718,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GeometryInstanceFlagsKHR value )
   {
     if ( !value )
@@ -14919,6 +15736,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using BuildAccelerationStructureFlagsKHR = Flags<BuildAccelerationStructureFlagBitsKHR>;
 
@@ -14958,6 +15776,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   using BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( BuildAccelerationStructureFlagsKHR value )
   {
     if ( !value )
@@ -14979,6 +15798,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using AccelerationStructureCreateFlagsKHR = Flags<AccelerationStructureCreateFlagBitsKHR>;
 
@@ -15014,6 +15834,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( AccelerationStructureCreateFlagsKHR( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureCreateFlagsKHR value )
   {
     if ( !value )
@@ -15027,43 +15848,52 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_NV_framebuffer_mixed_samples ===
 
   using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageModulationStateCreateFlagsNV )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_validation_cache ===
 
   using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ValidationCacheCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_AMD_pipeline_compiler_control ===
 
   using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCompilerControlFlagsAMD )
   {
     return "{}";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===
 
   using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImagePipeSurfaceCreateFlagsFUCHSIA )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
@@ -15071,38 +15901,46 @@ namespace VULKAN_HPP_NAMESPACE
 
   using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( MetalSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_AMD_shader_core_properties2 ===
 
   using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ShaderCorePropertiesFlagsAMD )
   {
     return "{}";
   }
+#endif
 
   //=== VK_NV_coverage_reduction_mode ===
 
   using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( PipelineCoverageReductionStateCreateFlagsNV )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_headless_surface ===
 
   using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
+#endif
 
   //=== VK_NV_device_generated_commands ===
 
@@ -15137,6 +15975,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( IndirectStateFlagsNV( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndirectStateFlagsNV value )
   {
     if ( !value )
@@ -15148,6 +15987,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using IndirectCommandsLayoutUsageFlagsNV = Flags<IndirectCommandsLayoutUsageFlagBitsNV>;
 
@@ -15184,6 +16024,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( IndirectCommandsLayoutUsageFlagsNV( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( IndirectCommandsLayoutUsageFlagsNV value )
   {
     if ( !value )
@@ -15199,15 +16040,18 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_EXT_device_memory_report ===
 
   using DeviceMemoryReportFlagsEXT = Flags<DeviceMemoryReportFlagBitsEXT>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportFlagsEXT )
   {
     return "{}";
   }
+#endif
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
@@ -15243,6 +16087,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeFlagsKHR value )
   {
     if ( !value )
@@ -15254,6 +16099,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeCapabilityFlagsKHR = Flags<VideoEncodeCapabilityFlagBitsKHR>;
 
@@ -15289,6 +16135,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeCapabilityFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeCapabilityFlagsKHR value )
   {
     if ( !value )
@@ -15300,6 +16147,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeRateControlFlagsKHR = Flags<VideoEncodeRateControlFlagBitsKHR>;
 
@@ -15335,6 +16183,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeRateControlFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlFlagsKHR value )
   {
     if ( !value )
@@ -15346,6 +16195,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 
   using VideoEncodeRateControlModeFlagsKHR = Flags<VideoEncodeRateControlModeFlagBitsKHR>;
 
@@ -15382,6 +16232,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( VideoEncodeRateControlModeFlagsKHR( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlModeFlagsKHR value )
   {
     if ( !value )
@@ -15391,6 +16242,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===
@@ -15431,6 +16283,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( DeviceDiagnosticsConfigFlagsNV( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DeviceDiagnosticsConfigFlagsNV value )
   {
     if ( !value )
@@ -15448,6 +16301,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
@@ -15488,6 +16342,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ExportMetalObjectTypeFlagsEXT( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ExportMetalObjectTypeFlagsEXT value )
   {
     if ( !value )
@@ -15509,6 +16364,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_EXT_graphics_pipeline_library ===
@@ -15549,6 +16405,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( GraphicsPipelineLibraryFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( GraphicsPipelineLibraryFlagsEXT value )
   {
     if ( !value )
@@ -15566,22 +16423,27 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   //=== VK_NV_ray_tracing_motion_blur ===
 
   using AccelerationStructureMotionInfoFlagsNV = Flags<AccelerationStructureMotionInfoFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInfoFlagsNV )
   {
     return "{}";
   }
+#endif
 
   using AccelerationStructureMotionInstanceFlagsNV = Flags<AccelerationStructureMotionInstanceFlagBitsNV>;
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( AccelerationStructureMotionInstanceFlagsNV )
   {
     return "{}";
   }
+#endif
 
   //=== VK_EXT_image_compression_control ===
 
@@ -15620,6 +16482,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageCompressionFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFlagsEXT value )
   {
     if ( !value )
@@ -15635,6 +16498,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
   using ImageCompressionFixedRateFlagsEXT = Flags<ImageCompressionFixedRateFlagBitsEXT>;
 
@@ -15682,6 +16546,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageCompressionFixedRateFlagsEXT( bits ) );
   }
 
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFixedRateFlagsEXT value )
   {
     if ( !value )
@@ -15739,16 +16604,19 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
   using DirectFBSurfaceCreateFlagsEXT = Flags<DirectFBSurfaceCreateFlagBitsEXT>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( DirectFBSurfaceCreateFlagsEXT )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
@@ -15756,10 +16624,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ImageFormatConstraintsFlagsFUCHSIA = Flags<ImageFormatConstraintsFlagBitsFUCHSIA>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageFormatConstraintsFlagsFUCHSIA )
   {
     return "{}";
   }
+#  endif
 
   using ImageConstraintsInfoFlagsFUCHSIA = Flags<ImageConstraintsInfoFlagBitsFUCHSIA>;
 
@@ -15797,6 +16667,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( ImageConstraintsInfoFlagsFUCHSIA( bits ) );
   }
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ImageConstraintsInfoFlagsFUCHSIA value )
   {
     if ( !value )
@@ -15816,6 +16687,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
@@ -15823,10 +16695,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ScreenSurfaceCreateFlagsQNX = Flags<ScreenSurfaceCreateFlagBitsQNX>;
 
+#  if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ScreenSurfaceCreateFlagsQNX )
   {
     return "{}";
   }
+#  endif
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
 }  // namespace VULKAN_HPP_NAMESPACE

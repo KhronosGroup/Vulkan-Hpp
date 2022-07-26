@@ -25,29 +25,145 @@
 static char const * AppName    = "SurfaceCapabilities";
 static char const * EngineName = "Vulkan.hpp";
 
+#if defined( VULKAN_HPP_NO_TO_STRING )
+namespace local
+{
+  std::string to_string( vk::CompositeAlphaFlagsKHR value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::CompositeAlphaFlagBitsKHR::eOpaque )
+      result += "Opaque | ";
+    if ( value & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )
+      result += "PreMultiplied | ";
+    if ( value & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied )
+      result += "PostMultiplied | ";
+    if ( value & vk::CompositeAlphaFlagBitsKHR::eInherit )
+      result += "Inherit | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  std::string to_string( vk::ImageUsageFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::ImageUsageFlagBits::eTransferSrc )
+      result += "TransferSrc | ";
+    if ( value & vk::ImageUsageFlagBits::eTransferDst )
+      result += "TransferDst | ";
+    if ( value & vk::ImageUsageFlagBits::eSampled )
+      result += "Sampled | ";
+    if ( value & vk::ImageUsageFlagBits::eStorage )
+      result += "Storage | ";
+    if ( value & vk::ImageUsageFlagBits::eColorAttachment )
+      result += "ColorAttachment | ";
+    if ( value & vk::ImageUsageFlagBits::eDepthStencilAttachment )
+      result += "DepthStencilAttachment | ";
+    if ( value & vk::ImageUsageFlagBits::eTransientAttachment )
+      result += "TransientAttachment | ";
+    if ( value & vk::ImageUsageFlagBits::eInputAttachment )
+      result += "InputAttachment | ";
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & vk::ImageUsageFlagBits::eVideoDecodeDstKHR )
+      result += "VideoDecodeDstKHR | ";
+    if ( value & vk::ImageUsageFlagBits::eVideoDecodeSrcKHR )
+      result += "VideoDecodeSrcKHR | ";
+    if ( value & vk::ImageUsageFlagBits::eVideoDecodeDpbKHR )
+      result += "VideoDecodeDpbKHR | ";
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & vk::ImageUsageFlagBits::eFragmentDensityMapEXT )
+      result += "FragmentDensityMapEXT | ";
+    if ( value & vk::ImageUsageFlagBits::eFragmentShadingRateAttachmentKHR )
+      result += "FragmentShadingRateAttachmentKHR | ";
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & vk::ImageUsageFlagBits::eVideoEncodeDstKHR )
+      result += "VideoEncodeDstKHR | ";
+    if ( value & vk::ImageUsageFlagBits::eVideoEncodeSrcKHR )
+      result += "VideoEncodeSrcKHR | ";
+    if ( value & vk::ImageUsageFlagBits::eVideoEncodeDpbKHR )
+      result += "VideoEncodeDpbKHR | ";
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & vk::ImageUsageFlagBits::eInvocationMaskHUAWEI )
+      result += "InvocationMaskHUAWEI | ";
+    if ( value & vk::ImageUsageFlagBits::eSampleWeightQCOM )
+      result += "SampleWeightQCOM | ";
+    if ( value & vk::ImageUsageFlagBits::eSampleBlockMatchQCOM )
+      result += "SampleBlockMatchQCOM | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  std::string to_string( vk::SurfaceTransformFlagBitsKHR value )
+  {
+    switch ( value )
+    {
+      case vk::SurfaceTransformFlagBitsKHR::eIdentity: return "Identity";
+      case vk::SurfaceTransformFlagBitsKHR::eRotate90: return "Rotate90";
+      case vk::SurfaceTransformFlagBitsKHR::eRotate180: return "Rotate180";
+      case vk::SurfaceTransformFlagBitsKHR::eRotate270: return "Rotate270";
+      case vk::SurfaceTransformFlagBitsKHR::eHorizontalMirror: return "HorizontalMirror";
+      case vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90: return "HorizontalMirrorRotate90";
+      case vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180: return "HorizontalMirrorRotate180";
+      case vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270: return "HorizontalMirrorRotate270";
+      case vk::SurfaceTransformFlagBitsKHR::eInherit: return "Inherit";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  std::string to_string( vk::SurfaceTransformFlagsKHR value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eIdentity )
+      result += "Identity | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eRotate90 )
+      result += "Rotate90 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eRotate180 )
+      result += "Rotate180 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eRotate270 )
+      result += "Rotate270 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirror )
+      result += "HorizontalMirror | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate90 )
+      result += "HorizontalMirrorRotate90 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate180 )
+      result += "HorizontalMirrorRotate180 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eHorizontalMirrorRotate270 )
+      result += "HorizontalMirrorRotate270 | ";
+    if ( value & vk::SurfaceTransformFlagBitsKHR::eInherit )
+      result += "Inherit | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+}  // namespace local
+using local::to_string;
+#else
+using vk::to_string;
+#endif
+
 void cout( vk::SurfaceCapabilitiesKHR const & surfaceCapabilities )
 {
-  std::cout << "\tCapabilities:\n";
-  std::cout << "\t\t"
-            << "currentExtent           = " << surfaceCapabilities.currentExtent.width << " x " << surfaceCapabilities.currentExtent.height << "\n";
-  std::cout << "\t\t"
-            << "currentTransform        = " << vk::to_string( surfaceCapabilities.currentTransform ) << "\n";
-  std::cout << "\t\t"
-            << "maxImageArrayLayers     = " << surfaceCapabilities.maxImageArrayLayers << "\n";
-  std::cout << "\t\t"
-            << "maxImageCount           = " << surfaceCapabilities.maxImageCount << "\n";
-  std::cout << "\t\t"
-            << "maxImageExtent          = " << surfaceCapabilities.maxImageExtent.width << " x " << surfaceCapabilities.maxImageExtent.height << "\n";
-  std::cout << "\t\t"
-            << "minImageCount           = " << surfaceCapabilities.minImageCount << "\n";
-  std::cout << "\t\t"
-            << "minImageExtent          = " << surfaceCapabilities.minImageExtent.width << " x " << surfaceCapabilities.minImageExtent.height << "\n";
-  std::cout << "\t\t"
-            << "supportedCompositeAlpha = " << vk::to_string( surfaceCapabilities.supportedCompositeAlpha ) << "\n";
-  std::cout << "\t\t"
-            << "supportedTransforms     = " << vk::to_string( surfaceCapabilities.supportedTransforms ) << "\n";
-  std::cout << "\t\t"
-            << "supportedUsageFlags     = " << vk::to_string( surfaceCapabilities.supportedUsageFlags ) << "\n";
+  std::cout << std::string( "\t" ) << "Capabilities:\n";
+  std::cout << std::string( "\t\t" ) << "currentExtent           = " << surfaceCapabilities.currentExtent.width << " x "
+            << surfaceCapabilities.currentExtent.height << "\n";
+  std::cout << std::string( "\t\t" ) << "currentTransform        = " << to_string( surfaceCapabilities.currentTransform ) << "\n";
+  std::cout << std::string( "\t\t" ) << "maxImageArrayLayers     = " << surfaceCapabilities.maxImageArrayLayers << "\n";
+  std::cout << std::string( "\t\t" ) << "maxImageCount           = " << surfaceCapabilities.maxImageCount << "\n";
+  std::cout << std::string( "\t\t" ) << "maxImageExtent          = " << surfaceCapabilities.maxImageExtent.width << " x "
+            << surfaceCapabilities.maxImageExtent.height << "\n";
+  std::cout << std::string( "\t\t" ) << "minImageCount           = " << surfaceCapabilities.minImageCount << "\n";
+  std::cout << std::string( "\t\t" ) << "minImageExtent          = " << surfaceCapabilities.minImageExtent.width << " x "
+            << surfaceCapabilities.minImageExtent.height << "\n";
+  std::cout << std::string( "\t\t" ) << "supportedCompositeAlpha = " << to_string( surfaceCapabilities.supportedCompositeAlpha ) << "\n";
+  std::cout << std::string( "\t\t" ) << "supportedTransforms     = " << to_string( surfaceCapabilities.supportedTransforms ) << "\n";
+  std::cout << std::string( "\t\t" ) << "supportedUsageFlags     = " << to_string( surfaceCapabilities.supportedUsageFlags ) << "\n";
   std::cout << "\n";
 }
 
@@ -110,18 +226,17 @@ int main( int /*argc*/, char ** /*argv*/ )
         {
           vk::DisplayNativeHdrSurfaceCapabilitiesAMD displayNativeHdrSurfaceCapabilities =
             surfaceCapabilities2.get<vk::DisplayNativeHdrSurfaceCapabilitiesAMD>();
-          std::cout << "\tDisplayNativeHdrSurfaceCapabilitiesAMD:\n";
-          std::cout << "\t\t"
-                    << "localDimmingSupport = " << !!displayNativeHdrSurfaceCapabilities.localDimmingSupport << "\n";
+          std::cout << std::string( "\t" ) << "DisplayNativeHdrSurfaceCapabilitiesAMD:\n";
+          std::cout << std::string( "\t\t" ) << "localDimmingSupport = " << !!displayNativeHdrSurfaceCapabilities.localDimmingSupport << "\n";
           std::cout << "\n";
         }
 
         if ( vk::su::contains( extensionProperties, "VK_KHR_shared_presentable_image" ) )
         {
           vk::SharedPresentSurfaceCapabilitiesKHR sharedPresentSurfaceCapabilities = surfaceCapabilities2.get<vk::SharedPresentSurfaceCapabilitiesKHR>();
-          std::cout << "\tSharedPresentSurfaceCapabilitiesKHR:\n";
-          std::cout << "\t\t"
-                    << "sharedPresentSupportedUsageFlags  = " << vk::to_string( sharedPresentSurfaceCapabilities.sharedPresentSupportedUsageFlags ) << "\n";
+          std::cout << std::string( "\t" ) << "SharedPresentSurfaceCapabilitiesKHR:\n";
+          std::cout << std::string( "\t\t" )
+                    << "sharedPresentSupportedUsageFlags  = " << to_string( sharedPresentSurfaceCapabilities.sharedPresentSupportedUsageFlags ) << "\n";
           std::cout << "\n";
         }
 
@@ -129,18 +244,17 @@ int main( int /*argc*/, char ** /*argv*/ )
         {
           vk::SurfaceCapabilitiesFullScreenExclusiveEXT surfaceCapabilitiesFullScreenExclusive =
             surfaceCapabilities2.get<vk::SurfaceCapabilitiesFullScreenExclusiveEXT>();
-          std::cout << "\tSurfaceCapabilitiesFullScreenExclusiveEXT:\n";
-          std::cout << "\t\t"
-                    << "fullScreenExclusiveSupported  = " << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported << "\n";
+          std::cout << std::string( "\t" ) << "SurfaceCapabilitiesFullScreenExclusiveEXT:\n";
+          std::cout << std::string( "\t\t" ) << "fullScreenExclusiveSupported  = " << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported
+                    << "\n";
           std::cout << "\n";
         }
 
         if ( vk::su::contains( extensionProperties, "VK_KHR_surface_protected_capabilities" ) )
         {
           vk::SurfaceProtectedCapabilitiesKHR surfaceProtectedCapabilities = surfaceCapabilities2.get<vk::SurfaceProtectedCapabilitiesKHR>();
-          std::cout << "\tSurfaceProtectedCapabilitiesKHR:\n";
-          std::cout << "\t\t"
-                    << "supportsProtected  = " << !!surfaceProtectedCapabilities.supportsProtected << "\n";
+          std::cout << std::string( "\t" ) << "SurfaceProtectedCapabilitiesKHR:\n";
+          std::cout << std::string( "\t\t" ) << "supportsProtected  = " << !!surfaceProtectedCapabilities.supportsProtected << "\n";
           std::cout << "\n";
         }
       }

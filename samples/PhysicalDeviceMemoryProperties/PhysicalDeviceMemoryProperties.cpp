@@ -46,7 +46,57 @@ std::string formatSize( vk::DeviceSize size )
   return oss.str();
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+#if defined( VULKAN_HPP_NO_TO_STRING )
+namespace local
+{
+  std::string to_string( vk::MemoryHeapFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::MemoryHeapFlagBits::eDeviceLocal )
+      result += "DeviceLocal | ";
+    if ( value & vk::MemoryHeapFlagBits::eMultiInstance )
+      result += "MultiInstance | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  std::string to_string( vk::MemoryPropertyFlags value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & vk::MemoryPropertyFlagBits::eDeviceLocal )
+      result += "DeviceLocal | ";
+    if ( value & vk::MemoryPropertyFlagBits::eHostVisible )
+      result += "HostVisible | ";
+    if ( value & vk::MemoryPropertyFlagBits::eHostCoherent )
+      result += "HostCoherent | ";
+    if ( value & vk::MemoryPropertyFlagBits::eHostCached )
+      result += "HostCached | ";
+    if ( value & vk::MemoryPropertyFlagBits::eLazilyAllocated )
+      result += "LazilyAllocated | ";
+    if ( value & vk::MemoryPropertyFlagBits::eProtected )
+      result += "Protected | ";
+    if ( value & vk::MemoryPropertyFlagBits::eDeviceCoherentAMD )
+      result += "DeviceCoherentAMD | ";
+    if ( value & vk::MemoryPropertyFlagBits::eDeviceUncachedAMD )
+      result += "DeviceUncachedAMD | ";
+    if ( value & vk::MemoryPropertyFlagBits::eRdmaCapableNV )
+      result += "RdmaCapableNV | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+}  // namespace local
+using local::to_string;
+#else
+using vk::to_string;
+#endif
+
+  int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
@@ -74,7 +124,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       for ( uint32_t j = 0; j < memoryProperties.memoryHeapCount; j++ )
       {
         std::cout << "  " << j << ": size = " << formatSize( memoryProperties.memoryHeaps[j].size )
-                  << ", flags = " << vk::to_string( memoryProperties.memoryHeaps[j].flags ) << "\n";
+                  << ", flags = " << to_string( memoryProperties.memoryHeaps[j].flags ) << "\n";
         if ( containsMemoryBudget )
         {
           std::cout << "     heapBudget = " << formatSize( memoryBudgetProperties.heapBudget[j] )
@@ -85,7 +135,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       for ( uint32_t j = 0; j < memoryProperties.memoryTypeCount; j++ )
       {
         std::cout << "  " << j << ": heapIndex = " << memoryProperties.memoryTypes[j].heapIndex
-                  << ", flags = " << vk::to_string( memoryProperties.memoryTypes[j].propertyFlags ) << "\n";
+                  << ", flags = " << to_string( memoryProperties.memoryTypes[j].propertyFlags ) << "\n";
       }
     }
 

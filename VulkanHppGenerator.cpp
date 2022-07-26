@@ -2703,10 +2703,12 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   if ( bitmaskBitsIt->second.values.empty() )
   {
     static std::string bitmaskValuesTemplate = R"(${alias}
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} )
   {
     return "{}";
   }
+#endif
 )";
     str += replaceWithMap( bitmaskValuesTemplate, { { "alias", alias }, { "bitmaskName", strippedBitmaskName } } );
   }
@@ -2741,6 +2743,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     return ~( ${bitmaskName}( bits ) );
   }
 ${alias}
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} value )
   {
     if ( !value )
@@ -2750,6 +2753,7 @@ ${alias}
 ${toStringChecks}
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
+#endif
 )";
 
     std::string allFlags, toStringChecks;
@@ -5377,10 +5381,12 @@ ${cases}      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( 
   }
 
   const std::string enumToStringTemplate = R"(
+#if !defined( VULKAN_HPP_NO_TO_STRING )
   VULKAN_HPP_INLINE std::string to_string( ${enumName}${argument} )
   {
 ${functionBody}
   }
+#endif
 )";
 
   return replaceWithMap( enumToStringTemplate,
@@ -14800,7 +14806,14 @@ int main( int argc, char ** argv )
   {
     public:
     virtual const char* name() const VULKAN_HPP_NOEXCEPT override { return VULKAN_HPP_NAMESPACE_STRING"::Result"; }
-    virtual std::string message(int ev) const override { return to_string(static_cast<Result>(ev)); }
+    virtual std::string message(int ev) const override
+    {
+#if defined( VULKAN_HPP_NO_TO_STRING )
+      return std::to_string( ev );
+#else
+      return VULKAN_HPP_NAMESPACE::to_string(static_cast<VULKAN_HPP_NAMESPACE::Result>(ev));
+#endif
+    }
   };
 
   class Error

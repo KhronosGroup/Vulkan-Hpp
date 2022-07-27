@@ -400,9 +400,13 @@ std::string VulkanHppGenerator::generateEnumsToString() const
 
   VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
   {
+#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+    return std::format( "{:x}", value );
+#else
     std::stringstream stream;
     stream << std::hex << value;
     return stream.str();
+#endif
   }
 
 ${enumsToString}
@@ -13377,7 +13381,6 @@ std::string toString( tinyxml2::XMLError error )
 int main( int argc, char ** argv )
 {
   static const std::string classArrayProxy = R"(
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   template <typename T>
   class ArrayProxy
   {
@@ -13664,7 +13667,6 @@ int main( int argc, char ** argv )
     uint32_t m_count;
     T *      m_ptr;
   };
-#endif
 )";
 
   static const std::string classArrayWrapper = R"(
@@ -14592,8 +14594,7 @@ int main( int argc, char ** argv )
                     uniqueToRaw( std::vector<UniqueType> const & handles )
   {
     std::vector<typename UniqueType::element_type> newBuffer( handles.size() );
-    std::transform(
-      handles.begin(), handles.end(), newBuffer.begin(), []( UniqueType const & handle ) { return handle.get(); } );
+    std::transform( handles.begin(), handles.end(), newBuffer.begin(), []( UniqueType const & handle ) { return handle.get(); } );
     return newBuffer;
   }
 
@@ -15010,22 +15011,11 @@ int main( int argc, char ** argv )
 #  error "vulkan.hpp needs at least c++ standard version 11"
 #endif
 
-#include <algorithm>
-#include <array>
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <functional>
-#include <initializer_list>
-#include <sstream>
-#include <string>
-#include <system_error>
-#include <tuple>
-#include <type_traits>
-#include <utility>
+#include <array>   // ArrayWrapperND
+#include <string>  // std::string
 #include <vulkan/vulkan.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
-#  include <string_view>
+#  include <string_view>    // std::string_view
 #endif
 
 #if defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -15033,8 +15023,16 @@ int main( int argc, char ** argv )
 #    define VULKAN_HPP_NO_SMART_HANDLE
 #  endif
 #else
-#  include <memory>
-#  include <vector>
+#  include <tuple>  // std::tie
+#  include <vector> // std::vector
+#endif
+
+#if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#  include <system_error>  // std::is_error_code_enum
+#endif
+
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+#  include <algorithm>  // std::transform
 #endif
 
 #if defined( VULKAN_HPP_NO_CONSTRUCTORS )
@@ -15366,6 +15364,8 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_STRUCTS_HPP
 #  define VULKAN_STRUCTS_HPP
 
+#include <cstring>  // strcmp
+
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
@@ -15408,12 +15408,13 @@ namespace VULKAN_HPP_NAMESPACE
       "#    define VULKAN_HPP_TYPESAFE_CONVERSION\n"
       "#  endif\n"
       "#endif\n";
-    str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{" + classArrayProxy + classArrayWrapper + classFlags + classOptional + classStructureChain +
-           classUniqueHandle;
+    str += defines + "\n" + "namespace VULKAN_HPP_NAMESPACE\n" + "{" + classArrayWrapper + classFlags + "#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )\n" +
+           classArrayProxy + classOptional + classStructureChain + classUniqueHandle + "#endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE\n";
     str += dispatchLoaderBase;
     str += generator.generateDispatchLoaderStatic();
     str += dispatchLoaderDefault;
-    str += classObjectDestroy + classObjectFree + classObjectRelease + classPoolFree + "\n";
+    str += "#if !defined( VULKAN_HPP_NO_SMART_HANDLE )\n" + classObjectDestroy + classObjectFree + classObjectRelease + classPoolFree + "\n" +
+           "#endif // !VULKAN_HPP_NO_SMART_HANDLE\n";
     str += generator.generateBaseTypes();
     str += R"(} // namespace VULKAN_HPP_NAMESPACE
 
@@ -15450,7 +15451,7 @@ namespace VULKAN_HPP_NAMESPACE
 namespace VULKAN_HPP_NAMESPACE
 {
 )";
-    str += generator.generateStructExtendsStructs();
+    str += "#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )\n" + generator.generateStructExtendsStructs() + "#endif // VULKAN_HPP_DISABLE_ENHANCED_MODE\n";
     str += dynamicLoader;
     str += generator.generateDispatchLoaderDynamic();
     str +=
@@ -15500,6 +15501,12 @@ namespace std
 #  define VULKAN_TO_STRING_HPP
 
 #include <vulkan/vulkan_enums.hpp>
+
+#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+#  include <format>   // std::format
+#else
+#  include <sstream>  // std::stringstream
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

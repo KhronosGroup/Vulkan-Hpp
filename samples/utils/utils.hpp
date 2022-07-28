@@ -22,6 +22,7 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <memory>   // std::unique_ptr
 
 namespace vk
 {

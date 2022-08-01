@@ -121,8 +121,6 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
-file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
-string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp vulkan_enums_hpp)
 string(REPLACE "\\" "\\\\" vulkan_enums_hpp ${vulkan_enums_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp vulkan_format_traits_hpp)
@@ -135,20 +133,23 @@ file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp vulkan_h
 string(REPLACE "\\" "\\\\" vulkan_hash_hpp ${vulkan_hash_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp vulkan_raii_hpp)
 string(REPLACE "\\" "\\\\" vulkan_raii_hpp ${vulkan_raii_hpp})
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_asserts.hpp vulkan_static_asserts_hpp)
+string(REPLACE "\\" "\\\\" vulkan_static_asserts_hpp ${vulkan_static_asserts_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp vulkan_structs_hpp)
 string(REPLACE "\\" "\\\\" vulkan_structs_hpp ${vulkan_structs_hpp})
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp vulkan_to_string_hpp)
 string(REPLACE "\\" "\\\\" vulkan_to_string_hpp ${vulkan_to_string_hpp})
 target_compile_definitions(${PROJECT_NAME} PUBLIC
-				-DVULKAN_HPP_FILE="${vulkan_hpp}"
                 -DVULKAN_ENUMS_HPP_FILE="${vulkan_enums_hpp}"
                 -DVULKAN_FORMAT_TRAITS_HPP_FILE="${vulkan_format_traits_hpp}"
                 -DVULKAN_FUNCS_HPP_FILE="${vulkan_funcs_hpp}"
                 -DVULKAN_HANDLES_HPP_FILE="${vulkan_handles_hpp}"
                 -DVULKAN_HASH_HPP_FILE="${vulkan_hash_hpp}"
                 -DVULKAN_RAII_HPP_FILE="${vulkan_raii_hpp}"
+				-DVULKAN_STATIC_ASSERTS_HPP_FILE="${vulkan_static_asserts_hpp}"
                 -DVULKAN_STRUCTS_HPP_FILE="${vulkan_structs_hpp}"
-				-DVULKAN_TO_STRING_HPP_FILE="${vulkan_to_string_hpp}")
+				-DVULKAN_TO_STRING_HPP_FILE="${vulkan_to_string_hpp}"
+				-DBASE_PATH="${CMAKE_SOURCE_DIR}")
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 

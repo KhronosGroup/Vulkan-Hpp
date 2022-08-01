@@ -25,12 +25,9 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document );
 
-  std::string         generateBaseTypes() const;
   std::string         generateBitmasks() const;
   std::string         generateBitmasksToString() const;
   std::string         generateCommandDefinitions() const;
-  std::string         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
-  std::string         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string         generateEnums() const;
   std::string         generateEnumsToString() const;
   std::string         generateFormatTraits() const;
@@ -40,14 +37,10 @@ public:
   std::string         generateRAIICommandDefinitions() const;
   std::string         generateRAIIDispatchers() const;
   std::string         generateRAIIHandles() const;
-  std::string         generateResultExceptions() const;
-  std::string         generateStructExtendsStructs() const;
   std::string         generateStructForwardDeclarations() const;
   std::string         generateStructHashStructures() const;
   std::string         generateStructs() const;
-  std::string         generateThrowResultException() const;
-  std::string const & getTypesafeCheck() const;
-  std::string const & getVersion() const;
+  void                generateVulkanHppFile() const;
   std::string const & getVulkanLicenseHeader() const;
   void                prepareRAIIHandles();
 
@@ -459,7 +452,8 @@ private:
                                          std::set<size_t> const &         templatedParams,
                                          bool                             chained,
                                          bool                             raii ) const;
-  std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string                                        generateBaseTypes() const;
+  std::string                                        generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateBitmaskToString( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
@@ -650,6 +644,8 @@ private:
                                       std::map<size_t, size_t> const & vectorParams,
                                       std::set<size_t> const &         templatedParams,
                                       bool                             singular ) const;
+  std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
+  std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
   std::string
     generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, CommandData const & commandData, std::string const & firstArg ) const;
@@ -822,6 +818,7 @@ private:
   std::string generateResultAssignment( CommandData const & commandData ) const;
   std::string generateResultCheck(
     CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName, bool enumerating ) const;
+  std::string generateResultExceptions() const;
   std::string generateReturnStatement( std::string const & commandName,
                                        CommandData const & commandData,
                                        std::string const & returnVariable,
@@ -850,6 +847,7 @@ private:
   std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
+  std::string generateStructExtendsStructs() const;
   std::string
     generateStructExtendsStructs( std::vector<RequireData> const & requireData, std::set<std::string> & listedStructs, std::string const & title ) const;
   std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
@@ -858,6 +856,7 @@ private:
   std::string                         generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
   std::string                         generateSuccessCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const;
+  std::string                         generateThrowResultException() const;
   std::string                         generateTypenameCheck( std::vector<size_t> const &      returnParams,
                                                              std::map<size_t, size_t> const & vectorParams,
                                                              bool                             definition,

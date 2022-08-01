@@ -556,8 +556,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return flags.operator^( bit );
   }
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   template <typename T>
   class ArrayProxy
   {
@@ -5406,8 +5406,8 @@ namespace VULKAN_HPP_NAMESPACE
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
 #endif
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   struct AllocationCallbacks;
 
   template <typename OwnerType, typename Dispatch>
@@ -5617,7 +5617,6 @@ namespace std
 namespace VULKAN_HPP_NAMESPACE
 {
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
-
   class ErrorCategoryImpl : public std::error_category
   {
   public:

@@ -36,7 +36,7 @@ std::string decodeDriverVersion( uint32_t driverVersion, uint32_t vendorID )
 {
   switch ( vendorID )
   {
-    case 4318:
+    case 0x10DE:
       return std::to_string( ( driverVersion >> 22 ) & 0x3FF ) + "." + std::to_string( ( driverVersion >> 14 ) & 0xFF ) + "." +
              std::to_string( ( driverVersion >> 6 ) & 0xFF ) + "." + std::to_string( driverVersion & 0x3F );
     case 0x8086: return std::to_string( ( driverVersion >> 14 ) & 0x3FFFF ) + "." + std::to_string( ( driverVersion & 0x3FFF ) );

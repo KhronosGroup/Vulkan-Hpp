@@ -4710,18 +4710,25 @@ std::string VulkanHppGenerator::generateCommandVoid1Return(
   }
   else if ( commandData.params[returnParam].type.type == "void" )
   {
-    if ( vectorParams.size() == 1 )
+    switch ( vectorParams.size() )
     {
-      if ( returnParam == vectorParams.begin()->first )
-      {
-        if ( name == stripPluralS( name ) )
+      case 0:
+        return generateCommandSetStandardEnhanced(
+          definition,
+          generateCommandStandard( name, commandData, initialSkipCount, definition ),
+          generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false, false, false, false ) );
+      case 1:
+        if ( returnParam == vectorParams.begin()->first )
         {
-          return generateCommandSetStandardEnhanced(
-            definition,
-            generateCommandStandard( name, commandData, initialSkipCount, definition ),
-            generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, false ) );
+          if ( name == stripPluralS( name ) )
+          {
+            return generateCommandSetStandardEnhanced(
+              definition,
+              generateCommandStandard( name, commandData, initialSkipCount, definition ),
+              generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, true, false, false, false ) );
+          }
         }
-      }
+        break;
     }
   }
   else
@@ -7057,15 +7064,18 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
       }
       else if ( commandIt->second.params[returnParams[0]].type.type == "void" )
       {
-        if ( vectorParams.size() == 1 )
+        switch ( vectorParams.size() )
         {
-          if ( returnParams[0] == vectorParams.begin()->first )
-          {
-            if ( commandIt->first == stripPluralS( commandIt->first ) )
+          case 0: str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false ); break;
+          case 1:
+            if ( returnParams[0] == vectorParams.begin()->first )
             {
-              str = generateRAIIHandleCommandVoid1ReturnVoidVectorSingular( commandIt, initialSkipCount, vectorParams, returnParams[0], definition );
+              if ( commandIt->first == stripPluralS( commandIt->first ) )
+              {
+                str = generateRAIIHandleCommandVoid1ReturnVoidVectorSingular( commandIt, initialSkipCount, vectorParams, returnParams[0], definition );
+              }
             }
-          }
+            break;
         }
       }
       else

@@ -736,11 +736,6 @@ private:
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,
                                                                              size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoidSingular( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                         size_t                                             initialSkipCount,
-                                                                                         std::map<size_t, size_t> const &                   vectorParamIndices,
-                                                                                         size_t                                             returnParam,
-                                                                                         bool                                               definition ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,

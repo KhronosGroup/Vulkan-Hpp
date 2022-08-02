@@ -6959,18 +6959,9 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
       }
       else if ( commandIt->second.params[returnParams[0]].type.type == "void" )
       {
-        switch ( vectorParams.size() )
+        if ( vectorParams.empty() )
         {
-          case 0: str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false ); break;
-          case 1:
-            if ( returnParams[0] == vectorParams.begin()->first )
-            {
-              if ( commandIt->first == stripPluralS( commandIt->first ) )
-              {
-                str = generateRAIIHandleCommandVoid1ReturnVoidVectorSingular( commandIt, initialSkipCount, vectorParams, returnParams[0], definition );
-              }
-            }
-            break;
+          generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
         }
       }
       else
@@ -7007,64 +6998,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
       break;
   }
   return str;
-}
-
-std::string VulkanHppGenerator::generateRAIIHandleCommandVoid1ReturnVoidVectorSingular( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                        size_t                                             initialSkipCount,
-                                                                                        std::map<size_t, size_t> const &                   vectorParams,
-                                                                                        size_t                                             returnParam,
-                                                                                        bool                                               definition ) const
-{
-  std::set<size_t> skippedParams  = determineSkippedParams( commandIt->second.params, initialSkipCount, vectorParams, { returnParam }, true );
-  std::set<size_t> singularParams = determineSingularParams( returnParam, vectorParams );
-  std::string      argumentList   = generateArgumentListEnhanced(
-    commandIt->second.params, { returnParam }, vectorParams, skippedParams, singularParams, { returnParam }, definition, false, false, false );
-  std::string commandName       = generateCommandName( commandIt->first, commandIt->second.params, initialSkipCount, m_tags, true, false );
-  std::string argumentTemplates = generateArgumentTemplates( commandIt->second.params, { returnParam }, vectorParams, { returnParam }, false, true );
-  std::string dataType          = stripPrefix( commandIt->second.params[returnParam].name, "p" ) + "Type";
-
-  if ( definition )
-  {
-    std::string const singularDefinitionTemplate =
-      R"(
-  ${argumentTemplates}
-  VULKAN_HPP_NODISCARD ${dataType} ${className}::${commandName}( ${argumentList} ) const
-  {
-    ${dataType} ${dataName};
-    getDispatcher()->${vkCommand}( ${callArguments} );
-    return ${dataName};
-  }
-)";
-
-    std::string callArguments = generateCallArgumentsEnhanced( commandIt->second, initialSkipCount, false, singularParams, {}, true );
-    std::string dataName      = startLowerCase( stripPrefix( commandIt->second.params[returnParam].name, "p" ) );
-
-    return replaceWithMap( singularDefinitionTemplate,
-                           { { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
-                             { "callArguments", callArguments },
-                             { "className", stripPrefix( commandIt->second.params[initialSkipCount - 1].type.type, "Vk" ) },
-                             { "commandName", commandName },
-                             { "dataName", dataName },
-                             { "dataType", dataType },
-                             { "vkCommand", commandIt->first } } );
-  }
-  else
-  {
-    std::string const singularDeclarationTemplate =
-      R"(
-    ${argumentTemplates}
-    VULKAN_HPP_NODISCARD ${dataType} ${commandName}( ${argumentList} ) const;
-)";
-
-    return replaceWithMap( singularDeclarationTemplate,
-                           {
-                             { "argumentList", argumentList },
-                             { "argumentTemplates", argumentTemplates },
-                             { "commandName", commandName },
-                             { "dataType", dataType },
-                           } );
-  }
 }
 
 std::pair<std::string, std::string>

@@ -126,807 +126,155 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
   }
 }
 
-std::string VulkanHppGenerator::generateBitmasks() const
+void VulkanHppGenerator::generateVulkanEnumsHppFile() const
 {
-  const std::string bitmasksTemplate = R"(
-  //================
-  //=== BITMASKs ===
-  //================
+  std::string const vulkan_enums_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_enums.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_enums_hpp << " ..." << std::endl;
 
-${bitmasks}
-)";
+  std::string const vulkanEnumsHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_ENUMS_HPP
+#  define VULKAN_ENUMS_HPP
 
-  std::string           bitmasks;
-  std::set<std::string> listedBitmasks;
-  for ( auto const & feature : m_features )
-  {
-    bitmasks += generateBitmasks( feature.second.requireData, listedBitmasks, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    bitmasks += generateBitmasks( extIt.second->second.requireData, listedBitmasks, extIt.second->first );
-  }
-
-  return replaceWithMap( bitmasksTemplate, { { "bitmasks", bitmasks } } );
-}
-
-std::string VulkanHppGenerator::generateBitmasksToString() const
+namespace VULKAN_HPP_NAMESPACE
 {
-  const std::string bitmasksToStringTemplate = R"(
-  //==========================
-  //=== BITMASKs to_string ===
-  //==========================
-
-${bitmasksToString}
-)";
-
-  std::string           bitmasksToString;
-  std::set<std::string> listedBitmasks;
-  for ( auto const & feature : m_features )
-  {
-    bitmasksToString += generateBitmasksToString( feature.second.requireData, listedBitmasks, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    bitmasksToString += generateBitmasksToString( extIt.second->second.requireData, listedBitmasks, extIt.second->first );
-  }
-
-  return replaceWithMap( bitmasksToStringTemplate, { { "bitmasksToString", bitmasksToString } } );
-}
-
-std::string VulkanHppGenerator::generateCommandDefinitions() const
-{
-  const std::string commandDefinitionsTemplate = R"(
-  //===========================
-  //=== COMMAND Definitions ===
-  //===========================
-
-${commandDefinitions}
-)";
-
-  std::string           commandDefinitions;
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    commandDefinitions += generateCommandDefinitions( feature.second.requireData, listedCommands, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    commandDefinitions += generateCommandDefinitions( extIt.second->second.requireData, listedCommands, extIt.second->first );
-  }
-
-  return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
-}
-
-std::string VulkanHppGenerator::generateEnums() const
-{
-  const std::string enumsTemplate = R"(
-  //=============
-  //=== ENUMs ===
-  //=============
-
-${enums}
-)";
-
-  std::string           enums;
-  std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
-  {
-    enums += generateEnums( feature.second.requireData, listedEnums, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    enums += generateEnums( extIt.second->second.requireData, listedEnums, extIt.second->first );
-  }
-
-  return replaceWithMap( enumsTemplate, { { "enums", enums } } );
-}
-
-std::string VulkanHppGenerator::generateEnumsToString() const
-{
-  // start with toHexString, which is used in all the to_string functions here!
-  const std::string enumsToStringTemplate = R"(
-  //=======================
-  //=== ENUMs to_string ===
-  //=======================
-
-  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
-  {
-#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
-    return std::format( "{:x}", value );
-#else
-    std::stringstream stream;
-    stream << std::hex << value;
-    return stream.str();
-#endif
-  }
-
-${enumsToString}
-)";
-
-  std::string           enumsToString;
-  std::set<std::string> listedEnums;
-  for ( auto const & feature : m_features )
-  {
-    enumsToString += generateEnumsToString( feature.second.requireData, listedEnums, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    enumsToString += generateEnumsToString( extIt.second->second.requireData, listedEnums, extIt.second->first );
-  }
-
-  return replaceWithMap( enumsToStringTemplate, { { "enumsToString", enumsToString } } );
-}
-
-std::string VulkanHppGenerator::generateFormatTraits() const
-{
-  if ( m_formats.empty() )
-  {
-    return "";
-  }
-
-  const std::string formatTraitsTemplate = R"(
-  //=====================
-  //=== Format Traits ===
-  //=====================
-
-  // The texel block size in bytes.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${blockSizeCases}
-      default : VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-
-  // The number of texels in a texel block.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${texelsPerBlockCases}
-      default: VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-
-  // The three-dimensional extent of a texel block.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${blockExtentCases}
-      default: return {{1, 1, 1 }};
-    }
-  }
-
-  // A textual description of the compression scheme, or an empty string if it is not compressed
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${compressionSchemeCases}
-      default: return "";
-    }
-  }
-
-  // True, if this format is a compressed one.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
-  }
-
-  // The number of bits into which the format is packed. A single image element in this format
-  // can be stored in the same space as a scalar type of this bit width.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${packedCases}
-      default: return 0;
-    }
-  }
-
-  // True, if the components of this format are compressed, otherwise false.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentsAreCompressedCases}
-        return true;
-      default: return false;
-    }
-  }
-
-  // The number of bits in this component, if not compressed, otherwise 0.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentBitsCases}
-      default: return 0;
-    }
-  }
-
-  // The number of components of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentCountCases}
-      default: return 0;
-    }
-  }
-
-  // The name of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentNameCases}
-      default: return "";
-    }
-  }
-
-  // The numeric format of the component
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentNumericFormatCases}
-      default: return "";
-    }
-  }
-
-  // The plane this component lies in.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
-  {
-    switch( format )
-    {
-${componentPlaneIndexCases}
-      default: return 0;
-    }
-  }
-
-  // The number of image planes of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${planeCountCases}
-      default: return 1;
-    }
-  }
-
-  // The single-plane format that this plane is compatible with.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeCompatibleCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return format;
-    }
-  }
-
-  // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeHeightDivisorCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
-    }
-  }
-
-  // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
-  {
-    switch( format )
-    {
-${planeWidthDivisorCases}
-      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
-    }
-  }
-)";
-
-  auto formatIt = m_enums.find( "VkFormat" );
-  assert( formatIt != m_enums.end() );
-  assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
-
-  std::string blockSizeCases, texelsPerBlockCases, blockExtentCases, compressionSchemeCases, packedCases, componentsAreCompressedCases, componentCountCases,
-    componentBitsCases, componentNameCases, componentNumericFormatCases, componentPlaneIndexCases, planeCountCases, planeCompatibleCases,
-    planeHeightDivisorCases, planeWidthDivisorCases;
-  for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
-  {
-    auto traitIt = m_formats.find( formatValuesIt->name );
-    assert( traitIt != m_formats.end() );
-    std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false, m_tags ) + ":";
-    blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
-    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
-    if ( !traitIt->second.blockExtent.empty() )
-    {
-      std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
-      assert( blockExtent.size() == 3 );
-      blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
-    }
-    if ( !traitIt->second.compressed.empty() )
-    {
-      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
-    }
-    if ( !traitIt->second.packed.empty() )
-    {
-      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
-    }
-    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
-    if ( traitIt->second.components.front().bits == "compressed" )
-    {
-      componentsAreCompressedCases += caseString + "\n";
-    }
-    else
-    {
-      const std::string componentBitsCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return 0;
-        }
-)";
-
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
-      }
-      componentCases.pop_back();
-      componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
-
-    {
-      const std::string componentNameCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return "";
-        }
-)";
-
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
-      }
-      componentCases.pop_back();
-      componentNameCases += replaceWithMap( componentNameCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
-
-    {
-      const std::string componentNumericFormatCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return "";
-        }
-)";
-
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].numericFormat + "\";\n";
-      }
-      componentCases.pop_back();
-      componentNumericFormatCases +=
-        replaceWithMap( componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
-
-    if ( !traitIt->second.components.front().planeIndex.empty() )
-    {
-      const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
-        switch( component )
-        {
-${componentCases}
-          default: VULKAN_HPP_ASSERT( false ); return 0;
-        }
-)";
-
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
-      }
-      componentCases.pop_back();
-      componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
-    if ( !traitIt->second.planes.empty() )
-    {
-      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
-
-      const std::string planeCompatibleCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${compatibleCases}
-          default: VULKAN_HPP_ASSERT( false ); return VULKAN_HPP_NAMESPACE::Format::eUndefined;
-        }
-)";
-
-      const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${heightDivisorCases}
-          default: VULKAN_HPP_ASSERT( false ); return 1;
-        }
-)";
-
-      const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
-        switch( plane )
-        {
-${widthDivisorCases}
-          default: VULKAN_HPP_ASSERT( false ); return 1;
-        }
-)";
-
-      std::string compatibleCases, heightDivisorCases, widthDivisorCases;
-      for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
-      {
-        compatibleCases += "          case " + std::to_string( i ) + ": return VULKAN_HPP_NAMESPACE::Format::" +
-                           generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false, m_tags ) + ";\n";
-        heightDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
-        widthDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
-      }
-      compatibleCases.pop_back();
-      heightDivisorCases.pop_back();
-      widthDivisorCases.pop_back();
-      planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
-      planeHeightDivisorCases +=
-        replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
-      planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
-    }
-  }
-
-  return replaceWithMap( formatTraitsTemplate,
-                         { { "blockExtentCases", blockExtentCases },
-                           { "blockSizeCases", blockSizeCases },
-                           { "componentBitsCases", componentBitsCases },
-                           { "componentCountCases", componentCountCases },
-                           { "componentNameCases", componentNameCases },
-                           { "componentNumericFormatCases", componentNumericFormatCases },
-                           { "componentPlaneIndexCases", componentPlaneIndexCases },
-                           { "componentsAreCompressedCases", componentsAreCompressedCases },
-                           { "compressionSchemeCases", compressionSchemeCases },
-                           { "packedCases", packedCases },
-                           { "planeCompatibleCases", planeCompatibleCases },
-                           { "planeCountCases", planeCountCases },
-                           { "planeHeightDivisorCases", planeHeightDivisorCases },
-                           { "planeWidthDivisorCases", planeWidthDivisorCases },
-                           { "texelsPerBlockCases", texelsPerBlockCases } } );
-}
-
-std::string VulkanHppGenerator::generateHandles() const
-{
-  // Note: reordering structs or handles by features and extensions is not possible!
-  std::string str = R"(
-  //===============
-  //=== HANDLEs ===
-  //===============
-)";
-
-  std::set<std::string> listedHandles;
-  for ( auto const & handle : m_handles )
-  {
-    if ( listedHandles.find( handle.first ) == listedHandles.end() )
-    {
-      str += generateHandle( handle, listedHandles );
-    }
-  }
-  return str;
-}
-
-std::string VulkanHppGenerator::generateHandleHashStructures() const
-{
-  const std::string hashesTemplate = R"(
-  //===================================
-  //=== HASH structures for handles ===
-  //===================================
-
-${hashes}
-)";
-
-  std::string hashes;
-  for ( auto const & feature : m_features )
-  {
-    hashes += generateHandleHashStructures( feature.second.requireData, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    hashes += generateHandleHashStructures( extIt.second->second.requireData, extIt.second->first );
-  }
-  return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
-}
-
-std::string VulkanHppGenerator::generateIndexTypeTraits() const
-{
-  const std::string indexTypeTraitsTemplate = R"(
-  template<typename T>
-  struct IndexTypeValue
+  template <typename EnumType, EnumType value>
+  struct CppType
   {};
 
+  template <typename Type>
+  struct isVulkanHandleType
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
+${enums}
 ${indexTypeTraits}
+${bitmasks}
+}   // namespace VULKAN_HPP_NAMESPACE
+#endif
 )";
 
-  auto indexType = m_enums.find( "VkIndexType" );
-  assert( indexType != m_enums.end() );
+  std::string str = replaceWithMap( vulkanEnumsHppTemplate,
+                                    { { "bitmasks", generateBitmasks() },
+                                      { "enums", generateEnums() },
+                                      { "indexTypeTraits", generateIndexTypeTraits() },
+                                      { "licenseHeader", m_vulkanLicenseHeader } } );
 
-  std::string           indexTypeTraits;
-  std::set<std::string> listedCppTypes;
-  for ( auto const & value : indexType->second.values )
-  {
-    std::string valueName = generateEnumValueName( indexType->first, value.name, false, m_tags );
-    std::string cppType;
-    if ( !beginsWith( valueName, "eNone" ) )
-    {
-      // get the bit count out of the value Name (8, 16, 32, ... ) and generate the cppType (uint8_t,...)
-      assert( beginsWith( valueName, "eUint" ) );
-      auto beginDigit = valueName.begin() + strlen( "eUint" );
-      assert( isdigit( *beginDigit ) );
-      auto endDigit = std::find_if_not( beginDigit, valueName.end(), []( std::string::value_type c ) { return isdigit( c ); } );
-      cppType       = "uint" + valueName.substr( strlen( "eUint" ), endDigit - beginDigit ) + "_t";
-    }
-
-    if ( !cppType.empty() )
-    {
-      if ( listedCppTypes.insert( cppType ).second )
-      {
-        // IndexType traits aren't necessarily invertible.
-        // The Type -> Enum translation will only occur for the first prefixed enum value.
-        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
-        const std::string typeToEnumTemplate = R"(
-  template <>
-  struct IndexTypeValue<${cppType}>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::${valueName};
-  };
-)";
-        indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
-      }
-
-      // Enum -> Type translations are always able to occur.
-      const std::string enumToTypeTemplate = R"(
-  template <>
-  struct CppType<IndexType, IndexType::${valueName}>
-  {
-    using Type = ${cppType};
-  };
-)";
-      indexTypeTraits += replaceWithMap( enumToTypeTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
-    }
-  }
-
-  return replaceWithMap( indexTypeTraitsTemplate, { { "indexTypeTraits", indexTypeTraits } } );
+  writeToFile( str, vulkan_enums_hpp );
 }
 
-std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
+void VulkanHppGenerator::generateVulkanFormatTraitsHppFile() const
 {
-  const std::string commandDefinitionsTemplate = R"(
-  //===========================
-  //=== COMMAND Definitions ===
-  //===========================
+  std::string const vulkan_format_traits_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_format_traits.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_format_traits_hpp << " ..." << std::endl;
 
+  std::string const vulkanFormatTraitsHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_FORMAT_TRAITS_HPP
+#  define VULKAN_FORMAT_TRAITS_HPP
+
+#include <vulkan/vulkan.hpp>
+
+namespace VULKAN_HPP_NAMESPACE
+{
+${formatTraits}
+}   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+
+  std::string str = replaceWithMap( vulkanFormatTraitsHppTemplate, { { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+
+  writeToFile( str, vulkan_format_traits_hpp );
+}
+
+void VulkanHppGenerator::generateVulkanFuncsHppFile() const
+{
+  std::string const vulkan_funcs_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_funcs.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_funcs_hpp << " ..." << std::endl;
+
+  std::string const vulkanFuncsHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_FUNCS_HPP
+#  define VULKAN_FUNCS_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
 ${commandDefinitions}
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
 )";
 
-  std::string           commandDefinitions;
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
-  for ( auto const & feature : m_features )
-  {
-    commandDefinitions += generateRAIICommandDefinitions( feature.second.requireData, listedCommands, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    commandDefinitions += generateRAIICommandDefinitions( extIt.second->second.requireData, listedCommands, extIt.second->first );
-  }
+  std::string str =
+    replaceWithMap( vulkanFuncsHppTemplate, { { "commandDefinitions", generateCommandDefinitions() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 
-  return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
+  writeToFile( str, vulkan_funcs_hpp );
 }
 
-std::string VulkanHppGenerator::generateRAIIDispatchers() const
+void VulkanHppGenerator::generateVulkanHandlesHppFile() const
 {
-  std::string contextInitializers, contextMembers, deviceAssignments, deviceMembers, instanceAssignments, instanceMembers;
+  std::string const vulkan_handles_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_handles.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_handles_hpp << " ..." << std::endl;
 
-  std::set<std::string> listedCommands;
-  for ( auto const & feature : m_features )
-  {
-    appendRAIIDispatcherCommands( feature.second.requireData,
-                                  listedCommands,
-                                  feature.first,
-                                  contextInitializers,
-                                  contextMembers,
-                                  deviceAssignments,
-                                  deviceMembers,
-                                  instanceAssignments,
-                                  instanceMembers );
-  }
-  for ( auto const & extension : m_extensions )
-  {
-    appendRAIIDispatcherCommands( extension.second.requireData,
-                                  listedCommands,
-                                  extension.first,
-                                  contextInitializers,
-                                  contextMembers,
-                                  deviceAssignments,
-                                  deviceMembers,
-                                  instanceAssignments,
-                                  instanceMembers );
-  }
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_HANDLES_HPP
+#  define VULKAN_HANDLES_HPP
 
-  std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher : public DispatchLoaderBase
-    {
-    public:
-      ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
-        : vkGetInstanceProcAddr( getProcAddr )${contextInitializers}
-      {}
-
-    public:
-      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
-${contextMembers}
-    };
+namespace VULKAN_HPP_NAMESPACE
+{
+${structForwardDeclarations}
+${handles}
+  }   // namespace VULKAN_HPP_NAMESPACE
+#endif
 )";
 
-  std::string str = replaceWithMap( contextDispatcherTemplate, { { "contextInitializers", contextInitializers }, { "contextMembers", contextMembers } } );
+  std::string str = replaceWithMap(
+    vulkanHandlesHppTemplate,
+    { { "handles", generateHandles() }, { "licenseHeader", m_vulkanLicenseHeader }, { "structForwardDeclarations", generateStructForwardDeclarations() } } );
 
-  std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher : public DispatchLoaderBase
-    {
-    public:
-      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
-        : vkGetInstanceProcAddr( getProcAddr )
-      {
-${instanceAssignments}
-        vkGetDeviceProcAddr =
-          PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
-      }
-
-    public:
-${instanceMembers}
-      PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
-    };
-)";
-
-  str += replaceWithMap( instanceDispatcherTemplate, { { "instanceAssignments", instanceAssignments }, { "instanceMembers", instanceMembers } } );
-
-  std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher : public DispatchLoaderBase
-    {
-    public:
-      DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
-      {
-${deviceAssignments}
-      }
-
-    public:
-${deviceMembers}
-    };
-)";
-
-  str += replaceWithMap( deviceDispatcherTemplate, { { "deviceAssignments", deviceAssignments }, { "deviceMembers", deviceMembers } } );
-  return str;
+  writeToFile( str, vulkan_handles_hpp );
 }
 
-std::string VulkanHppGenerator::generateRAIIHandles() const
+void VulkanHppGenerator::generateVulkanHashHppFile() const
 {
-  const std::string raiiHandlesTemplate = R"(
-  //========================================
-  //=== RAII HANDLE forward declarations ===
-  //========================================
+  std::string const vulkan_hash_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_hash.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_hash_hpp << " ..." << std::endl;
 
-${forwardDeclarations}
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_HASH_HPP
+#  define VULKAN_HASH_HPP
 
-  //====================
-  //=== RAII HANDLES ===
-  //====================
+#include <vulkan/vulkan.hpp>
 
-${raiiHandles}
-)";
-
-  std::string forwardDeclarations;
-  for ( auto const & feature : m_features )
-  {
-    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.second.requireData, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    forwardDeclarations += generateRAIIHandleForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
-  }
-
-  std::set<std::string> listedHandles;
-  auto                  handleIt = m_handles.begin();
-  assert( handleIt->first.empty() );
-  std::string raiiHandles = generateRAIIHandleContext( *handleIt, m_RAIISpecialFunctions );
-  for ( ++handleIt; handleIt != m_handles.end(); ++handleIt )
-  {
-    raiiHandles += generateRAIIHandle( *handleIt, listedHandles, m_RAIISpecialFunctions );
-  }
-  return replaceWithMap( raiiHandlesTemplate, { { "forwardDeclarations", forwardDeclarations }, { "raiiHandles", raiiHandles } } );
-}
-
-std::string VulkanHppGenerator::generateStructForwardDeclarations() const
+namespace std
 {
-  const std::string fowardDeclarationsTemplate = R"(
-  //===================================
-  //=== STRUCT forward declarations ===
-  //===================================
+  //=======================================
+  //=== HASH structures for Flags types ===
+  //=======================================
 
-${forwardDeclarations}
-)";
-
-  std::string forwardDeclarations;
-  for ( auto const & feature : m_features )
+  template <typename BitType>
+  struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
   {
-    forwardDeclarations += generateStructForwardDeclarations( feature.second.requireData, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    forwardDeclarations += generateStructForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
-  }
-
-  return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
-}
-
-std::string VulkanHppGenerator::generateStructHashStructures() const
-{
-  const std::string hashesTemplate = R"(
-#if 14 <= VULKAN_HPP_CPP_VERSION
-  //======================================
-  //=== HASH structures for structures ===
-  //======================================
-
-#  if !defined( VULKAN_HPP_HASH_COMBINE )
-#    define VULKAN_HPP_HASH_COMBINE( seed, value ) \
-      seed ^= std::hash<std::decay<decltype( value )>::type>{}( value ) + 0x9e3779b9 + ( seed << 6 ) + ( seed >> 2 )
-#  endif
-
-${hashes}
-#endif    // 14 <= VULKAN_HPP_CPP_VERSION
-)";
-
-  // Note reordering structs or handles by features and extensions is not possible!
-  std::set<std::string> listedStructs;
-  std::string           hashes;
-  for ( auto const & structure : m_structures )
-  {
-    if ( listedStructs.find( structure.first ) == listedStructs.end() )
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::Flags<BitType> const & flags ) const VULKAN_HPP_NOEXCEPT
     {
-      hashes += generateStructHashStructure( structure, listedStructs );
+      return std::hash<typename std::underlying_type<BitType>::type>{}(
+        static_cast<typename std::underlying_type<BitType>::type>( flags ) );
     }
-  }
-  return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
-}
+  };
 
-std::string VulkanHppGenerator::generateStructs() const
-{
-  const std::string structsTemplate = R"(
-  //===============
-  //=== STRUCTS ===
-  //===============
-
-${structs}
+${handleHashStructures}
+${structHashStructures}
+} // namespace std
+#endif
 )";
 
-  // Note reordering structs or handles by features and extensions is not possible!
-  std::set<std::string> listedStructs;
-  std::string           structs;
-  for ( auto const & structure : m_structures )
-  {
-    if ( listedStructs.find( structure.first ) == listedStructs.end() )
-    {
-      structs += generateStruct( structure, listedStructs );
-    }
-  }
-  return replaceWithMap( structsTemplate, { { "structs", structs } } );
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    { { "handleHashStructures", generateHandleHashStructures() },
+                                      { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "structHashStructures", generateStructHashStructures() } } );
+
+  writeToFile( str, vulkan_hash_hpp );
 }
 
 void VulkanHppGenerator::generateVulkanHppFile() const
 {
-  const std::string vulkan_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan.hpp";
+  std::string const vulkan_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan.hpp";
   std::cout << "VulkanHppGenerator: Generating " << vulkan_hpp << " ... " << std::endl;
 
   std::string const vulkanHppTemplate = R"(${licenseHeader}
@@ -1047,9 +395,110 @@ ${DispatchLoaderDynamic}
   writeToFile( str, vulkan_hpp );
 }
 
-std::string const & VulkanHppGenerator::getVulkanLicenseHeader() const
+void VulkanHppGenerator::generateVulkanRAIIHppFile() const
 {
-  return m_vulkanLicenseHeader;
+  std::string const vulkan_raii_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_raii.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_raii_hpp << " ..." << std::endl;
+
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_RAII_HPP
+#  define VULKAN_RAII_HPP
+
+#include <vulkan/vulkan.hpp>
+
+#if !defined( VULKAN_HPP_RAII_NAMESPACE )
+#  define VULKAN_HPP_RAII_NAMESPACE raii
+#endif
+
+namespace VULKAN_HPP_NAMESPACE
+{
+  namespace VULKAN_HPP_RAII_NAMESPACE
+  {
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
+
+    template <class T, class U = T>
+    VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
+    {
+#  if ( 14 <= VULKAN_HPP_CPP_VERSION )
+      return std::exchange<T>( obj, std::forward<U>( newValue ) );
+#  else
+      T oldValue = std::move( obj );
+      obj        = std::forward<U>( newValue );
+      return oldValue;
+#  endif
+    }
+
+${RAIIDispatchers}
+${RAIIHandles}
+${RAIICommandDefinitions}
+#endif
+  } // namespace VULKAN_HPP_RAII_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    { { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
+                                      { "RAIIDispatchers", generateRAIIDispatchers() },
+                                      { "RAIIHandles", generateRAIIHandles() } } );
+
+  writeToFile( str, vulkan_raii_hpp );
+}
+
+void VulkanHppGenerator::generateStructsHppFile() const
+{
+  std::string const vulkan_structs_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_structs.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_structs_hpp << " ..." << std::endl;
+
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_STRUCTS_HPP
+#  define VULKAN_STRUCTS_HPP
+
+#include <cstring>  // strcmp
+
+namespace VULKAN_HPP_NAMESPACE
+{
+${structs}
+}   // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "structs", generateStructs() } } );
+
+  writeToFile( str, vulkan_structs_hpp );
+}
+
+void VulkanHppGenerator::generateToStringHppFile() const
+{
+  std::string const vulkan_to_string_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_to_string.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_to_string_hpp << "..." << std::endl;
+
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_TO_STRING_HPP
+#  define VULKAN_TO_STRING_HPP
+
+#include <vulkan/vulkan_enums.hpp>
+
+#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+#  include <format>   // std::format
+#else
+#  include <sstream>  // std::stringstream
+#endif
+
+namespace VULKAN_HPP_NAMESPACE
+{
+${bitmasksToString}
+${enumsToString}
+} // namespace VULKAN_HPP_NAMESPACE
+#endif
+)";
+
+  std::string str = replaceWithMap(
+    vulkanHandlesHppTemplate,
+    { { "bitmasksToString", generateBitmasksToString() }, { "enumsToString", generateEnumsToString() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+
+  writeToFile( str, vulkan_to_string_hpp );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()
@@ -2696,6 +2145,30 @@ ${alias}
   return str;
 }
 
+std::string VulkanHppGenerator::generateBitmasks() const
+{
+  const std::string bitmasksTemplate = R"(
+  //================
+  //=== BITMASKs ===
+  //================
+
+${bitmasks}
+)";
+
+  std::string           bitmasks;
+  std::set<std::string> listedBitmasks;
+  for ( auto const & feature : m_features )
+  {
+    bitmasks += generateBitmasks( feature.second.requireData, listedBitmasks, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    bitmasks += generateBitmasks( extIt.second->second.requireData, listedBitmasks, extIt.second->first );
+  }
+
+  return replaceWithMap( bitmasksTemplate, { { "bitmasks", bitmasks } } );
+}
+
 std::string
   VulkanHppGenerator::generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const
 {
@@ -2713,6 +2186,30 @@ std::string
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateBitmasksToString() const
+{
+  const std::string bitmasksToStringTemplate = R"(
+  //==========================
+  //=== BITMASKs to_string ===
+  //==========================
+
+${bitmasksToString}
+)";
+
+  std::string           bitmasksToString;
+  std::set<std::string> listedBitmasks;
+  for ( auto const & feature : m_features )
+  {
+    bitmasksToString += generateBitmasksToString( feature.second.requireData, listedBitmasks, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    bitmasksToString += generateBitmasksToString( extIt.second->second.requireData, listedBitmasks, extIt.second->first );
+  }
+
+  return replaceWithMap( bitmasksToStringTemplate, { { "bitmasksToString", bitmasksToString } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasksToString( std::vector<RequireData> const & requireData,
@@ -3349,6 +2846,30 @@ std::string VulkanHppGenerator::generateCommand( std::string const & name, Comma
     throw std::runtime_error( "Never encountered a function like <" + name + "> !" );
   }
   return str;
+}
+
+std::string VulkanHppGenerator::generateCommandDefinitions() const
+{
+  const std::string commandDefinitionsTemplate = R"(
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+
+${commandDefinitions}
+)";
+
+  std::string           commandDefinitions;
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    commandDefinitions += generateCommandDefinitions( feature.second.requireData, listedCommands, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    commandDefinitions += generateCommandDefinitions( extIt.second->second.requireData, listedCommands, extIt.second->first );
+  }
+
+  return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
 }
 
 std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireData> const & requireData,
@@ -5422,6 +4943,30 @@ ${enumUsing})";
     enumTemplate, { { "bitmask", bitmask }, { "enumName", stripPrefix( enumData.first, "Vk" ) }, { "enumUsing", enumUsing }, { "enumValues", enumValues } } );
 }
 
+std::string VulkanHppGenerator::generateEnums() const
+{
+  const std::string enumsTemplate = R"(
+  //=============
+  //=== ENUMs ===
+  //=============
+
+${enums}
+)";
+
+  std::string           enums;
+  std::set<std::string> listedEnums;
+  for ( auto const & feature : m_features )
+  {
+    enums += generateEnums( feature.second.requireData, listedEnums, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    enums += generateEnums( extIt.second->second.requireData, listedEnums, extIt.second->first );
+  }
+
+  return replaceWithMap( enumsTemplate, { { "enums", enums } } );
+}
+
 std::string
   VulkanHppGenerator::generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const
 {
@@ -5441,6 +4986,42 @@ std::string
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateEnumsToString() const
+{
+  // start with toHexString, which is used in all the to_string functions here!
+  const std::string enumsToStringTemplate = R"(
+  //=======================
+  //=== ENUMs to_string ===
+  //=======================
+
+  VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
+  {
+#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+    return std::format( "{:x}", value );
+#else
+    std::stringstream stream;
+    stream << std::hex << value;
+    return stream.str();
+#endif
+  }
+
+${enumsToString}
+)";
+
+  std::string           enumsToString;
+  std::set<std::string> listedEnums;
+  for ( auto const & feature : m_features )
+  {
+    enumsToString += generateEnumsToString( feature.second.requireData, listedEnums, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    enumsToString += generateEnumsToString( extIt.second->second.requireData, listedEnums, extIt.second->first );
+  }
+
+  return replaceWithMap( enumsToStringTemplate, { { "enumsToString", enumsToString } } );
 }
 
 std::string VulkanHppGenerator::generateEnumsToString( std::vector<RequireData> const & requireData,
@@ -5559,6 +5140,348 @@ std::string VulkanHppGenerator::generateFailureCheck( std::vector<std::string> c
     }
   }
   return failureCheck;
+}
+
+std::string VulkanHppGenerator::generateFormatTraits() const
+{
+  if ( m_formats.empty() )
+  {
+    return "";
+  }
+
+  const std::string formatTraitsTemplate = R"(
+  //=====================
+  //=== Format Traits ===
+  //=====================
+
+  // The texel block size in bytes.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${blockSizeCases}
+      default : VULKAN_HPP_ASSERT( false ); return 0;
+    }
+  }
+
+  // The number of texels in a texel block.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${texelsPerBlockCases}
+      default: VULKAN_HPP_ASSERT( false ); return 0;
+    }
+  }
+
+  // The three-dimensional extent of a texel block.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${blockExtentCases}
+      default: return {{1, 1, 1 }};
+    }
+  }
+
+  // A textual description of the compression scheme, or an empty string if it is not compressed
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${compressionSchemeCases}
+      default: return "";
+    }
+  }
+
+  // True, if this format is a compressed one.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
+  }
+
+  // The number of bits into which the format is packed. A single image element in this format
+  // can be stored in the same space as a scalar type of this bit width.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${packedCases}
+      default: return 0;
+    }
+  }
+
+  // True, if the components of this format are compressed, otherwise false.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${componentsAreCompressedCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // The number of bits in this component, if not compressed, otherwise 0.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentBits( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentBitsCases}
+      default: return 0;
+    }
+  }
+
+  // The number of components of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${componentCountCases}
+      default: return 0;
+    }
+  }
+
+  // The name of the component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentName( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentNameCases}
+      default: return "";
+    }
+  }
+
+  // The numeric format of the component
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * componentNumericFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentNumericFormatCases}
+      default: return "";
+    }
+  }
+
+  // The plane this component lies in.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t componentPlaneIndex( VULKAN_HPP_NAMESPACE::Format format, uint8_t component )
+  {
+    switch( format )
+    {
+${componentPlaneIndexCases}
+      default: return 0;
+    }
+  }
+
+  // The number of image planes of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${planeCountCases}
+      default: return 1;
+    }
+  }
+
+  // The single-plane format that this plane is compatible with.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_NAMESPACE::Format planeCompatibleFormat( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeCompatibleCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return format;
+    }
+  }
+
+  // The relative height of this plane. A value of k means that this plane is 1/k the height of the overall format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeHeightDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeHeightDivisorCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
+    }
+  }
+
+  // The relative width of this plane. A value of k means that this plane is 1/k the width of the overall format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeWidthDivisor( VULKAN_HPP_NAMESPACE::Format format, uint8_t plane )
+  {
+    switch( format )
+    {
+${planeWidthDivisorCases}
+      default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
+    }
+  }
+)";
+
+  auto formatIt = m_enums.find( "VkFormat" );
+  assert( formatIt != m_enums.end() );
+  assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
+
+  std::string blockSizeCases, texelsPerBlockCases, blockExtentCases, compressionSchemeCases, packedCases, componentsAreCompressedCases, componentCountCases,
+    componentBitsCases, componentNameCases, componentNumericFormatCases, componentPlaneIndexCases, planeCountCases, planeCompatibleCases,
+    planeHeightDivisorCases, planeWidthDivisorCases;
+  for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
+  {
+    auto traitIt = m_formats.find( formatValuesIt->name );
+    assert( traitIt != m_formats.end() );
+    std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false, m_tags ) + ":";
+    blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
+    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
+    if ( !traitIt->second.blockExtent.empty() )
+    {
+      std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
+      assert( blockExtent.size() == 3 );
+      blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
+    }
+    if ( !traitIt->second.compressed.empty() )
+    {
+      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
+    }
+    if ( !traitIt->second.packed.empty() )
+    {
+      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
+    }
+    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
+    if ( traitIt->second.components.front().bits == "compressed" )
+    {
+      componentsAreCompressedCases += caseString + "\n";
+    }
+    else
+    {
+      const std::string componentBitsCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
+      }
+      componentCases.pop_back();
+      componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+
+    {
+      const std::string componentNameCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
+      }
+      componentCases.pop_back();
+      componentNameCases += replaceWithMap( componentNameCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+
+    {
+      const std::string componentNumericFormatCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].numericFormat + "\";\n";
+      }
+      componentCases.pop_back();
+      componentNumericFormatCases +=
+        replaceWithMap( componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+
+    if ( !traitIt->second.components.front().planeIndex.empty() )
+    {
+      const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
+        switch( component )
+        {
+${componentCases}
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
+)";
+
+      std::string componentCases;
+      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+      {
+        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
+      }
+      componentCases.pop_back();
+      componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
+    }
+    if ( !traitIt->second.planes.empty() )
+    {
+      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
+
+      const std::string planeCompatibleCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${compatibleCases}
+          default: VULKAN_HPP_ASSERT( false ); return VULKAN_HPP_NAMESPACE::Format::eUndefined;
+        }
+)";
+
+      const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${heightDivisorCases}
+          default: VULKAN_HPP_ASSERT( false ); return 1;
+        }
+)";
+
+      const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
+        switch( plane )
+        {
+${widthDivisorCases}
+          default: VULKAN_HPP_ASSERT( false ); return 1;
+        }
+)";
+
+      std::string compatibleCases, heightDivisorCases, widthDivisorCases;
+      for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
+      {
+        compatibleCases += "          case " + std::to_string( i ) + ": return VULKAN_HPP_NAMESPACE::Format::" +
+                           generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false, m_tags ) + ";\n";
+        heightDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
+        widthDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
+      }
+      compatibleCases.pop_back();
+      heightDivisorCases.pop_back();
+      widthDivisorCases.pop_back();
+      planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
+      planeHeightDivisorCases +=
+        replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
+      planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
+    }
+  }
+
+  return replaceWithMap( formatTraitsTemplate,
+                         { { "blockExtentCases", blockExtentCases },
+                           { "blockSizeCases", blockSizeCases },
+                           { "componentBitsCases", componentBitsCases },
+                           { "componentCountCases", componentCountCases },
+                           { "componentNameCases", componentNameCases },
+                           { "componentNumericFormatCases", componentNumericFormatCases },
+                           { "componentPlaneIndexCases", componentPlaneIndexCases },
+                           { "componentsAreCompressedCases", componentsAreCompressedCases },
+                           { "compressionSchemeCases", compressionSchemeCases },
+                           { "packedCases", packedCases },
+                           { "planeCompatibleCases", planeCompatibleCases },
+                           { "planeCountCases", planeCountCases },
+                           { "planeHeightDivisorCases", planeHeightDivisorCases },
+                           { "planeWidthDivisorCases", planeWidthDivisorCases },
+                           { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 
 std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const
@@ -5886,6 +5809,109 @@ std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<Requir
   return addTitleAndProtection( title, str );
 }
 
+std::string VulkanHppGenerator::generateHandleHashStructures() const
+{
+  const std::string hashesTemplate = R"(
+  //===================================
+  //=== HASH structures for handles ===
+  //===================================
+
+${hashes}
+)";
+
+  std::string hashes;
+  for ( auto const & feature : m_features )
+  {
+    hashes += generateHandleHashStructures( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    hashes += generateHandleHashStructures( extIt.second->second.requireData, extIt.second->first );
+  }
+  return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
+}
+
+std::string VulkanHppGenerator::generateHandles() const
+{
+  // Note: reordering structs or handles by features and extensions is not possible!
+  std::string str = R"(
+  //===============
+  //=== HANDLEs ===
+  //===============
+)";
+
+  std::set<std::string> listedHandles;
+  for ( auto const & handle : m_handles )
+  {
+    if ( listedHandles.find( handle.first ) == listedHandles.end() )
+    {
+      str += generateHandle( handle, listedHandles );
+    }
+  }
+  return str;
+}
+
+std::string VulkanHppGenerator::generateIndexTypeTraits() const
+{
+  const std::string indexTypeTraitsTemplate = R"(
+  template<typename T>
+  struct IndexTypeValue
+  {};
+
+${indexTypeTraits}
+)";
+
+  auto indexType = m_enums.find( "VkIndexType" );
+  assert( indexType != m_enums.end() );
+
+  std::string           indexTypeTraits;
+  std::set<std::string> listedCppTypes;
+  for ( auto const & value : indexType->second.values )
+  {
+    std::string valueName = generateEnumValueName( indexType->first, value.name, false, m_tags );
+    std::string cppType;
+    if ( !beginsWith( valueName, "eNone" ) )
+    {
+      // get the bit count out of the value Name (8, 16, 32, ... ) and generate the cppType (uint8_t,...)
+      assert( beginsWith( valueName, "eUint" ) );
+      auto beginDigit = valueName.begin() + strlen( "eUint" );
+      assert( isdigit( *beginDigit ) );
+      auto endDigit = std::find_if_not( beginDigit, valueName.end(), []( std::string::value_type c ) { return isdigit( c ); } );
+      cppType       = "uint" + valueName.substr( strlen( "eUint" ), endDigit - beginDigit ) + "_t";
+    }
+
+    if ( !cppType.empty() )
+    {
+      if ( listedCppTypes.insert( cppType ).second )
+      {
+        // IndexType traits aren't necessarily invertible.
+        // The Type -> Enum translation will only occur for the first prefixed enum value.
+        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
+        const std::string typeToEnumTemplate = R"(
+  template <>
+  struct IndexTypeValue<${cppType}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::${valueName};
+  };
+)";
+        indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
+      }
+
+      // Enum -> Type translations are always able to occur.
+      const std::string enumToTypeTemplate = R"(
+  template <>
+  struct CppType<IndexType, IndexType::${valueName}>
+  {
+    using Type = ${cppType};
+  };
+)";
+      indexTypeTraits += replaceWithMap( enumToTypeTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
+    }
+  }
+
+  return replaceWithMap( indexTypeTraitsTemplate, { { "indexTypeTraits", indexTypeTraits } } );
+}
+
 std::string VulkanHppGenerator::generateLenInitializer(
   std::vector<MemberData>::const_iterator                                                                                 mit,
   std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
@@ -6022,6 +6048,30 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
   }
 }
 
+std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
+{
+  const std::string commandDefinitionsTemplate = R"(
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+
+${commandDefinitions}
+)";
+
+  std::string           commandDefinitions;
+  std::set<std::string> listedCommands;  // some commands are listed with more than one extension!
+  for ( auto const & feature : m_features )
+  {
+    commandDefinitions += generateRAIICommandDefinitions( feature.second.requireData, listedCommands, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    commandDefinitions += generateRAIICommandDefinitions( extIt.second->second.requireData, listedCommands, extIt.second->first );
+  }
+
+  return replaceWithMap( commandDefinitionsTemplate, { { "commandDefinitions", commandDefinitions } } );
+}
+
 std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<RequireData> const & requireData,
                                                                 std::set<std::string> &          listedCommands,
                                                                 std::string const &              title ) const
@@ -6038,6 +6088,90 @@ std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<Requ
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateRAIIDispatchers() const
+{
+  std::string contextInitializers, contextMembers, deviceAssignments, deviceMembers, instanceAssignments, instanceMembers;
+
+  std::set<std::string> listedCommands;
+  for ( auto const & feature : m_features )
+  {
+    appendRAIIDispatcherCommands( feature.second.requireData,
+                                  listedCommands,
+                                  feature.first,
+                                  contextInitializers,
+                                  contextMembers,
+                                  deviceAssignments,
+                                  deviceMembers,
+                                  instanceAssignments,
+                                  instanceMembers );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    appendRAIIDispatcherCommands( extension.second.requireData,
+                                  listedCommands,
+                                  extension.first,
+                                  contextInitializers,
+                                  contextMembers,
+                                  deviceAssignments,
+                                  deviceMembers,
+                                  instanceAssignments,
+                                  instanceMembers );
+  }
+
+  std::string contextDispatcherTemplate = R"(
+    class ContextDispatcher : public DispatchLoaderBase
+    {
+    public:
+      ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
+        : vkGetInstanceProcAddr( getProcAddr )${contextInitializers}
+      {}
+
+    public:
+      PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = 0;
+${contextMembers}
+    };
+)";
+
+  std::string str = replaceWithMap( contextDispatcherTemplate, { { "contextInitializers", contextInitializers }, { "contextMembers", contextMembers } } );
+
+  std::string instanceDispatcherTemplate = R"(
+    class InstanceDispatcher : public DispatchLoaderBase
+    {
+    public:
+      InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
+        : vkGetInstanceProcAddr( getProcAddr )
+      {
+${instanceAssignments}
+        vkGetDeviceProcAddr =
+          PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
+      }
+
+    public:
+${instanceMembers}
+      PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
+    };
+)";
+
+  str += replaceWithMap( instanceDispatcherTemplate, { { "instanceAssignments", instanceAssignments }, { "instanceMembers", instanceMembers } } );
+
+  std::string deviceDispatcherTemplate = R"(
+    class DeviceDispatcher : public DispatchLoaderBase
+    {
+    public:
+      DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
+      {
+${deviceAssignments}
+      }
+
+    public:
+${deviceMembers}
+    };
+)";
+
+  str += replaceWithMap( deviceDispatcherTemplate, { { "deviceAssignments", deviceAssignments }, { "deviceMembers", deviceMembers } } );
+  return str;
 }
 
 std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
@@ -8191,6 +8325,43 @@ std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vect
   return addTitleAndProtection( title, str );
 }
 
+std::string VulkanHppGenerator::generateRAIIHandles() const
+{
+  const std::string raiiHandlesTemplate = R"(
+  //========================================
+  //=== RAII HANDLE forward declarations ===
+  //========================================
+
+${forwardDeclarations}
+
+  //====================
+  //=== RAII HANDLES ===
+  //====================
+
+${raiiHandles}
+)";
+
+  std::string forwardDeclarations;
+  for ( auto const & feature : m_features )
+  {
+    forwardDeclarations += generateRAIIHandleForwardDeclarations( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    forwardDeclarations += generateRAIIHandleForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
+  }
+
+  std::set<std::string> listedHandles;
+  auto                  handleIt = m_handles.begin();
+  assert( handleIt->first.empty() );
+  std::string raiiHandles = generateRAIIHandleContext( *handleIt, m_RAIISpecialFunctions );
+  for ( ++handleIt; handleIt != m_handles.end(); ++handleIt )
+  {
+    raiiHandles += generateRAIIHandle( *handleIt, listedHandles, m_RAIISpecialFunctions );
+  }
+  return replaceWithMap( raiiHandlesTemplate, { { "forwardDeclarations", forwardDeclarations }, { "raiiHandles", raiiHandles } } );
+}
+
 std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const &         handle,
                                                                                 std::map<std::string, CommandData>::const_iterator constructorIt ) const
 {
@@ -9140,6 +9311,36 @@ ${leave})";
   return str;
 }
 
+std::string VulkanHppGenerator::generateStructHashStructures() const
+{
+  const std::string hashesTemplate = R"(
+#if 14 <= VULKAN_HPP_CPP_VERSION
+  //======================================
+  //=== HASH structures for structures ===
+  //======================================
+
+#  if !defined( VULKAN_HPP_HASH_COMBINE )
+#    define VULKAN_HPP_HASH_COMBINE( seed, value ) \
+      seed ^= std::hash<std::decay<decltype( value )>::type>{}( value ) + 0x9e3779b9 + ( seed << 6 ) + ( seed >> 2 )
+#  endif
+
+${hashes}
+#endif    // 14 <= VULKAN_HPP_CPP_VERSION
+)";
+
+  // Note reordering structs or handles by features and extensions is not possible!
+  std::set<std::string> listedStructs;
+  std::string           hashes;
+  for ( auto const & structure : m_structures )
+  {
+    if ( listedStructs.find( structure.first ) == listedStructs.end() )
+    {
+      hashes += generateStructHashStructure( structure, listedStructs );
+    }
+  }
+  return replaceWithMap( hashesTemplate, { { "hashes", hashes } } );
+}
+
 std::string VulkanHppGenerator::generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const
 {
   std::string hashSum;
@@ -9193,6 +9394,29 @@ std::string VulkanHppGenerator::generateStructHashSum( std::string const & struc
   }
   assert( !hashSum.empty() );
   return hashSum.substr( 0, hashSum.size() - 1 );
+}
+
+std::string VulkanHppGenerator::generateStructs() const
+{
+  const std::string structsTemplate = R"(
+  //===============
+  //=== STRUCTS ===
+  //===============
+
+${structs}
+)";
+
+  // Note reordering structs or handles by features and extensions is not possible!
+  std::set<std::string> listedStructs;
+  std::string           structs;
+  for ( auto const & structure : m_structures )
+  {
+    if ( listedStructs.find( structure.first ) == listedStructs.end() )
+    {
+      structs += generateStruct( structure, listedStructs );
+    }
+  }
+  return replaceWithMap( structsTemplate, { { "structs", structs } } );
 }
 
 std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
@@ -9395,6 +9619,29 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateStructForwardDeclarations() const
+{
+  const std::string fowardDeclarationsTemplate = R"(
+  //===================================
+  //=== STRUCT forward declarations ===
+  //===================================
+
+${forwardDeclarations}
+)";
+
+  std::string forwardDeclarations;
+  for ( auto const & feature : m_features )
+  {
+    forwardDeclarations += generateStructForwardDeclarations( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    forwardDeclarations += generateStructForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
+  }
+
+  return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
 }
 
 std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
@@ -13382,18 +13629,6 @@ std::string toString( tinyxml2::XMLError error )
 
 int main( int argc, char ** argv )
 {
-  static const std::string typeTraits = R"(
-  template <typename EnumType, EnumType value>
-  struct CppType
-  {};
-
-  template <typename Type>
-  struct isVulkanHandleType
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
-  };
-)";
-
   try
   {
     tinyxml2::XMLDocument doc;
@@ -13422,202 +13657,15 @@ int main( int argc, char ** argv )
     VulkanHppGenerator generator( doc );
 
     generator.generateVulkanHppFile();
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_ENUMS_HPP_FILE << " ..." << std::endl;
-    std::string str;
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_ENUMS_HPP
-#  define VULKAN_ENUMS_HPP
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += typeTraits;
-    str += generator.generateEnums();
-    str += generator.generateIndexTypeTraits();
-    str += generator.generateBitmasks();
-    str += R"(
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-    writeToFile( str, VULKAN_ENUMS_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_FORMAT_TRAITS_HPP_FILE << " ..." << std::endl;
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_FORMAT_TRAITS_HPP
-#  define VULKAN_FORMAT_TRAITS_HPP
-
-#include <vulkan/vulkan.hpp>
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += generator.generateFormatTraits();
-    str += R"(
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-    writeToFile( str, VULKAN_FORMAT_TRAITS_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HANDLES_HPP_FILE << " ..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_HANDLES_HPP
-#  define VULKAN_HANDLES_HPP
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += generator.generateStructForwardDeclarations();
-    str += generator.generateHandles();
-    str += R"(
-  }   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-    writeToFile( str, VULKAN_HANDLES_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_STRUCTS_HPP_FILE << " ..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_STRUCTS_HPP
-#  define VULKAN_STRUCTS_HPP
-
-#include <cstring>  // strcmp
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += generator.generateStructs();
-    str += R"(
-  }   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-    writeToFile( str, VULKAN_STRUCTS_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_FUNCS_HPP_FILE << " ..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_FUNCS_HPP
-#  define VULKAN_FUNCS_HPP
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += generator.generateCommandDefinitions();
-    str += R"(
-  }   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-    writeToFile( str, VULKAN_FUNCS_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_HASH_HPP_FILE << "..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_HASH_HPP
-#  define VULKAN_HASH_HPP
-
-#include <vulkan/vulkan.hpp>
-
-namespace std
-{
-  //=======================================
-  //=== HASH structures for Flags types ===
-  //=======================================
-
-  template <typename BitType>
-  struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::Flags<BitType> const & flags ) const VULKAN_HPP_NOEXCEPT
-    {
-      return std::hash<typename std::underlying_type<BitType>::type>{}(
-        static_cast<typename std::underlying_type<BitType>::type>( flags ) );
-    }
-  };
-)";
-    str += generator.generateHandleHashStructures();
-    str += generator.generateStructHashStructures();
-    str += R"(
-} // namespace std
-#endif    // VULKAN_HASH_HPP
-)";
-    writeToFile( str, VULKAN_HASH_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_TO_STRING_HPP_FILE << "..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader();
-    str += +R"(
-#ifndef VULKAN_TO_STRING_HPP
-#  define VULKAN_TO_STRING_HPP
-
-#include <vulkan/vulkan_enums.hpp>
-
-#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
-#  include <format>   // std::format
-#else
-#  include <sstream>  // std::stringstream
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-)";
-    str += generator.generateBitmasksToString();
-    str += generator.generateEnumsToString();
-    str += R"(
-} // namespace VULKAN_HPP_NAMESPACE
-#endif    // VULKAN_TO_STRING_HPP
-)";
-    writeToFile( str, VULKAN_TO_STRING_HPP_FILE );
-
-    std::cout << "VulkanHppGenerator: Generating " << VULKAN_RAII_HPP_FILE << " ..." << std::endl;
-    str.clear();
-    str = generator.getVulkanLicenseHeader() + R"(
-#ifndef VULKAN_RAII_HPP
-#  define VULKAN_RAII_HPP
-
-#include <vulkan/vulkan.hpp>
-
-#if !defined( VULKAN_HPP_RAII_NAMESPACE )
-#  define VULKAN_HPP_RAII_NAMESPACE raii
-#endif
-
-namespace VULKAN_HPP_NAMESPACE
-{
-  namespace VULKAN_HPP_RAII_NAMESPACE
-  {
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
-
-    template <class T, class U = T>
-    VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
-    {
-#  if ( 14 <= VULKAN_HPP_CPP_VERSION )
-      return std::exchange<T>( obj, std::forward<U>( newValue ) );
-#  else
-      T oldValue = std::move( obj );
-      obj        = std::forward<U>( newValue );
-      return oldValue;
-#  endif
-    }
-
-)";
-
+    generator.generateVulkanEnumsHppFile();
+    generator.generateVulkanFormatTraitsHppFile();
+    generator.generateVulkanFuncsHppFile();
+    generator.generateVulkanHandlesHppFile();
+    generator.generateVulkanHashHppFile();
     generator.prepareRAIIHandles();
-    str += generator.generateRAIIDispatchers();
-    str += generator.generateRAIIHandles();
-    str += generator.generateRAIICommandDefinitions();
-    str += R"(
-#endif
-  } // namespace VULKAN_HPP_RAII_NAMESPACE
-}   // namespace VULKAN_HPP_NAMESPACE
-#endif
-)";
-
-    writeToFile( str, VULKAN_RAII_HPP_FILE );
+    generator.generateVulkanRAIIHppFile();
+    generator.generateStructsHppFile();
+    generator.generateToStringHppFile();
 
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";

@@ -25,24 +25,16 @@ class VulkanHppGenerator
 public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document );
 
-  std::string         generateBitmasks() const;
-  std::string         generateBitmasksToString() const;
-  std::string         generateCommandDefinitions() const;
-  std::string         generateEnums() const;
-  std::string         generateEnumsToString() const;
-  std::string         generateFormatTraits() const;
-  std::string         generateHandles() const;
-  std::string         generateHandleHashStructures() const;
-  std::string         generateIndexTypeTraits() const;
-  std::string         generateRAIICommandDefinitions() const;
-  std::string         generateRAIIDispatchers() const;
-  std::string         generateRAIIHandles() const;
-  std::string         generateStructForwardDeclarations() const;
-  std::string         generateStructHashStructures() const;
-  std::string         generateStructs() const;
-  void                generateVulkanHppFile() const;
-  std::string const & getVulkanLicenseHeader() const;
-  void                prepareRAIIHandles();
+  void generateVulkanEnumsHppFile() const;
+  void generateVulkanFormatTraitsHppFile() const;
+  void generateVulkanFuncsHppFile() const;
+  void generateVulkanHandlesHppFile() const;
+  void generateVulkanHashHppFile() const;
+  void generateVulkanHppFile() const;
+  void generateVulkanRAIIHppFile() const;
+  void generateStructsHppFile() const;
+  void generateToStringHppFile() const;
+  void prepareRAIIHandles();
 
 private:
   struct TypeInfo
@@ -452,9 +444,11 @@ private:
                                          std::set<size_t> const &         templatedParams,
                                          bool                             chained,
                                          bool                             raii ) const;
-  std::string                                        generateBaseTypes() const;
-  std::string                                        generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string generateBaseTypes() const;
+  std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
+  std::string generateBitmasks() const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
+  std::string generateBitmasksToString() const;
   std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateBitmaskToString( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
   std::string generateCallArgumentsEnhanced( CommandData const &      commandData,
@@ -492,6 +486,7 @@ private:
                                     bool                             raii ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommandDefinitions() const;
   std::string
     generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
   std::string generateCommandDefinitions( std::string const & command, std::string const & handle ) const;
@@ -653,7 +648,9 @@ private:
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateEnums() const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
+  std::string generateEnumsToString() const;
   std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumInitializer( TypeInfo const &                   type,
                                        std::vector<std::string> const &   arraySizes,
@@ -661,12 +658,16 @@ private:
                                        bool                               bitmask ) const;
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
+  std::string generateFormatTraits() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateHandleHashStructures() const;
+  std::string generateHandles() const;
+  std::string generateIndexTypeTraits() const;
   std::string
               generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
                                       std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
@@ -675,8 +676,10 @@ private:
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & referencedIn, std::string const & protect ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
+  std::string                         generateRAIICommandDefinitions() const;
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
+  std::string generateRAIIDispatchers() const;
   std::string generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
                                   std::set<std::string> &                    listedHandles,
                                   std::set<std::string> const &              specialFunctions ) const;
@@ -803,6 +806,7 @@ private:
   std::tuple<std::string, std::string, std::string, std::string, std::string, std::string>
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateRAIIHandles() const;
   std::string generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const &         handle,
                                                               std::map<std::string, CommandData>::const_iterator constructorIt ) const;
   std::string generateRAIIHandleVectorSizeCheck( std::string const &                           name,
@@ -840,11 +844,14 @@ private:
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorArgument( bool listedArgument, MemberData const & memberData, bool withDefault ) const;
   std::string generateStructHashStructure( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
+  std::string generateStructHashStructures() const;
   std::string generateStructHashSum( std::string const & structName, std::vector<MemberData> const & members ) const;
+  std::string generateStructs() const;
   std::string generateStructure( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructExtendsStructs() const;
   std::string
     generateStructExtendsStructs( std::vector<RequireData> const & requireData, std::set<std::string> & listedStructs, std::string const & title ) const;
+  std::string generateStructForwardDeclarations() const;
   std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                         generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;

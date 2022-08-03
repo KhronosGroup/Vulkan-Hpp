@@ -444,7 +444,7 @@ All over vulkan.hpp, there are a couple of calls to an assert function. By defin
 
 By default, `VULKAN_HPP_ASSERT_ON_RESULT` will be used for checking results when `VULKAN_HPP_NO_EXCEPTIONS` is defined. If you want to handle errors by yourself, you can disable/customize it just like `VULKAN_HPP_ASSERT`.
 
-There are a couple of static assertions for each handle class and each struct. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
+There are a couple of static assertions for each handle class and each struct in the file vulkan_static_assertions.hpp. You might include that file in at least one of your source files. By defining `VULKAN_HPP_STATIC_ASSERT`, you can specify your own custom static assertion to be used for those cases. That is, by defining it to be a NOP, you can reduce your compilation time a little.
 
 
 ### Extensions / Per Device function pointers

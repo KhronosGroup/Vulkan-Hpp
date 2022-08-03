@@ -446,7 +446,41 @@ ${RAIICommandDefinitions}
   writeToFile( str, vulkan_raii_hpp );
 }
 
-void VulkanHppGenerator::generateStructsHppFile() const
+void VulkanHppGenerator::generateVulkanStaticAssertionsHppFile() const
+{
+  std::string const static_assertions_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_static_assertions.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << static_assertions_hpp << " ..." << std::endl;
+
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_STRUCTS_HPP
+#  define VULKAN_STRUCTS_HPP
+
+#include <vulkan/vulkan.hpp>
+
+//=========================
+//=== static_assertions ===
+//=========================
+
+${staticAssertions}
+#endif
+)";
+
+  std::string staticAssertions;
+  for ( auto const & feature : m_features )
+  {
+    staticAssertions += generateStaticAssertions( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    staticAssertions += generateStaticAssertions( extIt.second->second.requireData, extIt.second->first );
+  }
+
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", staticAssertions } } );
+
+  writeToFile( str, static_assertions_hpp );
+}
+
+void VulkanHppGenerator::generateVulkanStructsHppFile() const
 {
   std::string const vulkan_structs_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_structs.hpp";
   std::cout << "VulkanHppGenerator: Generating " << vulkan_structs_hpp << " ..." << std::endl;
@@ -469,7 +503,7 @@ ${structs}
   writeToFile( str, vulkan_structs_hpp );
 }
 
-void VulkanHppGenerator::generateToStringHppFile() const
+void VulkanHppGenerator::generateVulkanToStringHppFile() const
 {
   std::string const vulkan_to_string_hpp = std::string( BASE_PATH ) + "/vulkan/vulkan_to_string.hpp";
   std::cout << "VulkanHppGenerator: Generating " << vulkan_to_string_hpp << "..." << std::endl;
@@ -5637,8 +5671,6 @@ ${commands}
   private:
     Vk${className} m_${memberName} = {};
   };
-  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum}>
@@ -8804,6 +8836,40 @@ std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<Membe
   return sizeCheck;
 }
 
+std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type );
+      if ( handleIt != m_handles.end() )
+      {
+        std::string const assertionTemplate = R"(
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
+)";
+        str += replaceWithMap( assertionTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
+      }
+      else
+      {
+        auto structIt = m_structures.find( type );
+        if ( structIt != m_structures.end() )
+        {
+          std::string const assertionTemplate = R"(
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${structureType} ) == sizeof( Vk${structureType} ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::${structureType}>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${structureType}>::value, "${structureType} is not nothrow_move_constructible!" );
+)";
+          str += replaceWithMap( assertionTemplate, { { "structureType", stripPrefix( structIt->first, "Vk" ) } } );
+        }
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
+}
+
 std::string VulkanHppGenerator::generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const
 {
   assert( listedStructs.find( structure.first ) == listedStructs.end() );
@@ -9432,9 +9498,6 @@ ${compareOperators}
     public:
 ${members}
   };
-  VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${structureType} ) == sizeof( Vk${structureType} ), "struct and wrapper have different size!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::${structureType}>::value, "struct wrapper is not a standard layout!" );
-  VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${structureType}>::value, "${structureType} is not nothrow_move_constructible!" );
 )";
 
   std::string allowDuplicate, typeValue;
@@ -13597,8 +13660,9 @@ int main( int argc, char ** argv )
     generator.generateVulkanHashHppFile();
     generator.prepareRAIIHandles();
     generator.generateVulkanRAIIHppFile();
-    generator.generateStructsHppFile();
-    generator.generateToStringHppFile();
+    generator.generateVulkanStaticAssertionsHppFile();
+    generator.generateVulkanStructsHppFile();
+    generator.generateVulkanToStringHppFile();
 
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";

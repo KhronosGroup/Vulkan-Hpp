@@ -31,6 +31,7 @@
 #if defined( VULKAN_HPP_NO_TO_STRING )
 #  include <vulkan/vulkan_to_string.hpp>
 #endif
+#include <vulkan/vulkan_static_assertions.hpp>
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE

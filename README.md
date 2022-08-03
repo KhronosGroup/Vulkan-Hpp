@@ -44,6 +44,10 @@ Optional: To update the Vulkan-Hpp and its submodules execute ```git pull --recu
 
 If the program clang-format is found by CMake, the define CLANG_FORMAT_EXECUTABLE is set accordingly. In that case, the generated vulkan.hpp is formatted using the .clang-format file located in the root directory of this project. Otherwise it's formatted as hard-coded in the generator.
 
+#### Custom views of Vulkan-Hpp objects in Visual Studio
+
+The file VulkanHpp.natvis provides a custom view on vk::Flags for Visual Studio. If you add this file to the user-specific natvis directory of your Visual Studio installation (%USERPROFILE%\Documents\Visual Studio 2022\Visualizers), you get vk::Flags nicely formatted in your debugger with all your Visual Studio projects.
+
 ## Usage
 
 ### namespace vk

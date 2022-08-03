@@ -32,8 +32,9 @@ public:
   void generateVulkanHashHppFile() const;
   void generateVulkanHppFile() const;
   void generateVulkanRAIIHppFile() const;
-  void generateStructsHppFile() const;
-  void generateToStringHppFile() const;
+  void generateVulkanStaticAssertionsHppFile() const;
+  void generateVulkanStructsHppFile() const;
+  void generateVulkanToStringHppFile() const;
   void prepareRAIIHandles();
 
 private:
@@ -837,6 +838,7 @@ private:
                                       bool                             singular ) const;
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
+  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructAssignmentOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structure ) const;

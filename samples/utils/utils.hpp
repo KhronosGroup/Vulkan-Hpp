@@ -445,3 +445,7 @@ namespace vk
 }  // namespace vk
 
 std::ostream & operator<<( std::ostream & os, vk::su::UUID const & uuid );
+
+#if !( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+void initVkDebugUtilsMessengerEXT(vk::Instance instance);
+#endif

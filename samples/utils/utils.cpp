@@ -65,11 +65,6 @@ namespace vk
       return device.createCommandPool( commandPoolCreateInfo );
     }
 
-    vk::DebugUtilsMessengerEXT createDebugUtilsMessengerEXT( vk::Instance const & instance )
-    {
-      return instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
-    }
-
     vk::DescriptorPool createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes )
     {
       assert( !poolSizes.empty() );

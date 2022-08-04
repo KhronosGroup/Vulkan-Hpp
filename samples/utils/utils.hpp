@@ -361,7 +361,6 @@ namespace vk
                                                          vk::MemoryPropertyFlags                    memoryPropertyFlags );
     bool                           contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName );
     vk::CommandPool                createCommandPool( vk::Device const & device, uint32_t queueFamilyIndex );
-    vk::DebugUtilsMessengerEXT     createDebugUtilsMessengerEXT( vk::Instance const & instance );
     vk::DescriptorPool             createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes );
     vk::DescriptorSetLayout        createDescriptorSetLayout( vk::Device const &                                                                  device,
                                                               std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,

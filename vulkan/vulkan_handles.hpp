@@ -1263,6 +1263,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct ImageSubresource2EXT;
   struct ImageCompressionPropertiesEXT;
 
+  //=== VK_EXT_attachment_feedback_loop_layout ===
+  struct PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT;
+
   //=== VK_EXT_4444_formats ===
   struct PhysicalDevice4444FormatsFeaturesEXT;
 
@@ -1437,6 +1440,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_tile_properties ===
   struct PhysicalDeviceTilePropertiesFeaturesQCOM;
   struct TilePropertiesQCOM;
+
+  //=== VK_SEC_amigo_profiling ===
+  struct PhysicalDeviceAmigoProfilingFeaturesSEC;
+  struct AmigoProfilingSubmitInfoSEC;
 
   //===============
   //=== HANDLEs ===

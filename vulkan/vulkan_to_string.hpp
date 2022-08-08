@@ -188,6 +188,8 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ImageUsageFlagBits::eVideoEncodeDpbKHR )
       result += "VideoEncodeDpbKHR | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    if ( value & ImageUsageFlagBits::eAttachmentFeedbackLoopEXT )
+      result += "AttachmentFeedbackLoopEXT | ";
     if ( value & ImageUsageFlagBits::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
     if ( value & ImageUsageFlagBits::eSampleWeightQCOM )
@@ -742,6 +744,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "LinkTimeOptimizationEXT | ";
     if ( value & PipelineCreateFlagBits::eRayTracingAllowMotionNV )
       result += "RayTracingAllowMotionNV | ";
+    if ( value & PipelineCreateFlagBits::eColorAttachmentFeedbackLoopEXT )
+      result += "ColorAttachmentFeedbackLoopEXT | ";
+    if ( value & PipelineCreateFlagBits::eDepthStencilAttachmentFeedbackLoopEXT )
+      result += "DepthStencilAttachmentFeedbackLoopEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -1006,6 +1012,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "DeviceGroup | ";
     if ( value & DependencyFlagBits::eViewLocal )
       result += "ViewLocal | ";
+    if ( value & DependencyFlagBits::eFeedbackLoopEXT )
+      result += "FeedbackLoopEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -3718,6 +3726,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSubresourceLayout2EXT: return "SubresourceLayout2EXT";
       case StructureType::eImageSubresource2EXT: return "ImageSubresource2EXT";
       case StructureType::eImageCompressionPropertiesEXT: return "ImageCompressionPropertiesEXT";
+      case StructureType::ePhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT";
       case StructureType::ePhysicalDevice4444FormatsFeaturesEXT: return "PhysicalDevice4444FormatsFeaturesEXT";
       case StructureType::ePhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM: return "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM";
       case StructureType::ePhysicalDeviceRgba10X6FormatsFeaturesEXT: return "PhysicalDeviceRgba10X6FormatsFeaturesEXT";
@@ -3799,6 +3808,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eShaderModuleIdentifierEXT: return "ShaderModuleIdentifierEXT";
       case StructureType::ePhysicalDeviceTilePropertiesFeaturesQCOM: return "PhysicalDeviceTilePropertiesFeaturesQCOM";
       case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
+      case StructureType::ePhysicalDeviceAmigoProfilingFeaturesSEC: return "PhysicalDeviceAmigoProfilingFeaturesSEC";
+      case StructureType::eAmigoProfilingSubmitInfoSEC: return "AmigoProfilingSubmitInfoSEC";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4255,6 +4266,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageUsageFlagBits::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
       case ImageUsageFlagBits::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case ImageUsageFlagBits::eAttachmentFeedbackLoopEXT: return "AttachmentFeedbackLoopEXT";
       case ImageUsageFlagBits::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
       case ImageUsageFlagBits::eSampleWeightQCOM: return "SampleWeightQCOM";
       case ImageUsageFlagBits::eSampleBlockMatchQCOM: return "SampleBlockMatchQCOM";
@@ -4633,6 +4645,7 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageLayout::eVideoEncodeSrcKHR: return "VideoEncodeSrcKHR";
       case ImageLayout::eVideoEncodeDpbKHR: return "VideoEncodeDpbKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case ImageLayout::eAttachmentFeedbackLoopOptimalEXT: return "AttachmentFeedbackLoopOptimalEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4915,6 +4928,8 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits::eRetainLinkTimeOptimizationInfoEXT: return "RetainLinkTimeOptimizationInfoEXT";
       case PipelineCreateFlagBits::eLinkTimeOptimizationEXT: return "LinkTimeOptimizationEXT";
       case PipelineCreateFlagBits::eRayTracingAllowMotionNV: return "RayTracingAllowMotionNV";
+      case PipelineCreateFlagBits::eColorAttachmentFeedbackLoopEXT: return "ColorAttachmentFeedbackLoopEXT";
+      case PipelineCreateFlagBits::eDepthStencilAttachmentFeedbackLoopEXT: return "DepthStencilAttachmentFeedbackLoopEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5236,6 +5251,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DependencyFlagBits::eByRegion: return "ByRegion";
       case DependencyFlagBits::eDeviceGroup: return "DeviceGroup";
       case DependencyFlagBits::eViewLocal: return "ViewLocal";
+      case DependencyFlagBits::eFeedbackLoopEXT: return "FeedbackLoopEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

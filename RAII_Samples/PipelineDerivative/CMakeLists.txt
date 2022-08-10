@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_PipelineDerivative)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PipelineDerivative.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_PipelineDerivative
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_PipelineDerivative PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_PipelineDerivative PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME PipelineDerivative )

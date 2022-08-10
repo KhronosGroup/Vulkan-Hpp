@@ -39,6 +39,7 @@ jobs:
             -DTESTS_BUILD=ON
             -DTESTS_BUILD_ONLY_DYNAMIC=ON
             -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+            -DVULKAN_HPP_PRECOMPILE=OFF
             -DVULKAN_HPP_RUN_GENERATOR=ON
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
             -DCMAKE_BUILD_TYPE=${{matrix.build_type}}

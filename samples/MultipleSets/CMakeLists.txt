@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(MultipleSets)
-
-set(HEADERS
-)
-
-set(SOURCES
-  MultipleSets.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(MultipleSets
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(MultipleSets PROPERTIES FOLDER "Samples")
-target_link_libraries(MultipleSets PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME MultipleSets )

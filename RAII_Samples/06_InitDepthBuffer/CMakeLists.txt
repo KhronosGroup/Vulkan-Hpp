@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_06_InitDepthBuffer)
-
-set(HEADERS
-)
-
-set(SOURCES
-  06_InitDepthBuffer.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_06_InitDepthBuffer
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_06_InitDepthBuffer PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_06_InitDepthBuffer PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 06_InitDepthBuffer )

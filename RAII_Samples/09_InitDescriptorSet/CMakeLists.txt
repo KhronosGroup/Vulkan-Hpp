@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_09_InitDescriptorSet)
-
-set(HEADERS
-)
-
-set(SOURCES
-  09_InitDescriptorSet.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_09_InitDescriptorSet
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_09_InitDescriptorSet PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_09_InitDescriptorSet PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 09_InitDescriptorSet )

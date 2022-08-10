@@ -15,9 +15,8 @@
 // VulkanHpp Samples : ArrayProxy
 //                     Compile test on using vk::ArrayProxy
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 #if ( 20 <= VULKAN_HPP_CPP_VERSION )
 #  include <span>
 #endif

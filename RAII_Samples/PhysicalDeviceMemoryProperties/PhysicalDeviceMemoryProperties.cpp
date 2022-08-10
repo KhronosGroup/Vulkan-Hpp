@@ -19,7 +19,6 @@
 
 #include <sstream>
 #include <vector>
-#include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_to_string.hpp>
 
 static char const * AppName    = "PhysicalDeviceMemoryProperties";

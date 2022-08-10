@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_16_Vulkan_1_1)
-
-set(HEADERS
-)
-
-set(SOURCES
-  16_Vulkan_1_1.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_16_Vulkan_1_1
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_16_Vulkan_1_1 PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_16_Vulkan_1_1 PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 16_Vulkan_1_1 )

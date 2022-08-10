@@ -40,6 +40,6 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
   endif()
 
   set_target_properties(DispatchLoaderStatic PROPERTIES FOLDER "Tests")
-  target_link_libraries(DispatchLoaderStatic PRIVATE utils "${Vulkan_LIBRARIES}")
+  target_link_libraries(DispatchLoaderStatic PRIVATE utils ${Vulkan_LIBRARIES})
 
 endif()

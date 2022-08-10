@@ -16,7 +16,6 @@
 //                     Draw a cube
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <thread>
 

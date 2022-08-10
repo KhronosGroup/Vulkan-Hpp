@@ -16,7 +16,6 @@
 //                     Initialize a descriptor and pipeline layout
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iostream>
 

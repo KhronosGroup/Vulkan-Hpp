@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(SurfaceFormats)
-
-set(HEADERS
-)
-
-set(SOURCES
-  SurfaceFormats.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(SurfaceFormats
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(SurfaceFormats PROPERTIES FOLDER "Samples")
-target_link_libraries(SurfaceFormats PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME SurfaceFormats )

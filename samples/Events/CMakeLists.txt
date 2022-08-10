@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(Events)
-
-set(HEADERS
-)
-
-set(SOURCES
-  Events.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(Events
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(Events PROPERTIES FOLDER "Samples")
-target_link_libraries(Events PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME Events )

@@ -15,14 +15,14 @@
 // limitations under the License.
 //
 
-#include "vulkan/vulkan.hpp"
+#include <vulkan/vulkan.hpp>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <limits>
 #include <map>
-#include <memory>   // std::unique_ptr
+#include <memory>  // std::unique_ptr
 
 namespace vk
 {

@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(02_EnumerateDevices)
-
-set(HEADERS
-)
-
-set(SOURCES
-  02_EnumerateDevices.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(02_EnumerateDevices
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(02_EnumerateDevices PROPERTIES FOLDER "Samples")
-target_link_libraries(02_EnumerateDevices PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 02_EnumerateDevices )

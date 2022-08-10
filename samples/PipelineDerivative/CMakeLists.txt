@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(PipelineDerivative)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PipelineDerivative.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(PipelineDerivative
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(PipelineDerivative PROPERTIES FOLDER "Samples")
-target_link_libraries(PipelineDerivative PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME PipelineDerivative )

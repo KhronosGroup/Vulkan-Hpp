@@ -16,7 +16,6 @@
 //                     Use basic events
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iostream>
 

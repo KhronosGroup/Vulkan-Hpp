@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(TexelBuffer)
-
-set(HEADERS
-)
-
-set(SOURCES
-  TexelBuffer.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(TexelBuffer
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(TexelBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(TexelBuffer PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME TexelBuffer )

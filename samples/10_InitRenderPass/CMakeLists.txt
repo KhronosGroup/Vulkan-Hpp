@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(10_InitRenderPass)
-
-set(HEADERS
-)
-
-set(SOURCES
-  10_InitRenderPass.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(10_InitRenderPass
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(10_InitRenderPass PROPERTIES FOLDER "Samples")
-target_link_libraries(10_InitRenderPass PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 10_InitRenderPass )

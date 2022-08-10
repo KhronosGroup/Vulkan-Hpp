@@ -26,9 +26,8 @@
 
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 
 static char const * AppName    = "StructureChain";
 static char const * EngineName = "Vulkan.hpp";
@@ -37,7 +36,8 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 template <typename T>
 void unused( T const & )
-{}
+{
+}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

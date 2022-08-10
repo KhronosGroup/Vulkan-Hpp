@@ -28,8 +28,6 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#define VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL 0
-
 // clang-format off
 // we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
 #include <vulkan/vulkan.hpp>
@@ -691,7 +689,27 @@ int main( int /*argc*/, char ** /*argv*/ )
 #if !defined( NDEBUG )
     vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
-    vk::raii::PhysicalDevice physicalDevice = vk::raii::PhysicalDevices( instance ).front();
+
+    vk::raii::PhysicalDevice  physicalDevice( nullptr );
+    vk::raii::PhysicalDevices physicalDevices( instance );
+    for ( auto & pd : physicalDevices )
+    {
+      std::vector<vk::ExtensionProperties> ep = pd.enumerateDeviceExtensionProperties();
+      if ( std::find_if( ep.cbegin(),
+                         ep.cend(),
+                         []( vk::ExtensionProperties const & prop )
+                         { return strcmp( prop.extensionName, VK_NV_RAY_TRACING_EXTENSION_NAME ) == 0; } ) !=
+           ep.cend() )
+      {
+        physicalDevice = pd;
+        break;
+      }
+    }
+    if ( !*physicalDevice )
+    {
+      std::cerr << AppName << ": can't find a PhysicalDevice supporting extension <" << VK_NV_RAY_TRACING_EXTENSION_NAME << ">" << std::endl;
+      return 1;
+    }
 
     std::vector<vk::ExtensionProperties> extensionProperties = physicalDevice.enumerateDeviceExtensionProperties();
     assert( vk::su::contains( extensionProperties, VK_KHR_SWAPCHAIN_EXTENSION_NAME ) );

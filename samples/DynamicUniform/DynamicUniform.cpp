@@ -31,8 +31,6 @@
 #  pragma warning( pop )
 #endif
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <thread>
 

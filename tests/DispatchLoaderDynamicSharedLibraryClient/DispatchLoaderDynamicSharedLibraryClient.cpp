@@ -15,11 +15,9 @@
 // VulkanHpp Samples : DispatchLoaderDynamic
 //                     Compile test on DispatchLoaderDynamic functions
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <map>
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

@@ -28,9 +28,9 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-// clang-format off
-// we need to include vulkan.hpp before glfw3.h, so stop clang-format to reorder them
 #include <vulkan/vulkan.hpp>
+
+// clang-format off
 #include <GLFW/glfw3.h>
 // clang-format on
 #include <numeric>
@@ -700,7 +700,25 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DebugUtilsMessengerEXT debugUtilsMessenger = instance.createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif
 
-    vk::PhysicalDevice physicalDevice = instance.enumeratePhysicalDevices().front();
+    vk::PhysicalDevice              physicalDevice  = nullptr;
+    std::vector<vk::PhysicalDevice> physicalDevices = instance.enumeratePhysicalDevices();
+    for ( auto pd : physicalDevices )
+    {
+      std::vector<vk::ExtensionProperties> ep = pd.enumerateDeviceExtensionProperties();
+      if ( std::find_if( ep.cbegin(),
+                         ep.cend(),
+                         []( vk::ExtensionProperties const & prop )
+                         { return strcmp( prop.extensionName, VK_NV_RAY_TRACING_EXTENSION_NAME ) == 0; } ) != ep.cend() )
+      {
+        physicalDevice = pd;
+        break;
+      }
+    }
+    if ( !physicalDevice )
+    {
+      std::cerr << AppName << ": can't find a PhysicalDevice supporting extension <" << VK_NV_RAY_TRACING_EXTENSION_NAME << ">" << std::endl;
+      return 1;
+    }
 
     // Create Window Surface (using glfw)
     vk::SurfaceKHR surface;

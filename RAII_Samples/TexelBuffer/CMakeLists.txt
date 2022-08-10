@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_TexelBuffer)
-
-set(HEADERS
-)
-
-set(SOURCES
-  TexelBuffer.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_TexelBuffer
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_TexelBuffer PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_TexelBuffer PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME TexelBuffer )

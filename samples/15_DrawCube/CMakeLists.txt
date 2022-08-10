@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(15_DrawCube)
-
-set(HEADERS
-)
-
-set(SOURCES
-  15_DrawCube.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(15_DrawCube
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(15_DrawCube PROPERTIES FOLDER "Samples")
-target_link_libraries(15_DrawCube PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 15_DrawCube )

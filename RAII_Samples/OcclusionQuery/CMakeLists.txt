@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_OcclusionQuery)
-
-set(HEADERS
-)
-
-set(SOURCES
-  OcclusionQuery.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_OcclusionQuery
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_OcclusionQuery PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_OcclusionQuery PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME OcclusionQuery )

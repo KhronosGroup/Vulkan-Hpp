@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(EnableValidationWithCallback)
-
-set(HEADERS
-)
-
-set(SOURCES
-  EnableValidationWithCallback.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(EnableValidationWithCallback
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(EnableValidationWithCallback PROPERTIES FOLDER "Samples")
-target_link_libraries(EnableValidationWithCallback PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME EnableValidationWithCallback )

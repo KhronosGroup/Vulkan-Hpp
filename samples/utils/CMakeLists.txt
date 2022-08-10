@@ -47,3 +47,4 @@ target_link_libraries(utils PUBLIC glslang-default-resource-limits)
 target_link_libraries(utils PUBLIC SPIRV)
 target_compile_definitions(utils PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
 
+target_precompile_headers(utils PRIVATE <vulkan/vulkan.hpp>)

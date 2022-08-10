@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_PushDescriptors)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PushDescriptors.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_PushDescriptors
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_PushDescriptors PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_PushDescriptors PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME PushDescriptors )

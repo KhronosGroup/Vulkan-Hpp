@@ -16,7 +16,6 @@
 //                     Determine if the current system can use Vulkan 1.1 API features
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 static char const * AppName    = "16_Vulkan_1_1";
 static char const * EngineName = "Vulkan.hpp";

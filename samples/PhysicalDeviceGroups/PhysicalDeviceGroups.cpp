@@ -16,7 +16,6 @@
 //                     Get the PhysicalDeviceGroups.
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <vector>
 

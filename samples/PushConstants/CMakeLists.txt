@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(PushConstants)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PushConstants.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(PushConstants
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(PushConstants PROPERTIES FOLDER "Samples")
-target_link_libraries(PushConstants PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME PushConstants )

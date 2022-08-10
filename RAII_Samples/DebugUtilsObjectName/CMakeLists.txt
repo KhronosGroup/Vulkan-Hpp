@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_DebugUtilsObjectName)
-
-set(HEADERS
-)
-
-set(SOURCES
-  DebugUtilsObjectName.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_DebugUtilsObjectName
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_DebugUtilsObjectName PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_DebugUtilsObjectName PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME DebugUtilsObjectName )

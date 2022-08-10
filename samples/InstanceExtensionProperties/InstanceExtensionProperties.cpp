@@ -16,10 +16,9 @@
 //                     Get global extension properties to know what extension are available to enable at CreateInstance
 //                     time.
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <sstream>
+#include <vulkan/vulkan.hpp>
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

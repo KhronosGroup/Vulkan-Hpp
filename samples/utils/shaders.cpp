@@ -17,7 +17,8 @@
 
 #include "SPIRV/GlslangToSpv.h"
 #include "StandAlone/ResourceLimits.h"
-#include "vulkan/vulkan.hpp"
+
+#include <vulkan/vulkan.hpp>
 
 namespace vk
 {

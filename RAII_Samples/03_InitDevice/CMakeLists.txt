@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_03_InitDevice)
-
-set(HEADERS
-)
-
-set(SOURCES
-  03_InitDevice.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_03_InitDevice
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_03_InitDevice PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_03_InitDevice PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 03_InitDevice )

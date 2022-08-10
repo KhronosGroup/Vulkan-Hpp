@@ -16,7 +16,6 @@
 //                     Initialize a swapchain
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iostream>
 
@@ -52,8 +51,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
     size_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( static_cast<uint32_t>( graphicsQueueFamilyIndex ), surface )
-                                       ? graphicsQueueFamilyIndex
-                                       : queueFamilyProperties.size();
+                                     ? graphicsQueueFamilyIndex
+                                     : queueFamilyProperties.size();
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
     {
       // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
@@ -113,8 +112,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
 
     vk::SurfaceTransformFlagBitsKHR preTransform = ( surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity )
-                                                     ? vk::SurfaceTransformFlagBitsKHR::eIdentity
-                                                     : surfaceCapabilities.currentTransform;
+                                                   ? vk::SurfaceTransformFlagBitsKHR::eIdentity
+                                                   : surfaceCapabilities.currentTransform;
 
     vk::CompositeAlphaFlagBitsKHR compositeAlpha =
       ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied

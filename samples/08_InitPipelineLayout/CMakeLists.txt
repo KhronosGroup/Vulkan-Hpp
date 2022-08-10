@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(08_InitPipelineLayout)
-
-set(HEADERS
-)
-
-set(SOURCES
-  08_InitPipelineLayout.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(08_InitPipelineLayout
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(08_InitPipelineLayout PROPERTIES FOLDER "Samples")
-target_link_libraries(08_InitPipelineLayout PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 08_InitPipelineLayout )

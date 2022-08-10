@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(OcclusionQuery)
-
-set(HEADERS
-)
-
-set(SOURCES
-  OcclusionQuery.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(OcclusionQuery
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(OcclusionQuery PROPERTIES FOLDER "Samples")
-target_link_libraries(OcclusionQuery PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME OcclusionQuery )

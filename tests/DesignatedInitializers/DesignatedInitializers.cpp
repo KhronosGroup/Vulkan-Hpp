@@ -17,9 +17,8 @@
 
 #define VULKAN_HPP_NO_STRUCT_CONSTRUCTORS
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"

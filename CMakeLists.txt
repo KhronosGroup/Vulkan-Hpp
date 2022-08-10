@@ -149,6 +149,101 @@ if (VULKAN_HPP_RUN_GENERATOR)
     DEPENDS "${vulkan_hpp}" "${vk_spec}")
 endif()
 
+option (VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON)
+
+function(vulkan_hpp__setup_sample)
+  set(options)
+  set(oneValueArgs FOLDER NAME)
+  set(multiValueArgs HEADERS INCLUDE_DIRS LIBS PCH SOURCES)
+
+  cmake_parse_arguments(TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if(${TARGET_NAME} STREQUAL "")
+    message(FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample")
+  endif()
+
+  project(${TARGET_NAME})
+
+  add_executable(${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES})
+
+  if (TARGET_INCLUDE_DIRS)
+    target_include_directories(${TARGET_NAME} PUBLIC ${TARGET_INCLUDE_DIRS})
+  endif()
+  if (TARGET_FOLDER)
+    set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}")
+  endif()
+  if (VULKAN_HPP_PRECOMPILE AND TARGET_PCH)
+    target_precompile_headers(${TARGET_NAME} PRIVATE "${TARGET_PCH}")
+  endif()
+  if (TARGET_LIBS)
+    target_link_libraries(${TARGET_NAME} PRIVATE "${TARGET_LIBS}")
+  endif()
+endfunction()
+
+function(vulkan_hpp__setup_sample_static)
+  set(options)
+  set(oneValueArgs NAME)
+  set(multiValueArgs)
+
+  cmake_parse_arguments(TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
+    find_package(Vulkan REQUIRED)
+
+    vulkan_hpp__setup_sample(
+      NAME         ${TARGET_NAME}
+      FOLDER       Samples
+      PCH          <vulkan/vulkan.hpp>
+      SOURCES      ${TARGET_NAME}.cpp
+      LIBS         ${Vulkan_LIBRARIES})
+
+    target_compile_definitions(01_InitInstance PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0)
+
+  endif()
+endfunction()
+
+function(vulkan_hpp__setup_sample_dynamic)
+  set(options)
+  set(oneValueArgs NAME)
+  set(multiValueArgs HEADERS INCLUDE_DIRS SOURCES)
+
+  cmake_parse_arguments(TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT TARGET_SOURCES)
+      set(TARGET_SOURCES ${TARGET_NAME}.cpp)
+  endif()
+
+  vulkan_hpp__setup_sample(
+    NAME         ${TARGET_NAME}
+    FOLDER       Samples
+    PCH          <vulkan/vulkan.hpp>
+    INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
+    HEADERS      ${TARGET_HEADERS}
+    SOURCES      ${TARGET_SOURCES}
+    LIBS         utils)
+endfunction()
+
+function(vulkan_hpp__setup_sample_raii)
+  set(options)
+  set(oneValueArgs NAME)
+  set(multiValueArgs HEADERS INCLUDE_DIRS SOURCES)
+
+  cmake_parse_arguments(TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+  if (NOT TARGET_SOURCES)
+    set(TARGET_SOURCES ${TARGET_NAME}.cpp)
+  endif()
+
+  vulkan_hpp__setup_sample(
+    NAME         RAII_${TARGET_NAME}
+    FOLDER       RAII_Samples
+    PCH          <vulkan/vulkan_raii.hpp>
+    INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
+    HEADERS      ${TARGET_HEADERS}
+    SOURCES      ${TARGET_SOURCES}
+    LIBS         utils)
+endfunction()
+
 option (SAMPLES_BUILD "Build samples" OFF)
 if (SAMPLES_BUILD)
   # external libraries

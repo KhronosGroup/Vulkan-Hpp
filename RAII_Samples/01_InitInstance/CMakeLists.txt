@@ -14,26 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
-
-  project(RAII_01_InitInstance)
-  
-  set(HEADERS
-  )
-  
-  set(SOURCES
-    01_InitInstance.cpp
-  )
-  
-  source_group(headers FILES ${HEADERS})
-  source_group(sources FILES ${SOURCES})
-  
-  add_executable(RAII_01_InitInstance
-    ${HEADERS}
-    ${SOURCES}
-  )
-  
-  set_target_properties(RAII_01_InitInstance PROPERTIES FOLDER "RAII_Samples")
-  target_link_libraries(RAII_01_InitInstance PRIVATE utils)
-
-endif()
+vulkan_hpp__setup_sample_raii( NAME 01_InitInstance )

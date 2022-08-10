@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(EnumerateDevicesAdvanced)
-
-set(HEADERS
-)
-
-set(SOURCES
-  EnumerateDevicesAdvanced.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(EnumerateDevicesAdvanced
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(EnumerateDevicesAdvanced PROPERTIES FOLDER "Samples")
-target_link_libraries(EnumerateDevicesAdvanced PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME EnumerateDevicesAdvanced )

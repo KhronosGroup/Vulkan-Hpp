@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_02_EnumerateDevices)
-
-set(HEADERS
-)
-
-set(SOURCES
-  02_EnumerateDevices.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_02_EnumerateDevices
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_02_EnumerateDevices PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_02_EnumerateDevices PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 02_EnumerateDevices )

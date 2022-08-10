@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(09_InitDescriptorSet)
-
-set(HEADERS
-)
-
-set(SOURCES
-  09_InitDescriptorSet.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(09_InitDescriptorSet
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(09_InitDescriptorSet PROPERTIES FOLDER "Samples")
-target_link_libraries(09_InitDescriptorSet PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 09_InitDescriptorSet )

@@ -404,6 +404,7 @@ void VulkanHppGenerator::generateVulkanRAIIHppFile() const
 #ifndef VULKAN_RAII_HPP
 #  define VULKAN_RAII_HPP
 
+#include <memory>
 #include <vulkan/vulkan.hpp>
 
 #if !defined( VULKAN_HPP_RAII_NAMESPACE )

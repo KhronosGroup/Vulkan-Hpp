@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_CopyBlitImage)
-
-set(HEADERS
-)
-
-set(SOURCES
-  CopyBlitImage.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_CopyBlitImage
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_CopyBlitImage PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_CopyBlitImage PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME CopyBlitImage )

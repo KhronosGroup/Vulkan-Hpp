@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(PhysicalDeviceMemoryProperties)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PhysicalDeviceMemoryProperties.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(PhysicalDeviceMemoryProperties
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(PhysicalDeviceMemoryProperties PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceMemoryProperties PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME PhysicalDeviceMemoryProperties )

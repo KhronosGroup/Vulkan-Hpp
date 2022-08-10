@@ -15,9 +15,8 @@
 // VulkanHpp Samples : 01_InitInstance
 //                     Create and destroy a vk::Instance
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 
 static std::string AppName    = "01_InitInstance";
 static std::string EngineName = "Vulkan.hpp";

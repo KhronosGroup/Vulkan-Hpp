@@ -16,7 +16,6 @@
 //                     Get extension properties per physical device.
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <vector>
 

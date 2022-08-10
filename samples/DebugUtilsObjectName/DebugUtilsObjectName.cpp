@@ -16,7 +16,6 @@
 //                     Demonstrate usage of DebugUtilsObjectName
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 static char const * AppName    = "DebugUtilsObjectName";
 static char const * EngineName = "Vulkan.hpp";

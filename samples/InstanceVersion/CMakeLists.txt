@@ -14,26 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-if(NOT SAMPLES_BUILD_ONLY_DYNAMIC)
-
-  project(InstanceVersion)
-  
-  set(HEADERS
-  )
-  
-  set(SOURCES
-    InstanceVersion.cpp
-  )
-  
-  source_group(headers FILES ${HEADERS})
-  source_group(sources FILES ${SOURCES})
-  
-  add_executable(InstanceVersion
-    ${HEADERS}
-    ${SOURCES}
-  )
-  
-  set_target_properties(InstanceVersion PROPERTIES FOLDER "Samples")
-  target_link_libraries(InstanceVersion PRIVATE utils)
-
-endif()
+vulkan_hpp__setup_sample_static( NAME InstanceVersion )

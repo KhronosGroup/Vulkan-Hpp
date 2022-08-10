@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 // VulkanHpp Samples : 01_InitInstanceRAII
-//                     Create and destroy a vk::UniqueInstance
+//                     Create and destroy a vk::raii::Instance
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan_raii.hpp"
 
 #include <iostream>
 

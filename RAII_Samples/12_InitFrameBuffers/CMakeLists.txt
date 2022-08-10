@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_12_InitFrameBuffers)
-
-set(HEADERS
-)
-
-set(SOURCES
-  12_InitFrameBuffers.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_12_InitFrameBuffers
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_12_InitFrameBuffers PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_12_InitFrameBuffers PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 12_InitFrameBuffers )

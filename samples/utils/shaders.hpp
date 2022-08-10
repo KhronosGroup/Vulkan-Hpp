@@ -13,10 +13,9 @@
 // limitations under the License.
 //
 
-#include "vulkan/vulkan.hpp"
-
 #include <string>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 namespace vk
 {

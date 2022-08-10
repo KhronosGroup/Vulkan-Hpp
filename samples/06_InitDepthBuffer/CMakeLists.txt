@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(06_InitDepthBuffer)
-
-set(HEADERS
-)
-
-set(SOURCES
-  06_InitDepthBuffer.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(06_InitDepthBuffer
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(06_InitDepthBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(06_InitDepthBuffer PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 06_InitDepthBuffer )

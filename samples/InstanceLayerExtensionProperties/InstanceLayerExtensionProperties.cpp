@@ -15,17 +15,17 @@
 // VulkanHpp Samples : InstanceLayerExtensionProperties
 //                     Get list of global layers and their associated extensions, if any.
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 struct PropertyData
 {
   PropertyData( vk::LayerProperties const & layerProperties_, std::vector<vk::ExtensionProperties> const & extensionProperties_ )
     : layerProperties( layerProperties_ ), extensionProperties( extensionProperties_ )
-  {}
+  {
+  }
 
   vk::LayerProperties                  layerProperties;
   std::vector<vk::ExtensionProperties> extensionProperties;

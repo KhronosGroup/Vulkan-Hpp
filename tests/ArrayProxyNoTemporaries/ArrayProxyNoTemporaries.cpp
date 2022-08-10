@@ -25,9 +25,8 @@
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 
 void fct( vk::ArrayProxyNoTemporaries<int> /*ap*/ ) {}
 
@@ -270,7 +269,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ArrayProxyNoTemporaries<const int> ap24 = {};
     assert( ap24.size() == 0 );
 
-    //vk::ArrayProxyNoTemporaries<const int> ap25 = { 0, 1 };   // not supported
+    // vk::ArrayProxyNoTemporaries<const int> ap25 = { 0, 1 };   // not supported
 
     vk::ArrayProxyNoTemporaries<const int> ap26 = il1;
     assert( ap26.size() == 2 );

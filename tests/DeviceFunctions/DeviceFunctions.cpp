@@ -27,9 +27,8 @@
 #undef VULKAN_HPP_DISPATCH_LOADER_DYNAMIC
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
+#include <vulkan/vulkan.hpp>
 
 static char const * AppName    = "DeviceFunctions";
 static char const * EngineName = "Vulkan.hpp";

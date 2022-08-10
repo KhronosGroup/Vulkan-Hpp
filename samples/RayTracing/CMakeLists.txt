@@ -14,30 +14,15 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RayTracing)
-
-set(HEADERS
-  CameraManipulator.hpp
-)
-
-set(SOURCES
-  CameraManipulator.cpp
-  RayTracing.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RayTracing
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RayTracing PROPERTIES FOLDER "Samples")
-target_link_libraries(RayTracing PRIVATE utils)
-target_include_directories(RayTracing PUBLIC
-  ${CMAKE_SOURCE_DIR}/samples/RayTracing/common
-  ${CMAKE_SOURCE_DIR}/samples/RayTracing/vulkannv 
-  ${CMAKE_SOURCE_DIR}/stb
-  ${CMAKE_SOURCE_DIR}/tinyobjloader
-  )
+vulkan_hpp__setup_sample_dynamic(
+    NAME RayTracing
+    INCLUDE_DIRS
+        ${CMAKE_SOURCE_DIR}/samples/RayTracing/common
+        ${CMAKE_SOURCE_DIR}/samples/RayTracing/vulkannv 
+        ${CMAKE_SOURCE_DIR}/stb
+        ${CMAKE_SOURCE_DIR}/tinyobjloader
+    HEADERS
+        CameraManipulator.hpp
+    SOURCES
+        CameraManipulator.cpp
+        RayTracing.cpp)

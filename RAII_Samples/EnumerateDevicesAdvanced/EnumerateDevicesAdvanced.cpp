@@ -19,7 +19,6 @@
 
 #include <iomanip>
 #include <iostream>
-#include <vulkan/vulkan_raii.hpp>
 #include <vulkan/vulkan_to_string.hpp>
 
 static char const * AppName    = "EnumerateDevicesAdvanced";

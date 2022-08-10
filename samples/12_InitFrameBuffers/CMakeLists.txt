@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(12_InitFrameBuffers)
-
-set(HEADERS
-)
-
-set(SOURCES
-  12_InitFrameBuffers.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(12_InitFrameBuffers
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(12_InitFrameBuffers PROPERTIES FOLDER "Samples")
-target_link_libraries(12_InitFrameBuffers PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 12_InitFrameBuffers )

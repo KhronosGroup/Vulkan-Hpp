@@ -16,7 +16,6 @@
 //                     Create and destroy a device
 
 #include "../utils/utils.hpp"
-#include "vulkan/vulkan.hpp"
 
 #include <iostream>
 

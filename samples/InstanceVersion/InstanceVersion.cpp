@@ -15,10 +15,9 @@
 // VulkanHpp Samples : InstanceVersion
 //                     Get the version of instance-level functionality supported by the implementation.
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <sstream>
+#include <vulkan/vulkan.hpp>
 
 std::string decodeAPIVersion( uint32_t apiVersion )
 {

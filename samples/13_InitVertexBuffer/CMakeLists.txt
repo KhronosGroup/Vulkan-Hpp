@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(13_InitVertexBuffer)
-
-set(HEADERS
-)
-
-set(SOURCES
-  13_InitVertexBuffer.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(13_InitVertexBuffer
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(13_InitVertexBuffer PROPERTIES FOLDER "Samples")
-target_link_libraries(13_InitVertexBuffer PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 13_InitVertexBuffer )

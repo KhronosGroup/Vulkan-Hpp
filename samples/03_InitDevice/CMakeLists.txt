@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(03_InitDevice)
-
-set(HEADERS
-)
-
-set(SOURCES
-  03_InitDevice.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(03_InitDevice
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(03_InitDevice PROPERTIES FOLDER "Samples")
-target_link_libraries(03_InitDevice PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 03_InitDevice )

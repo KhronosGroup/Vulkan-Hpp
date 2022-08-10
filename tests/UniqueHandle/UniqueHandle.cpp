@@ -18,7 +18,6 @@
 #include "../../samples/utils/shaders.hpp"
 #include "../../samples/utils/utils.hpp"
 #include "SPIRV/GlslangToSpv.h"
-#include "vulkan/vulkan.hpp"
 
 #include <iostream>
 

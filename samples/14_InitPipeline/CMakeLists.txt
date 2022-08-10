@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(14_InitPipeline)
-
-set(HEADERS
-)
-
-set(SOURCES
-  14_InitPipeline.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(14_InitPipeline
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(14_InitPipeline PROPERTIES FOLDER "Samples")
-target_link_libraries(14_InitPipeline PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME 14_InitPipeline )

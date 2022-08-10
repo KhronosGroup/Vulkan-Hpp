@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_08_InitPipelineLayout)
-
-set(HEADERS
-)
-
-set(SOURCES
-  08_InitPipelineLayout.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(RAII_08_InitPipelineLayout
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(RAII_08_InitPipelineLayout PROPERTIES FOLDER "RAII_Samples")
-target_link_libraries(RAII_08_InitPipelineLayout PRIVATE utils)
+vulkan_hpp__setup_sample_raii( NAME 08_InitPipelineLayout )

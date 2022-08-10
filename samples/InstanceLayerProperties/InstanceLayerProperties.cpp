@@ -15,11 +15,10 @@
 // VulkanHpp Samples : InstanceLayerProperties
 //                     Get global layer properties to know what layers are available to enable at CreateInstance time.
 
-#include "vulkan/vulkan.hpp"
-
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

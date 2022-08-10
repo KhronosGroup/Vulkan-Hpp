@@ -14,22 +14,4 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(PhysicalDeviceGroups)
-
-set(HEADERS
-)
-
-set(SOURCES
-  PhysicalDeviceGroups.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(PhysicalDeviceGroups
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(PhysicalDeviceGroups PROPERTIES FOLDER "Samples")
-target_link_libraries(PhysicalDeviceGroups PRIVATE utils)
+vulkan_hpp__setup_sample_dynamic( NAME PhysicalDeviceGroups )

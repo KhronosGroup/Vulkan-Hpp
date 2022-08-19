@@ -121,6 +121,19 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
+set(VK_GENERATED_VULKAN_HEADERS
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
+  )
+
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
 string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 
@@ -266,5 +279,6 @@ if (TESTS_BUILD)
 endif ()
 
 if (${VULKAN_HPP_INSTALL})
-  install(FILES ${vulkan_hpp} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan)
+  include(GNUInstallDirs)
+  install(FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan)
 endif()

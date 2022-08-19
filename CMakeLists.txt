@@ -143,7 +143,7 @@ if (VULKAN_HPP_RUN_GENERATOR)
     OUTPUT "${vulkan_hpp}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     COMMENT "run ${PROJECT_NAME}"
-    DEPENDS ${PROJECT_NAME} "${vk_spec}")
+    DEPENDS "${vk_spec}")
 
   add_custom_target(build_vulkan_hpp ALL
     DEPENDS "${vulkan_hpp}" "${vk_spec}")

@@ -121,6 +121,9 @@ add_executable(VulkanHppGenerator
   ${TINYXML2_HEADERS}
 )
 
+file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)
+string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBASE_PATH="${CMAKE_SOURCE_DIR}")
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

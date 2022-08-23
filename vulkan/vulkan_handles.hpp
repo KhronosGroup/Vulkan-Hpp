@@ -533,17 +533,17 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
-  struct QueueFamilyQueryResultStatusProperties2KHR;
-  struct VideoQueueFamilyProperties2KHR;
-  struct VideoProfileKHR;
-  struct VideoProfilesKHR;
+  struct QueueFamilyQueryResultStatusPropertiesKHR;
+  struct QueueFamilyVideoPropertiesKHR;
+  struct VideoProfileInfoKHR;
+  struct VideoProfileListInfoKHR;
   struct VideoCapabilitiesKHR;
   struct PhysicalDeviceVideoFormatInfoKHR;
   struct VideoFormatPropertiesKHR;
-  struct VideoPictureResourceKHR;
-  struct VideoReferenceSlotKHR;
-  struct VideoGetMemoryPropertiesKHR;
-  struct VideoBindMemoryKHR;
+  struct VideoPictureResourceInfoKHR;
+  struct VideoReferenceSlotInfoKHR;
+  struct VideoSessionMemoryRequirementsKHR;
+  struct BindVideoSessionMemoryInfoKHR;
   struct VideoSessionCreateInfoKHR;
   struct VideoSessionParametersCreateInfoKHR;
   struct VideoSessionParametersUpdateInfoKHR;
@@ -583,11 +583,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH264SessionParametersCreateInfoEXT;
   struct VideoEncodeH264SessionParametersAddInfoEXT;
   struct VideoEncodeH264VclFrameInfoEXT;
-  struct VideoEncodeH264ReferenceListsEXT;
-  struct VideoEncodeH264EmitPictureParametersEXT;
+  struct VideoEncodeH264ReferenceListsInfoEXT;
+  struct VideoEncodeH264EmitPictureParametersInfoEXT;
   struct VideoEncodeH264DpbSlotInfoEXT;
-  struct VideoEncodeH264NaluSliceEXT;
-  struct VideoEncodeH264ProfileEXT;
+  struct VideoEncodeH264NaluSliceInfoEXT;
+  struct VideoEncodeH264ProfileInfoEXT;
   struct VideoEncodeH264RateControlInfoEXT;
   struct VideoEncodeH264RateControlLayerInfoEXT;
   struct VideoEncodeH264QpEXT;
@@ -600,11 +600,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH265SessionParametersCreateInfoEXT;
   struct VideoEncodeH265SessionParametersAddInfoEXT;
   struct VideoEncodeH265VclFrameInfoEXT;
-  struct VideoEncodeH265EmitPictureParametersEXT;
+  struct VideoEncodeH265EmitPictureParametersInfoEXT;
   struct VideoEncodeH265DpbSlotInfoEXT;
-  struct VideoEncodeH265NaluSliceSegmentEXT;
-  struct VideoEncodeH265ProfileEXT;
-  struct VideoEncodeH265ReferenceListsEXT;
+  struct VideoEncodeH265NaluSliceSegmentInfoEXT;
+  struct VideoEncodeH265ProfileInfoEXT;
+  struct VideoEncodeH265ReferenceListsInfoEXT;
   struct VideoEncodeH265RateControlInfoEXT;
   struct VideoEncodeH265RateControlLayerInfoEXT;
   struct VideoEncodeH265QpEXT;
@@ -613,12 +613,12 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
-  struct VideoDecodeH264ProfileEXT;
+  struct VideoDecodeH264ProfileInfoEXT;
   struct VideoDecodeH264CapabilitiesEXT;
   struct VideoDecodeH264SessionParametersCreateInfoEXT;
   struct VideoDecodeH264SessionParametersAddInfoEXT;
   struct VideoDecodeH264PictureInfoEXT;
-  struct VideoDecodeH264MvcEXT;
+  struct VideoDecodeH264MvcInfoEXT;
   struct VideoDecodeH264DpbSlotInfoEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -950,7 +950,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h265 ===
-  struct VideoDecodeH265ProfileEXT;
+  struct VideoDecodeH265ProfileInfoEXT;
   struct VideoDecodeH265CapabilitiesEXT;
   struct VideoDecodeH265SessionParametersCreateInfoEXT;
   struct VideoDecodeH265SessionParametersAddInfoEXT;
@@ -1269,9 +1269,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_4444_formats ===
   struct PhysicalDevice4444FormatsFeaturesEXT;
 
-  //=== VK_ARM_rasterization_order_attachment_access ===
-  struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM;
-
   //=== VK_EXT_rgba10x6_formats ===
   struct PhysicalDeviceRGBA10X6FormatsFeaturesEXT;
 
@@ -1436,6 +1433,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceShaderModuleIdentifierPropertiesEXT;
   struct PipelineShaderStageModuleIdentifierCreateInfoEXT;
   struct ShaderModuleIdentifierEXT;
+
+  //=== VK_EXT_rasterization_order_attachment_access ===
+  struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
+  using PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
 
   //=== VK_QCOM_tile_properties ===
   struct PhysicalDeviceTilePropertiesFeaturesQCOM;
@@ -9131,37 +9132,39 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR               videoSession,
-                                                                      uint32_t *                                          pVideoSessionMemoryRequirementsCount,
-                                                                      VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR * pVideoSessionMemoryRequirements,
+    VULKAN_HPP_NODISCARD Result getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                     videoSession,
+                                                                      uint32_t *                                                pMemoryRequirementsCount,
+                                                                      VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR * pMemoryRequirements,
                                                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename VideoGetMemoryPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>,
-              typename Dispatch                             = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator>>::type
+    template <typename VideoSessionMemoryRequirementsKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>,
+              typename Dispatch                                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
       getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR videoSession,
                                             Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename VideoGetMemoryPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>,
-              typename Dispatch                             = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename B1                                   = VideoGetMemoryPropertiesKHRAllocator,
-              typename std::enable_if<std::is_same<typename B1::value_type, VideoGetMemoryPropertiesKHR>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator>>::type
-      getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR  videoSession,
-                                            VideoGetMemoryPropertiesKHRAllocator & videoGetMemoryPropertiesKHRAllocator,
-                                            Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename VideoSessionMemoryRequirementsKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>,
+              typename Dispatch                                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B1                                         = VideoSessionMemoryRequirementsKHRAllocator,
+              typename std::enable_if<std::is_same<typename B1::value_type, VideoSessionMemoryRequirementsKHR>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
+      getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR        videoSession,
+                                            VideoSessionMemoryRequirementsKHRAllocator & videoSessionMemoryRequirementsKHRAllocator,
+                                            Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR            videoSession,
-                                                           uint32_t                                         videoSessionBindMemoryCount,
-                                                           const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR * pVideoSessionBindMemories,
+    VULKAN_HPP_NODISCARD Result bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                       videoSession,
+                                                           uint32_t                                                    bindSessionMemoryInfoCount,
+                                                           const VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR * pBindSessionMemoryInfos,
                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
-      bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                              videoSession,
-                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories,
-                                 Dispatch const & d                                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                                         videoSession,
+                                 ArrayProxy<const VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR> const & bindSessionMemoryInfos,
+                                 Dispatch const & d                                                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -12075,16 +12078,18 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_video_queue ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR * pVideoProfile,
-                                                         VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR *  pCapabilities,
+    VULKAN_HPP_NODISCARD Result getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR * pVideoProfile,
+                                                         VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR *      pCapabilities,
                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>::type
-      getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR & videoProfile,
+                               Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD typename ResultValueType<StructureChain<X, Y, Z...>>::type
-      getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+      getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR & videoProfile,
+                               Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>

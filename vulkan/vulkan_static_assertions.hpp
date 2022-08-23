@@ -2012,28 +2012,29 @@ VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoSessionParametersKH
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR>::value,
                           "VideoSessionParametersKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR ) == sizeof( VkQueueFamilyQueryResultStatusProperties2KHR ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusPropertiesKHR ) == sizeof( VkQueueFamilyQueryResultStatusPropertiesKHR ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR>::value,
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusPropertiesKHR>::value,
                           "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusProperties2KHR>::value,
-                          "QueueFamilyQueryResultStatusProperties2KHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyQueryResultStatusPropertiesKHR>::value,
+                          "QueueFamilyQueryResultStatusPropertiesKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoQueueFamilyProperties2KHR ) == sizeof( VkVideoQueueFamilyProperties2KHR ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyVideoPropertiesKHR ) == sizeof( VkQueueFamilyVideoPropertiesKHR ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoQueueFamilyProperties2KHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoQueueFamilyProperties2KHR>::value,
-                          "VideoQueueFamilyProperties2KHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyVideoPropertiesKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyVideoPropertiesKHR>::value,
+                          "QueueFamilyVideoPropertiesKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoProfileKHR ) == sizeof( VkVideoProfileKHR ), "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoProfileKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoProfileKHR>::value,
-                          "VideoProfileKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR ) == sizeof( VkVideoProfileInfoKHR ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR>::value,
+                          "VideoProfileInfoKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoProfilesKHR ) == sizeof( VkVideoProfilesKHR ), "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoProfilesKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoProfilesKHR>::value,
-                          "VideoProfilesKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoProfileListInfoKHR ) == sizeof( VkVideoProfileListInfoKHR ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoProfileListInfoKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoProfileListInfoKHR>::value,
+                          "VideoProfileListInfoKHR is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR ) == sizeof( VkVideoCapabilitiesKHR ), "struct and wrapper have different size!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>::value, "struct wrapper is not a standard layout!" );
@@ -2052,28 +2053,29 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoFor
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR>::value,
                           "VideoFormatPropertiesKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoPictureResourceKHR ) == sizeof( VkVideoPictureResourceKHR ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoPictureResourceInfoKHR ) == sizeof( VkVideoPictureResourceInfoKHR ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoPictureResourceKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoPictureResourceKHR>::value,
-                          "VideoPictureResourceKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoPictureResourceInfoKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoPictureResourceInfoKHR>::value,
+                          "VideoPictureResourceInfoKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoReferenceSlotKHR ) == sizeof( VkVideoReferenceSlotKHR ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoReferenceSlotInfoKHR ) == sizeof( VkVideoReferenceSlotInfoKHR ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoReferenceSlotKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoReferenceSlotKHR>::value,
-                          "VideoReferenceSlotKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoReferenceSlotInfoKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoReferenceSlotInfoKHR>::value,
+                          "VideoReferenceSlotInfoKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR ) == sizeof( VkVideoGetMemoryPropertiesKHR ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR ) == sizeof( VkVideoSessionMemoryRequirementsKHR ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR>::value,
-                          "VideoGetMemoryPropertiesKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>::value,
+                          "VideoSessionMemoryRequirementsKHR is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR ) == sizeof( VkVideoBindMemoryKHR ), "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR>::value,
-                          "VideoBindMemoryKHR is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR ) == sizeof( VkBindVideoSessionMemoryInfoKHR ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR>::value,
+                          "BindVideoSessionMemoryInfoKHR is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR ) == sizeof( VkVideoSessionCreateInfoKHR ),
                           "struct and wrapper have different size!" );
@@ -2246,18 +2248,20 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEnc
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264VclFrameInfoEXT>::value,
                           "VideoEncodeH264VclFrameInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsEXT ) == sizeof( VkVideoEncodeH264ReferenceListsEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsInfoEXT ) == sizeof( VkVideoEncodeH264ReferenceListsInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsEXT>::value,
-                          "VideoEncodeH264ReferenceListsEXT is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersEXT ) == sizeof( VkVideoEncodeH264EmitPictureParametersEXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersEXT>::value,
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsInfoEXT>::value,
                           "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersEXT>::value,
-                          "VideoEncodeH264EmitPictureParametersEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264ReferenceListsInfoEXT>::value,
+                          "VideoEncodeH264ReferenceListsInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersInfoEXT ) ==
+                            sizeof( VkVideoEncodeH264EmitPictureParametersInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersInfoEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264EmitPictureParametersInfoEXT>::value,
+                          "VideoEncodeH264EmitPictureParametersInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264DpbSlotInfoEXT ) == sizeof( VkVideoEncodeH264DpbSlotInfoEXT ),
                           "struct and wrapper have different size!" );
@@ -2265,17 +2269,17 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEnc
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264DpbSlotInfoEXT>::value,
                           "VideoEncodeH264DpbSlotInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceEXT ) == sizeof( VkVideoEncodeH264NaluSliceEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceInfoEXT ) == sizeof( VkVideoEncodeH264NaluSliceInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceEXT>::value,
-                          "VideoEncodeH264NaluSliceEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceInfoEXT>::value,
+                          "VideoEncodeH264NaluSliceInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileEXT ) == sizeof( VkVideoEncodeH264ProfileEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileInfoEXT ) == sizeof( VkVideoEncodeH264ProfileInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileEXT>::value,
-                          "VideoEncodeH264ProfileEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileInfoEXT>::value,
+                          "VideoEncodeH264ProfileInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlInfoEXT ) == sizeof( VkVideoEncodeH264RateControlInfoEXT ),
                           "struct and wrapper have different size!" );
@@ -2332,12 +2336,13 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEnc
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265VclFrameInfoEXT>::value,
                           "VideoEncodeH265VclFrameInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersEXT ) == sizeof( VkVideoEncodeH265EmitPictureParametersEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersInfoEXT ) ==
+                            sizeof( VkVideoEncodeH265EmitPictureParametersInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersEXT>::value,
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersInfoEXT>::value,
                           "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersEXT>::value,
-                          "VideoEncodeH265EmitPictureParametersEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265EmitPictureParametersInfoEXT>::value,
+                          "VideoEncodeH265EmitPictureParametersInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265DpbSlotInfoEXT ) == sizeof( VkVideoEncodeH265DpbSlotInfoEXT ),
                           "struct and wrapper have different size!" );
@@ -2345,24 +2350,25 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEnc
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265DpbSlotInfoEXT>::value,
                           "VideoEncodeH265DpbSlotInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentEXT ) == sizeof( VkVideoEncodeH265NaluSliceSegmentEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentInfoEXT ) == sizeof( VkVideoEncodeH265NaluSliceSegmentInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentEXT>::value,
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentInfoEXT>::value,
                           "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentEXT>::value,
-                          "VideoEncodeH265NaluSliceSegmentEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentInfoEXT>::value,
+                          "VideoEncodeH265NaluSliceSegmentInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileEXT ) == sizeof( VkVideoEncodeH265ProfileEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileInfoEXT ) == sizeof( VkVideoEncodeH265ProfileInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileEXT>::value,
-                          "VideoEncodeH265ProfileEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileInfoEXT>::value,
+                          "VideoEncodeH265ProfileInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsEXT ) == sizeof( VkVideoEncodeH265ReferenceListsEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsInfoEXT ) == sizeof( VkVideoEncodeH265ReferenceListsInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsEXT>::value,
-                          "VideoEncodeH265ReferenceListsEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsInfoEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoEncodeH265ReferenceListsInfoEXT>::value,
+                          "VideoEncodeH265ReferenceListsInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlInfoEXT ) == sizeof( VkVideoEncodeH265RateControlInfoEXT ),
                           "struct and wrapper have different size!" );
@@ -2392,11 +2398,11 @@ VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPAC
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
 //=== VK_EXT_video_decode_h264 ===
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileEXT ) == sizeof( VkVideoDecodeH264ProfileEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileInfoEXT ) == sizeof( VkVideoDecodeH264ProfileInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileEXT>::value,
-                          "VideoDecodeH264ProfileEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH264ProfileInfoEXT>::value,
+                          "VideoDecodeH264ProfileInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264CapabilitiesEXT ) == sizeof( VkVideoDecodeH264CapabilitiesEXT ),
                           "struct and wrapper have different size!" );
@@ -2425,11 +2431,11 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDec
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH264PictureInfoEXT>::value,
                           "VideoDecodeH264PictureInfoEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcEXT ) == sizeof( VkVideoDecodeH264MvcEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcInfoEXT ) == sizeof( VkVideoDecodeH264MvcInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcEXT>::value,
-                          "VideoDecodeH264MvcEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH264MvcInfoEXT>::value,
+                          "VideoDecodeH264MvcInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH264DpbSlotInfoEXT ) == sizeof( VkVideoDecodeH264DpbSlotInfoEXT ),
                           "struct and wrapper have different size!" );
@@ -3766,11 +3772,11 @@ VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPAC
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
 //=== VK_EXT_video_decode_h265 ===
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileEXT ) == sizeof( VkVideoDecodeH265ProfileEXT ),
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileInfoEXT ) == sizeof( VkVideoDecodeH265ProfileInfoEXT ),
                           "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileEXT>::value,
-                          "VideoDecodeH265ProfileEXT is not nothrow_move_constructible!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VideoDecodeH265ProfileInfoEXT>::value,
+                          "VideoDecodeH265ProfileInfoEXT is not nothrow_move_constructible!" );
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VideoDecodeH265CapabilitiesEXT ) == sizeof( VkVideoDecodeH265CapabilitiesEXT ),
                           "struct and wrapper have different size!" );
@@ -5070,16 +5076,6 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDevice4444FormatsFeaturesEXT>::value,
                           "PhysicalDevice4444FormatsFeaturesEXT is not nothrow_move_constructible!" );
 
-//=== VK_ARM_rasterization_order_attachment_access ===
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM ) ==
-                            sizeof( VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM>::value,
-                          "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM>::value,
-                          "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM is not nothrow_move_constructible!" );
-
 //=== VK_EXT_rgba10x6_formats ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRGBA10X6FormatsFeaturesEXT ) == sizeof( VkPhysicalDeviceRGBA10X6FormatsFeaturesEXT ),
@@ -5756,6 +5752,16 @@ VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEX
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT>::value, "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT>::value,
                           "ShaderModuleIdentifierEXT is not nothrow_move_constructible!" );
+
+//=== VK_EXT_rasterization_order_attachment_access ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT ) ==
+                            sizeof( VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT>::value,
+                          "PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT is not nothrow_move_constructible!" );
 
 //=== VK_QCOM_tile_properties ===
 

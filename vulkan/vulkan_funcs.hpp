@@ -9283,25 +9283,25 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_queue ===
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR * pVideoProfile,
-                                                                                         VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR *  pCapabilities,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR * pVideoProfile,
+                                                                                         VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR *      pCapabilities,
                                                                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkGetPhysicalDeviceVideoCapabilitiesKHR(
-      m_physicalDevice, reinterpret_cast<const VkVideoProfileKHR *>( pVideoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( pCapabilities ) ) );
+      m_physicalDevice, reinterpret_cast<const VkVideoProfileInfoKHR *>( pVideoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( pCapabilities ) ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>::type
-                       PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile, Dispatch const & d ) const
+                       PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR & videoProfile, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR capabilities;
     VkResult                                   result = d.vkGetPhysicalDeviceVideoCapabilitiesKHR(
-      m_physicalDevice, reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) );
+      m_physicalDevice, reinterpret_cast<const VkVideoProfileInfoKHR *>( &videoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), capabilities );
@@ -9309,14 +9309,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename X, typename Y, typename... Z, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<StructureChain<X, Y, Z...>>::type
-                       PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileKHR & videoProfile, Dispatch const & d ) const
+                       PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR & videoProfile, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     StructureChain<X, Y, Z...>                   structureChain;
     VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR & capabilities = structureChain.template get<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>();
     VkResult                                     result       = d.vkGetPhysicalDeviceVideoCapabilitiesKHR(
-      m_physicalDevice, reinterpret_cast<const VkVideoProfileKHR *>( &videoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) );
+      m_physicalDevice, reinterpret_cast<const VkVideoProfileInfoKHR *>( &videoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( &capabilities ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoCapabilitiesKHR" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), structureChain );
@@ -9515,117 +9515,115 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
-    Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR               videoSession,
-                                                  uint32_t *                                          pVideoSessionMemoryRequirementsCount,
-                                                  VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR * pVideoSessionMemoryRequirements,
-                                                  Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
+    Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                     videoSession,
+                                                  uint32_t *                                                pMemoryRequirementsCount,
+                                                  VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR * pMemoryRequirements,
+                                                  Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    return static_cast<Result>(
-      d.vkGetVideoSessionMemoryRequirementsKHR( m_device,
-                                                static_cast<VkVideoSessionKHR>( videoSession ),
-                                                pVideoSessionMemoryRequirementsCount,
-                                                reinterpret_cast<VkVideoGetMemoryPropertiesKHR *>( pVideoSessionMemoryRequirements ) ) );
+    return static_cast<Result>( d.vkGetVideoSessionMemoryRequirementsKHR( m_device,
+                                                                          static_cast<VkVideoSessionKHR>( videoSession ),
+                                                                          pMemoryRequirementsCount,
+                                                                          reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( pMemoryRequirements ) ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename VideoGetMemoryPropertiesKHRAllocator, typename Dispatch>
+  template <typename VideoSessionMemoryRequirementsKHRAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator>>::type
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
     Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR videoSession, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator> videoSessionMemoryRequirements;
-    uint32_t                                                                                             videoSessionMemoryRequirementsCount;
-    VkResult                                                                                             result;
+    std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator> memoryRequirements;
+    uint32_t                                                                                                         memoryRequirementsCount;
+    VkResult                                                                                                         result;
     do
     {
-      result =
-        d.vkGetVideoSessionMemoryRequirementsKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), &videoSessionMemoryRequirementsCount, nullptr );
-      if ( ( result == VK_SUCCESS ) && videoSessionMemoryRequirementsCount )
+      result = d.vkGetVideoSessionMemoryRequirementsKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), &memoryRequirementsCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && memoryRequirementsCount )
       {
-        videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+        memoryRequirements.resize( memoryRequirementsCount );
         result = d.vkGetVideoSessionMemoryRequirementsKHR( m_device,
                                                            static_cast<VkVideoSessionKHR>( videoSession ),
-                                                           &videoSessionMemoryRequirementsCount,
-                                                           reinterpret_cast<VkVideoGetMemoryPropertiesKHR *>( videoSessionMemoryRequirements.data() ) );
+                                                           &memoryRequirementsCount,
+                                                           reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
-    VULKAN_HPP_ASSERT( videoSessionMemoryRequirementsCount <= videoSessionMemoryRequirements.size() );
-    if ( videoSessionMemoryRequirementsCount < videoSessionMemoryRequirements.size() )
+    VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
+    if ( memoryRequirementsCount < memoryRequirements.size() )
     {
-      videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+      memoryRequirements.resize( memoryRequirementsCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), videoSessionMemoryRequirements );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), memoryRequirements );
   }
 
-  template <typename VideoGetMemoryPropertiesKHRAllocator,
+  template <typename VideoSessionMemoryRequirementsKHRAllocator,
             typename Dispatch,
             typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VideoGetMemoryPropertiesKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename B1::value_type, VideoSessionMemoryRequirementsKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator>>::type
-    Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR  videoSession,
-                                                  VideoGetMemoryPropertiesKHRAllocator & videoGetMemoryPropertiesKHRAllocator,
-                                                  Dispatch const &                       d ) const
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
+    Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR        videoSession,
+                                                  VideoSessionMemoryRequirementsKHRAllocator & videoSessionMemoryRequirementsKHRAllocator,
+                                                  Dispatch const &                             d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::vector<VULKAN_HPP_NAMESPACE::VideoGetMemoryPropertiesKHR, VideoGetMemoryPropertiesKHRAllocator> videoSessionMemoryRequirements(
-      videoGetMemoryPropertiesKHRAllocator );
-    uint32_t videoSessionMemoryRequirementsCount;
+    std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator> memoryRequirements(
+      videoSessionMemoryRequirementsKHRAllocator );
+    uint32_t memoryRequirementsCount;
     VkResult result;
     do
     {
-      result =
-        d.vkGetVideoSessionMemoryRequirementsKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), &videoSessionMemoryRequirementsCount, nullptr );
-      if ( ( result == VK_SUCCESS ) && videoSessionMemoryRequirementsCount )
+      result = d.vkGetVideoSessionMemoryRequirementsKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), &memoryRequirementsCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && memoryRequirementsCount )
       {
-        videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+        memoryRequirements.resize( memoryRequirementsCount );
         result = d.vkGetVideoSessionMemoryRequirementsKHR( m_device,
                                                            static_cast<VkVideoSessionKHR>( videoSession ),
-                                                           &videoSessionMemoryRequirementsCount,
-                                                           reinterpret_cast<VkVideoGetMemoryPropertiesKHR *>( videoSessionMemoryRequirements.data() ) );
+                                                           &memoryRequirementsCount,
+                                                           reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
-    VULKAN_HPP_ASSERT( videoSessionMemoryRequirementsCount <= videoSessionMemoryRequirements.size() );
-    if ( videoSessionMemoryRequirementsCount < videoSessionMemoryRequirements.size() )
+    VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
+    if ( memoryRequirementsCount < memoryRequirements.size() )
     {
-      videoSessionMemoryRequirements.resize( videoSessionMemoryRequirementsCount );
+      memoryRequirements.resize( memoryRequirementsCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), videoSessionMemoryRequirements );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), memoryRequirements );
   }
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR            videoSession,
-                                                                                   uint32_t                                         videoSessionBindMemoryCount,
-                                                                                   const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR * pVideoSessionBindMemories,
-                                                                                   Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                       videoSession,
+                                       uint32_t                                                    bindSessionMemoryInfoCount,
+                                       const VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR * pBindSessionMemoryInfos,
+                                       Dispatch const &                                            d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkBindVideoSessionMemoryKHR( m_device,
                                                                static_cast<VkVideoSessionKHR>( videoSession ),
-                                                               videoSessionBindMemoryCount,
-                                                               reinterpret_cast<const VkVideoBindMemoryKHR *>( pVideoSessionBindMemories ) ) );
+                                                               bindSessionMemoryInfoCount,
+                                                               reinterpret_cast<const VkBindVideoSessionMemoryInfoKHR *>( pBindSessionMemoryInfos ) ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
-                                          Device::bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                              videoSession,
-                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::VideoBindMemoryKHR> const & videoSessionBindMemories,
-                                       Dispatch const &                                                   d ) const
+                                          Device::bindVideoSessionMemoryKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                                         videoSession,
+                                       ArrayProxy<const VULKAN_HPP_NAMESPACE::BindVideoSessionMemoryInfoKHR> const & bindSessionMemoryInfos,
+                                       Dispatch const &                                                              d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     VkResult result = d.vkBindVideoSessionMemoryKHR( m_device,
                                                      static_cast<VkVideoSessionKHR>( videoSession ),
-                                                     videoSessionBindMemories.size(),
-                                                     reinterpret_cast<const VkVideoBindMemoryKHR *>( videoSessionBindMemories.data() ) );
+                                                     bindSessionMemoryInfos.size(),
+                                                     reinterpret_cast<const VkBindVideoSessionMemoryInfoKHR *>( bindSessionMemoryInfos.data() ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::bindVideoSessionMemoryKHR" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );

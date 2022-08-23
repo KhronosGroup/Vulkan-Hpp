@@ -117,7 +117,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 224, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 225, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -3029,9 +3029,9 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_queue ===
 
-    VkResult vkGetPhysicalDeviceVideoCapabilitiesKHR( VkPhysicalDevice          physicalDevice,
-                                                      const VkVideoProfileKHR * pVideoProfile,
-                                                      VkVideoCapabilitiesKHR *  pCapabilities ) const VULKAN_HPP_NOEXCEPT
+    VkResult vkGetPhysicalDeviceVideoCapabilitiesKHR( VkPhysicalDevice              physicalDevice,
+                                                      const VkVideoProfileInfoKHR * pVideoProfile,
+                                                      VkVideoCapabilitiesKHR *      pCapabilities ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetPhysicalDeviceVideoCapabilitiesKHR( physicalDevice, pVideoProfile, pCapabilities );
     }
@@ -3057,20 +3057,20 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkDestroyVideoSessionKHR( device, videoSession, pAllocator );
     }
 
-    VkResult vkGetVideoSessionMemoryRequirementsKHR( VkDevice                        device,
-                                                     VkVideoSessionKHR               videoSession,
-                                                     uint32_t *                      pVideoSessionMemoryRequirementsCount,
-                                                     VkVideoGetMemoryPropertiesKHR * pVideoSessionMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
+    VkResult vkGetVideoSessionMemoryRequirementsKHR( VkDevice                              device,
+                                                     VkVideoSessionKHR                     videoSession,
+                                                     uint32_t *                            pMemoryRequirementsCount,
+                                                     VkVideoSessionMemoryRequirementsKHR * pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkGetVideoSessionMemoryRequirementsKHR( device, videoSession, pVideoSessionMemoryRequirementsCount, pVideoSessionMemoryRequirements );
+      return ::vkGetVideoSessionMemoryRequirementsKHR( device, videoSession, pMemoryRequirementsCount, pMemoryRequirements );
     }
 
-    VkResult vkBindVideoSessionMemoryKHR( VkDevice                     device,
-                                          VkVideoSessionKHR            videoSession,
-                                          uint32_t                     videoSessionBindMemoryCount,
-                                          const VkVideoBindMemoryKHR * pVideoSessionBindMemories ) const VULKAN_HPP_NOEXCEPT
+    VkResult vkBindVideoSessionMemoryKHR( VkDevice                                device,
+                                          VkVideoSessionKHR                       videoSession,
+                                          uint32_t                                bindSessionMemoryInfoCount,
+                                          const VkBindVideoSessionMemoryInfoKHR * pBindSessionMemoryInfos ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkBindVideoSessionMemoryKHR( device, videoSession, videoSessionBindMemoryCount, pVideoSessionBindMemories );
+      return ::vkBindVideoSessionMemoryKHR( device, videoSession, bindSessionMemoryInfoCount, pBindSessionMemoryInfos );
     }
 
     VkResult vkCreateVideoSessionParametersKHR( VkDevice                                      device,
@@ -7492,7 +7492,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
   template <>
-  struct StructExtends<QueueFamilyQueryResultStatusProperties2KHR, QueueFamilyProperties2>
+  struct StructExtends<QueueFamilyQueryResultStatusPropertiesKHR, QueueFamilyProperties2>
   {
     enum
     {
@@ -7500,7 +7500,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoQueueFamilyProperties2KHR, QueueFamilyProperties2>
+  struct StructExtends<QueueFamilyVideoPropertiesKHR, QueueFamilyProperties2>
   {
     enum
     {
@@ -7508,7 +7508,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoProfileKHR, QueryPoolCreateInfo>
+  struct StructExtends<VideoProfileInfoKHR, QueryPoolCreateInfo>
   {
     enum
     {
@@ -7516,7 +7516,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoProfilesKHR, PhysicalDeviceImageFormatInfo2>
+  struct StructExtends<VideoProfileListInfoKHR, PhysicalDeviceImageFormatInfo2>
   {
     enum
     {
@@ -7524,7 +7524,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoProfilesKHR, PhysicalDeviceVideoFormatInfoKHR>
+  struct StructExtends<VideoProfileListInfoKHR, PhysicalDeviceVideoFormatInfoKHR>
   {
     enum
     {
@@ -7532,7 +7532,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoProfilesKHR, ImageCreateInfo>
+  struct StructExtends<VideoProfileListInfoKHR, ImageCreateInfo>
   {
     enum
     {
@@ -7540,7 +7540,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoProfilesKHR, BufferCreateInfo>
+  struct StructExtends<VideoProfileListInfoKHR, BufferCreateInfo>
   {
     enum
     {
@@ -7656,7 +7656,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH264EmitPictureParametersEXT, VideoEncodeInfoKHR>
+  struct StructExtends<VideoEncodeH264EmitPictureParametersInfoEXT, VideoEncodeInfoKHR>
   {
     enum
     {
@@ -7664,7 +7664,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH264ProfileEXT, VideoProfileKHR>
+  struct StructExtends<VideoEncodeH264ProfileInfoEXT, VideoProfileInfoKHR>
   {
     enum
     {
@@ -7672,7 +7672,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH264ProfileEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoEncodeH264ProfileInfoEXT, QueryPoolCreateInfo>
   {
     enum
     {
@@ -7680,7 +7680,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH264RateControlInfoEXT, VideoEncodeRateControlInfoKHR>
+  struct StructExtends<VideoEncodeH264RateControlInfoEXT, VideoCodingControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH264RateControlLayerInfoEXT, VideoCodingControlInfoKHR>
   {
     enum
     {
@@ -7732,7 +7740,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH265EmitPictureParametersEXT, VideoEncodeInfoKHR>
+  struct StructExtends<VideoEncodeH265EmitPictureParametersInfoEXT, VideoEncodeInfoKHR>
   {
     enum
     {
@@ -7740,7 +7748,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH265ProfileEXT, VideoProfileKHR>
+  struct StructExtends<VideoEncodeH265ProfileInfoEXT, VideoProfileInfoKHR>
   {
     enum
     {
@@ -7748,7 +7756,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH265ProfileEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoEncodeH265ProfileInfoEXT, QueryPoolCreateInfo>
   {
     enum
     {
@@ -7756,7 +7764,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoEncodeH265RateControlInfoEXT, VideoEncodeRateControlInfoKHR>
+  struct StructExtends<VideoEncodeH265RateControlInfoEXT, VideoCodingControlInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<VideoEncodeH265RateControlLayerInfoEXT, VideoCodingControlInfoKHR>
   {
     enum
     {
@@ -7776,7 +7792,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
   template <>
-  struct StructExtends<VideoDecodeH264ProfileEXT, VideoProfileKHR>
+  struct StructExtends<VideoDecodeH264ProfileInfoEXT, VideoProfileInfoKHR>
   {
     enum
     {
@@ -7784,7 +7800,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoDecodeH264ProfileEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoDecodeH264ProfileInfoEXT, QueryPoolCreateInfo>
   {
     enum
     {
@@ -7824,7 +7840,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoDecodeH264MvcEXT, VideoDecodeH264PictureInfoEXT>
+  struct StructExtends<VideoDecodeH264MvcInfoEXT, VideoDecodeH264PictureInfoEXT>
   {
     enum
     {
@@ -7832,7 +7848,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
   {
     enum
     {
@@ -8864,7 +8880,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h265 ===
   template <>
-  struct StructExtends<VideoDecodeH265ProfileEXT, VideoProfileKHR>
+  struct StructExtends<VideoDecodeH265ProfileInfoEXT, VideoProfileInfoKHR>
   {
     enum
     {
@@ -8872,7 +8888,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoDecodeH265ProfileEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoDecodeH265ProfileInfoEXT, QueryPoolCreateInfo>
   {
     enum
     {
@@ -8912,7 +8928,7 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
-  struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotKHR>
+  struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
   {
     enum
     {
@@ -10479,24 +10495,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  //=== VK_ARM_rasterization_order_attachment_access ===
-  template <>
-  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_EXT_rgba10x6_formats ===
   template <>
   struct StructExtends<PhysicalDeviceRGBA10X6FormatsFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11246,6 +11244,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PipelineShaderStageModuleIdentifierCreateInfoEXT, PipelineShaderStageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_rasterization_order_attachment_access ===
+  template <>
+  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT, DeviceCreateInfo>
   {
     enum
     {

@@ -624,6 +624,33 @@ private:
                                         std::string const &              dataType,
                                         std::string const &              returnType,
                                         std::string const &              returnVariable ) const;
+  std::string generateDataDeclarations1Return( CommandData const &              commandData,
+                                               std::vector<size_t> const &      returnParams,
+                                               std::map<size_t, size_t> const & vectorParams,
+                                               std::set<size_t> const &         templatedParams,
+                                               bool                             singular,
+                                               bool                             withAllocator,
+                                               bool                             chained,
+                                               bool                             unique,
+                                               std::vector<std::string> const & dataTypes,
+                                               std::string const &              dataType,
+                                               std::string const &              returnType,
+                                               std::string const &              returnVariable ) const;
+  std::string generateDataDeclarations2Returns( CommandData const &              commandData,
+                                                std::vector<size_t> const &      returnParams,
+                                                std::map<size_t, size_t> const & vectorParams,
+                                                bool                             singular,
+                                                bool                             withAllocator,
+                                                bool                             chained,
+                                                bool                             raii,
+                                                std::vector<std::string> const & dataTypes,
+                                                std::string const &              dataType,
+                                                std::string const &              returnVariable ) const;
+  std::string generateDataDeclarations3Returns( CommandData const &              commandData,
+                                                std::vector<size_t> const &      returnParams,
+                                                bool                             withAllocator,
+                                                bool                             raii,
+                                                std::vector<std::string> const & dataTypes ) const;
   std::string generateDataPreparation( CommandData const &              commandData,
                                        size_t                           initialSkipCount,
                                        std::vector<size_t> const &      returnParams,
@@ -829,8 +856,13 @@ private:
                                        bool                unique,
                                        bool                enumerating,
                                        bool                raii ) const;
-  std::string generateReturnType(
-    CommandData const & commandData, std::vector<size_t> const & returnParams, bool unique, bool chained, bool raii, std::string const & dataType ) const;
+  std::string generateReturnType( CommandData const &              commandData,
+                                  std::vector<size_t> const &      returnParams,
+                                  std::map<size_t, size_t> const & vectorParams,
+                                  bool                             unique,
+                                  bool                             chained,
+                                  bool                             raii,
+                                  std::string const &              dataType ) const;
   std::string generateReturnVariable( CommandData const &              commandData,
                                       std::vector<size_t> const &      returnParams,
                                       std::map<size_t, size_t> const & vectorParams,

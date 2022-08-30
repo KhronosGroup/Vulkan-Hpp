@@ -10,7 +10,7 @@
 
 #include <vulkan/vulkan_enums.hpp>
 
-#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+#if __cpp_lib_format
 #  include <format>  // std::format
 #else
 #  include <sstream>  // std::stringstream
@@ -2949,7 +2949,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::string toHexString( uint32_t value )
   {
-#if ( ( 20 <= VULKAN_HPP_CPP_VERSION ) && __has_include( <format> ) )
+#if __cpp_lib_format
     return std::format( "{:x}", value );
 #else
     std::stringstream stream;

@@ -169,7 +169,7 @@ option (VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sam
 
 function(vulkan_hpp__setup_sample)
   set(options)
-  set(oneValueArgs FOLDER NAME)
+  set(oneValueArgs FOLDER NAME PCH_REUSE)
   set(multiValueArgs HEADERS INCLUDE_DIRS LIBS PCH SOURCES)
 
   cmake_parse_arguments(TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -188,8 +188,12 @@ function(vulkan_hpp__setup_sample)
   if (TARGET_FOLDER)
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}")
   endif()
-  if (VULKAN_HPP_PRECOMPILE AND TARGET_PCH)
-    target_precompile_headers(${TARGET_NAME} PRIVATE "${TARGET_PCH}")
+  if (VULKAN_HPP_PRECOMPILE)
+    if (TARGET_PCH_REUSE)
+      target_precompile_headers(${TARGET_NAME} REUSE_FROM "${TARGET_PCH_REUSE}")
+    elseif (TARGET_PCH)
+      target_precompile_headers(${TARGET_NAME} PRIVATE "${TARGET_PCH}")
+    endif()
   endif()
   if (TARGET_LIBS)
     target_link_libraries(${TARGET_NAME} PRIVATE "${TARGET_LIBS}")
@@ -232,7 +236,7 @@ function(vulkan_hpp__setup_sample_dynamic)
   vulkan_hpp__setup_sample(
     NAME         ${TARGET_NAME}
     FOLDER       Samples
-    PCH          <vulkan/vulkan.hpp>
+    PCH_REUSE    utils
     INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
     HEADERS      ${TARGET_HEADERS}
     SOURCES      ${TARGET_SOURCES}
@@ -253,7 +257,7 @@ function(vulkan_hpp__setup_sample_raii)
   vulkan_hpp__setup_sample(
     NAME         RAII_${TARGET_NAME}
     FOLDER       RAII_Samples
-    PCH          <vulkan/vulkan_raii.hpp>
+    PCH_REUSE    utils
     INCLUDE_DIRS ${TARGET_INCLUDE_DIRS}
     HEADERS      ${TARGET_HEADERS}
     SOURCES      ${TARGET_SOURCES}

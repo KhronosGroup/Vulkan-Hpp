@@ -555,6 +555,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
   struct VideoDecodeCapabilitiesKHR;
+  struct VideoDecodeUsageInfoKHR;
   struct VideoDecodeInfoKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -1184,6 +1185,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_encode_queue ===
   struct VideoEncodeInfoKHR;
   struct VideoEncodeCapabilitiesKHR;
+  struct VideoEncodeUsageInfoKHR;
   struct VideoEncodeRateControlInfoKHR;
   struct VideoEncodeRateControlLayerInfoKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -1242,6 +1244,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct AccelerationStructureSRTMotionInstanceNV;
   struct SRTDataNV;
   struct PhysicalDeviceRayTracingMotionBlurFeaturesNV;
+
+  //=== VK_EXT_mesh_shader ===
+  struct PhysicalDeviceMeshShaderFeaturesEXT;
+  struct PhysicalDeviceMeshShaderPropertiesEXT;
+  struct DrawMeshTasksIndirectCommandEXT;
 
   //=== VK_EXT_ycbcr_2plane_444_formats ===
   struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT;
@@ -1400,6 +1407,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE;
   struct DescriptorSetBindingReferenceVALVE;
   struct DescriptorSetLayoutHostMappingInfoVALVE;
+
+  //=== VK_EXT_depth_clamp_zero_one ===
+  struct PhysicalDeviceDepthClampZeroOneFeaturesEXT;
 
   //=== VK_EXT_non_seamless_cube_map ===
   struct PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
@@ -4657,6 +4667,30 @@ namespace VULKAN_HPP_NAMESPACE
     void setFragmentShadingRateEnumNV( VULKAN_HPP_NAMESPACE::FragmentShadingRateNV                  shadingRate,
                                        const VULKAN_HPP_NAMESPACE::FragmentShadingRateCombinerOpKHR combinerOps[2],
                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_EXT_mesh_shader ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMeshTasksEXT( uint32_t           groupCountX,
+                           uint32_t           groupCountY,
+                           uint32_t           groupCountZ,
+                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMeshTasksIndirectEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                   VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                   uint32_t                         drawCount,
+                                   uint32_t                         stride,
+                                   Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawMeshTasksIndirectCountEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                        VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                        VULKAN_HPP_NAMESPACE::Buffer     countBuffer,
+                                        VULKAN_HPP_NAMESPACE::DeviceSize countBufferOffset,
+                                        uint32_t                         maxDrawCount,
+                                        uint32_t                         stride,
+                                        Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_KHR_copy_commands2 ===
 

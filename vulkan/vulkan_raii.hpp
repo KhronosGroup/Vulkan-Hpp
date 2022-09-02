@@ -984,6 +984,11 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_EXT_line_rasterization ===
         vkCmdSetLineStippleEXT = PFN_vkCmdSetLineStippleEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleEXT" ) );
 
+        //=== VK_EXT_mesh_shader ===
+        vkCmdDrawMeshTasksEXT              = PFN_vkCmdDrawMeshTasksEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksEXT" ) );
+        vkCmdDrawMeshTasksIndirectEXT      = PFN_vkCmdDrawMeshTasksIndirectEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectEXT" ) );
+        vkCmdDrawMeshTasksIndirectCountEXT = PFN_vkCmdDrawMeshTasksIndirectCountEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectCountEXT" ) );
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_metal_objects ===
         vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetDeviceProcAddr( device, "vkExportMetalObjectsEXT" ) );
@@ -1798,6 +1803,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_line_rasterization ===
       PFN_vkCmdSetLineStippleEXT vkCmdSetLineStippleEXT = 0;
+
+      //=== VK_EXT_mesh_shader ===
+      PFN_vkCmdDrawMeshTasksEXT              vkCmdDrawMeshTasksEXT              = 0;
+      PFN_vkCmdDrawMeshTasksIndirectEXT      vkCmdDrawMeshTasksIndirectEXT      = 0;
+      PFN_vkCmdDrawMeshTasksIndirectCountEXT vkCmdDrawMeshTasksIndirectCountEXT = 0;
 
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
@@ -5257,6 +5267,22 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setFragmentShadingRateEnumNV( VULKAN_HPP_NAMESPACE::FragmentShadingRateNV                  shadingRate,
                                          const VULKAN_HPP_NAMESPACE::FragmentShadingRateCombinerOpKHR combinerOps[2] ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_mesh_shader ===
+
+      void drawMeshTasksEXT( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT;
+
+      void drawMeshTasksIndirectEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                     VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                     uint32_t                         drawCount,
+                                     uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT;
+
+      void drawMeshTasksIndirectCountEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                          VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                          VULKAN_HPP_NAMESPACE::Buffer     countBuffer,
+                                          VULKAN_HPP_NAMESPACE::DeviceSize countBufferOffset,
+                                          uint32_t                         maxDrawCount,
+                                          uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_KHR_copy_commands2 ===
 
@@ -16586,6 +16612,46 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkCmdSetFragmentShadingRateEnumNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                           static_cast<VkFragmentShadingRateNV>( shadingRate ),
                                                           reinterpret_cast<const VkFragmentShadingRateCombinerOpKHR *>( combinerOps ) );
+    }
+
+    //=== VK_EXT_mesh_shader ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawMeshTasksEXT( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawMeshTasksEXT && "Function <vkCmdDrawMeshTasksEXT> needs extension <VK_EXT_mesh_shader> enabled!" );
+
+      getDispatcher()->vkCmdDrawMeshTasksEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), groupCountX, groupCountY, groupCountZ );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawMeshTasksIndirectEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                                                    VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                                                    uint32_t                         drawCount,
+                                                                    uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawMeshTasksIndirectEXT &&
+                         "Function <vkCmdDrawMeshTasksIndirectEXT> needs extension <VK_EXT_mesh_shader> enabled!" );
+
+      getDispatcher()->vkCmdDrawMeshTasksIndirectEXT(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBuffer>( buffer ), static_cast<VkDeviceSize>( offset ), drawCount, stride );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawMeshTasksIndirectCountEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                                                         VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                                                         VULKAN_HPP_NAMESPACE::Buffer     countBuffer,
+                                                                         VULKAN_HPP_NAMESPACE::DeviceSize countBufferOffset,
+                                                                         uint32_t                         maxDrawCount,
+                                                                         uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawMeshTasksIndirectCountEXT &&
+                         "Function <vkCmdDrawMeshTasksIndirectCountEXT> needs extension <VK_EXT_mesh_shader> enabled!" );
+
+      getDispatcher()->vkCmdDrawMeshTasksIndirectCountEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                           static_cast<VkBuffer>( buffer ),
+                                                           static_cast<VkDeviceSize>( offset ),
+                                                           static_cast<VkBuffer>( countBuffer ),
+                                                           static_cast<VkDeviceSize>( countBufferOffset ),
+                                                           maxDrawCount,
+                                                           stride );
     }
 
     //=== VK_KHR_copy_commands2 ===

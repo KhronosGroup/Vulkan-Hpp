@@ -18202,6 +18202,46 @@ namespace VULKAN_HPP_NAMESPACE
       m_commandBuffer, static_cast<VkFragmentShadingRateNV>( shadingRate ), reinterpret_cast<const VkFragmentShadingRateCombinerOpKHR *>( combinerOps ) );
   }
 
+  //=== VK_EXT_mesh_shader ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::drawMeshTasksEXT( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDrawMeshTasksEXT( m_commandBuffer, groupCountX, groupCountY, groupCountZ );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::drawMeshTasksIndirectEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                                                  VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                                                  uint32_t                         drawCount,
+                                                                  uint32_t                         stride,
+                                                                  Dispatch const &                 d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDrawMeshTasksIndirectEXT( m_commandBuffer, static_cast<VkBuffer>( buffer ), static_cast<VkDeviceSize>( offset ), drawCount, stride );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::drawMeshTasksIndirectCountEXT( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                                                       VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                                                       VULKAN_HPP_NAMESPACE::Buffer     countBuffer,
+                                                                       VULKAN_HPP_NAMESPACE::DeviceSize countBufferOffset,
+                                                                       uint32_t                         maxDrawCount,
+                                                                       uint32_t                         stride,
+                                                                       Dispatch const &                 d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDrawMeshTasksIndirectCountEXT( m_commandBuffer,
+                                          static_cast<VkBuffer>( buffer ),
+                                          static_cast<VkDeviceSize>( offset ),
+                                          static_cast<VkBuffer>( countBuffer ),
+                                          static_cast<VkDeviceSize>( countBufferOffset ),
+                                          maxDrawCount,
+                                          stride );
+  }
+
   //=== VK_KHR_copy_commands2 ===
 
   template <typename Dispatch>

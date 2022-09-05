@@ -117,7 +117,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 225, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 226, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -4915,6 +4915,30 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdSetFragmentShadingRateEnumNV( commandBuffer, shadingRate, combinerOps );
     }
 
+    //=== VK_EXT_mesh_shader ===
+
+    void vkCmdDrawMeshTasksEXT( VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawMeshTasksEXT( commandBuffer, groupCountX, groupCountY, groupCountZ );
+    }
+
+    void vkCmdDrawMeshTasksIndirectEXT( VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawMeshTasksIndirectEXT( commandBuffer, buffer, offset, drawCount, stride );
+    }
+
+    void vkCmdDrawMeshTasksIndirectCountEXT( VkCommandBuffer commandBuffer,
+                                             VkBuffer        buffer,
+                                             VkDeviceSize    offset,
+                                             VkBuffer        countBuffer,
+                                             VkDeviceSize    countBufferOffset,
+                                             uint32_t        maxDrawCount,
+                                             uint32_t        stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawMeshTasksIndirectCountEXT( commandBuffer, buffer, offset, countBuffer, countBufferOffset, maxDrawCount, stride );
+    }
+
     //=== VK_KHR_copy_commands2 ===
 
     void vkCmdCopyBuffer2KHR( VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
@@ -7559,6 +7583,14 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+  template <>
+  struct StructExtends<VideoDecodeUsageInfoKHR, VideoProfileInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_dedicated_allocation ===
@@ -9948,6 +9980,14 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
   template <>
+  struct StructExtends<VideoEncodeUsageInfoKHR, VideoProfileInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
   struct StructExtends<VideoEncodeRateControlInfoKHR, VideoCodingControlInfoKHR>
   {
     enum
@@ -10306,6 +10346,32 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_mesh_shader ===
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMeshShaderPropertiesEXT, PhysicalDeviceProperties2>
   {
     enum
     {
@@ -11038,6 +11104,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_depth_clamp_zero_one ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesEXT, DeviceCreateInfo>
   {
     enum
     {
@@ -12239,6 +12323,11 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_NV_fragment_shading_rate_enums ===
     PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV = 0;
 
+    //=== VK_EXT_mesh_shader ===
+    PFN_vkCmdDrawMeshTasksEXT              vkCmdDrawMeshTasksEXT              = 0;
+    PFN_vkCmdDrawMeshTasksIndirectEXT      vkCmdDrawMeshTasksIndirectEXT      = 0;
+    PFN_vkCmdDrawMeshTasksIndirectCountEXT vkCmdDrawMeshTasksIndirectCountEXT = 0;
+
     //=== VK_KHR_copy_commands2 ===
     PFN_vkCmdCopyBuffer2KHR        vkCmdCopyBuffer2KHR        = 0;
     PFN_vkCmdCopyImage2KHR         vkCmdCopyImage2KHR         = 0;
@@ -13415,6 +13504,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_fragment_shading_rate_enums ===
       vkCmdSetFragmentShadingRateEnumNV = PFN_vkCmdSetFragmentShadingRateEnumNV( vkGetInstanceProcAddr( instance, "vkCmdSetFragmentShadingRateEnumNV" ) );
 
+      //=== VK_EXT_mesh_shader ===
+      vkCmdDrawMeshTasksEXT              = PFN_vkCmdDrawMeshTasksEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMeshTasksEXT" ) );
+      vkCmdDrawMeshTasksIndirectEXT      = PFN_vkCmdDrawMeshTasksIndirectEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMeshTasksIndirectEXT" ) );
+      vkCmdDrawMeshTasksIndirectCountEXT = PFN_vkCmdDrawMeshTasksIndirectCountEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMeshTasksIndirectCountEXT" ) );
+
       //=== VK_KHR_copy_commands2 ===
       vkCmdCopyBuffer2KHR = PFN_vkCmdCopyBuffer2KHR( vkGetInstanceProcAddr( instance, "vkCmdCopyBuffer2KHR" ) );
       if ( !vkCmdCopyBuffer2 )
@@ -14282,6 +14376,11 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_fragment_shading_rate_enums ===
       vkCmdSetFragmentShadingRateEnumNV = PFN_vkCmdSetFragmentShadingRateEnumNV( vkGetDeviceProcAddr( device, "vkCmdSetFragmentShadingRateEnumNV" ) );
+
+      //=== VK_EXT_mesh_shader ===
+      vkCmdDrawMeshTasksEXT              = PFN_vkCmdDrawMeshTasksEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksEXT" ) );
+      vkCmdDrawMeshTasksIndirectEXT      = PFN_vkCmdDrawMeshTasksIndirectEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectEXT" ) );
+      vkCmdDrawMeshTasksIndirectCountEXT = PFN_vkCmdDrawMeshTasksIndirectCountEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectCountEXT" ) );
 
       //=== VK_KHR_copy_commands2 ===
       vkCmdCopyBuffer2KHR = PFN_vkCmdCopyBuffer2KHR( vkGetDeviceProcAddr( device, "vkCmdCopyBuffer2KHR" ) );

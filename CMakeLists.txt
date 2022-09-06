@@ -139,7 +139,7 @@ string(REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp})
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBASE_PATH="${CMAKE_SOURCE_DIR}")
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)

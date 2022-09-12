@@ -1448,6 +1448,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
   using PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesARM = PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT;
 
+  //=== VK_EXT_legacy_dithering ===
+  struct PhysicalDeviceLegacyDitheringFeaturesEXT;
+
   //=== VK_QCOM_tile_properties ===
   struct PhysicalDeviceTilePropertiesFeaturesQCOM;
   struct TilePropertiesQCOM;

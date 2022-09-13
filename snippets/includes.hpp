@@ -19,6 +19,7 @@
 #  error "vulkan.hpp needs at least c++ standard version 11"
 #endif
 
+#include <algorithm>
 #include <array>   // ArrayWrapperND
 #include <string>  // std::string
 #include <vulkan/vulkan.h>
@@ -37,10 +38,6 @@
 
 #if !defined( VULKAN_HPP_NO_EXCEPTIONS )
 #  include <system_error>  // std::is_error_code_enum
-#endif
-
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-#  include <algorithm>  // std::transform
 #endif
 
 #if defined( VULKAN_HPP_NO_CONSTRUCTORS )

@@ -38,6 +38,20 @@ To build the local samples and tests you'll have to clone this repository and ru
 
 Optional: To update the Vulkan-Hpp and its submodules execute ```git pull --recurse-submodules```.
 
+### Installing vulkan-hpp using vcpkg
+
+You can download and install vulkan-hpp using the [vcpkg](https://github.com/Microsoft/vcpkg) dependency manager:
+
+```bash
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+./vcpkg integrate install
+./vcpkg install vulkan-hpp
+```
+
+The vulkan-hpp port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please [create an issue or pull request](https://github.com/Microsoft/vcpkg) on the vcpkg repository.
+
 ### Optional Features
 
 #### Formatting

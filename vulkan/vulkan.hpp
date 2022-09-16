@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 227, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 228, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -10618,40 +10618,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  //=== VK_VALVE_mutable_descriptor_type ===
-  template <>
-  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesVALVE, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorSetLayoutCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-  template <>
-  struct StructExtends<MutableDescriptorTypeCreateInfoVALVE, DescriptorPoolCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_EXT_vertex_input_dynamic_state ===
   template <>
   struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11403,6 +11369,40 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<AmigoProfilingSubmitInfoSEC, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_mutable_descriptor_type ===
+  template <>
+  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MutableDescriptorTypeCreateInfoEXT, DescriptorSetLayoutCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<MutableDescriptorTypeCreateInfoEXT, DescriptorPoolCreateInfo>
   {
     enum
     {

@@ -10731,6 +10731,7 @@ void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const * eleme
                        { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
                        { "renderpass", { "both", "inside", "outside" } },
                        { "successcodes", {} },
+                       { "tasks", { "action", "indirection", "state", "synchronization" } },
                        { "videocoding", { "both", "inside", "outside" } } } );
 
     std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );

@@ -899,8 +899,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FreeDescriptorSet | ";
     if ( value & DescriptorPoolCreateFlagBits::eUpdateAfterBind )
       result += "UpdateAfterBind | ";
-    if ( value & DescriptorPoolCreateFlagBits::eHostOnlyVALVE )
-      result += "HostOnlyVALVE | ";
+    if ( value & DescriptorPoolCreateFlagBits::eHostOnlyEXT )
+      result += "HostOnlyEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -920,8 +920,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "UpdateAfterBindPool | ";
     if ( value & DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR )
       result += "PushDescriptorKHR | ";
-    if ( value & DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolVALVE )
-      result += "HostOnlyPoolVALVE | ";
+    if ( value & DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolEXT )
+      result += "HostOnlyPoolEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -3740,8 +3740,6 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
       case StructureType::eDirectfbSurfaceCreateInfoEXT: return "DirectfbSurfaceCreateInfoEXT";
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
-      case StructureType::ePhysicalDeviceMutableDescriptorTypeFeaturesVALVE: return "PhysicalDeviceMutableDescriptorTypeFeaturesVALVE";
-      case StructureType::eMutableDescriptorTypeCreateInfoVALVE: return "MutableDescriptorTypeCreateInfoVALVE";
       case StructureType::ePhysicalDeviceVertexInputDynamicStateFeaturesEXT: return "PhysicalDeviceVertexInputDynamicStateFeaturesEXT";
       case StructureType::eVertexInputBindingDescription2EXT: return "VertexInputBindingDescription2EXT";
       case StructureType::eVertexInputAttributeDescription2EXT: return "VertexInputAttributeDescription2EXT";
@@ -3820,6 +3818,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
       case StructureType::ePhysicalDeviceAmigoProfilingFeaturesSEC: return "PhysicalDeviceAmigoProfilingFeaturesSEC";
       case StructureType::eAmigoProfilingSubmitInfoSEC: return "AmigoProfilingSubmitInfoSEC";
+      case StructureType::ePhysicalDeviceMutableDescriptorTypeFeaturesEXT: return "PhysicalDeviceMutableDescriptorTypeFeaturesEXT";
+      case StructureType::eMutableDescriptorTypeCreateInfoEXT: return "MutableDescriptorTypeCreateInfoEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5142,7 +5142,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case DescriptorPoolCreateFlagBits::eFreeDescriptorSet: return "FreeDescriptorSet";
       case DescriptorPoolCreateFlagBits::eUpdateAfterBind: return "UpdateAfterBind";
-      case DescriptorPoolCreateFlagBits::eHostOnlyVALVE: return "HostOnlyVALVE";
+      case DescriptorPoolCreateFlagBits::eHostOnlyEXT: return "HostOnlyEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5153,7 +5153,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool: return "UpdateAfterBindPool";
       case DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR: return "PushDescriptorKHR";
-      case DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolVALVE: return "HostOnlyPoolVALVE";
+      case DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolEXT: return "HostOnlyPoolEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5176,9 +5176,9 @@ namespace VULKAN_HPP_NAMESPACE
       case DescriptorType::eInlineUniformBlock: return "InlineUniformBlock";
       case DescriptorType::eAccelerationStructureKHR: return "AccelerationStructureKHR";
       case DescriptorType::eAccelerationStructureNV: return "AccelerationStructureNV";
-      case DescriptorType::eMutableVALVE: return "MutableVALVE";
       case DescriptorType::eSampleWeightImageQCOM: return "SampleWeightImageQCOM";
       case DescriptorType::eBlockMatchImageQCOM: return "BlockMatchImageQCOM";
+      case DescriptorType::eMutableEXT: return "MutableEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

@@ -1296,11 +1296,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_ray_query ===
   struct PhysicalDeviceRayQueryFeaturesKHR;
 
-  //=== VK_VALVE_mutable_descriptor_type ===
-  struct PhysicalDeviceMutableDescriptorTypeFeaturesVALVE;
-  struct MutableDescriptorTypeListVALVE;
-  struct MutableDescriptorTypeCreateInfoVALVE;
-
   //=== VK_EXT_vertex_input_dynamic_state ===
   struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT;
   struct VertexInputBindingDescription2EXT;
@@ -1458,6 +1453,14 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_SEC_amigo_profiling ===
   struct PhysicalDeviceAmigoProfilingFeaturesSEC;
   struct AmigoProfilingSubmitInfoSEC;
+
+  //=== VK_EXT_mutable_descriptor_type ===
+  struct PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
+  using PhysicalDeviceMutableDescriptorTypeFeaturesVALVE = PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
+  struct MutableDescriptorTypeListEXT;
+  using MutableDescriptorTypeListVALVE = MutableDescriptorTypeListEXT;
+  struct MutableDescriptorTypeCreateInfoEXT;
+  using MutableDescriptorTypeCreateInfoVALVE = MutableDescriptorTypeCreateInfoEXT;
 
   //===============
   //=== HANDLEs ===

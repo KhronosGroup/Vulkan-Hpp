@@ -20,16 +20,18 @@
 #include <regex>
 #include <sstream>
 
-void                                checkAttributes( int                                                  line,
-                                                     std::map<std::string, std::string> const &           attributes,
-                                                     std::map<std::string, std::set<std::string>> const & required,
-                                                     std::map<std::string, std::set<std::string>> const & optional );
-void                                checkElements( int                                               line,
-                                                   std::vector<tinyxml2::XMLElement const *> const & elements,
-                                                   std::map<std::string, bool> const &               required,
-                                                   std::set<std::string> const &                     optional = {} );
-void                                checkForError( bool condition, int line, std::string const & message );
-void                                checkForWarning( bool condition, int line, std::string const & message );
+void checkAttributes( int                                                  line,
+                      std::map<std::string, std::string> const &           attributes,
+                      std::map<std::string, std::set<std::string>> const & required,
+                      std::map<std::string, std::set<std::string>> const & optional );
+void checkElements( int                                               line,
+                    std::vector<tinyxml2::XMLElement const *> const & elements,
+                    std::map<std::string, bool> const &               required,
+                    std::set<std::string> const &                     optional = {} );
+void checkForError( bool condition, int line, std::string const & message );
+void checkForWarning( bool condition, int line, std::string const & message );
+template <class InputIt, class UnaryPredicate>
+std::vector<InputIt>                findAll( InputIt first, InputIt last, UnaryPredicate p );
 std::string                         findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
 std::string                         generateCArraySizes( std::vector<std::string> const & sizes );
 std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags );
@@ -44,7 +46,6 @@ template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node );
 std::string                                      readSnippet( std::string const & snippetFile );
-void                                             replaceAll( std::string & str, std::string const & from, std::string const & to );
 std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
 std::string                                      startLowerCase( std::string const & input );
 std::string                                      startUpperCase( std::string const & input );
@@ -54,28 +55,11 @@ std::string                                      stripPrefix( std::string const 
 std::string                                      toCamelCase( std::string const & value );
 std::string                                      toUpperCase( std::string const & name );
 std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
-template <typename StringContainer>
-std::string toString( StringContainer const & strings );
-std::string toString( tinyxml2::XMLError error );
-std::string trim( std::string const & input );
-std::string trimEnd( std::string const & input );
-std::string trimStars( std::string const & input );
-void        writeToFile( std::string const & str, std::string const & fileName );
-
-template <class InputIt, class UnaryPredicate>
-std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
-{
-  std::vector<InputIt> result;
-  while ( first != last )
-  {
-    if ( p( *first ) )
-    {
-      result.push_back( first );
-    }
-    ++first;
-  }
-  return result;
-}
+std::string                                      toString( tinyxml2::XMLError error );
+std::string                                      trim( std::string const & input );
+std::string                                      trimEnd( std::string const & input );
+std::string                                      trimStars( std::string const & input );
+void                                             writeToFile( std::string const & str, std::string const & fileName );
 
 const std::set<std::string> altLens             = { "2*VK_UUID_SIZE", "codeSize / 4", "(rasterizationSamples + 31) / 32", "(samples + 31) / 32" };
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
@@ -102,15 +86,15 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document )
   {
     addMissingFlagBits( feature.second.requireData, feature.first );
   }
-  for ( auto & ext : m_extensions )
+  for ( auto & extension : m_extensions )
   {
-    addMissingFlagBits( ext.second.requireData, ext.first );
+    addMissingFlagBits( extension.second.requireData, extension.first );
   }
 
   // determine the extensionsByNumber map
   for ( auto extensionIt = m_extensions.begin(); extensionIt != m_extensions.end(); ++extensionIt )
   {
-    int number = atoi( extensionIt->second.number.c_str() );
+    int number = stoi( extensionIt->second.number );
     assert( m_extensionsByNumber.find( number ) == m_extensionsByNumber.end() );
     m_extensionsByNumber[number] = extensionIt;
   }
@@ -459,17 +443,8 @@ ${staticAssertions}
 #endif
 )";
 
-  std::string staticAssertions;
-  for ( auto const & feature : m_features )
-  {
-    staticAssertions += generateStaticAssertions( feature.second.requireData, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    staticAssertions += generateStaticAssertions( extIt.second->second.requireData, extIt.second->first );
-  }
-
-  std::string str = replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", staticAssertions } } );
+  std::string str =
+    replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
 
   writeToFile( str, static_assertions_hpp );
 }
@@ -533,17 +508,15 @@ void VulkanHppGenerator::prepareRAIIHandles()
 {
   // filter out functions that are not usefull on this level of abstraction (like vkGetInstanceProcAddr)
   // and all the construction and destruction functions, as they are used differently
-  for ( auto & handle : m_handles )
+  assert( m_handles.begin()->first.empty() );
+  for ( auto handleIt = std::next( m_handles.begin() ); handleIt != m_handles.end(); ++handleIt )
   {
-    if ( !handle.first.empty() )
+    handleIt->second.destructorIt = determineRAIIHandleDestructor( handleIt->first );
+    if ( handleIt->second.destructorIt != m_commands.end() )
     {
-      handle.second.destructorIt = determineRAIIHandleDestructor( handle.first );
-      if ( handle.second.destructorIt != m_commands.end() )
-      {
-        m_RAIISpecialFunctions.insert( handle.second.destructorIt->first );
-      }
-      handle.second.constructorIts = determineRAIIHandleConstructors( handle.first, handle.second.destructorIt );
+      m_RAIISpecialFunctions.insert( handleIt->second.destructorIt->first );
     }
+    handleIt->second.constructorIts = determineRAIIHandleConstructors( handleIt->first, handleIt->second.destructorIt );
   }
 
   distributeSecondLevelCommands( m_RAIISpecialFunctions );
@@ -575,7 +548,7 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
   {
     handleIt = m_handles.find( "" );
   }
-  checkForError( handleIt != m_handles.end(), commandData.xmlLine, "could not find a handle to hold command <" + name + ">" );
+  assert( handleIt != m_handles.end() );
   commandData.handle = handleIt->first;
 
   // add this command to the list of commands
@@ -597,7 +570,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
       auto bitmaskIt = m_bitmasks.find( type );
       if ( ( bitmaskIt != m_bitmasks.end() ) && bitmaskIt->second.requirements.empty() )
       {
-        // generate the flagBits enum name out of the bitmask name
+        // generate the flagBits enum name out of the bitmask name: VkFooFlagsXXX -> VkFooFlagBitsXXX
         size_t pos = bitmaskIt->first.find( "Flags" );
         assert( pos != std::string::npos );
         std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
@@ -609,7 +582,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
         bitmaskIt->second.requirements = flagBits;
 
         // some flagsBits are specified but never listed as required for any flags!
-        // so, even if this bitmask has not enum listed as required, it might still already exist in the enums list
+        // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
         if ( m_enums.find( flagBits ) == m_enums.end() )
         {
           m_enums.insert( std::make_pair( flagBits, EnumData( 0, true ) ) );
@@ -648,6 +621,7 @@ std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title
 
 bool VulkanHppGenerator::allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const
 {
+  // check if all vector sizes are by value and their type is one of "uint32_t", "VkDeviceSize", or "VkSampleCountFlagBits"
   return std::find_if_not( vectorParams.begin(),
                            vectorParams.end(),
                            [&params]( auto const & vpi )
@@ -1440,8 +1414,7 @@ std::vector<size_t> VulkanHppGenerator::determineConstPointerParams( std::vector
 std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                                  std::map<size_t, VectorParamData> const &          vectorParams,
                                                                  std::vector<size_t> const &                        returnParams,
-                                                                 std::set<size_t> const &                           templatedParams,
-                                                                 bool                                               raii ) const
+                                                                 std::set<size_t> const &                           templatedParams ) const
 {
   std::vector<std::string> dataTypes;
   for ( auto rp : returnParams )
@@ -1458,10 +1431,6 @@ std::vector<std::string> VulkanHppGenerator::determineDataTypes( std::vector<Vul
       {
         dataTypes.push_back( ( stripPrefix( params[rp].name, "p" ) + "Type" ) );
       }
-    }
-    else if ( raii && isHandleType( params[rp].type.type ) )
-    {
-      dataTypes.push_back( params[rp].type.type );
     }
     else
     {
@@ -2407,7 +2376,7 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
     {
       arguments += ", ";
     }
-    arguments += generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams, raiiHandleMemberFunction );
+    arguments += generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams );
     encounteredArgument = true;
   }
   return arguments;
@@ -2492,8 +2461,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamD
                                                               size_t                         paramIndex,
                                                               bool                           nonConstPointerAsNullptr,
                                                               std::set<size_t> const &       singularParams,
-                                                              std::set<size_t> const &       templatedParams,
-                                                              bool                           raiiHandleMemberFunction ) const
+                                                              std::set<size_t> const &       templatedParams ) const
 {
   std::string       argument;
   ParamData const & param = params[paramIndex];
@@ -2505,7 +2473,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamD
   else if ( param.type.isNonConstPointer() && ( specialPointerTypes.find( param.type.type ) == specialPointerTypes.end() ) )
   {
     // parameter is a non-const pointer and none of the special pointer types, that are considered const-pointers
-    argument = generateCallArgumentEnhancedNonConstPointer( param, paramIndex, nonConstPointerAsNullptr, singularParams, raiiHandleMemberFunction );
+    argument = generateCallArgumentEnhancedNonConstPointer( param, paramIndex, nonConstPointerAsNullptr, singularParams );
   }
   else
   {
@@ -2587,8 +2555,10 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
   return argument;
 }
 
-std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer(
-  ParamData const & param, size_t paramIndex, bool nonConstPointerAsNullptr, std::set<size_t> const & singularParams, bool raiiHandleMemberFunction ) const
+std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( ParamData const &        param,
+                                                                             size_t                   paramIndex,
+                                                                             bool                     nonConstPointerAsNullptr,
+                                                                             std::set<size_t> const & singularParams ) const
 {
   std::string argument;
   std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
@@ -2624,7 +2594,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer(
         // get the data of the array, which also covers no data -> no need to look at param.optional
         argument = name + ".data()";
       }
-      if ( ( param.type.type.starts_with( "Vk" ) || ( param.type.type == "void" ) ) && ( !raiiHandleMemberFunction || !isHandleType( param.type.type ) ) )
+      if ( param.type.type.starts_with( "Vk" ) || ( param.type.type == "void" ) )
       {
         argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( " + argument + " )";
       }
@@ -3053,7 +3023,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams );
   bool enumerating = determineEnumeration( vectorParams, returnParams );
 
-  std::vector<std::string> dataTypes = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams, false );
+  std::vector<std::string> dataTypes = determineDataTypes( commandData.params, vectorParams, returnParams, templatedParams );
   std::string              dataType  = combineDataTypes( vectorParams, returnParams, singular, enumerating, dataTypes, unique, false );
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chained, false );
@@ -6630,7 +6600,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::map<std:
     ( commandIt->first == "vkGetMemoryHostPointerPropertiesEXT" ) ? std::set<size_t>() : determineVoidPointerParams( commandIt->second.params );
 
   bool                     enumerating = determineEnumeration( vectorParams, returnParams );
-  std::vector<std::string> dataTypes   = determineDataTypes( commandIt->second.params, vectorParams, returnParams, templatedParams, true );
+  std::vector<std::string> dataTypes   = determineDataTypes( commandIt->second.params, vectorParams, returnParams, templatedParams );
   std::string              dataType    = combineDataTypes( vectorParams, returnParams, singular, enumerating, dataTypes, false, true );
 
   std::string argumentTemplates = generateArgumentTemplates( commandIt->second.params, returnParams, vectorParams, templatedParams, chained, true );
@@ -7543,7 +7513,7 @@ std::string
     else
     {
       assert( !param.optional );
-      arguments += generateCallArgumentEnhanced( constructorIt->second.params, i, nonConstPointerAsNullptr, singularParams, {}, true );
+      arguments += generateCallArgumentEnhanced( constructorIt->second.params, i, nonConstPointerAsNullptr, singularParams, {} );
     }
     encounteredArgument = true;
   }
@@ -8043,7 +8013,7 @@ std::string
   std::string initializationList = generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
   assert( !initializationList.empty() );
   std::string failureCheck = generateFailureCheck( constructorIt->second.successCodes );
-  replaceAll( failureCheck, "result", "m_constructorSuccessCode" );
+  failureCheck             = std::regex_replace( failureCheck, std::regex( "result" ), "m_constructorSuccessCode" );
 
   const std::string singularConstructorTemplate =
     R"(
@@ -8963,6 +8933,20 @@ std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<Membe
     sizeCheck += "\n#ifdef VULKAN_HPP_NO_EXCEPTIONS\n" + assertionText + "#else\n" + throwText + "#endif /*VULKAN_HPP_NO_EXCEPTIONS*/\n" + "    ";
   }
   return sizeCheck;
+}
+
+std::string VulkanHppGenerator::generateStaticAssertions() const
+{
+  std::string staticAssertions;
+  for ( auto const & feature : m_features )
+  {
+    staticAssertions += generateStaticAssertions( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    staticAssertions += generateStaticAssertions( extIt.second->second.requireData, extIt.second->first );
+  }
+  return staticAssertions;
 }
 
 std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const
@@ -13248,6 +13232,21 @@ void checkForWarning( bool condition, int line, std::string const & message )
   }
 }
 
+template <class InputIt, class UnaryPredicate>
+std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
+{
+  std::vector<InputIt> result;
+  while ( first != last )
+  {
+    if ( p( *first ) )
+    {
+      result.push_back( first );
+    }
+    ++first;
+  }
+  return result;
+}
+
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix )
 {
   auto tagIt = std::find_if( tags.begin(), tags.end(), [&name, &postfix]( std::string const & t ) { return name.ends_with( t + postfix ); } );
@@ -13441,16 +13440,6 @@ std::string readSnippet( std::string const & snippetFile )
   return oss.str();
 }
 
-void replaceAll( std::string & str, std::string const & from, std::string const & to )
-{
-  size_t pos = 0;
-  while ( ( pos = str.find( from, pos ) ) != std::string::npos )
-  {
-    str.replace( pos, from.length(), to );
-    pos += to.length();  // Handles case where 'to' is a substring of 'from'
-  }
-}
-
 std::string replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements )
 {
   // This will match ${someVariable} and contain someVariable in match group 1
@@ -13504,12 +13493,14 @@ std::string replaceWithMap( std::string const & input, std::map<std::string, std
 
 std::string startLowerCase( std::string const & input )
 {
-  return input.empty() ? "" : static_cast<char>( tolower( input[0] ) ) + input.substr( 1 );
+  assert( !input.empty() );
+  return static_cast<char>( tolower( input[0] ) ) + input.substr( 1 );
 }
 
 std::string startUpperCase( std::string const & input )
 {
-  return input.empty() ? "" : static_cast<char>( toupper( input[0] ) ) + input.substr( 1 );
+  assert( !input.empty() );
+  return static_cast<char>( toupper( input[0] ) ) + input.substr( 1 );
 }
 
 std::string stripPostfix( std::string const & value, std::string const & postfix )
@@ -13615,23 +13606,6 @@ std::vector<std::string> tokenize( std::string const & tokenString, std::string 
     } while ( end != std::string::npos );
   }
   return tokens;
-}
-
-template <typename StringContainer>
-std::string toString( StringContainer const & strings )
-{
-  std::string str;
-  bool        encounteredMember = false;
-  for ( auto s : strings )
-  {
-    if ( encounteredMember )
-    {
-      str += ", ";
-    }
-    str += s;
-    encounteredMember = true;
-  }
-  return str;
 }
 
 std::string trim( std::string const & input )

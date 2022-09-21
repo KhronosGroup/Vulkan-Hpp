@@ -48,8 +48,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
     uint32_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, *surface )
-                                         ? graphicsQueueFamilyIndex
-                                         : vk::su::checked_cast<uint32_t>( queueFamilyProperties.size() );
+                                       ? graphicsQueueFamilyIndex
+                                       : vk::su::checked_cast<uint32_t>( queueFamilyProperties.size() );
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
     {
       // the graphicsQueueFamilyIndex doesn't support present -> look for an other family index that supports both
@@ -109,8 +109,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PresentModeKHR swapchainPresentMode = vk::PresentModeKHR::eFifo;
 
     vk::SurfaceTransformFlagBitsKHR preTransform = ( surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity )
-                                                     ? vk::SurfaceTransformFlagBitsKHR::eIdentity
-                                                     : surfaceCapabilities.currentTransform;
+                                                   ? vk::SurfaceTransformFlagBitsKHR::eIdentity
+                                                   : surfaceCapabilities.currentTransform;
 
     vk::CompositeAlphaFlagBitsKHR compositeAlpha =
       ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
@@ -146,14 +146,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     vk::raii::SwapchainKHR swapChain( device, swapChainCreateInfo );
-    std::vector<VkImage>   swapChainImages = swapChain.getImages();
+    std::vector<vk::Image> swapChainImages = swapChain.getImages();
 
     std::vector<vk::raii::ImageView> imageViews;
     imageViews.reserve( swapChainImages.size() );
     vk::ImageViewCreateInfo imageViewCreateInfo( {}, {}, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     for ( auto image : swapChainImages )
     {
-      imageViewCreateInfo.image = static_cast<vk::Image>( image );
+      imageViewCreateInfo.image = image;
       imageViews.push_back( { device, imageViewCreateInfo } );
     }
 

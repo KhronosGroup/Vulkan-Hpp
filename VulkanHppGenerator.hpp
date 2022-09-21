@@ -409,8 +409,7 @@ private:
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
                                                std::vector<size_t> const &                        returnParams,
-                                               std::set<size_t> const &                           templatedParams,
-                                               bool                                               raii ) const;
+                                               std::set<size_t> const &                           templatedParams ) const;
   size_t                   determineDefaultStartIndex( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   bool                     determineEnumeration( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & returnParams ) const;
   size_t                   determineInitialSkipCount( std::string const & command ) const;
@@ -477,14 +476,15 @@ private:
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
                                             std::set<size_t> const &       singularParams,
-                                            std::set<size_t> const &       templatedParams,
-                                            bool                           raiiHandleMemberFunction ) const;
+                                            std::set<size_t> const &       templatedParams ) const;
   std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
                                                         size_t                   paramIndex,
                                                         std::set<size_t> const & singularParams,
                                                         std::set<size_t> const & templatedParams ) const;
-  std::string generateCallArgumentEnhancedNonConstPointer(
-    ParamData const & param, size_t paramIndex, bool nonConstPointerAsNullptr, std::set<size_t> const & singularParams, bool raiiHandleMemberFunction ) const;
+  std::string generateCallArgumentEnhancedNonConstPointer( ParamData const &        param,
+                                                           size_t                   paramIndex,
+                                                           bool                     nonConstPointerAsNullptr,
+                                                           std::set<size_t> const & singularParams ) const;
   std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params, size_t paramIndex, std::set<size_t> const & singularParams ) const;
   std::string generateCallSequence( std::string const &                       name,
                                     CommandData const &                       commandData,
@@ -886,6 +886,7 @@ private:
                                       bool                                      singular ) const;
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
+  std::string generateStaticAssertions() const;
   std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructAssignmentOperators( std::pair<std::string, StructureData> const & structure ) const;

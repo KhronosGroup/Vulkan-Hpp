@@ -26,9 +26,9 @@
 #endif
 
 #include "../../samples/utils/utils.hpp"
-#include <vulkan/vulkan_raii.hpp>
 
 #include <numeric>
+#include <vulkan/vulkan_raii.hpp>
 
 namespace vk
 {
@@ -398,14 +398,14 @@ namespace vk
           vk::ImageViewCreateInfo imageViewCreateInfo( {}, {}, vk::ImageViewType::e2D, colorFormat, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
           for ( auto image : images )
           {
-            imageViewCreateInfo.image = static_cast<vk::Image>( image );
+            imageViewCreateInfo.image = image;
             imageViews.emplace_back( device, imageViewCreateInfo );
           }
         }
 
         vk::Format                       colorFormat;
         vk::raii::SwapchainKHR           swapChain = nullptr;
-        std::vector<VkImage>             images;
+        std::vector<vk::Image>           images;
         std::vector<vk::raii::ImageView> imageViews;
       };
 

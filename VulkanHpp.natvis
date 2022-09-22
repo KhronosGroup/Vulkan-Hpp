@@ -3,4 +3,8 @@
   <Type Name="vk::Flags&lt;*&gt;">
     <DisplayString>[{($T1)m_mask}]</DisplayString>
   </Type>
+  <Type Name="vk::ArrayWrapper1D&lt;char,*&gt;">
+    <DisplayString>{_Elems,s}</DisplayString>
+    <StringView>_Elems,s</StringView>
+  </Type>
 </AutoVisualizer>

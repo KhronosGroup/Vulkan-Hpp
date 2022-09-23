@@ -4945,7 +4945,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_KHR_video_decode_queue ===
 
-      void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & frameInfo ) const VULKAN_HPP_NOEXCEPT;
+      void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & decodeInfo ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       //=== VK_EXT_transform_feedback ===
@@ -13009,11 +13009,11 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_decode_queue ===
 
-    VULKAN_HPP_INLINE void CommandBuffer::decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & frameInfo ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void CommandBuffer::decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & decodeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDecodeVideoKHR && "Function <vkCmdDecodeVideoKHR> needs extension <VK_KHR_video_decode_queue> enabled!" );
 
-      getDispatcher()->vkCmdDecodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkVideoDecodeInfoKHR *>( &frameInfo ) );
+      getDispatcher()->vkCmdDecodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkVideoDecodeInfoKHR *>( &decodeInfo ) );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 

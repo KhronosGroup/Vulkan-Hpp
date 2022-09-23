@@ -619,7 +619,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoDecodeH264SessionParametersCreateInfoEXT;
   struct VideoDecodeH264SessionParametersAddInfoEXT;
   struct VideoDecodeH264PictureInfoEXT;
-  struct VideoDecodeH264MvcInfoEXT;
   struct VideoDecodeH264DpbSlotInfoEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -3923,11 +3922,11 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_video_decode_queue ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR * pFrameInfo,
+    void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR * pDecodeInfo,
                          Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & frameInfo,
+    void decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & decodeInfo,
                          Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -9161,7 +9160,7 @@ namespace VULKAN_HPP_NAMESPACE
                                  Dispatch const & d                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void destroyVideoSessionKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                               videoSession,
+    void destroyVideoSessionKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR videoSession                  VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
@@ -9251,7 +9250,7 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void destroyVideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR                     videoSessionParameters,
+    void destroyVideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR videoSessionParameters VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                                            Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

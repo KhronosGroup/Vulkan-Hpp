@@ -295,7 +295,7 @@ private:
     std::vector<std::string> len;
     bool                     noAutoValidity = false;
     std::vector<bool>        optional;
-    std::string              selection;
+    std::vector<std::string> selection;
     std::string              selector;
     std::string              value;
     std::string              usedConstant;

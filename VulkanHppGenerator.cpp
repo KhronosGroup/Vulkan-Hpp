@@ -1222,13 +1222,15 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
       {
         // check that each union member has a selection, that is a value of the seleting enum
         assert( !unionMember.selection.empty() );
-        std::string const & selection = unionMember.selection;
-        checkForError( std::find_if( selectorEnumIt->second.values.begin(),
-                                     selectorEnumIt->second.values.end(),
-                                     [&selection]( EnumValueData const & evd ) { return evd.name == selection; } ) != selectorEnumIt->second.values.end(),
-                       unionMember.xmlLine,
-                       "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" +
-                         selectorIt->type.type + ">" );
+        for ( auto const & selection : unionMember.selection )
+        {
+          checkForError( std::find_if( selectorEnumIt->second.values.begin(),
+                                       selectorEnumIt->second.values.end(),
+                                       [&selection]( EnumValueData const & evd ) { return evd.name == selection; } ) != selectorEnumIt->second.values.end(),
+                         unionMember.xmlLine,
+                         "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" +
+                           selectorIt->type.type + ">" );
+        }
       }
     }
 
@@ -12897,7 +12899,7 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
     else if ( attribute.first == "selection" )
     {
       checkForError( isUnion, line, "attribute <selection> is used with a non-union structure." );
-      memberData.selection = attribute.second;
+      memberData.selection = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "selector" )
     {

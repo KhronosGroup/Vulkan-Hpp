@@ -10714,7 +10714,7 @@ void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const * eleme
                      { { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
-                       { "queues", { "compute", "decode", "encode", "graphics", "sparse_binding", "transfer" } },
+                       { "queues", { "compute", "decode", "encode", "graphics", "opticalflow", "sparse_binding", "transfer" } },
                        { "renderpass", { "both", "inside", "outside" } },
                        { "successcodes", {} },
                        { "tasks", { "action", "indirection", "state", "synchronization" } },

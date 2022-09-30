@@ -18425,6 +18425,39 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_EXT_device_fault ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getFaultInfoEXT( VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT * pFaultCounts,
+                                                                         VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT *   pFaultInfo,
+                                                                         Dispatch const &                             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetDeviceFaultInfoEXT(
+      m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( pFaultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( pFaultInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>
+                                         Device::getFaultInfoEXT( Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> data;
+    VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT &                                                    faultCounts = data.first;
+    VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT &                                                      faultInfo   = data.second;
+    VkResult                                                                                        result =
+      d.vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultInfoEXT",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
+
+    return ResultValue<std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_NV_acquire_winrt_display ===
 
@@ -19666,6 +19699,460 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_EXT_opacity_micromap ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::createMicromapEXT( const VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT * pCreateInfo,
+                                                                           const VULKAN_HPP_NAMESPACE::AllocationCallbacks *   pAllocator,
+                                                                           VULKAN_HPP_NAMESPACE::MicromapEXT *                 pMicromap,
+                                                                           Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateMicromapEXT( m_device,
+                                                       reinterpret_cast<const VkMicromapCreateInfoEXT *>( pCreateInfo ),
+                                                       reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                       reinterpret_cast<VkMicromapEXT *>( pMicromap ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::MicromapEXT>::type
+                       Device::createMicromapEXT( const VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT &       createInfo,
+                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                               Dispatch const &                                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::MicromapEXT micromap;
+    VkResult                          result =
+      d.vkCreateMicromapEXT( m_device,
+                             reinterpret_cast<const VkMicromapCreateInfoEXT *>( &createInfo ),
+                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+                             reinterpret_cast<VkMicromapEXT *>( &micromap ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createMicromapEXT" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), micromap );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::MicromapEXT, Dispatch>>::type
+                       Device::createMicromapEXTUnique( const VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT &       createInfo,
+                                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                     Dispatch const &                                          d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::MicromapEXT micromap;
+    VkResult                          result =
+      d.vkCreateMicromapEXT( m_device,
+                             reinterpret_cast<const VkMicromapCreateInfoEXT *>( &createInfo ),
+                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+                             reinterpret_cast<VkMicromapEXT *>( &micromap ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createMicromapEXTUnique" );
+
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::MicromapEXT, Dispatch>( micromap, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+  }
+#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyMicromapEXT( VULKAN_HPP_NAMESPACE::MicromapEXT                 micromap,
+                                                     const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                     Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyMicromapEXT( m_device, static_cast<VkMicromapEXT>( micromap ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyMicromapEXT( VULKAN_HPP_NAMESPACE::MicromapEXT                         micromap,
+                                                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                                     Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkDestroyMicromapEXT( m_device,
+                            static_cast<VkMicromapEXT>( micromap ),
+                            reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::MicromapEXT                 micromap,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyMicromapEXT( m_device, static_cast<VkMicromapEXT>( micromap ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::MicromapEXT                         micromap,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkDestroyMicromapEXT( m_device,
+                            static_cast<VkMicromapEXT>( micromap ),
+                            reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::buildMicromapsEXT( uint32_t                                           infoCount,
+                                                           const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT * pInfos,
+                                                           Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBuildMicromapsEXT( m_commandBuffer, infoCount, reinterpret_cast<const VkMicromapBuildInfoEXT *>( pInfos ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::buildMicromapsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos,
+                                                           Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdBuildMicromapsEXT( m_commandBuffer, infos.size(), reinterpret_cast<const VkMicromapBuildInfoEXT *>( infos.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::buildMicromapsEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR         deferredOperation,
+                                                                           uint32_t                                           infoCount,
+                                                                           const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT * pInfos,
+                                                                           Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkBuildMicromapsEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), infoCount, reinterpret_cast<const VkMicromapBuildInfoEXT *>( pInfos ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
+                                         Device::buildMicromapsEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                 deferredOperation,
+                               VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos,
+                               Dispatch const &                                                                           d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VkResult result = d.vkBuildMicromapsEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), infos.size(), reinterpret_cast<const VkMicromapBuildInfoEXT *>( infos.data() ) );
+    resultCheck(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      VULKAN_HPP_NAMESPACE_STRING "::Device::buildMicromapsEXT",
+      { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+    return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::copyMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR        deferredOperation,
+                                                                         const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT * pInfo,
+                                                                         Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkCopyMicromapEXT( m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMicromapInfoEXT *>( pInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Device::copyMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation,
+                                                                                               const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info,
+                                                                                               Dispatch const &                                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VkResult result =
+      d.vkCopyMicromapEXT( m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMicromapInfoEXT *>( &info ) );
+    resultCheck(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      VULKAN_HPP_NAMESPACE_STRING "::Device::copyMicromapEXT",
+      { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+    return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::copyMicromapToMemoryEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                                                                 const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT * pInfo,
+                                                                                 Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCopyMicromapToMemoryEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( pInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Device::copyMicromapToMemoryEXT(
+    VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation, const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VkResult result = d.vkCopyMicromapToMemoryEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( &info ) );
+    resultCheck(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      VULKAN_HPP_NAMESPACE_STRING "::Device::copyMicromapToMemoryEXT",
+      { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+    return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::copyMemoryToMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                                                                 const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT * pInfo,
+                                                                                 Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCopyMemoryToMicromapEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( pInfo ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Device::copyMemoryToMicromapEXT(
+    VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation, const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VkResult result = d.vkCopyMemoryToMicromapEXT(
+      m_device, static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( &info ) );
+    resultCheck(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      VULKAN_HPP_NAMESPACE_STRING "::Device::copyMemoryToMicromapEXT",
+      { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR, VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+    return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::writeMicromapsPropertiesEXT( uint32_t                                  micromapCount,
+                                                                                     const VULKAN_HPP_NAMESPACE::MicromapEXT * pMicromaps,
+                                                                                     VULKAN_HPP_NAMESPACE::QueryType           queryType,
+                                                                                     size_t                                    dataSize,
+                                                                                     void *                                    pData,
+                                                                                     size_t                                    stride,
+                                                                                     Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkWriteMicromapsPropertiesEXT(
+      m_device, micromapCount, reinterpret_cast<const VkMicromapEXT *>( pMicromaps ), static_cast<VkQueryType>( queryType ), dataSize, pData, stride ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename DataType, typename DataTypeAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<DataType, DataTypeAllocator>>::type
+                       Device::writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                         VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                         size_t                                                                            dataSize,
+                                         size_t                                                                            stride,
+                                         Dispatch const &                                                                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+    std::vector<DataType, DataTypeAllocator> data( dataSize / sizeof( DataType ) );
+    VkResult                                 result = d.vkWriteMicromapsPropertiesEXT( m_device,
+                                                       micromaps.size(),
+                                                       reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                                       static_cast<VkQueryType>( queryType ),
+                                                       data.size() * sizeof( DataType ),
+                                                       reinterpret_cast<void *>( data.data() ),
+                                                       stride );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::writeMicromapsPropertiesEXT" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+  }
+
+  template <typename DataType, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<DataType>::type
+                       Device::writeMicromapsPropertyEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                       VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                       size_t                                                                            stride,
+                                       Dispatch const &                                                                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    DataType data;
+    VkResult result = d.vkWriteMicromapsPropertiesEXT( m_device,
+                                                       micromaps.size(),
+                                                       reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                                       static_cast<VkQueryType>( queryType ),
+                                                       sizeof( DataType ),
+                                                       reinterpret_cast<void *>( &data ),
+                                                       stride );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::writeMicromapsPropertyEXT" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT * pInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMicromapEXT( m_commandBuffer, reinterpret_cast<const VkCopyMicromapInfoEXT *>( pInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdCopyMicromapEXT( m_commandBuffer, reinterpret_cast<const VkCopyMicromapInfoEXT *>( &info ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMicromapToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT * pInfo,
+                                                                 Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMicromapToMemoryEXT( m_commandBuffer, reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( pInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMicromapToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info,
+                                                                 Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdCopyMicromapToMemoryEXT( m_commandBuffer, reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( &info ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT * pInfo,
+                                                                 Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMemoryToMicromapEXT( m_commandBuffer, reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( pInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info,
+                                                                 Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdCopyMemoryToMicromapEXT( m_commandBuffer, reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( &info ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::writeMicromapsPropertiesEXT( uint32_t                                  micromapCount,
+                                                                     const VULKAN_HPP_NAMESPACE::MicromapEXT * pMicromaps,
+                                                                     VULKAN_HPP_NAMESPACE::QueryType           queryType,
+                                                                     VULKAN_HPP_NAMESPACE::QueryPool           queryPool,
+                                                                     uint32_t                                  firstQuery,
+                                                                     Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdWriteMicromapsPropertiesEXT( m_commandBuffer,
+                                        micromapCount,
+                                        reinterpret_cast<const VkMicromapEXT *>( pMicromaps ),
+                                        static_cast<VkQueryType>( queryType ),
+                                        static_cast<VkQueryPool>( queryPool ),
+                                        firstQuery );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                                VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                                VULKAN_HPP_NAMESPACE::QueryPool                                                   queryPool,
+                                                uint32_t                                                                          firstQuery,
+                                                Dispatch const &                                                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdWriteMicromapsPropertiesEXT( m_commandBuffer,
+                                        micromaps.size(),
+                                        reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                        static_cast<VkQueryType>( queryType ),
+                                        static_cast<VkQueryPool>( queryPool ),
+                                        firstQuery );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::getMicromapCompatibilityEXT( const VULKAN_HPP_NAMESPACE::MicromapVersionInfoEXT *          pVersionInfo,
+                                                              VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR * pCompatibility,
+                                                              Dispatch const &                                              d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetDeviceMicromapCompatibilityEXT( m_device,
+                                           reinterpret_cast<const VkMicromapVersionInfoEXT *>( pVersionInfo ),
+                                           reinterpret_cast<VkAccelerationStructureCompatibilityKHR *>( pCompatibility ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
+    Device::getMicromapCompatibilityEXT( const VULKAN_HPP_NAMESPACE::MicromapVersionInfoEXT & versionInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR compatibility;
+    d.vkGetDeviceMicromapCompatibilityEXT( m_device,
+                                           reinterpret_cast<const VkMicromapVersionInfoEXT *>( &versionInfo ),
+                                           reinterpret_cast<VkAccelerationStructureCompatibilityKHR *>( &compatibility ) );
+
+    return compatibility;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::getMicromapBuildSizesEXT( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR buildType,
+                                                           const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT *      pBuildInfo,
+                                                           VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT *       pSizeInfo,
+                                                           Dispatch const &                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetMicromapBuildSizesEXT( m_device,
+                                  static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),
+                                  reinterpret_cast<const VkMicromapBuildInfoEXT *>( pBuildInfo ),
+                                  reinterpret_cast<VkMicromapBuildSizesInfoEXT *>( pSizeInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT
+                                         Device::getMicromapBuildSizesEXT( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR buildType,
+                                      const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT &      buildInfo,
+                                      Dispatch const &                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT sizeInfo;
+    d.vkGetMicromapBuildSizesEXT( m_device,
+                                  static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),
+                                  reinterpret_cast<const VkMicromapBuildInfoEXT *>( &buildInfo ),
+                                  reinterpret_cast<VkMicromapBuildSizesInfoEXT *>( &sizeInfo ) );
+
+    return sizeInfo;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
   //=== VK_EXT_pageable_device_local_memory ===
 
   template <typename Dispatch>
@@ -19876,6 +20363,354 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_EXT_extended_dynamic_state3 ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setTessellationDomainOriginEXT( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin,
+                                                                        Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetTessellationDomainOriginEXT( m_commandBuffer, static_cast<VkTessellationDomainOrigin>( domainOrigin ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDepthClampEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClampEnable, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDepthClampEnableEXT( m_commandBuffer, static_cast<VkBool32>( depthClampEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setPolygonModeEXT( VULKAN_HPP_NAMESPACE::PolygonMode polygonMode, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetPolygonModeEXT( m_commandBuffer, static_cast<VkPolygonMode>( polygonMode ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setRasterizationSamplesEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples,
+                                                                    Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetRasterizationSamplesEXT( m_commandBuffer, static_cast<VkSampleCountFlagBits>( rasterizationSamples ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setSampleMaskEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples,
+                                                          const VULKAN_HPP_NAMESPACE::SampleMask *  pSampleMask,
+                                                          Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetSampleMaskEXT( m_commandBuffer, static_cast<VkSampleCountFlagBits>( samples ), reinterpret_cast<const VkSampleMask *>( pSampleMask ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setSampleMaskEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits                                        samples,
+                                                          VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SampleMask> const & sampleMask,
+                                                          Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetSampleMaskEXT( m_commandBuffer, static_cast<VkSampleCountFlagBits>( samples ), reinterpret_cast<const VkSampleMask *>( sampleMask.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setAlphaToCoverageEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToCoverageEnable,
+                                                                     Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetAlphaToCoverageEnableEXT( m_commandBuffer, static_cast<VkBool32>( alphaToCoverageEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setAlphaToOneEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToOneEnable, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetAlphaToOneEnableEXT( m_commandBuffer, static_cast<VkBool32>( alphaToOneEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setLogicOpEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 logicOpEnable, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetLogicOpEnableEXT( m_commandBuffer, static_cast<VkBool32>( logicOpEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setColorBlendEnableEXT( uint32_t                             firstAttachment,
+                                                                uint32_t                             attachmentCount,
+                                                                const VULKAN_HPP_NAMESPACE::Bool32 * pColorBlendEnables,
+                                                                Dispatch const &                     d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetColorBlendEnableEXT( m_commandBuffer, firstAttachment, attachmentCount, reinterpret_cast<const VkBool32 *>( pColorBlendEnables ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setColorBlendEnableEXT( uint32_t                                                                     firstAttachment,
+                                                                VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorBlendEnables,
+                                                                Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetColorBlendEnableEXT( m_commandBuffer, firstAttachment, colorBlendEnables.size(), reinterpret_cast<const VkBool32 *>( colorBlendEnables.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setColorBlendEquationEXT( uint32_t                                            firstAttachment,
+                                                                  uint32_t                                            attachmentCount,
+                                                                  const VULKAN_HPP_NAMESPACE::ColorBlendEquationEXT * pColorBlendEquations,
+                                                                  Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetColorBlendEquationEXT(
+      m_commandBuffer, firstAttachment, attachmentCount, reinterpret_cast<const VkColorBlendEquationEXT *>( pColorBlendEquations ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setColorBlendEquationEXT( uint32_t                                                                                    firstAttachment,
+                                             VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendEquationEXT> const & colorBlendEquations,
+                                             Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetColorBlendEquationEXT(
+      m_commandBuffer, firstAttachment, colorBlendEquations.size(), reinterpret_cast<const VkColorBlendEquationEXT *>( colorBlendEquations.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setColorWriteMaskEXT( uint32_t                                          firstAttachment,
+                                                              uint32_t                                          attachmentCount,
+                                                              const VULKAN_HPP_NAMESPACE::ColorComponentFlags * pColorWriteMasks,
+                                                              Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetColorWriteMaskEXT( m_commandBuffer, firstAttachment, attachmentCount, reinterpret_cast<const VkColorComponentFlags *>( pColorWriteMasks ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setColorWriteMaskEXT( uint32_t                                                                                  firstAttachment,
+                                         VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorComponentFlags> const & colorWriteMasks,
+                                         Dispatch const &                                                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetColorWriteMaskEXT(
+      m_commandBuffer, firstAttachment, colorWriteMasks.size(), reinterpret_cast<const VkColorComponentFlags *>( colorWriteMasks.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setRasterizationStreamEXT( uint32_t rasterizationStream, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetRasterizationStreamEXT( m_commandBuffer, rasterizationStream );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setConservativeRasterizationModeEXT( VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode,
+                                                        Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetConservativeRasterizationModeEXT( m_commandBuffer, static_cast<VkConservativeRasterizationModeEXT>( conservativeRasterizationMode ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setExtraPrimitiveOverestimationSizeEXT( float            extraPrimitiveOverestimationSize,
+                                                                                Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetExtraPrimitiveOverestimationSizeEXT( m_commandBuffer, extraPrimitiveOverestimationSize );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDepthClipEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClipEnable, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDepthClipEnableEXT( m_commandBuffer, static_cast<VkBool32>( depthClipEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setSampleLocationsEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 sampleLocationsEnable,
+                                                                     Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetSampleLocationsEnableEXT( m_commandBuffer, static_cast<VkBool32>( sampleLocationsEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setColorBlendAdvancedEXT( uint32_t                                            firstAttachment,
+                                                                  uint32_t                                            attachmentCount,
+                                                                  const VULKAN_HPP_NAMESPACE::ColorBlendAdvancedEXT * pColorBlendAdvanced,
+                                                                  Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetColorBlendAdvancedEXT(
+      m_commandBuffer, firstAttachment, attachmentCount, reinterpret_cast<const VkColorBlendAdvancedEXT *>( pColorBlendAdvanced ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setColorBlendAdvancedEXT( uint32_t                                                                                    firstAttachment,
+                                             VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendAdvancedEXT> const & colorBlendAdvanced,
+                                             Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetColorBlendAdvancedEXT(
+      m_commandBuffer, firstAttachment, colorBlendAdvanced.size(), reinterpret_cast<const VkColorBlendAdvancedEXT *>( colorBlendAdvanced.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setProvokingVertexModeEXT( VULKAN_HPP_NAMESPACE::ProvokingVertexModeEXT provokingVertexMode,
+                                                                   Dispatch const &                             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetProvokingVertexModeEXT( m_commandBuffer, static_cast<VkProvokingVertexModeEXT>( provokingVertexMode ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setLineRasterizationModeEXT( VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode,
+                                                                     Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetLineRasterizationModeEXT( m_commandBuffer, static_cast<VkLineRasterizationModeEXT>( lineRasterizationMode ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setLineStippleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 stippledLineEnable, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetLineStippleEnableEXT( m_commandBuffer, static_cast<VkBool32>( stippledLineEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDepthClipNegativeOneToOneEXT( VULKAN_HPP_NAMESPACE::Bool32 negativeOneToOne,
+                                                                         Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDepthClipNegativeOneToOneEXT( m_commandBuffer, static_cast<VkBool32>( negativeOneToOne ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setViewportWScalingEnableNV( VULKAN_HPP_NAMESPACE::Bool32 viewportWScalingEnable,
+                                                                     Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetViewportWScalingEnableNV( m_commandBuffer, static_cast<VkBool32>( viewportWScalingEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setViewportSwizzleNV( uint32_t                                        firstViewport,
+                                                              uint32_t                                        viewportCount,
+                                                              const VULKAN_HPP_NAMESPACE::ViewportSwizzleNV * pViewportSwizzles,
+                                                              Dispatch const &                                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetViewportSwizzleNV( m_commandBuffer, firstViewport, viewportCount, reinterpret_cast<const VkViewportSwizzleNV *>( pViewportSwizzles ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setViewportSwizzleNV( uint32_t                                                                                firstViewport,
+                                         VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ViewportSwizzleNV> const & viewportSwizzles,
+                                         Dispatch const &                                                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetViewportSwizzleNV(
+      m_commandBuffer, firstViewport, viewportSwizzles.size(), reinterpret_cast<const VkViewportSwizzleNV *>( viewportSwizzles.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageToColorEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageToColorEnable,
+                                                                    Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageToColorEnableNV( m_commandBuffer, static_cast<VkBool32>( coverageToColorEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageToColorLocationNV( uint32_t coverageToColorLocation, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageToColorLocationNV( m_commandBuffer, coverageToColorLocation );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageModulationModeNV( VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode,
+                                                                     Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageModulationModeNV( m_commandBuffer, static_cast<VkCoverageModulationModeNV>( coverageModulationMode ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageModulationTableEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageModulationTableEnable,
+                                                                            Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageModulationTableEnableNV( m_commandBuffer, static_cast<VkBool32>( coverageModulationTableEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageModulationTableNV( uint32_t         coverageModulationTableCount,
+                                                                      const float *    pCoverageModulationTable,
+                                                                      Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageModulationTableNV( m_commandBuffer, coverageModulationTableCount, pCoverageModulationTable );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageModulationTableNV( VULKAN_HPP_NAMESPACE::ArrayProxy<const float> const & coverageModulationTable,
+                                                                      Dispatch const &                                      d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetCoverageModulationTableNV( m_commandBuffer, coverageModulationTable.size(), coverageModulationTable.data() );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setShadingRateImageEnableNV( VULKAN_HPP_NAMESPACE::Bool32 shadingRateImageEnable,
+                                                                     Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetShadingRateImageEnableNV( m_commandBuffer, static_cast<VkBool32>( shadingRateImageEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setRepresentativeFragmentTestEnableNV( VULKAN_HPP_NAMESPACE::Bool32 representativeFragmentTestEnable,
+                                                                               Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetRepresentativeFragmentTestEnableNV( m_commandBuffer, static_cast<VkBool32>( representativeFragmentTestEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setCoverageReductionModeNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode,
+                                                                    Dispatch const &                              d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetCoverageReductionModeNV( m_commandBuffer, static_cast<VkCoverageReductionModeNV>( coverageReductionMode ) );
+  }
+
   //=== VK_EXT_shader_module_identifier ===
 
   template <typename Dispatch>
@@ -19924,6 +20759,261 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkShaderModuleCreateInfo *>( &createInfo ), reinterpret_cast<VkShaderModuleIdentifierEXT *>( &identifier ) );
 
     return identifier;
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  //=== VK_NV_optical_flow ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    PhysicalDevice::getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV * pOpticalFlowImageFormatInfo,
+                                                  uint32_t *                                                 pFormatCount,
+                                                  VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV * pImageFormatProperties,
+                                                  Dispatch const &                                           d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetPhysicalDeviceOpticalFlowImageFormatsNV( m_physicalDevice,
+                                                      reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( pOpticalFlowImageFormatInfo ),
+                                                      pFormatCount,
+                                                      reinterpret_cast<VkOpticalFlowImageFormatPropertiesNV *>( pImageFormatProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename OpticalFlowImageFormatPropertiesNVAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator>>::type
+    PhysicalDevice::getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo,
+                                                  Dispatch const &                                           d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator> imageFormatProperties;
+    uint32_t                                                                                                           formatCount;
+    VkResult                                                                                                           result;
+    do
+    {
+      result = d.vkGetPhysicalDeviceOpticalFlowImageFormatsNV(
+        m_physicalDevice, reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ), &formatCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && formatCount )
+      {
+        imageFormatProperties.resize( formatCount );
+        result = d.vkGetPhysicalDeviceOpticalFlowImageFormatsNV( m_physicalDevice,
+                                                                 reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ),
+                                                                 &formatCount,
+                                                                 reinterpret_cast<VkOpticalFlowImageFormatPropertiesNV *>( imageFormatProperties.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getOpticalFlowImageFormatsNV" );
+    VULKAN_HPP_ASSERT( formatCount <= imageFormatProperties.size() );
+    if ( formatCount < imageFormatProperties.size() )
+    {
+      imageFormatProperties.resize( formatCount );
+    }
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageFormatProperties );
+  }
+
+  template <typename OpticalFlowImageFormatPropertiesNVAllocator,
+            typename Dispatch,
+            typename B1,
+            typename std::enable_if<std::is_same<typename B1::value_type, OpticalFlowImageFormatPropertiesNV>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator>>::type
+    PhysicalDevice::getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo,
+                                                  OpticalFlowImageFormatPropertiesNVAllocator &              opticalFlowImageFormatPropertiesNVAllocator,
+                                                  Dispatch const &                                           d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator> imageFormatProperties(
+      opticalFlowImageFormatPropertiesNVAllocator );
+    uint32_t formatCount;
+    VkResult result;
+    do
+    {
+      result = d.vkGetPhysicalDeviceOpticalFlowImageFormatsNV(
+        m_physicalDevice, reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ), &formatCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && formatCount )
+      {
+        imageFormatProperties.resize( formatCount );
+        result = d.vkGetPhysicalDeviceOpticalFlowImageFormatsNV( m_physicalDevice,
+                                                                 reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ),
+                                                                 &formatCount,
+                                                                 reinterpret_cast<VkOpticalFlowImageFormatPropertiesNV *>( imageFormatProperties.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getOpticalFlowImageFormatsNV" );
+    VULKAN_HPP_ASSERT( formatCount <= imageFormatProperties.size() );
+    if ( formatCount < imageFormatProperties.size() )
+    {
+      imageFormatProperties.resize( formatCount );
+    }
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageFormatProperties );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::createOpticalFlowSessionNV( const VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV * pCreateInfo,
+                                                                                    const VULKAN_HPP_NAMESPACE::AllocationCallbacks *            pAllocator,
+                                                                                    VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV *                 pSession,
+                                                                                    Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateOpticalFlowSessionNV( m_device,
+                                                                reinterpret_cast<const VkOpticalFlowSessionCreateInfoNV *>( pCreateInfo ),
+                                                                reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                                reinterpret_cast<VkOpticalFlowSessionNV *>( pSession ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV>::type
+                       Device::createOpticalFlowSessionNV( const VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV & createInfo,
+                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>    allocator,
+                                        Dispatch const &                                             d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV session;
+    VkResult                                   result = d.vkCreateOpticalFlowSessionNV(
+      m_device,
+      reinterpret_cast<const VkOpticalFlowSessionCreateInfoNV *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkOpticalFlowSessionNV *>( &session ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createOpticalFlowSessionNV" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), session );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV, Dispatch>>::type
+                       Device::createOpticalFlowSessionNVUnique( const VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV & createInfo,
+                                              Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>    allocator,
+                                              Dispatch const &                                             d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV session;
+    VkResult                                   result = d.vkCreateOpticalFlowSessionNV(
+      m_device,
+      reinterpret_cast<const VkOpticalFlowSessionCreateInfoNV *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkOpticalFlowSessionNV *>( &session ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::createOpticalFlowSessionNVUnique" );
+
+    return createResultValueType(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV, Dispatch>( session, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+  }
+#  endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+#endif   /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyOpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV        session,
+                                                              const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                              Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyOpticalFlowSessionNV( m_device, static_cast<VkOpticalFlowSessionNV>( session ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyOpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV                session,
+                                                              Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                                              Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkDestroyOpticalFlowSessionNV(
+      m_device,
+      static_cast<VkOpticalFlowSessionNV>( session ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV        session,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyOpticalFlowSessionNV( m_device, static_cast<VkOpticalFlowSessionNV>( session ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV                session,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkDestroyOpticalFlowSessionNV(
+      m_device,
+      static_cast<VkOpticalFlowSessionNV>( session ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+#ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::bindOpticalFlowSessionImageNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                                                                       VULKAN_HPP_NAMESPACE::OpticalFlowSessionBindingPointNV bindingPoint,
+                                                                                       VULKAN_HPP_NAMESPACE::ImageView                        view,
+                                                                                       VULKAN_HPP_NAMESPACE::ImageLayout                      layout,
+                                                                                       Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkBindOpticalFlowSessionImageNV( m_device,
+                                                                   static_cast<VkOpticalFlowSessionNV>( session ),
+                                                                   static_cast<VkOpticalFlowSessionBindingPointNV>( bindingPoint ),
+                                                                   static_cast<VkImageView>( view ),
+                                                                   static_cast<VkImageLayout>( layout ) ) );
+  }
+#else
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
+                                          Device::bindOpticalFlowSessionImageNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                           VULKAN_HPP_NAMESPACE::OpticalFlowSessionBindingPointNV bindingPoint,
+                                           VULKAN_HPP_NAMESPACE::ImageView                        view,
+                                           VULKAN_HPP_NAMESPACE::ImageLayout                      layout,
+                                           Dispatch const &                                       d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VkResult result = d.vkBindOpticalFlowSessionImageNV( m_device,
+                                                         static_cast<VkOpticalFlowSessionNV>( session ),
+                                                         static_cast<VkOpticalFlowSessionBindingPointNV>( bindingPoint ),
+                                                         static_cast<VkImageView>( view ),
+                                                         static_cast<VkImageLayout>( layout ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::bindOpticalFlowSessionImageNV" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::opticalFlowExecuteNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                                              const VULKAN_HPP_NAMESPACE::OpticalFlowExecuteInfoNV * pExecuteInfo,
+                                                              Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdOpticalFlowExecuteNV(
+      m_commandBuffer, static_cast<VkOpticalFlowSessionNV>( session ), reinterpret_cast<const VkOpticalFlowExecuteInfoNV *>( pExecuteInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::opticalFlowExecuteNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                                              const VULKAN_HPP_NAMESPACE::OpticalFlowExecuteInfoNV & executeInfo,
+                                                              Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdOpticalFlowExecuteNV(
+      m_commandBuffer, static_cast<VkOpticalFlowSessionNV>( session ), reinterpret_cast<const VkOpticalFlowExecuteInfoNV *>( &executeInfo ) );
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 

@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 229, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 230, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -4976,6 +4976,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetImageSubresourceLayout2EXT( device, image, pSubresource, pLayout );
     }
 
+    //=== VK_EXT_device_fault ===
+
+    VkResult vkGetDeviceFaultInfoEXT( VkDevice device, VkDeviceFaultCountsEXT * pFaultCounts, VkDeviceFaultInfoEXT * pFaultInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceFaultInfoEXT( device, pFaultCounts, pFaultInfo );
+    }
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===
 
@@ -5278,6 +5285,104 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdDrawMultiIndexedEXT( commandBuffer, drawCount, pIndexInfo, instanceCount, firstInstance, stride, pVertexOffset );
     }
 
+    //=== VK_EXT_opacity_micromap ===
+
+    VkResult vkCreateMicromapEXT( VkDevice                        device,
+                                  const VkMicromapCreateInfoEXT * pCreateInfo,
+                                  const VkAllocationCallbacks *   pAllocator,
+                                  VkMicromapEXT *                 pMicromap ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateMicromapEXT( device, pCreateInfo, pAllocator, pMicromap );
+    }
+
+    void vkDestroyMicromapEXT( VkDevice device, VkMicromapEXT micromap, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyMicromapEXT( device, micromap, pAllocator );
+    }
+
+    void vkCmdBuildMicromapsEXT( VkCommandBuffer commandBuffer, uint32_t infoCount, const VkMicromapBuildInfoEXT * pInfos ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdBuildMicromapsEXT( commandBuffer, infoCount, pInfos );
+    }
+
+    VkResult vkBuildMicromapsEXT( VkDevice                       device,
+                                  VkDeferredOperationKHR         deferredOperation,
+                                  uint32_t                       infoCount,
+                                  const VkMicromapBuildInfoEXT * pInfos ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkBuildMicromapsEXT( device, deferredOperation, infoCount, pInfos );
+    }
+
+    VkResult vkCopyMicromapEXT( VkDevice device, VkDeferredOperationKHR deferredOperation, const VkCopyMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCopyMicromapEXT( device, deferredOperation, pInfo );
+    }
+
+    VkResult vkCopyMicromapToMemoryEXT( VkDevice                              device,
+                                        VkDeferredOperationKHR                deferredOperation,
+                                        const VkCopyMicromapToMemoryInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCopyMicromapToMemoryEXT( device, deferredOperation, pInfo );
+    }
+
+    VkResult vkCopyMemoryToMicromapEXT( VkDevice                              device,
+                                        VkDeferredOperationKHR                deferredOperation,
+                                        const VkCopyMemoryToMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCopyMemoryToMicromapEXT( device, deferredOperation, pInfo );
+    }
+
+    VkResult vkWriteMicromapsPropertiesEXT( VkDevice              device,
+                                            uint32_t              micromapCount,
+                                            const VkMicromapEXT * pMicromaps,
+                                            VkQueryType           queryType,
+                                            size_t                dataSize,
+                                            void *                pData,
+                                            size_t                stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkWriteMicromapsPropertiesEXT( device, micromapCount, pMicromaps, queryType, dataSize, pData, stride );
+    }
+
+    void vkCmdCopyMicromapEXT( VkCommandBuffer commandBuffer, const VkCopyMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdCopyMicromapEXT( commandBuffer, pInfo );
+    }
+
+    void vkCmdCopyMicromapToMemoryEXT( VkCommandBuffer commandBuffer, const VkCopyMicromapToMemoryInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdCopyMicromapToMemoryEXT( commandBuffer, pInfo );
+    }
+
+    void vkCmdCopyMemoryToMicromapEXT( VkCommandBuffer commandBuffer, const VkCopyMemoryToMicromapInfoEXT * pInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdCopyMemoryToMicromapEXT( commandBuffer, pInfo );
+    }
+
+    void vkCmdWriteMicromapsPropertiesEXT( VkCommandBuffer       commandBuffer,
+                                           uint32_t              micromapCount,
+                                           const VkMicromapEXT * pMicromaps,
+                                           VkQueryType           queryType,
+                                           VkQueryPool           queryPool,
+                                           uint32_t              firstQuery ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdWriteMicromapsPropertiesEXT( commandBuffer, micromapCount, pMicromaps, queryType, queryPool, firstQuery );
+    }
+
+    void vkGetDeviceMicromapCompatibilityEXT( VkDevice                                  device,
+                                              const VkMicromapVersionInfoEXT *          pVersionInfo,
+                                              VkAccelerationStructureCompatibilityKHR * pCompatibility ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetDeviceMicromapCompatibilityEXT( device, pVersionInfo, pCompatibility );
+    }
+
+    void vkGetMicromapBuildSizesEXT( VkDevice                            device,
+                                     VkAccelerationStructureBuildTypeKHR buildType,
+                                     const VkMicromapBuildInfoEXT *      pBuildInfo,
+                                     VkMicromapBuildSizesInfoEXT *       pSizeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetMicromapBuildSizesEXT( device, buildType, pBuildInfo, pSizeInfo );
+    }
+
     //=== VK_EXT_pageable_device_local_memory ===
 
     void vkSetDeviceMemoryPriorityEXT( VkDevice device, VkDeviceMemory memory, float priority ) const VULKAN_HPP_NOEXCEPT
@@ -5323,6 +5428,181 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetDescriptorSetHostMappingVALVE( device, descriptorSet, ppData );
     }
 
+    //=== VK_EXT_extended_dynamic_state3 ===
+
+    void vkCmdSetTessellationDomainOriginEXT( VkCommandBuffer commandBuffer, VkTessellationDomainOrigin domainOrigin ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetTessellationDomainOriginEXT( commandBuffer, domainOrigin );
+    }
+
+    void vkCmdSetDepthClampEnableEXT( VkCommandBuffer commandBuffer, VkBool32 depthClampEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetDepthClampEnableEXT( commandBuffer, depthClampEnable );
+    }
+
+    void vkCmdSetPolygonModeEXT( VkCommandBuffer commandBuffer, VkPolygonMode polygonMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetPolygonModeEXT( commandBuffer, polygonMode );
+    }
+
+    void vkCmdSetRasterizationSamplesEXT( VkCommandBuffer commandBuffer, VkSampleCountFlagBits rasterizationSamples ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetRasterizationSamplesEXT( commandBuffer, rasterizationSamples );
+    }
+
+    void vkCmdSetSampleMaskEXT( VkCommandBuffer commandBuffer, VkSampleCountFlagBits samples, const VkSampleMask * pSampleMask ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetSampleMaskEXT( commandBuffer, samples, pSampleMask );
+    }
+
+    void vkCmdSetAlphaToCoverageEnableEXT( VkCommandBuffer commandBuffer, VkBool32 alphaToCoverageEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetAlphaToCoverageEnableEXT( commandBuffer, alphaToCoverageEnable );
+    }
+
+    void vkCmdSetAlphaToOneEnableEXT( VkCommandBuffer commandBuffer, VkBool32 alphaToOneEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetAlphaToOneEnableEXT( commandBuffer, alphaToOneEnable );
+    }
+
+    void vkCmdSetLogicOpEnableEXT( VkCommandBuffer commandBuffer, VkBool32 logicOpEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetLogicOpEnableEXT( commandBuffer, logicOpEnable );
+    }
+
+    void vkCmdSetColorBlendEnableEXT( VkCommandBuffer  commandBuffer,
+                                      uint32_t         firstAttachment,
+                                      uint32_t         attachmentCount,
+                                      const VkBool32 * pColorBlendEnables ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetColorBlendEnableEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendEnables );
+    }
+
+    void vkCmdSetColorBlendEquationEXT( VkCommandBuffer                 commandBuffer,
+                                        uint32_t                        firstAttachment,
+                                        uint32_t                        attachmentCount,
+                                        const VkColorBlendEquationEXT * pColorBlendEquations ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetColorBlendEquationEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendEquations );
+    }
+
+    void vkCmdSetColorWriteMaskEXT( VkCommandBuffer               commandBuffer,
+                                    uint32_t                      firstAttachment,
+                                    uint32_t                      attachmentCount,
+                                    const VkColorComponentFlags * pColorWriteMasks ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetColorWriteMaskEXT( commandBuffer, firstAttachment, attachmentCount, pColorWriteMasks );
+    }
+
+    void vkCmdSetRasterizationStreamEXT( VkCommandBuffer commandBuffer, uint32_t rasterizationStream ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetRasterizationStreamEXT( commandBuffer, rasterizationStream );
+    }
+
+    void vkCmdSetConservativeRasterizationModeEXT( VkCommandBuffer                    commandBuffer,
+                                                   VkConservativeRasterizationModeEXT conservativeRasterizationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetConservativeRasterizationModeEXT( commandBuffer, conservativeRasterizationMode );
+    }
+
+    void vkCmdSetExtraPrimitiveOverestimationSizeEXT( VkCommandBuffer commandBuffer, float extraPrimitiveOverestimationSize ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetExtraPrimitiveOverestimationSizeEXT( commandBuffer, extraPrimitiveOverestimationSize );
+    }
+
+    void vkCmdSetDepthClipEnableEXT( VkCommandBuffer commandBuffer, VkBool32 depthClipEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetDepthClipEnableEXT( commandBuffer, depthClipEnable );
+    }
+
+    void vkCmdSetSampleLocationsEnableEXT( VkCommandBuffer commandBuffer, VkBool32 sampleLocationsEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetSampleLocationsEnableEXT( commandBuffer, sampleLocationsEnable );
+    }
+
+    void vkCmdSetColorBlendAdvancedEXT( VkCommandBuffer                 commandBuffer,
+                                        uint32_t                        firstAttachment,
+                                        uint32_t                        attachmentCount,
+                                        const VkColorBlendAdvancedEXT * pColorBlendAdvanced ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetColorBlendAdvancedEXT( commandBuffer, firstAttachment, attachmentCount, pColorBlendAdvanced );
+    }
+
+    void vkCmdSetProvokingVertexModeEXT( VkCommandBuffer commandBuffer, VkProvokingVertexModeEXT provokingVertexMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetProvokingVertexModeEXT( commandBuffer, provokingVertexMode );
+    }
+
+    void vkCmdSetLineRasterizationModeEXT( VkCommandBuffer commandBuffer, VkLineRasterizationModeEXT lineRasterizationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetLineRasterizationModeEXT( commandBuffer, lineRasterizationMode );
+    }
+
+    void vkCmdSetLineStippleEnableEXT( VkCommandBuffer commandBuffer, VkBool32 stippledLineEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetLineStippleEnableEXT( commandBuffer, stippledLineEnable );
+    }
+
+    void vkCmdSetDepthClipNegativeOneToOneEXT( VkCommandBuffer commandBuffer, VkBool32 negativeOneToOne ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetDepthClipNegativeOneToOneEXT( commandBuffer, negativeOneToOne );
+    }
+
+    void vkCmdSetViewportWScalingEnableNV( VkCommandBuffer commandBuffer, VkBool32 viewportWScalingEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetViewportWScalingEnableNV( commandBuffer, viewportWScalingEnable );
+    }
+
+    void vkCmdSetViewportSwizzleNV( VkCommandBuffer             commandBuffer,
+                                    uint32_t                    firstViewport,
+                                    uint32_t                    viewportCount,
+                                    const VkViewportSwizzleNV * pViewportSwizzles ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetViewportSwizzleNV( commandBuffer, firstViewport, viewportCount, pViewportSwizzles );
+    }
+
+    void vkCmdSetCoverageToColorEnableNV( VkCommandBuffer commandBuffer, VkBool32 coverageToColorEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageToColorEnableNV( commandBuffer, coverageToColorEnable );
+    }
+
+    void vkCmdSetCoverageToColorLocationNV( VkCommandBuffer commandBuffer, uint32_t coverageToColorLocation ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageToColorLocationNV( commandBuffer, coverageToColorLocation );
+    }
+
+    void vkCmdSetCoverageModulationModeNV( VkCommandBuffer commandBuffer, VkCoverageModulationModeNV coverageModulationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageModulationModeNV( commandBuffer, coverageModulationMode );
+    }
+
+    void vkCmdSetCoverageModulationTableEnableNV( VkCommandBuffer commandBuffer, VkBool32 coverageModulationTableEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageModulationTableEnableNV( commandBuffer, coverageModulationTableEnable );
+    }
+
+    void vkCmdSetCoverageModulationTableNV( VkCommandBuffer commandBuffer,
+                                            uint32_t        coverageModulationTableCount,
+                                            const float *   pCoverageModulationTable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageModulationTableNV( commandBuffer, coverageModulationTableCount, pCoverageModulationTable );
+    }
+
+    void vkCmdSetShadingRateImageEnableNV( VkCommandBuffer commandBuffer, VkBool32 shadingRateImageEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetShadingRateImageEnableNV( commandBuffer, shadingRateImageEnable );
+    }
+
+    void vkCmdSetRepresentativeFragmentTestEnableNV( VkCommandBuffer commandBuffer, VkBool32 representativeFragmentTestEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetRepresentativeFragmentTestEnableNV( commandBuffer, representativeFragmentTestEnable );
+    }
+
+    void vkCmdSetCoverageReductionModeNV( VkCommandBuffer commandBuffer, VkCoverageReductionModeNV coverageReductionMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetCoverageReductionModeNV( commandBuffer, coverageReductionMode );
+    }
+
     //=== VK_EXT_shader_module_identifier ===
 
     void vkGetShaderModuleIdentifierEXT( VkDevice device, VkShaderModule shaderModule, VkShaderModuleIdentifierEXT * pIdentifier ) const VULKAN_HPP_NOEXCEPT
@@ -5335,6 +5615,45 @@ namespace VULKAN_HPP_NAMESPACE
                                                    VkShaderModuleIdentifierEXT *    pIdentifier ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetShaderModuleCreateInfoIdentifierEXT( device, pCreateInfo, pIdentifier );
+    }
+
+    //=== VK_NV_optical_flow ===
+
+    VkResult vkGetPhysicalDeviceOpticalFlowImageFormatsNV( VkPhysicalDevice                       physicalDevice,
+                                                           const VkOpticalFlowImageFormatInfoNV * pOpticalFlowImageFormatInfo,
+                                                           uint32_t *                             pFormatCount,
+                                                           VkOpticalFlowImageFormatPropertiesNV * pImageFormatProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetPhysicalDeviceOpticalFlowImageFormatsNV( physicalDevice, pOpticalFlowImageFormatInfo, pFormatCount, pImageFormatProperties );
+    }
+
+    VkResult vkCreateOpticalFlowSessionNV( VkDevice                                 device,
+                                           const VkOpticalFlowSessionCreateInfoNV * pCreateInfo,
+                                           const VkAllocationCallbacks *            pAllocator,
+                                           VkOpticalFlowSessionNV *                 pSession ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateOpticalFlowSessionNV( device, pCreateInfo, pAllocator, pSession );
+    }
+
+    void vkDestroyOpticalFlowSessionNV( VkDevice device, VkOpticalFlowSessionNV session, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyOpticalFlowSessionNV( device, session, pAllocator );
+    }
+
+    VkResult vkBindOpticalFlowSessionImageNV( VkDevice                           device,
+                                              VkOpticalFlowSessionNV             session,
+                                              VkOpticalFlowSessionBindingPointNV bindingPoint,
+                                              VkImageView                        view,
+                                              VkImageLayout                      layout ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkBindOpticalFlowSessionImageNV( device, session, bindingPoint, view, layout );
+    }
+
+    void vkCmdOpticalFlowExecuteNV( VkCommandBuffer                    commandBuffer,
+                                    VkOpticalFlowSessionNV             session,
+                                    const VkOpticalFlowExecuteInfoNV * pExecuteInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdOpticalFlowExecuteNV( commandBuffer, session, pExecuteInfo );
     }
 
     //=== VK_QCOM_tile_properties ===
@@ -9938,6 +10257,40 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_NV_present_barrier ===
+  template <>
+  struct StructExtends<PhysicalDevicePresentBarrierFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePresentBarrierFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SurfaceCapabilitiesPresentBarrierNV, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<SwapchainPresentBarrierCreateInfoNV, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_present_id ===
   template <>
   struct StructExtends<PresentIdKHR, PresentInfoKHR>
@@ -10564,6 +10917,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_device_fault ===
+  template <>
+  struct StructExtends<PhysicalDeviceFaultFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceFaultFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_rgba10x6_formats ===
   template <>
   struct StructExtends<PhysicalDeviceRGBA10X6FormatsFeaturesEXT, PhysicalDeviceFeatures2>
@@ -10647,6 +11018,32 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_physical_device_drm ===
   template <>
   struct StructExtends<PhysicalDeviceDrmPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_device_address_binding_report ===
+  template <>
+  struct StructExtends<PhysicalDeviceAddressBindingReportFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceAddressBindingReportFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<DeviceAddressBindingCallbackDataEXT, DebugUtilsMessengerCallbackDataEXT>
   {
     enum
     {
@@ -11018,6 +11415,40 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_opacity_micromap ===
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceOpacityMicromapPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<AccelerationStructureTrianglesOpacityMicromapEXT, AccelerationStructureGeometryTrianglesDataKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_border_color_swizzle ===
   template <>
   struct StructExtends<PhysicalDeviceBorderColorSwizzleFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11220,6 +11651,32 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_extended_dynamic_state3 ===
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicState3FeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicState3FeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedDynamicState3PropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_subpass_merge_feedback ===
   template <>
   struct StructExtends<PhysicalDeviceSubpassMergeFeedbackFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11322,6 +11779,56 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_NV_optical_flow ===
+  template <>
+  struct StructExtends<PhysicalDeviceOpticalFlowFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceOpticalFlowFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDeviceOpticalFlowPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<OpticalFlowImageFormatInfoNV, PhysicalDeviceImageFormatInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<OpticalFlowImageFormatInfoNV, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<OpticalFlowSessionCreatePrivateDataInfoNV, OpticalFlowSessionCreateInfoNV>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_legacy_dithering ===
   template <>
   struct StructExtends<PhysicalDeviceLegacyDitheringFeaturesEXT, PhysicalDeviceFeatures2>
@@ -11333,6 +11840,24 @@ namespace VULKAN_HPP_NAMESPACE
   };
   template <>
   struct StructExtends<PhysicalDeviceLegacyDitheringFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_pipeline_protected_access ===
+  template <>
+  struct StructExtends<PhysicalDevicePipelineProtectedAccessFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+  template <>
+  struct StructExtends<PhysicalDevicePipelineProtectedAccessFeaturesEXT, DeviceCreateInfo>
   {
     enum
     {
@@ -12360,6 +12885,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_image_compression_control ===
     PFN_vkGetImageSubresourceLayout2EXT vkGetImageSubresourceLayout2EXT = 0;
 
+    //=== VK_EXT_device_fault ===
+    PFN_vkGetDeviceFaultInfoEXT vkGetDeviceFaultInfoEXT = 0;
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===
     PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV = 0;
@@ -12462,6 +12990,22 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdDrawMultiEXT        vkCmdDrawMultiEXT        = 0;
     PFN_vkCmdDrawMultiIndexedEXT vkCmdDrawMultiIndexedEXT = 0;
 
+    //=== VK_EXT_opacity_micromap ===
+    PFN_vkCreateMicromapEXT                 vkCreateMicromapEXT                 = 0;
+    PFN_vkDestroyMicromapEXT                vkDestroyMicromapEXT                = 0;
+    PFN_vkCmdBuildMicromapsEXT              vkCmdBuildMicromapsEXT              = 0;
+    PFN_vkBuildMicromapsEXT                 vkBuildMicromapsEXT                 = 0;
+    PFN_vkCopyMicromapEXT                   vkCopyMicromapEXT                   = 0;
+    PFN_vkCopyMicromapToMemoryEXT           vkCopyMicromapToMemoryEXT           = 0;
+    PFN_vkCopyMemoryToMicromapEXT           vkCopyMemoryToMicromapEXT           = 0;
+    PFN_vkWriteMicromapsPropertiesEXT       vkWriteMicromapsPropertiesEXT       = 0;
+    PFN_vkCmdCopyMicromapEXT                vkCmdCopyMicromapEXT                = 0;
+    PFN_vkCmdCopyMicromapToMemoryEXT        vkCmdCopyMicromapToMemoryEXT        = 0;
+    PFN_vkCmdCopyMemoryToMicromapEXT        vkCmdCopyMemoryToMicromapEXT        = 0;
+    PFN_vkCmdWriteMicromapsPropertiesEXT    vkCmdWriteMicromapsPropertiesEXT    = 0;
+    PFN_vkGetDeviceMicromapCompatibilityEXT vkGetDeviceMicromapCompatibilityEXT = 0;
+    PFN_vkGetMicromapBuildSizesEXT          vkGetMicromapBuildSizesEXT          = 0;
+
     //=== VK_EXT_pageable_device_local_memory ===
     PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
 
@@ -12474,9 +13018,49 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE vkGetDescriptorSetLayoutHostMappingInfoVALVE = 0;
     PFN_vkGetDescriptorSetHostMappingVALVE           vkGetDescriptorSetHostMappingVALVE           = 0;
 
+    //=== VK_EXT_extended_dynamic_state3 ===
+    PFN_vkCmdSetTessellationDomainOriginEXT         vkCmdSetTessellationDomainOriginEXT         = 0;
+    PFN_vkCmdSetDepthClampEnableEXT                 vkCmdSetDepthClampEnableEXT                 = 0;
+    PFN_vkCmdSetPolygonModeEXT                      vkCmdSetPolygonModeEXT                      = 0;
+    PFN_vkCmdSetRasterizationSamplesEXT             vkCmdSetRasterizationSamplesEXT             = 0;
+    PFN_vkCmdSetSampleMaskEXT                       vkCmdSetSampleMaskEXT                       = 0;
+    PFN_vkCmdSetAlphaToCoverageEnableEXT            vkCmdSetAlphaToCoverageEnableEXT            = 0;
+    PFN_vkCmdSetAlphaToOneEnableEXT                 vkCmdSetAlphaToOneEnableEXT                 = 0;
+    PFN_vkCmdSetLogicOpEnableEXT                    vkCmdSetLogicOpEnableEXT                    = 0;
+    PFN_vkCmdSetColorBlendEnableEXT                 vkCmdSetColorBlendEnableEXT                 = 0;
+    PFN_vkCmdSetColorBlendEquationEXT               vkCmdSetColorBlendEquationEXT               = 0;
+    PFN_vkCmdSetColorWriteMaskEXT                   vkCmdSetColorWriteMaskEXT                   = 0;
+    PFN_vkCmdSetRasterizationStreamEXT              vkCmdSetRasterizationStreamEXT              = 0;
+    PFN_vkCmdSetConservativeRasterizationModeEXT    vkCmdSetConservativeRasterizationModeEXT    = 0;
+    PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT = 0;
+    PFN_vkCmdSetDepthClipEnableEXT                  vkCmdSetDepthClipEnableEXT                  = 0;
+    PFN_vkCmdSetSampleLocationsEnableEXT            vkCmdSetSampleLocationsEnableEXT            = 0;
+    PFN_vkCmdSetColorBlendAdvancedEXT               vkCmdSetColorBlendAdvancedEXT               = 0;
+    PFN_vkCmdSetProvokingVertexModeEXT              vkCmdSetProvokingVertexModeEXT              = 0;
+    PFN_vkCmdSetLineRasterizationModeEXT            vkCmdSetLineRasterizationModeEXT            = 0;
+    PFN_vkCmdSetLineStippleEnableEXT                vkCmdSetLineStippleEnableEXT                = 0;
+    PFN_vkCmdSetDepthClipNegativeOneToOneEXT        vkCmdSetDepthClipNegativeOneToOneEXT        = 0;
+    PFN_vkCmdSetViewportWScalingEnableNV            vkCmdSetViewportWScalingEnableNV            = 0;
+    PFN_vkCmdSetViewportSwizzleNV                   vkCmdSetViewportSwizzleNV                   = 0;
+    PFN_vkCmdSetCoverageToColorEnableNV             vkCmdSetCoverageToColorEnableNV             = 0;
+    PFN_vkCmdSetCoverageToColorLocationNV           vkCmdSetCoverageToColorLocationNV           = 0;
+    PFN_vkCmdSetCoverageModulationModeNV            vkCmdSetCoverageModulationModeNV            = 0;
+    PFN_vkCmdSetCoverageModulationTableEnableNV     vkCmdSetCoverageModulationTableEnableNV     = 0;
+    PFN_vkCmdSetCoverageModulationTableNV           vkCmdSetCoverageModulationTableNV           = 0;
+    PFN_vkCmdSetShadingRateImageEnableNV            vkCmdSetShadingRateImageEnableNV            = 0;
+    PFN_vkCmdSetRepresentativeFragmentTestEnableNV  vkCmdSetRepresentativeFragmentTestEnableNV  = 0;
+    PFN_vkCmdSetCoverageReductionModeNV             vkCmdSetCoverageReductionModeNV             = 0;
+
     //=== VK_EXT_shader_module_identifier ===
     PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
     PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
+
+    //=== VK_NV_optical_flow ===
+    PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV vkGetPhysicalDeviceOpticalFlowImageFormatsNV = 0;
+    PFN_vkCreateOpticalFlowSessionNV                 vkCreateOpticalFlowSessionNV                 = 0;
+    PFN_vkDestroyOpticalFlowSessionNV                vkDestroyOpticalFlowSessionNV                = 0;
+    PFN_vkBindOpticalFlowSessionImageNV              vkBindOpticalFlowSessionImageNV              = 0;
+    PFN_vkCmdOpticalFlowExecuteNV                    vkCmdOpticalFlowExecuteNV                    = 0;
 
     //=== VK_QCOM_tile_properties ===
     PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
@@ -13553,6 +14137,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_image_compression_control ===
       vkGetImageSubresourceLayout2EXT = PFN_vkGetImageSubresourceLayout2EXT( vkGetInstanceProcAddr( instance, "vkGetImageSubresourceLayout2EXT" ) );
 
+      //=== VK_EXT_device_fault ===
+      vkGetDeviceFaultInfoEXT = PFN_vkGetDeviceFaultInfoEXT( vkGetInstanceProcAddr( instance, "vkGetDeviceFaultInfoEXT" ) );
+
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       //=== VK_NV_acquire_winrt_display ===
       vkAcquireWinrtDisplayNV = PFN_vkAcquireWinrtDisplayNV( vkGetInstanceProcAddr( instance, "vkAcquireWinrtDisplayNV" ) );
@@ -13652,6 +14239,22 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMultiEXT        = PFN_vkCmdDrawMultiEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiEXT" ) );
       vkCmdDrawMultiIndexedEXT = PFN_vkCmdDrawMultiIndexedEXT( vkGetInstanceProcAddr( instance, "vkCmdDrawMultiIndexedEXT" ) );
 
+      //=== VK_EXT_opacity_micromap ===
+      vkCreateMicromapEXT                 = PFN_vkCreateMicromapEXT( vkGetInstanceProcAddr( instance, "vkCreateMicromapEXT" ) );
+      vkDestroyMicromapEXT                = PFN_vkDestroyMicromapEXT( vkGetInstanceProcAddr( instance, "vkDestroyMicromapEXT" ) );
+      vkCmdBuildMicromapsEXT              = PFN_vkCmdBuildMicromapsEXT( vkGetInstanceProcAddr( instance, "vkCmdBuildMicromapsEXT" ) );
+      vkBuildMicromapsEXT                 = PFN_vkBuildMicromapsEXT( vkGetInstanceProcAddr( instance, "vkBuildMicromapsEXT" ) );
+      vkCopyMicromapEXT                   = PFN_vkCopyMicromapEXT( vkGetInstanceProcAddr( instance, "vkCopyMicromapEXT" ) );
+      vkCopyMicromapToMemoryEXT           = PFN_vkCopyMicromapToMemoryEXT( vkGetInstanceProcAddr( instance, "vkCopyMicromapToMemoryEXT" ) );
+      vkCopyMemoryToMicromapEXT           = PFN_vkCopyMemoryToMicromapEXT( vkGetInstanceProcAddr( instance, "vkCopyMemoryToMicromapEXT" ) );
+      vkWriteMicromapsPropertiesEXT       = PFN_vkWriteMicromapsPropertiesEXT( vkGetInstanceProcAddr( instance, "vkWriteMicromapsPropertiesEXT" ) );
+      vkCmdCopyMicromapEXT                = PFN_vkCmdCopyMicromapEXT( vkGetInstanceProcAddr( instance, "vkCmdCopyMicromapEXT" ) );
+      vkCmdCopyMicromapToMemoryEXT        = PFN_vkCmdCopyMicromapToMemoryEXT( vkGetInstanceProcAddr( instance, "vkCmdCopyMicromapToMemoryEXT" ) );
+      vkCmdCopyMemoryToMicromapEXT        = PFN_vkCmdCopyMemoryToMicromapEXT( vkGetInstanceProcAddr( instance, "vkCmdCopyMemoryToMicromapEXT" ) );
+      vkCmdWriteMicromapsPropertiesEXT    = PFN_vkCmdWriteMicromapsPropertiesEXT( vkGetInstanceProcAddr( instance, "vkCmdWriteMicromapsPropertiesEXT" ) );
+      vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT( vkGetInstanceProcAddr( instance, "vkGetDeviceMicromapCompatibilityEXT" ) );
+      vkGetMicromapBuildSizesEXT          = PFN_vkGetMicromapBuildSizesEXT( vkGetInstanceProcAddr( instance, "vkGetMicromapBuildSizesEXT" ) );
+
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetInstanceProcAddr( instance, "vkSetDeviceMemoryPriorityEXT" ) );
 
@@ -13674,10 +14277,56 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
       vkGetDescriptorSetHostMappingVALVE = PFN_vkGetDescriptorSetHostMappingVALVE( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetHostMappingVALVE" ) );
 
+      //=== VK_EXT_extended_dynamic_state3 ===
+      vkCmdSetTessellationDomainOriginEXT = PFN_vkCmdSetTessellationDomainOriginEXT( vkGetInstanceProcAddr( instance, "vkCmdSetTessellationDomainOriginEXT" ) );
+      vkCmdSetDepthClampEnableEXT         = PFN_vkCmdSetDepthClampEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthClampEnableEXT" ) );
+      vkCmdSetPolygonModeEXT              = PFN_vkCmdSetPolygonModeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetPolygonModeEXT" ) );
+      vkCmdSetRasterizationSamplesEXT     = PFN_vkCmdSetRasterizationSamplesEXT( vkGetInstanceProcAddr( instance, "vkCmdSetRasterizationSamplesEXT" ) );
+      vkCmdSetSampleMaskEXT               = PFN_vkCmdSetSampleMaskEXT( vkGetInstanceProcAddr( instance, "vkCmdSetSampleMaskEXT" ) );
+      vkCmdSetAlphaToCoverageEnableEXT    = PFN_vkCmdSetAlphaToCoverageEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetAlphaToCoverageEnableEXT" ) );
+      vkCmdSetAlphaToOneEnableEXT         = PFN_vkCmdSetAlphaToOneEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetAlphaToOneEnableEXT" ) );
+      vkCmdSetLogicOpEnableEXT            = PFN_vkCmdSetLogicOpEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetLogicOpEnableEXT" ) );
+      vkCmdSetColorBlendEnableEXT         = PFN_vkCmdSetColorBlendEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetColorBlendEnableEXT" ) );
+      vkCmdSetColorBlendEquationEXT       = PFN_vkCmdSetColorBlendEquationEXT( vkGetInstanceProcAddr( instance, "vkCmdSetColorBlendEquationEXT" ) );
+      vkCmdSetColorWriteMaskEXT           = PFN_vkCmdSetColorWriteMaskEXT( vkGetInstanceProcAddr( instance, "vkCmdSetColorWriteMaskEXT" ) );
+      vkCmdSetRasterizationStreamEXT      = PFN_vkCmdSetRasterizationStreamEXT( vkGetInstanceProcAddr( instance, "vkCmdSetRasterizationStreamEXT" ) );
+      vkCmdSetConservativeRasterizationModeEXT =
+        PFN_vkCmdSetConservativeRasterizationModeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetConservativeRasterizationModeEXT" ) );
+      vkCmdSetExtraPrimitiveOverestimationSizeEXT =
+        PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetExtraPrimitiveOverestimationSizeEXT" ) );
+      vkCmdSetDepthClipEnableEXT       = PFN_vkCmdSetDepthClipEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthClipEnableEXT" ) );
+      vkCmdSetSampleLocationsEnableEXT = PFN_vkCmdSetSampleLocationsEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetSampleLocationsEnableEXT" ) );
+      vkCmdSetColorBlendAdvancedEXT    = PFN_vkCmdSetColorBlendAdvancedEXT( vkGetInstanceProcAddr( instance, "vkCmdSetColorBlendAdvancedEXT" ) );
+      vkCmdSetProvokingVertexModeEXT   = PFN_vkCmdSetProvokingVertexModeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetProvokingVertexModeEXT" ) );
+      vkCmdSetLineRasterizationModeEXT = PFN_vkCmdSetLineRasterizationModeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetLineRasterizationModeEXT" ) );
+      vkCmdSetLineStippleEnableEXT     = PFN_vkCmdSetLineStippleEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetLineStippleEnableEXT" ) );
+      vkCmdSetDepthClipNegativeOneToOneEXT =
+        PFN_vkCmdSetDepthClipNegativeOneToOneEXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthClipNegativeOneToOneEXT" ) );
+      vkCmdSetViewportWScalingEnableNV  = PFN_vkCmdSetViewportWScalingEnableNV( vkGetInstanceProcAddr( instance, "vkCmdSetViewportWScalingEnableNV" ) );
+      vkCmdSetViewportSwizzleNV         = PFN_vkCmdSetViewportSwizzleNV( vkGetInstanceProcAddr( instance, "vkCmdSetViewportSwizzleNV" ) );
+      vkCmdSetCoverageToColorEnableNV   = PFN_vkCmdSetCoverageToColorEnableNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageToColorEnableNV" ) );
+      vkCmdSetCoverageToColorLocationNV = PFN_vkCmdSetCoverageToColorLocationNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageToColorLocationNV" ) );
+      vkCmdSetCoverageModulationModeNV  = PFN_vkCmdSetCoverageModulationModeNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageModulationModeNV" ) );
+      vkCmdSetCoverageModulationTableEnableNV =
+        PFN_vkCmdSetCoverageModulationTableEnableNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageModulationTableEnableNV" ) );
+      vkCmdSetCoverageModulationTableNV = PFN_vkCmdSetCoverageModulationTableNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageModulationTableNV" ) );
+      vkCmdSetShadingRateImageEnableNV  = PFN_vkCmdSetShadingRateImageEnableNV( vkGetInstanceProcAddr( instance, "vkCmdSetShadingRateImageEnableNV" ) );
+      vkCmdSetRepresentativeFragmentTestEnableNV =
+        PFN_vkCmdSetRepresentativeFragmentTestEnableNV( vkGetInstanceProcAddr( instance, "vkCmdSetRepresentativeFragmentTestEnableNV" ) );
+      vkCmdSetCoverageReductionModeNV = PFN_vkCmdSetCoverageReductionModeNV( vkGetInstanceProcAddr( instance, "vkCmdSetCoverageReductionModeNV" ) );
+
       //=== VK_EXT_shader_module_identifier ===
       vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleIdentifierEXT" ) );
       vkGetShaderModuleCreateInfoIdentifierEXT =
         PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetInstanceProcAddr( instance, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
+
+      //=== VK_NV_optical_flow ===
+      vkGetPhysicalDeviceOpticalFlowImageFormatsNV =
+        PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceOpticalFlowImageFormatsNV" ) );
+      vkCreateOpticalFlowSessionNV    = PFN_vkCreateOpticalFlowSessionNV( vkGetInstanceProcAddr( instance, "vkCreateOpticalFlowSessionNV" ) );
+      vkDestroyOpticalFlowSessionNV   = PFN_vkDestroyOpticalFlowSessionNV( vkGetInstanceProcAddr( instance, "vkDestroyOpticalFlowSessionNV" ) );
+      vkBindOpticalFlowSessionImageNV = PFN_vkBindOpticalFlowSessionImageNV( vkGetInstanceProcAddr( instance, "vkBindOpticalFlowSessionImageNV" ) );
+      vkCmdOpticalFlowExecuteNV       = PFN_vkCmdOpticalFlowExecuteNV( vkGetInstanceProcAddr( instance, "vkCmdOpticalFlowExecuteNV" ) );
 
       //=== VK_QCOM_tile_properties ===
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetFramebufferTilePropertiesQCOM" ) );
@@ -14426,6 +15075,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_image_compression_control ===
       vkGetImageSubresourceLayout2EXT = PFN_vkGetImageSubresourceLayout2EXT( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2EXT" ) );
 
+      //=== VK_EXT_device_fault ===
+      vkGetDeviceFaultInfoEXT = PFN_vkGetDeviceFaultInfoEXT( vkGetDeviceProcAddr( device, "vkGetDeviceFaultInfoEXT" ) );
+
       //=== VK_KHR_ray_tracing_pipeline ===
       vkCmdTraceRaysKHR                    = PFN_vkCmdTraceRaysKHR( vkGetDeviceProcAddr( device, "vkCmdTraceRaysKHR" ) );
       vkCreateRayTracingPipelinesKHR       = PFN_vkCreateRayTracingPipelinesKHR( vkGetDeviceProcAddr( device, "vkCreateRayTracingPipelinesKHR" ) );
@@ -14503,6 +15155,22 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDrawMultiEXT        = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
       vkCmdDrawMultiIndexedEXT = PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
 
+      //=== VK_EXT_opacity_micromap ===
+      vkCreateMicromapEXT                 = PFN_vkCreateMicromapEXT( vkGetDeviceProcAddr( device, "vkCreateMicromapEXT" ) );
+      vkDestroyMicromapEXT                = PFN_vkDestroyMicromapEXT( vkGetDeviceProcAddr( device, "vkDestroyMicromapEXT" ) );
+      vkCmdBuildMicromapsEXT              = PFN_vkCmdBuildMicromapsEXT( vkGetDeviceProcAddr( device, "vkCmdBuildMicromapsEXT" ) );
+      vkBuildMicromapsEXT                 = PFN_vkBuildMicromapsEXT( vkGetDeviceProcAddr( device, "vkBuildMicromapsEXT" ) );
+      vkCopyMicromapEXT                   = PFN_vkCopyMicromapEXT( vkGetDeviceProcAddr( device, "vkCopyMicromapEXT" ) );
+      vkCopyMicromapToMemoryEXT           = PFN_vkCopyMicromapToMemoryEXT( vkGetDeviceProcAddr( device, "vkCopyMicromapToMemoryEXT" ) );
+      vkCopyMemoryToMicromapEXT           = PFN_vkCopyMemoryToMicromapEXT( vkGetDeviceProcAddr( device, "vkCopyMemoryToMicromapEXT" ) );
+      vkWriteMicromapsPropertiesEXT       = PFN_vkWriteMicromapsPropertiesEXT( vkGetDeviceProcAddr( device, "vkWriteMicromapsPropertiesEXT" ) );
+      vkCmdCopyMicromapEXT                = PFN_vkCmdCopyMicromapEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMicromapEXT" ) );
+      vkCmdCopyMicromapToMemoryEXT        = PFN_vkCmdCopyMicromapToMemoryEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMicromapToMemoryEXT" ) );
+      vkCmdCopyMemoryToMicromapEXT        = PFN_vkCmdCopyMemoryToMicromapEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryToMicromapEXT" ) );
+      vkCmdWriteMicromapsPropertiesEXT    = PFN_vkCmdWriteMicromapsPropertiesEXT( vkGetDeviceProcAddr( device, "vkCmdWriteMicromapsPropertiesEXT" ) );
+      vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT( vkGetDeviceProcAddr( device, "vkGetDeviceMicromapCompatibilityEXT" ) );
+      vkGetMicromapBuildSizesEXT          = PFN_vkGetMicromapBuildSizesEXT( vkGetDeviceProcAddr( device, "vkGetMicromapBuildSizesEXT" ) );
+
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
 
@@ -14525,10 +15193,53 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDescriptorSetLayoutHostMappingInfoVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutHostMappingInfoVALVE" ) );
       vkGetDescriptorSetHostMappingVALVE = PFN_vkGetDescriptorSetHostMappingVALVE( vkGetDeviceProcAddr( device, "vkGetDescriptorSetHostMappingVALVE" ) );
 
+      //=== VK_EXT_extended_dynamic_state3 ===
+      vkCmdSetTessellationDomainOriginEXT = PFN_vkCmdSetTessellationDomainOriginEXT( vkGetDeviceProcAddr( device, "vkCmdSetTessellationDomainOriginEXT" ) );
+      vkCmdSetDepthClampEnableEXT         = PFN_vkCmdSetDepthClampEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClampEnableEXT" ) );
+      vkCmdSetPolygonModeEXT              = PFN_vkCmdSetPolygonModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetPolygonModeEXT" ) );
+      vkCmdSetRasterizationSamplesEXT     = PFN_vkCmdSetRasterizationSamplesEXT( vkGetDeviceProcAddr( device, "vkCmdSetRasterizationSamplesEXT" ) );
+      vkCmdSetSampleMaskEXT               = PFN_vkCmdSetSampleMaskEXT( vkGetDeviceProcAddr( device, "vkCmdSetSampleMaskEXT" ) );
+      vkCmdSetAlphaToCoverageEnableEXT    = PFN_vkCmdSetAlphaToCoverageEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAlphaToCoverageEnableEXT" ) );
+      vkCmdSetAlphaToOneEnableEXT         = PFN_vkCmdSetAlphaToOneEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAlphaToOneEnableEXT" ) );
+      vkCmdSetLogicOpEnableEXT            = PFN_vkCmdSetLogicOpEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetLogicOpEnableEXT" ) );
+      vkCmdSetColorBlendEnableEXT         = PFN_vkCmdSetColorBlendEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendEnableEXT" ) );
+      vkCmdSetColorBlendEquationEXT       = PFN_vkCmdSetColorBlendEquationEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendEquationEXT" ) );
+      vkCmdSetColorWriteMaskEXT           = PFN_vkCmdSetColorWriteMaskEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorWriteMaskEXT" ) );
+      vkCmdSetRasterizationStreamEXT      = PFN_vkCmdSetRasterizationStreamEXT( vkGetDeviceProcAddr( device, "vkCmdSetRasterizationStreamEXT" ) );
+      vkCmdSetConservativeRasterizationModeEXT =
+        PFN_vkCmdSetConservativeRasterizationModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetConservativeRasterizationModeEXT" ) );
+      vkCmdSetExtraPrimitiveOverestimationSizeEXT =
+        PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT( vkGetDeviceProcAddr( device, "vkCmdSetExtraPrimitiveOverestimationSizeEXT" ) );
+      vkCmdSetDepthClipEnableEXT           = PFN_vkCmdSetDepthClipEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClipEnableEXT" ) );
+      vkCmdSetSampleLocationsEnableEXT     = PFN_vkCmdSetSampleLocationsEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetSampleLocationsEnableEXT" ) );
+      vkCmdSetColorBlendAdvancedEXT        = PFN_vkCmdSetColorBlendAdvancedEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendAdvancedEXT" ) );
+      vkCmdSetProvokingVertexModeEXT       = PFN_vkCmdSetProvokingVertexModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetProvokingVertexModeEXT" ) );
+      vkCmdSetLineRasterizationModeEXT     = PFN_vkCmdSetLineRasterizationModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineRasterizationModeEXT" ) );
+      vkCmdSetLineStippleEnableEXT         = PFN_vkCmdSetLineStippleEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleEnableEXT" ) );
+      vkCmdSetDepthClipNegativeOneToOneEXT = PFN_vkCmdSetDepthClipNegativeOneToOneEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClipNegativeOneToOneEXT" ) );
+      vkCmdSetViewportWScalingEnableNV     = PFN_vkCmdSetViewportWScalingEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportWScalingEnableNV" ) );
+      vkCmdSetViewportSwizzleNV            = PFN_vkCmdSetViewportSwizzleNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportSwizzleNV" ) );
+      vkCmdSetCoverageToColorEnableNV      = PFN_vkCmdSetCoverageToColorEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageToColorEnableNV" ) );
+      vkCmdSetCoverageToColorLocationNV    = PFN_vkCmdSetCoverageToColorLocationNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageToColorLocationNV" ) );
+      vkCmdSetCoverageModulationModeNV     = PFN_vkCmdSetCoverageModulationModeNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationModeNV" ) );
+      vkCmdSetCoverageModulationTableEnableNV =
+        PFN_vkCmdSetCoverageModulationTableEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationTableEnableNV" ) );
+      vkCmdSetCoverageModulationTableNV = PFN_vkCmdSetCoverageModulationTableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationTableNV" ) );
+      vkCmdSetShadingRateImageEnableNV  = PFN_vkCmdSetShadingRateImageEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetShadingRateImageEnableNV" ) );
+      vkCmdSetRepresentativeFragmentTestEnableNV =
+        PFN_vkCmdSetRepresentativeFragmentTestEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetRepresentativeFragmentTestEnableNV" ) );
+      vkCmdSetCoverageReductionModeNV = PFN_vkCmdSetCoverageReductionModeNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageReductionModeNV" ) );
+
       //=== VK_EXT_shader_module_identifier ===
       vkGetShaderModuleIdentifierEXT = PFN_vkGetShaderModuleIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleIdentifierEXT" ) );
       vkGetShaderModuleCreateInfoIdentifierEXT =
         PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
+
+      //=== VK_NV_optical_flow ===
+      vkCreateOpticalFlowSessionNV    = PFN_vkCreateOpticalFlowSessionNV( vkGetDeviceProcAddr( device, "vkCreateOpticalFlowSessionNV" ) );
+      vkDestroyOpticalFlowSessionNV   = PFN_vkDestroyOpticalFlowSessionNV( vkGetDeviceProcAddr( device, "vkDestroyOpticalFlowSessionNV" ) );
+      vkBindOpticalFlowSessionImageNV = PFN_vkBindOpticalFlowSessionImageNV( vkGetDeviceProcAddr( device, "vkBindOpticalFlowSessionImageNV" ) );
+      vkCmdOpticalFlowExecuteNV       = PFN_vkCmdOpticalFlowExecuteNV( vkGetDeviceProcAddr( device, "vkCmdOpticalFlowExecuteNV" ) );
 
       //=== VK_QCOM_tile_properties ===
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );

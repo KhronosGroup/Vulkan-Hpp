@@ -357,6 +357,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPhysicalDeviceExternalImageFormatPropertiesNV =
           PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceExternalImageFormatPropertiesNV" ) );
 
+        //=== VK_NV_optical_flow ===
+        vkGetPhysicalDeviceOpticalFlowImageFormatsNV =
+          PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceOpticalFlowImageFormatsNV" ) );
+
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
         //=== VK_QNX_screen_surface ===
         vkCreateScreenSurfaceQNX = PFN_vkCreateScreenSurfaceQNX( vkGetInstanceProcAddr( instance, "vkCreateScreenSurfaceQNX" ) );
@@ -624,6 +628,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_external_memory_capabilities ===
       PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV vkGetPhysicalDeviceExternalImageFormatPropertiesNV = 0;
+
+      //=== VK_NV_optical_flow ===
+      PFN_vkGetPhysicalDeviceOpticalFlowImageFormatsNV vkGetPhysicalDeviceOpticalFlowImageFormatsNV = 0;
 
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
       //=== VK_QNX_screen_surface ===
@@ -895,6 +902,9 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdEndDebugUtilsLabelEXT      = PFN_vkCmdEndDebugUtilsLabelEXT( vkGetDeviceProcAddr( device, "vkCmdEndDebugUtilsLabelEXT" ) );
         vkCmdInsertDebugUtilsLabelEXT   = PFN_vkCmdInsertDebugUtilsLabelEXT( vkGetDeviceProcAddr( device, "vkCmdInsertDebugUtilsLabelEXT" ) );
 
+        //=== VK_EXT_device_fault ===
+        vkGetDeviceFaultInfoEXT = PFN_vkGetDeviceFaultInfoEXT( vkGetDeviceProcAddr( device, "vkGetDeviceFaultInfoEXT" ) );
+
         //=== VK_EXT_discard_rectangles ===
         vkCmdSetDiscardRectangleEXT = PFN_vkCmdSetDiscardRectangleEXT( vkGetDeviceProcAddr( device, "vkCmdSetDiscardRectangleEXT" ) );
 
@@ -955,6 +965,44 @@ namespace VULKAN_HPP_NAMESPACE
         if ( !vkCmdSetPrimitiveRestartEnable )
           vkCmdSetPrimitiveRestartEnable = vkCmdSetPrimitiveRestartEnableEXT;
 
+        //=== VK_EXT_extended_dynamic_state3 ===
+        vkCmdSetTessellationDomainOriginEXT = PFN_vkCmdSetTessellationDomainOriginEXT( vkGetDeviceProcAddr( device, "vkCmdSetTessellationDomainOriginEXT" ) );
+        vkCmdSetDepthClampEnableEXT         = PFN_vkCmdSetDepthClampEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClampEnableEXT" ) );
+        vkCmdSetPolygonModeEXT              = PFN_vkCmdSetPolygonModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetPolygonModeEXT" ) );
+        vkCmdSetRasterizationSamplesEXT     = PFN_vkCmdSetRasterizationSamplesEXT( vkGetDeviceProcAddr( device, "vkCmdSetRasterizationSamplesEXT" ) );
+        vkCmdSetSampleMaskEXT               = PFN_vkCmdSetSampleMaskEXT( vkGetDeviceProcAddr( device, "vkCmdSetSampleMaskEXT" ) );
+        vkCmdSetAlphaToCoverageEnableEXT    = PFN_vkCmdSetAlphaToCoverageEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAlphaToCoverageEnableEXT" ) );
+        vkCmdSetAlphaToOneEnableEXT         = PFN_vkCmdSetAlphaToOneEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAlphaToOneEnableEXT" ) );
+        vkCmdSetLogicOpEnableEXT            = PFN_vkCmdSetLogicOpEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetLogicOpEnableEXT" ) );
+        vkCmdSetColorBlendEnableEXT         = PFN_vkCmdSetColorBlendEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendEnableEXT" ) );
+        vkCmdSetColorBlendEquationEXT       = PFN_vkCmdSetColorBlendEquationEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendEquationEXT" ) );
+        vkCmdSetColorWriteMaskEXT           = PFN_vkCmdSetColorWriteMaskEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorWriteMaskEXT" ) );
+        vkCmdSetRasterizationStreamEXT      = PFN_vkCmdSetRasterizationStreamEXT( vkGetDeviceProcAddr( device, "vkCmdSetRasterizationStreamEXT" ) );
+        vkCmdSetConservativeRasterizationModeEXT =
+          PFN_vkCmdSetConservativeRasterizationModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetConservativeRasterizationModeEXT" ) );
+        vkCmdSetExtraPrimitiveOverestimationSizeEXT =
+          PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT( vkGetDeviceProcAddr( device, "vkCmdSetExtraPrimitiveOverestimationSizeEXT" ) );
+        vkCmdSetDepthClipEnableEXT       = PFN_vkCmdSetDepthClipEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClipEnableEXT" ) );
+        vkCmdSetSampleLocationsEnableEXT = PFN_vkCmdSetSampleLocationsEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetSampleLocationsEnableEXT" ) );
+        vkCmdSetColorBlendAdvancedEXT    = PFN_vkCmdSetColorBlendAdvancedEXT( vkGetDeviceProcAddr( device, "vkCmdSetColorBlendAdvancedEXT" ) );
+        vkCmdSetProvokingVertexModeEXT   = PFN_vkCmdSetProvokingVertexModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetProvokingVertexModeEXT" ) );
+        vkCmdSetLineRasterizationModeEXT = PFN_vkCmdSetLineRasterizationModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineRasterizationModeEXT" ) );
+        vkCmdSetLineStippleEnableEXT     = PFN_vkCmdSetLineStippleEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleEnableEXT" ) );
+        vkCmdSetDepthClipNegativeOneToOneEXT =
+          PFN_vkCmdSetDepthClipNegativeOneToOneEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClipNegativeOneToOneEXT" ) );
+        vkCmdSetViewportWScalingEnableNV  = PFN_vkCmdSetViewportWScalingEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportWScalingEnableNV" ) );
+        vkCmdSetViewportSwizzleNV         = PFN_vkCmdSetViewportSwizzleNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportSwizzleNV" ) );
+        vkCmdSetCoverageToColorEnableNV   = PFN_vkCmdSetCoverageToColorEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageToColorEnableNV" ) );
+        vkCmdSetCoverageToColorLocationNV = PFN_vkCmdSetCoverageToColorLocationNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageToColorLocationNV" ) );
+        vkCmdSetCoverageModulationModeNV  = PFN_vkCmdSetCoverageModulationModeNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationModeNV" ) );
+        vkCmdSetCoverageModulationTableEnableNV =
+          PFN_vkCmdSetCoverageModulationTableEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationTableEnableNV" ) );
+        vkCmdSetCoverageModulationTableNV = PFN_vkCmdSetCoverageModulationTableNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageModulationTableNV" ) );
+        vkCmdSetShadingRateImageEnableNV  = PFN_vkCmdSetShadingRateImageEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetShadingRateImageEnableNV" ) );
+        vkCmdSetRepresentativeFragmentTestEnableNV =
+          PFN_vkCmdSetRepresentativeFragmentTestEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetRepresentativeFragmentTestEnableNV" ) );
+        vkCmdSetCoverageReductionModeNV = PFN_vkCmdSetCoverageReductionModeNV( vkGetDeviceProcAddr( device, "vkCmdSetCoverageReductionModeNV" ) );
+
         //=== VK_EXT_external_memory_host ===
         vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetMemoryHostPointerPropertiesEXT" ) );
 
@@ -997,6 +1045,22 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_EXT_multi_draw ===
         vkCmdDrawMultiEXT        = PFN_vkCmdDrawMultiEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiEXT" ) );
         vkCmdDrawMultiIndexedEXT = PFN_vkCmdDrawMultiIndexedEXT( vkGetDeviceProcAddr( device, "vkCmdDrawMultiIndexedEXT" ) );
+
+        //=== VK_EXT_opacity_micromap ===
+        vkCreateMicromapEXT                 = PFN_vkCreateMicromapEXT( vkGetDeviceProcAddr( device, "vkCreateMicromapEXT" ) );
+        vkDestroyMicromapEXT                = PFN_vkDestroyMicromapEXT( vkGetDeviceProcAddr( device, "vkDestroyMicromapEXT" ) );
+        vkCmdBuildMicromapsEXT              = PFN_vkCmdBuildMicromapsEXT( vkGetDeviceProcAddr( device, "vkCmdBuildMicromapsEXT" ) );
+        vkBuildMicromapsEXT                 = PFN_vkBuildMicromapsEXT( vkGetDeviceProcAddr( device, "vkBuildMicromapsEXT" ) );
+        vkCopyMicromapEXT                   = PFN_vkCopyMicromapEXT( vkGetDeviceProcAddr( device, "vkCopyMicromapEXT" ) );
+        vkCopyMicromapToMemoryEXT           = PFN_vkCopyMicromapToMemoryEXT( vkGetDeviceProcAddr( device, "vkCopyMicromapToMemoryEXT" ) );
+        vkCopyMemoryToMicromapEXT           = PFN_vkCopyMemoryToMicromapEXT( vkGetDeviceProcAddr( device, "vkCopyMemoryToMicromapEXT" ) );
+        vkWriteMicromapsPropertiesEXT       = PFN_vkWriteMicromapsPropertiesEXT( vkGetDeviceProcAddr( device, "vkWriteMicromapsPropertiesEXT" ) );
+        vkCmdCopyMicromapEXT                = PFN_vkCmdCopyMicromapEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMicromapEXT" ) );
+        vkCmdCopyMicromapToMemoryEXT        = PFN_vkCmdCopyMicromapToMemoryEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMicromapToMemoryEXT" ) );
+        vkCmdCopyMemoryToMicromapEXT        = PFN_vkCmdCopyMemoryToMicromapEXT( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryToMicromapEXT" ) );
+        vkCmdWriteMicromapsPropertiesEXT    = PFN_vkCmdWriteMicromapsPropertiesEXT( vkGetDeviceProcAddr( device, "vkCmdWriteMicromapsPropertiesEXT" ) );
+        vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT( vkGetDeviceProcAddr( device, "vkGetDeviceMicromapCompatibilityEXT" ) );
+        vkGetMicromapBuildSizesEXT          = PFN_vkGetMicromapBuildSizesEXT( vkGetDeviceProcAddr( device, "vkGetMicromapBuildSizesEXT" ) );
 
         //=== VK_EXT_pageable_device_local_memory ===
         vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );
@@ -1460,6 +1524,12 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdDrawMeshTasksIndirectNV      = PFN_vkCmdDrawMeshTasksIndirectNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectNV" ) );
         vkCmdDrawMeshTasksIndirectCountNV = PFN_vkCmdDrawMeshTasksIndirectCountNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksIndirectCountNV" ) );
 
+        //=== VK_NV_optical_flow ===
+        vkCreateOpticalFlowSessionNV    = PFN_vkCreateOpticalFlowSessionNV( vkGetDeviceProcAddr( device, "vkCreateOpticalFlowSessionNV" ) );
+        vkDestroyOpticalFlowSessionNV   = PFN_vkDestroyOpticalFlowSessionNV( vkGetDeviceProcAddr( device, "vkDestroyOpticalFlowSessionNV" ) );
+        vkBindOpticalFlowSessionImageNV = PFN_vkBindOpticalFlowSessionImageNV( vkGetDeviceProcAddr( device, "vkBindOpticalFlowSessionImageNV" ) );
+        vkCmdOpticalFlowExecuteNV       = PFN_vkCmdOpticalFlowExecuteNV( vkGetDeviceProcAddr( device, "vkCmdOpticalFlowExecuteNV" ) );
+
         //=== VK_NV_ray_tracing ===
         vkCreateAccelerationStructureNV  = PFN_vkCreateAccelerationStructureNV( vkGetDeviceProcAddr( device, "vkCreateAccelerationStructureNV" ) );
         vkDestroyAccelerationStructureNV = PFN_vkDestroyAccelerationStructureNV( vkGetDeviceProcAddr( device, "vkDestroyAccelerationStructureNV" ) );
@@ -1745,6 +1815,9 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdEndDebugUtilsLabelEXT      vkCmdEndDebugUtilsLabelEXT      = 0;
       PFN_vkCmdInsertDebugUtilsLabelEXT   vkCmdInsertDebugUtilsLabelEXT   = 0;
 
+      //=== VK_EXT_device_fault ===
+      PFN_vkGetDeviceFaultInfoEXT vkGetDeviceFaultInfoEXT = 0;
+
       //=== VK_EXT_discard_rectangles ===
       PFN_vkCmdSetDiscardRectangleEXT vkCmdSetDiscardRectangleEXT = 0;
 
@@ -1774,6 +1847,39 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdSetDepthBiasEnableEXT         vkCmdSetDepthBiasEnableEXT         = 0;
       PFN_vkCmdSetLogicOpEXT                 vkCmdSetLogicOpEXT                 = 0;
       PFN_vkCmdSetPrimitiveRestartEnableEXT  vkCmdSetPrimitiveRestartEnableEXT  = 0;
+
+      //=== VK_EXT_extended_dynamic_state3 ===
+      PFN_vkCmdSetTessellationDomainOriginEXT         vkCmdSetTessellationDomainOriginEXT         = 0;
+      PFN_vkCmdSetDepthClampEnableEXT                 vkCmdSetDepthClampEnableEXT                 = 0;
+      PFN_vkCmdSetPolygonModeEXT                      vkCmdSetPolygonModeEXT                      = 0;
+      PFN_vkCmdSetRasterizationSamplesEXT             vkCmdSetRasterizationSamplesEXT             = 0;
+      PFN_vkCmdSetSampleMaskEXT                       vkCmdSetSampleMaskEXT                       = 0;
+      PFN_vkCmdSetAlphaToCoverageEnableEXT            vkCmdSetAlphaToCoverageEnableEXT            = 0;
+      PFN_vkCmdSetAlphaToOneEnableEXT                 vkCmdSetAlphaToOneEnableEXT                 = 0;
+      PFN_vkCmdSetLogicOpEnableEXT                    vkCmdSetLogicOpEnableEXT                    = 0;
+      PFN_vkCmdSetColorBlendEnableEXT                 vkCmdSetColorBlendEnableEXT                 = 0;
+      PFN_vkCmdSetColorBlendEquationEXT               vkCmdSetColorBlendEquationEXT               = 0;
+      PFN_vkCmdSetColorWriteMaskEXT                   vkCmdSetColorWriteMaskEXT                   = 0;
+      PFN_vkCmdSetRasterizationStreamEXT              vkCmdSetRasterizationStreamEXT              = 0;
+      PFN_vkCmdSetConservativeRasterizationModeEXT    vkCmdSetConservativeRasterizationModeEXT    = 0;
+      PFN_vkCmdSetExtraPrimitiveOverestimationSizeEXT vkCmdSetExtraPrimitiveOverestimationSizeEXT = 0;
+      PFN_vkCmdSetDepthClipEnableEXT                  vkCmdSetDepthClipEnableEXT                  = 0;
+      PFN_vkCmdSetSampleLocationsEnableEXT            vkCmdSetSampleLocationsEnableEXT            = 0;
+      PFN_vkCmdSetColorBlendAdvancedEXT               vkCmdSetColorBlendAdvancedEXT               = 0;
+      PFN_vkCmdSetProvokingVertexModeEXT              vkCmdSetProvokingVertexModeEXT              = 0;
+      PFN_vkCmdSetLineRasterizationModeEXT            vkCmdSetLineRasterizationModeEXT            = 0;
+      PFN_vkCmdSetLineStippleEnableEXT                vkCmdSetLineStippleEnableEXT                = 0;
+      PFN_vkCmdSetDepthClipNegativeOneToOneEXT        vkCmdSetDepthClipNegativeOneToOneEXT        = 0;
+      PFN_vkCmdSetViewportWScalingEnableNV            vkCmdSetViewportWScalingEnableNV            = 0;
+      PFN_vkCmdSetViewportSwizzleNV                   vkCmdSetViewportSwizzleNV                   = 0;
+      PFN_vkCmdSetCoverageToColorEnableNV             vkCmdSetCoverageToColorEnableNV             = 0;
+      PFN_vkCmdSetCoverageToColorLocationNV           vkCmdSetCoverageToColorLocationNV           = 0;
+      PFN_vkCmdSetCoverageModulationModeNV            vkCmdSetCoverageModulationModeNV            = 0;
+      PFN_vkCmdSetCoverageModulationTableEnableNV     vkCmdSetCoverageModulationTableEnableNV     = 0;
+      PFN_vkCmdSetCoverageModulationTableNV           vkCmdSetCoverageModulationTableNV           = 0;
+      PFN_vkCmdSetShadingRateImageEnableNV            vkCmdSetShadingRateImageEnableNV            = 0;
+      PFN_vkCmdSetRepresentativeFragmentTestEnableNV  vkCmdSetRepresentativeFragmentTestEnableNV  = 0;
+      PFN_vkCmdSetCoverageReductionModeNV             vkCmdSetCoverageReductionModeNV             = 0;
 
       //=== VK_EXT_external_memory_host ===
       PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesEXT = 0;
@@ -1819,6 +1925,22 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_multi_draw ===
       PFN_vkCmdDrawMultiEXT        vkCmdDrawMultiEXT        = 0;
       PFN_vkCmdDrawMultiIndexedEXT vkCmdDrawMultiIndexedEXT = 0;
+
+      //=== VK_EXT_opacity_micromap ===
+      PFN_vkCreateMicromapEXT                 vkCreateMicromapEXT                 = 0;
+      PFN_vkDestroyMicromapEXT                vkDestroyMicromapEXT                = 0;
+      PFN_vkCmdBuildMicromapsEXT              vkCmdBuildMicromapsEXT              = 0;
+      PFN_vkBuildMicromapsEXT                 vkBuildMicromapsEXT                 = 0;
+      PFN_vkCopyMicromapEXT                   vkCopyMicromapEXT                   = 0;
+      PFN_vkCopyMicromapToMemoryEXT           vkCopyMicromapToMemoryEXT           = 0;
+      PFN_vkCopyMemoryToMicromapEXT           vkCopyMemoryToMicromapEXT           = 0;
+      PFN_vkWriteMicromapsPropertiesEXT       vkWriteMicromapsPropertiesEXT       = 0;
+      PFN_vkCmdCopyMicromapEXT                vkCmdCopyMicromapEXT                = 0;
+      PFN_vkCmdCopyMicromapToMemoryEXT        vkCmdCopyMicromapToMemoryEXT        = 0;
+      PFN_vkCmdCopyMemoryToMicromapEXT        vkCmdCopyMemoryToMicromapEXT        = 0;
+      PFN_vkCmdWriteMicromapsPropertiesEXT    vkCmdWriteMicromapsPropertiesEXT    = 0;
+      PFN_vkGetDeviceMicromapCompatibilityEXT vkGetDeviceMicromapCompatibilityEXT = 0;
+      PFN_vkGetMicromapBuildSizesEXT          vkGetMicromapBuildSizesEXT          = 0;
 
       //=== VK_EXT_pageable_device_local_memory ===
       PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
@@ -2181,6 +2303,12 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdDrawMeshTasksIndirectNV      vkCmdDrawMeshTasksIndirectNV      = 0;
       PFN_vkCmdDrawMeshTasksIndirectCountNV vkCmdDrawMeshTasksIndirectCountNV = 0;
 
+      //=== VK_NV_optical_flow ===
+      PFN_vkCreateOpticalFlowSessionNV    vkCreateOpticalFlowSessionNV    = 0;
+      PFN_vkDestroyOpticalFlowSessionNV   vkDestroyOpticalFlowSessionNV   = 0;
+      PFN_vkBindOpticalFlowSessionImageNV vkBindOpticalFlowSessionImageNV = 0;
+      PFN_vkCmdOpticalFlowExecuteNV       vkCmdOpticalFlowExecuteNV       = 0;
+
       //=== VK_NV_ray_tracing ===
       PFN_vkCreateAccelerationStructureNV                vkCreateAccelerationStructureNV                = 0;
       PFN_vkDestroyAccelerationStructureNV               vkDestroyAccelerationStructureNV               = 0;
@@ -2298,6 +2426,12 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_FUCHSIA_buffer_collection ===
     class BufferCollectionFUCHSIA;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+    //=== VK_EXT_opacity_micromap ===
+    class MicromapEXT;
+
+    //=== VK_NV_optical_flow ===
+    class OpticalFlowSessionNV;
 
     //====================
     //=== RAII HANDLES ===
@@ -3012,6 +3146,11 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Bool32 getScreenPresentationSupportQNX( uint32_t                queueFamilyIndex,
                                                                                          struct _screen_window & window ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+      //=== VK_NV_optical_flow ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV>
+                           getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice = {};
@@ -3766,6 +3905,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD StructureChain<X, Y, Z...> exportMetalObjectsEXT() const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
 
+      //=== VK_EXT_device_fault ===
+
+      VULKAN_HPP_NODISCARD
+        std::pair<VULKAN_HPP_NAMESPACE::Result, std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>
+        getFaultInfoEXT() const;
+
       //=== VK_KHR_ray_tracing_pipeline ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_RAII_NAMESPACE::Pipeline> createRayTracingPipelinesKHR(
@@ -3815,6 +3960,44 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::BaseOutStructure getPipelinePropertiesEXT( const VULKAN_HPP_NAMESPACE::PipelineInfoEXT & pipelineInfo ) const;
 
+      //=== VK_EXT_opacity_micromap ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::MicromapEXT
+                           createMicromapEXT( VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT const &                             createInfo,
+                                              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result
+                           buildMicromapsEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                 deferredOperation,
+                                              VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result copyMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR        deferredOperation,
+                                                                         const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result copyMicromapToMemoryEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                                                                 const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::Result copyMemoryToMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                                                                 const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info ) const;
+
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD std::vector<DataType>
+                           writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                                        VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                                        size_t                                                                            dataSize,
+                                                        size_t                                                                            stride ) const;
+
+      template <typename DataType>
+      VULKAN_HPP_NODISCARD DataType writeMicromapsPropertyEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                                               VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                                               size_t                                                                            stride ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
+                           getMicromapCompatibilityEXT( const VULKAN_HPP_NAMESPACE::MicromapVersionInfoEXT & versionInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT
+                           getMicromapBuildSizesEXT( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR buildType,
+                                                     const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT &      buildInfo ) const VULKAN_HPP_NOEXCEPT;
+
       //=== VK_KHR_maintenance4 ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
@@ -3843,6 +4026,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT
                            getShaderModuleCreateInfoIdentifierEXT( const VULKAN_HPP_NAMESPACE::ShaderModuleCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_optical_flow ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV
+                           createOpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV const &                    createInfo,
+                                                       VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 
       //=== VK_QCOM_tile_properties ===
 
@@ -5374,6 +5563,101 @@ namespace VULKAN_HPP_NAMESPACE
                                 uint32_t                                                                                             instanceCount,
                                 uint32_t                                                                                             firstInstance,
                                 Optional<const int32_t> vertexOffset VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_opacity_micromap ===
+
+      void buildMicromapsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos ) const VULKAN_HPP_NOEXCEPT;
+
+      void copyMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info ) const VULKAN_HPP_NOEXCEPT;
+
+      void copyMicromapToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info ) const VULKAN_HPP_NOEXCEPT;
+
+      void copyMemoryToMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info ) const VULKAN_HPP_NOEXCEPT;
+
+      void writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                        VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                        VULKAN_HPP_NAMESPACE::QueryPool                                                   queryPool,
+                                        uint32_t firstQuery ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_EXT_extended_dynamic_state3 ===
+
+      void setTessellationDomainOriginEXT( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin ) const VULKAN_HPP_NOEXCEPT;
+
+      void setDepthClampEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClampEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setPolygonModeEXT( VULKAN_HPP_NAMESPACE::PolygonMode polygonMode ) const VULKAN_HPP_NOEXCEPT;
+
+      void setRasterizationSamplesEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples ) const VULKAN_HPP_NOEXCEPT;
+
+      void setSampleMaskEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits                                        samples,
+                             VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SampleMask> const & sampleMask ) const VULKAN_HPP_NOEXCEPT;
+
+      void setAlphaToCoverageEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToCoverageEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setAlphaToOneEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToOneEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setLogicOpEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 logicOpEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setColorBlendEnableEXT( uint32_t                                                                     firstAttachment,
+                                   VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorBlendEnables ) const VULKAN_HPP_NOEXCEPT;
+
+      void setColorBlendEquationEXT( uint32_t                                                                                    firstAttachment,
+                                     VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendEquationEXT> const & colorBlendEquations ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      void setColorWriteMaskEXT( uint32_t                                                                                  firstAttachment,
+                                 VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorComponentFlags> const & colorWriteMasks ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      void setRasterizationStreamEXT( uint32_t rasterizationStream ) const VULKAN_HPP_NOEXCEPT;
+
+      void
+        setConservativeRasterizationModeEXT( VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode ) const VULKAN_HPP_NOEXCEPT;
+
+      void setExtraPrimitiveOverestimationSizeEXT( float extraPrimitiveOverestimationSize ) const VULKAN_HPP_NOEXCEPT;
+
+      void setDepthClipEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClipEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setSampleLocationsEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 sampleLocationsEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setColorBlendAdvancedEXT( uint32_t                                                                                    firstAttachment,
+                                     VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendAdvancedEXT> const & colorBlendAdvanced ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      void setProvokingVertexModeEXT( VULKAN_HPP_NAMESPACE::ProvokingVertexModeEXT provokingVertexMode ) const VULKAN_HPP_NOEXCEPT;
+
+      void setLineRasterizationModeEXT( VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode ) const VULKAN_HPP_NOEXCEPT;
+
+      void setLineStippleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 stippledLineEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setDepthClipNegativeOneToOneEXT( VULKAN_HPP_NAMESPACE::Bool32 negativeOneToOne ) const VULKAN_HPP_NOEXCEPT;
+
+      void setViewportWScalingEnableNV( VULKAN_HPP_NAMESPACE::Bool32 viewportWScalingEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setViewportSwizzleNV( uint32_t                                                                                firstViewport,
+                                 VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ViewportSwizzleNV> const & viewportSwizzles ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageToColorEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageToColorEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageToColorLocationNV( uint32_t coverageToColorLocation ) const VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageModulationModeNV( VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode ) const VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageModulationTableEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageModulationTableEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageModulationTableNV( VULKAN_HPP_NAMESPACE::ArrayProxy<const float> const & coverageModulationTable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setShadingRateImageEnableNV( VULKAN_HPP_NAMESPACE::Bool32 shadingRateImageEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setRepresentativeFragmentTestEnableNV( VULKAN_HPP_NAMESPACE::Bool32 representativeFragmentTestEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setCoverageReductionModeNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_optical_flow ===
+
+      void opticalFlowExecuteNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                 const VULKAN_HPP_NAMESPACE::OpticalFlowExecuteInfoNV & executeInfo ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device        = {};
@@ -7631,6 +7915,237 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV                            m_indirectCommandsLayout = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator              = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher             = nullptr;
+    };
+
+    class MicromapEXT
+    {
+    public:
+      using CType = VkMicromapEXT;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eMicromapEXT;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      MicromapEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                   VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT const &                             createInfo,
+                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          device.getDispatcher()->vkCreateMicromapEXT( static_cast<VkDevice>( *device ),
+                                                       reinterpret_cast<const VkMicromapCreateInfoEXT *>( &createInfo ),
+                                                       reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ),
+                                                       reinterpret_cast<VkMicromapEXT *>( &m_micromap ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateMicromapEXT" );
+        }
+      }
+
+      MicromapEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                   VkMicromapEXT                                                                   micromap,
+                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_micromap( micromap )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      MicromapEXT( std::nullptr_t ) {}
+
+      ~MicromapEXT()
+      {
+        clear();
+      }
+
+      MicromapEXT()                      = delete;
+      MicromapEXT( MicromapEXT const & ) = delete;
+      MicromapEXT( MicromapEXT && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_micromap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_micromap, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+      MicromapEXT & operator=( MicromapEXT const & ) = delete;
+      MicromapEXT & operator                         =( MicromapEXT && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          clear();
+          m_device     = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} );
+          m_micromap   = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_micromap, {} );
+          m_allocator  = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} );
+          m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::MicromapEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_micromap;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_micromap )
+        {
+          getDispatcher()->vkDestroyMicromapEXT(
+            static_cast<VkDevice>( m_device ), static_cast<VkMicromapEXT>( m_micromap ), reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device     = nullptr;
+        m_micromap   = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::MicromapEXT & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_micromap, rhs.m_micromap );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
+      VULKAN_HPP_NAMESPACE::MicromapEXT                                         m_micromap   = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator  = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    class OpticalFlowSessionNV
+    {
+    public:
+      using CType = VkOpticalFlowSessionNV;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eOpticalFlowSessionNV;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      OpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                            VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV const &                    createInfo,
+                            VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          device.getDispatcher()->vkCreateOpticalFlowSessionNV( static_cast<VkDevice>( *device ),
+                                                                reinterpret_cast<const VkOpticalFlowSessionCreateInfoNV *>( &createInfo ),
+                                                                reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ),
+                                                                reinterpret_cast<VkOpticalFlowSessionNV *>( &m_session ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          throwResultException( result, "vkCreateOpticalFlowSessionNV" );
+        }
+      }
+
+      OpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                            VkOpticalFlowSessionNV                                                          session,
+                            VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_session( session )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      OpticalFlowSessionNV( std::nullptr_t ) {}
+
+      ~OpticalFlowSessionNV()
+      {
+        clear();
+      }
+
+      OpticalFlowSessionNV()                               = delete;
+      OpticalFlowSessionNV( OpticalFlowSessionNV const & ) = delete;
+      OpticalFlowSessionNV( OpticalFlowSessionNV && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_session( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_session, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+      OpticalFlowSessionNV & operator=( OpticalFlowSessionNV const & ) = delete;
+      OpticalFlowSessionNV & operator                                  =( OpticalFlowSessionNV && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          clear();
+          m_device     = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} );
+          m_session    = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_session, {} );
+          m_allocator  = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} );
+          m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_session;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_session )
+        {
+          getDispatcher()->vkDestroyOpticalFlowSessionNV( static_cast<VkDevice>( m_device ),
+                                                          static_cast<VkOpticalFlowSessionNV>( m_session ),
+                                                          reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device     = nullptr;
+        m_session    = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_session, rhs.m_session );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+      //=== VK_NV_optical_flow ===
+
+      void bindImage( VULKAN_HPP_NAMESPACE::OpticalFlowSessionBindingPointNV bindingPoint,
+                      VULKAN_HPP_NAMESPACE::ImageView                        view,
+                      VULKAN_HPP_NAMESPACE::ImageLayout                      layout ) const;
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
+      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV                                m_session    = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator  = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
     class PerformanceConfigurationINTEL
@@ -16781,6 +17296,26 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 
+    //=== VK_EXT_device_fault ===
+
+    VULKAN_HPP_NODISCARD
+      VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>
+                        Device::getFaultInfoEXT() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceFaultInfoEXT && "Function <vkGetDeviceFaultInfoEXT> needs extension <VK_EXT_device_fault> enabled!" );
+
+      std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> data;
+      VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT &                                                    faultCounts = data.first;
+      VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT &                                                      faultInfo   = data.second;
+      VkResult                                                                                        result      = getDispatcher()->vkGetDeviceFaultInfoEXT(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultInfoEXT",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
+
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    }
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===
 
@@ -17300,6 +17835,215 @@ namespace VULKAN_HPP_NAMESPACE
                                                  static_cast<const int32_t *>( vertexOffset ) );
     }
 
+    //=== VK_EXT_opacity_micromap ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::MicromapEXT
+                                           Device::createMicromapEXT( VULKAN_HPP_NAMESPACE::MicromapCreateInfoEXT const &                             createInfo,
+                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::MicromapEXT( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::buildMicromapsEXT(
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdBuildMicromapsEXT && "Function <vkCmdBuildMicromapsEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      getDispatcher()->vkCmdBuildMicromapsEXT(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), infos.size(), reinterpret_cast<const VkMicromapBuildInfoEXT *>( infos.data() ) );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
+                                           Device::buildMicromapsEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                 deferredOperation,
+                                 VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT> const & infos ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkBuildMicromapsEXT && "Function <vkBuildMicromapsEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VkResult result = getDispatcher()->vkBuildMicromapsEXT( static_cast<VkDevice>( m_device ),
+                                                              static_cast<VkDeferredOperationKHR>( deferredOperation ),
+                                                              infos.size(),
+                                                              reinterpret_cast<const VkMicromapBuildInfoEXT *>( infos.data() ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::buildMicromapsEXT",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Device::copyMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation,
+                                                                                                 const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyMicromapEXT && "Function <vkCopyMicromapEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VkResult result = getDispatcher()->vkCopyMicromapEXT(
+        static_cast<VkDevice>( m_device ), static_cast<VkDeferredOperationKHR>( deferredOperation ), reinterpret_cast<const VkCopyMicromapInfoEXT *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyMicromapEXT",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
+                                           Device::copyMicromapToMemoryEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                       const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyMicromapToMemoryEXT &&
+                         "Function <vkCopyMicromapToMemoryEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VkResult result = getDispatcher()->vkCopyMicromapToMemoryEXT( static_cast<VkDevice>( m_device ),
+                                                                    static_cast<VkDeferredOperationKHR>( deferredOperation ),
+                                                                    reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyMicromapToMemoryEXT",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result
+                                           Device::copyMemoryToMicromapEXT( VULKAN_HPP_NAMESPACE::DeferredOperationKHR                deferredOperation,
+                                       const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyMemoryToMicromapEXT &&
+                         "Function <vkCopyMemoryToMicromapEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VkResult result = getDispatcher()->vkCopyMemoryToMicromapEXT( static_cast<VkDevice>( m_device ),
+                                                                    static_cast<VkDeferredOperationKHR>( deferredOperation ),
+                                                                    reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( &info ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                   VULKAN_HPP_NAMESPACE_STRING "::Device::copyMemoryToMicromapEXT",
+                   { VULKAN_HPP_NAMESPACE::Result::eSuccess,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationDeferredKHR,
+                     VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR } );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+    }
+
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<DataType>
+      Device::writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                           VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                           size_t                                                                            dataSize,
+                                           size_t                                                                            stride ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkWriteMicromapsPropertiesEXT &&
+                         "Function <vkWriteMicromapsPropertiesEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VULKAN_HPP_ASSERT( dataSize % sizeof( DataType ) == 0 );
+      std::vector<DataType> data( dataSize / sizeof( DataType ) );
+      VkResult              result = getDispatcher()->vkWriteMicromapsPropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                        micromaps.size(),
+                                                                        reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                                                        static_cast<VkQueryType>( queryType ),
+                                                                        data.size() * sizeof( DataType ),
+                                                                        reinterpret_cast<void *>( data.data() ),
+                                                                        stride );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::writeMicromapsPropertiesEXT" );
+
+      return data;
+    }
+
+    template <typename DataType>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE DataType
+      Device::writeMicromapsPropertyEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                         VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                         size_t                                                                            stride ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkWriteMicromapsPropertiesEXT &&
+                         "Function <vkWriteMicromapsPropertiesEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      DataType data;
+      VkResult result = getDispatcher()->vkWriteMicromapsPropertiesEXT( static_cast<VkDevice>( m_device ),
+                                                                        micromaps.size(),
+                                                                        reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                                                        static_cast<VkQueryType>( queryType ),
+                                                                        sizeof( DataType ),
+                                                                        reinterpret_cast<void *>( &data ),
+                                                                        stride );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::writeMicromapsPropertyEXT" );
+
+      return data;
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::copyMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapInfoEXT & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMicromapEXT && "Function <vkCmdCopyMicromapEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      getDispatcher()->vkCmdCopyMicromapEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkCopyMicromapInfoEXT *>( &info ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::copyMicromapToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyMicromapToMemoryInfoEXT & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMicromapToMemoryEXT &&
+                         "Function <vkCmdCopyMicromapToMemoryEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      getDispatcher()->vkCmdCopyMicromapToMemoryEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                     reinterpret_cast<const VkCopyMicromapToMemoryInfoEXT *>( &info ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToMicromapEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToMicromapInfoEXT & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMemoryToMicromapEXT &&
+                         "Function <vkCmdCopyMemoryToMicromapEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      getDispatcher()->vkCmdCopyMemoryToMicromapEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                     reinterpret_cast<const VkCopyMemoryToMicromapInfoEXT *>( &info ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::writeMicromapsPropertiesEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::MicromapEXT> const & micromaps,
+                                                  VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
+                                                  VULKAN_HPP_NAMESPACE::QueryPool                                                   queryPool,
+                                                  uint32_t firstQuery ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdWriteMicromapsPropertiesEXT &&
+                         "Function <vkCmdWriteMicromapsPropertiesEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      getDispatcher()->vkCmdWriteMicromapsPropertiesEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                         micromaps.size(),
+                                                         reinterpret_cast<const VkMicromapEXT *>( micromaps.data() ),
+                                                         static_cast<VkQueryType>( queryType ),
+                                                         static_cast<VkQueryPool>( queryPool ),
+                                                         firstQuery );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR
+      Device::getMicromapCompatibilityEXT( const VULKAN_HPP_NAMESPACE::MicromapVersionInfoEXT & versionInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceMicromapCompatibilityEXT &&
+                         "Function <vkGetDeviceMicromapCompatibilityEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::AccelerationStructureCompatibilityKHR compatibility;
+      getDispatcher()->vkGetDeviceMicromapCompatibilityEXT( static_cast<VkDevice>( m_device ),
+                                                            reinterpret_cast<const VkMicromapVersionInfoEXT *>( &versionInfo ),
+                                                            reinterpret_cast<VkAccelerationStructureCompatibilityKHR *>( &compatibility ) );
+
+      return compatibility;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT
+                                           Device::getMicromapBuildSizesEXT( VULKAN_HPP_NAMESPACE::AccelerationStructureBuildTypeKHR buildType,
+                                        const VULKAN_HPP_NAMESPACE::MicromapBuildInfoEXT &      buildInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetMicromapBuildSizesEXT &&
+                         "Function <vkGetMicromapBuildSizesEXT> needs extension <VK_EXT_opacity_micromap> enabled!" );
+
+      VULKAN_HPP_NAMESPACE::MicromapBuildSizesInfoEXT sizeInfo;
+      getDispatcher()->vkGetMicromapBuildSizesEXT( static_cast<VkDevice>( m_device ),
+                                                   static_cast<VkAccelerationStructureBuildTypeKHR>( buildType ),
+                                                   reinterpret_cast<const VkMicromapBuildInfoEXT *>( &buildInfo ),
+                                                   reinterpret_cast<VkMicromapBuildSizesInfoEXT *>( &sizeInfo ) );
+
+      return sizeInfo;
+    }
+
     //=== VK_EXT_pageable_device_local_memory ===
 
     VULKAN_HPP_INLINE void DeviceMemory::setPriorityEXT( float priority ) const VULKAN_HPP_NOEXCEPT
@@ -17423,6 +18167,303 @@ namespace VULKAN_HPP_NAMESPACE
       return pData;
     }
 
+    //=== VK_EXT_extended_dynamic_state3 ===
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setTessellationDomainOriginEXT( VULKAN_HPP_NAMESPACE::TessellationDomainOrigin domainOrigin ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetTessellationDomainOriginEXT &&
+                         "Function <vkCmdSetTessellationDomainOriginEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetTessellationDomainOriginEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                            static_cast<VkTessellationDomainOrigin>( domainOrigin ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setDepthClampEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClampEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDepthClampEnableEXT &&
+                         "Function <vkCmdSetDepthClampEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetDepthClampEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( depthClampEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setPolygonModeEXT( VULKAN_HPP_NAMESPACE::PolygonMode polygonMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetPolygonModeEXT &&
+                         "Function <vkCmdSetPolygonModeEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetPolygonModeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkPolygonMode>( polygonMode ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setRasterizationSamplesEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits rasterizationSamples ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetRasterizationSamplesEXT &&
+                         "Function <vkCmdSetRasterizationSamplesEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetRasterizationSamplesEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                        static_cast<VkSampleCountFlagBits>( rasterizationSamples ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setSampleMaskEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits                                        samples,
+                                       VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SampleMask> const & sampleMask ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetSampleMaskEXT &&
+                         "Function <vkCmdSetSampleMaskEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetSampleMaskEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                              static_cast<VkSampleCountFlagBits>( samples ),
+                                              reinterpret_cast<const VkSampleMask *>( sampleMask.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setAlphaToCoverageEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToCoverageEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetAlphaToCoverageEnableEXT &&
+                         "Function <vkCmdSetAlphaToCoverageEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetAlphaToCoverageEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( alphaToCoverageEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setAlphaToOneEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 alphaToOneEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetAlphaToOneEnableEXT &&
+                         "Function <vkCmdSetAlphaToOneEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetAlphaToOneEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( alphaToOneEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setLogicOpEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 logicOpEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLogicOpEnableEXT &&
+                         "Function <vkCmdSetLogicOpEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetLogicOpEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( logicOpEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setColorBlendEnableEXT(
+      uint32_t firstAttachment, VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorBlendEnables ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetColorBlendEnableEXT &&
+                         "Function <vkCmdSetColorBlendEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetColorBlendEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                    firstAttachment,
+                                                    colorBlendEnables.size(),
+                                                    reinterpret_cast<const VkBool32 *>( colorBlendEnables.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setColorBlendEquationEXT(
+      uint32_t                                                                                    firstAttachment,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendEquationEXT> const & colorBlendEquations ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetColorBlendEquationEXT &&
+                         "Function <vkCmdSetColorBlendEquationEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetColorBlendEquationEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                      firstAttachment,
+                                                      colorBlendEquations.size(),
+                                                      reinterpret_cast<const VkColorBlendEquationEXT *>( colorBlendEquations.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setColorWriteMaskEXT(
+      uint32_t                                                                                  firstAttachment,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorComponentFlags> const & colorWriteMasks ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetColorWriteMaskEXT &&
+                         "Function <vkCmdSetColorWriteMaskEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetColorWriteMaskEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                  firstAttachment,
+                                                  colorWriteMasks.size(),
+                                                  reinterpret_cast<const VkColorComponentFlags *>( colorWriteMasks.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setRasterizationStreamEXT( uint32_t rasterizationStream ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetRasterizationStreamEXT &&
+                         "Function <vkCmdSetRasterizationStreamEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetRasterizationStreamEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), rasterizationStream );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setConservativeRasterizationModeEXT(
+      VULKAN_HPP_NAMESPACE::ConservativeRasterizationModeEXT conservativeRasterizationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetConservativeRasterizationModeEXT &&
+                         "Function <vkCmdSetConservativeRasterizationModeEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetConservativeRasterizationModeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                                 static_cast<VkConservativeRasterizationModeEXT>( conservativeRasterizationMode ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setExtraPrimitiveOverestimationSizeEXT( float extraPrimitiveOverestimationSize ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetExtraPrimitiveOverestimationSizeEXT &&
+                         "Function <vkCmdSetExtraPrimitiveOverestimationSizeEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetExtraPrimitiveOverestimationSizeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), extraPrimitiveOverestimationSize );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setDepthClipEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 depthClipEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDepthClipEnableEXT &&
+                         "Function <vkCmdSetDepthClipEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetDepthClipEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( depthClipEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setSampleLocationsEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 sampleLocationsEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetSampleLocationsEnableEXT &&
+                         "Function <vkCmdSetSampleLocationsEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetSampleLocationsEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( sampleLocationsEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setColorBlendAdvancedEXT(
+      uint32_t                                                                                    firstAttachment,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ColorBlendAdvancedEXT> const & colorBlendAdvanced ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetColorBlendAdvancedEXT &&
+                         "Function <vkCmdSetColorBlendAdvancedEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetColorBlendAdvancedEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                      firstAttachment,
+                                                      colorBlendAdvanced.size(),
+                                                      reinterpret_cast<const VkColorBlendAdvancedEXT *>( colorBlendAdvanced.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setProvokingVertexModeEXT( VULKAN_HPP_NAMESPACE::ProvokingVertexModeEXT provokingVertexMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetProvokingVertexModeEXT &&
+                         "Function <vkCmdSetProvokingVertexModeEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetProvokingVertexModeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                       static_cast<VkProvokingVertexModeEXT>( provokingVertexMode ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setLineRasterizationModeEXT( VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT lineRasterizationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLineRasterizationModeEXT &&
+                         "Function <vkCmdSetLineRasterizationModeEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetLineRasterizationModeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                         static_cast<VkLineRasterizationModeEXT>( lineRasterizationMode ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setLineStippleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 stippledLineEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLineStippleEnableEXT &&
+                         "Function <vkCmdSetLineStippleEnableEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetLineStippleEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( stippledLineEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setDepthClipNegativeOneToOneEXT( VULKAN_HPP_NAMESPACE::Bool32 negativeOneToOne ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDepthClipNegativeOneToOneEXT &&
+                         "Function <vkCmdSetDepthClipNegativeOneToOneEXT> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetDepthClipNegativeOneToOneEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( negativeOneToOne ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setViewportWScalingEnableNV( VULKAN_HPP_NAMESPACE::Bool32 viewportWScalingEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetViewportWScalingEnableNV &&
+                         "Function <vkCmdSetViewportWScalingEnableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetViewportWScalingEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( viewportWScalingEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setViewportSwizzleNV(
+      uint32_t                                                                                firstViewport,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ViewportSwizzleNV> const & viewportSwizzles ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetViewportSwizzleNV &&
+                         "Function <vkCmdSetViewportSwizzleNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetViewportSwizzleNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                  firstViewport,
+                                                  viewportSwizzles.size(),
+                                                  reinterpret_cast<const VkViewportSwizzleNV *>( viewportSwizzles.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setCoverageToColorEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageToColorEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageToColorEnableNV &&
+                         "Function <vkCmdSetCoverageToColorEnableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageToColorEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( coverageToColorEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setCoverageToColorLocationNV( uint32_t coverageToColorLocation ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageToColorLocationNV &&
+                         "Function <vkCmdSetCoverageToColorLocationNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageToColorLocationNV( static_cast<VkCommandBuffer>( m_commandBuffer ), coverageToColorLocation );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setCoverageModulationModeNV( VULKAN_HPP_NAMESPACE::CoverageModulationModeNV coverageModulationMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageModulationModeNV &&
+                         "Function <vkCmdSetCoverageModulationModeNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageModulationModeNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                         static_cast<VkCoverageModulationModeNV>( coverageModulationMode ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setCoverageModulationTableEnableNV( VULKAN_HPP_NAMESPACE::Bool32 coverageModulationTableEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageModulationTableEnableNV &&
+                         "Function <vkCmdSetCoverageModulationTableEnableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageModulationTableEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                                static_cast<VkBool32>( coverageModulationTableEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setCoverageModulationTableNV( VULKAN_HPP_NAMESPACE::ArrayProxy<const float> const & coverageModulationTable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageModulationTableNV &&
+                         "Function <vkCmdSetCoverageModulationTableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageModulationTableNV(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), coverageModulationTable.size(), coverageModulationTable.data() );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::setShadingRateImageEnableNV( VULKAN_HPP_NAMESPACE::Bool32 shadingRateImageEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetShadingRateImageEnableNV &&
+                         "Function <vkCmdSetShadingRateImageEnableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetShadingRateImageEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( shadingRateImageEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setRepresentativeFragmentTestEnableNV( VULKAN_HPP_NAMESPACE::Bool32 representativeFragmentTestEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetRepresentativeFragmentTestEnableNV &&
+                         "Function <vkCmdSetRepresentativeFragmentTestEnableNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetRepresentativeFragmentTestEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                                   static_cast<VkBool32>( representativeFragmentTestEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setCoverageReductionModeNV( VULKAN_HPP_NAMESPACE::CoverageReductionModeNV coverageReductionMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetCoverageReductionModeNV &&
+                         "Function <vkCmdSetCoverageReductionModeNV> needs extension <VK_EXT_extended_dynamic_state3> enabled!" );
+
+      getDispatcher()->vkCmdSetCoverageReductionModeNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                        static_cast<VkCoverageReductionModeNV>( coverageReductionMode ) );
+    }
+
     //=== VK_EXT_shader_module_identifier ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::ShaderModuleIdentifierEXT ShaderModule::getIdentifierEXT() const VULKAN_HPP_NOEXCEPT
@@ -17449,6 +18490,75 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  reinterpret_cast<VkShaderModuleIdentifierEXT *>( &identifier ) );
 
       return identifier;
+    }
+
+    //=== VK_NV_optical_flow ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV>
+      PhysicalDevice::getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceOpticalFlowImageFormatsNV &&
+                         "Function <vkGetPhysicalDeviceOpticalFlowImageFormatsNV> needs extension <VK_NV_optical_flow> enabled!" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV> imageFormatProperties;
+      uint32_t                                                              formatCount;
+      VkResult                                                              result;
+      do
+      {
+        result = getDispatcher()->vkGetPhysicalDeviceOpticalFlowImageFormatsNV(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ),
+          reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ),
+          &formatCount,
+          nullptr );
+        if ( ( result == VK_SUCCESS ) && formatCount )
+        {
+          imageFormatProperties.resize( formatCount );
+          result = getDispatcher()->vkGetPhysicalDeviceOpticalFlowImageFormatsNV(
+            static_cast<VkPhysicalDevice>( m_physicalDevice ),
+            reinterpret_cast<const VkOpticalFlowImageFormatInfoNV *>( &opticalFlowImageFormatInfo ),
+            &formatCount,
+            reinterpret_cast<VkOpticalFlowImageFormatPropertiesNV *>( imageFormatProperties.data() ) );
+        }
+      } while ( result == VK_INCOMPLETE );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getOpticalFlowImageFormatsNV" );
+      VULKAN_HPP_ASSERT( formatCount <= imageFormatProperties.size() );
+      if ( formatCount < imageFormatProperties.size() )
+      {
+        imageFormatProperties.resize( formatCount );
+      }
+      return imageFormatProperties;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV
+                                           Device::createOpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionCreateInfoNV const &                    createInfo,
+                                          VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_INLINE void OpticalFlowSessionNV::bindImage( VULKAN_HPP_NAMESPACE::OpticalFlowSessionBindingPointNV bindingPoint,
+                                                            VULKAN_HPP_NAMESPACE::ImageView                        view,
+                                                            VULKAN_HPP_NAMESPACE::ImageLayout                      layout ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkBindOpticalFlowSessionImageNV &&
+                         "Function <vkBindOpticalFlowSessionImageNV> needs extension <VK_NV_optical_flow> enabled!" );
+
+      VkResult result = getDispatcher()->vkBindOpticalFlowSessionImageNV( static_cast<VkDevice>( m_device ),
+                                                                          static_cast<VkOpticalFlowSessionNV>( m_session ),
+                                                                          static_cast<VkOpticalFlowSessionBindingPointNV>( bindingPoint ),
+                                                                          static_cast<VkImageView>( view ),
+                                                                          static_cast<VkImageLayout>( layout ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::OpticalFlowSessionNV::bindImage" );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::opticalFlowExecuteNV( VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV             session,
+                                                                const VULKAN_HPP_NAMESPACE::OpticalFlowExecuteInfoNV & executeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdOpticalFlowExecuteNV && "Function <vkCmdOpticalFlowExecuteNV> needs extension <VK_NV_optical_flow> enabled!" );
+
+      getDispatcher()->vkCmdOpticalFlowExecuteNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                  static_cast<VkOpticalFlowSessionNV>( session ),
+                                                  reinterpret_cast<const VkOpticalFlowExecuteInfoNV *>( &executeInfo ) );
     }
 
     //=== VK_QCOM_tile_properties ===

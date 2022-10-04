@@ -12765,8 +12765,10 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
     // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in
     // VkWriteDescriptorSet)! That is, there's not enough information available in vk.xml to decide on that, so we
     // need this external knowledge!
-    static std::set<std::string> mutualExclusiveStructs = { "VkAccelerationStructureBuildGeometryInfoKHR", "VkWriteDescriptorSet" };
-    static std::set<std::string> multipleLenStructs     = { "VkImageConstraintsInfoFUCHSIA",
+    static std::set<std::string> mutualExclusiveStructs = {
+      "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
+    };
+    static std::set<std::string> multipleLenStructs = { "VkImageConstraintsInfoFUCHSIA",
                                                         "VkIndirectCommandsLayoutTokenNV",
                                                         "VkPresentInfoKHR",
                                                         "VkSemaphoreWaitInfo",
@@ -12775,7 +12777,7 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
                                                         "VkSubpassDescription2",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoNV" };
-    bool                         warned                 = false;
+    bool                         warned             = false;
     for ( auto m0It = it->second.members.begin(); !warned && ( m0It != it->second.members.end() ); ++m0It )
     {
       if ( !m0It->len.empty() && ( m0It->len.front() != "null-terminated" ) )

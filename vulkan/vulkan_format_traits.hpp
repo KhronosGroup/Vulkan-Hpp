@@ -267,6 +267,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG: return 8;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG: return 8;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG: return 8;
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV: return 4;
 
       default: VULKAN_HPP_ASSERT( false ); return 0;
     }
@@ -523,6 +524,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG: return 1;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG: return 1;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG: return 1;
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV: return 1;
 
       default: VULKAN_HPP_ASSERT( false ); return 0;
     }
@@ -2236,6 +2238,13 @@ namespace VULKAN_HPP_NAMESPACE
           case 3: return 4;
           default: VULKAN_HPP_ASSERT( false ); return 0;
         }
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV:
+        switch ( component )
+        {
+          case 0: return 16;
+          case 1: return 16;
+          default: VULKAN_HPP_ASSERT( false ); return 0;
+        }
 
       default: return 0;
     }
@@ -2492,6 +2501,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc14BppSrgbBlockIMG: return 4;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc22BppSrgbBlockIMG: return 4;
       case VULKAN_HPP_NAMESPACE::Format::ePvrtc24BppSrgbBlockIMG: return 4;
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV: return 2;
 
       default: return 0;
     }
@@ -4505,6 +4515,13 @@ namespace VULKAN_HPP_NAMESPACE
           case 3: return "A";
           default: VULKAN_HPP_ASSERT( false ); return "";
         }
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV:
+        switch ( component )
+        {
+          case 0: return "R";
+          case 1: return "G";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
 
       default: return "";
     }
@@ -6516,6 +6533,13 @@ namespace VULKAN_HPP_NAMESPACE
           case 1: return "SRGB";
           case 2: return "SRGB";
           case 3: return "SRGB";
+          default: VULKAN_HPP_ASSERT( false ); return "";
+        }
+      case VULKAN_HPP_NAMESPACE::Format::eR16G16S105NV:
+        switch ( component )
+        {
+          case 0: return "SINT";
+          case 1: return "SINT";
           default: VULKAN_HPP_ASSERT( false ); return "";
         }
 

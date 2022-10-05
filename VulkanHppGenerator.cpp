@@ -120,8 +120,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 ${enums}
 ${indexTypeTraits}
-${bitmasks}
-}   // namespace VULKAN_HPP_NAMESPACE
+${bitmasks}}   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
@@ -2093,7 +2092,7 @@ ${basetypes}
   return replaceWithMap( basetypesTemplate, { { "basetypes", basetypes } } );
 }
 
-std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const
+std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const
 {
   auto bitmaskBitsIt = m_enums.find( bitmaskIt->second.requirements );
   assert( bitmaskBitsIt != m_enums.end() );
@@ -2108,7 +2107,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
 
   if ( bitmaskBitsIt->second.values.empty() )
   {
-    str += alias + "\n";
+    str += alias;
   }
   else
   {
@@ -2140,15 +2139,22 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   {
     return ~( ${bitmaskName}( bits ) );
   }
-${alias}
-)";
+${alias})";
 
     std::string allFlags;
     bool        encounteredFlag = false;
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      auto [enter, leave]   = generateProtection( getProtect( value ) );
+      // determine the values protect, if any
+      std::string valueProtect = getProtect( value );
+
+      // if the value's protect differs from the surrounding protect, generate protection code
+      std::string enter, leave;
+      if ( !valueProtect.empty() && ( valueProtect != surroundingProtect ) )
+      {
+        tie( enter, leave ) = generateProtection( valueProtect );
+      }
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
       allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) +
                   bitmaskIt->second.type + "( " + enumName + "::" + valueName + " )";
@@ -2178,8 +2184,7 @@ std::string VulkanHppGenerator::generateBitmasks() const
   //=== BITMASKs ===
   //================
 
-${bitmasks}
-)";
+${bitmasks})";
 
   std::string           bitmasks;
   std::set<std::string> listedBitmasks;
@@ -2198,6 +2203,7 @@ ${bitmasks}
 std::string
   VulkanHppGenerator::generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const
 {
+  std::string surroundingProtect = getProtectFromTitle( title );
   std::string str;
   for ( auto const & require : requireData )
   {
@@ -2207,7 +2213,7 @@ std::string
       if ( ( bitmaskIt != m_bitmasks.end() ) && ( listedBitmasks.find( type ) == listedBitmasks.end() ) )
       {
         listedBitmasks.insert( type );
-        str += generateBitmask( bitmaskIt );
+        str += generateBitmask( bitmaskIt, surroundingProtect );
       }
     }
   }

@@ -455,8 +455,8 @@ private:
                                                                      bool                                      chained,
                                                                      bool                                      raii ) const;
   std::string                             generateBaseTypes() const;
-  std::string                             generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt ) const;
-  std::string                             generateBitmasks() const;
+  std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
+  std::string generateBitmasks() const;
   std::string generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;
   std::string generateBitmasksToString() const;
   std::string generateBitmasksToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const;

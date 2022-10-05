@@ -20,18 +20,16 @@
 #include <regex>
 #include <sstream>
 
-void checkAttributes( int                                                  line,
-                      std::map<std::string, std::string> const &           attributes,
-                      std::map<std::string, std::set<std::string>> const & required,
-                      std::map<std::string, std::set<std::string>> const & optional );
-void checkElements( int                                               line,
-                    std::vector<tinyxml2::XMLElement const *> const & elements,
-                    std::map<std::string, bool> const &               required,
-                    std::set<std::string> const &                     optional = {} );
-void checkForError( bool condition, int line, std::string const & message );
-void checkForWarning( bool condition, int line, std::string const & message );
-template <class InputIt, class UnaryPredicate>
-std::vector<InputIt>                findAll( InputIt first, InputIt last, UnaryPredicate p );
+void                                checkAttributes( int                                                  line,
+                                                     std::map<std::string, std::string> const &           attributes,
+                                                     std::map<std::string, std::set<std::string>> const & required,
+                                                     std::map<std::string, std::set<std::string>> const & optional );
+void                                checkElements( int                                               line,
+                                                   std::vector<tinyxml2::XMLElement const *> const & elements,
+                                                   std::map<std::string, bool> const &               required,
+                                                   std::set<std::string> const &                     optional = {} );
+void                                checkForError( bool condition, int line, std::string const & message );
+void                                checkForWarning( bool condition, int line, std::string const & message );
 std::string                         findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix = "" );
 std::string                         generateCArraySizes( std::vector<std::string> const & sizes );
 std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask, std::set<std::string> const & tags );
@@ -608,7 +606,7 @@ std::string VulkanHppGenerator::addTitleAndProtection( std::string const & title
   std::string str;
   if ( !strIf.empty() )
   {
-    auto [enter, leave] = generateProtection( title, std::string() );
+    auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
     str                 = "\n" + enter + "  //=== " + title + " ===\n" + strIf;
     if ( !enter.empty() && !strElse.empty() )
     {
@@ -667,7 +665,7 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
       }
     }
   }
-  auto [enter, leave] = generateProtection( title, std::string() );
+  auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
   std::string header  = "\n" + enter + "  //=== " + title + " ===\n";
   if ( !members.empty() )
   {
@@ -2150,7 +2148,7 @@ ${alias}
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      auto [enter, leave]   = generateProtection( value.extension, value.protect );
+      auto [enter, leave]   = generateProtection( getProtect( value ) );
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
       allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) +
                   bitmaskIt->second.type + "( " + enumName + "::" + valueName + " )";
@@ -2297,7 +2295,7 @@ ${toStringChecks}
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      auto [enter, leave]   = generateProtection( value.extension, value.protect );
+      auto [enter, leave]   = generateProtection( getProtect( value ) );
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
       if ( value.singleBit )
       {
@@ -4934,7 +4932,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData ) const
+std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const
 {
   std::string bitmask;
   if ( enumData.second.isBitmask )
@@ -4949,7 +4947,15 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   std::map<std::string, std::string> valueToNameMap;
   for ( auto const & value : enumData.second.values )
   {
-    auto [enter, leave] = generateProtection( value.extension, value.protect );
+    // determine the values protect, if any
+    std::string valueProtect = getProtect( value );
+
+    // if the value's protect differs from the surrounding protect, generate protection code
+    std::string enter, leave;
+    if ( !valueProtect.empty() && ( valueProtect != surroundingProtect ) )
+    {
+      tie( enter, leave ) = generateProtection( valueProtect );
+    }
     if ( previousEnter != enter )
     {
       enumValues += previousLeave + enter;
@@ -4989,7 +4995,7 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
           enumData.second.values.begin(), enumData.second.values.end(), [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.name == evd.name; } );
       }
       assert( enumIt != enumData.second.values.end() );
-      assert( enumIt->extension.empty() || generateProtection( enumIt->extension, enumIt->protect ).first.empty() );
+      assert( enumIt->extension.empty() || generateProtection( getProtectFromTitle( enumIt->extension ) ).first.empty() );
 #endif
       enumValues += "    " + aliasName + " = " + alias.first + ",\n";
 
@@ -5061,6 +5067,7 @@ ${enums}
 std::string
   VulkanHppGenerator::generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const
 {
+  std::string surroundingProtect = getProtectFromTitle( title );
   std::string str;
   for ( auto const & require : requireData )
   {
@@ -5070,9 +5077,8 @@ std::string
       if ( ( enumIt != m_enums.end() ) && ( listedEnums.find( type ) == listedEnums.end() ) )
       {
         listedEnums.insert( type );
-
         str += "\n";
-        str += generateEnum( *enumIt );
+        str += generateEnum( *enumIt, surroundingProtect );
       }
     }
   }
@@ -5180,7 +5186,7 @@ std::string VulkanHppGenerator::generateEnumToString( std::pair<std::string, Enu
     std::string cases, previousEnter, previousLeave;
     for ( auto const & value : enumData.second.values )
     {
-      auto [enter, leave] = generateProtection( value.extension, value.protect );
+      auto [enter, leave] = generateProtection( getProtect( value ) );
       if ( previousEnter != enter )
       {
         cases += previousLeave + enter;
@@ -5642,7 +5648,7 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
       debugReportObjectType = generateEnumValueName( enumIt->first, valueIt->name, false, m_tags );
     }
 
-    auto [enter, leave] = generateProtection( handleData.first, !handleData.second.alias.empty() );
+    auto [enter, leave] = generateProtection( handleData.second.alias.empty() ? getProtectFromType( handleData.first ) : "" );
 
     assert( !handleData.second.objTypeEnum.empty() );
     enumIt = m_enums.find( "VkObjectType" );
@@ -5789,7 +5795,7 @@ std::string VulkanHppGenerator::generateHandleCommandDeclarations( std::set<std:
     std::vector<std::string> commandNames = selectCommandsByHandle( extIt.second->second.requireData, commands, listedCommands );
     if ( !commandNames.empty() )
     {
-      auto [enter, leave] = generateProtection( extIt.second->first, std::string() );
+      auto [enter, leave] = generateProtection( getProtectFromTitle( extIt.second->first ) );
       str += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : commandNames )
       {
@@ -6114,44 +6120,9 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
   return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "NoParent" ) ? "" : "*this, " ) + allocator + "d )";
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & referencedIn, std::string const & protect ) const
+std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & protect ) const
 {
-  if ( !referencedIn.empty() )
-  {
-    if ( m_features.find( referencedIn ) == m_features.end() )
-    {
-      auto extensionIt = m_extensions.find( referencedIn );
-      assert( extensionIt != m_extensions.end() );
-      if ( !extensionIt->second.platform.empty() )
-      {
-        auto platformIt = m_platforms.find( extensionIt->second.platform );
-        assert( platformIt != m_platforms.end() );
-        if ( !platformIt->second.protect.empty() )
-        {
-          return std::make_pair( "#if defined( " + platformIt->second.protect + " )\n", "#endif /*" + platformIt->second.protect + "*/\n" );
-        }
-      }
-    }
-  }
-  else if ( !protect.empty() )
-  {
-    return std::make_pair( "#if defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
-  }
-  return std::make_pair( "", "" );
-}
-
-std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & type, bool isAliased ) const
-{
-  if ( isAliased )
-  {
-    return std::make_pair( "", "" );
-  }
-  else
-  {
-    auto typeIt = m_types.find( type );
-    assert( typeIt != m_types.end() );
-    return generateProtection( typeIt->second.referencedIn, std::string() );
-  }
+  return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( "#if defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
 }
 
 std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
@@ -6289,7 +6260,7 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
   {
     rescheduleRAIIHandle( str, handle, listedHandles, specialFunctions );
 
-    auto [enter, leave]    = generateProtection( handle.first, !handle.second.alias.empty() );
+    auto [enter, leave]    = generateProtection( handle.second.alias.empty() ? getProtectFromType( handle.first ) : "" );
     std::string handleType = stripPrefix( handle.first, "Vk" );
     std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
@@ -6569,7 +6540,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
       std::string enter, leave;
       if ( extIt.second->first != m_types.find( handle.first )->second.referencedIn )
       {
-        std::tie( enter, leave ) = generateProtection( extIt.second->first, std::string() );
+        std::tie( enter, leave ) = generateProtection( getProtectFromTitle( extIt.second->first ) );
       }
       functionDeclarations += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : firstLevelCommands )
@@ -7309,7 +7280,7 @@ std::pair<std::string, std::string>
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstructors( std::pair<std::string, HandleData> const & handle ) const
 {
-  auto [enter, leave] = generateProtection( handle.first, !handle.second.alias.empty() );
+  auto [enter, leave] = generateProtection( handle.second.alias.empty() ? getProtectFromType( handle.first ) : "" );
 
   std::string singularConstructors, arrayConstructors;
   for ( auto constructorIt : handle.second.constructorIts )
@@ -7317,7 +7288,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
     // there is a non-const parameter with handle type : the to-be-constructed handle
 
     // check for additional enter/leave guards for the constructors
-    auto [constructorEnter, constructorLeave] = generateProtection( constructorIt->second.referencedIn, std::string() );
+    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitle( constructorIt->second.referencedIn ) );
     if ( constructorEnter == enter )
     {
       constructorEnter.clear();
@@ -8240,7 +8211,6 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   auto [parentType, parentName] = getParentTypeAndName( handle );
 
-  std::string handleType = stripPrefix( handle.first, "Vk" );
   std::string handleName = generateRAIIHandleConstructorParamName( handle.first, handle.second.destructorIt );
 
   std::string clearMembers, moveConstructorInitializerList, moveAssignmentInstructions, memberVariables, swapMembers;
@@ -8265,7 +8235,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       else if ( destructorParam.type.type == handle.first )
       {
         memberName = handleName;
-        memberType = "VULKAN_HPP_NAMESPACE::" + handleType;
+        memberType = generateNamespacedType( handle.first );
       }
       else if ( std::find_if( handle.second.destructorIt->second.params.begin(),
                               handle.second.destructorIt->second.params.end(),
@@ -8317,7 +8287,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     moveConstructorInitializerList += "m_" + handleName + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName + ", {} ) ), ";
     moveAssignmentInstructions +=
       "\n          m_" + handleName + " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName + ", {} );";
-    memberVariables += "\n    VULKAN_HPP_NAMESPACE::" + handleType + " m_" + handleName + " = {};";
+    memberVariables += "\n    " + generateNamespacedType( handle.first ) + " m_" + handleName + " = {};";
     swapMembers += "\n      std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
   }
 
@@ -8621,7 +8591,7 @@ ${leave})";
   {
     if ( value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]   = generateProtection( value.extension, value.protect );
+      auto [enter, leave]   = generateProtection( getProtect( value ) );
       std::string valueName = generateEnumValueName( enumIt->first, value.name, false, m_tags );
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( valueName, "eError" ) + "Error" },
@@ -9234,22 +9204,22 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 
 std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const
 {
-  auto memberIts = findAll( structData.second.members.begin(),
-                            structData.second.members.end(),
-                            []( MemberData const & md ) {
-                              return !md.len.empty() && !( md.len[0] == "null-terminated" ) &&
-                                     ( ( altLens.find( md.len[0] ) == altLens.end() ) || ( md.len[0] == "codeSize / 4" ) );
-                            } );
-  if ( !memberIts.empty() )
+  auto hasLen = []( MemberData const & md )
+  { return !md.len.empty() && !( md.len[0] == "null-terminated" ) && ( ( altLens.find( md.len[0] ) == altLens.end() ) || ( md.len[0] == "codeSize / 4" ) ); };
+
+  if ( std::find_if( structData.second.members.begin(), structData.second.members.end(), hasLen ) != structData.second.members.end() )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
-    for ( auto const & mit : memberIts )
+    for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
-      std::string lenName = ( mit->len.front() == "codeSize / 4" ) ? "codeSize" : mit->len.front();
-      auto        lenIt   = findStructMemberIt( lenName, structData.second.members );
-      assert( lenIt != mit );
-      lenIts[lenIt].push_back( mit );
+      if ( hasLen( *mit ) )
+      {
+        std::string lenName = ( mit->len.front() == "codeSize / 4" ) ? "codeSize" : mit->len.front();
+        auto        lenIt   = findStructMemberIt( lenName, structData.second.members );
+        assert( lenIt != mit );
+        lenIts[lenIt].push_back( mit );
+      }
     }
 
     std::string arguments, initializers;
@@ -9275,7 +9245,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
-        else if ( std::find( memberIts.begin(), memberIts.end(), mit ) != memberIts.end() )
+        else if ( hasLen( *mit ) )
         {
           assert( mit->name.starts_with( "p" ) );
           std::string argumentName = startLowerCase( stripPrefix( mit->name, "p" ) ) + "_";
@@ -9409,7 +9379,8 @@ ${hashSum}
   };
 ${leave})";
 
-    auto [enter, leave] = generateProtection( structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
+    auto [enter, leave] =
+      generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
 
     std::string structureType = stripPrefix( structure.first, "Vk" );
     std::string structureName = startLowerCase( structureType );
@@ -9535,7 +9506,8 @@ ${structs}
 
 std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
 {
-  auto [enter, leave] = generateProtection( structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
+  auto [enter, leave] =
+    generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
 
   std::string str = "\n" + enter;
 
@@ -9693,7 +9665,7 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
         assert( listedStructs.find( type ) == listedStructs.end() );
         listedStructs.insert( type );
 
-        auto [enter, leave] = generateProtection( title, std::string() );
+        auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
 
         // append all allowed structure chains
         for ( auto extendName : structIt->second.structExtends )
@@ -9710,8 +9682,8 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
             }
           }
 
-          auto [subEnter, subLeave] =
-            generateProtection( itExtend->first, m_structureAliasesInverse.find( itExtend->first ) != m_structureAliasesInverse.end() );
+          auto [subEnter, subLeave] = generateProtection(
+            m_structureAliasesInverse.find( itExtend->first ) == m_structureAliasesInverse.end() ? getProtectFromType( itExtend->first ) : "" );
 
           if ( enter != subEnter )
           {
@@ -10058,7 +10030,7 @@ std::string VulkanHppGenerator::generateThrowResultException() const
   {
     if ( value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]   = generateProtection( value.extension, value.protect );
+      auto [enter, leave]   = generateProtection( getProtect( value ) );
       std::string valueName = generateEnumValueName( enumIt->first, value.name, false, m_tags );
       cases += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) + "Error( message );\n" + leave;
     }
@@ -10130,7 +10102,8 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
 
 std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureData> const & structure ) const
 {
-  auto [enter, leave]   = generateProtection( structure.first, m_structureAliasesInverse.find( structure.first ) != m_structureAliasesInverse.end() );
+  auto [enter, leave] =
+    generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
   std::string unionName = stripPrefix( structure.first, "Vk" );
 
   bool               firstMember = true;
@@ -10261,7 +10234,7 @@ std::string VulkanHppGenerator::generateUniqueTypes( std::string const & parentT
 
     std::string type = stripPrefix( childType, "Vk" );
 
-    auto [enter, leave] = generateProtection( handleIt->first, !handleIt->second.alias.empty() );
+    auto [enter, leave] = generateProtection( handleIt->second.alias.empty() ? getProtectFromType( handleIt->first ) : "" );
 
     std::string aliasHandle;
     if ( !handleIt->second.alias.empty() )
@@ -10449,6 +10422,35 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
                         structIt->second.members.end(),
                         []( MemberData const & md ) { return md.name.find( "Pool" ) != std::string::npos; } ) == structIt->second.members.end() );
   return std::make_pair( memberIt->type.type, memberIt->name );
+}
+
+std::string VulkanHppGenerator::getProtect( EnumValueData const & evd ) const
+{
+  assert( evd.protect.empty() || ( evd.protect == getProtectFromTitle( evd.extension ) ) );
+  return evd.protect.empty() ? getProtectFromTitle( evd.extension ) : evd.protect;
+}
+
+std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platform ) const
+{
+  auto platformIt = m_platforms.find( platform );
+  return ( platformIt != m_platforms.end() ) ? platformIt->second.protect : "";
+}
+
+std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title ) const
+{
+  if ( m_features.find( title ) == m_features.end() )
+  {
+    auto extensionIt = m_extensions.find( title );
+    return ( extensionIt != m_extensions.end() ) ? getProtectFromPlatform( extensionIt->second.platform ) : "";
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::getProtectFromType( std::string const & type ) const
+{
+  auto typeIt = m_types.find( type );
+  assert( typeIt != m_types.end() );
+  return getProtectFromTitle( typeIt->second.referencedIn );
 }
 
 std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &            params,
@@ -10984,8 +10986,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
   }
   else
   {
-    checkAttributes(
-      line, attributes, { { "name", {} } }, { { "bitpos", {} }, { "comment", {} }, { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } }, { "value", {} } } );
+    checkAttributes( line, attributes, { { "name", {} } }, { { "bitpos", {} }, { "comment", {} }, { "value", {} } } );
     checkElements( line, getChildElements( element ), {} );
 
     std::string alias, bitpos, name, protect, value;
@@ -10998,10 +10999,6 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
       else if ( attribute.first == "name" )
       {
         name = attribute.second;
-      }
-      else if ( attribute.first == "protect" )
-      {
-        protect = attribute.second;
       }
       else if ( attribute.first == "value" )
       {
@@ -11921,7 +11918,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
                        { "value", {} } } );
     checkElements( line, getChildElements( element ), {} );
 
-    std::string bitpos, name, extends, extnumber, offset, protect, value;
+    std::string bitpos, name, extends, offset, protect, value;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "bitpos" )
@@ -13234,21 +13231,6 @@ void checkForWarning( bool condition, int line, std::string const & message )
   {
     std::cerr << "VulkanHppGenerator: Spec warning on line " << std::to_string( line ) << ": " << message << "!" << std::endl;
   }
-}
-
-template <class InputIt, class UnaryPredicate>
-std::vector<InputIt> findAll( InputIt first, InputIt last, UnaryPredicate p )
-{
-  std::vector<InputIt> result;
-  while ( first != last )
-  {
-    if ( p( *first ) )
-    {
-      result.push_back( first );
-    }
-    ++first;
-  }
-  return result;
 }
 
 std::string findTag( std::set<std::string> const & tags, std::string const & name, std::string const & postfix )

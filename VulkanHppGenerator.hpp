@@ -685,7 +685,7 @@ private:
   std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
-  std::string generateEnum( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
   std::string generateEnums() const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumsToString() const;
@@ -718,8 +718,7 @@ private:
                                 bool                                      vectorSizeCheck,
                                 bool                                      raii ) const;
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const & referencedIn, std::string const & protect ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const & type, bool isAliased ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & protect ) const;
   std::string                         generateRAIICommandDefinitions() const;
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
@@ -929,6 +928,10 @@ private:
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
+  std::string                         getProtect( EnumValueData const & evd ) const;
+  std::string                         getProtectFromPlatform( std::string const & platform ) const;
+  std::string                         getProtectFromTitle( std::string const & title ) const;
+  std::string                         getProtectFromType( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &            params,
                                                      std::map<size_t, VectorParamData> const & vectorParamIndices,
                                                      size_t                                    returnParam,

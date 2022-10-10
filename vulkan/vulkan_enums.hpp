@@ -7062,35 +7062,30 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_xlib_surface ===
 
   using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR>;
-
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
   //=== VK_KHR_xcb_surface ===
 
   using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR>;
-
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
   //=== VK_KHR_wayland_surface ===
 
   using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR>;
-
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   //=== VK_KHR_android_surface ===
 
   using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR>;
-
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_win32_surface ===
 
   using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR>;
-
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_debug_report ===
@@ -7137,11 +7132,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum : VkFlags
     {
-      allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eNone )
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) |
-                 VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eNone ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) |
+                 VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH265EXT ) | VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH264EXT ) |
+                 VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
     };
   };
 
@@ -7320,10 +7313,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     enum : VkFlags
     {
-      allFlags = VkFlags( VideoCodingControlFlagBitsKHR::eReset )
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-               | VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControl ) | VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControlLayer )
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      allFlags = VkFlags( VideoCodingControlFlagBitsKHR::eReset ) | VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControl ) |
+                 VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControlLayer )
     };
   };
 
@@ -7349,7 +7340,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( VideoCodingControlFlagsKHR( bits ) );
   }
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7425,7 +7415,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   using VideoDecodeFlagsKHR = Flags<VideoDecodeFlagBitsKHR>;
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_transform_feedback ===
@@ -7551,7 +7540,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( VideoEncodeH264OutputModeFlagsEXT( bits ) );
   }
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7745,7 +7733,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( VideoEncodeH265TransformBlockSizeFlagsEXT( bits ) );
   }
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7786,14 +7773,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( VideoDecodeH264PictureLayoutFlagsEXT( bits ) );
   }
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
 
   using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP>;
-
 #endif /*VK_USE_PLATFORM_GGP*/
 
   //=== VK_NV_external_memory_capabilities ===
@@ -7872,7 +7857,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NN_vi_surface ===
 
   using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN>;
-
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
   //=== VK_EXT_conditional_rendering ===
@@ -8003,14 +7987,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_MVK_ios_surface ===
 
   using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK>;
-
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
   //=== VK_MVK_macos_surface ===
 
   using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK>;
-
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
   //=== VK_EXT_debug_utils ===
@@ -8257,14 +8239,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_FUCHSIA_imagepipe_surface ===
 
   using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA>;
-
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_surface ===
 
   using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT>;
-
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_AMD_shader_core_properties2 ===
@@ -8497,7 +8477,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( VideoEncodeRateControlModeFlagsKHR( bits ) );
   }
-
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===
@@ -8576,7 +8555,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( ExportMetalObjectTypeFlagsEXT( bits ) );
   }
-
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_EXT_graphics_pipeline_library ===
@@ -8710,7 +8688,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_directfb_surface ===
 
   using DirectFBSurfaceCreateFlagsEXT = Flags<DirectFBSurfaceCreateFlagBitsEXT>;
-
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
   //=== VK_EXT_device_address_binding_report ===
@@ -8789,14 +8766,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( ImageConstraintsInfoFlagsFUCHSIA( bits ) );
   }
-
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_screen_surface ===
 
   using ScreenSurfaceCreateFlagsQNX = Flags<ScreenSurfaceCreateFlagBitsQNX>;
-
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //=== VK_EXT_opacity_micromap ===
@@ -9007,6 +8982,5 @@ namespace VULKAN_HPP_NAMESPACE
   {
     return ~( OpticalFlowExecuteFlagsNV( bits ) );
   }
-
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

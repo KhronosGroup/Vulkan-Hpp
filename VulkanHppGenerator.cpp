@@ -112,12 +112,6 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename EnumType, EnumType value>
   struct CppType
   {};
-
-  template <typename Type>
-  struct isVulkanHandleType
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
-  };
 ${enums}
 ${indexTypeTraits}
 ${bitmasks}}   // namespace VULKAN_HPP_NAMESPACE
@@ -2099,49 +2093,15 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
 
   std::string bitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
+  std::string alias       = bitmaskIt->second.alias.empty() ? "" : ( "  using " + stripPrefix( bitmaskIt->second.alias, "Vk" ) + " = " + bitmaskName + ";\n" );
 
-  // each Flags class is using the class 'Flags' with the corresponding FlagBits enum as the template parameter
-  std::string str = "\n  using " + bitmaskName + " = Flags<" + enumName + ">;\n";
-
-  std::string alias = bitmaskIt->second.alias.empty() ? "" : ( "\n  using " + stripPrefix( bitmaskIt->second.alias, "Vk" ) + " = " + bitmaskName + ";\n" );
-
+  std::string allFlags;
   if ( bitmaskBitsIt->second.values.empty() )
   {
-    str += alias;
+    allFlags = "0";
   }
   else
   {
-    static const std::string bitmaskTemplate = R"(
-  template <> struct FlagTraits<${enumName}>
-  {
-    enum : ${bitmaskType}
-    {
-      allFlags = ${allFlags}
-    };
-  };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator|( ${enumName} bit0, ${enumName} bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ${bitmaskName}( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator&( ${enumName} bit0, ${enumName} bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ${bitmaskName}( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator^( ${enumName} bit0, ${enumName} bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ${bitmaskName}( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ${bitmaskName} operator~( ${enumName} bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ${bitmaskName}( bits ) );
-  }
-${alias})";
-
-    std::string allFlags;
     bool        encounteredFlag = false;
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
@@ -2168,13 +2128,24 @@ ${alias})";
       previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
       allFlags += "\n" + previousLeave;
     }
-
-    str += replaceWithMap(
-      bitmaskTemplate,
-      { { "alias", alias }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "bitmaskType", bitmaskIt->second.type }, { "enumName", enumName } } );
   }
 
-  return str;
+  static const std::string bitmaskTemplate = R"(
+  template <> struct FlagTraits<${enumName}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : ${bitmaskType}
+    {
+      allFlags = ${allFlags}
+    };
+  };
+  using ${bitmaskName} = Flags<${enumName}>;
+${alias})";
+
+  return replaceWithMap(
+    bitmaskTemplate,
+    { { "alias", alias }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "bitmaskType", bitmaskIt->second.type }, { "enumName", enumName } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasks() const
@@ -5939,6 +5910,12 @@ std::string VulkanHppGenerator::generateHandles() const
   //===============
   //=== HANDLEs ===
   //===============
+
+  template <typename Type>
+  struct isVulkanHandleType
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
 )";
 
   std::set<std::string> listedHandles;

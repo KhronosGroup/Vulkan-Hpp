@@ -15,12 +15,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
   };
 
-  template <typename Type>
-  struct isVulkanHandleType
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
-  };
-
   //=============
   //=== ENUMs ===
   //=============
@@ -4475,11 +4469,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_0 ===
 
-  using FormatFeatureFlags = Flags<FormatFeatureFlagBits>;
-
   template <>
   struct FlagTraits<FormatFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags =
@@ -4505,32 +4499,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags operator|( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags operator&( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags operator^( FormatFeatureFlagBits bit0, FormatFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags operator~( FormatFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( FormatFeatureFlags( bits ) );
-  }
-
-  using ImageCreateFlags = Flags<ImageCreateFlagBits>;
+  using FormatFeatureFlags = Flags<FormatFeatureFlagBits>;
 
   template <>
   struct FlagTraits<ImageCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageCreateFlagBits::eSparseBinding ) | VkFlags( ImageCreateFlagBits::eSparseResidency ) |
@@ -4544,32 +4519,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageCreateFlagBits::eFragmentDensityMapOffsetQCOM )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCreateFlags operator|( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCreateFlags operator&( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCreateFlags operator^( ImageCreateFlagBits bit0, ImageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCreateFlags operator~( ImageCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageCreateFlags( bits ) );
-  }
-
-  using ImageUsageFlags = Flags<ImageUsageFlagBits>;
+  using ImageCreateFlags = Flags<ImageCreateFlagBits>;
 
   template <>
   struct FlagTraits<ImageUsageFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageUsageFlagBits::eTransferSrc ) | VkFlags( ImageUsageFlagBits::eTransferDst ) | VkFlags( ImageUsageFlagBits::eSampled ) |
@@ -4589,94 +4545,37 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageUsageFlagBits::eSampleWeightQCOM ) | VkFlags( ImageUsageFlagBits::eSampleBlockMatchQCOM )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageUsageFlags operator|( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageUsageFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageUsageFlags operator&( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageUsageFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageUsageFlags operator^( ImageUsageFlagBits bit0, ImageUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageUsageFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageUsageFlags operator~( ImageUsageFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageUsageFlags( bits ) );
-  }
-
-  using InstanceCreateFlags = Flags<InstanceCreateFlagBits>;
+  using ImageUsageFlags = Flags<ImageUsageFlagBits>;
 
   template <>
   struct FlagTraits<InstanceCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( InstanceCreateFlagBits::eEnumeratePortabilityKHR )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator|( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return InstanceCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator&( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return InstanceCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator^( InstanceCreateFlagBits bit0, InstanceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return InstanceCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR InstanceCreateFlags operator~( InstanceCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( InstanceCreateFlags( bits ) );
-  }
-
-  using MemoryHeapFlags = Flags<MemoryHeapFlagBits>;
+  using InstanceCreateFlags = Flags<InstanceCreateFlagBits>;
 
   template <>
   struct FlagTraits<MemoryHeapFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( MemoryHeapFlagBits::eDeviceLocal ) | VkFlags( MemoryHeapFlagBits::eMultiInstance )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryHeapFlags operator|( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryHeapFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryHeapFlags operator&( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryHeapFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryHeapFlags operator^( MemoryHeapFlagBits bit0, MemoryHeapFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryHeapFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryHeapFlags operator~( MemoryHeapFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( MemoryHeapFlags( bits ) );
-  }
-
-  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits>;
+  using MemoryHeapFlags = Flags<MemoryHeapFlagBits>;
 
   template <>
   struct FlagTraits<MemoryPropertyFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( MemoryPropertyFlagBits::eDeviceLocal ) | VkFlags( MemoryPropertyFlagBits::eHostVisible ) |
@@ -4686,32 +4585,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( MemoryPropertyFlagBits::eRdmaCapableNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryPropertyFlags operator|( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryPropertyFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryPropertyFlags operator&( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryPropertyFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryPropertyFlags operator^( MemoryPropertyFlagBits bit0, MemoryPropertyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryPropertyFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryPropertyFlags operator~( MemoryPropertyFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( MemoryPropertyFlags( bits ) );
-  }
-
-  using QueueFlags = Flags<QueueFlagBits>;
+  using MemoryPropertyFlags = Flags<MemoryPropertyFlagBits>;
 
   template <>
   struct FlagTraits<QueueFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( QueueFlagBits::eGraphics ) | VkFlags( QueueFlagBits::eCompute ) | VkFlags( QueueFlagBits::eTransfer ) |
@@ -4722,32 +4602,13 @@ namespace VULKAN_HPP_NAMESPACE
                | VkFlags( QueueFlagBits::eOpticalFlowNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueueFlags operator|( QueueFlagBits bit0, QueueFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueueFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueueFlags operator&( QueueFlagBits bit0, QueueFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueueFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueueFlags operator^( QueueFlagBits bit0, QueueFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueueFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueueFlags operator~( QueueFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( QueueFlags( bits ) );
-  }
-
-  using SampleCountFlags = Flags<SampleCountFlagBits>;
+  using QueueFlags = Flags<QueueFlagBits>;
 
   template <>
   struct FlagTraits<SampleCountFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SampleCountFlagBits::e1 ) | VkFlags( SampleCountFlagBits::e2 ) | VkFlags( SampleCountFlagBits::e4 ) |
@@ -4755,65 +4616,37 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( SampleCountFlagBits::e64 )
     };
   };
+  using SampleCountFlags = Flags<SampleCountFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SampleCountFlags operator|( SampleCountFlagBits bit0, SampleCountFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<DeviceCreateFlagBits>
   {
-    return SampleCountFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SampleCountFlags operator&( SampleCountFlagBits bit0, SampleCountFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SampleCountFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SampleCountFlags operator^( SampleCountFlagBits bit0, SampleCountFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SampleCountFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SampleCountFlags operator~( SampleCountFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SampleCountFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DeviceCreateFlags = Flags<DeviceCreateFlagBits>;
-
-  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
 
   template <>
   struct FlagTraits<DeviceQueueCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DeviceQueueCreateFlagBits::eProtected )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceQueueCreateFlags operator|( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceQueueCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceQueueCreateFlags operator&( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceQueueCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceQueueCreateFlags operator^( DeviceQueueCreateFlagBits bit0, DeviceQueueCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceQueueCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceQueueCreateFlags operator~( DeviceQueueCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DeviceQueueCreateFlags( bits ) );
-  }
-
-  using PipelineStageFlags = Flags<PipelineStageFlagBits>;
+  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineStageFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineStageFlagBits::eTopOfPipe ) | VkFlags( PipelineStageFlagBits::eDrawIndirect ) |
@@ -4831,34 +4664,25 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( PipelineStageFlagBits::eMeshShaderEXT )
     };
   };
+  using PipelineStageFlags = Flags<PipelineStageFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags operator|( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<MemoryMapFlagBits>
   {
-    return PipelineStageFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags operator&( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags operator^( PipelineStageFlagBits bit0, PipelineStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags operator~( PipelineStageFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineStageFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using MemoryMapFlags = Flags<MemoryMapFlagBits>;
-
-  using ImageAspectFlags = Flags<ImageAspectFlagBits>;
 
   template <>
   struct FlagTraits<ImageAspectFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageAspectFlagBits::eColor ) | VkFlags( ImageAspectFlagBits::eDepth ) | VkFlags( ImageAspectFlagBits::eStencil ) |
@@ -4868,159 +4692,74 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageAspectFlagBits::eMemoryPlane3EXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageAspectFlags operator|( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageAspectFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageAspectFlags operator&( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageAspectFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageAspectFlags operator^( ImageAspectFlagBits bit0, ImageAspectFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageAspectFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageAspectFlags operator~( ImageAspectFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageAspectFlags( bits ) );
-  }
-
-  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits>;
+  using ImageAspectFlags = Flags<ImageAspectFlagBits>;
 
   template <>
   struct FlagTraits<SparseImageFormatFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SparseImageFormatFlagBits::eSingleMiptail ) | VkFlags( SparseImageFormatFlagBits::eAlignedMipSize ) |
                  VkFlags( SparseImageFormatFlagBits::eNonstandardBlockSize )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseImageFormatFlags operator|( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseImageFormatFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseImageFormatFlags operator&( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseImageFormatFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseImageFormatFlags operator^( SparseImageFormatFlagBits bit0, SparseImageFormatFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseImageFormatFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseImageFormatFlags operator~( SparseImageFormatFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SparseImageFormatFlags( bits ) );
-  }
-
-  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits>;
+  using SparseImageFormatFlags = Flags<SparseImageFormatFlagBits>;
 
   template <>
   struct FlagTraits<SparseMemoryBindFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SparseMemoryBindFlagBits::eMetadata )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseMemoryBindFlags operator|( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseMemoryBindFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseMemoryBindFlags operator&( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseMemoryBindFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseMemoryBindFlags operator^( SparseMemoryBindFlagBits bit0, SparseMemoryBindFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SparseMemoryBindFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SparseMemoryBindFlags operator~( SparseMemoryBindFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SparseMemoryBindFlags( bits ) );
-  }
-
-  using FenceCreateFlags = Flags<FenceCreateFlagBits>;
+  using SparseMemoryBindFlags = Flags<SparseMemoryBindFlagBits>;
 
   template <>
   struct FlagTraits<FenceCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( FenceCreateFlagBits::eSignaled )
     };
   };
+  using FenceCreateFlags = Flags<FenceCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceCreateFlags operator|( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<SemaphoreCreateFlagBits>
   {
-    return FenceCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceCreateFlags operator&( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceCreateFlags operator^( FenceCreateFlagBits bit0, FenceCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceCreateFlags operator~( FenceCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( FenceCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using SemaphoreCreateFlags = Flags<SemaphoreCreateFlagBits>;
-
-  using EventCreateFlags = Flags<EventCreateFlagBits>;
 
   template <>
   struct FlagTraits<EventCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( EventCreateFlagBits::eDeviceOnly )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR EventCreateFlags operator|( EventCreateFlagBits bit0, EventCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return EventCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR EventCreateFlags operator&( EventCreateFlagBits bit0, EventCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return EventCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR EventCreateFlags operator^( EventCreateFlagBits bit0, EventCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return EventCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR EventCreateFlags operator~( EventCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( EventCreateFlags( bits ) );
-  }
-
-  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
+  using EventCreateFlags = Flags<EventCreateFlagBits>;
 
   template <>
   struct FlagTraits<QueryPipelineStatisticFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( QueryPipelineStatisticFlagBits::eInputAssemblyVertices ) | VkFlags( QueryPipelineStatisticFlagBits::eInputAssemblyPrimitives ) |
@@ -5033,37 +4772,25 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( QueryPipelineStatisticFlagBits::eMeshShaderInvocationsEXT )
     };
   };
+  using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryPipelineStatisticFlags operator|( QueryPipelineStatisticFlagBits bit0,
-                                                                                QueryPipelineStatisticFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<QueryPoolCreateFlagBits>
   {
-    return QueryPipelineStatisticFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryPipelineStatisticFlags operator&( QueryPipelineStatisticFlagBits bit0,
-                                                                                QueryPipelineStatisticFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryPipelineStatisticFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryPipelineStatisticFlags operator^( QueryPipelineStatisticFlagBits bit0,
-                                                                                QueryPipelineStatisticFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryPipelineStatisticFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryPipelineStatisticFlags operator~( QueryPipelineStatisticFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( QueryPipelineStatisticFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using QueryPoolCreateFlags = Flags<QueryPoolCreateFlagBits>;
-
-  using QueryResultFlags = Flags<QueryResultFlagBits>;
 
   template <>
   struct FlagTraits<QueryResultFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( QueryResultFlagBits::e64 ) | VkFlags( QueryResultFlagBits::eWait ) | VkFlags( QueryResultFlagBits::eWithAvailability ) |
@@ -5073,32 +4800,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryResultFlags operator|( QueryResultFlagBits bit0, QueryResultFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryResultFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryResultFlags operator&( QueryResultFlagBits bit0, QueryResultFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryResultFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryResultFlags operator^( QueryResultFlagBits bit0, QueryResultFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryResultFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryResultFlags operator~( QueryResultFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( QueryResultFlags( bits ) );
-  }
-
-  using BufferCreateFlags = Flags<BufferCreateFlagBits>;
+  using QueryResultFlags = Flags<QueryResultFlagBits>;
 
   template <>
   struct FlagTraits<BufferCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( BufferCreateFlagBits::eSparseBinding ) | VkFlags( BufferCreateFlagBits::eSparseResidency ) |
@@ -5106,32 +4814,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BufferCreateFlagBits::eDeviceAddressCaptureReplay )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferCreateFlags operator|( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferCreateFlags operator&( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferCreateFlags operator^( BufferCreateFlagBits bit0, BufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferCreateFlags operator~( BufferCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( BufferCreateFlags( bits ) );
-  }
-
-  using BufferUsageFlags = Flags<BufferUsageFlagBits>;
+  using BufferCreateFlags = Flags<BufferCreateFlagBits>;
 
   template <>
   struct FlagTraits<BufferUsageFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( BufferUsageFlagBits::eTransferSrc ) | VkFlags( BufferUsageFlagBits::eTransferDst ) |
@@ -5151,199 +4840,99 @@ namespace VULKAN_HPP_NAMESPACE
                | VkFlags( BufferUsageFlagBits::eMicromapBuildInputReadOnlyEXT ) | VkFlags( BufferUsageFlagBits::eMicromapStorageEXT )
     };
   };
+  using BufferUsageFlags = Flags<BufferUsageFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferUsageFlags operator|( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<BufferViewCreateFlagBits>
   {
-    return BufferUsageFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferUsageFlags operator&( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferUsageFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferUsageFlags operator^( BufferUsageFlagBits bit0, BufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BufferUsageFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BufferUsageFlags operator~( BufferUsageFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( BufferUsageFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using BufferViewCreateFlags = Flags<BufferViewCreateFlagBits>;
-
-  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits>;
 
   template <>
   struct FlagTraits<ImageViewCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT ) | VkFlags( ImageViewCreateFlagBits::eFragmentDensityMapDeferredEXT )
     };
   };
+  using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageViewCreateFlags operator|( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<ShaderModuleCreateFlagBits>
   {
-    return ImageViewCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageViewCreateFlags operator&( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageViewCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageViewCreateFlags operator^( ImageViewCreateFlagBits bit0, ImageViewCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageViewCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageViewCreateFlags operator~( ImageViewCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageViewCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ShaderModuleCreateFlags = Flags<ShaderModuleCreateFlagBits>;
-
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineCacheCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineCacheCreateFlagBits::eExternallySynchronized )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCacheCreateFlags operator|( PipelineCacheCreateFlagBits bit0,
-                                                                             PipelineCacheCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCacheCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCacheCreateFlags operator&( PipelineCacheCreateFlagBits bit0,
-                                                                             PipelineCacheCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCacheCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCacheCreateFlags operator^( PipelineCacheCreateFlagBits bit0,
-                                                                             PipelineCacheCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCacheCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCacheCreateFlags operator~( PipelineCacheCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineCacheCreateFlags( bits ) );
-  }
-
-  using ColorComponentFlags = Flags<ColorComponentFlagBits>;
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
 
   template <>
   struct FlagTraits<ColorComponentFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ColorComponentFlagBits::eR ) | VkFlags( ColorComponentFlagBits::eG ) | VkFlags( ColorComponentFlagBits::eB ) |
                  VkFlags( ColorComponentFlagBits::eA )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ColorComponentFlags operator|( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ColorComponentFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ColorComponentFlags operator&( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ColorComponentFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ColorComponentFlags operator^( ColorComponentFlagBits bit0, ColorComponentFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ColorComponentFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ColorComponentFlags operator~( ColorComponentFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ColorComponentFlags( bits ) );
-  }
-
-  using CullModeFlags = Flags<CullModeFlagBits>;
+  using ColorComponentFlags = Flags<ColorComponentFlagBits>;
 
   template <>
   struct FlagTraits<CullModeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CullModeFlagBits::eNone ) | VkFlags( CullModeFlagBits::eFront ) | VkFlags( CullModeFlagBits::eBack ) |
                  VkFlags( CullModeFlagBits::eFrontAndBack )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CullModeFlags operator|( CullModeFlagBits bit0, CullModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CullModeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CullModeFlags operator&( CullModeFlagBits bit0, CullModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CullModeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CullModeFlags operator^( CullModeFlagBits bit0, CullModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CullModeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CullModeFlags operator~( CullModeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CullModeFlags( bits ) );
-  }
-
-  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits>;
+  using CullModeFlags = Flags<CullModeFlagBits>;
 
   template <>
   struct FlagTraits<PipelineColorBlendStateCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineColorBlendStateCreateFlagBits::eRasterizationOrderAttachmentAccessEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator|( PipelineColorBlendStateCreateFlagBits bit0,
-                                                                                       PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineColorBlendStateCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator&( PipelineColorBlendStateCreateFlagBits bit0,
-                                                                                       PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineColorBlendStateCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator^( PipelineColorBlendStateCreateFlagBits bit0,
-                                                                                       PipelineColorBlendStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineColorBlendStateCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineColorBlendStateCreateFlags operator~( PipelineColorBlendStateCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineColorBlendStateCreateFlags( bits ) );
-  }
-
-  using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
+  using PipelineColorBlendStateCreateFlags = Flags<PipelineColorBlendStateCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineCreateFlagBits::eDisableOptimization ) | VkFlags( PipelineCreateFlagBits::eAllowDerivatives ) |
@@ -5364,149 +4953,134 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( PipelineCreateFlagBits::eNoProtectedAccessEXT ) | VkFlags( PipelineCreateFlagBits::eProtectedAccessOnlyEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreateFlags operator|( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreateFlags operator&( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreateFlags operator^( PipelineCreateFlagBits bit0, PipelineCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreateFlags operator~( PipelineCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineCreateFlags( bits ) );
-  }
-
-  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits>;
+  using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineDepthStencilStateCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentDepthAccessEXT ) |
                  VkFlags( PipelineDepthStencilStateCreateFlagBits::eRasterizationOrderAttachmentStencilAccessEXT )
     };
   };
+  using PipelineDepthStencilStateCreateFlags = Flags<PipelineDepthStencilStateCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator|( PipelineDepthStencilStateCreateFlagBits bit0,
-                                                                                         PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<PipelineDynamicStateCreateFlagBits>
   {
-    return PipelineDepthStencilStateCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator&( PipelineDepthStencilStateCreateFlagBits bit0,
-                                                                                         PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineDepthStencilStateCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator^( PipelineDepthStencilStateCreateFlagBits bit0,
-                                                                                         PipelineDepthStencilStateCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineDepthStencilStateCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineDepthStencilStateCreateFlags operator~( PipelineDepthStencilStateCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineDepthStencilStateCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineDynamicStateCreateFlags = Flags<PipelineDynamicStateCreateFlagBits>;
 
-  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits>;
+  template <>
+  struct FlagTraits<PipelineInputAssemblyStateCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using PipelineInputAssemblyStateCreateFlags = Flags<PipelineInputAssemblyStateCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineLayoutCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineLayoutCreateFlagBits::eIndependentSetsEXT )
     };
   };
+  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineLayoutCreateFlags operator|( PipelineLayoutCreateFlagBits bit0,
-                                                                              PipelineLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<PipelineMultisampleStateCreateFlagBits>
   {
-    return PipelineLayoutCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineLayoutCreateFlags operator&( PipelineLayoutCreateFlagBits bit0,
-                                                                              PipelineLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineLayoutCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineLayoutCreateFlags operator^( PipelineLayoutCreateFlagBits bit0,
-                                                                              PipelineLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineLayoutCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineLayoutCreateFlags operator~( PipelineLayoutCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineLayoutCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineMultisampleStateCreateFlags = Flags<PipelineMultisampleStateCreateFlagBits>;
 
-  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits>;
+  template <>
+  struct FlagTraits<PipelineRasterizationStateCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using PipelineRasterizationStateCreateFlags = Flags<PipelineRasterizationStateCreateFlagBits>;
 
   template <>
   struct FlagTraits<PipelineShaderStageCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineShaderStageCreateFlagBits::eAllowVaryingSubgroupSize ) | VkFlags( PipelineShaderStageCreateFlagBits::eRequireFullSubgroups )
     };
   };
+  using PipelineShaderStageCreateFlags = Flags<PipelineShaderStageCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateFlags operator|( PipelineShaderStageCreateFlagBits bit0,
-                                                                                   PipelineShaderStageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<PipelineTessellationStateCreateFlagBits>
   {
-    return PipelineShaderStageCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateFlags operator&( PipelineShaderStageCreateFlagBits bit0,
-                                                                                   PipelineShaderStageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineShaderStageCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateFlags operator^( PipelineShaderStageCreateFlagBits bit0,
-                                                                                   PipelineShaderStageCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineShaderStageCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineShaderStageCreateFlags operator~( PipelineShaderStageCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineShaderStageCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineTessellationStateCreateFlags = Flags<PipelineTessellationStateCreateFlagBits>;
 
+  template <>
+  struct FlagTraits<PipelineVertexInputStateCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineVertexInputStateCreateFlags = Flags<PipelineVertexInputStateCreateFlagBits>;
 
-  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits>;
+  template <>
+  struct FlagTraits<PipelineViewportStateCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using ShaderStageFlags = Flags<ShaderStageFlagBits>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using PipelineViewportStateCreateFlags = Flags<PipelineViewportStateCreateFlagBits>;
 
   template <>
   struct FlagTraits<ShaderStageFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ShaderStageFlagBits::eVertex ) | VkFlags( ShaderStageFlagBits::eTessellationControl ) |
@@ -5518,136 +5092,64 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ShaderStageFlagBits::eSubpassShadingHUAWEI )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ShaderStageFlags operator|( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ShaderStageFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ShaderStageFlags operator&( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ShaderStageFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ShaderStageFlags operator^( ShaderStageFlagBits bit0, ShaderStageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ShaderStageFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ShaderStageFlags operator~( ShaderStageFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ShaderStageFlags( bits ) );
-  }
-
-  using SamplerCreateFlags = Flags<SamplerCreateFlagBits>;
+  using ShaderStageFlags = Flags<ShaderStageFlagBits>;
 
   template <>
   struct FlagTraits<SamplerCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SamplerCreateFlagBits::eSubsampledEXT ) | VkFlags( SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT ) |
                  VkFlags( SamplerCreateFlagBits::eNonSeamlessCubeMapEXT ) | VkFlags( SamplerCreateFlagBits::eImageProcessingQCOM )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SamplerCreateFlags operator|( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SamplerCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SamplerCreateFlags operator&( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SamplerCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SamplerCreateFlags operator^( SamplerCreateFlagBits bit0, SamplerCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SamplerCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SamplerCreateFlags operator~( SamplerCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SamplerCreateFlags( bits ) );
-  }
-
-  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits>;
+  using SamplerCreateFlags = Flags<SamplerCreateFlagBits>;
 
   template <>
   struct FlagTraits<DescriptorPoolCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DescriptorPoolCreateFlagBits::eFreeDescriptorSet ) | VkFlags( DescriptorPoolCreateFlagBits::eUpdateAfterBind ) |
                  VkFlags( DescriptorPoolCreateFlagBits::eHostOnlyEXT )
     };
   };
+  using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorPoolCreateFlags operator|( DescriptorPoolCreateFlagBits bit0,
-                                                                              DescriptorPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<DescriptorPoolResetFlagBits>
   {
-    return DescriptorPoolCreateFlags( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorPoolCreateFlags operator&( DescriptorPoolCreateFlagBits bit0,
-                                                                              DescriptorPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorPoolCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorPoolCreateFlags operator^( DescriptorPoolCreateFlagBits bit0,
-                                                                              DescriptorPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorPoolCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorPoolCreateFlags operator~( DescriptorPoolCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DescriptorPoolCreateFlags( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DescriptorPoolResetFlags = Flags<DescriptorPoolResetFlagBits>;
-
-  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits>;
 
   template <>
   struct FlagTraits<DescriptorSetLayoutCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool ) | VkFlags( DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR ) |
                  VkFlags( DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateFlags operator|( DescriptorSetLayoutCreateFlagBits bit0,
-                                                                                   DescriptorSetLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorSetLayoutCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateFlags operator&( DescriptorSetLayoutCreateFlagBits bit0,
-                                                                                   DescriptorSetLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorSetLayoutCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateFlags operator^( DescriptorSetLayoutCreateFlagBits bit0,
-                                                                                   DescriptorSetLayoutCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorSetLayoutCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorSetLayoutCreateFlags operator~( DescriptorSetLayoutCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DescriptorSetLayoutCreateFlags( bits ) );
-  }
-
-  using AccessFlags = Flags<AccessFlagBits>;
+  using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits>;
 
   template <>
   struct FlagTraits<AccessFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( AccessFlagBits::eIndirectCommandRead ) | VkFlags( AccessFlagBits::eIndexRead ) | VkFlags( AccessFlagBits::eVertexAttributeRead ) |
@@ -5664,160 +5166,62 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( AccessFlagBits::eCommandPreprocessReadNV ) | VkFlags( AccessFlagBits::eCommandPreprocessWriteNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags operator|( AccessFlagBits bit0, AccessFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags operator&( AccessFlagBits bit0, AccessFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags operator^( AccessFlagBits bit0, AccessFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags operator~( AccessFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( AccessFlags( bits ) );
-  }
-
-  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits>;
+  using AccessFlags = Flags<AccessFlagBits>;
 
   template <>
   struct FlagTraits<AttachmentDescriptionFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( AttachmentDescriptionFlagBits::eMayAlias )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AttachmentDescriptionFlags operator|( AttachmentDescriptionFlagBits bit0,
-                                                                               AttachmentDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AttachmentDescriptionFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AttachmentDescriptionFlags operator&( AttachmentDescriptionFlagBits bit0,
-                                                                               AttachmentDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AttachmentDescriptionFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AttachmentDescriptionFlags operator^( AttachmentDescriptionFlagBits bit0,
-                                                                               AttachmentDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AttachmentDescriptionFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AttachmentDescriptionFlags operator~( AttachmentDescriptionFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( AttachmentDescriptionFlags( bits ) );
-  }
-
-  using DependencyFlags = Flags<DependencyFlagBits>;
+  using AttachmentDescriptionFlags = Flags<AttachmentDescriptionFlagBits>;
 
   template <>
   struct FlagTraits<DependencyFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DependencyFlagBits::eByRegion ) | VkFlags( DependencyFlagBits::eDeviceGroup ) | VkFlags( DependencyFlagBits::eViewLocal ) |
                  VkFlags( DependencyFlagBits::eFeedbackLoopEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DependencyFlags operator|( DependencyFlagBits bit0, DependencyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DependencyFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DependencyFlags operator&( DependencyFlagBits bit0, DependencyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DependencyFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DependencyFlags operator^( DependencyFlagBits bit0, DependencyFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DependencyFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DependencyFlags operator~( DependencyFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DependencyFlags( bits ) );
-  }
-
-  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits>;
+  using DependencyFlags = Flags<DependencyFlagBits>;
 
   template <>
   struct FlagTraits<FramebufferCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( FramebufferCreateFlagBits::eImageless )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FramebufferCreateFlags operator|( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FramebufferCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FramebufferCreateFlags operator&( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FramebufferCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FramebufferCreateFlags operator^( FramebufferCreateFlagBits bit0, FramebufferCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FramebufferCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FramebufferCreateFlags operator~( FramebufferCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( FramebufferCreateFlags( bits ) );
-  }
-
-  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits>;
+  using FramebufferCreateFlags = Flags<FramebufferCreateFlagBits>;
 
   template <>
   struct FlagTraits<RenderPassCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( RenderPassCreateFlagBits::eTransformQCOM )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderPassCreateFlags operator|( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderPassCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderPassCreateFlags operator&( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderPassCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderPassCreateFlags operator^( RenderPassCreateFlagBits bit0, RenderPassCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderPassCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderPassCreateFlags operator~( RenderPassCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( RenderPassCreateFlags( bits ) );
-  }
-
-  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits>;
+  using RenderPassCreateFlags = Flags<RenderPassCreateFlagBits>;
 
   template <>
   struct FlagTraits<SubpassDescriptionFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SubpassDescriptionFlagBits::ePerViewAttributesNVX ) | VkFlags( SubpassDescriptionFlagBits::ePerViewPositionXOnlyNVX ) |
@@ -5828,231 +5232,89 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( SubpassDescriptionFlagBits::eEnableLegacyDitheringEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubpassDescriptionFlags operator|( SubpassDescriptionFlagBits bit0,
-                                                                            SubpassDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubpassDescriptionFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubpassDescriptionFlags operator&( SubpassDescriptionFlagBits bit0,
-                                                                            SubpassDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubpassDescriptionFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubpassDescriptionFlags operator^( SubpassDescriptionFlagBits bit0,
-                                                                            SubpassDescriptionFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubpassDescriptionFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubpassDescriptionFlags operator~( SubpassDescriptionFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SubpassDescriptionFlags( bits ) );
-  }
-
-  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits>;
+  using SubpassDescriptionFlags = Flags<SubpassDescriptionFlagBits>;
 
   template <>
   struct FlagTraits<CommandPoolCreateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CommandPoolCreateFlagBits::eTransient ) | VkFlags( CommandPoolCreateFlagBits::eResetCommandBuffer ) |
                  VkFlags( CommandPoolCreateFlagBits::eProtected )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolCreateFlags operator|( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolCreateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolCreateFlags operator&( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolCreateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolCreateFlags operator^( CommandPoolCreateFlagBits bit0, CommandPoolCreateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolCreateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolCreateFlags operator~( CommandPoolCreateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CommandPoolCreateFlags( bits ) );
-  }
-
-  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits>;
+  using CommandPoolCreateFlags = Flags<CommandPoolCreateFlagBits>;
 
   template <>
   struct FlagTraits<CommandPoolResetFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CommandPoolResetFlagBits::eReleaseResources )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolResetFlags operator|( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolResetFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolResetFlags operator&( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolResetFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolResetFlags operator^( CommandPoolResetFlagBits bit0, CommandPoolResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandPoolResetFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandPoolResetFlags operator~( CommandPoolResetFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CommandPoolResetFlags( bits ) );
-  }
-
-  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits>;
+  using CommandPoolResetFlags = Flags<CommandPoolResetFlagBits>;
 
   template <>
   struct FlagTraits<CommandBufferResetFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CommandBufferResetFlagBits::eReleaseResources )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferResetFlags operator|( CommandBufferResetFlagBits bit0,
-                                                                            CommandBufferResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferResetFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferResetFlags operator&( CommandBufferResetFlagBits bit0,
-                                                                            CommandBufferResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferResetFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferResetFlags operator^( CommandBufferResetFlagBits bit0,
-                                                                            CommandBufferResetFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferResetFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferResetFlags operator~( CommandBufferResetFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CommandBufferResetFlags( bits ) );
-  }
-
-  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits>;
+  using CommandBufferResetFlags = Flags<CommandBufferResetFlagBits>;
 
   template <>
   struct FlagTraits<CommandBufferUsageFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CommandBufferUsageFlagBits::eOneTimeSubmit ) | VkFlags( CommandBufferUsageFlagBits::eRenderPassContinue ) |
                  VkFlags( CommandBufferUsageFlagBits::eSimultaneousUse )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferUsageFlags operator|( CommandBufferUsageFlagBits bit0,
-                                                                            CommandBufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferUsageFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferUsageFlags operator&( CommandBufferUsageFlagBits bit0,
-                                                                            CommandBufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferUsageFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferUsageFlags operator^( CommandBufferUsageFlagBits bit0,
-                                                                            CommandBufferUsageFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CommandBufferUsageFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CommandBufferUsageFlags operator~( CommandBufferUsageFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CommandBufferUsageFlags( bits ) );
-  }
-
-  using QueryControlFlags = Flags<QueryControlFlagBits>;
+  using CommandBufferUsageFlags = Flags<CommandBufferUsageFlagBits>;
 
   template <>
   struct FlagTraits<QueryControlFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( QueryControlFlagBits::ePrecise )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryControlFlags operator|( QueryControlFlagBits bit0, QueryControlFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryControlFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryControlFlags operator&( QueryControlFlagBits bit0, QueryControlFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryControlFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryControlFlags operator^( QueryControlFlagBits bit0, QueryControlFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return QueryControlFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR QueryControlFlags operator~( QueryControlFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( QueryControlFlags( bits ) );
-  }
-
-  using StencilFaceFlags = Flags<StencilFaceFlagBits>;
+  using QueryControlFlags = Flags<QueryControlFlagBits>;
 
   template <>
   struct FlagTraits<StencilFaceFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( StencilFaceFlagBits::eFront ) | VkFlags( StencilFaceFlagBits::eBack ) | VkFlags( StencilFaceFlagBits::eFrontAndBack )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR StencilFaceFlags operator|( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return StencilFaceFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR StencilFaceFlags operator&( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return StencilFaceFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR StencilFaceFlags operator^( StencilFaceFlagBits bit0, StencilFaceFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return StencilFaceFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR StencilFaceFlags operator~( StencilFaceFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( StencilFaceFlags( bits ) );
-  }
+  using StencilFaceFlags = Flags<StencilFaceFlagBits>;
 
   //=== VK_VERSION_1_1 ===
-
-  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
 
   template <>
   struct FlagTraits<SubgroupFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SubgroupFeatureFlagBits::eBasic ) | VkFlags( SubgroupFeatureFlagBits::eVote ) | VkFlags( SubgroupFeatureFlagBits::eArithmetic ) |
@@ -6061,108 +5323,67 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( SubgroupFeatureFlagBits::eQuad ) | VkFlags( SubgroupFeatureFlagBits::ePartitionedNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubgroupFeatureFlags operator|( SubgroupFeatureFlagBits bit0, SubgroupFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubgroupFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubgroupFeatureFlags operator&( SubgroupFeatureFlagBits bit0, SubgroupFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubgroupFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubgroupFeatureFlags operator^( SubgroupFeatureFlagBits bit0, SubgroupFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubgroupFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubgroupFeatureFlags operator~( SubgroupFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SubgroupFeatureFlags( bits ) );
-  }
-
-  using PeerMemoryFeatureFlags = Flags<PeerMemoryFeatureFlagBits>;
+  using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
 
   template <>
   struct FlagTraits<PeerMemoryFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PeerMemoryFeatureFlagBits::eCopySrc ) | VkFlags( PeerMemoryFeatureFlagBits::eCopyDst ) |
                  VkFlags( PeerMemoryFeatureFlagBits::eGenericSrc ) | VkFlags( PeerMemoryFeatureFlagBits::eGenericDst )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PeerMemoryFeatureFlags operator|( PeerMemoryFeatureFlagBits bit0, PeerMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PeerMemoryFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PeerMemoryFeatureFlags operator&( PeerMemoryFeatureFlagBits bit0, PeerMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PeerMemoryFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PeerMemoryFeatureFlags operator^( PeerMemoryFeatureFlagBits bit0, PeerMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PeerMemoryFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PeerMemoryFeatureFlags operator~( PeerMemoryFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PeerMemoryFeatureFlags( bits ) );
-  }
-
+  using PeerMemoryFeatureFlags    = Flags<PeerMemoryFeatureFlagBits>;
   using PeerMemoryFeatureFlagsKHR = PeerMemoryFeatureFlags;
-
-  using MemoryAllocateFlags = Flags<MemoryAllocateFlagBits>;
 
   template <>
   struct FlagTraits<MemoryAllocateFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( MemoryAllocateFlagBits::eDeviceMask ) | VkFlags( MemoryAllocateFlagBits::eDeviceAddress ) |
                  VkFlags( MemoryAllocateFlagBits::eDeviceAddressCaptureReplay )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryAllocateFlags operator|( MemoryAllocateFlagBits bit0, MemoryAllocateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryAllocateFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryAllocateFlags operator&( MemoryAllocateFlagBits bit0, MemoryAllocateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryAllocateFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryAllocateFlags operator^( MemoryAllocateFlagBits bit0, MemoryAllocateFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MemoryAllocateFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MemoryAllocateFlags operator~( MemoryAllocateFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( MemoryAllocateFlags( bits ) );
-  }
-
+  using MemoryAllocateFlags    = Flags<MemoryAllocateFlagBits>;
   using MemoryAllocateFlagsKHR = MemoryAllocateFlags;
 
-  using CommandPoolTrimFlags = Flags<CommandPoolTrimFlagBits>;
+  template <>
+  struct FlagTraits<CommandPoolTrimFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using CommandPoolTrimFlags    = Flags<CommandPoolTrimFlagBits>;
   using CommandPoolTrimFlagsKHR = CommandPoolTrimFlags;
 
-  using DescriptorUpdateTemplateCreateFlags = Flags<DescriptorUpdateTemplateCreateFlagBits>;
+  template <>
+  struct FlagTraits<DescriptorUpdateTemplateCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using DescriptorUpdateTemplateCreateFlags    = Flags<DescriptorUpdateTemplateCreateFlagBits>;
   using DescriptorUpdateTemplateCreateFlagsKHR = DescriptorUpdateTemplateCreateFlags;
-
-  using ExternalMemoryHandleTypeFlags = Flags<ExternalMemoryHandleTypeFlagBits>;
 
   template <>
   struct FlagTraits<ExternalMemoryHandleTypeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalMemoryHandleTypeFlagBits::eOpaqueFd ) | VkFlags( ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 ) |
@@ -6179,213 +5400,81 @@ namespace VULKAN_HPP_NAMESPACE
                | VkFlags( ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlags operator|( ExternalMemoryHandleTypeFlagBits bit0,
-                                                                                  ExternalMemoryHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlags operator&( ExternalMemoryHandleTypeFlagBits bit0,
-                                                                                  ExternalMemoryHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlags operator^( ExternalMemoryHandleTypeFlagBits bit0,
-                                                                                  ExternalMemoryHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlags operator~( ExternalMemoryHandleTypeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalMemoryHandleTypeFlags( bits ) );
-  }
-
+  using ExternalMemoryHandleTypeFlags    = Flags<ExternalMemoryHandleTypeFlagBits>;
   using ExternalMemoryHandleTypeFlagsKHR = ExternalMemoryHandleTypeFlags;
-
-  using ExternalMemoryFeatureFlags = Flags<ExternalMemoryFeatureFlagBits>;
 
   template <>
   struct FlagTraits<ExternalMemoryFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalMemoryFeatureFlagBits::eDedicatedOnly ) | VkFlags( ExternalMemoryFeatureFlagBits::eExportable ) |
                  VkFlags( ExternalMemoryFeatureFlagBits::eImportable )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlags operator|( ExternalMemoryFeatureFlagBits bit0,
-                                                                               ExternalMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlags operator&( ExternalMemoryFeatureFlagBits bit0,
-                                                                               ExternalMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlags operator^( ExternalMemoryFeatureFlagBits bit0,
-                                                                               ExternalMemoryFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlags operator~( ExternalMemoryFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalMemoryFeatureFlags( bits ) );
-  }
-
+  using ExternalMemoryFeatureFlags    = Flags<ExternalMemoryFeatureFlagBits>;
   using ExternalMemoryFeatureFlagsKHR = ExternalMemoryFeatureFlags;
-
-  using ExternalFenceHandleTypeFlags = Flags<ExternalFenceHandleTypeFlagBits>;
 
   template <>
   struct FlagTraits<ExternalFenceHandleTypeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalFenceHandleTypeFlagBits::eOpaqueFd ) | VkFlags( ExternalFenceHandleTypeFlagBits::eOpaqueWin32 ) |
                  VkFlags( ExternalFenceHandleTypeFlagBits::eOpaqueWin32Kmt ) | VkFlags( ExternalFenceHandleTypeFlagBits::eSyncFd )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceHandleTypeFlags operator|( ExternalFenceHandleTypeFlagBits bit0,
-                                                                                 ExternalFenceHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceHandleTypeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceHandleTypeFlags operator&( ExternalFenceHandleTypeFlagBits bit0,
-                                                                                 ExternalFenceHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceHandleTypeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceHandleTypeFlags operator^( ExternalFenceHandleTypeFlagBits bit0,
-                                                                                 ExternalFenceHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceHandleTypeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceHandleTypeFlags operator~( ExternalFenceHandleTypeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalFenceHandleTypeFlags( bits ) );
-  }
-
+  using ExternalFenceHandleTypeFlags    = Flags<ExternalFenceHandleTypeFlagBits>;
   using ExternalFenceHandleTypeFlagsKHR = ExternalFenceHandleTypeFlags;
-
-  using ExternalFenceFeatureFlags = Flags<ExternalFenceFeatureFlagBits>;
 
   template <>
   struct FlagTraits<ExternalFenceFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalFenceFeatureFlagBits::eExportable ) | VkFlags( ExternalFenceFeatureFlagBits::eImportable )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceFeatureFlags operator|( ExternalFenceFeatureFlagBits bit0,
-                                                                              ExternalFenceFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceFeatureFlags operator&( ExternalFenceFeatureFlagBits bit0,
-                                                                              ExternalFenceFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceFeatureFlags operator^( ExternalFenceFeatureFlagBits bit0,
-                                                                              ExternalFenceFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalFenceFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalFenceFeatureFlags operator~( ExternalFenceFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalFenceFeatureFlags( bits ) );
-  }
-
+  using ExternalFenceFeatureFlags    = Flags<ExternalFenceFeatureFlagBits>;
   using ExternalFenceFeatureFlagsKHR = ExternalFenceFeatureFlags;
-
-  using FenceImportFlags = Flags<FenceImportFlagBits>;
 
   template <>
   struct FlagTraits<FenceImportFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( FenceImportFlagBits::eTemporary )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceImportFlags operator|( FenceImportFlagBits bit0, FenceImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceImportFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceImportFlags operator&( FenceImportFlagBits bit0, FenceImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceImportFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceImportFlags operator^( FenceImportFlagBits bit0, FenceImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FenceImportFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FenceImportFlags operator~( FenceImportFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( FenceImportFlags( bits ) );
-  }
-
+  using FenceImportFlags    = Flags<FenceImportFlagBits>;
   using FenceImportFlagsKHR = FenceImportFlags;
-
-  using SemaphoreImportFlags = Flags<SemaphoreImportFlagBits>;
 
   template <>
   struct FlagTraits<SemaphoreImportFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SemaphoreImportFlagBits::eTemporary )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreImportFlags operator|( SemaphoreImportFlagBits bit0, SemaphoreImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreImportFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreImportFlags operator&( SemaphoreImportFlagBits bit0, SemaphoreImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreImportFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreImportFlags operator^( SemaphoreImportFlagBits bit0, SemaphoreImportFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreImportFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreImportFlags operator~( SemaphoreImportFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SemaphoreImportFlags( bits ) );
-  }
-
+  using SemaphoreImportFlags    = Flags<SemaphoreImportFlagBits>;
   using SemaphoreImportFlagsKHR = SemaphoreImportFlags;
-
-  using ExternalSemaphoreHandleTypeFlags = Flags<ExternalSemaphoreHandleTypeFlagBits>;
 
   template <>
   struct FlagTraits<ExternalSemaphoreHandleTypeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueFd ) | VkFlags( ExternalSemaphoreHandleTypeFlagBits::eOpaqueWin32 ) |
@@ -6396,215 +5485,86 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreHandleTypeFlags operator|( ExternalSemaphoreHandleTypeFlagBits bit0,
-                                                                                     ExternalSemaphoreHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreHandleTypeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreHandleTypeFlags operator&( ExternalSemaphoreHandleTypeFlagBits bit0,
-                                                                                     ExternalSemaphoreHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreHandleTypeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreHandleTypeFlags operator^( ExternalSemaphoreHandleTypeFlagBits bit0,
-                                                                                     ExternalSemaphoreHandleTypeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreHandleTypeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreHandleTypeFlags operator~( ExternalSemaphoreHandleTypeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalSemaphoreHandleTypeFlags( bits ) );
-  }
-
+  using ExternalSemaphoreHandleTypeFlags    = Flags<ExternalSemaphoreHandleTypeFlagBits>;
   using ExternalSemaphoreHandleTypeFlagsKHR = ExternalSemaphoreHandleTypeFlags;
-
-  using ExternalSemaphoreFeatureFlags = Flags<ExternalSemaphoreFeatureFlagBits>;
 
   template <>
   struct FlagTraits<ExternalSemaphoreFeatureFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalSemaphoreFeatureFlagBits::eExportable ) | VkFlags( ExternalSemaphoreFeatureFlagBits::eImportable )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreFeatureFlags operator|( ExternalSemaphoreFeatureFlagBits bit0,
-                                                                                  ExternalSemaphoreFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreFeatureFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreFeatureFlags operator&( ExternalSemaphoreFeatureFlagBits bit0,
-                                                                                  ExternalSemaphoreFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreFeatureFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreFeatureFlags operator^( ExternalSemaphoreFeatureFlagBits bit0,
-                                                                                  ExternalSemaphoreFeatureFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalSemaphoreFeatureFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalSemaphoreFeatureFlags operator~( ExternalSemaphoreFeatureFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalSemaphoreFeatureFlags( bits ) );
-  }
-
+  using ExternalSemaphoreFeatureFlags    = Flags<ExternalSemaphoreFeatureFlagBits>;
   using ExternalSemaphoreFeatureFlagsKHR = ExternalSemaphoreFeatureFlags;
 
   //=== VK_VERSION_1_2 ===
 
-  using DescriptorBindingFlags = Flags<DescriptorBindingFlagBits>;
-
   template <>
   struct FlagTraits<DescriptorBindingFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DescriptorBindingFlagBits::eUpdateAfterBind ) | VkFlags( DescriptorBindingFlagBits::eUpdateUnusedWhilePending ) |
                  VkFlags( DescriptorBindingFlagBits::ePartiallyBound ) | VkFlags( DescriptorBindingFlagBits::eVariableDescriptorCount )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorBindingFlags operator|( DescriptorBindingFlagBits bit0, DescriptorBindingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorBindingFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorBindingFlags operator&( DescriptorBindingFlagBits bit0, DescriptorBindingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorBindingFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorBindingFlags operator^( DescriptorBindingFlagBits bit0, DescriptorBindingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DescriptorBindingFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DescriptorBindingFlags operator~( DescriptorBindingFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DescriptorBindingFlags( bits ) );
-  }
-
+  using DescriptorBindingFlags    = Flags<DescriptorBindingFlagBits>;
   using DescriptorBindingFlagsEXT = DescriptorBindingFlags;
-
-  using ResolveModeFlags = Flags<ResolveModeFlagBits>;
 
   template <>
   struct FlagTraits<ResolveModeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ResolveModeFlagBits::eNone ) | VkFlags( ResolveModeFlagBits::eSampleZero ) | VkFlags( ResolveModeFlagBits::eAverage ) |
                  VkFlags( ResolveModeFlagBits::eMin ) | VkFlags( ResolveModeFlagBits::eMax )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ResolveModeFlags operator|( ResolveModeFlagBits bit0, ResolveModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ResolveModeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ResolveModeFlags operator&( ResolveModeFlagBits bit0, ResolveModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ResolveModeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ResolveModeFlags operator^( ResolveModeFlagBits bit0, ResolveModeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ResolveModeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ResolveModeFlags operator~( ResolveModeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ResolveModeFlags( bits ) );
-  }
-
+  using ResolveModeFlags    = Flags<ResolveModeFlagBits>;
   using ResolveModeFlagsKHR = ResolveModeFlags;
-
-  using SemaphoreWaitFlags = Flags<SemaphoreWaitFlagBits>;
 
   template <>
   struct FlagTraits<SemaphoreWaitFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SemaphoreWaitFlagBits::eAny )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlags operator|( SemaphoreWaitFlagBits bit0, SemaphoreWaitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreWaitFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlags operator&( SemaphoreWaitFlagBits bit0, SemaphoreWaitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreWaitFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlags operator^( SemaphoreWaitFlagBits bit0, SemaphoreWaitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SemaphoreWaitFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SemaphoreWaitFlags operator~( SemaphoreWaitFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SemaphoreWaitFlags( bits ) );
-  }
-
+  using SemaphoreWaitFlags    = Flags<SemaphoreWaitFlagBits>;
   using SemaphoreWaitFlagsKHR = SemaphoreWaitFlags;
 
   //=== VK_VERSION_1_3 ===
 
-  using PipelineCreationFeedbackFlags = Flags<PipelineCreationFeedbackFlagBits>;
-
   template <>
   struct FlagTraits<PipelineCreationFeedbackFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( PipelineCreationFeedbackFlagBits::eValid ) | VkFlags( PipelineCreationFeedbackFlagBits::eApplicationPipelineCacheHit ) |
                  VkFlags( PipelineCreationFeedbackFlagBits::eBasePipelineAcceleration )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackFlags operator|( PipelineCreationFeedbackFlagBits bit0,
-                                                                                  PipelineCreationFeedbackFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreationFeedbackFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackFlags operator&( PipelineCreationFeedbackFlagBits bit0,
-                                                                                  PipelineCreationFeedbackFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreationFeedbackFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackFlags operator^( PipelineCreationFeedbackFlagBits bit0,
-                                                                                  PipelineCreationFeedbackFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineCreationFeedbackFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineCreationFeedbackFlags operator~( PipelineCreationFeedbackFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineCreationFeedbackFlags( bits ) );
-  }
-
+  using PipelineCreationFeedbackFlags    = Flags<PipelineCreationFeedbackFlagBits>;
   using PipelineCreationFeedbackFlagsEXT = PipelineCreationFeedbackFlags;
-
-  using ToolPurposeFlags = Flags<ToolPurposeFlagBits>;
 
   template <>
   struct FlagTraits<ToolPurposeFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ToolPurposeFlagBits::eValidation ) | VkFlags( ToolPurposeFlagBits::eProfiling ) | VkFlags( ToolPurposeFlagBits::eTracing ) |
@@ -6612,38 +5572,27 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ToolPurposeFlagBits::eDebugReportingEXT ) | VkFlags( ToolPurposeFlagBits::eDebugMarkersEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlags operator|( ToolPurposeFlagBits bit0, ToolPurposeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ToolPurposeFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlags operator&( ToolPurposeFlagBits bit0, ToolPurposeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ToolPurposeFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlags operator^( ToolPurposeFlagBits bit0, ToolPurposeFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ToolPurposeFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ToolPurposeFlags operator~( ToolPurposeFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ToolPurposeFlags( bits ) );
-  }
-
+  using ToolPurposeFlags    = Flags<ToolPurposeFlagBits>;
   using ToolPurposeFlagsEXT = ToolPurposeFlags;
 
-  using PrivateDataSlotCreateFlags = Flags<PrivateDataSlotCreateFlagBits>;
+  template <>
+  struct FlagTraits<PrivateDataSlotCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using PrivateDataSlotCreateFlags    = Flags<PrivateDataSlotCreateFlagBits>;
   using PrivateDataSlotCreateFlagsEXT = PrivateDataSlotCreateFlags;
-
-  using PipelineStageFlags2 = Flags<PipelineStageFlagBits2>;
 
   template <>
   struct FlagTraits<PipelineStageFlagBits2>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags64
     {
       allFlags = VkFlags64( PipelineStageFlagBits2::eNone ) | VkFlags64( PipelineStageFlagBits2::eTopOfPipe ) |
@@ -6670,34 +5619,14 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( PipelineStageFlagBits2::eMicromapBuildEXT ) | VkFlags64( PipelineStageFlagBits2::eOpticalFlowNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags2 operator|( PipelineStageFlagBits2 bit0, PipelineStageFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags2( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags2 operator&( PipelineStageFlagBits2 bit0, PipelineStageFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags2( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags2 operator^( PipelineStageFlagBits2 bit0, PipelineStageFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PipelineStageFlags2( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PipelineStageFlags2 operator~( PipelineStageFlagBits2 bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PipelineStageFlags2( bits ) );
-  }
-
+  using PipelineStageFlags2    = Flags<PipelineStageFlagBits2>;
   using PipelineStageFlags2KHR = PipelineStageFlags2;
-
-  using AccessFlags2 = Flags<AccessFlagBits2>;
 
   template <>
   struct FlagTraits<AccessFlagBits2>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags64
     {
       allFlags =
@@ -6723,101 +5652,41 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags64( AccessFlagBits2::eMicromapWriteEXT ) | VkFlags64( AccessFlagBits2::eOpticalFlowReadNV ) | VkFlags64( AccessFlagBits2::eOpticalFlowWriteNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags2 operator|( AccessFlagBits2 bit0, AccessFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags2( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags2 operator&( AccessFlagBits2 bit0, AccessFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags2( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags2 operator^( AccessFlagBits2 bit0, AccessFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccessFlags2( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccessFlags2 operator~( AccessFlagBits2 bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( AccessFlags2( bits ) );
-  }
-
+  using AccessFlags2    = Flags<AccessFlagBits2>;
   using AccessFlags2KHR = AccessFlags2;
-
-  using SubmitFlags = Flags<SubmitFlagBits>;
 
   template <>
   struct FlagTraits<SubmitFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SubmitFlagBits::eProtected )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubmitFlags operator|( SubmitFlagBits bit0, SubmitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubmitFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubmitFlags operator&( SubmitFlagBits bit0, SubmitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubmitFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubmitFlags operator^( SubmitFlagBits bit0, SubmitFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SubmitFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SubmitFlags operator~( SubmitFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SubmitFlags( bits ) );
-  }
-
+  using SubmitFlags    = Flags<SubmitFlagBits>;
   using SubmitFlagsKHR = SubmitFlags;
-
-  using RenderingFlags = Flags<RenderingFlagBits>;
 
   template <>
   struct FlagTraits<RenderingFlagBits>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( RenderingFlagBits::eContentsSecondaryCommandBuffers ) | VkFlags( RenderingFlagBits::eSuspending ) |
                  VkFlags( RenderingFlagBits::eResuming ) | VkFlags( RenderingFlagBits::eEnableLegacyDitheringEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlags operator|( RenderingFlagBits bit0, RenderingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderingFlags( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlags operator&( RenderingFlagBits bit0, RenderingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderingFlags( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlags operator^( RenderingFlagBits bit0, RenderingFlagBits bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return RenderingFlags( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR RenderingFlags operator~( RenderingFlagBits bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( RenderingFlags( bits ) );
-  }
-
+  using RenderingFlags    = Flags<RenderingFlagBits>;
   using RenderingFlagsKHR = RenderingFlags;
-
-  using FormatFeatureFlags2 = Flags<FormatFeatureFlagBits2>;
 
   template <>
   struct FlagTraits<FormatFeatureFlagBits2>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags64
     {
       allFlags = VkFlags64( FormatFeatureFlagBits2::eSampledImage ) | VkFlags64( FormatFeatureFlagBits2::eStorageImage ) |
@@ -6850,181 +5719,96 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags64( FormatFeatureFlagBits2::eOpticalFlowVectorNV ) | VkFlags64( FormatFeatureFlagBits2::eOpticalFlowCostNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2 operator|( FormatFeatureFlagBits2 bit0, FormatFeatureFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags2( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2 operator&( FormatFeatureFlagBits2 bit0, FormatFeatureFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags2( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2 operator^( FormatFeatureFlagBits2 bit0, FormatFeatureFlagBits2 bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return FormatFeatureFlags2( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR FormatFeatureFlags2 operator~( FormatFeatureFlagBits2 bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( FormatFeatureFlags2( bits ) );
-  }
-
+  using FormatFeatureFlags2    = Flags<FormatFeatureFlagBits2>;
   using FormatFeatureFlags2KHR = FormatFeatureFlags2;
 
   //=== VK_KHR_surface ===
 
-  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR>;
-
   template <>
   struct FlagTraits<CompositeAlphaFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( CompositeAlphaFlagBitsKHR::eOpaque ) | VkFlags( CompositeAlphaFlagBitsKHR::ePreMultiplied ) |
                  VkFlags( CompositeAlphaFlagBitsKHR::ePostMultiplied ) | VkFlags( CompositeAlphaFlagBitsKHR::eInherit )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CompositeAlphaFlagsKHR operator|( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CompositeAlphaFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CompositeAlphaFlagsKHR operator&( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CompositeAlphaFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CompositeAlphaFlagsKHR operator^( CompositeAlphaFlagBitsKHR bit0, CompositeAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return CompositeAlphaFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR CompositeAlphaFlagsKHR operator~( CompositeAlphaFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( CompositeAlphaFlagsKHR( bits ) );
-  }
+  using CompositeAlphaFlagsKHR = Flags<CompositeAlphaFlagBitsKHR>;
 
   //=== VK_KHR_swapchain ===
-
-  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR>;
 
   template <>
   struct FlagTraits<SwapchainCreateFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions ) | VkFlags( SwapchainCreateFlagBitsKHR::eProtected ) |
                  VkFlags( SwapchainCreateFlagBitsKHR::eMutableFormat )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SwapchainCreateFlagsKHR operator|( SwapchainCreateFlagBitsKHR bit0,
-                                                                            SwapchainCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SwapchainCreateFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SwapchainCreateFlagsKHR operator&( SwapchainCreateFlagBitsKHR bit0,
-                                                                            SwapchainCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SwapchainCreateFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SwapchainCreateFlagsKHR operator^( SwapchainCreateFlagBitsKHR bit0,
-                                                                            SwapchainCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SwapchainCreateFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SwapchainCreateFlagsKHR operator~( SwapchainCreateFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SwapchainCreateFlagsKHR( bits ) );
-  }
-
-  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR>;
+  using SwapchainCreateFlagsKHR = Flags<SwapchainCreateFlagBitsKHR>;
 
   template <>
   struct FlagTraits<DeviceGroupPresentModeFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DeviceGroupPresentModeFlagBitsKHR::eLocal ) | VkFlags( DeviceGroupPresentModeFlagBitsKHR::eRemote ) |
                  VkFlags( DeviceGroupPresentModeFlagBitsKHR::eSum ) | VkFlags( DeviceGroupPresentModeFlagBitsKHR::eLocalMultiDevice )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceGroupPresentModeFlagsKHR operator|( DeviceGroupPresentModeFlagBitsKHR bit0,
-                                                                                   DeviceGroupPresentModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceGroupPresentModeFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceGroupPresentModeFlagsKHR operator&( DeviceGroupPresentModeFlagBitsKHR bit0,
-                                                                                   DeviceGroupPresentModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceGroupPresentModeFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceGroupPresentModeFlagsKHR operator^( DeviceGroupPresentModeFlagBitsKHR bit0,
-                                                                                   DeviceGroupPresentModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceGroupPresentModeFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceGroupPresentModeFlagsKHR operator~( DeviceGroupPresentModeFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DeviceGroupPresentModeFlagsKHR( bits ) );
-  }
+  using DeviceGroupPresentModeFlagsKHR = Flags<DeviceGroupPresentModeFlagBitsKHR>;
 
   //=== VK_KHR_display ===
 
-  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR>;
+  template <>
+  struct FlagTraits<DisplayModeCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using DisplayModeCreateFlagsKHR = Flags<DisplayModeCreateFlagBitsKHR>;
 
   template <>
   struct FlagTraits<DisplayPlaneAlphaFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DisplayPlaneAlphaFlagBitsKHR::eOpaque ) | VkFlags( DisplayPlaneAlphaFlagBitsKHR::eGlobal ) |
                  VkFlags( DisplayPlaneAlphaFlagBitsKHR::ePerPixel ) | VkFlags( DisplayPlaneAlphaFlagBitsKHR::ePerPixelPremultiplied )
     };
   };
+  using DisplayPlaneAlphaFlagsKHR = Flags<DisplayPlaneAlphaFlagBitsKHR>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DisplayPlaneAlphaFlagsKHR operator|( DisplayPlaneAlphaFlagBitsKHR bit0,
-                                                                              DisplayPlaneAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<DisplaySurfaceCreateFlagBitsKHR>
   {
-    return DisplayPlaneAlphaFlagsKHR( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DisplayPlaneAlphaFlagsKHR operator&( DisplayPlaneAlphaFlagBitsKHR bit0,
-                                                                              DisplayPlaneAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DisplayPlaneAlphaFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DisplayPlaneAlphaFlagsKHR operator^( DisplayPlaneAlphaFlagBitsKHR bit0,
-                                                                              DisplayPlaneAlphaFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DisplayPlaneAlphaFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DisplayPlaneAlphaFlagsKHR operator~( DisplayPlaneAlphaFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DisplayPlaneAlphaFlagsKHR( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DisplaySurfaceCreateFlagsKHR = Flags<DisplaySurfaceCreateFlagBitsKHR>;
-
-  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR>;
 
   template <>
   struct FlagTraits<SurfaceTransformFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SurfaceTransformFlagBitsKHR::eIdentity ) | VkFlags( SurfaceTransformFlagBitsKHR::eRotate90 ) |
@@ -7034,102 +5818,111 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( SurfaceTransformFlagBitsKHR::eInherit )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceTransformFlagsKHR operator|( SurfaceTransformFlagBitsKHR bit0,
-                                                                             SurfaceTransformFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceTransformFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceTransformFlagsKHR operator&( SurfaceTransformFlagBitsKHR bit0,
-                                                                             SurfaceTransformFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceTransformFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceTransformFlagsKHR operator^( SurfaceTransformFlagBitsKHR bit0,
-                                                                             SurfaceTransformFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceTransformFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceTransformFlagsKHR operator~( SurfaceTransformFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SurfaceTransformFlagsKHR( bits ) );
-  }
+  using SurfaceTransformFlagsKHR = Flags<SurfaceTransformFlagBitsKHR>;
 
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
   //=== VK_KHR_xlib_surface ===
 
+  template <>
+  struct FlagTraits<XlibSurfaceCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using XlibSurfaceCreateFlagsKHR = Flags<XlibSurfaceCreateFlagBitsKHR>;
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 
 #if defined( VK_USE_PLATFORM_XCB_KHR )
   //=== VK_KHR_xcb_surface ===
 
+  template <>
+  struct FlagTraits<XcbSurfaceCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using XcbSurfaceCreateFlagsKHR = Flags<XcbSurfaceCreateFlagBitsKHR>;
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
   //=== VK_KHR_wayland_surface ===
 
+  template <>
+  struct FlagTraits<WaylandSurfaceCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using WaylandSurfaceCreateFlagsKHR = Flags<WaylandSurfaceCreateFlagBitsKHR>;
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
   //=== VK_KHR_android_surface ===
 
+  template <>
+  struct FlagTraits<AndroidSurfaceCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using AndroidSurfaceCreateFlagsKHR = Flags<AndroidSurfaceCreateFlagBitsKHR>;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_KHR_win32_surface ===
 
+  template <>
+  struct FlagTraits<Win32SurfaceCreateFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using Win32SurfaceCreateFlagsKHR = Flags<Win32SurfaceCreateFlagBitsKHR>;
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
   //=== VK_EXT_debug_report ===
 
-  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT>;
-
   template <>
   struct FlagTraits<DebugReportFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DebugReportFlagBitsEXT::eInformation ) | VkFlags( DebugReportFlagBitsEXT::eWarning ) |
                  VkFlags( DebugReportFlagBitsEXT::ePerformanceWarning ) | VkFlags( DebugReportFlagBitsEXT::eError ) | VkFlags( DebugReportFlagBitsEXT::eDebug )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugReportFlagsEXT operator|( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugReportFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugReportFlagsEXT operator&( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugReportFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugReportFlagsEXT operator^( DebugReportFlagBitsEXT bit0, DebugReportFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugReportFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugReportFlagsEXT operator~( DebugReportFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DebugReportFlagsEXT( bits ) );
-  }
+  using DebugReportFlagsEXT = Flags<DebugReportFlagBitsEXT>;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
 
-  using VideoCodecOperationFlagsKHR = Flags<VideoCodecOperationFlagBitsKHR>;
-
   template <>
   struct FlagTraits<VideoCodecOperationFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoCodecOperationFlagBitsKHR::eNone ) | VkFlags( VideoCodecOperationFlagBitsKHR::eEncodeH264EXT ) |
@@ -7137,35 +5930,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( VideoCodecOperationFlagBitsKHR::eDecodeH265EXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodecOperationFlagsKHR operator|( VideoCodecOperationFlagBitsKHR bit0,
-                                                                                VideoCodecOperationFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodecOperationFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodecOperationFlagsKHR operator&( VideoCodecOperationFlagBitsKHR bit0,
-                                                                                VideoCodecOperationFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodecOperationFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodecOperationFlagsKHR operator^( VideoCodecOperationFlagBitsKHR bit0,
-                                                                                VideoCodecOperationFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodecOperationFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodecOperationFlagsKHR operator~( VideoCodecOperationFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoCodecOperationFlagsKHR( bits ) );
-  }
-
-  using VideoChromaSubsamplingFlagsKHR = Flags<VideoChromaSubsamplingFlagBitsKHR>;
+  using VideoCodecOperationFlagsKHR = Flags<VideoCodecOperationFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoChromaSubsamplingFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoChromaSubsamplingFlagBitsKHR::eInvalid ) | VkFlags( VideoChromaSubsamplingFlagBitsKHR::eMonochrome ) |
@@ -7173,262 +5944,158 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( VideoChromaSubsamplingFlagBitsKHR::e444 )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoChromaSubsamplingFlagsKHR operator|( VideoChromaSubsamplingFlagBitsKHR bit0,
-                                                                                   VideoChromaSubsamplingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoChromaSubsamplingFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoChromaSubsamplingFlagsKHR operator&( VideoChromaSubsamplingFlagBitsKHR bit0,
-                                                                                   VideoChromaSubsamplingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoChromaSubsamplingFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoChromaSubsamplingFlagsKHR operator^( VideoChromaSubsamplingFlagBitsKHR bit0,
-                                                                                   VideoChromaSubsamplingFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoChromaSubsamplingFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoChromaSubsamplingFlagsKHR operator~( VideoChromaSubsamplingFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoChromaSubsamplingFlagsKHR( bits ) );
-  }
-
-  using VideoComponentBitDepthFlagsKHR = Flags<VideoComponentBitDepthFlagBitsKHR>;
+  using VideoChromaSubsamplingFlagsKHR = Flags<VideoChromaSubsamplingFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoComponentBitDepthFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoComponentBitDepthFlagBitsKHR::eInvalid ) | VkFlags( VideoComponentBitDepthFlagBitsKHR::e8 ) |
                  VkFlags( VideoComponentBitDepthFlagBitsKHR::e10 ) | VkFlags( VideoComponentBitDepthFlagBitsKHR::e12 )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoComponentBitDepthFlagsKHR operator|( VideoComponentBitDepthFlagBitsKHR bit0,
-                                                                                   VideoComponentBitDepthFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoComponentBitDepthFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoComponentBitDepthFlagsKHR operator&( VideoComponentBitDepthFlagBitsKHR bit0,
-                                                                                   VideoComponentBitDepthFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoComponentBitDepthFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoComponentBitDepthFlagsKHR operator^( VideoComponentBitDepthFlagBitsKHR bit0,
-                                                                                   VideoComponentBitDepthFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoComponentBitDepthFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoComponentBitDepthFlagsKHR operator~( VideoComponentBitDepthFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoComponentBitDepthFlagsKHR( bits ) );
-  }
-
-  using VideoCapabilityFlagsKHR = Flags<VideoCapabilityFlagBitsKHR>;
+  using VideoComponentBitDepthFlagsKHR = Flags<VideoComponentBitDepthFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoCapabilityFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoCapabilityFlagBitsKHR::eProtectedContent ) | VkFlags( VideoCapabilityFlagBitsKHR::eSeparateReferenceImages )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR operator|( VideoCapabilityFlagBitsKHR bit0,
-                                                                            VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCapabilityFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR operator&( VideoCapabilityFlagBitsKHR bit0,
-                                                                            VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCapabilityFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR operator^( VideoCapabilityFlagBitsKHR bit0,
-                                                                            VideoCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCapabilityFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCapabilityFlagsKHR operator~( VideoCapabilityFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoCapabilityFlagsKHR( bits ) );
-  }
-
-  using VideoSessionCreateFlagsKHR = Flags<VideoSessionCreateFlagBitsKHR>;
+  using VideoCapabilityFlagsKHR = Flags<VideoCapabilityFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoSessionCreateFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoSessionCreateFlagBitsKHR::eProtectedContent )
     };
   };
+  using VideoSessionCreateFlagsKHR = Flags<VideoSessionCreateFlagBitsKHR>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoSessionCreateFlagsKHR operator|( VideoSessionCreateFlagBitsKHR bit0,
-                                                                               VideoSessionCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<VideoSessionParametersCreateFlagBitsKHR>
   {
-    return VideoSessionCreateFlagsKHR( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoSessionCreateFlagsKHR operator&( VideoSessionCreateFlagBitsKHR bit0,
-                                                                               VideoSessionCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoSessionCreateFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoSessionCreateFlagsKHR operator^( VideoSessionCreateFlagBitsKHR bit0,
-                                                                               VideoSessionCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoSessionCreateFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoSessionCreateFlagsKHR operator~( VideoSessionCreateFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoSessionCreateFlagsKHR( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using VideoSessionParametersCreateFlagsKHR = Flags<VideoSessionParametersCreateFlagBitsKHR>;
 
+  template <>
+  struct FlagTraits<VideoBeginCodingFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using VideoBeginCodingFlagsKHR = Flags<VideoBeginCodingFlagBitsKHR>;
 
-  using VideoEndCodingFlagsKHR = Flags<VideoEndCodingFlagBitsKHR>;
+  template <>
+  struct FlagTraits<VideoEndCodingFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using VideoCodingControlFlagsKHR = Flags<VideoCodingControlFlagBitsKHR>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using VideoEndCodingFlagsKHR = Flags<VideoEndCodingFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoCodingControlFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoCodingControlFlagBitsKHR::eReset ) | VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControl ) |
                  VkFlags( VideoCodingControlFlagBitsKHR::eEncodeRateControlLayer )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodingControlFlagsKHR operator|( VideoCodingControlFlagBitsKHR bit0,
-                                                                               VideoCodingControlFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodingControlFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodingControlFlagsKHR operator&( VideoCodingControlFlagBitsKHR bit0,
-                                                                               VideoCodingControlFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodingControlFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodingControlFlagsKHR operator^( VideoCodingControlFlagBitsKHR bit0,
-                                                                               VideoCodingControlFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoCodingControlFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoCodingControlFlagsKHR operator~( VideoCodingControlFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoCodingControlFlagsKHR( bits ) );
-  }
+  using VideoCodingControlFlagsKHR = Flags<VideoCodingControlFlagBitsKHR>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
 
-  using VideoDecodeCapabilityFlagsKHR = Flags<VideoDecodeCapabilityFlagBitsKHR>;
-
   template <>
   struct FlagTraits<VideoDecodeCapabilityFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoDecodeCapabilityFlagBitsKHR::eDpbAndOutputCoincide ) | VkFlags( VideoDecodeCapabilityFlagBitsKHR::eDpbAndOutputDistinct )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeCapabilityFlagsKHR operator|( VideoDecodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoDecodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeCapabilityFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeCapabilityFlagsKHR operator&( VideoDecodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoDecodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeCapabilityFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeCapabilityFlagsKHR operator^( VideoDecodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoDecodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeCapabilityFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeCapabilityFlagsKHR operator~( VideoDecodeCapabilityFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoDecodeCapabilityFlagsKHR( bits ) );
-  }
-
-  using VideoDecodeUsageFlagsKHR = Flags<VideoDecodeUsageFlagBitsKHR>;
+  using VideoDecodeCapabilityFlagsKHR = Flags<VideoDecodeCapabilityFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoDecodeUsageFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoDecodeUsageFlagBitsKHR::eDefault ) | VkFlags( VideoDecodeUsageFlagBitsKHR::eTranscoding ) |
                  VkFlags( VideoDecodeUsageFlagBitsKHR::eOffline ) | VkFlags( VideoDecodeUsageFlagBitsKHR::eStreaming )
     };
   };
+  using VideoDecodeUsageFlagsKHR = Flags<VideoDecodeUsageFlagBitsKHR>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeUsageFlagsKHR operator|( VideoDecodeUsageFlagBitsKHR bit0,
-                                                                             VideoDecodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<VideoDecodeFlagBitsKHR>
   {
-    return VideoDecodeUsageFlagsKHR( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeUsageFlagsKHR operator&( VideoDecodeUsageFlagBitsKHR bit0,
-                                                                             VideoDecodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeUsageFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeUsageFlagsKHR operator^( VideoDecodeUsageFlagBitsKHR bit0,
-                                                                             VideoDecodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeUsageFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeUsageFlagsKHR operator~( VideoDecodeUsageFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoDecodeUsageFlagsKHR( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using VideoDecodeFlagsKHR = Flags<VideoDecodeFlagBitsKHR>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_EXT_transform_feedback ===
 
+  template <>
+  struct FlagTraits<PipelineRasterizationStateStreamCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineRasterizationStateStreamCreateFlagsEXT = Flags<PipelineRasterizationStateStreamCreateFlagBitsEXT>;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h264 ===
 
-  using VideoEncodeH264CapabilityFlagsEXT = Flags<VideoEncodeH264CapabilityFlagBitsEXT>;
-
   template <>
   struct FlagTraits<VideoEncodeH264CapabilityFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags =
@@ -7447,109 +6114,43 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eDifferentSliceType ) | VkFlags( VideoEncodeH264CapabilityFlagBitsEXT::eBFrameInL1List )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator|( VideoEncodeH264CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator&( VideoEncodeH264CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator^( VideoEncodeH264CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264CapabilityFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264CapabilityFlagsEXT operator~( VideoEncodeH264CapabilityFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH264CapabilityFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH264InputModeFlagsEXT = Flags<VideoEncodeH264InputModeFlagBitsEXT>;
+  using VideoEncodeH264CapabilityFlagsEXT = Flags<VideoEncodeH264CapabilityFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH264InputModeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH264InputModeFlagBitsEXT::eFrame ) | VkFlags( VideoEncodeH264InputModeFlagBitsEXT::eSlice ) |
                  VkFlags( VideoEncodeH264InputModeFlagBitsEXT::eNonVcl )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264InputModeFlagsEXT operator|( VideoEncodeH264InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH264InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264InputModeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264InputModeFlagsEXT operator&( VideoEncodeH264InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH264InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264InputModeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264InputModeFlagsEXT operator^( VideoEncodeH264InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH264InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264InputModeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264InputModeFlagsEXT operator~( VideoEncodeH264InputModeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH264InputModeFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH264OutputModeFlagsEXT = Flags<VideoEncodeH264OutputModeFlagBitsEXT>;
+  using VideoEncodeH264InputModeFlagsEXT = Flags<VideoEncodeH264InputModeFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH264OutputModeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH264OutputModeFlagBitsEXT::eFrame ) | VkFlags( VideoEncodeH264OutputModeFlagBitsEXT::eSlice ) |
                  VkFlags( VideoEncodeH264OutputModeFlagBitsEXT::eNonVcl )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264OutputModeFlagsEXT operator|( VideoEncodeH264OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264OutputModeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264OutputModeFlagsEXT operator&( VideoEncodeH264OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264OutputModeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264OutputModeFlagsEXT operator^( VideoEncodeH264OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH264OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH264OutputModeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH264OutputModeFlagsEXT operator~( VideoEncodeH264OutputModeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH264OutputModeFlagsEXT( bits ) );
-  }
+  using VideoEncodeH264OutputModeFlagsEXT = Flags<VideoEncodeH264OutputModeFlagBitsEXT>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_encode_h265 ===
 
-  using VideoEncodeH265CapabilityFlagsEXT = Flags<VideoEncodeH265CapabilityFlagBitsEXT>;
-
   template <>
   struct FlagTraits<VideoEncodeH265CapabilityFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags =
@@ -7569,180 +6170,69 @@ namespace VULKAN_HPP_NAMESPACE
         VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eDifferentSliceType ) | VkFlags( VideoEncodeH265CapabilityFlagBitsEXT::eBFrameInL1List )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator|( VideoEncodeH265CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator&( VideoEncodeH265CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator^( VideoEncodeH265CapabilityFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265CapabilityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CapabilityFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CapabilityFlagsEXT operator~( VideoEncodeH265CapabilityFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265CapabilityFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH265InputModeFlagsEXT = Flags<VideoEncodeH265InputModeFlagBitsEXT>;
+  using VideoEncodeH265CapabilityFlagsEXT = Flags<VideoEncodeH265CapabilityFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH265InputModeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eFrame ) | VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eSliceSegment ) |
                  VkFlags( VideoEncodeH265InputModeFlagBitsEXT::eNonVcl )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265InputModeFlagsEXT operator|( VideoEncodeH265InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH265InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265InputModeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265InputModeFlagsEXT operator&( VideoEncodeH265InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH265InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265InputModeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265InputModeFlagsEXT operator^( VideoEncodeH265InputModeFlagBitsEXT bit0,
-                                                                                     VideoEncodeH265InputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265InputModeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265InputModeFlagsEXT operator~( VideoEncodeH265InputModeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265InputModeFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH265OutputModeFlagsEXT = Flags<VideoEncodeH265OutputModeFlagBitsEXT>;
+  using VideoEncodeH265InputModeFlagsEXT = Flags<VideoEncodeH265InputModeFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH265OutputModeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eFrame ) | VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eSliceSegment ) |
                  VkFlags( VideoEncodeH265OutputModeFlagBitsEXT::eNonVcl )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265OutputModeFlagsEXT operator|( VideoEncodeH265OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265OutputModeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265OutputModeFlagsEXT operator&( VideoEncodeH265OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265OutputModeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265OutputModeFlagsEXT operator^( VideoEncodeH265OutputModeFlagBitsEXT bit0,
-                                                                                      VideoEncodeH265OutputModeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265OutputModeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265OutputModeFlagsEXT operator~( VideoEncodeH265OutputModeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265OutputModeFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH265CtbSizeFlagsEXT = Flags<VideoEncodeH265CtbSizeFlagBitsEXT>;
+  using VideoEncodeH265OutputModeFlagsEXT = Flags<VideoEncodeH265OutputModeFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH265CtbSizeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265CtbSizeFlagBitsEXT::e16 ) | VkFlags( VideoEncodeH265CtbSizeFlagBitsEXT::e32 ) |
                  VkFlags( VideoEncodeH265CtbSizeFlagBitsEXT::e64 )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CtbSizeFlagsEXT operator|( VideoEncodeH265CtbSizeFlagBitsEXT bit0,
-                                                                                   VideoEncodeH265CtbSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CtbSizeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CtbSizeFlagsEXT operator&( VideoEncodeH265CtbSizeFlagBitsEXT bit0,
-                                                                                   VideoEncodeH265CtbSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CtbSizeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CtbSizeFlagsEXT operator^( VideoEncodeH265CtbSizeFlagBitsEXT bit0,
-                                                                                   VideoEncodeH265CtbSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265CtbSizeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265CtbSizeFlagsEXT operator~( VideoEncodeH265CtbSizeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265CtbSizeFlagsEXT( bits ) );
-  }
-
-  using VideoEncodeH265TransformBlockSizeFlagsEXT = Flags<VideoEncodeH265TransformBlockSizeFlagBitsEXT>;
+  using VideoEncodeH265CtbSizeFlagsEXT = Flags<VideoEncodeH265CtbSizeFlagBitsEXT>;
 
   template <>
   struct FlagTraits<VideoEncodeH265TransformBlockSizeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeH265TransformBlockSizeFlagBitsEXT::e4 ) | VkFlags( VideoEncodeH265TransformBlockSizeFlagBitsEXT::e8 ) |
                  VkFlags( VideoEncodeH265TransformBlockSizeFlagBitsEXT::e16 ) | VkFlags( VideoEncodeH265TransformBlockSizeFlagBitsEXT::e32 )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265TransformBlockSizeFlagsEXT
-    operator|( VideoEncodeH265TransformBlockSizeFlagBitsEXT bit0, VideoEncodeH265TransformBlockSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265TransformBlockSizeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265TransformBlockSizeFlagsEXT
-    operator&( VideoEncodeH265TransformBlockSizeFlagBitsEXT bit0, VideoEncodeH265TransformBlockSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265TransformBlockSizeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265TransformBlockSizeFlagsEXT
-    operator^( VideoEncodeH265TransformBlockSizeFlagBitsEXT bit0, VideoEncodeH265TransformBlockSizeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeH265TransformBlockSizeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeH265TransformBlockSizeFlagsEXT operator~( VideoEncodeH265TransformBlockSizeFlagBitsEXT bits )
-    VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeH265TransformBlockSizeFlagsEXT( bits ) );
-  }
+  using VideoEncodeH265TransformBlockSizeFlagsEXT = Flags<VideoEncodeH265TransformBlockSizeFlagBitsEXT>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_EXT_video_decode_h264 ===
 
-  using VideoDecodeH264PictureLayoutFlagsEXT = Flags<VideoDecodeH264PictureLayoutFlagBitsEXT>;
-
   template <>
   struct FlagTraits<VideoDecodeH264PictureLayoutFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoDecodeH264PictureLayoutFlagBitsEXT::eProgressive ) |
@@ -7750,371 +6240,298 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( VideoDecodeH264PictureLayoutFlagBitsEXT::eInterlacedSeparatePlanes )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator|( VideoDecodeH264PictureLayoutFlagBitsEXT bit0,
-                                                                                         VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator&( VideoDecodeH264PictureLayoutFlagBitsEXT bit0,
-                                                                                         VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator^( VideoDecodeH264PictureLayoutFlagBitsEXT bit0,
-                                                                                         VideoDecodeH264PictureLayoutFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoDecodeH264PictureLayoutFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoDecodeH264PictureLayoutFlagsEXT operator~( VideoDecodeH264PictureLayoutFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoDecodeH264PictureLayoutFlagsEXT( bits ) );
-  }
+  using VideoDecodeH264PictureLayoutFlagsEXT = Flags<VideoDecodeH264PictureLayoutFlagBitsEXT>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
 
+  template <>
+  struct FlagTraits<StreamDescriptorSurfaceCreateFlagBitsGGP>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using StreamDescriptorSurfaceCreateFlagsGGP = Flags<StreamDescriptorSurfaceCreateFlagBitsGGP>;
 #endif /*VK_USE_PLATFORM_GGP*/
 
   //=== VK_NV_external_memory_capabilities ===
 
-  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV>;
-
   template <>
   struct FlagTraits<ExternalMemoryHandleTypeFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32 ) | VkFlags( ExternalMemoryHandleTypeFlagBitsNV::eOpaqueWin32Kmt ) |
                  VkFlags( ExternalMemoryHandleTypeFlagBitsNV::eD3D11Image ) | VkFlags( ExternalMemoryHandleTypeFlagBitsNV::eD3D11ImageKmt )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlagsNV operator|( ExternalMemoryHandleTypeFlagBitsNV bit0,
-                                                                                    ExternalMemoryHandleTypeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlagsNV operator&( ExternalMemoryHandleTypeFlagBitsNV bit0,
-                                                                                    ExternalMemoryHandleTypeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlagsNV operator^( ExternalMemoryHandleTypeFlagBitsNV bit0,
-                                                                                    ExternalMemoryHandleTypeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryHandleTypeFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryHandleTypeFlagsNV operator~( ExternalMemoryHandleTypeFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalMemoryHandleTypeFlagsNV( bits ) );
-  }
-
-  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV>;
+  using ExternalMemoryHandleTypeFlagsNV = Flags<ExternalMemoryHandleTypeFlagBitsNV>;
 
   template <>
   struct FlagTraits<ExternalMemoryFeatureFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExternalMemoryFeatureFlagBitsNV::eDedicatedOnly ) | VkFlags( ExternalMemoryFeatureFlagBitsNV::eExportable ) |
                  VkFlags( ExternalMemoryFeatureFlagBitsNV::eImportable )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlagsNV operator|( ExternalMemoryFeatureFlagBitsNV bit0,
-                                                                                 ExternalMemoryFeatureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlagsNV operator&( ExternalMemoryFeatureFlagBitsNV bit0,
-                                                                                 ExternalMemoryFeatureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlagsNV operator^( ExternalMemoryFeatureFlagBitsNV bit0,
-                                                                                 ExternalMemoryFeatureFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExternalMemoryFeatureFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExternalMemoryFeatureFlagsNV operator~( ExternalMemoryFeatureFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExternalMemoryFeatureFlagsNV( bits ) );
-  }
+  using ExternalMemoryFeatureFlagsNV = Flags<ExternalMemoryFeatureFlagBitsNV>;
 
 #if defined( VK_USE_PLATFORM_VI_NN )
   //=== VK_NN_vi_surface ===
 
+  template <>
+  struct FlagTraits<ViSurfaceCreateFlagBitsNN>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ViSurfaceCreateFlagsNN = Flags<ViSurfaceCreateFlagBitsNN>;
 #endif /*VK_USE_PLATFORM_VI_NN*/
 
   //=== VK_EXT_conditional_rendering ===
 
-  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT>;
-
   template <>
   struct FlagTraits<ConditionalRenderingFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ConditionalRenderingFlagBitsEXT::eInverted )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ConditionalRenderingFlagsEXT operator|( ConditionalRenderingFlagBitsEXT bit0,
-                                                                                 ConditionalRenderingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ConditionalRenderingFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ConditionalRenderingFlagsEXT operator&( ConditionalRenderingFlagBitsEXT bit0,
-                                                                                 ConditionalRenderingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ConditionalRenderingFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ConditionalRenderingFlagsEXT operator^( ConditionalRenderingFlagBitsEXT bit0,
-                                                                                 ConditionalRenderingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ConditionalRenderingFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ConditionalRenderingFlagsEXT operator~( ConditionalRenderingFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ConditionalRenderingFlagsEXT( bits ) );
-  }
+  using ConditionalRenderingFlagsEXT = Flags<ConditionalRenderingFlagBitsEXT>;
 
   //=== VK_EXT_display_surface_counter ===
-
-  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT>;
 
   template <>
   struct FlagTraits<SurfaceCounterFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( SurfaceCounterFlagBitsEXT::eVblank )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceCounterFlagsEXT operator|( SurfaceCounterFlagBitsEXT bit0, SurfaceCounterFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceCounterFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceCounterFlagsEXT operator&( SurfaceCounterFlagBitsEXT bit0, SurfaceCounterFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceCounterFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceCounterFlagsEXT operator^( SurfaceCounterFlagBitsEXT bit0, SurfaceCounterFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return SurfaceCounterFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR SurfaceCounterFlagsEXT operator~( SurfaceCounterFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( SurfaceCounterFlagsEXT( bits ) );
-  }
+  using SurfaceCounterFlagsEXT = Flags<SurfaceCounterFlagBitsEXT>;
 
   //=== VK_NV_viewport_swizzle ===
 
+  template <>
+  struct FlagTraits<PipelineViewportSwizzleStateCreateFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineViewportSwizzleStateCreateFlagsNV = Flags<PipelineViewportSwizzleStateCreateFlagBitsNV>;
 
   //=== VK_EXT_discard_rectangles ===
 
+  template <>
+  struct FlagTraits<PipelineDiscardRectangleStateCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineDiscardRectangleStateCreateFlagsEXT = Flags<PipelineDiscardRectangleStateCreateFlagBitsEXT>;
 
   //=== VK_EXT_conservative_rasterization ===
 
+  template <>
+  struct FlagTraits<PipelineRasterizationConservativeStateCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineRasterizationConservativeStateCreateFlagsEXT = Flags<PipelineRasterizationConservativeStateCreateFlagBitsEXT>;
 
   //=== VK_EXT_depth_clip_enable ===
 
+  template <>
+  struct FlagTraits<PipelineRasterizationDepthClipStateCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineRasterizationDepthClipStateCreateFlagsEXT = Flags<PipelineRasterizationDepthClipStateCreateFlagBitsEXT>;
 
   //=== VK_KHR_performance_query ===
 
-  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR>;
-
   template <>
   struct FlagTraits<PerformanceCounterDescriptionFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags =
         VkFlags( PerformanceCounterDescriptionFlagBitsKHR::ePerformanceImpacting ) | VkFlags( PerformanceCounterDescriptionFlagBitsKHR::eConcurrentlyImpacted )
     };
   };
+  using PerformanceCounterDescriptionFlagsKHR = Flags<PerformanceCounterDescriptionFlagBitsKHR>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator|( PerformanceCounterDescriptionFlagBitsKHR bit0,
-                                                                                          PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<AcquireProfilingLockFlagBitsKHR>
   {
-    return PerformanceCounterDescriptionFlagsKHR( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator&( PerformanceCounterDescriptionFlagBitsKHR bit0,
-                                                                                          PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PerformanceCounterDescriptionFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator^( PerformanceCounterDescriptionFlagBitsKHR bit0,
-                                                                                          PerformanceCounterDescriptionFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return PerformanceCounterDescriptionFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR PerformanceCounterDescriptionFlagsKHR operator~( PerformanceCounterDescriptionFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( PerformanceCounterDescriptionFlagsKHR( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using AcquireProfilingLockFlagsKHR = Flags<AcquireProfilingLockFlagBitsKHR>;
 
 #if defined( VK_USE_PLATFORM_IOS_MVK )
   //=== VK_MVK_ios_surface ===
 
+  template <>
+  struct FlagTraits<IOSSurfaceCreateFlagBitsMVK>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using IOSSurfaceCreateFlagsMVK = Flags<IOSSurfaceCreateFlagBitsMVK>;
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
   //=== VK_MVK_macos_surface ===
 
+  template <>
+  struct FlagTraits<MacOSSurfaceCreateFlagBitsMVK>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using MacOSSurfaceCreateFlagsMVK = Flags<MacOSSurfaceCreateFlagBitsMVK>;
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
 
   //=== VK_EXT_debug_utils ===
 
-  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT>;
-
   template <>
   struct FlagTraits<DebugUtilsMessageSeverityFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DebugUtilsMessageSeverityFlagBitsEXT::eVerbose ) | VkFlags( DebugUtilsMessageSeverityFlagBitsEXT::eInfo ) |
                  VkFlags( DebugUtilsMessageSeverityFlagBitsEXT::eWarning ) | VkFlags( DebugUtilsMessageSeverityFlagBitsEXT::eError )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageSeverityFlagsEXT operator|( DebugUtilsMessageSeverityFlagBitsEXT bit0,
-                                                                                      DebugUtilsMessageSeverityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageSeverityFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageSeverityFlagsEXT operator&( DebugUtilsMessageSeverityFlagBitsEXT bit0,
-                                                                                      DebugUtilsMessageSeverityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageSeverityFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageSeverityFlagsEXT operator^( DebugUtilsMessageSeverityFlagBitsEXT bit0,
-                                                                                      DebugUtilsMessageSeverityFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageSeverityFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageSeverityFlagsEXT operator~( DebugUtilsMessageSeverityFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DebugUtilsMessageSeverityFlagsEXT( bits ) );
-  }
-
-  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT>;
+  using DebugUtilsMessageSeverityFlagsEXT = Flags<DebugUtilsMessageSeverityFlagBitsEXT>;
 
   template <>
   struct FlagTraits<DebugUtilsMessageTypeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DebugUtilsMessageTypeFlagBitsEXT::eGeneral ) | VkFlags( DebugUtilsMessageTypeFlagBitsEXT::eValidation ) |
                  VkFlags( DebugUtilsMessageTypeFlagBitsEXT::ePerformance ) | VkFlags( DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding )
     };
   };
+  using DebugUtilsMessageTypeFlagsEXT = Flags<DebugUtilsMessageTypeFlagBitsEXT>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageTypeFlagsEXT operator|( DebugUtilsMessageTypeFlagBitsEXT bit0,
-                                                                                  DebugUtilsMessageTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<DebugUtilsMessengerCallbackDataFlagBitsEXT>
   {
-    return DebugUtilsMessageTypeFlagsEXT( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageTypeFlagsEXT operator&( DebugUtilsMessageTypeFlagBitsEXT bit0,
-                                                                                  DebugUtilsMessageTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageTypeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageTypeFlagsEXT operator^( DebugUtilsMessageTypeFlagBitsEXT bit0,
-                                                                                  DebugUtilsMessageTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DebugUtilsMessageTypeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DebugUtilsMessageTypeFlagsEXT operator~( DebugUtilsMessageTypeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DebugUtilsMessageTypeFlagsEXT( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DebugUtilsMessengerCallbackDataFlagsEXT = Flags<DebugUtilsMessengerCallbackDataFlagBitsEXT>;
 
+  template <>
+  struct FlagTraits<DebugUtilsMessengerCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DebugUtilsMessengerCreateFlagsEXT = Flags<DebugUtilsMessengerCreateFlagBitsEXT>;
 
   //=== VK_NV_fragment_coverage_to_color ===
 
+  template <>
+  struct FlagTraits<PipelineCoverageToColorStateCreateFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineCoverageToColorStateCreateFlagsNV = Flags<PipelineCoverageToColorStateCreateFlagBitsNV>;
 
   //=== VK_KHR_acceleration_structure ===
 
-  using GeometryFlagsKHR = Flags<GeometryFlagBitsKHR>;
-
   template <>
   struct FlagTraits<GeometryFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( GeometryFlagBitsKHR::eOpaque ) | VkFlags( GeometryFlagBitsKHR::eNoDuplicateAnyHitInvocation )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryFlagsKHR operator|( GeometryFlagBitsKHR bit0, GeometryFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryFlagsKHR operator&( GeometryFlagBitsKHR bit0, GeometryFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryFlagsKHR operator^( GeometryFlagBitsKHR bit0, GeometryFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryFlagsKHR operator~( GeometryFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( GeometryFlagsKHR( bits ) );
-  }
-
-  using GeometryFlagsNV = GeometryFlagsKHR;
-
-  using GeometryInstanceFlagsKHR = Flags<GeometryInstanceFlagBitsKHR>;
+  using GeometryFlagsKHR = Flags<GeometryFlagBitsKHR>;
+  using GeometryFlagsNV  = GeometryFlagsKHR;
 
   template <>
   struct FlagTraits<GeometryInstanceFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( GeometryInstanceFlagBitsKHR::eTriangleFacingCullDisable ) | VkFlags( GeometryInstanceFlagBitsKHR::eTriangleFlipFacing ) |
@@ -8122,37 +6539,14 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( GeometryInstanceFlagBitsKHR::eForceOpacityMicromap2StateEXT ) | VkFlags( GeometryInstanceFlagBitsKHR::eDisableOpacityMicromapsEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryInstanceFlagsKHR operator|( GeometryInstanceFlagBitsKHR bit0,
-                                                                             GeometryInstanceFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryInstanceFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryInstanceFlagsKHR operator&( GeometryInstanceFlagBitsKHR bit0,
-                                                                             GeometryInstanceFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryInstanceFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryInstanceFlagsKHR operator^( GeometryInstanceFlagBitsKHR bit0,
-                                                                             GeometryInstanceFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GeometryInstanceFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GeometryInstanceFlagsKHR operator~( GeometryInstanceFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( GeometryInstanceFlagsKHR( bits ) );
-  }
-
-  using GeometryInstanceFlagsNV = GeometryInstanceFlagsKHR;
-
-  using BuildAccelerationStructureFlagsKHR = Flags<BuildAccelerationStructureFlagBitsKHR>;
+  using GeometryInstanceFlagsKHR = Flags<GeometryInstanceFlagBitsKHR>;
+  using GeometryInstanceFlagsNV  = GeometryInstanceFlagsKHR;
 
   template <>
   struct FlagTraits<BuildAccelerationStructureFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( BuildAccelerationStructureFlagBitsKHR::eAllowUpdate ) | VkFlags( BuildAccelerationStructureFlagBitsKHR::eAllowCompaction ) |
@@ -8163,218 +6557,210 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( BuildAccelerationStructureFlagBitsKHR::eAllowOpacityMicromapDataUpdateEXT )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildAccelerationStructureFlagsKHR operator|( BuildAccelerationStructureFlagBitsKHR bit0,
-                                                                                       BuildAccelerationStructureFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildAccelerationStructureFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildAccelerationStructureFlagsKHR operator&( BuildAccelerationStructureFlagBitsKHR bit0,
-                                                                                       BuildAccelerationStructureFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildAccelerationStructureFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildAccelerationStructureFlagsKHR operator^( BuildAccelerationStructureFlagBitsKHR bit0,
-                                                                                       BuildAccelerationStructureFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildAccelerationStructureFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildAccelerationStructureFlagsKHR operator~( BuildAccelerationStructureFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( BuildAccelerationStructureFlagsKHR( bits ) );
-  }
-
-  using BuildAccelerationStructureFlagsNV = BuildAccelerationStructureFlagsKHR;
-
-  using AccelerationStructureCreateFlagsKHR = Flags<AccelerationStructureCreateFlagBitsKHR>;
+  using BuildAccelerationStructureFlagsKHR = Flags<BuildAccelerationStructureFlagBitsKHR>;
+  using BuildAccelerationStructureFlagsNV  = BuildAccelerationStructureFlagsKHR;
 
   template <>
   struct FlagTraits<AccelerationStructureCreateFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay ) | VkFlags( AccelerationStructureCreateFlagBitsKHR::eMotionNV )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccelerationStructureCreateFlagsKHR operator|( AccelerationStructureCreateFlagBitsKHR bit0,
-                                                                                        AccelerationStructureCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccelerationStructureCreateFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccelerationStructureCreateFlagsKHR operator&( AccelerationStructureCreateFlagBitsKHR bit0,
-                                                                                        AccelerationStructureCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccelerationStructureCreateFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccelerationStructureCreateFlagsKHR operator^( AccelerationStructureCreateFlagBitsKHR bit0,
-                                                                                        AccelerationStructureCreateFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return AccelerationStructureCreateFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR AccelerationStructureCreateFlagsKHR operator~( AccelerationStructureCreateFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( AccelerationStructureCreateFlagsKHR( bits ) );
-  }
+  using AccelerationStructureCreateFlagsKHR = Flags<AccelerationStructureCreateFlagBitsKHR>;
 
   //=== VK_NV_framebuffer_mixed_samples ===
 
+  template <>
+  struct FlagTraits<PipelineCoverageModulationStateCreateFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineCoverageModulationStateCreateFlagsNV = Flags<PipelineCoverageModulationStateCreateFlagBitsNV>;
 
   //=== VK_EXT_validation_cache ===
 
+  template <>
+  struct FlagTraits<ValidationCacheCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ValidationCacheCreateFlagsEXT = Flags<ValidationCacheCreateFlagBitsEXT>;
 
   //=== VK_AMD_pipeline_compiler_control ===
 
+  template <>
+  struct FlagTraits<PipelineCompilerControlFlagBitsAMD>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineCompilerControlFlagsAMD = Flags<PipelineCompilerControlFlagBitsAMD>;
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_imagepipe_surface ===
 
+  template <>
+  struct FlagTraits<ImagePipeSurfaceCreateFlagBitsFUCHSIA>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ImagePipeSurfaceCreateFlagsFUCHSIA = Flags<ImagePipeSurfaceCreateFlagBitsFUCHSIA>;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_surface ===
 
+  template <>
+  struct FlagTraits<MetalSurfaceCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using MetalSurfaceCreateFlagsEXT = Flags<MetalSurfaceCreateFlagBitsEXT>;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_AMD_shader_core_properties2 ===
 
+  template <>
+  struct FlagTraits<ShaderCorePropertiesFlagBitsAMD>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ShaderCorePropertiesFlagsAMD = Flags<ShaderCorePropertiesFlagBitsAMD>;
 
   //=== VK_NV_coverage_reduction_mode ===
 
+  template <>
+  struct FlagTraits<PipelineCoverageReductionStateCreateFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using PipelineCoverageReductionStateCreateFlagsNV = Flags<PipelineCoverageReductionStateCreateFlagBitsNV>;
 
   //=== VK_EXT_headless_surface ===
 
+  template <>
+  struct FlagTraits<HeadlessSurfaceCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using HeadlessSurfaceCreateFlagsEXT = Flags<HeadlessSurfaceCreateFlagBitsEXT>;
 
   //=== VK_NV_device_generated_commands ===
 
-  using IndirectStateFlagsNV = Flags<IndirectStateFlagBitsNV>;
-
   template <>
   struct FlagTraits<IndirectStateFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( IndirectStateFlagBitsNV::eFlagFrontface )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectStateFlagsNV operator|( IndirectStateFlagBitsNV bit0, IndirectStateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectStateFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectStateFlagsNV operator&( IndirectStateFlagBitsNV bit0, IndirectStateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectStateFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectStateFlagsNV operator^( IndirectStateFlagBitsNV bit0, IndirectStateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectStateFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectStateFlagsNV operator~( IndirectStateFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( IndirectStateFlagsNV( bits ) );
-  }
-
-  using IndirectCommandsLayoutUsageFlagsNV = Flags<IndirectCommandsLayoutUsageFlagBitsNV>;
+  using IndirectStateFlagsNV = Flags<IndirectStateFlagBitsNV>;
 
   template <>
   struct FlagTraits<IndirectCommandsLayoutUsageFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( IndirectCommandsLayoutUsageFlagBitsNV::eExplicitPreprocess ) | VkFlags( IndirectCommandsLayoutUsageFlagBitsNV::eIndexedSequences ) |
                  VkFlags( IndirectCommandsLayoutUsageFlagBitsNV::eUnorderedSequences )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutUsageFlagsNV operator|( IndirectCommandsLayoutUsageFlagBitsNV bit0,
-                                                                                       IndirectCommandsLayoutUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectCommandsLayoutUsageFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutUsageFlagsNV operator&( IndirectCommandsLayoutUsageFlagBitsNV bit0,
-                                                                                       IndirectCommandsLayoutUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectCommandsLayoutUsageFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutUsageFlagsNV operator^( IndirectCommandsLayoutUsageFlagBitsNV bit0,
-                                                                                       IndirectCommandsLayoutUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return IndirectCommandsLayoutUsageFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutUsageFlagsNV operator~( IndirectCommandsLayoutUsageFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( IndirectCommandsLayoutUsageFlagsNV( bits ) );
-  }
+  using IndirectCommandsLayoutUsageFlagsNV = Flags<IndirectCommandsLayoutUsageFlagBitsNV>;
 
   //=== VK_EXT_device_memory_report ===
 
+  template <>
+  struct FlagTraits<DeviceMemoryReportFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DeviceMemoryReportFlagsEXT = Flags<DeviceMemoryReportFlagBitsEXT>;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
 
-  using VideoEncodeFlagsKHR = Flags<VideoEncodeFlagBitsKHR>;
+  template <>
+  struct FlagTraits<VideoEncodeFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using VideoEncodeCapabilityFlagsKHR = Flags<VideoEncodeCapabilityFlagBitsKHR>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using VideoEncodeFlagsKHR = Flags<VideoEncodeFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoEncodeCapabilityFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeCapabilityFlagBitsKHR::ePrecedingExternallyEncodedBytes )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeCapabilityFlagsKHR operator|( VideoEncodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoEncodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeCapabilityFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeCapabilityFlagsKHR operator&( VideoEncodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoEncodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeCapabilityFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeCapabilityFlagsKHR operator^( VideoEncodeCapabilityFlagBitsKHR bit0,
-                                                                                  VideoEncodeCapabilityFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeCapabilityFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeCapabilityFlagsKHR operator~( VideoEncodeCapabilityFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeCapabilityFlagsKHR( bits ) );
-  }
-
-  using VideoEncodeUsageFlagsKHR = Flags<VideoEncodeUsageFlagBitsKHR>;
+  using VideoEncodeCapabilityFlagsKHR = Flags<VideoEncodeCapabilityFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoEncodeUsageFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeUsageFlagBitsKHR::eDefault ) | VkFlags( VideoEncodeUsageFlagBitsKHR::eTranscoding ) |
@@ -8382,110 +6768,54 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( VideoEncodeUsageFlagBitsKHR::eConferencing )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeUsageFlagsKHR operator|( VideoEncodeUsageFlagBitsKHR bit0,
-                                                                             VideoEncodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeUsageFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeUsageFlagsKHR operator&( VideoEncodeUsageFlagBitsKHR bit0,
-                                                                             VideoEncodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeUsageFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeUsageFlagsKHR operator^( VideoEncodeUsageFlagBitsKHR bit0,
-                                                                             VideoEncodeUsageFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeUsageFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeUsageFlagsKHR operator~( VideoEncodeUsageFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeUsageFlagsKHR( bits ) );
-  }
-
-  using VideoEncodeContentFlagsKHR = Flags<VideoEncodeContentFlagBitsKHR>;
+  using VideoEncodeUsageFlagsKHR = Flags<VideoEncodeUsageFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoEncodeContentFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeContentFlagBitsKHR::eDefault ) | VkFlags( VideoEncodeContentFlagBitsKHR::eCamera ) |
                  VkFlags( VideoEncodeContentFlagBitsKHR::eDesktop ) | VkFlags( VideoEncodeContentFlagBitsKHR::eRendered )
     };
   };
+  using VideoEncodeContentFlagsKHR = Flags<VideoEncodeContentFlagBitsKHR>;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeContentFlagsKHR operator|( VideoEncodeContentFlagBitsKHR bit0,
-                                                                               VideoEncodeContentFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
+  template <>
+  struct FlagTraits<VideoEncodeRateControlFlagBitsKHR>
   {
-    return VideoEncodeContentFlagsKHR( bit0 ) | bit1;
-  }
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeContentFlagsKHR operator&( VideoEncodeContentFlagBitsKHR bit0,
-                                                                               VideoEncodeContentFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeContentFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeContentFlagsKHR operator^( VideoEncodeContentFlagBitsKHR bit0,
-                                                                               VideoEncodeContentFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeContentFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeContentFlagsKHR operator~( VideoEncodeContentFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeContentFlagsKHR( bits ) );
-  }
-
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using VideoEncodeRateControlFlagsKHR = Flags<VideoEncodeRateControlFlagBitsKHR>;
-
-  using VideoEncodeRateControlModeFlagsKHR = Flags<VideoEncodeRateControlModeFlagBitsKHR>;
 
   template <>
   struct FlagTraits<VideoEncodeRateControlModeFlagBitsKHR>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( VideoEncodeRateControlModeFlagBitsKHR::eNone ) | VkFlags( VideoEncodeRateControlModeFlagBitsKHR::eCbr ) |
                  VkFlags( VideoEncodeRateControlModeFlagBitsKHR::eVbr )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeRateControlModeFlagsKHR operator|( VideoEncodeRateControlModeFlagBitsKHR bit0,
-                                                                                       VideoEncodeRateControlModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeRateControlModeFlagsKHR( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeRateControlModeFlagsKHR operator&( VideoEncodeRateControlModeFlagBitsKHR bit0,
-                                                                                       VideoEncodeRateControlModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeRateControlModeFlagsKHR( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeRateControlModeFlagsKHR operator^( VideoEncodeRateControlModeFlagBitsKHR bit0,
-                                                                                       VideoEncodeRateControlModeFlagBitsKHR bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return VideoEncodeRateControlModeFlagsKHR( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR VideoEncodeRateControlModeFlagsKHR operator~( VideoEncodeRateControlModeFlagBitsKHR bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( VideoEncodeRateControlModeFlagsKHR( bits ) );
-  }
+  using VideoEncodeRateControlModeFlagsKHR = Flags<VideoEncodeRateControlModeFlagBitsKHR>;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_device_diagnostics_config ===
 
-  using DeviceDiagnosticsConfigFlagsNV = Flags<DeviceDiagnosticsConfigFlagBitsNV>;
-
   template <>
   struct FlagTraits<DeviceDiagnosticsConfigFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DeviceDiagnosticsConfigFlagBitsNV::eEnableShaderDebugInfo ) | VkFlags( DeviceDiagnosticsConfigFlagBitsNV::eEnableResourceTracking ) |
@@ -8493,38 +6823,16 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( DeviceDiagnosticsConfigFlagBitsNV::eEnableShaderErrorReporting )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceDiagnosticsConfigFlagsNV operator|( DeviceDiagnosticsConfigFlagBitsNV bit0,
-                                                                                   DeviceDiagnosticsConfigFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceDiagnosticsConfigFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceDiagnosticsConfigFlagsNV operator&( DeviceDiagnosticsConfigFlagBitsNV bit0,
-                                                                                   DeviceDiagnosticsConfigFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceDiagnosticsConfigFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceDiagnosticsConfigFlagsNV operator^( DeviceDiagnosticsConfigFlagBitsNV bit0,
-                                                                                   DeviceDiagnosticsConfigFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceDiagnosticsConfigFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceDiagnosticsConfigFlagsNV operator~( DeviceDiagnosticsConfigFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DeviceDiagnosticsConfigFlagsNV( bits ) );
-  }
+  using DeviceDiagnosticsConfigFlagsNV = Flags<DeviceDiagnosticsConfigFlagBitsNV>;
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
 
-  using ExportMetalObjectTypeFlagsEXT = Flags<ExportMetalObjectTypeFlagBitsEXT>;
-
   template <>
   struct FlagTraits<ExportMetalObjectTypeFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ExportMetalObjectTypeFlagBitsEXT::eMetalDevice ) | VkFlags( ExportMetalObjectTypeFlagBitsEXT::eMetalCommandQueue ) |
@@ -8532,38 +6840,16 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ExportMetalObjectTypeFlagBitsEXT::eMetalIosurface ) | VkFlags( ExportMetalObjectTypeFlagBitsEXT::eMetalSharedEvent )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExportMetalObjectTypeFlagsEXT operator|( ExportMetalObjectTypeFlagBitsEXT bit0,
-                                                                                  ExportMetalObjectTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExportMetalObjectTypeFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExportMetalObjectTypeFlagsEXT operator&( ExportMetalObjectTypeFlagBitsEXT bit0,
-                                                                                  ExportMetalObjectTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExportMetalObjectTypeFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExportMetalObjectTypeFlagsEXT operator^( ExportMetalObjectTypeFlagBitsEXT bit0,
-                                                                                  ExportMetalObjectTypeFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ExportMetalObjectTypeFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ExportMetalObjectTypeFlagsEXT operator~( ExportMetalObjectTypeFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ExportMetalObjectTypeFlagsEXT( bits ) );
-  }
+  using ExportMetalObjectTypeFlagsEXT = Flags<ExportMetalObjectTypeFlagBitsEXT>;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
   //=== VK_EXT_graphics_pipeline_library ===
 
-  using GraphicsPipelineLibraryFlagsEXT = Flags<GraphicsPipelineLibraryFlagBitsEXT>;
-
   template <>
   struct FlagTraits<GraphicsPipelineLibraryFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( GraphicsPipelineLibraryFlagBitsEXT::eVertexInputInterface ) |
@@ -8571,78 +6857,54 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( GraphicsPipelineLibraryFlagBitsEXT::eFragmentOutputInterface )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GraphicsPipelineLibraryFlagsEXT operator|( GraphicsPipelineLibraryFlagBitsEXT bit0,
-                                                                                    GraphicsPipelineLibraryFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GraphicsPipelineLibraryFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GraphicsPipelineLibraryFlagsEXT operator&( GraphicsPipelineLibraryFlagBitsEXT bit0,
-                                                                                    GraphicsPipelineLibraryFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GraphicsPipelineLibraryFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GraphicsPipelineLibraryFlagsEXT operator^( GraphicsPipelineLibraryFlagBitsEXT bit0,
-                                                                                    GraphicsPipelineLibraryFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return GraphicsPipelineLibraryFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR GraphicsPipelineLibraryFlagsEXT operator~( GraphicsPipelineLibraryFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( GraphicsPipelineLibraryFlagsEXT( bits ) );
-  }
+  using GraphicsPipelineLibraryFlagsEXT = Flags<GraphicsPipelineLibraryFlagBitsEXT>;
 
   //=== VK_NV_ray_tracing_motion_blur ===
 
+  template <>
+  struct FlagTraits<AccelerationStructureMotionInfoFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using AccelerationStructureMotionInfoFlagsNV = Flags<AccelerationStructureMotionInfoFlagBitsNV>;
 
+  template <>
+  struct FlagTraits<AccelerationStructureMotionInstanceFlagBitsNV>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using AccelerationStructureMotionInstanceFlagsNV = Flags<AccelerationStructureMotionInstanceFlagBitsNV>;
 
   //=== VK_EXT_image_compression_control ===
 
-  using ImageCompressionFlagsEXT = Flags<ImageCompressionFlagBitsEXT>;
-
   template <>
   struct FlagTraits<ImageCompressionFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageCompressionFlagBitsEXT::eDefault ) | VkFlags( ImageCompressionFlagBitsEXT::eFixedRateDefault ) |
                  VkFlags( ImageCompressionFlagBitsEXT::eFixedRateExplicit ) | VkFlags( ImageCompressionFlagBitsEXT::eDisabled )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFlagsEXT operator|( ImageCompressionFlagBitsEXT bit0,
-                                                                             ImageCompressionFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFlagsEXT operator&( ImageCompressionFlagBitsEXT bit0,
-                                                                             ImageCompressionFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFlagsEXT operator^( ImageCompressionFlagBitsEXT bit0,
-                                                                             ImageCompressionFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFlagsEXT operator~( ImageCompressionFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageCompressionFlagsEXT( bits ) );
-  }
-
-  using ImageCompressionFixedRateFlagsEXT = Flags<ImageCompressionFixedRateFlagBitsEXT>;
+  using ImageCompressionFlagsEXT = Flags<ImageCompressionFlagBitsEXT>;
 
   template <>
   struct FlagTraits<ImageCompressionFixedRateFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageCompressionFixedRateFlagBitsEXT::eNone ) | VkFlags( ImageCompressionFixedRateFlagBitsEXT::e1Bpc ) |
@@ -8660,82 +6922,58 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageCompressionFixedRateFlagBitsEXT::e24Bpc )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFixedRateFlagsEXT operator|( ImageCompressionFixedRateFlagBitsEXT bit0,
-                                                                                      ImageCompressionFixedRateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFixedRateFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFixedRateFlagsEXT operator&( ImageCompressionFixedRateFlagBitsEXT bit0,
-                                                                                      ImageCompressionFixedRateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFixedRateFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFixedRateFlagsEXT operator^( ImageCompressionFixedRateFlagBitsEXT bit0,
-                                                                                      ImageCompressionFixedRateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageCompressionFixedRateFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageCompressionFixedRateFlagsEXT operator~( ImageCompressionFixedRateFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageCompressionFixedRateFlagsEXT( bits ) );
-  }
+  using ImageCompressionFixedRateFlagsEXT = Flags<ImageCompressionFixedRateFlagBitsEXT>;
 
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
   //=== VK_EXT_directfb_surface ===
 
+  template <>
+  struct FlagTraits<DirectFBSurfaceCreateFlagBitsEXT>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using DirectFBSurfaceCreateFlagsEXT = Flags<DirectFBSurfaceCreateFlagBitsEXT>;
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 
   //=== VK_EXT_device_address_binding_report ===
 
-  using DeviceAddressBindingFlagsEXT = Flags<DeviceAddressBindingFlagBitsEXT>;
-
   template <>
   struct FlagTraits<DeviceAddressBindingFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( DeviceAddressBindingFlagBitsEXT::eInternalObject )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceAddressBindingFlagsEXT operator|( DeviceAddressBindingFlagBitsEXT bit0,
-                                                                                 DeviceAddressBindingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceAddressBindingFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceAddressBindingFlagsEXT operator&( DeviceAddressBindingFlagBitsEXT bit0,
-                                                                                 DeviceAddressBindingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceAddressBindingFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceAddressBindingFlagsEXT operator^( DeviceAddressBindingFlagBitsEXT bit0,
-                                                                                 DeviceAddressBindingFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return DeviceAddressBindingFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR DeviceAddressBindingFlagsEXT operator~( DeviceAddressBindingFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( DeviceAddressBindingFlagsEXT( bits ) );
-  }
+  using DeviceAddressBindingFlagsEXT = Flags<DeviceAddressBindingFlagBitsEXT>;
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
 
-  using ImageFormatConstraintsFlagsFUCHSIA = Flags<ImageFormatConstraintsFlagBitsFUCHSIA>;
+  template <>
+  struct FlagTraits<ImageFormatConstraintsFlagBitsFUCHSIA>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
 
-  using ImageConstraintsInfoFlagsFUCHSIA = Flags<ImageConstraintsInfoFlagBitsFUCHSIA>;
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
+  using ImageFormatConstraintsFlagsFUCHSIA = Flags<ImageFormatConstraintsFlagBitsFUCHSIA>;
 
   template <>
   struct FlagTraits<ImageConstraintsInfoFlagBitsFUCHSIA>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( ImageConstraintsInfoFlagBitsFUCHSIA::eCpuReadRarely ) | VkFlags( ImageConstraintsInfoFlagBitsFUCHSIA::eCpuReadOften ) |
@@ -8743,109 +6981,59 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( ImageConstraintsInfoFlagBitsFUCHSIA::eProtectedOptional )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageConstraintsInfoFlagsFUCHSIA operator|( ImageConstraintsInfoFlagBitsFUCHSIA bit0,
-                                                                                     ImageConstraintsInfoFlagBitsFUCHSIA bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageConstraintsInfoFlagsFUCHSIA( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageConstraintsInfoFlagsFUCHSIA operator&( ImageConstraintsInfoFlagBitsFUCHSIA bit0,
-                                                                                     ImageConstraintsInfoFlagBitsFUCHSIA bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageConstraintsInfoFlagsFUCHSIA( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageConstraintsInfoFlagsFUCHSIA operator^( ImageConstraintsInfoFlagBitsFUCHSIA bit0,
-                                                                                     ImageConstraintsInfoFlagBitsFUCHSIA bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return ImageConstraintsInfoFlagsFUCHSIA( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR ImageConstraintsInfoFlagsFUCHSIA operator~( ImageConstraintsInfoFlagBitsFUCHSIA bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( ImageConstraintsInfoFlagsFUCHSIA( bits ) );
-  }
+  using ImageConstraintsInfoFlagsFUCHSIA = Flags<ImageConstraintsInfoFlagBitsFUCHSIA>;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_screen_surface ===
 
+  template <>
+  struct FlagTraits<ScreenSurfaceCreateFlagBitsQNX>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
+    enum : VkFlags
+    {
+      allFlags = 0
+    };
+  };
   using ScreenSurfaceCreateFlagsQNX = Flags<ScreenSurfaceCreateFlagBitsQNX>;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //=== VK_EXT_opacity_micromap ===
 
-  using BuildMicromapFlagsEXT = Flags<BuildMicromapFlagBitsEXT>;
-
   template <>
   struct FlagTraits<BuildMicromapFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( BuildMicromapFlagBitsEXT::ePreferFastTrace ) | VkFlags( BuildMicromapFlagBitsEXT::ePreferFastBuild ) |
                  VkFlags( BuildMicromapFlagBitsEXT::eAllowCompaction )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildMicromapFlagsEXT operator|( BuildMicromapFlagBitsEXT bit0, BuildMicromapFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildMicromapFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildMicromapFlagsEXT operator&( BuildMicromapFlagBitsEXT bit0, BuildMicromapFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildMicromapFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildMicromapFlagsEXT operator^( BuildMicromapFlagBitsEXT bit0, BuildMicromapFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return BuildMicromapFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR BuildMicromapFlagsEXT operator~( BuildMicromapFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( BuildMicromapFlagsEXT( bits ) );
-  }
-
-  using MicromapCreateFlagsEXT = Flags<MicromapCreateFlagBitsEXT>;
+  using BuildMicromapFlagsEXT = Flags<BuildMicromapFlagBitsEXT>;
 
   template <>
   struct FlagTraits<MicromapCreateFlagBitsEXT>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( MicromapCreateFlagBitsEXT::eDeviceAddressCaptureReplay )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MicromapCreateFlagsEXT operator|( MicromapCreateFlagBitsEXT bit0, MicromapCreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MicromapCreateFlagsEXT( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MicromapCreateFlagsEXT operator&( MicromapCreateFlagBitsEXT bit0, MicromapCreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MicromapCreateFlagsEXT( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MicromapCreateFlagsEXT operator^( MicromapCreateFlagBitsEXT bit0, MicromapCreateFlagBitsEXT bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return MicromapCreateFlagsEXT( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR MicromapCreateFlagsEXT operator~( MicromapCreateFlagBitsEXT bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( MicromapCreateFlagsEXT( bits ) );
-  }
+  using MicromapCreateFlagsEXT = Flags<MicromapCreateFlagBitsEXT>;
 
   //=== VK_NV_optical_flow ===
-
-  using OpticalFlowUsageFlagsNV = Flags<OpticalFlowUsageFlagBitsNV>;
 
   template <>
   struct FlagTraits<OpticalFlowUsageFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( OpticalFlowUsageFlagBitsNV::eUnknown ) | VkFlags( OpticalFlowUsageFlagBitsNV::eInput ) |
@@ -8853,35 +7041,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( OpticalFlowUsageFlagBitsNV::eGlobalFlow )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowUsageFlagsNV operator|( OpticalFlowUsageFlagBitsNV bit0,
-                                                                            OpticalFlowUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowUsageFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowUsageFlagsNV operator&( OpticalFlowUsageFlagBitsNV bit0,
-                                                                            OpticalFlowUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowUsageFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowUsageFlagsNV operator^( OpticalFlowUsageFlagBitsNV bit0,
-                                                                            OpticalFlowUsageFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowUsageFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowUsageFlagsNV operator~( OpticalFlowUsageFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( OpticalFlowUsageFlagsNV( bits ) );
-  }
-
-  using OpticalFlowGridSizeFlagsNV = Flags<OpticalFlowGridSizeFlagBitsNV>;
+  using OpticalFlowUsageFlagsNV = Flags<OpticalFlowUsageFlagBitsNV>;
 
   template <>
   struct FlagTraits<OpticalFlowGridSizeFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( OpticalFlowGridSizeFlagBitsNV::eUnknown ) | VkFlags( OpticalFlowGridSizeFlagBitsNV::e1X1 ) |
@@ -8889,35 +7055,13 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( OpticalFlowGridSizeFlagBitsNV::e8X8 )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowGridSizeFlagsNV operator|( OpticalFlowGridSizeFlagBitsNV bit0,
-                                                                               OpticalFlowGridSizeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowGridSizeFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowGridSizeFlagsNV operator&( OpticalFlowGridSizeFlagBitsNV bit0,
-                                                                               OpticalFlowGridSizeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowGridSizeFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowGridSizeFlagsNV operator^( OpticalFlowGridSizeFlagBitsNV bit0,
-                                                                               OpticalFlowGridSizeFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowGridSizeFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowGridSizeFlagsNV operator~( OpticalFlowGridSizeFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( OpticalFlowGridSizeFlagsNV( bits ) );
-  }
-
-  using OpticalFlowSessionCreateFlagsNV = Flags<OpticalFlowSessionCreateFlagBitsNV>;
+  using OpticalFlowGridSizeFlagsNV = Flags<OpticalFlowGridSizeFlagBitsNV>;
 
   template <>
   struct FlagTraits<OpticalFlowSessionCreateFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( OpticalFlowSessionCreateFlagBitsNV::eEnableHint ) | VkFlags( OpticalFlowSessionCreateFlagBitsNV::eEnableCost ) |
@@ -8925,62 +7069,18 @@ namespace VULKAN_HPP_NAMESPACE
                  VkFlags( OpticalFlowSessionCreateFlagBitsNV::eBothDirections )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowSessionCreateFlagsNV operator|( OpticalFlowSessionCreateFlagBitsNV bit0,
-                                                                                    OpticalFlowSessionCreateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowSessionCreateFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowSessionCreateFlagsNV operator&( OpticalFlowSessionCreateFlagBitsNV bit0,
-                                                                                    OpticalFlowSessionCreateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowSessionCreateFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowSessionCreateFlagsNV operator^( OpticalFlowSessionCreateFlagBitsNV bit0,
-                                                                                    OpticalFlowSessionCreateFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowSessionCreateFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowSessionCreateFlagsNV operator~( OpticalFlowSessionCreateFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( OpticalFlowSessionCreateFlagsNV( bits ) );
-  }
-
-  using OpticalFlowExecuteFlagsNV = Flags<OpticalFlowExecuteFlagBitsNV>;
+  using OpticalFlowSessionCreateFlagsNV = Flags<OpticalFlowSessionCreateFlagBitsNV>;
 
   template <>
   struct FlagTraits<OpticalFlowExecuteFlagBitsNV>
   {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
+
     enum : VkFlags
     {
       allFlags = VkFlags( OpticalFlowExecuteFlagBitsNV::eDisableTemporalHints )
     };
   };
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowExecuteFlagsNV operator|( OpticalFlowExecuteFlagBitsNV bit0,
-                                                                              OpticalFlowExecuteFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowExecuteFlagsNV( bit0 ) | bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowExecuteFlagsNV operator&( OpticalFlowExecuteFlagBitsNV bit0,
-                                                                              OpticalFlowExecuteFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowExecuteFlagsNV( bit0 ) & bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowExecuteFlagsNV operator^( OpticalFlowExecuteFlagBitsNV bit0,
-                                                                              OpticalFlowExecuteFlagBitsNV bit1 ) VULKAN_HPP_NOEXCEPT
-  {
-    return OpticalFlowExecuteFlagsNV( bit0 ) ^ bit1;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR OpticalFlowExecuteFlagsNV operator~( OpticalFlowExecuteFlagBitsNV bits ) VULKAN_HPP_NOEXCEPT
-  {
-    return ~( OpticalFlowExecuteFlagsNV( bits ) );
-  }
+  using OpticalFlowExecuteFlagsNV = Flags<OpticalFlowExecuteFlagBitsNV>;
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

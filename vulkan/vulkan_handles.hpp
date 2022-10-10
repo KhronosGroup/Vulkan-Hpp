@@ -1514,6 +1514,12 @@ namespace VULKAN_HPP_NAMESPACE
   //=== HANDLEs ===
   //===============
 
+  template <typename Type>
+  struct isVulkanHandleType
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
+
   class SurfaceKHR
   {
   public:

@@ -1510,6 +1510,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct MutableDescriptorTypeCreateInfoEXT;
   using MutableDescriptorTypeCreateInfoVALVE = MutableDescriptorTypeCreateInfoEXT;
 
+  //=== VK_ARM_shader_core_builtins ===
+  struct PhysicalDeviceShaderCoreBuiltinsFeaturesARM;
+  struct PhysicalDeviceShaderCoreBuiltinsPropertiesARM;
+
   //===============
   //=== HANDLEs ===
   //===============

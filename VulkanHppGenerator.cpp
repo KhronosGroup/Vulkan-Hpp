@@ -114,13 +114,12 @@ namespace VULKAN_HPP_NAMESPACE
   {};
 ${enums}
 ${indexTypeTraits}
-${bitmasks}}   // namespace VULKAN_HPP_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
   std::string str = replaceWithMap( vulkanEnumsHppTemplate,
-                                    { { "bitmasks", generateBitmasks() },
-                                      { "enums", generateEnums() },
+                                    { { "enums", generateEnums() },
                                       { "indexTypeTraits", generateIndexTypeTraits() },
                                       { "licenseHeader", m_vulkanLicenseHeader } } );
 
@@ -574,7 +573,8 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
 
         // some flagsBits are specified but never listed as required for any flags!
         // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
-        if ( m_enums.find( flagBits ) == m_enums.end() )
+        auto enumIt = m_enums.find( flagBits );
+        if ( enumIt == m_enums.end() )
         {
           m_enums.insert( std::make_pair( flagBits, EnumData( 0, true ) ) );
 
@@ -584,6 +584,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
         else
         {
           assert( m_types.find( flagBits ) != m_types.end() );
+          enumIt->second.isBitmask = true;
         }
 
         newTypes.push_back( flagBits );
@@ -2098,7 +2099,7 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   std::string allFlags;
   if ( bitmaskBitsIt->second.values.empty() )
   {
-    allFlags = "0";
+    allFlags = " {};";
   }
   else
   {
@@ -2116,79 +2117,31 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
         tie( enter, leave ) = generateProtection( valueProtect );
       }
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true, m_tags );
-      allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) +
-                  bitmaskIt->second.type + "( " + enumName + "::" + valueName + " )";
+      allFlags +=
+        ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) + enumName + "::" + valueName;
       encounteredFlag = true;
       previousEnter   = enter;
       previousLeave   = leave;
     }
     if ( !previousLeave.empty() )
     {
-      assert( previousLeave.ends_with( "\n" ) );
-      previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
       allFlags += "\n" + previousLeave;
     }
+    allFlags += ";";
   }
 
   static const std::string bitmaskTemplate = R"(
+  using ${bitmaskName} = Flags<${enumName}>;
+${alias}
+
   template <> struct FlagTraits<${enumName}>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool isBitmask = true;
-
-    enum : ${bitmaskType}
-    {
-      allFlags = ${allFlags}
-    };
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ${bitmaskName} allFlags = ${allFlags}
   };
-  using ${bitmaskName} = Flags<${enumName}>;
-${alias})";
+)";
 
-  return replaceWithMap(
-    bitmaskTemplate,
-    { { "alias", alias }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "bitmaskType", bitmaskIt->second.type }, { "enumName", enumName } } );
-}
-
-std::string VulkanHppGenerator::generateBitmasks() const
-{
-  const std::string bitmasksTemplate = R"(
-  //================
-  //=== BITMASKs ===
-  //================
-
-${bitmasks})";
-
-  std::string           bitmasks;
-  std::set<std::string> listedBitmasks;
-  for ( auto const & feature : m_features )
-  {
-    bitmasks += generateBitmasks( feature.second.requireData, listedBitmasks, feature.first );
-  }
-  for ( auto const & extIt : m_extensionsByNumber )
-  {
-    bitmasks += generateBitmasks( extIt.second->second.requireData, listedBitmasks, extIt.second->first );
-  }
-
-  return replaceWithMap( bitmasksTemplate, { { "bitmasks", bitmasks } } );
-}
-
-std::string
-  VulkanHppGenerator::generateBitmasks( std::vector<RequireData> const & requireData, std::set<std::string> & listedBitmasks, std::string const & title ) const
-{
-  std::string surroundingProtect = getProtectFromTitle( title );
-  std::string str;
-  for ( auto const & require : requireData )
-  {
-    for ( auto const & type : require.types )
-    {
-      auto bitmaskIt = m_bitmasks.find( type );
-      if ( ( bitmaskIt != m_bitmasks.end() ) && ( listedBitmasks.find( type ) == listedBitmasks.end() ) )
-      {
-        listedBitmasks.insert( type );
-        str += generateBitmask( bitmaskIt, surroundingProtect );
-      }
-    }
-  }
-  return addTitleAndProtection( title, str );
+  return replaceWithMap( bitmaskTemplate, { { "alias", alias }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "enumName", enumName } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasksToString() const
@@ -4911,13 +4864,14 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
 
 std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const
 {
-  std::string bitmask;
+  std::string baseType, bitmask;
   if ( enumData.second.isBitmask )
   {
     auto bitmaskIt =
       std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&enumData]( auto const & bitmask ) { return bitmask.second.requirements == enumData.first; } );
     assert( bitmaskIt != m_bitmasks.end() );
-    bitmask = " : " + bitmaskIt->first;
+    baseType = " : " + bitmaskIt->first;
+    bitmask  = generateBitmask( bitmaskIt, surroundingProtect );
   }
 
   std::string                        enumValues, previousEnter, previousLeave;
@@ -5009,12 +4963,16 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     enumUsing += "  using " + stripPrefix( enumData.second.alias, "Vk" ) + " = " + stripPrefix( enumData.first, "Vk" ) + ";\n";
   }
 
-  const std::string enumTemplate = R"(  enum class ${enumName}${bitmask}
+  const std::string enumTemplate = R"(  enum class ${enumName}${baseType}
   {${enumValues}};
-${enumUsing})";
+${enumUsing}${bitmask})";
 
-  return replaceWithMap(
-    enumTemplate, { { "bitmask", bitmask }, { "enumName", stripPrefix( enumData.first, "Vk" ) }, { "enumUsing", enumUsing }, { "enumValues", enumValues } } );
+  return replaceWithMap( enumTemplate,
+                         { { "baseType", baseType },
+                           { "bitmask", bitmask },
+                           { "enumName", stripPrefix( enumData.first, "Vk" ) },
+                           { "enumUsing", enumUsing },
+                           { "enumValues", enumValues } } );
 }
 
 std::string VulkanHppGenerator::generateEnums() const
@@ -5932,6 +5890,10 @@ std::string VulkanHppGenerator::generateHandles() const
 std::string VulkanHppGenerator::generateIndexTypeTraits() const
 {
   const std::string indexTypeTraitsTemplate = R"(
+  //=========================
+  //=== Index Type Traits ===
+  //=========================
+
   template<typename T>
   struct IndexTypeValue
   {};

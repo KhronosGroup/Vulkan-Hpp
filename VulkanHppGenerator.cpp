@@ -3245,7 +3245,19 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
       }
     }
   }
-  else if ( !isStructureChainAnchor( commandData.params[returnParam].type.type ) )
+  else if ( isStructureChainAnchor( commandData.params[returnParam].type.type ) )
+  {
+    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+    if ( vectorParams.empty() )
+    {
+      return generateCommandSetStandardEnhancedChained(
+        definition,
+        generateCommandStandard( name, commandData, initialSkipCount, definition ),
+        generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false, false, false, false ),
+        generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, { returnParam }, false, false, true, false ) );
+    }
+  }
+  else
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
     if ( vectorParams.empty() )
@@ -6817,12 +6829,16 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultMultiSuccessWithE
       }
     }
   }
-  else if ( !isStructureChainAnchor( commandIt->second.params[returnParam].type.type ) )
+  else
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandIt->second.params );
     if ( vectorParams.empty() )
     {
       str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, false, false );
+      if ( isStructureChainAnchor( commandIt->second.params[returnParam].type.type ) )
+      {
+        str += generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, true, false );
+      }
     }
   }
   return str;
@@ -8660,8 +8676,8 @@ std::string VulkanHppGenerator::generateReturnType( CommandData const &         
   {
     assert( !unique );
     modifiedDataType = dataType.starts_with( "std::vector" )
-                       ? ( std::string( "std::vector<StructureChain" ) + ( raii ? "" : ", StructureChainAllocator" ) + "> " )
-                       : " StructureChain<X, Y, Z...> ";
+                       ? ( std::string( "std::vector<StructureChain" ) + ( raii ? "" : ", StructureChainAllocator" ) + ">" )
+                       : "StructureChain<X, Y, Z...>";
   }
   else if ( unique )
   {
@@ -8703,8 +8719,7 @@ std::string VulkanHppGenerator::generateReturnType( CommandData const &         
     }
   }
   else if ( ( commandData.returnType == "void" ) ||
-            ( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && ( commandData.errorCodes.empty() || raii ) ) ||
-            ( chained && raii ) )
+            ( ( commandData.returnType == "VkResult" ) && ( commandData.successCodes.size() == 1 ) && ( commandData.errorCodes.empty() || raii ) ) )
   {
     assert( !unique );
     assert( ( commandData.returnType != "void" ) || ( returnParams.size() <= 2 ) );
@@ -8716,7 +8731,7 @@ std::string VulkanHppGenerator::generateReturnType( CommandData const &         
     assert( !commandData.successCodes.empty() && ( commandData.successCodes[0] == "VK_SUCCESS" ) );
     if ( ( 1 < commandData.successCodes.size() ) && ( ( returnParams.size() == 1 ) || ( ( returnParams.size() == 2 ) && vectorParams.empty() ) ) )
     {
-      assert( !commandData.errorCodes.empty() && !chained );
+      assert( !commandData.errorCodes.empty() );
       returnType = ( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) + modifiedDataType + ">";
     }
     else

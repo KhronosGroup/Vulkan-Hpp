@@ -118,10 +118,8 @@ ${indexTypeTraits}
 #endif
 )";
 
-  std::string str = replaceWithMap( vulkanEnumsHppTemplate,
-                                    { { "enums", generateEnums() },
-                                      { "indexTypeTraits", generateIndexTypeTraits() },
-                                      { "licenseHeader", m_vulkanLicenseHeader } } );
+  std::string str = replaceWithMap(
+    vulkanEnumsHppTemplate, { { "enums", generateEnums() }, { "indexTypeTraits", generateIndexTypeTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 
   writeToFile( str, vulkan_enums_hpp );
 }
@@ -161,7 +159,7 @@ void VulkanHppGenerator::generateVulkanFuncsHppFile() const
 namespace VULKAN_HPP_NAMESPACE
 {
 ${commandDefinitions}
-  }   // namespace VULKAN_HPP_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
@@ -184,7 +182,7 @@ namespace VULKAN_HPP_NAMESPACE
 {
 ${structForwardDeclarations}
 ${handles}
-  }   // namespace VULKAN_HPP_NAMESPACE
+}   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
@@ -368,7 +366,7 @@ void VulkanHppGenerator::generateVulkanRAIIHppFile() const
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_RAII_HPP
-#  define VULKAN_RAII_HPP
+#define VULKAN_RAII_HPP
 
 #include <memory>
 #include <utility>  // std::exchange, std::forward
@@ -378,12 +376,11 @@ void VulkanHppGenerator::generateVulkanRAIIHppFile() const
 #  define VULKAN_HPP_RAII_NAMESPACE raii
 #endif
 
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
 namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined(VULKAN_HPP_NO_EXCEPTIONS)
-
     template <class T, class U = T>
     VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
     {
@@ -399,9 +396,9 @@ namespace VULKAN_HPP_NAMESPACE
 ${RAIIDispatchers}
 ${RAIIHandles}
 ${RAIICommandDefinitions}
-#endif
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 }   // namespace VULKAN_HPP_NAMESPACE
+#endif
 #endif
 )";
 
@@ -9149,16 +9146,15 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 
 std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const
 {
-  auto hasLen = []( MemberData const & md )
-  { return !md.len.empty() && !( md.len[0] == "null-terminated" ) && ( ( altLens.find( md.len[0] ) == altLens.end() ) || ( md.len[0] == "codeSize / 4" ) ); };
-
-  if ( std::find_if( structData.second.members.begin(), structData.second.members.end(), hasLen ) != structData.second.members.end() )
+  if ( std::find_if( structData.second.members.begin(),
+                     structData.second.members.end(),
+                     [this, &structData]( MemberData const & md ) { return hasLen( structData.second.members, md ); } ) != structData.second.members.end() )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
-      if ( hasLen( *mit ) )
+      if ( hasLen( structData.second.members, *mit ) )
       {
         std::string lenName = ( mit->len.front() == "codeSize / 4" ) ? "codeSize" : mit->len.front();
         auto        lenIt   = findStructMemberIt( lenName, structData.second.members );
@@ -9190,7 +9186,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
-        else if ( hasLen( *mit ) )
+        else if ( hasLen( structData.second.members, *mit ) )
         {
           assert( mit->name.starts_with( "p" ) );
           std::string argumentName = startLowerCase( stripPrefix( mit->name, "p" ) ) + "_";
@@ -9814,8 +9810,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                         { "reference", ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) ) ? "const & " : "" },
                         { "structureName", structureName } } );
 
-    if ( !member.len.empty() && ( member.len[0] != "null-terminated" ) &&
-         ( ( altLens.find( member.len[0] ) == altLens.end() ) || ( member.len[0] == "codeSize / 4" ) ) )
+    if ( hasLen( memberData, member ) )
     {
       assert( member.name.front() == 'p' );
       std::string arrayName = startLowerCase( stripPrefix( member.name, "p" ) );
@@ -10442,6 +10437,16 @@ std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &   
   }
   assert( !vectorSize.empty() );
   return vectorSize;
+}
+
+bool VulkanHppGenerator::hasLen( std::vector<MemberData> const & members, MemberData const & md ) const
+{
+  if ( !md.len.empty() && !( md.len[0] == "null-terminated" ) && ( ( altLens.find( md.len[0] ) == altLens.end() ) || ( md.len[0] == "codeSize / 4" ) ) )
+  {
+    auto lenIt = findStructMemberIt( md.len.front(), members );
+    return ( lenIt == members.end() ) || lenIt->type.isValue();
+  }
+  return false;
 }
 
 bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::string const & parent ) const
@@ -12815,7 +12820,7 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
                        "member attribute <len> holds unknown value <" + memberData.len[0] + ">" );
         if ( lenMember != members.end() )
         {
-          checkForError( lenMember->type.prefix.empty() && lenMember->type.postfix.empty(),
+          checkForError( lenMember->type.prefix.empty(),
                          line,
                          "member attribute <len> references a member of unexpected type <" + lenMember->type.compose( "VULKAN_HPP_NAMESPACE" ) + ">" );
         }

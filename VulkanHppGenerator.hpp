@@ -935,6 +935,7 @@ private:
                                                      size_t                                    returnParam,
                                                      std::string const &                       returnParamType,
                                                      std::set<size_t> const &                  templatedParams ) const;
+  bool                                hasLen( std::vector<MemberData> const & members, MemberData const & md ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                isDeviceCommand( CommandData const & commandData ) const;
   bool                                isHandleType( std::string const & type ) const;

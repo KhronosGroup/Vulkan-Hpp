@@ -16,12 +16,11 @@
 #  define VULKAN_HPP_RAII_NAMESPACE raii
 #endif
 
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
 namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
-
     template <class T, class U = T>
     VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
     {
@@ -18607,7 +18606,7 @@ namespace VULKAN_HPP_NAMESPACE
       return properties;
     }
 
-#endif
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 }  // namespace VULKAN_HPP_NAMESPACE
+#endif
 #endif

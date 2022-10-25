@@ -2591,6 +2591,13 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::Instance release()
+      {
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_instance, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -2818,6 +2825,12 @@ namespace VULKAN_HPP_NAMESPACE
       {
         m_physicalDevice = nullptr;
         m_dispatcher     = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::PhysicalDevice release()
+      {
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_physicalDevice, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
@@ -3279,6 +3292,13 @@ namespace VULKAN_HPP_NAMESPACE
         m_device     = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Device release()
+      {
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_device, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -4130,6 +4150,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher            = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::AccelerationStructureKHR release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_accelerationStructure, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -4241,6 +4269,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_accelerationStructure = nullptr;
         m_allocator             = nullptr;
         m_dispatcher            = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::AccelerationStructureNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_accelerationStructure, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -4363,6 +4399,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::Buffer release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_buffer, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -4481,6 +4525,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_collection = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_collection, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -4604,6 +4656,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::BufferView release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_bufferView, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -4716,6 +4776,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher  = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::CommandPool release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_commandPool, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -4815,6 +4883,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_commandPool   = nullptr;
         m_commandBuffer = nullptr;
         m_dispatcher    = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::CommandBuffer release()
+      {
+        m_device      = nullptr;
+        m_commandPool = nullptr;
+        m_dispatcher  = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_commandBuffer, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -5784,6 +5860,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::CuFunctionNVX release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_function, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -5894,6 +5978,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_module     = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::CuModuleNVX release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_module, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -6009,6 +6101,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT release()
+      {
+        m_instance   = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_callback, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Instance getInstance() const
       {
         return m_instance;
@@ -6122,6 +6222,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT release()
+      {
+        m_instance   = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_messenger, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Instance getInstance() const
       {
         return m_instance;
@@ -6231,6 +6339,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_operation  = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::DeferredOperationKHR release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_operation, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -6354,6 +6470,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher     = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DescriptorPool release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_descriptorPool, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -6447,6 +6571,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_descriptorPool = nullptr;
         m_descriptorSet  = nullptr;
         m_dispatcher     = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::DescriptorSet release()
+      {
+        m_device         = nullptr;
+        m_descriptorPool = nullptr;
+        m_dispatcher     = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_descriptorSet, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -6609,6 +6741,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher          = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DescriptorSetLayout release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_descriptorSetLayout, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -6722,6 +6862,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher               = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_descriptorUpdateTemplate, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -6832,6 +6980,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_memory     = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::DeviceMemory release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_memory, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -6974,6 +7130,13 @@ namespace VULKAN_HPP_NAMESPACE
         m_physicalDevice = nullptr;
         m_display        = nullptr;
         m_dispatcher     = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::DisplayKHR release()
+      {
+        m_physicalDevice = nullptr;
+        m_dispatcher     = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_display, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::PhysicalDevice getPhysicalDevice() const
@@ -7138,6 +7301,13 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher     = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::DisplayModeKHR release()
+      {
+        m_physicalDevice = nullptr;
+        m_dispatcher     = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_displayModeKHR, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -7245,6 +7415,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_event      = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Event release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_event, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -7405,6 +7583,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::Fence release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_fence, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -7521,6 +7707,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher  = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::Framebuffer release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_framebuffer, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -7635,6 +7829,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_image      = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Image release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_image, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -7773,6 +7975,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::ImageView release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_imageView, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -7890,6 +8100,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher             = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_indirectCommandsLayout, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -8000,6 +8218,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_micromap   = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::MicromapEXT release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_micromap, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -8115,6 +8341,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_session, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -8219,6 +8453,13 @@ namespace VULKAN_HPP_NAMESPACE
         m_device        = nullptr;
         m_configuration = nullptr;
         m_dispatcher    = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL release()
+      {
+        m_device     = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_configuration, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -8330,6 +8571,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_pipelineCache = nullptr;
         m_allocator     = nullptr;
         m_dispatcher    = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::PipelineCache release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_pipelineCache, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -8527,6 +8776,15 @@ namespace VULKAN_HPP_NAMESPACE
         m_allocator              = nullptr;
         m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;
         m_dispatcher             = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Pipeline release()
+      {
+        m_device                 = nullptr;
+        m_allocator              = nullptr;
+        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;
+        m_dispatcher             = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_pipeline, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Result getConstructorSuccessCode() const
@@ -8809,6 +9067,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher     = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::PipelineLayout release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_pipelineLayout, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -8922,6 +9188,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher      = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::PrivateDataSlot release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_privateDataSlot, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -9032,6 +9306,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_queryPool  = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::QueryPool release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_queryPool, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -9151,6 +9433,12 @@ namespace VULKAN_HPP_NAMESPACE
       {
         m_queue      = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Queue release()
+      {
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_queue, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
@@ -9316,6 +9604,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::RenderPass release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_renderPass, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -9436,6 +9732,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::Sampler release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_sampler, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -9549,6 +9853,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher      = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_ycbcrConversion, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -9659,6 +9971,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_semaphore  = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::Semaphore release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_semaphore, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -9779,6 +10099,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_shaderModule = nullptr;
         m_allocator    = nullptr;
         m_dispatcher   = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::ShaderModule release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_shaderModule, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -10175,6 +10503,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::SurfaceKHR release()
+      {
+        m_instance   = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_surface, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Instance getInstance() const
       {
         return m_instance;
@@ -10285,6 +10621,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_swapchain  = nullptr;
         m_allocator  = nullptr;
         m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::SwapchainKHR release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_swapchain, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -10477,6 +10821,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_dispatcher      = nullptr;
       }
 
+      VULKAN_HPP_NAMESPACE::ValidationCacheEXT release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_validationCache, nullptr );
+      }
+
       VULKAN_HPP_NAMESPACE::Device getDevice() const
       {
         return m_device;
@@ -10595,6 +10947,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_videoSession = nullptr;
         m_allocator    = nullptr;
         m_dispatcher   = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::VideoSessionKHR release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_videoSession, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const
@@ -10716,6 +11076,14 @@ namespace VULKAN_HPP_NAMESPACE
         m_videoSessionParameters = nullptr;
         m_allocator              = nullptr;
         m_dispatcher             = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_videoSessionParameters, nullptr );
       }
 
       VULKAN_HPP_NAMESPACE::Device getDevice() const

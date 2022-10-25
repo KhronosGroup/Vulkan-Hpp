@@ -174,11 +174,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo );
     vk::raii::Device          device( physicalDevice, deviceCreateInfo );
 
-    // Create a vk::CommandPool (not a vk::raii::CommandPool, for testing purposes!)
     vk::CommandPoolCreateInfo commandPoolCreateInfo( {}, graphicsQueueFamilyIndex );
-    vk::CommandPool           commandPool = ( *device ).createCommandPool( commandPoolCreateInfo, nullptr, *device.getDispatcher() );
+    vk::raii::CommandPool     commandPool( device, commandPoolCreateInfo );
 
-    // The commandPool is not destroyed automatically (as it's not a UniqueCommandPool.
+    // release the CommandPool without destroying it (for testing purposes only!)
+    vk::CommandPool cp = commandPool.release();
+
+    // The commandPool is not destroyed automatically (as it's released from its handle)
     // That is, the device is destroyed before the commmand pool and will trigger a validation error.
     std::cout << "*** INTENTIONALLY destroying the Device before destroying a CommandPool ***\n";
     std::cout << "*** The following error message is EXPECTED ***\n";

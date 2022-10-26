@@ -8304,7 +8304,8 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     moveAssignmentInstructions += "\n        m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );";
   }
 
-  return std::make_tuple( clearMembers, getConstructorSuccessCode, memberVariables, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );
+  return std::make_tuple(
+    clearMembers, getConstructorSuccessCode, memberVariables, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );
 }
 
 std::string VulkanHppGenerator::generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
@@ -8962,20 +8963,6 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
   return str;
 }
 
-std::string VulkanHppGenerator::generateStructAssignmentOperators( std::pair<std::string, StructureData> const & structData ) const
-{
-  static const std::string assignmentFromVulkanType = R"(
-    ${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    ${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
-      return *this;
-    }
-)";
-  return replaceWithMap( assignmentFromVulkanType, { { "structName", stripPrefix( structData.first, "Vk" ) } } );
-}
-
 std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::string, StructureData> const & structData ) const
 {
   static const std::set<std::string> simpleTypes = { "char",   "double",  "DWORD",    "float",    "HANDLE",  "HINSTANCE", "HMONITOR",
@@ -9124,8 +9111,7 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 {
   // the constructor with all the elements as arguments, with defaults
   // and the simple copy constructor from the corresponding vulkan structure
-  static const std::string constructors = R"(
-    ${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
+  static const std::string constructors = R"(${constexpr}${structName}(${arguments}) VULKAN_HPP_NOEXCEPT
     ${initializers}
     {}
 
@@ -9481,21 +9467,34 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
 
   std::string str = "\n" + enter;
 
-  std::string constructorAndSetters;
-  constructorAndSetters += "#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )";
-  constructorAndSetters += generateStructConstructors( structure );
-  constructorAndSetters += generateStructSubConstructor( structure );
-  constructorAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/\n";
-  constructorAndSetters += generateStructAssignmentOperators( structure );
+  static const std::string constructorsTemplate = R"(
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+${constructors}
+${subConstructors}
+    ${structName} & operator=( ${structName} const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ${structName} & operator=( Vk${structName} const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::${structName} const *>( &rhs );
+      return *this;
+    }
+)";
+
+  std::string constructorsAndSetters = replaceWithMap( constructorsTemplate,
+                                                       { { "constructors", generateStructConstructors( structure ) },
+                                                         { "structName", stripPrefix( structure.first, "Vk" ) },
+                                                         { "subConstructors", generateStructSubConstructor( structure ) } } );
+
   if ( !structure.second.returnedOnly )
   {
     // only structs that are not returnedOnly get setters!
-    constructorAndSetters += "\n#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
+    constructorsAndSetters += "\n#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )";
     for ( size_t i = 0; i < structure.second.members.size(); i++ )
     {
-      constructorAndSetters += generateStructSetter( stripPrefix( structure.first, "Vk" ), structure.second.members, i );
+      constructorsAndSetters += generateStructSetter( stripPrefix( structure.first, "Vk" ), structure.second.members, i );
     }
-    constructorAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/\n";
+    constructorsAndSetters += "#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/\n";
   }
 
   std::string structureType = stripPrefix( structure.first, "Vk" );
@@ -9539,7 +9538,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
 
 ${allowDuplicate}
 ${typeValue}
-${constructorAndSetters}
+${constructorsAndSetters}
 
     operator Vk${structureType} const &() const VULKAN_HPP_NOEXCEPT
     {
@@ -9565,7 +9564,7 @@ ${members}
   }
   str += replaceWithMap( structureTemplate,
                          { { "allowDuplicate", allowDuplicate },
-                           { "constructorAndSetters", constructorAndSetters },
+                           { "constructorsAndSetters", constructorsAndSetters },
                            { "compareOperators", compareOperators },
                            { "members", members },
                            { "reflect", reflect },

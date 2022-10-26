@@ -886,7 +886,6 @@ private:
   std::string generateStaticAssertions() const;
   std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
-  std::string generateStructAssignmentOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const;
   std::string generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const;

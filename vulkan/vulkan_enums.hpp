@@ -1688,9 +1688,9 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR QueueFlags allFlags  = QueueFlagBits::eGraphics | QueueFlagBits::eCompute | QueueFlagBits::eTransfer |
                                                                QueueFlagBits::eSparseBinding | QueueFlagBits::eProtected
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                                                             | QueueFlagBits::eVideoDecodeKHR | QueueFlagBits::eVideoEncodeKHR
+                                                               | QueueFlagBits::eVideoDecodeKHR | QueueFlagBits::eVideoEncodeKHR
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                                                             | QueueFlagBits::eOpticalFlowNV;
+                                                               | QueueFlagBits::eOpticalFlowNV;
   };
 
   enum class SampleCountFlagBits : VkSampleCountFlags
@@ -1964,7 +1964,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR QueryResultFlags allFlags  = QueryResultFlagBits::e64 | QueryResultFlagBits::eWait |
                                                                      QueryResultFlagBits::eWithAvailability | QueryResultFlagBits::ePartial
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                                                                   | QueryResultFlagBits::eWithStatusKHR
+                                                                     | QueryResultFlagBits::eWithStatusKHR
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       ;
   };

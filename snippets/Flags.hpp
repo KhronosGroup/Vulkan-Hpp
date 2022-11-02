@@ -84,7 +84,7 @@
 
     VULKAN_HPP_CONSTEXPR Flags<BitType> operator~() const VULKAN_HPP_NOEXCEPT
     {
-      return Flags<BitType>( m_mask ^ FlagTraits<BitType>::allFlags );
+      return Flags<BitType>( m_mask ^ FlagTraits<BitType>::allFlags.m_mask );
     }
 
     // assignment operators

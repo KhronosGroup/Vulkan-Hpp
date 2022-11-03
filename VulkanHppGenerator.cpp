@@ -542,9 +542,8 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
   checkForError( m_commands.insert( std::make_pair( name, commandData ) ).second, commandData.xmlLine, "already encountered command <" + name + ">" );
 
   // put the command into the handle's list of commands
-  checkForError( handleIt->second.commands.insert( name ).second,
-                 commandData.xmlLine,
-                 "command list of handle <" + handleIt->first + "> already holds a commnand <" + name + ">" );
+  assert( handleIt->second.commands.find( name ) == handleIt->second.commands.end() );
+  handleIt->second.commands.insert( name );
 }
 
 void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & referencedIn )
@@ -1885,7 +1884,6 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           assert( params[i].arraySizes.empty() );
           if ( params[i].type.type == "void" )
           {
-            assert( !params[i].optional );
             argumentList += ( templatedParams.find( i ) == templatedParams.end() ) ? ( composedType + " " + params[i].name )
                                                                                    : ( stripPrefix( params[i].name, "p" ) + "Type const & " + name );
           }
@@ -2430,7 +2428,6 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     // this const-pointer parameter has no length, that is it's a const-pointer to a single value
     if ( param.type.type == "void" )
     {
-      assert( !param.optional );
       argument = ( templatedParams.find( paramIndex ) == templatedParams.end() )
                  ? param.name
                  : "reinterpret_cast<" + param.type.compose( "VULKAN_HPP_NAMESPACE" ) + ">( &" + name + " )";
@@ -3541,7 +3538,8 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
     {
       if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
       {
-        if ( isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
+        if ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
+             !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) )
         {
           return generateCommandSetStandardEnhancedWithAllocatorSingularUnique(
             definition,
@@ -7033,7 +7031,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandResultSingleSuccessWith
           {
             if ( commandIt->second.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
             {
-              if ( isStructureChainAnchor( commandIt->second.params[vectorParams.begin()->first].type.type ) )
+              if ( ( commandIt->second.params[vectorParams.begin()->first].type.type != "void" ) &&
+                   !isHandleType( commandIt->second.params[vectorParams.begin()->first].type.type ) )
               {
                 str = generateRAIIHandleCommandFactory( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, false );
                 str += generateRAIIHandleCommandFactory( commandIt, initialSkipCount, { returnParam }, vectorParams, definition, true );
@@ -7225,7 +7224,8 @@ std::pair<std::string, std::string>
     {
       if ( constructorIt->second.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
       {
-        if ( isStructureChainAnchor( constructorIt->second.params[vectorParams.begin()->first].type.type ) )
+        if ( ( constructorIt->second.params[vectorParams.begin()->first].type.type != "void" ) &&
+             !isHandleType( constructorIt->second.params[vectorParams.begin()->first].type.type ) )
         {
           std::string singularConstructor;
           auto        lenParamIt    = constructorIt->second.params.begin() + vectorParams.begin()->second.lenParam;

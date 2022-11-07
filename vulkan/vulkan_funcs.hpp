@@ -20363,6 +20363,94 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
+  //=== VK_NV_copy_memory_indirect ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress copyBufferAddress,
+                                                              uint32_t                            copyCount,
+                                                              uint32_t                            stride,
+                                                              Dispatch const &                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMemoryIndirectNV( m_commandBuffer, static_cast<VkDeviceAddress>( copyBufferAddress ), copyCount, stride );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToImageIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress                  copyBufferAddress,
+                                                                     uint32_t                                             copyCount,
+                                                                     uint32_t                                             stride,
+                                                                     VULKAN_HPP_NAMESPACE::Image                          dstImage,
+                                                                     VULKAN_HPP_NAMESPACE::ImageLayout                    dstImageLayout,
+                                                                     const VULKAN_HPP_NAMESPACE::ImageSubresourceLayers * pImageSubresources,
+                                                                     Dispatch const &                                     d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdCopyMemoryToImageIndirectNV( m_commandBuffer,
+                                        static_cast<VkDeviceAddress>( copyBufferAddress ),
+                                        copyCount,
+                                        stride,
+                                        static_cast<VkImage>( dstImage ),
+                                        static_cast<VkImageLayout>( dstImageLayout ),
+                                        reinterpret_cast<const VkImageSubresourceLayers *>( pImageSubresources ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::copyMemoryToImageIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress                                                          copyBufferAddress,
+                                                uint32_t                                                                                     stride,
+                                                VULKAN_HPP_NAMESPACE::Image                                                                  dstImage,
+                                                VULKAN_HPP_NAMESPACE::ImageLayout                                                            dstImageLayout,
+                                                VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageSubresourceLayers> const & imageSubresources,
+                                                Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdCopyMemoryToImageIndirectNV( m_commandBuffer,
+                                        static_cast<VkDeviceAddress>( copyBufferAddress ),
+                                        imageSubresources.size(),
+                                        stride,
+                                        static_cast<VkImage>( dstImage ),
+                                        static_cast<VkImageLayout>( dstImageLayout ),
+                                        reinterpret_cast<const VkImageSubresourceLayers *>( imageSubresources.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  //=== VK_NV_memory_decompression ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::decompressMemoryNV( uint32_t                                               decompressRegionCount,
+                                                            const VULKAN_HPP_NAMESPACE::DecompressMemoryRegionNV * pDecompressMemoryRegions,
+                                                            Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDecompressMemoryNV( m_commandBuffer, decompressRegionCount, reinterpret_cast<const VkDecompressMemoryRegionNV *>( pDecompressMemoryRegions ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::decompressMemoryNV( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::DecompressMemoryRegionNV> const & decompressMemoryRegions,
+                                       Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdDecompressMemoryNV(
+      m_commandBuffer, decompressMemoryRegions.size(), reinterpret_cast<const VkDecompressMemoryRegionNV *>( decompressMemoryRegions.data() ) );
+  }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::decompressMemoryIndirectCountNV( VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsAddress,
+                                                                         VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsCountAddress,
+                                                                         uint32_t                            stride,
+                                                                         Dispatch const &                    d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdDecompressMemoryIndirectCountNV(
+      m_commandBuffer, static_cast<VkDeviceAddress>( indirectCommandsAddress ), static_cast<VkDeviceAddress>( indirectCommandsCountAddress ), stride );
+  }
+
   //=== VK_EXT_extended_dynamic_state3 ===
 
   template <typename Dispatch>

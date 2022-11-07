@@ -3087,6 +3087,20 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
+  //=== VK_NV_memory_decompression ===
+
+  VULKAN_HPP_INLINE std::string to_string( MemoryDecompressionMethodFlagsNV value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & MemoryDecompressionMethodFlagBitsNV::eGdeflate10 )
+      result += "Gdeflate10 | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
   //=== VK_NV_optical_flow ===
 
   VULKAN_HPP_INLINE std::string to_string( OpticalFlowUsageFlagsNV value )
@@ -3974,6 +3988,10 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM: return "PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM";
       case StructureType::ePhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM: return "PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM";
       case StructureType::eSubpassFragmentDensityMapOffsetEndInfoQCOM: return "SubpassFragmentDensityMapOffsetEndInfoQCOM";
+      case StructureType::ePhysicalDeviceCopyMemoryIndirectFeaturesNV: return "PhysicalDeviceCopyMemoryIndirectFeaturesNV";
+      case StructureType::ePhysicalDeviceCopyMemoryIndirectPropertiesNV: return "PhysicalDeviceCopyMemoryIndirectPropertiesNV";
+      case StructureType::ePhysicalDeviceMemoryDecompressionFeaturesNV: return "PhysicalDeviceMemoryDecompressionFeaturesNV";
+      case StructureType::ePhysicalDeviceMemoryDecompressionPropertiesNV: return "PhysicalDeviceMemoryDecompressionPropertiesNV";
       case StructureType::ePhysicalDeviceLinearColorAttachmentFeaturesNV: return "PhysicalDeviceLinearColorAttachmentFeaturesNV";
       case StructureType::ePhysicalDeviceImageCompressionControlSwapchainFeaturesEXT: return "PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT";
       case StructureType::ePhysicalDeviceImageProcessingFeaturesQCOM: return "PhysicalDeviceImageProcessingFeaturesQCOM";
@@ -4003,6 +4021,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
       case StructureType::ePhysicalDeviceAmigoProfilingFeaturesSEC: return "PhysicalDeviceAmigoProfilingFeaturesSEC";
       case StructureType::eAmigoProfilingSubmitInfoSEC: return "AmigoProfilingSubmitInfoSEC";
+      case StructureType::ePhysicalDeviceRayTracingInvocationReorderFeaturesNV: return "PhysicalDeviceRayTracingInvocationReorderFeaturesNV";
+      case StructureType::ePhysicalDeviceRayTracingInvocationReorderPropertiesNV: return "PhysicalDeviceRayTracingInvocationReorderPropertiesNV";
       case StructureType::ePhysicalDeviceMutableDescriptorTypeFeaturesEXT: return "PhysicalDeviceMutableDescriptorTypeFeaturesEXT";
       case StructureType::eMutableDescriptorTypeCreateInfoEXT: return "MutableDescriptorTypeCreateInfoEXT";
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsFeaturesARM: return "PhysicalDeviceShaderCoreBuiltinsFeaturesARM";
@@ -8048,6 +8068,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  //=== VK_NV_memory_decompression ===
+
+  VULKAN_HPP_INLINE std::string to_string( MemoryDecompressionMethodFlagBitsNV value )
+  {
+    switch ( value )
+    {
+      case MemoryDecompressionMethodFlagBitsNV::eGdeflate10: return "Gdeflate10";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   //=== VK_EXT_subpass_merge_feedback ===
 
   VULKAN_HPP_INLINE std::string to_string( SubpassMergeStatusEXT value )
@@ -8169,6 +8200,18 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case OpticalFlowExecuteFlagBitsNV::eDisableTemporalHints: return "DisableTemporalHints";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_NV_ray_tracing_invocation_reorder ===
+
+  VULKAN_HPP_INLINE std::string to_string( RayTracingInvocationReorderModeNV value )
+  {
+    switch ( value )
+    {
+      case RayTracingInvocationReorderModeNV::eNone: return "None";
+      case RayTracingInvocationReorderModeNV::eReorder: return "Reorder";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

@@ -1494,6 +1494,10 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_NV_clip_space_w_scaling ===
         vkCmdSetViewportWScalingNV = PFN_vkCmdSetViewportWScalingNV( vkGetDeviceProcAddr( device, "vkCmdSetViewportWScalingNV" ) );
 
+        //=== VK_NV_copy_memory_indirect ===
+        vkCmdCopyMemoryIndirectNV        = PFN_vkCmdCopyMemoryIndirectNV( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryIndirectNV" ) );
+        vkCmdCopyMemoryToImageIndirectNV = PFN_vkCmdCopyMemoryToImageIndirectNV( vkGetDeviceProcAddr( device, "vkCmdCopyMemoryToImageIndirectNV" ) );
+
         //=== VK_NV_device_diagnostic_checkpoints ===
         vkCmdSetCheckpointNV       = PFN_vkCmdSetCheckpointNV( vkGetDeviceProcAddr( device, "vkCmdSetCheckpointNV" ) );
         vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointDataNV" ) );
@@ -1517,6 +1521,11 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_fragment_shading_rate_enums ===
         vkCmdSetFragmentShadingRateEnumNV = PFN_vkCmdSetFragmentShadingRateEnumNV( vkGetDeviceProcAddr( device, "vkCmdSetFragmentShadingRateEnumNV" ) );
+
+        //=== VK_NV_memory_decompression ===
+        vkCmdDecompressMemoryNV = PFN_vkCmdDecompressMemoryNV( vkGetDeviceProcAddr( device, "vkCmdDecompressMemoryNV" ) );
+        vkCmdDecompressMemoryIndirectCountNV =
+          PFN_vkCmdDecompressMemoryIndirectCountNV( vkGetDeviceProcAddr( device, "vkCmdDecompressMemoryIndirectCountNV" ) );
 
         //=== VK_NV_mesh_shader ===
         vkCmdDrawMeshTasksNV              = PFN_vkCmdDrawMeshTasksNV( vkGetDeviceProcAddr( device, "vkCmdDrawMeshTasksNV" ) );
@@ -2272,6 +2281,10 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_clip_space_w_scaling ===
       PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV = 0;
 
+      //=== VK_NV_copy_memory_indirect ===
+      PFN_vkCmdCopyMemoryIndirectNV        vkCmdCopyMemoryIndirectNV        = 0;
+      PFN_vkCmdCopyMemoryToImageIndirectNV vkCmdCopyMemoryToImageIndirectNV = 0;
+
       //=== VK_NV_device_diagnostic_checkpoints ===
       PFN_vkCmdSetCheckpointNV       vkCmdSetCheckpointNV       = 0;
       PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV = 0;
@@ -2296,6 +2309,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_NV_fragment_shading_rate_enums ===
       PFN_vkCmdSetFragmentShadingRateEnumNV vkCmdSetFragmentShadingRateEnumNV = 0;
+
+      //=== VK_NV_memory_decompression ===
+      PFN_vkCmdDecompressMemoryNV              vkCmdDecompressMemoryNV              = 0;
+      PFN_vkCmdDecompressMemoryIndirectCountNV vkCmdDecompressMemoryIndirectCountNV = 0;
 
       //=== VK_NV_mesh_shader ===
       PFN_vkCmdDrawMeshTasksNV              vkCmdDrawMeshTasksNV              = 0;
@@ -5653,6 +5670,26 @@ namespace VULKAN_HPP_NAMESPACE
                                         VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
                                         VULKAN_HPP_NAMESPACE::QueryPool                                                   queryPool,
                                         uint32_t firstQuery ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_copy_memory_indirect ===
+
+      void copyMemoryIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress copyBufferAddress, uint32_t copyCount, uint32_t stride ) const VULKAN_HPP_NOEXCEPT;
+
+      void copyMemoryToImageIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress                                                          copyBufferAddress,
+                                        uint32_t                                                                                     stride,
+                                        VULKAN_HPP_NAMESPACE::Image                                                                  dstImage,
+                                        VULKAN_HPP_NAMESPACE::ImageLayout                                                            dstImageLayout,
+                                        VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageSubresourceLayers> const & imageSubresources ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_memory_decompression ===
+
+      void decompressMemoryNV( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::DecompressMemoryRegionNV> const & decompressMemoryRegions ) const
+        VULKAN_HPP_NOEXCEPT;
+
+      void decompressMemoryIndirectCountNV( VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsAddress,
+                                            VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsCountAddress,
+                                            uint32_t                            stride ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_extended_dynamic_state3 ===
 
@@ -18532,6 +18569,64 @@ namespace VULKAN_HPP_NAMESPACE
       getDispatcher()->vkGetDescriptorSetHostMappingVALVE( static_cast<VkDevice>( m_device ), static_cast<VkDescriptorSet>( m_descriptorSet ), &pData );
 
       return pData;
+    }
+
+    //=== VK_NV_copy_memory_indirect ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::copyMemoryIndirectNV( VULKAN_HPP_NAMESPACE::DeviceAddress copyBufferAddress,
+                                                                uint32_t                            copyCount,
+                                                                uint32_t                            stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMemoryIndirectNV &&
+                         "Function <vkCmdCopyMemoryIndirectNV> needs extension <VK_NV_copy_memory_indirect> enabled!" );
+
+      getDispatcher()->vkCmdCopyMemoryIndirectNV(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( copyBufferAddress ), copyCount, stride );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::copyMemoryToImageIndirectNV(
+      VULKAN_HPP_NAMESPACE::DeviceAddress                                                          copyBufferAddress,
+      uint32_t                                                                                     stride,
+      VULKAN_HPP_NAMESPACE::Image                                                                  dstImage,
+      VULKAN_HPP_NAMESPACE::ImageLayout                                                            dstImageLayout,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ImageSubresourceLayers> const & imageSubresources ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCopyMemoryToImageIndirectNV &&
+                         "Function <vkCmdCopyMemoryToImageIndirectNV> needs extension <VK_NV_copy_memory_indirect> enabled!" );
+
+      getDispatcher()->vkCmdCopyMemoryToImageIndirectNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                         static_cast<VkDeviceAddress>( copyBufferAddress ),
+                                                         imageSubresources.size(),
+                                                         stride,
+                                                         static_cast<VkImage>( dstImage ),
+                                                         static_cast<VkImageLayout>( dstImageLayout ),
+                                                         reinterpret_cast<const VkImageSubresourceLayers *>( imageSubresources.data() ) );
+    }
+
+    //=== VK_NV_memory_decompression ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::decompressMemoryNV(
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::DecompressMemoryRegionNV> const & decompressMemoryRegions ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDecompressMemoryNV &&
+                         "Function <vkCmdDecompressMemoryNV> needs extension <VK_NV_memory_decompression> enabled!" );
+
+      getDispatcher()->vkCmdDecompressMemoryNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                decompressMemoryRegions.size(),
+                                                reinterpret_cast<const VkDecompressMemoryRegionNV *>( decompressMemoryRegions.data() ) );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::decompressMemoryIndirectCountNV( VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsAddress,
+                                                                           VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsCountAddress,
+                                                                           uint32_t                            stride ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDecompressMemoryIndirectCountNV &&
+                         "Function <vkCmdDecompressMemoryIndirectCountNV> needs extension <VK_NV_memory_decompression> enabled!" );
+
+      getDispatcher()->vkCmdDecompressMemoryIndirectCountNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                             static_cast<VkDeviceAddress>( indirectCommandsAddress ),
+                                                             static_cast<VkDeviceAddress>( indirectCommandsCountAddress ),
+                                                             stride );
     }
 
     //=== VK_EXT_extended_dynamic_state3 ===

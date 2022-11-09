@@ -168,9 +168,9 @@ private:
 
   struct RequireData
   {
-    RequireData( int line, std::string const & titles_ );
+    RequireData( int line, std::string const & depends_ );
 
-    std::vector<std::string> titles;
+    std::vector<std::string> depends;
     std::vector<std::string> commands;
     std::vector<std::string> types;
     int                      xmlLine;
@@ -201,7 +201,7 @@ private:
     std::string              obsoletedBy;
     std::string              platform;
     std::string              promotedTo;
-    std::set<std::string>    requiresAttribute;
+    std::set<std::string>    depends;
     std::vector<RequireData> requireData;
     int                      xmlLine;
   };

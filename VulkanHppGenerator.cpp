@@ -1028,13 +1028,13 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     // check for existence of any requirement
     for ( auto const & require : extension.second.requireData )
     {
-      if ( !require.titles.empty() )
+      if ( !require.depends.empty() )
       {
-        for ( auto const & title : require.titles )
+        for ( auto const & depends : require.depends )
         {
-          checkForError( ( m_features.find( title ) != m_features.end() ) || ( m_extensions.find( title ) != m_extensions.end() ),
+          checkForError( ( m_features.find( depends ) != m_features.end() ) || ( m_extensions.find( depends ) != m_extensions.end() ),
                          require.xmlLine,
-                         "extension <" + extension.first + "> lists an unknown require <" + title + ">" );
+                         "extension <" + extension.first + "> lists an unknown depends <" + depends + ">" );
         }
       }
     }
@@ -11041,6 +11041,7 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
                      { { "author", {} },
                        { "comment", {} },
                        { "contact", {} },
+                       { "depends", {} },
                        { "deprecatedby", {} },
                        { "obsoletedby", {} },
                        { "platform", {} },
@@ -11054,7 +11055,7 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
     checkElements( line, children, { { "require", false } } );
 
     std::string              deprecatedBy, name, number, obsoletedBy, platform, promotedTo, supported;
-    std::vector<std::string> requirements;
+    std::vector<std::string> depends;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "deprecatedby" )
@@ -11094,9 +11095,9 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
                        line,
                        "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" + platform + "\"" );
       }
-      else if ( attribute.first == "requires" )
+      else if ( ( attribute.first == "depends" ) || ( attribute.first == "requires" ) )
       {
-        requirements = tokenize( attribute.second, "," );
+        depends = tokenize( attribute.second, "," );
       }
       else if ( attribute.first == "requiresCore" )
       {
@@ -11117,9 +11118,9 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
 
     auto pitb = m_extensions.insert( std::make_pair( name, ExtensionData( line, deprecatedBy, number, obsoletedBy, platform, promotedTo ) ) );
     checkForError( pitb.second, line, "already encountered extension <" + name + ">" );
-    for ( auto const & r : requirements )
+    for ( auto const & d : depends )
     {
-      checkForError( pitb.first->second.requiresAttribute.insert( r ).second, line, "required extension <" + r + "> already listed" );
+      checkForError( pitb.first->second.depends.insert( d ).second, line, "required depends <" + d + "> already listed" );
     }
 
     // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
@@ -11243,35 +11244,47 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "extension", {} }, { "feature", {} } } );
+  checkAttributes( line, attributes, {}, { { "depends", {} }, { "extension", {} }, { "feature", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
-  std::string requireTitle;
+  std::string depends;
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "extension" )
+    if (attribute.first == "depends")
     {
-      assert( requireTitle.empty() );
-      requireTitle = attribute.second;
+      assert( depends.empty() );
+      depends = attribute.second;
       checkForError( std::find_if( extensionIt->second.requireData.begin(),
                                    extensionIt->second.requireData.end(),
-                                   [&requireTitle]( RequireData const & rd ) {
-                                     return std::find( rd.titles.begin(), rd.titles.end(), requireTitle ) != rd.titles.end();
+                                   [&depends]( RequireData const & rd ) {
+                                     return std::find( rd.depends.begin(), rd.depends.end(), depends ) != rd.depends.end();
                                    } ) == extensionIt->second.requireData.end(),
                      line,
-                     "required extension <" + requireTitle + "> already listed" );
+                     "required extension <" + depends + "> already listed" );
+    }
+    else if ( attribute.first == "extension" )
+    {
+      assert( depends.empty() );
+      depends = attribute.second;
+      checkForError( std::find_if( extensionIt->second.requireData.begin(),
+                                   extensionIt->second.requireData.end(),
+                                   [&depends]( RequireData const & rd ) {
+                                     return std::find( rd.depends.begin(), rd.depends.end(), depends ) != rd.depends.end();
+                                   } ) == extensionIt->second.requireData.end(),
+                     line,
+                     "required extension <" + depends + "> already listed" );
     }
     else
     {
       assert( attribute.first == "feature" );
       checkForError( m_features.find( attribute.second ) != m_features.end(), line, "unknown feature <" + attribute.second + ">" );
-      assert( requireTitle.empty() );
-      requireTitle = attribute.second;
+      assert( depends.empty() );
+      depends = attribute.second;
     }
   }
 
-  RequireData requireData( line, requireTitle );
+  RequireData requireData( line, depends );
   bool        requireDataEmpty = true;
   for ( auto child : children )
   {
@@ -13119,7 +13132,7 @@ std::string VulkanHppGenerator::TypeInfo::compose( std::string const & nameSpace
          ( postfix.empty() ? "" : " " ) + postfix;
 }
 
-VulkanHppGenerator::RequireData::RequireData( int line, std::string const & titles_ ) : titles( tokenize( titles_, "," ) ), xmlLine( line ) {}
+VulkanHppGenerator::RequireData::RequireData( int line, std::string const & depends_ ) : depends( tokenize( depends_, "," ) ), xmlLine( line ) {}
 
 //
 // VulkanHppGenerator local functions

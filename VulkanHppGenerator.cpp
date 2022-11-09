@@ -48,7 +48,7 @@ std::string                                      replaceWithMap( std::string con
 std::string                                      startLowerCase( std::string const & input );
 std::string                                      startUpperCase( std::string const & input );
 std::string                                      stripPostfix( std::string const & value, std::string const & postfix );
-std::string                                      stripPluralS( std::string const & name );
+std::string                                      stripPluralS( std::string const & name, std::set<std::string> const & tags );
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
 std::string                                      toCamelCase( std::string const & value );
 std::string                                      toUpperCase( std::string const & name );
@@ -1746,6 +1746,8 @@ void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> co
           {
             auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
             assert( handleIt != m_handles.end() );
+            // filter out functions seem to fit due to taking handles as first and second argument, but the first argument is not the
+            // type to create the second one, and so it's unknown to the raii handle!
             assert( !handleIt->second.constructorIts.empty() );
             if ( ( *handleIt->second.constructorIts.begin() )->second.handle == handle.first )
             {
@@ -1871,7 +1873,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
                 params[i].type.type.starts_with( "Vk" ) );
         assert( !isHandleType( params[i].type.type ) );
         assert( composedType.ends_with( " *" ) );
-        argumentList += stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) );
+        argumentList += stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ), m_tags );
       }
       else if ( params[i].type.isConstPointer() )
       {
@@ -2325,7 +2327,7 @@ std::string VulkanHppGenerator::generateCallArgumentsRAIIFactory( std::vector<Pa
         argument = startLowerCase( stripPrefix( argument, "p" ) );
         if ( singularParams.find( i ) != singularParams.end() )
         {
-          argument = stripPluralS( argument );
+          argument = stripPluralS( argument, m_tags );
         }
       }
       else
@@ -2464,7 +2466,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedConstPointer( ParamD
     if ( singularParams.find( paramIndex ) != singularParams.end() )
     {
       assert( !param.optional );
-      argument = "&" + stripPluralS( name );
+      argument = "&" + stripPluralS( name, m_tags );
     }
     else
     {
@@ -2511,7 +2513,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
     {
       if ( singularParams.find( paramIndex ) != singularParams.end() )
       {
-        argument = "&" + stripPluralS( name );
+        argument = "&" + stripPluralS( name, m_tags );
       }
       else
       {
@@ -3104,7 +3106,7 @@ std::string VulkanHppGenerator::generateCommandName( std::string const &        
   }
   if ( singular )
   {
-    commandName = stripPluralS( commandName );
+    commandName = stripPluralS( commandName, m_tags );
   }
   if ( unique )
   {
@@ -4099,7 +4101,7 @@ std::string VulkanHppGenerator::generateCommandVoid1Return(
       case 1:
         if ( returnParam == vectorParams.begin()->first )
         {
-          if ( name == stripPluralS( name ) )
+          if ( name == stripPluralS( name, m_tags ) )
           {
             return generateCommandSetStandardEnhanced(
               definition,
@@ -4360,7 +4362,7 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
         std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
         if ( singular )
         {
-          firstDataVariable = stripPluralS( firstDataVariable );
+          firstDataVariable = stripPluralS( firstDataVariable, m_tags );
 
           std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data;
     ${firstDataType} & ${firstDataVariable} = data.first;
@@ -4558,7 +4560,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     std::string uniqueVectorName = "unique" + stripPrefix( commandData.params[returnParams[0]].name, "p" );
     std::string vectorAllocator  = withAllocator ? ( "( " + startLowerCase( handleType ) + "Allocator )" ) : "";
     std::string vectorName       = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
-    std::string elementName      = stripPluralS( vectorName );
+    std::string elementName      = stripPluralS( vectorName, m_tags );
     std::string vectorSize = getVectorSize( commandData.params, vectorParams, returnParams[0], commandData.params[returnParams[0]].type.type, templatedParams );
 
     std::string const dataPreparationTemplate =
@@ -7147,10 +7149,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
       }
       else if ( commandIt->second.params[returnParams[0]].type.type == "void" )
       {
-        if ( vectorParams.empty() )
-        {
-          str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
-        }
+        str = generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, true );
       }
       else
       {
@@ -7287,7 +7286,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArgument( ParamData
     }
     else if ( singular )
     {
-      argument = argumentType + " const & " + stripPluralS( argumentName );
+      argument = argumentType + " const & " + stripPluralS( argumentName, m_tags );
     }
     else
     {
@@ -7642,7 +7641,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorParamName( std::str
                             [&type]( ParamData const & destructorParam ) { return destructorParam.type.type == type; } ) == destructorIt->second.params.end() );
       if ( !destructorParamIt->type.isValue() )
       {
-        return startLowerCase( stripPrefix( stripPluralS( destructorParamIt->name ), "p" ) );
+        return startLowerCase( stripPrefix( stripPluralS( destructorParamIt->name, m_tags ), "p" ) );
       }
       else
       {
@@ -8119,7 +8118,7 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
       }
       else
       {
-        arguments += "reinterpret_cast<" + handleType + " const *>( &m_" + stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ) ) + " )";
+        arguments += "reinterpret_cast<" + handleType + " const *>( &m_" + stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ), m_tags ) + " )";
       }
     }
     else if ( param.type.type == "VkAllocationCallbacks" )
@@ -8780,7 +8779,7 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
         returnVariable = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
         if ( singular )
         {
-          returnVariable = stripPluralS( returnVariable );
+          returnVariable = stripPluralS( returnVariable, m_tags );
         }
       }
       break;
@@ -13477,12 +13476,13 @@ std::string stripPostfix( std::string const & value, std::string const & postfix
   return strippedValue;
 }
 
-std::string stripPluralS( std::string const & name )
+std::string stripPluralS( std::string const & name, std::set<std::string> const & tags )
 {
-  std::string strippedName( name );
-  size_t      pos = strippedName.rfind( 's' );
-  if ( pos != std::string::npos )
+  std::string strippedName = name;
+  std::string tag          = findTag( tags, name );
+  if ( strippedName.ends_with( "s" + tag ) )
   {
+    size_t pos = strippedName.rfind( 's' );
     if ( ( 2 <= pos ) && ( strippedName.substr( pos - 2, 3 ) == "ies" ) )
     {
       strippedName.replace( pos - 2, 3, "y" );

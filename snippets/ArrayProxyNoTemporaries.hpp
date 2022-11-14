@@ -91,8 +91,7 @@
     template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
     ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> && list ) = delete;
 
-    // Any type with a .data() return type implicitly convertible to T*, and a // .size() return type implicitly
-    // convertible to size_t.
+    // Any type with a .data() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
     template <typename V,
               typename std::enable_if<
                 std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&

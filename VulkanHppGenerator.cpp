@@ -4013,19 +4013,16 @@ std::string
   if ( returnParams.empty() )
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.empty() )
+    if ( vectorParams.empty() && determineConstPointerParams( commandData.params ).empty() )
     {
-      if ( determineConstPointerParams( commandData.params ).empty() )
-      {
-        return generateCommandSetStandard( generateCommandStandard( name, commandData, initialSkipCount, definition ) );
-      }
-      else
-      {
-        return generateCommandSetStandardEnhanced(
-          definition,
-          generateCommandStandard( name, commandData, initialSkipCount, definition ),
-          generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, false, false, false ) );
-      }
+      return generateCommandSetStandard( generateCommandStandard( name, commandData, initialSkipCount, definition ) );
+    }
+    else if ( vectorParams.size() <= 1 )
+    {
+      return generateCommandSetStandardEnhanced(
+        definition,
+        generateCommandStandard( name, commandData, initialSkipCount, definition ),
+        generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, false, false, false, false ) );
     }
   }
   return "";
@@ -7110,7 +7107,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandValue( std::map<std::st
   if ( returnParams.empty() )
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandIt->second.params );
-    if ( vectorParams.empty() )
+    if ( vectorParams.size() <= 1 )
     {
       return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, false, false );
     }

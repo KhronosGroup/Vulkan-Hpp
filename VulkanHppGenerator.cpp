@@ -417,8 +417,8 @@ void VulkanHppGenerator::generateVulkanStaticAssertionsHppFile() const
   std::cout << "VulkanHppGenerator: Generating " << static_assertions_hpp << " ..." << std::endl;
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
-#ifndef VULKAN_STRUCTS_HPP
-#  define VULKAN_STRUCTS_HPP
+#ifndef VULKAN_STATIC_ASSERTIONS_HPP
+#  define VULKAN_STATIC_ASSERTIONS_HPP
 
 #include <vulkan/vulkan.hpp>
 

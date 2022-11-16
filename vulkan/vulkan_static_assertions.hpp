@@ -5,8 +5,8 @@
 
 // This header is generated from the Khronos Vulkan XML API Registry.
 
-#ifndef VULKAN_STRUCTS_HPP
-#define VULKAN_STRUCTS_HPP
+#ifndef VULKAN_STATIC_ASSERTIONS_HPP
+#define VULKAN_STATIC_ASSERTIONS_HPP
 
 #include <vulkan/vulkan.hpp>
 

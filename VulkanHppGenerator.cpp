@@ -533,9 +533,9 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
   std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
   if ( handleIt == m_handles.end() )
   {
-    handleIt = m_handles.find( "" );
+    handleIt = m_handles.begin();
+    assert( handleIt->first == "" );
   }
-  assert( handleIt != m_handles.end() );
   commandData.handle = handleIt->first;
 
   // add this command to the list of commands
@@ -9003,16 +9003,10 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
       else
       {
         assert( member.len[1] == "null-terminated" );
-        static const std::string commpareMemberTemplate = R"(      [this, rhs]
-      {
-        bool equal = true;
-        for ( size_t i = 0; equal && ( i < ${count} ); ++i )
-        {
-          equal = ( ( ${name}[i] == rhs.${name}[i] ) || ( strcmp( ${name}[i], rhs.${name}[i] ) == 0 ) );
-        }
-        return equal;
-      }())";
-        compareMembers += intro + replaceWithMap( commpareMemberTemplate, { { "count", member.len[0] }, { "name", member.name } } );
+        assert( ( member.type.prefix == "const" ) && ( member.type.postfix == "* const *" ) );
+        static const std::string compareMemberTemplate =
+          R"(std::equal( ${name}, ${name} + ${count}, rhs.${name}, []( char const * left, char const * right ) { return ( left == right ) || ( strcmp( left, right ) == 0 ); } ))";
+        compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.len[0] }, { "name", member.name } } );
 
         static const std::string spaceshipMemberTemplate = R"(      for ( size_t i = 0; i < ${count}; ++i )
       {

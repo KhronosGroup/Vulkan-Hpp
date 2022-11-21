@@ -716,6 +716,19 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
     eQueueFamilyCheckpointProperties2NV                        = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV,
     eCheckpointData2NV                                         = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV,
+    ePhysicalDeviceDescriptorBufferPropertiesEXT               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_PROPERTIES_EXT,
+    ePhysicalDeviceDescriptorBufferDensityMapPropertiesEXT     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_DENSITY_MAP_PROPERTIES_EXT,
+    ePhysicalDeviceDescriptorBufferFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_BUFFER_FEATURES_EXT,
+    eDescriptorAddressInfoEXT                                  = VK_STRUCTURE_TYPE_DESCRIPTOR_ADDRESS_INFO_EXT,
+    eDescriptorGetInfoEXT                                      = VK_STRUCTURE_TYPE_DESCRIPTOR_GET_INFO_EXT,
+    eBufferCaptureDescriptorDataInfoEXT                        = VK_STRUCTURE_TYPE_BUFFER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+    eImageCaptureDescriptorDataInfoEXT                         = VK_STRUCTURE_TYPE_IMAGE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+    eImageViewCaptureDescriptorDataInfoEXT                     = VK_STRUCTURE_TYPE_IMAGE_VIEW_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+    eSamplerCaptureDescriptorDataInfoEXT                       = VK_STRUCTURE_TYPE_SAMPLER_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
+    eOpaqueCaptureDescriptorDataCreateInfoEXT                  = VK_STRUCTURE_TYPE_OPAQUE_CAPTURE_DESCRIPTOR_DATA_CREATE_INFO_EXT,
+    eDescriptorBufferBindingInfoEXT                            = VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_INFO_EXT,
+    eDescriptorBufferBindingPushDescriptorBufferHandleEXT      = VK_STRUCTURE_TYPE_DESCRIPTOR_BUFFER_BINDING_PUSH_DESCRIPTOR_BUFFER_HANDLE_EXT,
+    eAccelerationStructureCaptureDescriptorDataInfoEXT         = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CAPTURE_DESCRIPTOR_DATA_INFO_EXT,
     ePhysicalDeviceGraphicsPipelineLibraryFeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_FEATURES_EXT,
     ePhysicalDeviceGraphicsPipelineLibraryPropertiesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GRAPHICS_PIPELINE_LIBRARY_PROPERTIES_EXT,
     eGraphicsPipelineLibraryCreateInfoEXT                      = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_LIBRARY_CREATE_INFO_EXT,
@@ -1511,6 +1524,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCornerSampledNV                      = VK_IMAGE_CREATE_CORNER_SAMPLED_BIT_NV,
     eSampleLocationsCompatibleDepthEXT    = VK_IMAGE_CREATE_SAMPLE_LOCATIONS_COMPATIBLE_DEPTH_BIT_EXT,
     eSubsampledEXT                        = VK_IMAGE_CREATE_SUBSAMPLED_BIT_EXT,
+    eDescriptorBufferCaptureReplayEXT     = VK_IMAGE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT,
     eMultisampledRenderToSingleSampledEXT = VK_IMAGE_CREATE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_BIT_EXT,
     e2DViewCompatibleEXT                  = VK_IMAGE_CREATE_2D_VIEW_COMPATIBLE_BIT_EXT,
     eFragmentDensityMapOffsetQCOM         = VK_IMAGE_CREATE_FRAGMENT_DENSITY_MAP_OFFSET_BIT_QCOM,
@@ -1533,7 +1547,7 @@ namespace VULKAN_HPP_NAMESPACE
       ImageCreateFlagBits::eCubeCompatible | ImageCreateFlagBits::eAlias | ImageCreateFlagBits::eSplitInstanceBindRegions |
       ImageCreateFlagBits::e2DArrayCompatible | ImageCreateFlagBits::eBlockTexelViewCompatible | ImageCreateFlagBits::eExtendedUsage |
       ImageCreateFlagBits::eProtected | ImageCreateFlagBits::eDisjoint | ImageCreateFlagBits::eCornerSampledNV |
-      ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT | ImageCreateFlagBits::eSubsampledEXT |
+      ImageCreateFlagBits::eSampleLocationsCompatibleDepthEXT | ImageCreateFlagBits::eSubsampledEXT | ImageCreateFlagBits::eDescriptorBufferCaptureReplayEXT |
       ImageCreateFlagBits::eMultisampledRenderToSingleSampledEXT | ImageCreateFlagBits::e2DViewCompatibleEXT |
       ImageCreateFlagBits::eFragmentDensityMapOffsetQCOM;
   };
@@ -1694,9 +1708,9 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR QueueFlags allFlags  = QueueFlagBits::eGraphics | QueueFlagBits::eCompute | QueueFlagBits::eTransfer |
                                                                QueueFlagBits::eSparseBinding | QueueFlagBits::eProtected
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                                                             | QueueFlagBits::eVideoDecodeKHR | QueueFlagBits::eVideoEncodeKHR
+                                                               | QueueFlagBits::eVideoDecodeKHR | QueueFlagBits::eVideoEncodeKHR
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-                                                             | QueueFlagBits::eOpticalFlowNV;
+                                                               | QueueFlagBits::eOpticalFlowNV;
   };
 
   enum class SampleCountFlagBits : VkSampleCountFlags
@@ -1970,7 +1984,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR QueryResultFlags allFlags  = QueryResultFlagBits::e64 | QueryResultFlagBits::eWait |
                                                                      QueryResultFlagBits::eWithAvailability | QueryResultFlagBits::ePartial
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-                                                                   | QueryResultFlagBits::eWithStatusKHR
+                                                                     | QueryResultFlagBits::eWithStatusKHR
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       ;
   };
@@ -2015,13 +2029,14 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class BufferCreateFlagBits : VkBufferCreateFlags
   {
-    eSparseBinding                 = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
-    eSparseResidency               = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
-    eSparseAliased                 = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT,
-    eProtected                     = VK_BUFFER_CREATE_PROTECTED_BIT,
-    eDeviceAddressCaptureReplay    = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT,
-    eDeviceAddressCaptureReplayEXT = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT,
-    eDeviceAddressCaptureReplayKHR = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR
+    eSparseBinding                    = VK_BUFFER_CREATE_SPARSE_BINDING_BIT,
+    eSparseResidency                  = VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT,
+    eSparseAliased                    = VK_BUFFER_CREATE_SPARSE_ALIASED_BIT,
+    eProtected                        = VK_BUFFER_CREATE_PROTECTED_BIT,
+    eDeviceAddressCaptureReplay       = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT,
+    eDescriptorBufferCaptureReplayEXT = VK_BUFFER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT,
+    eDeviceAddressCaptureReplayEXT    = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_EXT,
+    eDeviceAddressCaptureReplayKHR    = VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR
   };
 
   using BufferCreateFlags = Flags<BufferCreateFlagBits>;
@@ -2030,9 +2045,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<BufferCreateFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool              isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR BufferCreateFlags allFlags  = BufferCreateFlagBits::eSparseBinding | BufferCreateFlagBits::eSparseResidency |
-                                                                      BufferCreateFlagBits::eSparseAliased | BufferCreateFlagBits::eProtected |
-                                                                      BufferCreateFlagBits::eDeviceAddressCaptureReplay;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR BufferCreateFlags allFlags =
+      BufferCreateFlagBits::eSparseBinding | BufferCreateFlagBits::eSparseResidency | BufferCreateFlagBits::eSparseAliased | BufferCreateFlagBits::eProtected |
+      BufferCreateFlagBits::eDeviceAddressCaptureReplay | BufferCreateFlagBits::eDescriptorBufferCaptureReplayEXT;
   };
 
   enum class BufferUsageFlagBits : VkBufferUsageFlags
@@ -2061,11 +2076,14 @@ namespace VULKAN_HPP_NAMESPACE
     eVideoEncodeDstKHR = VK_BUFFER_USAGE_VIDEO_ENCODE_DST_BIT_KHR,
     eVideoEncodeSrcKHR = VK_BUFFER_USAGE_VIDEO_ENCODE_SRC_BIT_KHR,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eMicromapBuildInputReadOnlyEXT = VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
-    eMicromapStorageEXT            = VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT,
-    eRayTracingNV                  = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV,
-    eShaderDeviceAddressEXT        = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT,
-    eShaderDeviceAddressKHR        = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR
+    eSamplerDescriptorBufferEXT         = VK_BUFFER_USAGE_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT,
+    eResourceDescriptorBufferEXT        = VK_BUFFER_USAGE_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT,
+    ePushDescriptorsDescriptorBufferEXT = VK_BUFFER_USAGE_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
+    eMicromapBuildInputReadOnlyEXT      = VK_BUFFER_USAGE_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
+    eMicromapStorageEXT                 = VK_BUFFER_USAGE_MICROMAP_STORAGE_BIT_EXT,
+    eRayTracingNV                       = VK_BUFFER_USAGE_RAY_TRACING_BIT_NV,
+    eShaderDeviceAddressEXT             = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_EXT,
+    eShaderDeviceAddressKHR             = VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR
   };
 
   using BufferUsageFlags = Flags<BufferUsageFlagBits>;
@@ -2087,7 +2105,8 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       | BufferUsageFlagBits::eVideoEncodeDstKHR | BufferUsageFlagBits::eVideoEncodeSrcKHR
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      | BufferUsageFlagBits::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits::eMicromapStorageEXT;
+      | BufferUsageFlagBits::eSamplerDescriptorBufferEXT | BufferUsageFlagBits::eResourceDescriptorBufferEXT |
+      BufferUsageFlagBits::ePushDescriptorsDescriptorBufferEXT | BufferUsageFlagBits::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits::eMicromapStorageEXT;
   };
 
   enum class SharingMode
@@ -2167,8 +2186,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class ImageViewCreateFlagBits : VkImageViewCreateFlags
   {
-    eFragmentDensityMapDynamicEXT  = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT,
-    eFragmentDensityMapDeferredEXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT
+    eFragmentDensityMapDynamicEXT     = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT,
+    eDescriptorBufferCaptureReplayEXT = VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT,
+    eFragmentDensityMapDeferredEXT    = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT
   };
 
   using ImageViewCreateFlags = Flags<ImageViewCreateFlagBits>;
@@ -2177,8 +2197,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<ImageViewCreateFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR ImageViewCreateFlags allFlags =
-      ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT | ImageViewCreateFlagBits::eFragmentDensityMapDeferredEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR ImageViewCreateFlags allFlags  = ImageViewCreateFlagBits::eFragmentDensityMapDynamicEXT |
+                                                                         ImageViewCreateFlagBits::eDescriptorBufferCaptureReplayEXT |
+                                                                         ImageViewCreateFlagBits::eFragmentDensityMapDeferredEXT;
   };
 
   enum class ImageViewType
@@ -2467,6 +2488,7 @@ namespace VULKAN_HPP_NAMESPACE
     eCaptureInternalRepresentationsKHR                                  = VK_PIPELINE_CREATE_CAPTURE_INTERNAL_REPRESENTATIONS_BIT_KHR,
     eIndirectBindableNV                                                 = VK_PIPELINE_CREATE_INDIRECT_BINDABLE_BIT_NV,
     eLibraryKHR                                                         = VK_PIPELINE_CREATE_LIBRARY_BIT_KHR,
+    eDescriptorBufferEXT                                                = VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT,
     eRetainLinkTimeOptimizationInfoEXT                                  = VK_PIPELINE_CREATE_RETAIN_LINK_TIME_OPTIMIZATION_INFO_BIT_EXT,
     eLinkTimeOptimizationEXT                                            = VK_PIPELINE_CREATE_LINK_TIME_OPTIMIZATION_BIT_EXT,
     eRayTracingAllowMotionNV                                            = VK_PIPELINE_CREATE_RAY_TRACING_ALLOW_MOTION_BIT_NV,
@@ -2498,10 +2520,11 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineCreateFlagBits::eRayTracingNoNullIntersectionShadersKHR | PipelineCreateFlagBits::eRayTracingSkipTrianglesKHR |
       PipelineCreateFlagBits::eRayTracingSkipAabbsKHR | PipelineCreateFlagBits::eRayTracingShaderGroupHandleCaptureReplayKHR |
       PipelineCreateFlagBits::eDeferCompileNV | PipelineCreateFlagBits::eCaptureStatisticsKHR | PipelineCreateFlagBits::eCaptureInternalRepresentationsKHR |
-      PipelineCreateFlagBits::eIndirectBindableNV | PipelineCreateFlagBits::eLibraryKHR | PipelineCreateFlagBits::eRetainLinkTimeOptimizationInfoEXT |
-      PipelineCreateFlagBits::eLinkTimeOptimizationEXT | PipelineCreateFlagBits::eRayTracingAllowMotionNV |
-      PipelineCreateFlagBits::eColorAttachmentFeedbackLoopEXT | PipelineCreateFlagBits::eDepthStencilAttachmentFeedbackLoopEXT |
-      PipelineCreateFlagBits::eRayTracingOpacityMicromapEXT | PipelineCreateFlagBits::eNoProtectedAccessEXT | PipelineCreateFlagBits::eProtectedAccessOnlyEXT;
+      PipelineCreateFlagBits::eIndirectBindableNV | PipelineCreateFlagBits::eLibraryKHR | PipelineCreateFlagBits::eDescriptorBufferEXT |
+      PipelineCreateFlagBits::eRetainLinkTimeOptimizationInfoEXT | PipelineCreateFlagBits::eLinkTimeOptimizationEXT |
+      PipelineCreateFlagBits::eRayTracingAllowMotionNV | PipelineCreateFlagBits::eColorAttachmentFeedbackLoopEXT |
+      PipelineCreateFlagBits::eDepthStencilAttachmentFeedbackLoopEXT | PipelineCreateFlagBits::eRayTracingOpacityMicromapEXT |
+      PipelineCreateFlagBits::eNoProtectedAccessEXT | PipelineCreateFlagBits::eProtectedAccessOnlyEXT;
   };
 
   enum class PipelineShaderStageCreateFlagBits : VkPipelineShaderStageCreateFlags
@@ -2731,6 +2754,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eSubsampledEXT                     = VK_SAMPLER_CREATE_SUBSAMPLED_BIT_EXT,
     eSubsampledCoarseReconstructionEXT = VK_SAMPLER_CREATE_SUBSAMPLED_COARSE_RECONSTRUCTION_BIT_EXT,
+    eDescriptorBufferCaptureReplayEXT  = VK_SAMPLER_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT,
     eNonSeamlessCubeMapEXT             = VK_SAMPLER_CREATE_NON_SEAMLESS_CUBE_MAP_BIT_EXT,
     eImageProcessingQCOM               = VK_SAMPLER_CREATE_IMAGE_PROCESSING_BIT_QCOM
   };
@@ -2742,8 +2766,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool               isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR SamplerCreateFlags allFlags =
-      SamplerCreateFlagBits::eSubsampledEXT | SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT | SamplerCreateFlagBits::eNonSeamlessCubeMapEXT |
-      SamplerCreateFlagBits::eImageProcessingQCOM;
+      SamplerCreateFlagBits::eSubsampledEXT | SamplerCreateFlagBits::eSubsampledCoarseReconstructionEXT |
+      SamplerCreateFlagBits::eDescriptorBufferCaptureReplayEXT | SamplerCreateFlagBits::eNonSeamlessCubeMapEXT | SamplerCreateFlagBits::eImageProcessingQCOM;
   };
 
   enum class SamplerMipmapMode
@@ -2773,11 +2797,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class DescriptorSetLayoutCreateFlagBits : VkDescriptorSetLayoutCreateFlags
   {
-    eUpdateAfterBindPool    = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT,
-    ePushDescriptorKHR      = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
-    eHostOnlyPoolEXT        = VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT,
-    eHostOnlyPoolVALVE      = VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_VALVE,
-    eUpdateAfterBindPoolEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
+    eUpdateAfterBindPool          = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT,
+    ePushDescriptorKHR            = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR,
+    eDescriptorBufferEXT          = VK_DESCRIPTOR_SET_LAYOUT_CREATE_DESCRIPTOR_BUFFER_BIT_EXT,
+    eEmbeddedImmutableSamplersEXT = VK_DESCRIPTOR_SET_LAYOUT_CREATE_EMBEDDED_IMMUTABLE_SAMPLERS_BIT_EXT,
+    eHostOnlyPoolEXT              = VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_EXT,
+    eHostOnlyPoolVALVE            = VK_DESCRIPTOR_SET_LAYOUT_CREATE_HOST_ONLY_POOL_BIT_VALVE,
+    eUpdateAfterBindPoolEXT       = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT_EXT
   };
 
   using DescriptorSetLayoutCreateFlags = Flags<DescriptorSetLayoutCreateFlagBits>;
@@ -2786,9 +2812,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<DescriptorSetLayoutCreateFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                           isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR DescriptorSetLayoutCreateFlags allFlags  = DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool |
-                                                                                   DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR |
-                                                                                   DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolEXT;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DescriptorSetLayoutCreateFlags allFlags =
+      DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool | DescriptorSetLayoutCreateFlagBits::ePushDescriptorKHR |
+      DescriptorSetLayoutCreateFlagBits::eDescriptorBufferEXT | DescriptorSetLayoutCreateFlagBits::eEmbeddedImmutableSamplersEXT |
+      DescriptorSetLayoutCreateFlagBits::eHostOnlyPoolEXT;
   };
 
   enum class DescriptorType
@@ -3474,7 +3501,8 @@ namespace VULKAN_HPP_NAMESPACE
     eMesaPanvk               = VK_DRIVER_ID_MESA_PANVK,
     eSamsungProprietary      = VK_DRIVER_ID_SAMSUNG_PROPRIETARY,
     eMesaVenus               = VK_DRIVER_ID_MESA_VENUS,
-    eMesaDozen               = VK_DRIVER_ID_MESA_DOZEN
+    eMesaDozen               = VK_DRIVER_ID_MESA_DOZEN,
+    eMesaNvk                 = VK_DRIVER_ID_MESA_NVK
   };
   using DriverIdKHR = DriverId;
 
@@ -3740,6 +3768,7 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureWriteKHR        = VK_ACCESS_2_ACCELERATION_STRUCTURE_WRITE_BIT_KHR,
     eFragmentDensityMapReadEXT            = VK_ACCESS_2_FRAGMENT_DENSITY_MAP_READ_BIT_EXT,
     eColorAttachmentReadNoncoherentEXT    = VK_ACCESS_2_COLOR_ATTACHMENT_READ_NONCOHERENT_BIT_EXT,
+    eDescriptorBufferReadEXT              = VK_ACCESS_2_DESCRIPTOR_BUFFER_READ_BIT_EXT,
     eInvocationMaskReadHUAWEI             = VK_ACCESS_2_INVOCATION_MASK_READ_BIT_HUAWEI,
     eShaderBindingTableReadKHR            = VK_ACCESS_2_SHADER_BINDING_TABLE_READ_BIT_KHR,
     eMicromapReadEXT                      = VK_ACCESS_2_MICROMAP_READ_BIT_EXT,
@@ -3774,8 +3803,8 @@ namespace VULKAN_HPP_NAMESPACE
       AccessFlagBits2::eConditionalRenderingReadEXT | AccessFlagBits2::eCommandPreprocessReadNV | AccessFlagBits2::eCommandPreprocessWriteNV |
       AccessFlagBits2::eFragmentShadingRateAttachmentReadKHR | AccessFlagBits2::eAccelerationStructureReadKHR |
       AccessFlagBits2::eAccelerationStructureWriteKHR | AccessFlagBits2::eFragmentDensityMapReadEXT | AccessFlagBits2::eColorAttachmentReadNoncoherentEXT |
-      AccessFlagBits2::eInvocationMaskReadHUAWEI | AccessFlagBits2::eShaderBindingTableReadKHR | AccessFlagBits2::eMicromapReadEXT |
-      AccessFlagBits2::eMicromapWriteEXT | AccessFlagBits2::eOpticalFlowReadNV | AccessFlagBits2::eOpticalFlowWriteNV;
+      AccessFlagBits2::eDescriptorBufferReadEXT | AccessFlagBits2::eInvocationMaskReadHUAWEI | AccessFlagBits2::eShaderBindingTableReadKHR |
+      AccessFlagBits2::eMicromapReadEXT | AccessFlagBits2::eMicromapWriteEXT | AccessFlagBits2::eOpticalFlowReadNV | AccessFlagBits2::eOpticalFlowWriteNV;
   };
 
   enum class SubmitFlagBits : VkSubmitFlags
@@ -5246,8 +5275,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class AccelerationStructureCreateFlagBitsKHR : VkAccelerationStructureCreateFlagsKHR
   {
-    eDeviceAddressCaptureReplay = VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
-    eMotionNV                   = VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV
+    eDeviceAddressCaptureReplay       = VK_ACCELERATION_STRUCTURE_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT_KHR,
+    eDescriptorBufferCaptureReplayEXT = VK_ACCELERATION_STRUCTURE_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT,
+    eMotionNV                         = VK_ACCELERATION_STRUCTURE_CREATE_MOTION_BIT_NV
   };
 
   using AccelerationStructureCreateFlagsKHR = Flags<AccelerationStructureCreateFlagBitsKHR>;
@@ -5257,7 +5287,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR AccelerationStructureCreateFlagsKHR allFlags =
-      AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay | AccelerationStructureCreateFlagBitsKHR::eMotionNV;
+      AccelerationStructureCreateFlagBitsKHR::eDeviceAddressCaptureReplay | AccelerationStructureCreateFlagBitsKHR::eDescriptorBufferCaptureReplayEXT |
+      AccelerationStructureCreateFlagBitsKHR::eMotionNV;
   };
 
   enum class BuildAccelerationStructureModeKHR

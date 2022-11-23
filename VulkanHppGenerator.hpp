@@ -168,7 +168,7 @@ private:
 
   struct RequireData
   {
-    RequireData( int line, std::string const & depends_ );
+    RequireData( int line, std::vector<std::string> const & depends_ );
 
     std::vector<std::string> depends;
     std::vector<std::string> commands;

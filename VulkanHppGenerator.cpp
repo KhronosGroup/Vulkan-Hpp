@@ -5194,26 +5194,6 @@ std::string VulkanHppGenerator::generateFormatTraits() const
   //=== Format Traits ===
   //=====================
 
-  // The texel block size in bytes.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${blockSizeCases}
-      default : VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-
-  // The number of texels in a texel block.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${texelsPerBlockCases}
-      default: VULKAN_HPP_ASSERT( false ); return 0;
-    }
-  }
-
   // The three-dimensional extent of a texel block.
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 std::array<uint8_t, 3> blockExtent( VULKAN_HPP_NAMESPACE::Format format )
   {
@@ -5224,41 +5204,23 @@ ${blockExtentCases}
     }
   }
 
-  // A textual description of the compression scheme, or an empty string if it is not compressed
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
+  // The texel block size in bytes.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t blockSize( VULKAN_HPP_NAMESPACE::Format format )
   {
     switch( format )
     {
-${compressionSchemeCases}
-      default: return "";
+${blockSizeCases}
+      default : VULKAN_HPP_ASSERT( false ); return 0;
     }
   }
 
-  // True, if this format is a compressed one.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
-  }
-
-  // The number of bits into which the format is packed. A single image element in this format
-  // can be stored in the same space as a scalar type of this bit width.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
+  // The class of the format (can't be just named "class"!)
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compatibilityClass( VULKAN_HPP_NAMESPACE::Format format )
   {
     switch( format )
     {
-${packedCases}
-      default: return 0;
-    }
-  }
-
-  // True, if the components of this format are compressed, otherwise false.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
-  {
-    switch( format )
-    {
-${componentsAreCompressedCases}
-        return true;
-      default: return false;
+${classCases}
+      default : VULKAN_HPP_ASSERT( false ); return "";
     }
   }
 
@@ -5312,13 +5274,41 @@ ${componentPlaneIndexCases}
     }
   }
 
-  // The number of image planes of this format.
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
+  // True, if the components of this format are compressed, otherwise false.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool componentsAreCompressed( VULKAN_HPP_NAMESPACE::Format format )
   {
     switch( format )
     {
-${planeCountCases}
-      default: return 1;
+${componentsAreCompressedCases}
+        return true;
+      default: return false;
+    }
+  }
+
+  // A textual description of the compression scheme, or an empty string if it is not compressed
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 char const * compressionScheme( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${compressionSchemeCases}
+      default: return "";
+    }
+  }
+
+  // True, if this format is a compressed one.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 bool isCompressed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    return ( *VULKAN_HPP_NAMESPACE::compressionScheme( format ) != 0 );
+  }
+
+  // The number of bits into which the format is packed. A single image element in this format
+  // can be stored in the same space as a scalar type of this bit width.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t packed( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${packedCases}
+      default: return 0;
     }
   }
 
@@ -5329,6 +5319,16 @@ ${planeCountCases}
     {
 ${planeCompatibleCases}
       default: VULKAN_HPP_ASSERT( plane == 0 ); return format;
+    }
+  }
+
+  // The number of image planes of this format.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t planeCount( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${planeCountCases}
+      default: return 1;
     }
   }
 
@@ -5351,42 +5351,43 @@ ${planeWidthDivisorCases}
       default: VULKAN_HPP_ASSERT( plane == 0 ); return 1;
     }
   }
+
+  // The number of texels in a texel block.
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_14 uint8_t texelsPerBlock( VULKAN_HPP_NAMESPACE::Format format )
+  {
+    switch( format )
+    {
+${texelsPerBlockCases}
+      default: VULKAN_HPP_ASSERT( false ); return 0;
+    }
+  }
 )";
 
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
   assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
-  std::string blockSizeCases, texelsPerBlockCases, blockExtentCases, compressionSchemeCases, packedCases, componentsAreCompressedCases, componentCountCases,
-    componentBitsCases, componentNameCases, componentNumericFormatCases, componentPlaneIndexCases, planeCountCases, planeCompatibleCases,
-    planeHeightDivisorCases, planeWidthDivisorCases;
+  std::string blockSizeCases, blockExtentCases, classCases, componentBitsCases, componentCountCases, componentNameCases, componentNumericFormatCases,
+    componentPlaneIndexCases, componentsAreCompressedCases, compressionSchemeCases, packedCases, planeCompatibleCases, planeCountCases, planeHeightDivisorCases,
+    planeWidthDivisorCases, texelsPerBlockCases;
   for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
   {
     auto traitIt = m_formats.find( formatValuesIt->name );
     assert( traitIt != m_formats.end() );
     std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false, m_tags ) + ":";
+
     blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
-    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
+
     if ( !traitIt->second.blockExtent.empty() )
     {
       std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
       assert( blockExtent.size() == 3 );
       blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
     }
-    if ( !traitIt->second.compressed.empty() )
-    {
-      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
-    }
-    if ( !traitIt->second.packed.empty() )
-    {
-      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
-    }
-    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
-    if ( traitIt->second.components.front().bits == "compressed" )
-    {
-      componentsAreCompressedCases += caseString + "\n";
-    }
-    else
+
+    classCases += caseString + " return \"" + traitIt->second.classAttribute + "\";\n";
+
+    if ( traitIt->second.components.front().bits != "compressed" )
     {
       const std::string componentBitsCaseTemplate = R"(${caseString}
         switch( component )
@@ -5404,6 +5405,8 @@ ${componentCases}
       componentCases.pop_back();
       componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
     }
+
+    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
 
     {
       const std::string componentNameCaseTemplate = R"(${caseString}
@@ -5460,10 +5463,24 @@ ${componentCases}
       componentCases.pop_back();
       componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
     }
+
+    if ( traitIt->second.components.front().bits == "compressed" )
+    {
+      componentsAreCompressedCases += caseString + "\n";
+    }
+
+    if ( !traitIt->second.compressed.empty() )
+    {
+      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
+    }
+
+    if ( !traitIt->second.packed.empty() )
+    {
+      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
+    }
+
     if ( !traitIt->second.planes.empty() )
     {
-      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
-
       const std::string planeCompatibleCaseTemplate = R"(${caseString}
         switch( plane )
         {
@@ -5499,16 +5516,24 @@ ${widthDivisorCases}
       compatibleCases.pop_back();
       heightDivisorCases.pop_back();
       widthDivisorCases.pop_back();
+
       planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
+
+      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
+
       planeHeightDivisorCases +=
         replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
+
       planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
     }
+
+    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
   }
 
   return replaceWithMap( formatTraitsTemplate,
                          { { "blockExtentCases", blockExtentCases },
                            { "blockSizeCases", blockSizeCases },
+                           { "classCases", classCases },
                            { "componentBitsCases", componentBitsCases },
                            { "componentCountCases", componentCountCases },
                            { "componentNameCases", componentNameCases },

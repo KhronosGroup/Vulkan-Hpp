@@ -3389,11 +3389,17 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors( std:
         case 0:
           {
             std::vector<size_t> constPointerParams = determineConstPointerParams( commandData.params );
-            if ( constPointerParams.empty() )
+            switch ( constPointerParams.size() )
             {
-              return generateCommandSetStandardOrEnhanced(
-                generateCommandStandard( name, commandData, initialSkipCount, definition ),
-                generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, false, false, false, false ) );
+              case 0:
+                return generateCommandSetStandardOrEnhanced(
+                  generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                  generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, false, false, false, false ) );
+              case 1:
+                return generateCommandSetStandardEnhanced(
+                  definition,
+                  generateCommandStandard( name, commandData, initialSkipCount, definition ),
+                  generateCommandEnhanced( name, commandData, initialSkipCount, definition, {}, {}, false, false, false, false ) );
             }
           }
           break;
@@ -11238,7 +11244,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
   std::string depends;
   for ( auto const & attribute : attributes )
   {
-    if (attribute.first == "depends")
+    if ( attribute.first == "depends" )
     {
       assert( depends.empty() );
       depends = attribute.second;

@@ -53,6 +53,7 @@ std::string                                      stripPrefix( std::string const 
 std::string                                      toCamelCase( std::string const & value );
 std::string                                      toUpperCase( std::string const & name );
 std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
+std::vector<std::string>                         tokenizeAny( std::string const & tokenString, std::string const & separators );
 std::string                                      toString( tinyxml2::XMLError error );
 std::string                                      trim( std::string const & input );
 std::string                                      trimEnd( std::string const & input );
@@ -11115,7 +11116,8 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
       }
       else if ( ( attribute.first == "depends" ) || ( attribute.first == "requires" ) )
       {
-        depends = tokenize( attribute.second, "," );
+        // we don't care about the logical implications of ',' and '+' here, we're just interested to get the depends strings
+        depends = tokenizeAny( attribute.second, ",+" );
       }
       else if ( attribute.first == "requiresCore" )
       {
@@ -11266,39 +11268,29 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
-  std::string depends;
+  std::vector<std::string> depends;
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "depends" )
+    if ( ( attribute.first == "depends" ) || ( attribute.first == "extension" ) )
     {
       assert( depends.empty() );
-      depends = attribute.second;
-      checkForError( std::find_if( extensionIt->second.requireData.begin(),
-                                   extensionIt->second.requireData.end(),
-                                   [&depends]( RequireData const & rd ) {
-                                     return std::find( rd.depends.begin(), rd.depends.end(), depends ) != rd.depends.end();
-                                   } ) == extensionIt->second.requireData.end(),
-                     line,
-                     "required extension <" + depends + "> already listed" );
-    }
-    else if ( attribute.first == "extension" )
-    {
-      assert( depends.empty() );
-      depends = attribute.second;
-      checkForError( std::find_if( extensionIt->second.requireData.begin(),
-                                   extensionIt->second.requireData.end(),
-                                   [&depends]( RequireData const & rd ) {
-                                     return std::find( rd.depends.begin(), rd.depends.end(), depends ) != rd.depends.end();
-                                   } ) == extensionIt->second.requireData.end(),
-                     line,
-                     "required extension <" + depends + "> already listed" );
+      depends = tokenizeAny( attribute.second, ",+" );
+      for ( auto const & d : depends )
+      {
+        checkForError( std::find_if( extensionIt->second.requireData.begin(),
+                                     extensionIt->second.requireData.end(),
+                                     [&d]( RequireData const & rd ) { return std::find( rd.depends.begin(), rd.depends.end(), d ) != rd.depends.end(); } ) ==
+                         extensionIt->second.requireData.end(),
+                       line,
+                       "required extension <" + d + "> already listed" );
+      }
     }
     else
     {
       assert( attribute.first == "feature" );
       checkForError( m_features.find( attribute.second ) != m_features.end(), line, "unknown feature <" + attribute.second + ">" );
       assert( depends.empty() );
-      depends = attribute.second;
+      depends.push_back( attribute.second );
     }
   }
 
@@ -11449,7 +11441,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
-  RequireData requireData( line, "" );
+  RequireData requireData( line, { "" } );
   bool        requireDataEmpty = true;
   for ( auto child : children )
   {
@@ -13150,7 +13142,7 @@ std::string VulkanHppGenerator::TypeInfo::compose( std::string const & nameSpace
          ( postfix.empty() ? "" : " " ) + postfix;
 }
 
-VulkanHppGenerator::RequireData::RequireData( int line, std::string const & depends_ ) : depends( tokenize( depends_, "," ) ), xmlLine( line ) {}
+VulkanHppGenerator::RequireData::RequireData( int line, std::vector<std::string> const & depends_ ) : depends( depends_ ), xmlLine( line ) {}
 
 //
 // VulkanHppGenerator local functions
@@ -13598,6 +13590,25 @@ std::vector<std::string> tokenize( std::string const & tokenString, std::string 
         tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
       }
       start = end + separator.length();
+    } while ( end != std::string::npos );
+  }
+  return tokens;
+}
+
+std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
+{
+  std::vector<std::string> tokens;
+  if ( !tokenString.empty() )
+  {
+    size_t start = 0, end;
+    do
+    {
+      end = tokenString.find_first_of( separators, start );
+      if ( start != end )
+      {
+        tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
+      }
+      start = end + 1;
     } while ( end != std::string::npos );
   }
   return tokens;

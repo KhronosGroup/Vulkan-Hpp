@@ -134,7 +134,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
 
     commandBuffer.clearColorImage( inputImage,
                                    vk::ImageLayout::eTransferDstOptimal,
-                                   vk::ClearColorValue( std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) ),
+                                   vk::ClearColorValue( 1.0f, 1.0f, 0.0f, 0.0f ),
                                    vk::ImageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS ) );
 
     // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
@@ -220,7 +220,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     uint32_t currentBuffer = nexImage.value;
 
     vk::ClearValue clearValue;
-    clearValue.color = vk::ClearColorValue( std::array<float, 4>( { { 0.2f, 0.2f, 0.2f, 0.2f } } ) );
+    clearValue.color = vk::ClearColorValue( 0.2f, 0.2f, 0.2f, 0.2f );
     commandBuffer.beginRenderPass(
       vk::RenderPassBeginInfo( renderPass, framebuffers[currentBuffer], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValue ),
       vk::SubpassContents::eInline );

@@ -10131,6 +10131,39 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
                                                                       { "memberType", memberType },
                                                                       { "unionName", stripPrefix( structure.first, "Vk" ) } } );
       firstMember = false;
+
+      if ( !memberIt->arraySizes.empty() )
+      {
+        assert( !multipleType );
+        assert( memberIt->arraySizes.size() == 1 );
+        int size = std::stoi( memberIt->arraySizes[0] );
+        assert( std::to_string( size ) == memberIt->arraySizes[0] );
+        std::string arguments, callArguments;
+        bool        firstArgument = true;
+        for ( int i = 0; i < size; i++ )
+        {
+          if ( !firstArgument )
+          {
+            arguments += ", ";
+            callArguments += ", ";
+          }
+          std::string argumentIndex = std::to_string( i );
+          arguments += memberIt->type.type + " " + memberIt->name + "_" + argumentIndex;
+          callArguments += memberIt->name + "_" + argumentIndex;
+          firstArgument = false;
+        }
+
+      static const std::string constructorBySequenceTemplate = R"(
+    VULKAN_HPP_CONSTEXPR ${unionName}( ${arguments} )
+      : ${memberName}( { ${callArguments} } )
+    {})";
+
+        constructors += "\n" + replaceWithMap( constructorBySequenceTemplate,
+                                               { { "arguments", arguments },
+                                                 { "callArguments", callArguments },
+                                                 { "memberName", memberIt->name },
+                                                 { "unionName", stripPrefix( structure.first, "Vk" ) } } );
+      }
     }
   }
 

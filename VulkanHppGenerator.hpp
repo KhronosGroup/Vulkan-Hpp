@@ -22,6 +22,56 @@
 
 const size_t INVALID_INDEX = (size_t)~0;
 
+template <typename BitType>
+class Flags
+{
+public:
+  using MaskType = typename std::underlying_type<BitType>::type;
+
+  constexpr Flags() noexcept : m_mask( 0 ) {}
+
+  constexpr Flags( BitType bit ) noexcept : m_mask( static_cast<MaskType>( bit ) ) {}
+
+  constexpr explicit Flags( MaskType flags ) noexcept : m_mask( flags ) {}
+
+  constexpr bool operator!() const noexcept
+  {
+    return !m_mask;
+  }
+
+  constexpr bool operator&( BitType const & rhs ) const noexcept
+  {
+    return m_mask & static_cast<MaskType>( rhs );
+  }
+
+  constexpr Flags<BitType> operator&( Flags<BitType> const & rhs ) const noexcept
+  {
+    return Flags<BitType>( m_mask & rhs.m_mask );
+  }
+
+  constexpr Flags<BitType> operator|( Flags<BitType> const & rhs ) const noexcept
+  {
+    return Flags<BitType>( m_mask | rhs.m_mask );
+  }
+
+private:
+  MaskType m_mask;
+};
+
+enum class CommandFlavourFlagBits : uint8_t
+{
+  chained       = 1 << 0,
+  singular      = 1 << 1,
+  unique        = 1 << 2,
+  withAllocator = 1 << 3
+};
+using CommandFlavourFlags = Flags<CommandFlavourFlagBits>;
+
+constexpr CommandFlavourFlags operator|( CommandFlavourFlagBits const & lhs, CommandFlavourFlagBits const & rhs ) noexcept
+{
+  return CommandFlavourFlags( lhs ) | CommandFlavourFlags( rhs );
+}
+
 class VulkanHppGenerator
 {
 public:
@@ -396,10 +446,9 @@ private:
   void checkValidStructs( int line, std::map<std::string, std::string> const & attributes ) const;
   std::string              combineDataTypes( std::map<size_t, VectorParamData> const & vectorParams,
                                              std::vector<size_t> const &               returnParams,
-                                             bool                                      singular,
                                              bool                                      enumerating,
                                              std::vector<std::string> const &          dataTypes,
-                                             bool                                      unique,
+                                             CommandFlavourFlags                       flavourFlags,
                                              bool                                      raii ) const;
   bool                     containsArray( std::string const & type ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
@@ -433,10 +482,8 @@ private:
   std::pair<std::string, std::string>     generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                       std::vector<std::string> const &          returnDataTypes,
                                                                       std::map<size_t, VectorParamData> const & vectorParams,
-                                                                      bool                                      definition,
-                                                                      bool                                      singular,
-                                                                      bool                                      unique,
-                                                                      bool                                      chained ) const;
+                                                                      CommandFlavourFlags                       flavourFlags,
+                                                                      bool                                      definition ) const;
   std::string                             generateArgumentListEnhanced( std::vector<ParamData> const &            params,
                                                                         std::vector<size_t> const &               returnParams,
                                                                         std::map<size_t, VectorParamData> const & vectorParams,
@@ -444,15 +491,14 @@ private:
                                                                         std::set<size_t> const &                  singularParams,
                                                                         std::set<size_t> const &                  templatedParams,
                                                                         bool                                      definition,
-                                                                        bool                                      withAllocators,
-                                                                        bool                                      structureChain,
+                                                                        CommandFlavourFlags                       flavourFlags,
                                                                         bool                                      withDispatcher ) const;
   std::string                             generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   std::string                             generateArgumentTemplates( std::vector<ParamData> const &            params,
                                                                      std::vector<size_t> const &               returnParams,
                                                                      std::map<size_t, VectorParamData> const & vectorParams,
                                                                      std::set<size_t> const &                  templatedParams,
-                                                                     bool                                      chained,
+                                                                     CommandFlavourFlags                       flavourFlags,
                                                                      bool                                      raii ) const;
   std::string                             generateBaseTypes() const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
@@ -491,7 +537,7 @@ private:
                                     size_t                                    initialSkipCount,
                                     std::set<size_t> const &                  singularParams,
                                     std::set<size_t> const &                  templatedParams,
-                                    bool                                      chained,
+                                    CommandFlavourFlags                       flavourFlags,
                                     bool                                      raii ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
@@ -505,16 +551,12 @@ private:
                                        bool                                      definition,
                                        std::map<size_t, VectorParamData> const & vectorParams,
                                        std::vector<size_t> const &               returnParams,
-                                       bool                                      singular,
-                                       bool                                      withAllocator,
-                                       bool                                      chained,
-                                       bool                                      unique ) const;
+                                       CommandFlavourFlags                       flavourFlags = {} ) const;
   std::string generateCommandName( std::string const &            vulkanCommandName,
                                    std::vector<ParamData> const & params,
                                    size_t                         initialSkipCount,
                                    std::set<std::string> const &  tags,
-                                   bool                           singular,
-                                   bool                           unique ) const;
+                                   CommandFlavourFlags            flavourFlags = {} ) const;
   std::string
     generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandResultMultiSuccessNoErrors0Return( std::string const & name,
@@ -623,10 +665,7 @@ private:
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,
                                         std::set<size_t> const &                  templatedParams,
-                                        bool                                      singular,
-                                        bool                                      withAllocator,
-                                        bool                                      chained,
-                                        bool                                      unique,
+                                        CommandFlavourFlags                       flavourFlags,
                                         bool                                      raii,
                                         std::vector<std::string> const &          dataTypes,
                                         std::string const &                       dataType,
@@ -636,10 +675,7 @@ private:
                                                std::vector<size_t> const &               returnParams,
                                                std::map<size_t, VectorParamData> const & vectorParams,
                                                std::set<size_t> const &                  templatedParams,
-                                               bool                                      singular,
-                                               bool                                      withAllocator,
-                                               bool                                      chained,
-                                               bool                                      unique,
+                                               CommandFlavourFlags                       flavourFlags,
                                                std::vector<std::string> const &          dataTypes,
                                                std::string const &                       dataType,
                                                std::string const &                       returnType,
@@ -647,16 +683,14 @@ private:
   std::string generateDataDeclarations2Returns( CommandData const &                       commandData,
                                                 std::vector<size_t> const &               returnParams,
                                                 std::map<size_t, VectorParamData> const & vectorParams,
-                                                bool                                      singular,
-                                                bool                                      withAllocator,
-                                                bool                                      chained,
+                                                CommandFlavourFlags                       flavourFlags,
                                                 bool                                      raii,
                                                 std::vector<std::string> const &          dataTypes,
                                                 std::string const &                       dataType,
                                                 std::string const &                       returnVariable ) const;
   std::string generateDataDeclarations3Returns( CommandData const &              commandData,
                                                 std::vector<size_t> const &      returnParams,
-                                                bool                             withAllocator,
+                                                CommandFlavourFlags              flavourFlags,
                                                 bool                             raii,
                                                 std::vector<std::string> const & dataTypes ) const;
   std::string generateDataPreparation( CommandData const &                       commandData,
@@ -664,10 +698,7 @@ private:
                                        std::vector<size_t> const &               returnParams,
                                        std::map<size_t, VectorParamData> const & vectorParams,
                                        std::set<size_t> const &                  templatedParams,
-                                       bool                                      singular,
-                                       bool                                      withAllocator,
-                                       bool                                      unique,
-                                       bool                                      chained,
+                                       CommandFlavourFlags                       flavourFlags,
                                        bool                                      enumerating ) const;
   std::string generateDataSizeChecks( CommandData const &                       commandData,
                                       std::vector<size_t> const &               returnParams,
@@ -712,7 +743,7 @@ private:
   std::string generateNoExcept( std::vector<std::string> const &          errorCodes,
                                 std::vector<size_t> const &               returnParams,
                                 std::map<size_t, VectorParamData> const & vectorParams,
-                                bool                                      singular,
+                                CommandFlavourFlags                       flavourFlags,
                                 bool                                      vectorSizeCheck,
                                 bool                                      raii ) const;
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
@@ -731,14 +762,13 @@ private:
                                                  std::vector<size_t> const &                        returnParams,
                                                  std::map<size_t, VectorParamData> const &          vectorParamIndices,
                                                  bool                                               definition,
-                                                 bool                                               chained,
-                                                 bool                                               singular ) const;
+                                                 CommandFlavourFlags                                flavourFlags = {} ) const;
   std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
                                                 size_t                                             initialSkipCount,
                                                 std::vector<size_t> const &                        returnParams,
                                                 std::map<size_t, VectorParamData> const &          vectorParams,
                                                 bool                                               definition,
-                                                bool                                               singular ) const;
+                                                CommandFlavourFlags                                flavourFlags = {} ) const;
   std::string generateRAIIHandleCommandFactoryArgumentList( std::vector<ParamData> const & params,
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
@@ -866,21 +896,19 @@ private:
                                        std::string const & dataType,
                                        size_t              initialSkipCount,
                                        size_t              returnParam,
-                                       bool                unique,
+                                       CommandFlavourFlags flavourFlags,
                                        bool                enumerating,
                                        bool                raii ) const;
   std::string generateReturnType( CommandData const &                       commandData,
                                   std::vector<size_t> const &               returnParams,
                                   std::map<size_t, VectorParamData> const & vectorParams,
-                                  bool                                      unique,
-                                  bool                                      chained,
+                                  CommandFlavourFlags                       flavourFlags,
                                   bool                                      raii,
                                   std::string const &                       dataType ) const;
   std::string generateReturnVariable( CommandData const &                       commandData,
                                       std::vector<size_t> const &               returnParams,
                                       std::map<size_t, VectorParamData> const & vectorParams,
-                                      bool                                      chained,
-                                      bool                                      singular ) const;
+                                      CommandFlavourFlags                       flavourFlags ) const;
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
@@ -910,10 +938,7 @@ private:
                                                              std::map<size_t, VectorParamData> const & vectorParams,
                                                              bool                                      definition,
                                                              std::vector<std::string> const &          dataTypes,
-                                                             bool                                      singular,
-                                                             bool                                      withAllocator,
-                                                             bool                                      unique,
-                                                             bool                                      chained ) const;
+                                                             CommandFlavourFlags                       flavourFlags ) const;
   std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
   std::string                         generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,

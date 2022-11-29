@@ -609,50 +609,11 @@ private:
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
   std::string
     generateCommandResultWithErrors0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string generateCommandSetStandard( std::string const & standard ) const;
-  std::string generateCommandSetStandardEnhanced( bool definition, std::string const & standard, std::string const & enhanced ) const;
-  std::string generateCommandSetStandardEnhancedChained( bool                definition,
-                                                         std::string const & standard,
-                                                         std::string const & enhanced,
-                                                         std::string const & enhancedChained ) const;
-  std::string generateCommandSetStandardEnhancedSingular( bool                definition,
-                                                          std::string const & standard,
-                                                          std::string const & enhanced,
-                                                          std::string const & enhancedSingular ) const;
-  std::string generateCommandSetStandardEnhancedUnique( bool                definition,
-                                                        std::string const & standard,
-                                                        std::string const & enhanced,
-                                                        std::string const & enhancedUnique ) const;
-  std::string generateCommandSetStandardEnhancedWithAllocator( bool                definition,
-                                                               std::string const & standard,
-                                                               std::string const & enhanced,
-                                                               std::string const & enhancedWithAllocator ) const;
-  std::string generateCommandSetStandardEnhancedWithAllocatorChained( bool                definition,
-                                                                      std::string const & standard,
-                                                                      std::string const & enhanced,
-                                                                      std::string const & enhancedWithAllocator,
-                                                                      std::string const & enhancedChained,
-                                                                      std::string const & enhancedChainedWithAllocator ) const;
-  std::string generateCommandSetStandardEnhancedWithAllocatorSingular( bool                definition,
-                                                                       std::string const & standard,
-                                                                       std::string const & enhanced,
-                                                                       std::string const & enhancedWithAllocator,
-                                                                       std::string const & enhancedSingular ) const;
-  std::string generateCommandSetStandardEnhancedWithAllocatorSingularUnique( bool                definition,
-                                                                             std::string const & standard,
-                                                                             std::string const & enhanced,
-                                                                             std::string const & enhancedWithAllocator,
-                                                                             std::string const & enhancedSingular,
-                                                                             std::string const & enhancedUnique,
-                                                                             std::string const & enhancedUniqueWithAllocator,
-                                                                             std::string const & enhancedUniqueSingular ) const;
-  std::string generateCommandSetStandardEnhancedWithAllocatorUnique( bool                definition,
-                                                                     std::string const & standard,
-                                                                     std::string const & enhanced,
-                                                                     std::string const & enhancedWithAllocator,
-                                                                     std::string const & enhancedUnique,
-                                                                     std::string const & enhancedUniqueWithAllocator ) const;
-  std::string generateCommandSetStandardOrEnhanced( std::string const & standard, std::string const & enhanced ) const;
+  std::string generateCommandSet( bool                             definition,
+                                  std::string const &              standard,
+                                  std::vector<std::string> const & enhanced = {},
+                                  std::vector<std::string> const & unique   = {} ) const;
+  std::string generateCommandSet( std::string const & standard, std::string const & enhanced ) const;
   std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
   std::string generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;

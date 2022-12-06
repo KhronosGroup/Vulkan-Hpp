@@ -12437,38 +12437,46 @@ void VulkanHppGenerator::readTypesTypeEnum( tinyxml2::XMLElement const * element
 void VulkanHppGenerator::readTypesTypeFuncpointer( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "funcpointer" } } }, { { "requires", {} } } );
+  checkAttributes( line, attributes, { { "category", { "funcpointer" } } }, { { "name", {} }, { "requires", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "name", true } }, { "type" } );
+  checkElements( line, children, {}, { "name", "type" } );
 
-  std::string requirements;
+  std::string name, requirements;
   for ( auto const & attribute : attributes )
   {
-    if ( attribute.first == "requires" )
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else if ( attribute.first == "requires" )
     {
       requirements = attribute.second;
     }
   }
 
-  auto                  funcPointerIt = m_funcPointers.end();
+  for ( auto const & child : children )
+  {
+    std::string value     = child->Value();
+    if ( value == "name" )
+    {
+      assert( name.empty() );
+      name = child->GetText();
+    }
+  }
+  checkForError( !name.empty(), line, "funcpointer with empty name" );
+  checkForError( m_funcPointers.find( name ) == m_funcPointers.end(), line, "funcpointer <" + name + "> already specified" );
+  auto funcPointerIt = m_funcPointers.insert( std::make_pair( name, FuncPointerData( requirements, line ) ) ).first;
+  checkForError(
+    m_types.insert( std::make_pair( name, TypeCategory::FuncPointer ) ).second, line, "funcpointer <" + name + "> already specified as a type" );
+
   std::set<std::string> argumentNames;
   for ( auto const & child : children )
   {
     std::string value     = child->Value();
-    int         childLine = child->GetLineNum();
-    if ( value == "name" )
+    if ( value == "type" )
     {
-      std::string name = child->GetText();
-      checkForError( !name.empty(), childLine, "funcpointer with empty name" );
-      checkForError( m_funcPointers.find( name ) == m_funcPointers.end(), childLine, "funcpointer <" + name + "> already specified" );
-      funcPointerIt = m_funcPointers.insert( std::make_pair( name, FuncPointerData( requirements, line ) ) ).first;
-      checkForError(
-        m_types.insert( std::make_pair( name, TypeCategory::FuncPointer ) ).second, childLine, "funcpointer <" + name + "> already specified as a type" );
-    }
-    else if ( value == "type" )
-    {
-      assert( funcPointerIt != m_funcPointers.end() );
       std::string type = child->GetText();
+      int         childLine = child->GetLineNum();
       funcPointerIt->second.arguments.push_back( { type, childLine } );
 
       auto         sibling      = child->NextSibling();

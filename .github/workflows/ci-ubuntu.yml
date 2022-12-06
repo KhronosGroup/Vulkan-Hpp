@@ -15,9 +15,10 @@ jobs:
         compiler:
           - {cxx: "g++-9", c: "gcc-9"}
           - {cxx: "g++-10", c: "gcc-10"}
-          - {cxx: "clang++-10", c: "clang-10"}
-          - {cxx: "clang++-11", c: "clang-11"}
+          - {cxx: "g++-11", c: "gcc-11"}
           - {cxx: "clang++-12", c: "clang-12"}
+          - {cxx: "clang++-13", c: "clang-13"}
+          - {cxx: "clang++-14", c: "clang-14"}
         cxx_standard: [11, 14, 17, 20]
 
     steps:

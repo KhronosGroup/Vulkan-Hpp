@@ -10,6 +10,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //===================================
   //=== STRUCT forward declarations ===
   //===================================
@@ -1496,6 +1497,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassSubpassFeedbackInfoEXT;
   struct RenderPassSubpassFeedbackCreateInfoEXT;
 
+  //=== VK_LUNARG_direct_driver_loading ===
+  struct DirectDriverLoadingInfoLUNARG;
+  struct DirectDriverLoadingListLUNARG;
+
   //=== VK_EXT_shader_module_identifier ===
   struct PhysicalDeviceShaderModuleIdentifierFeaturesEXT;
   struct PhysicalDeviceShaderModuleIdentifierPropertiesEXT;
@@ -1528,6 +1533,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_SEC_amigo_profiling ===
   struct PhysicalDeviceAmigoProfilingFeaturesSEC;
   struct AmigoProfilingSubmitInfoSEC;
+
+  //=== VK_QCOM_multiview_per_view_viewports ===
+  struct PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM;
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
   struct PhysicalDeviceRayTracingInvocationReorderPropertiesNV;

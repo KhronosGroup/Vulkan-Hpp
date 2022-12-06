@@ -18,6 +18,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //==========================
   //=== BITMASKs to_string ===
   //==========================
@@ -3125,6 +3126,13 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
+  //=== VK_LUNARG_direct_driver_loading ===
+
+  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingFlagsLUNARG )
+  {
+    return "{}";
+  }
+
   //=== VK_NV_optical_flow ===
 
   VULKAN_HPP_INLINE std::string to_string( OpticalFlowUsageFlagsNV value )
@@ -4040,6 +4048,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eRenderPassCreationControlEXT: return "RenderPassCreationControlEXT";
       case StructureType::eRenderPassCreationFeedbackCreateInfoEXT: return "RenderPassCreationFeedbackCreateInfoEXT";
       case StructureType::eRenderPassSubpassFeedbackCreateInfoEXT: return "RenderPassSubpassFeedbackCreateInfoEXT";
+      case StructureType::eDirectDriverLoadingInfoLUNARG: return "DirectDriverLoadingInfoLUNARG";
+      case StructureType::eDirectDriverLoadingListLUNARG: return "DirectDriverLoadingListLUNARG";
       case StructureType::ePhysicalDeviceShaderModuleIdentifierFeaturesEXT: return "PhysicalDeviceShaderModuleIdentifierFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderModuleIdentifierPropertiesEXT: return "PhysicalDeviceShaderModuleIdentifierPropertiesEXT";
       case StructureType::ePipelineShaderStageModuleIdentifierCreateInfoEXT: return "PipelineShaderStageModuleIdentifierCreateInfoEXT";
@@ -4058,6 +4068,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
       case StructureType::ePhysicalDeviceAmigoProfilingFeaturesSEC: return "PhysicalDeviceAmigoProfilingFeaturesSEC";
       case StructureType::eAmigoProfilingSubmitInfoSEC: return "AmigoProfilingSubmitInfoSEC";
+      case StructureType::ePhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM";
       case StructureType::ePhysicalDeviceRayTracingInvocationReorderFeaturesNV: return "PhysicalDeviceRayTracingInvocationReorderFeaturesNV";
       case StructureType::ePhysicalDeviceRayTracingInvocationReorderPropertiesNV: return "PhysicalDeviceRayTracingInvocationReorderPropertiesNV";
       case StructureType::ePhysicalDeviceMutableDescriptorTypeFeaturesEXT: return "PhysicalDeviceMutableDescriptorTypeFeaturesEXT";
@@ -8151,6 +8162,23 @@ namespace VULKAN_HPP_NAMESPACE
       case SubpassMergeStatusEXT::eNotMergedUnspecified: return "NotMergedUnspecified";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
+  }
+
+  //=== VK_LUNARG_direct_driver_loading ===
+
+  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingModeLUNARG value )
+  {
+    switch ( value )
+    {
+      case DirectDriverLoadingModeLUNARG::eExclusive: return "Exclusive";
+      case DirectDriverLoadingModeLUNARG::eInclusive: return "Inclusive";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( DirectDriverLoadingFlagBitsLUNARG )
+  {
+    return "(void)";
   }
 
   //=== VK_EXT_rasterization_order_attachment_access ===

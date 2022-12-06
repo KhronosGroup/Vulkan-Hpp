@@ -6070,6 +6070,20 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderPa
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderPassSubpassFeedbackCreateInfoEXT>::value,
                           "RenderPassSubpassFeedbackCreateInfoEXT is not nothrow_move_constructible!" );
 
+//=== VK_LUNARG_direct_driver_loading ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DirectDriverLoadingInfoLUNARG ) == sizeof( VkDirectDriverLoadingInfoLUNARG ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DirectDriverLoadingInfoLUNARG>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DirectDriverLoadingInfoLUNARG>::value,
+                          "DirectDriverLoadingInfoLUNARG is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::DirectDriverLoadingListLUNARG ) == sizeof( VkDirectDriverLoadingListLUNARG ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DirectDriverLoadingListLUNARG>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DirectDriverLoadingListLUNARG>::value,
+                          "DirectDriverLoadingListLUNARG is not nothrow_move_constructible!" );
+
 //=== VK_EXT_shader_module_identifier ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderModuleIdentifierFeaturesEXT ) ==
@@ -6211,6 +6225,16 @@ VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::AmigoProfilingSubmitInfo
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::AmigoProfilingSubmitInfoSEC>::value, "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::AmigoProfilingSubmitInfoSEC>::value,
                           "AmigoProfilingSubmitInfoSEC is not nothrow_move_constructible!" );
+
+//=== VK_QCOM_multiview_per_view_viewports ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM ) ==
+                            sizeof( VkPhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM>::value,
+                          "PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM is not nothrow_move_constructible!" );
 
 //=== VK_NV_ray_tracing_invocation_reorder ===
 

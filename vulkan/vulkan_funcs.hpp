@@ -10,6 +10,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //===========================
   //=== COMMAND Definitions ===
   //===========================

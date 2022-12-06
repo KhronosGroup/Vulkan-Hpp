@@ -12,6 +12,7 @@
 
 namespace VULKAN_HPP_NAMESPACE
 {
+
   //=====================
   //=== Format Traits ===
   //=====================

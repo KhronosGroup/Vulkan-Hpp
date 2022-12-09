@@ -1858,6 +1858,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Protected | ";
     if ( value & SwapchainCreateFlagBitsKHR::eMutableFormat )
       result += "MutableFormat | ";
+    if ( value & SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocationEXT )
+      result += "DeferredMemoryAllocationEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -2758,6 +2760,40 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( HeadlessSurfaceCreateFlagsEXT )
   {
     return "{}";
+  }
+
+  //=== VK_EXT_surface_maintenance1 ===
+
+  VULKAN_HPP_INLINE std::string to_string( PresentScalingFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & PresentScalingFlagBitsEXT::eOneToOne )
+      result += "OneToOne | ";
+    if ( value & PresentScalingFlagBitsEXT::eAspectRatioStretch )
+      result += "AspectRatioStretch | ";
+    if ( value & PresentScalingFlagBitsEXT::eStretch )
+      result += "Stretch | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PresentGravityFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & PresentGravityFlagBitsEXT::eMin )
+      result += "Min | ";
+    if ( value & PresentGravityFlagBitsEXT::eMax )
+      result += "Max | ";
+    if ( value & PresentGravityFlagBitsEXT::eCentered )
+      result += "Centered | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   //=== VK_NV_device_generated_commands ===
@@ -3863,6 +3899,15 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePipelineExecutableStatisticKHR: return "PipelineExecutableStatisticKHR";
       case StructureType::ePipelineExecutableInternalRepresentationKHR: return "PipelineExecutableInternalRepresentationKHR";
       case StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT: return "PhysicalDeviceShaderAtomicFloat2FeaturesEXT";
+      case StructureType::eSurfacePresentModeEXT: return "SurfacePresentModeEXT";
+      case StructureType::eSurfacePresentScalingCapabilitiesEXT: return "SurfacePresentScalingCapabilitiesEXT";
+      case StructureType::eSurfacePresentModeCompatibilityEXT: return "SurfacePresentModeCompatibilityEXT";
+      case StructureType::ePhysicalDeviceSwapchainMaintenance1FeaturesEXT: return "PhysicalDeviceSwapchainMaintenance1FeaturesEXT";
+      case StructureType::eSwapchainPresentFenceInfoEXT: return "SwapchainPresentFenceInfoEXT";
+      case StructureType::eSwapchainPresentModesCreateInfoEXT: return "SwapchainPresentModesCreateInfoEXT";
+      case StructureType::eSwapchainPresentModeInfoEXT: return "SwapchainPresentModeInfoEXT";
+      case StructureType::eSwapchainPresentScalingCreateInfoEXT: return "SwapchainPresentScalingCreateInfoEXT";
+      case StructureType::eReleaseSwapchainImagesInfoEXT: return "ReleaseSwapchainImagesInfoEXT";
       case StructureType::ePhysicalDeviceDeviceGeneratedCommandsPropertiesNV: return "PhysicalDeviceDeviceGeneratedCommandsPropertiesNV";
       case StructureType::eGraphicsShaderGroupCreateInfoNV: return "GraphicsShaderGroupCreateInfoNV";
       case StructureType::eGraphicsPipelineShaderGroupsCreateInfoNV: return "GraphicsPipelineShaderGroupsCreateInfoNV";
@@ -6331,6 +6376,7 @@ namespace VULKAN_HPP_NAMESPACE
       case SwapchainCreateFlagBitsKHR::eSplitInstanceBindRegions: return "SplitInstanceBindRegions";
       case SwapchainCreateFlagBitsKHR::eProtected: return "Protected";
       case SwapchainCreateFlagBitsKHR::eMutableFormat: return "MutableFormat";
+      case SwapchainCreateFlagBitsKHR::eDeferredMemoryAllocationEXT: return "DeferredMemoryAllocationEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7640,6 +7686,30 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineExecutableStatisticFormatKHR::eInt64: return "Int64";
       case PipelineExecutableStatisticFormatKHR::eUint64: return "Uint64";
       case PipelineExecutableStatisticFormatKHR::eFloat64: return "Float64";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_EXT_surface_maintenance1 ===
+
+  VULKAN_HPP_INLINE std::string to_string( PresentScalingFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PresentScalingFlagBitsEXT::eOneToOne: return "OneToOne";
+      case PresentScalingFlagBitsEXT::eAspectRatioStretch: return "AspectRatioStretch";
+      case PresentScalingFlagBitsEXT::eStretch: return "Stretch";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PresentGravityFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case PresentGravityFlagBitsEXT::eMin: return "Min";
+      case PresentGravityFlagBitsEXT::eMax: return "Max";
+      case PresentGravityFlagBitsEXT::eCentered: return "Centered";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

@@ -1134,6 +1134,19 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_atomic_float2 ===
   struct PhysicalDeviceShaderAtomicFloat2FeaturesEXT;
 
+  //=== VK_EXT_surface_maintenance1 ===
+  struct SurfacePresentModeEXT;
+  struct SurfacePresentScalingCapabilitiesEXT;
+  struct SurfacePresentModeCompatibilityEXT;
+
+  //=== VK_EXT_swapchain_maintenance1 ===
+  struct PhysicalDeviceSwapchainMaintenance1FeaturesEXT;
+  struct SwapchainPresentFenceInfoEXT;
+  struct SwapchainPresentModesCreateInfoEXT;
+  struct SwapchainPresentModeInfoEXT;
+  struct SwapchainPresentScalingCreateInfoEXT;
+  struct ReleaseSwapchainImagesInfoEXT;
+
   //=== VK_NV_device_generated_commands ===
   struct PhysicalDeviceDeviceGeneratedCommandsPropertiesNV;
   struct PhysicalDeviceDeviceGeneratedCommandsFeaturesNV;
@@ -11369,6 +11382,17 @@ namespace VULKAN_HPP_NAMESPACE
         const VULKAN_HPP_NAMESPACE::PipelineExecutableInfoKHR & executableInfo,
         PipelineExecutableInternalRepresentationKHRAllocator &  pipelineExecutableInternalRepresentationKHRAllocator,
         Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_EXT_swapchain_maintenance1 ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT * pReleaseInfo,
+                                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    typename ResultValueType<void>::type releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT & releaseInfo,
+                                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_device_generated_commands ===

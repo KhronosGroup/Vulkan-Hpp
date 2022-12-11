@@ -12966,11 +12966,6 @@ void VulkanHppGenerator::setVulkanLicenseHeader( int line, std::string const & c
   {
     m_vulkanLicenseHeader.replace( pos, 1, "\n// " );
   }
-  // replace any " \n" with "\n"
-  for ( size_t pos = m_vulkanLicenseHeader.find( " \n" ); pos != std::string::npos; pos = m_vulkanLicenseHeader.find( " \n", pos ) )
-  {
-    m_vulkanLicenseHeader.replace( pos, 2, "\n" );
-  }
   // remove any trailing spaces
   m_vulkanLicenseHeader = trimEnd( m_vulkanLicenseHeader );
 

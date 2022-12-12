@@ -1587,8 +1587,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSurfaceKHR;
 
   public:
-    VULKAN_HPP_CONSTEXPR         SurfaceKHR() = default;
-    VULKAN_HPP_CONSTEXPR         SurfaceKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR SurfaceKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR SurfaceKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT SurfaceKHR( VkSurfaceKHR surfaceKHR ) VULKAN_HPP_NOEXCEPT : m_surfaceKHR( surfaceKHR ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -1672,8 +1674,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDebugReportCallbackEXT;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DebugReportCallbackEXT() = default;
-    VULKAN_HPP_CONSTEXPR         DebugReportCallbackEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DebugReportCallbackEXT() = default;
+
+    VULKAN_HPP_CONSTEXPR DebugReportCallbackEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DebugReportCallbackEXT( VkDebugReportCallbackEXT debugReportCallbackEXT ) VULKAN_HPP_NOEXCEPT
       : m_debugReportCallbackEXT( debugReportCallbackEXT )
     {
@@ -1760,8 +1764,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DebugUtilsMessengerEXT() = default;
-    VULKAN_HPP_CONSTEXPR         DebugUtilsMessengerEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT() = default;
+
+    VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DebugUtilsMessengerEXT( VkDebugUtilsMessengerEXT debugUtilsMessengerEXT ) VULKAN_HPP_NOEXCEPT
       : m_debugUtilsMessengerEXT( debugUtilsMessengerEXT )
     {
@@ -1842,8 +1848,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DisplayKHR() = default;
-    VULKAN_HPP_CONSTEXPR         DisplayKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DisplayKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR DisplayKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayKHR( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT : m_displayKHR( displayKHR ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -1927,8 +1935,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSwapchainKHR;
 
   public:
-    VULKAN_HPP_CONSTEXPR         SwapchainKHR() = default;
-    VULKAN_HPP_CONSTEXPR         SwapchainKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR SwapchainKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR SwapchainKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT SwapchainKHR( VkSwapchainKHR swapchainKHR ) VULKAN_HPP_NOEXCEPT : m_swapchainKHR( swapchainKHR ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2012,8 +2022,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSemaphore;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Semaphore() = default;
-    VULKAN_HPP_CONSTEXPR         Semaphore( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Semaphore() = default;
+
+    VULKAN_HPP_CONSTEXPR Semaphore( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Semaphore( VkSemaphore semaphore ) VULKAN_HPP_NOEXCEPT : m_semaphore( semaphore ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2097,8 +2109,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFence;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Fence() = default;
-    VULKAN_HPP_CONSTEXPR         Fence( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Fence() = default;
+
+    VULKAN_HPP_CONSTEXPR Fence( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Fence( VkFence fence ) VULKAN_HPP_NOEXCEPT : m_fence( fence ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2182,8 +2196,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         PerformanceConfigurationINTEL() = default;
-    VULKAN_HPP_CONSTEXPR         PerformanceConfigurationINTEL( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationINTEL() = default;
+
+    VULKAN_HPP_CONSTEXPR PerformanceConfigurationINTEL( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT PerformanceConfigurationINTEL( VkPerformanceConfigurationINTEL performanceConfigurationINTEL ) VULKAN_HPP_NOEXCEPT
       : m_performanceConfigurationINTEL( performanceConfigurationINTEL )
     {
@@ -2264,8 +2280,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueryPool;
 
   public:
-    VULKAN_HPP_CONSTEXPR         QueryPool() = default;
-    VULKAN_HPP_CONSTEXPR         QueryPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR QueryPool() = default;
+
+    VULKAN_HPP_CONSTEXPR QueryPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT QueryPool( VkQueryPool queryPool ) VULKAN_HPP_NOEXCEPT : m_queryPool( queryPool ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2349,8 +2367,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBuffer;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Buffer() = default;
-    VULKAN_HPP_CONSTEXPR         Buffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Buffer() = default;
+
+    VULKAN_HPP_CONSTEXPR Buffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Buffer( VkBuffer buffer ) VULKAN_HPP_NOEXCEPT : m_buffer( buffer ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2434,8 +2454,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineLayout;
 
   public:
-    VULKAN_HPP_CONSTEXPR         PipelineLayout() = default;
-    VULKAN_HPP_CONSTEXPR         PipelineLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR PipelineLayout() = default;
+
+    VULKAN_HPP_CONSTEXPR PipelineLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineLayout( VkPipelineLayout pipelineLayout ) VULKAN_HPP_NOEXCEPT : m_pipelineLayout( pipelineLayout ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2519,8 +2541,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSet;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DescriptorSet() = default;
-    VULKAN_HPP_CONSTEXPR         DescriptorSet( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DescriptorSet() = default;
+
+    VULKAN_HPP_CONSTEXPR DescriptorSet( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorSet( VkDescriptorSet descriptorSet ) VULKAN_HPP_NOEXCEPT : m_descriptorSet( descriptorSet ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2604,8 +2628,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImageView;
 
   public:
-    VULKAN_HPP_CONSTEXPR         ImageView() = default;
-    VULKAN_HPP_CONSTEXPR         ImageView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR ImageView() = default;
+
+    VULKAN_HPP_CONSTEXPR ImageView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT ImageView( VkImageView imageView ) VULKAN_HPP_NOEXCEPT : m_imageView( imageView ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2689,8 +2715,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Pipeline() = default;
-    VULKAN_HPP_CONSTEXPR         Pipeline( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Pipeline() = default;
+
+    VULKAN_HPP_CONSTEXPR Pipeline( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Pipeline( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT : m_pipeline( pipeline ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2774,8 +2802,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eImage;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Image() = default;
-    VULKAN_HPP_CONSTEXPR         Image( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Image() = default;
+
+    VULKAN_HPP_CONSTEXPR Image( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Image( VkImage image ) VULKAN_HPP_NOEXCEPT : m_image( image ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -2859,8 +2889,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eAccelerationStructureNV;
 
   public:
-    VULKAN_HPP_CONSTEXPR         AccelerationStructureNV() = default;
-    VULKAN_HPP_CONSTEXPR         AccelerationStructureNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR AccelerationStructureNV() = default;
+
+    VULKAN_HPP_CONSTEXPR AccelerationStructureNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT AccelerationStructureNV( VkAccelerationStructureNV accelerationStructureNV ) VULKAN_HPP_NOEXCEPT
       : m_accelerationStructureNV( accelerationStructureNV )
     {
@@ -2947,8 +2979,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         OpticalFlowSessionNV() = default;
-    VULKAN_HPP_CONSTEXPR         OpticalFlowSessionNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR OpticalFlowSessionNV() = default;
+
+    VULKAN_HPP_CONSTEXPR OpticalFlowSessionNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT OpticalFlowSessionNV( VkOpticalFlowSessionNV opticalFlowSessionNV ) VULKAN_HPP_NOEXCEPT
       : m_opticalFlowSessionNV( opticalFlowSessionNV )
     {
@@ -3029,8 +3063,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorUpdateTemplate;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DescriptorUpdateTemplate() = default;
-    VULKAN_HPP_CONSTEXPR         DescriptorUpdateTemplate( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplate() = default;
+
+    VULKAN_HPP_CONSTEXPR DescriptorUpdateTemplate( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorUpdateTemplate( VkDescriptorUpdateTemplate descriptorUpdateTemplate ) VULKAN_HPP_NOEXCEPT
       : m_descriptorUpdateTemplate( descriptorUpdateTemplate )
     {
@@ -3105,6 +3141,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
+
   using DescriptorUpdateTemplateKHR = DescriptorUpdateTemplate;
 
   class Event
@@ -3118,8 +3155,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eEvent;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Event() = default;
-    VULKAN_HPP_CONSTEXPR         Event( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Event() = default;
+
+    VULKAN_HPP_CONSTEXPR Event( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Event( VkEvent event ) VULKAN_HPP_NOEXCEPT : m_event( event ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -3203,8 +3242,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eAccelerationStructureKHR;
 
   public:
-    VULKAN_HPP_CONSTEXPR         AccelerationStructureKHR() = default;
-    VULKAN_HPP_CONSTEXPR         AccelerationStructureKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR AccelerationStructureKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR AccelerationStructureKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT AccelerationStructureKHR( VkAccelerationStructureKHR accelerationStructureKHR ) VULKAN_HPP_NOEXCEPT
       : m_accelerationStructureKHR( accelerationStructureKHR )
     {
@@ -3291,8 +3332,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         MicromapEXT() = default;
-    VULKAN_HPP_CONSTEXPR         MicromapEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR MicromapEXT() = default;
+
+    VULKAN_HPP_CONSTEXPR MicromapEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT MicromapEXT( VkMicromapEXT micromapEXT ) VULKAN_HPP_NOEXCEPT : m_micromapEXT( micromapEXT ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -3371,7 +3414,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_CONSTEXPR CommandBuffer() = default;
+
     VULKAN_HPP_CONSTEXPR CommandBuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     CommandBuffer( VkCommandBuffer commandBuffer ) VULKAN_HPP_NOEXCEPT : m_commandBuffer( commandBuffer ) {}
 
     CommandBuffer & operator=( VkCommandBuffer commandBuffer ) VULKAN_HPP_NOEXCEPT
@@ -5549,8 +5594,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDeviceMemory;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DeviceMemory() = default;
-    VULKAN_HPP_CONSTEXPR         DeviceMemory( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DeviceMemory() = default;
+
+    VULKAN_HPP_CONSTEXPR DeviceMemory( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DeviceMemory( VkDeviceMemory deviceMemory ) VULKAN_HPP_NOEXCEPT : m_deviceMemory( deviceMemory ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -5635,8 +5682,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         VideoSessionKHR() = default;
-    VULKAN_HPP_CONSTEXPR         VideoSessionKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR VideoSessionKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR VideoSessionKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT VideoSessionKHR( VkVideoSessionKHR videoSessionKHR ) VULKAN_HPP_NOEXCEPT : m_videoSessionKHR( videoSessionKHR ) {}
 
 #  if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -5715,8 +5764,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DeferredOperationKHR() = default;
-    VULKAN_HPP_CONSTEXPR         DeferredOperationKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DeferredOperationKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR DeferredOperationKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DeferredOperationKHR( VkDeferredOperationKHR deferredOperationKHR ) VULKAN_HPP_NOEXCEPT
       : m_deferredOperationKHR( deferredOperationKHR )
     {
@@ -5798,8 +5849,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA;
 
   public:
-    VULKAN_HPP_CONSTEXPR         BufferCollectionFUCHSIA() = default;
-    VULKAN_HPP_CONSTEXPR         BufferCollectionFUCHSIA( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR BufferCollectionFUCHSIA() = default;
+
+    VULKAN_HPP_CONSTEXPR BufferCollectionFUCHSIA( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT BufferCollectionFUCHSIA( VkBufferCollectionFUCHSIA bufferCollectionFUCHSIA ) VULKAN_HPP_NOEXCEPT
       : m_bufferCollectionFUCHSIA( bufferCollectionFUCHSIA )
     {
@@ -5887,8 +5940,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eBufferView;
 
   public:
-    VULKAN_HPP_CONSTEXPR         BufferView() = default;
-    VULKAN_HPP_CONSTEXPR         BufferView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR BufferView() = default;
+
+    VULKAN_HPP_CONSTEXPR BufferView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT BufferView( VkBufferView bufferView ) VULKAN_HPP_NOEXCEPT : m_bufferView( bufferView ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -5972,8 +6027,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandPool;
 
   public:
-    VULKAN_HPP_CONSTEXPR         CommandPool() = default;
-    VULKAN_HPP_CONSTEXPR         CommandPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR CommandPool() = default;
+
+    VULKAN_HPP_CONSTEXPR CommandPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT CommandPool( VkCommandPool commandPool ) VULKAN_HPP_NOEXCEPT : m_commandPool( commandPool ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6057,8 +6114,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipelineCache;
 
   public:
-    VULKAN_HPP_CONSTEXPR         PipelineCache() = default;
-    VULKAN_HPP_CONSTEXPR         PipelineCache( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR PipelineCache() = default;
+
+    VULKAN_HPP_CONSTEXPR PipelineCache( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineCache( VkPipelineCache pipelineCache ) VULKAN_HPP_NOEXCEPT : m_pipelineCache( pipelineCache ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6142,8 +6201,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuFunctionNVX;
 
   public:
-    VULKAN_HPP_CONSTEXPR         CuFunctionNVX() = default;
-    VULKAN_HPP_CONSTEXPR         CuFunctionNVX( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR CuFunctionNVX() = default;
+
+    VULKAN_HPP_CONSTEXPR CuFunctionNVX( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT CuFunctionNVX( VkCuFunctionNVX cuFunctionNVX ) VULKAN_HPP_NOEXCEPT : m_cuFunctionNVX( cuFunctionNVX ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6227,8 +6288,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCuModuleNVX;
 
   public:
-    VULKAN_HPP_CONSTEXPR         CuModuleNVX() = default;
-    VULKAN_HPP_CONSTEXPR         CuModuleNVX( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR CuModuleNVX() = default;
+
+    VULKAN_HPP_CONSTEXPR CuModuleNVX( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT CuModuleNVX( VkCuModuleNVX cuModuleNVX ) VULKAN_HPP_NOEXCEPT : m_cuModuleNVX( cuModuleNVX ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6312,8 +6375,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorPool;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DescriptorPool() = default;
-    VULKAN_HPP_CONSTEXPR         DescriptorPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DescriptorPool() = default;
+
+    VULKAN_HPP_CONSTEXPR DescriptorPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorPool( VkDescriptorPool descriptorPool ) VULKAN_HPP_NOEXCEPT : m_descriptorPool( descriptorPool ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6397,8 +6462,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSetLayout;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DescriptorSetLayout() = default;
-    VULKAN_HPP_CONSTEXPR         DescriptorSetLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayout() = default;
+
+    VULKAN_HPP_CONSTEXPR DescriptorSetLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorSetLayout( VkDescriptorSetLayout descriptorSetLayout ) VULKAN_HPP_NOEXCEPT
       : m_descriptorSetLayout( descriptorSetLayout )
     {
@@ -6485,8 +6552,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFramebuffer;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Framebuffer() = default;
-    VULKAN_HPP_CONSTEXPR         Framebuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Framebuffer() = default;
+
+    VULKAN_HPP_CONSTEXPR Framebuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Framebuffer( VkFramebuffer framebuffer ) VULKAN_HPP_NOEXCEPT : m_framebuffer( framebuffer ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6570,8 +6639,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         IndirectCommandsLayoutNV() = default;
-    VULKAN_HPP_CONSTEXPR         IndirectCommandsLayoutNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutNV() = default;
+
+    VULKAN_HPP_CONSTEXPR IndirectCommandsLayoutNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT IndirectCommandsLayoutNV( VkIndirectCommandsLayoutNV indirectCommandsLayoutNV ) VULKAN_HPP_NOEXCEPT
       : m_indirectCommandsLayoutNV( indirectCommandsLayoutNV )
     {
@@ -6652,8 +6723,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         PrivateDataSlot() = default;
-    VULKAN_HPP_CONSTEXPR         PrivateDataSlot( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR PrivateDataSlot() = default;
+
+    VULKAN_HPP_CONSTEXPR PrivateDataSlot( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT PrivateDataSlot( VkPrivateDataSlot privateDataSlot ) VULKAN_HPP_NOEXCEPT : m_privateDataSlot( privateDataSlot ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6719,6 +6792,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
+
   using PrivateDataSlotEXT = PrivateDataSlot;
 
   class RenderPass
@@ -6732,8 +6806,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eRenderPass;
 
   public:
-    VULKAN_HPP_CONSTEXPR         RenderPass() = default;
-    VULKAN_HPP_CONSTEXPR         RenderPass( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR RenderPass() = default;
+
+    VULKAN_HPP_CONSTEXPR RenderPass( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT RenderPass( VkRenderPass renderPass ) VULKAN_HPP_NOEXCEPT : m_renderPass( renderPass ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6817,8 +6893,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSampler;
 
   public:
-    VULKAN_HPP_CONSTEXPR         Sampler() = default;
-    VULKAN_HPP_CONSTEXPR         Sampler( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR Sampler() = default;
+
+    VULKAN_HPP_CONSTEXPR Sampler( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT Sampler( VkSampler sampler ) VULKAN_HPP_NOEXCEPT : m_sampler( sampler ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -6902,8 +6980,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSamplerYcbcrConversion;
 
   public:
-    VULKAN_HPP_CONSTEXPR         SamplerYcbcrConversion() = default;
-    VULKAN_HPP_CONSTEXPR         SamplerYcbcrConversion( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion() = default;
+
+    VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT SamplerYcbcrConversion( VkSamplerYcbcrConversion samplerYcbcrConversion ) VULKAN_HPP_NOEXCEPT
       : m_samplerYcbcrConversion( samplerYcbcrConversion )
     {
@@ -6978,6 +7058,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
+
   using SamplerYcbcrConversionKHR = SamplerYcbcrConversion;
 
   class ShaderModule
@@ -6991,8 +7072,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eShaderModule;
 
   public:
-    VULKAN_HPP_CONSTEXPR         ShaderModule() = default;
-    VULKAN_HPP_CONSTEXPR         ShaderModule( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR ShaderModule() = default;
+
+    VULKAN_HPP_CONSTEXPR ShaderModule( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT ShaderModule( VkShaderModule shaderModule ) VULKAN_HPP_NOEXCEPT : m_shaderModule( shaderModule ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -7076,8 +7159,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eValidationCacheEXT;
 
   public:
-    VULKAN_HPP_CONSTEXPR         ValidationCacheEXT() = default;
-    VULKAN_HPP_CONSTEXPR         ValidationCacheEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR ValidationCacheEXT() = default;
+
+    VULKAN_HPP_CONSTEXPR ValidationCacheEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT ValidationCacheEXT( VkValidationCacheEXT validationCacheEXT ) VULKAN_HPP_NOEXCEPT : m_validationCacheEXT( validationCacheEXT )
     {
     }
@@ -7164,8 +7249,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
 
   public:
-    VULKAN_HPP_CONSTEXPR         VideoSessionParametersKHR() = default;
-    VULKAN_HPP_CONSTEXPR         VideoSessionParametersKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR VideoSessionParametersKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR VideoSessionParametersKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT VideoSessionParametersKHR( VkVideoSessionParametersKHR videoSessionParametersKHR ) VULKAN_HPP_NOEXCEPT
       : m_videoSessionParametersKHR( videoSessionParametersKHR )
     {
@@ -7248,7 +7335,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_CONSTEXPR Queue() = default;
+
     VULKAN_HPP_CONSTEXPR Queue( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     Queue( VkQueue queue ) VULKAN_HPP_NOEXCEPT : m_queue( queue ) {}
 
     Queue & operator=( VkQueue queue ) VULKAN_HPP_NOEXCEPT
@@ -7470,26 +7559,32 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Device;
+
   template <typename Dispatch>
   class UniqueHandleTraits<AccelerationStructureKHR, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueAccelerationStructureKHR = UniqueHandle<AccelerationStructureKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<AccelerationStructureNV, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Buffer, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueBuffer = UniqueHandle<Buffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   template <typename Dispatch>
@@ -7498,6 +7593,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueBufferCollectionFUCHSIA = UniqueHandle<BufferCollectionFUCHSIA, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
   template <typename Dispatch>
@@ -7506,219 +7602,280 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueBufferView = UniqueHandle<BufferView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<CommandBuffer, Dispatch>
   {
   public:
     using deleter = PoolFree<Device, CommandPool, Dispatch>;
   };
+
   using UniqueCommandBuffer = UniqueHandle<CommandBuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<CommandPool, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueCommandPool = UniqueHandle<CommandPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<CuFunctionNVX, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueCuFunctionNVX = UniqueHandle<CuFunctionNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<CuModuleNVX, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueCuModuleNVX = UniqueHandle<CuModuleNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DeferredOperationKHR, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueDeferredOperationKHR = UniqueHandle<DeferredOperationKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DescriptorPool, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueDescriptorPool = UniqueHandle<DescriptorPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DescriptorSet, Dispatch>
   {
   public:
     using deleter = PoolFree<Device, DescriptorPool, Dispatch>;
   };
+
   using UniqueDescriptorSet = UniqueHandle<DescriptorSet, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DescriptorSetLayout, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DescriptorUpdateTemplate, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueDescriptorUpdateTemplate    = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DeviceMemory, Dispatch>
   {
   public:
     using deleter = ObjectFree<Device, Dispatch>;
   };
+
   using UniqueDeviceMemory = UniqueHandle<DeviceMemory, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Event, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueEvent = UniqueHandle<Event, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Fence, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueFence = UniqueHandle<Fence, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Framebuffer, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueFramebuffer = UniqueHandle<Framebuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Image, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueImage = UniqueHandle<Image, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<ImageView, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueImageView = UniqueHandle<ImageView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<IndirectCommandsLayoutNV, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueIndirectCommandsLayoutNV = UniqueHandle<IndirectCommandsLayoutNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<MicromapEXT, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueMicromapEXT = UniqueHandle<MicromapEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<OpticalFlowSessionNV, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueOpticalFlowSessionNV = UniqueHandle<OpticalFlowSessionNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Pipeline, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniquePipeline = UniqueHandle<Pipeline, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<PipelineCache, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniquePipelineCache = UniqueHandle<PipelineCache, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<PipelineLayout, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniquePipelineLayout = UniqueHandle<PipelineLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<PrivateDataSlot, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniquePrivateDataSlot    = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<QueryPool, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueQueryPool = UniqueHandle<QueryPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<RenderPass, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueRenderPass = UniqueHandle<RenderPass, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Sampler, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueSampler = UniqueHandle<Sampler, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<SamplerYcbcrConversion, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueSamplerYcbcrConversion    = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
   using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<Semaphore, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueSemaphore = UniqueHandle<Semaphore, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<ShaderModule, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueShaderModule = UniqueHandle<ShaderModule, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<SwapchainKHR, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<ValidationCacheEXT, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   template <typename Dispatch>
@@ -7727,6 +7884,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueVideoSessionKHR = UniqueHandle<VideoSessionKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7736,6 +7894,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<Device, Dispatch>;
   };
+
   using UniqueVideoSessionParametersKHR = UniqueHandle<VideoSessionParametersKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #endif   /*VULKAN_HPP_NO_SMART_HANDLE*/
@@ -7752,7 +7911,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_CONSTEXPR Device() = default;
+
     VULKAN_HPP_CONSTEXPR Device( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     Device( VkDevice device ) VULKAN_HPP_NOEXCEPT : m_device( device ) {}
 
     Device & operator=( VkDevice device ) VULKAN_HPP_NOEXCEPT
@@ -12337,8 +12498,10 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayModeKHR;
 
   public:
-    VULKAN_HPP_CONSTEXPR         DisplayModeKHR() = default;
-    VULKAN_HPP_CONSTEXPR         DisplayModeKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+    VULKAN_HPP_CONSTEXPR DisplayModeKHR() = default;
+
+    VULKAN_HPP_CONSTEXPR DisplayModeKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayModeKHR( VkDisplayModeKHR displayModeKHR ) VULKAN_HPP_NOEXCEPT : m_displayModeKHR( displayModeKHR ) {}
 
 #if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
@@ -12418,6 +12581,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<NoParent, Dispatch>;
   };
+
   using UniqueDevice = UniqueHandle<Device, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -12433,7 +12597,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_CONSTEXPR PhysicalDevice() = default;
+
     VULKAN_HPP_CONSTEXPR PhysicalDevice( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     PhysicalDevice( VkPhysicalDevice physicalDevice ) VULKAN_HPP_NOEXCEPT : m_physicalDevice( physicalDevice ) {}
 
     PhysicalDevice & operator=( VkPhysicalDevice physicalDevice ) VULKAN_HPP_NOEXCEPT
@@ -13779,26 +13945,32 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
   class Instance;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DebugReportCallbackEXT, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Instance, Dispatch>;
   };
+
   using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<DebugUtilsMessengerEXT, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Instance, Dispatch>;
   };
+
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   template <typename Dispatch>
   class UniqueHandleTraits<SurfaceKHR, Dispatch>
   {
   public:
     using deleter = ObjectDestroy<Instance, Dispatch>;
   };
+
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
@@ -13814,7 +13986,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_CONSTEXPR Instance() = default;
+
     VULKAN_HPP_CONSTEXPR Instance( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
     Instance( VkInstance instance ) VULKAN_HPP_NOEXCEPT : m_instance( instance ) {}
 
     Instance & operator=( VkInstance instance ) VULKAN_HPP_NOEXCEPT
@@ -14474,6 +14648,7 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     using deleter = ObjectDestroy<NoParent, Dispatch>;
   };
+
   using UniqueInstance = UniqueHandle<Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 

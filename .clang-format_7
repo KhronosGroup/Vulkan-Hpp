@@ -68,7 +68,7 @@ SpaceBeforeParens : ControlStatements
 SpaceBeforeRangeBasedForLoopColon : true
 SpaceInEmptyParentheses : false
 SpacesBeforeTrailingComments : 2
-SpacesInAngles : false
+SpacesInAngles : Never
 SpacesInCStyleCastParentheses : false
 SpacesInContainerLiterals : false
 SpacesInParentheses : true

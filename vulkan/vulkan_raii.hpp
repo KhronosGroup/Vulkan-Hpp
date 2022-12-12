@@ -1109,6 +1109,9 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetShaderModuleCreateInfoIdentifierEXT =
           PFN_vkGetShaderModuleCreateInfoIdentifierEXT( vkGetDeviceProcAddr( device, "vkGetShaderModuleCreateInfoIdentifierEXT" ) );
 
+        //=== VK_EXT_swapchain_maintenance1 ===
+        vkReleaseSwapchainImagesEXT = PFN_vkReleaseSwapchainImagesEXT( vkGetDeviceProcAddr( device, "vkReleaseSwapchainImagesEXT" ) );
+
         //=== VK_EXT_transform_feedback ===
         vkCmdBindTransformFeedbackBuffersEXT =
           PFN_vkCmdBindTransformFeedbackBuffersEXT( vkGetDeviceProcAddr( device, "vkCmdBindTransformFeedbackBuffersEXT" ) );
@@ -2001,6 +2004,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_shader_module_identifier ===
       PFN_vkGetShaderModuleIdentifierEXT           vkGetShaderModuleIdentifierEXT           = 0;
       PFN_vkGetShaderModuleCreateInfoIdentifierEXT vkGetShaderModuleCreateInfoIdentifierEXT = 0;
+
+      //=== VK_EXT_swapchain_maintenance1 ===
+      PFN_vkReleaseSwapchainImagesEXT vkReleaseSwapchainImagesEXT = 0;
 
       //=== VK_EXT_transform_feedback ===
       PFN_vkCmdBindTransformFeedbackBuffersEXT vkCmdBindTransformFeedbackBuffersEXT = 0;
@@ -3932,6 +3938,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>
                            getPipelineExecutableInternalRepresentationsKHR( const VULKAN_HPP_NAMESPACE::PipelineExecutableInfoKHR & executableInfo ) const;
+
+      //=== VK_EXT_swapchain_maintenance1 ===
+
+      void releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT & releaseInfo ) const;
 
       //=== VK_NV_device_generated_commands ===
 
@@ -17362,6 +17372,18 @@ namespace VULKAN_HPP_NAMESPACE
         internalRepresentations.resize( internalRepresentationCount );
       }
       return internalRepresentations;
+    }
+
+    //=== VK_EXT_swapchain_maintenance1 ===
+
+    VULKAN_HPP_INLINE void Device::releaseSwapchainImagesEXT( const VULKAN_HPP_NAMESPACE::ReleaseSwapchainImagesInfoEXT & releaseInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkReleaseSwapchainImagesEXT &&
+                         "Function <vkReleaseSwapchainImagesEXT> needs extension <VK_EXT_swapchain_maintenance1> enabled!" );
+
+      VkResult result = getDispatcher()->vkReleaseSwapchainImagesEXT( static_cast<VkDevice>( m_device ),
+                                                                      reinterpret_cast<const VkReleaseSwapchainImagesInfoEXT *>( &releaseInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::releaseSwapchainImagesEXT" );
     }
 
     //=== VK_NV_device_generated_commands ===

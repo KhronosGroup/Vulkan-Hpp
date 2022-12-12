@@ -77,7 +77,7 @@ SpaceBeforeSquareBrackets : false
 SpaceInEmptyBlock : false
 SpaceInEmptyParentheses : false
 SpacesBeforeTrailingComments : 2
-SpacesInAngles : false
+SpacesInAngles : Never
 SpacesInCStyleCastParentheses : false
 SpacesInConditionalStatement : true
 SpacesInContainerLiterals : false

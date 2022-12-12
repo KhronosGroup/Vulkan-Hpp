@@ -896,10 +896,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       m_ptr = &reference;
     }
+
     Optional( RefType * ptr ) VULKAN_HPP_NOEXCEPT
     {
       m_ptr = ptr;
     }
+
     Optional( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {
       m_ptr = nullptr;
@@ -909,10 +911,12 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_ptr;
     }
+
     RefType const * operator->() const VULKAN_HPP_NOEXCEPT
     {
       return m_ptr;
     }
+
     explicit operator bool() const VULKAN_HPP_NOEXCEPT
     {
       return !!m_ptr;
@@ -5870,6 +5874,7 @@ namespace VULKAN_HPP_NAMESPACE
     static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
     return dls;
   }
+
 #    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::getDispatchLoaderStatic()
 #    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 #  endif
@@ -5915,6 +5920,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_owner;
     }
+
     Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
     {
       return m_allocationCallbacks;
@@ -6053,6 +6059,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return m_owner;
     }
+
     PoolType getPool() const VULKAN_HPP_NOEXCEPT
     {
       return m_pool;
@@ -6110,6 +6117,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return VULKAN_HPP_NAMESPACE_STRING "::Result";
     }
+
     virtual std::string message( int ev ) const override
     {
 #  if defined( VULKAN_HPP_NO_TO_STRING )
@@ -6136,6 +6144,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     explicit LogicError( const std::string & what ) : Error(), std::logic_error( what ) {}
+
     explicit LogicError( char const * what ) : Error(), std::logic_error( what ) {}
 
     virtual const char * what() const VULKAN_HPP_NOEXCEPT
@@ -6150,10 +6159,15 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     SystemError( std::error_code ec ) : Error(), std::system_error( ec ) {}
+
     SystemError( std::error_code ec, std::string const & what ) : Error(), std::system_error( ec, what ) {}
+
     SystemError( std::error_code ec, char const * what ) : Error(), std::system_error( ec, what ) {}
+
     SystemError( int ev, std::error_category const & ecat ) : Error(), std::system_error( ev, ecat ) {}
+
     SystemError( int ev, std::error_category const & ecat, std::string const & what ) : Error(), std::system_error( ev, ecat, what ) {}
+
     SystemError( int ev, std::error_category const & ecat, char const * what ) : Error(), std::system_error( ev, ecat, what ) {}
 
     virtual const char * what() const VULKAN_HPP_NOEXCEPT
@@ -6182,6 +6196,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     OutOfHostMemoryError( std::string const & message ) : SystemError( make_error_code( Result::eErrorOutOfHostMemory ), message ) {}
+
     OutOfHostMemoryError( char const * message ) : SystemError( make_error_code( Result::eErrorOutOfHostMemory ), message ) {}
   };
 
@@ -6189,6 +6204,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     OutOfDeviceMemoryError( std::string const & message ) : SystemError( make_error_code( Result::eErrorOutOfDeviceMemory ), message ) {}
+
     OutOfDeviceMemoryError( char const * message ) : SystemError( make_error_code( Result::eErrorOutOfDeviceMemory ), message ) {}
   };
 
@@ -6196,6 +6212,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     InitializationFailedError( std::string const & message ) : SystemError( make_error_code( Result::eErrorInitializationFailed ), message ) {}
+
     InitializationFailedError( char const * message ) : SystemError( make_error_code( Result::eErrorInitializationFailed ), message ) {}
   };
 
@@ -6203,6 +6220,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     DeviceLostError( std::string const & message ) : SystemError( make_error_code( Result::eErrorDeviceLost ), message ) {}
+
     DeviceLostError( char const * message ) : SystemError( make_error_code( Result::eErrorDeviceLost ), message ) {}
   };
 
@@ -6210,6 +6228,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     MemoryMapFailedError( std::string const & message ) : SystemError( make_error_code( Result::eErrorMemoryMapFailed ), message ) {}
+
     MemoryMapFailedError( char const * message ) : SystemError( make_error_code( Result::eErrorMemoryMapFailed ), message ) {}
   };
 
@@ -6217,6 +6236,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     LayerNotPresentError( std::string const & message ) : SystemError( make_error_code( Result::eErrorLayerNotPresent ), message ) {}
+
     LayerNotPresentError( char const * message ) : SystemError( make_error_code( Result::eErrorLayerNotPresent ), message ) {}
   };
 
@@ -6224,6 +6244,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     ExtensionNotPresentError( std::string const & message ) : SystemError( make_error_code( Result::eErrorExtensionNotPresent ), message ) {}
+
     ExtensionNotPresentError( char const * message ) : SystemError( make_error_code( Result::eErrorExtensionNotPresent ), message ) {}
   };
 
@@ -6231,6 +6252,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     FeatureNotPresentError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFeatureNotPresent ), message ) {}
+
     FeatureNotPresentError( char const * message ) : SystemError( make_error_code( Result::eErrorFeatureNotPresent ), message ) {}
   };
 
@@ -6238,6 +6260,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     IncompatibleDriverError( std::string const & message ) : SystemError( make_error_code( Result::eErrorIncompatibleDriver ), message ) {}
+
     IncompatibleDriverError( char const * message ) : SystemError( make_error_code( Result::eErrorIncompatibleDriver ), message ) {}
   };
 
@@ -6245,6 +6268,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     TooManyObjectsError( std::string const & message ) : SystemError( make_error_code( Result::eErrorTooManyObjects ), message ) {}
+
     TooManyObjectsError( char const * message ) : SystemError( make_error_code( Result::eErrorTooManyObjects ), message ) {}
   };
 
@@ -6252,6 +6276,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     FormatNotSupportedError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFormatNotSupported ), message ) {}
+
     FormatNotSupportedError( char const * message ) : SystemError( make_error_code( Result::eErrorFormatNotSupported ), message ) {}
   };
 
@@ -6259,6 +6284,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     FragmentedPoolError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFragmentedPool ), message ) {}
+
     FragmentedPoolError( char const * message ) : SystemError( make_error_code( Result::eErrorFragmentedPool ), message ) {}
   };
 
@@ -6266,6 +6292,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     UnknownError( std::string const & message ) : SystemError( make_error_code( Result::eErrorUnknown ), message ) {}
+
     UnknownError( char const * message ) : SystemError( make_error_code( Result::eErrorUnknown ), message ) {}
   };
 
@@ -6273,6 +6300,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     OutOfPoolMemoryError( std::string const & message ) : SystemError( make_error_code( Result::eErrorOutOfPoolMemory ), message ) {}
+
     OutOfPoolMemoryError( char const * message ) : SystemError( make_error_code( Result::eErrorOutOfPoolMemory ), message ) {}
   };
 
@@ -6280,6 +6308,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     InvalidExternalHandleError( std::string const & message ) : SystemError( make_error_code( Result::eErrorInvalidExternalHandle ), message ) {}
+
     InvalidExternalHandleError( char const * message ) : SystemError( make_error_code( Result::eErrorInvalidExternalHandle ), message ) {}
   };
 
@@ -6287,6 +6316,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     FragmentationError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFragmentation ), message ) {}
+
     FragmentationError( char const * message ) : SystemError( make_error_code( Result::eErrorFragmentation ), message ) {}
   };
 
@@ -6294,6 +6324,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     InvalidOpaqueCaptureAddressError( std::string const & message ) : SystemError( make_error_code( Result::eErrorInvalidOpaqueCaptureAddress ), message ) {}
+
     InvalidOpaqueCaptureAddressError( char const * message ) : SystemError( make_error_code( Result::eErrorInvalidOpaqueCaptureAddress ), message ) {}
   };
 
@@ -6301,6 +6332,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     SurfaceLostKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorSurfaceLostKHR ), message ) {}
+
     SurfaceLostKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorSurfaceLostKHR ), message ) {}
   };
 
@@ -6308,6 +6340,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     NativeWindowInUseKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorNativeWindowInUseKHR ), message ) {}
+
     NativeWindowInUseKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorNativeWindowInUseKHR ), message ) {}
   };
 
@@ -6315,6 +6348,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     OutOfDateKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorOutOfDateKHR ), message ) {}
+
     OutOfDateKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorOutOfDateKHR ), message ) {}
   };
 
@@ -6322,6 +6356,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     IncompatibleDisplayKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorIncompatibleDisplayKHR ), message ) {}
+
     IncompatibleDisplayKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorIncompatibleDisplayKHR ), message ) {}
   };
 
@@ -6329,6 +6364,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     ValidationFailedEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorValidationFailedEXT ), message ) {}
+
     ValidationFailedEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorValidationFailedEXT ), message ) {}
   };
 
@@ -6336,6 +6372,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     InvalidShaderNVError( std::string const & message ) : SystemError( make_error_code( Result::eErrorInvalidShaderNV ), message ) {}
+
     InvalidShaderNVError( char const * message ) : SystemError( make_error_code( Result::eErrorInvalidShaderNV ), message ) {}
   };
 
@@ -6344,6 +6381,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     ImageUsageNotSupportedKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorImageUsageNotSupportedKHR ), message ) {}
+
     ImageUsageNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorImageUsageNotSupportedKHR ), message ) {}
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -6356,6 +6394,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorVideoPictureLayoutNotSupportedKHR ), message )
     {
     }
+
     VideoPictureLayoutNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoPictureLayoutNotSupportedKHR ), message )
     {
     }
@@ -6370,6 +6409,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorVideoProfileOperationNotSupportedKHR ), message )
     {
     }
+
     VideoProfileOperationNotSupportedKHRError( char const * message )
       : SystemError( make_error_code( Result::eErrorVideoProfileOperationNotSupportedKHR ), message )
     {
@@ -6385,6 +6425,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorVideoProfileFormatNotSupportedKHR ), message )
     {
     }
+
     VideoProfileFormatNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoProfileFormatNotSupportedKHR ), message )
     {
     }
@@ -6399,6 +6440,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorVideoProfileCodecNotSupportedKHR ), message )
     {
     }
+
     VideoProfileCodecNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoProfileCodecNotSupportedKHR ), message ) {}
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -6410,6 +6452,7 @@ namespace VULKAN_HPP_NAMESPACE
     VideoStdVersionNotSupportedKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorVideoStdVersionNotSupportedKHR ), message )
     {
     }
+
     VideoStdVersionNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoStdVersionNotSupportedKHR ), message ) {}
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -6421,6 +6464,7 @@ namespace VULKAN_HPP_NAMESPACE
       : SystemError( make_error_code( Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT ), message )
     {
     }
+
     InvalidDrmFormatModifierPlaneLayoutEXTError( char const * message )
       : SystemError( make_error_code( Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT ), message )
     {
@@ -6431,6 +6475,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     NotPermittedKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorNotPermittedKHR ), message ) {}
+
     NotPermittedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorNotPermittedKHR ), message ) {}
   };
 
@@ -6441,6 +6486,7 @@ namespace VULKAN_HPP_NAMESPACE
     FullScreenExclusiveModeLostEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message )
     {
     }
+
     FullScreenExclusiveModeLostEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorFullScreenExclusiveModeLostEXT ), message ) {}
   };
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -6449,6 +6495,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     CompressionExhaustedEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorCompressionExhaustedEXT ), message ) {}
+
     CompressionExhaustedEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorCompressionExhaustedEXT ), message ) {}
   };
 
@@ -6677,6 +6724,7 @@ namespace VULKAN_HPP_NAMESPACE
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_funcs.hpp>
+
 // clang-format on
 
 namespace VULKAN_HPP_NAMESPACE
@@ -6706,6 +6754,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevice16BitStorageFeatures, PhysicalDeviceFeatures2>
   {
@@ -6714,6 +6763,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevice16BitStorageFeatures, DeviceCreateInfo>
   {
@@ -6722,6 +6772,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryDedicatedRequirements, MemoryRequirements2>
   {
@@ -6730,6 +6781,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryDedicatedAllocateInfo, MemoryAllocateInfo>
   {
@@ -6738,6 +6790,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryAllocateFlagsInfo, MemoryAllocateInfo>
   {
@@ -6746,6 +6799,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupRenderPassBeginInfo, RenderPassBeginInfo>
   {
@@ -6754,6 +6808,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupRenderPassBeginInfo, RenderingInfo>
   {
@@ -6762,6 +6817,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupCommandBufferBeginInfo, CommandBufferBeginInfo>
   {
@@ -6770,6 +6826,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupSubmitInfo, SubmitInfo>
   {
@@ -6778,6 +6835,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupBindSparseInfo, BindSparseInfo>
   {
@@ -6786,6 +6844,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BindBufferMemoryDeviceGroupInfo, BindBufferMemoryInfo>
   {
@@ -6794,6 +6853,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BindImageMemoryDeviceGroupInfo, BindImageMemoryInfo>
   {
@@ -6802,6 +6862,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupDeviceCreateInfo, DeviceCreateInfo>
   {
@@ -6810,6 +6871,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFeatures2, DeviceCreateInfo>
   {
@@ -6818,6 +6880,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePointClippingProperties, PhysicalDeviceProperties2>
   {
@@ -6826,6 +6889,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassInputAttachmentAspectCreateInfo, RenderPassCreateInfo>
   {
@@ -6834,6 +6898,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageViewUsageCreateInfo, ImageViewCreateInfo>
   {
@@ -6842,6 +6907,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineTessellationDomainOriginStateCreateInfo, PipelineTessellationStateCreateInfo>
   {
@@ -6850,6 +6916,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassMultiviewCreateInfo, RenderPassCreateInfo>
   {
@@ -6858,6 +6925,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiviewFeatures, PhysicalDeviceFeatures2>
   {
@@ -6866,6 +6934,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiviewFeatures, DeviceCreateInfo>
   {
@@ -6874,6 +6943,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiviewProperties, PhysicalDeviceProperties2>
   {
@@ -6882,6 +6952,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVariablePointersFeatures, PhysicalDeviceFeatures2>
   {
@@ -6890,6 +6961,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVariablePointersFeatures, DeviceCreateInfo>
   {
@@ -6898,6 +6970,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceProtectedMemoryFeatures, PhysicalDeviceFeatures2>
   {
@@ -6906,6 +6979,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceProtectedMemoryFeatures, DeviceCreateInfo>
   {
@@ -6914,6 +6988,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceProtectedMemoryProperties, PhysicalDeviceProperties2>
   {
@@ -6922,6 +6997,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ProtectedSubmitInfo, SubmitInfo>
   {
@@ -6930,6 +7006,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SamplerYcbcrConversionInfo, SamplerCreateInfo>
   {
@@ -6938,6 +7015,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SamplerYcbcrConversionInfo, ImageViewCreateInfo>
   {
@@ -6946,6 +7024,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BindImagePlaneMemoryInfo, BindImageMemoryInfo>
   {
@@ -6954,6 +7033,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImagePlaneMemoryRequirementsInfo, ImageMemoryRequirementsInfo2>
   {
@@ -6962,6 +7042,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSamplerYcbcrConversionFeatures, PhysicalDeviceFeatures2>
   {
@@ -6970,6 +7051,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSamplerYcbcrConversionFeatures, DeviceCreateInfo>
   {
@@ -6978,6 +7060,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SamplerYcbcrConversionImageFormatProperties, ImageFormatProperties2>
   {
@@ -6986,6 +7069,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExternalImageFormatInfo, PhysicalDeviceImageFormatInfo2>
   {
@@ -6994,6 +7078,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExternalImageFormatProperties, ImageFormatProperties2>
   {
@@ -7002,6 +7087,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceIDProperties, PhysicalDeviceProperties2>
   {
@@ -7010,6 +7096,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExternalMemoryImageCreateInfo, ImageCreateInfo>
   {
@@ -7018,6 +7105,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExternalMemoryBufferCreateInfo, BufferCreateInfo>
   {
@@ -7026,6 +7114,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMemoryAllocateInfo, MemoryAllocateInfo>
   {
@@ -7034,6 +7123,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportFenceCreateInfo, FenceCreateInfo>
   {
@@ -7042,6 +7132,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportSemaphoreCreateInfo, SemaphoreCreateInfo>
   {
@@ -7050,6 +7141,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMaintenance3Properties, PhysicalDeviceProperties2>
   {
@@ -7058,6 +7150,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderDrawParametersFeatures, PhysicalDeviceFeatures2>
   {
@@ -7066,6 +7159,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderDrawParametersFeatures, DeviceCreateInfo>
   {
@@ -7084,6 +7178,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan11Features, DeviceCreateInfo>
   {
@@ -7092,6 +7187,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan11Properties, PhysicalDeviceProperties2>
   {
@@ -7100,6 +7196,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan12Features, PhysicalDeviceFeatures2>
   {
@@ -7108,6 +7205,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan12Features, DeviceCreateInfo>
   {
@@ -7116,6 +7214,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan12Properties, PhysicalDeviceProperties2>
   {
@@ -7124,6 +7223,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageFormatListCreateInfo, ImageCreateInfo>
   {
@@ -7132,6 +7232,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageFormatListCreateInfo, SwapchainCreateInfoKHR>
   {
@@ -7140,6 +7241,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageFormatListCreateInfo, PhysicalDeviceImageFormatInfo2>
   {
@@ -7148,6 +7250,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevice8BitStorageFeatures, PhysicalDeviceFeatures2>
   {
@@ -7156,6 +7259,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevice8BitStorageFeatures, DeviceCreateInfo>
   {
@@ -7164,6 +7268,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDriverProperties, PhysicalDeviceProperties2>
   {
@@ -7172,6 +7277,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, PhysicalDeviceFeatures2>
   {
@@ -7180,6 +7286,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderAtomicInt64Features, DeviceCreateInfo>
   {
@@ -7188,6 +7295,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, PhysicalDeviceFeatures2>
   {
@@ -7196,6 +7304,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderFloat16Int8Features, DeviceCreateInfo>
   {
@@ -7204,6 +7313,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFloatControlsProperties, PhysicalDeviceProperties2>
   {
@@ -7212,6 +7322,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DescriptorSetLayoutBindingFlagsCreateInfo, DescriptorSetLayoutCreateInfo>
   {
@@ -7220,6 +7331,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, PhysicalDeviceFeatures2>
   {
@@ -7228,6 +7340,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorIndexingFeatures, DeviceCreateInfo>
   {
@@ -7236,6 +7349,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorIndexingProperties, PhysicalDeviceProperties2>
   {
@@ -7244,6 +7358,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DescriptorSetVariableDescriptorCountAllocateInfo, DescriptorSetAllocateInfo>
   {
@@ -7252,6 +7367,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DescriptorSetVariableDescriptorCountLayoutSupport, DescriptorSetLayoutSupport>
   {
@@ -7260,6 +7376,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SubpassDescriptionDepthStencilResolve, SubpassDescription2>
   {
@@ -7268,6 +7385,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDepthStencilResolveProperties, PhysicalDeviceProperties2>
   {
@@ -7276,6 +7394,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, PhysicalDeviceFeatures2>
   {
@@ -7284,6 +7403,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceScalarBlockLayoutFeatures, DeviceCreateInfo>
   {
@@ -7292,6 +7412,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageStencilUsageCreateInfo, ImageCreateInfo>
   {
@@ -7300,6 +7421,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageStencilUsageCreateInfo, PhysicalDeviceImageFormatInfo2>
   {
@@ -7308,6 +7430,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SamplerReductionModeCreateInfo, SamplerCreateInfo>
   {
@@ -7316,6 +7439,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSamplerFilterMinmaxProperties, PhysicalDeviceProperties2>
   {
@@ -7324,6 +7448,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkanMemoryModelFeatures, PhysicalDeviceFeatures2>
   {
@@ -7332,6 +7457,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkanMemoryModelFeatures, DeviceCreateInfo>
   {
@@ -7340,6 +7466,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, PhysicalDeviceFeatures2>
   {
@@ -7348,6 +7475,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImagelessFramebufferFeatures, DeviceCreateInfo>
   {
@@ -7356,6 +7484,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<FramebufferAttachmentsCreateInfo, FramebufferCreateInfo>
   {
@@ -7364,6 +7493,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassAttachmentBeginInfo, RenderPassBeginInfo>
   {
@@ -7372,6 +7502,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, PhysicalDeviceFeatures2>
   {
@@ -7380,6 +7511,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceUniformBufferStandardLayoutFeatures, DeviceCreateInfo>
   {
@@ -7388,6 +7520,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, PhysicalDeviceFeatures2>
   {
@@ -7396,6 +7529,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupExtendedTypesFeatures, DeviceCreateInfo>
   {
@@ -7404,6 +7538,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, PhysicalDeviceFeatures2>
   {
@@ -7412,6 +7547,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSeparateDepthStencilLayoutsFeatures, DeviceCreateInfo>
   {
@@ -7420,6 +7556,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AttachmentReferenceStencilLayout, AttachmentReference2>
   {
@@ -7428,6 +7565,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AttachmentDescriptionStencilLayout, AttachmentDescription2>
   {
@@ -7436,6 +7574,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceHostQueryResetFeatures, PhysicalDeviceFeatures2>
   {
@@ -7444,6 +7583,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceHostQueryResetFeatures, DeviceCreateInfo>
   {
@@ -7452,6 +7592,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, PhysicalDeviceFeatures2>
   {
@@ -7460,6 +7601,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTimelineSemaphoreFeatures, DeviceCreateInfo>
   {
@@ -7468,6 +7610,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTimelineSemaphoreProperties, PhysicalDeviceProperties2>
   {
@@ -7476,6 +7619,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SemaphoreTypeCreateInfo, SemaphoreCreateInfo>
   {
@@ -7484,6 +7628,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SemaphoreTypeCreateInfo, PhysicalDeviceExternalSemaphoreInfo>
   {
@@ -7492,6 +7637,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<TimelineSemaphoreSubmitInfo, SubmitInfo>
   {
@@ -7500,6 +7646,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<TimelineSemaphoreSubmitInfo, BindSparseInfo>
   {
@@ -7508,6 +7655,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, PhysicalDeviceFeatures2>
   {
@@ -7516,6 +7664,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBufferDeviceAddressFeatures, DeviceCreateInfo>
   {
@@ -7524,6 +7673,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BufferOpaqueCaptureAddressCreateInfo, BufferCreateInfo>
   {
@@ -7532,6 +7682,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryOpaqueCaptureAddressAllocateInfo, MemoryAllocateInfo>
   {
@@ -7550,6 +7701,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan13Features, DeviceCreateInfo>
   {
@@ -7558,6 +7710,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVulkan13Properties, PhysicalDeviceProperties2>
   {
@@ -7566,6 +7719,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, GraphicsPipelineCreateInfo>
   {
@@ -7574,6 +7728,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, ComputePipelineCreateInfo>
   {
@@ -7582,6 +7737,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, RayTracingPipelineCreateInfoNV>
   {
@@ -7590,6 +7746,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, RayTracingPipelineCreateInfoKHR>
   {
@@ -7598,6 +7755,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeatures, PhysicalDeviceFeatures2>
   {
@@ -7606,6 +7764,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderTerminateInvocationFeatures, DeviceCreateInfo>
   {
@@ -7614,6 +7773,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeatures, PhysicalDeviceFeatures2>
   {
@@ -7622,6 +7782,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderDemoteToHelperInvocationFeatures, DeviceCreateInfo>
   {
@@ -7630,6 +7791,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePrivateDataFeatures, PhysicalDeviceFeatures2>
   {
@@ -7638,6 +7800,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePrivateDataFeatures, DeviceCreateInfo>
   {
@@ -7646,6 +7809,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DevicePrivateDataCreateInfo, DeviceCreateInfo>
   {
@@ -7654,6 +7818,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeatures, PhysicalDeviceFeatures2>
   {
@@ -7662,6 +7827,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineCreationCacheControlFeatures, DeviceCreateInfo>
   {
@@ -7670,6 +7836,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryBarrier2, SubpassDependency2>
   {
@@ -7678,6 +7845,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSynchronization2Features, PhysicalDeviceFeatures2>
   {
@@ -7686,6 +7854,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSynchronization2Features, DeviceCreateInfo>
   {
@@ -7694,6 +7863,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures, PhysicalDeviceFeatures2>
   {
@@ -7702,6 +7872,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceZeroInitializeWorkgroupMemoryFeatures, DeviceCreateInfo>
   {
@@ -7710,6 +7881,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageRobustnessFeatures, PhysicalDeviceFeatures2>
   {
@@ -7718,6 +7890,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageRobustnessFeatures, DeviceCreateInfo>
   {
@@ -7726,6 +7899,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubgroupSizeControlFeatures, PhysicalDeviceFeatures2>
   {
@@ -7734,6 +7908,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubgroupSizeControlFeatures, DeviceCreateInfo>
   {
@@ -7742,6 +7917,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubgroupSizeControlProperties, PhysicalDeviceProperties2>
   {
@@ -7750,6 +7926,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfo, PipelineShaderStageCreateInfo>
   {
@@ -7758,6 +7935,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceInlineUniformBlockFeatures, PhysicalDeviceFeatures2>
   {
@@ -7766,6 +7944,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceInlineUniformBlockFeatures, DeviceCreateInfo>
   {
@@ -7774,6 +7953,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceInlineUniformBlockProperties, PhysicalDeviceProperties2>
   {
@@ -7782,6 +7962,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<WriteDescriptorSetInlineUniformBlock, WriteDescriptorSet>
   {
@@ -7790,6 +7971,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DescriptorPoolInlineUniformBlockCreateInfo, DescriptorPoolCreateInfo>
   {
@@ -7798,6 +7980,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeatures, PhysicalDeviceFeatures2>
   {
@@ -7806,6 +7989,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTextureCompressionASTCHDRFeatures, DeviceCreateInfo>
   {
@@ -7814,6 +7998,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRenderingCreateInfo, GraphicsPipelineCreateInfo>
   {
@@ -7822,6 +8007,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDynamicRenderingFeatures, PhysicalDeviceFeatures2>
   {
@@ -7830,6 +8016,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDynamicRenderingFeatures, DeviceCreateInfo>
   {
@@ -7838,6 +8025,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<CommandBufferInheritanceRenderingInfo, CommandBufferInheritanceInfo>
   {
@@ -7846,6 +8034,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderIntegerDotProductFeatures, PhysicalDeviceFeatures2>
   {
@@ -7854,6 +8043,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderIntegerDotProductFeatures, DeviceCreateInfo>
   {
@@ -7862,6 +8052,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderIntegerDotProductProperties, PhysicalDeviceProperties2>
   {
@@ -7870,6 +8061,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTexelBufferAlignmentProperties, PhysicalDeviceProperties2>
   {
@@ -7878,6 +8070,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<FormatProperties3, FormatProperties2>
   {
@@ -7886,6 +8079,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMaintenance4Features, PhysicalDeviceFeatures2>
   {
@@ -7894,6 +8088,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMaintenance4Features, DeviceCreateInfo>
   {
@@ -7902,6 +8097,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMaintenance4Properties, PhysicalDeviceProperties2>
   {
@@ -7920,6 +8116,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BindImageMemorySwapchainInfoKHR, BindImageMemoryInfo>
   {
@@ -7928,6 +8125,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupPresentInfoKHR, PresentInfoKHR>
   {
@@ -7936,6 +8134,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceGroupSwapchainCreateInfoKHR, SwapchainCreateInfoKHR>
   {
@@ -7985,6 +8184,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<QueueFamilyVideoPropertiesKHR, QueueFamilyProperties2>
   {
@@ -7993,6 +8193,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoProfileInfoKHR, QueryPoolCreateInfo>
   {
@@ -8001,6 +8202,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoProfileListInfoKHR, PhysicalDeviceImageFormatInfo2>
   {
@@ -8009,6 +8211,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoProfileListInfoKHR, PhysicalDeviceVideoFormatInfoKHR>
   {
@@ -8017,6 +8220,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoProfileListInfoKHR, ImageCreateInfo>
   {
@@ -8025,6 +8229,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoProfileListInfoKHR, BufferCreateInfo>
   {
@@ -8045,6 +8250,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeUsageInfoKHR, VideoProfileInfoKHR>
   {
@@ -8053,6 +8259,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeUsageInfoKHR, QueryPoolCreateInfo>
   {
@@ -8072,6 +8279,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DedicatedAllocationBufferCreateInfoNV, BufferCreateInfo>
   {
@@ -8080,6 +8288,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DedicatedAllocationMemoryAllocateInfoNV, MemoryAllocateInfo>
   {
@@ -8098,6 +8307,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTransformFeedbackFeaturesEXT, DeviceCreateInfo>
   {
@@ -8106,6 +8316,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTransformFeedbackPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -8114,6 +8325,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRasterizationStateStreamCreateInfoEXT, PipelineRasterizationStateCreateInfo>
   {
@@ -8133,6 +8345,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
   {
@@ -8141,6 +8354,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
   {
@@ -8149,6 +8363,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264VclFrameInfoEXT, VideoEncodeInfoKHR>
   {
@@ -8157,6 +8372,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264EmitPictureParametersInfoEXT, VideoEncodeInfoKHR>
   {
@@ -8165,6 +8381,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264ProfileInfoEXT, VideoProfileInfoKHR>
   {
@@ -8173,6 +8390,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264ProfileInfoEXT, QueryPoolCreateInfo>
   {
@@ -8181,6 +8399,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264RateControlInfoEXT, VideoCodingControlInfoKHR>
   {
@@ -8189,6 +8408,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264RateControlLayerInfoEXT, VideoCodingControlInfoKHR>
   {
@@ -8197,6 +8417,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH264RateControlLayerInfoEXT, VideoEncodeRateControlLayerInfoKHR>
   {
@@ -8217,6 +8438,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
   {
@@ -8225,6 +8447,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
   {
@@ -8233,6 +8456,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265VclFrameInfoEXT, VideoEncodeInfoKHR>
   {
@@ -8241,6 +8465,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265EmitPictureParametersInfoEXT, VideoEncodeInfoKHR>
   {
@@ -8249,6 +8474,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265ProfileInfoEXT, VideoProfileInfoKHR>
   {
@@ -8257,6 +8483,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265ProfileInfoEXT, QueryPoolCreateInfo>
   {
@@ -8265,6 +8492,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265RateControlInfoEXT, VideoCodingControlInfoKHR>
   {
@@ -8273,6 +8501,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265RateControlLayerInfoEXT, VideoCodingControlInfoKHR>
   {
@@ -8281,6 +8510,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeH265RateControlLayerInfoEXT, VideoEncodeRateControlLayerInfoKHR>
   {
@@ -8301,6 +8531,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264ProfileInfoEXT, QueryPoolCreateInfo>
   {
@@ -8309,6 +8540,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
   {
@@ -8317,6 +8549,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
   {
@@ -8325,6 +8558,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
   {
@@ -8333,6 +8567,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264PictureInfoEXT, VideoDecodeInfoKHR>
   {
@@ -8341,6 +8576,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
   {
@@ -8370,6 +8606,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderingFragmentDensityMapAttachmentInfoEXT, RenderingInfo>
   {
@@ -8378,6 +8615,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AttachmentSampleCountInfoAMD, CommandBufferInheritanceInfo>
   {
@@ -8386,6 +8624,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AttachmentSampleCountInfoAMD, GraphicsPipelineCreateInfo>
   {
@@ -8394,6 +8633,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MultiviewPerViewAttributesInfoNVX, CommandBufferInheritanceInfo>
   {
@@ -8402,6 +8642,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MultiviewPerViewAttributesInfoNVX, GraphicsPipelineCreateInfo>
   {
@@ -8410,6 +8651,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MultiviewPerViewAttributesInfoNVX, RenderingInfo>
   {
@@ -8428,6 +8670,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, DeviceCreateInfo>
   {
@@ -8446,6 +8689,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMemoryAllocateInfoNV, MemoryAllocateInfo>
   {
@@ -8465,6 +8709,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMemoryWin32HandleInfoNV, MemoryAllocateInfo>
   {
@@ -8485,6 +8730,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<Win32KeyedMutexAcquireReleaseInfoNV, SubmitInfo2>
   {
@@ -8514,6 +8760,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, PhysicalDeviceFeatures2>
   {
@@ -8522,6 +8769,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceASTCDecodeFeaturesEXT, DeviceCreateInfo>
   {
@@ -8540,6 +8788,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineRobustnessFeaturesEXT, DeviceCreateInfo>
   {
@@ -8548,6 +8797,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineRobustnessPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -8556,6 +8806,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRobustnessCreateInfoEXT, GraphicsPipelineCreateInfo>
   {
@@ -8564,6 +8815,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRobustnessCreateInfoEXT, ComputePipelineCreateInfo>
   {
@@ -8572,6 +8824,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRobustnessCreateInfoEXT, PipelineShaderStageCreateInfo>
   {
@@ -8580,6 +8833,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRobustnessCreateInfoEXT, RayTracingPipelineCreateInfoKHR>
   {
@@ -8599,6 +8853,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMemoryWin32HandleInfoKHR, MemoryAllocateInfo>
   {
@@ -8629,6 +8884,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<Win32KeyedMutexAcquireReleaseInfoKHR, SubmitInfo2>
   {
@@ -8649,6 +8905,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<D3D12FenceSubmitInfoKHR, SubmitInfo>
   {
@@ -8678,6 +8935,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceConditionalRenderingFeaturesEXT, DeviceCreateInfo>
   {
@@ -8686,6 +8944,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<CommandBufferInheritanceConditionalRenderingInfoEXT, CommandBufferInheritanceInfo>
   {
@@ -8764,6 +9023,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineDiscardRectangleStateCreateInfoEXT, GraphicsPipelineCreateInfo>
   {
@@ -8782,6 +9042,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRasterizationConservativeStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
   {
@@ -8800,6 +9061,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDepthClipEnableFeaturesEXT, DeviceCreateInfo>
   {
@@ -8808,6 +9070,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRasterizationDepthClipStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
   {
@@ -8848,6 +9111,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePerformanceQueryFeaturesKHR, DeviceCreateInfo>
   {
@@ -8856,6 +9120,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePerformanceQueryPropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -8864,6 +9129,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<QueryPoolPerformanceCreateInfoKHR, QueryPoolCreateInfo>
   {
@@ -8872,6 +9138,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo>
   {
@@ -8880,6 +9147,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PerformanceQuerySubmitInfoKHR, SubmitInfo2>
   {
@@ -8898,6 +9166,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DebugUtilsObjectNameInfoEXT, PipelineShaderStageCreateInfo>
   {
@@ -8917,6 +9186,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AndroidHardwareBufferFormatPropertiesANDROID, AndroidHardwareBufferPropertiesANDROID>
   {
@@ -8925,6 +9195,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportAndroidHardwareBufferInfoANDROID, MemoryAllocateInfo>
   {
@@ -8933,6 +9204,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExternalFormatANDROID, ImageCreateInfo>
   {
@@ -8941,6 +9213,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExternalFormatANDROID, SamplerYcbcrConversionCreateInfo>
   {
@@ -8949,6 +9222,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AndroidHardwareBufferFormatProperties2ANDROID, AndroidHardwareBufferPropertiesANDROID>
   {
@@ -8968,6 +9242,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SampleLocationsInfoEXT, ImageMemoryBarrier2>
   {
@@ -8976,6 +9251,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassSampleLocationsBeginInfoEXT, RenderPassBeginInfo>
   {
@@ -8984,6 +9260,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineSampleLocationsStateCreateInfoEXT, PipelineMultisampleStateCreateInfo>
   {
@@ -8992,6 +9269,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSampleLocationsPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -9010,6 +9288,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBlendOperationAdvancedFeaturesEXT, DeviceCreateInfo>
   {
@@ -9018,6 +9297,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBlendOperationAdvancedPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -9026,6 +9306,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineColorBlendAdvancedStateCreateInfoEXT, PipelineColorBlendStateCreateInfo>
   {
@@ -9054,6 +9335,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, PhysicalDeviceFeatures2>
   {
@@ -9062,6 +9344,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAccelerationStructureFeaturesKHR, DeviceCreateInfo>
   {
@@ -9070,6 +9353,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAccelerationStructurePropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -9098,6 +9382,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -9106,6 +9391,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderSMBuiltinsFeaturesNV, DeviceCreateInfo>
   {
@@ -9124,6 +9410,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageDrmFormatModifierInfoEXT, PhysicalDeviceImageFormatInfo2>
   {
@@ -9132,6 +9419,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageDrmFormatModifierListCreateInfoEXT, ImageCreateInfo>
   {
@@ -9140,6 +9428,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageDrmFormatModifierExplicitCreateInfoEXT, ImageCreateInfo>
   {
@@ -9148,6 +9437,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DrmFormatModifierPropertiesList2EXT, FormatProperties2>
   {
@@ -9166,6 +9456,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ShaderModuleValidationCacheCreateInfoEXT, PipelineShaderStageCreateInfo>
   {
@@ -9185,6 +9476,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePortabilitySubsetFeaturesKHR, DeviceCreateInfo>
   {
@@ -9193,6 +9485,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePortabilitySubsetPropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -9212,6 +9505,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -9220,6 +9514,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShadingRateImageFeaturesNV, DeviceCreateInfo>
   {
@@ -9228,6 +9523,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShadingRateImagePropertiesNV, PhysicalDeviceProperties2>
   {
@@ -9236,6 +9532,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineViewportCoarseSampleOrderStateCreateInfoNV, PipelineViewportStateCreateInfo>
   {
@@ -9254,6 +9551,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -9272,6 +9570,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRepresentativeFragmentTestFeaturesNV, DeviceCreateInfo>
   {
@@ -9280,6 +9579,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRepresentativeFragmentTestStateCreateInfoNV, GraphicsPipelineCreateInfo>
   {
@@ -9298,6 +9598,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<FilterCubicImageViewImageFormatPropertiesEXT, ImageFormatProperties2>
   {
@@ -9316,6 +9617,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExternalMemoryHostPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -9334,6 +9636,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderClockFeaturesKHR, DeviceCreateInfo>
   {
@@ -9352,6 +9655,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCompilerControlCreateInfoAMD, ComputePipelineCreateInfo>
   {
@@ -9381,6 +9685,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265ProfileInfoEXT, QueryPoolCreateInfo>
   {
@@ -9389,6 +9694,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265CapabilitiesEXT, VideoCapabilitiesKHR>
   {
@@ -9397,6 +9703,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
   {
@@ -9405,6 +9712,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
   {
@@ -9413,6 +9721,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265PictureInfoEXT, VideoDecodeInfoKHR>
   {
@@ -9421,6 +9730,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
   {
@@ -9440,6 +9750,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesKHR, PhysicalDeviceFeatures2>
   {
@@ -9448,6 +9759,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceGlobalPriorityQueryFeaturesKHR, DeviceCreateInfo>
   {
@@ -9456,6 +9768,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<QueueFamilyGlobalPriorityPropertiesKHR, QueueFamilyProperties2>
   {
@@ -9484,6 +9797,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineVertexInputDivisorStateCreateInfoEXT, PipelineVertexInputStateCreateInfo>
   {
@@ -9492,6 +9806,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, PhysicalDeviceFeatures2>
   {
@@ -9500,6 +9815,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, DeviceCreateInfo>
   {
@@ -9530,6 +9846,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceComputeShaderDerivativesFeaturesNV, DeviceCreateInfo>
   {
@@ -9548,6 +9865,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMeshShaderFeaturesNV, DeviceCreateInfo>
   {
@@ -9556,6 +9874,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMeshShaderPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -9574,6 +9893,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderImageFootprintFeaturesNV, DeviceCreateInfo>
   {
@@ -9592,6 +9912,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -9600,6 +9921,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExclusiveScissorFeaturesNV, DeviceCreateInfo>
   {
@@ -9628,6 +9950,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, DeviceCreateInfo>
   {
@@ -9666,6 +9989,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainDisplayNativeHdrCreateInfoAMD, SwapchainCreateInfoKHR>
   {
@@ -9684,6 +10008,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMapFeaturesEXT, DeviceCreateInfo>
   {
@@ -9692,6 +10017,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMapPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -9700,6 +10026,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo>
   {
@@ -9708,6 +10035,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassFragmentDensityMapCreateInfoEXT, RenderPassCreateInfo2>
   {
@@ -9726,6 +10054,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineFragmentShadingRateStateCreateInfoKHR, GraphicsPipelineCreateInfo>
   {
@@ -9734,6 +10063,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, PhysicalDeviceFeatures2>
   {
@@ -9742,6 +10072,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRateFeaturesKHR, DeviceCreateInfo>
   {
@@ -9750,6 +10081,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRatePropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -9778,6 +10110,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCoherentMemoryFeaturesAMD, DeviceCreateInfo>
   {
@@ -9796,6 +10129,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, DeviceCreateInfo>
   {
@@ -9824,6 +10158,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMemoryPriorityFeaturesEXT, DeviceCreateInfo>
   {
@@ -9832,6 +10167,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MemoryPriorityAllocateInfoEXT, MemoryAllocateInfo>
   {
@@ -9860,6 +10196,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDedicatedAllocationImageAliasingFeaturesNV, DeviceCreateInfo>
   {
@@ -9878,6 +10215,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBufferDeviceAddressFeaturesEXT, DeviceCreateInfo>
   {
@@ -9886,6 +10224,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BufferDeviceAddressCreateInfoEXT, BufferCreateInfo>
   {
@@ -9914,6 +10253,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePresentWaitFeaturesKHR, DeviceCreateInfo>
   {
@@ -9932,6 +10272,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesNV, DeviceCreateInfo>
   {
@@ -9940,6 +10281,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -9958,6 +10300,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCoverageReductionModeFeaturesNV, DeviceCreateInfo>
   {
@@ -9966,6 +10309,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineCoverageReductionStateCreateInfoNV, PipelineMultisampleStateCreateInfo>
   {
@@ -9984,6 +10328,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, DeviceCreateInfo>
   {
@@ -10002,6 +10347,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceYcbcrImageArraysFeaturesEXT, DeviceCreateInfo>
   {
@@ -10020,6 +10366,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceProvokingVertexFeaturesEXT, DeviceCreateInfo>
   {
@@ -10028,6 +10375,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceProvokingVertexPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10036,6 +10384,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRasterizationProvokingVertexStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
   {
@@ -10055,6 +10404,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfaceFullScreenExclusiveInfoEXT, SwapchainCreateInfoKHR>
   {
@@ -10063,6 +10413,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfaceCapabilitiesFullScreenExclusiveEXT, SurfaceCapabilities2KHR>
   {
@@ -10071,6 +10422,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, PhysicalDeviceSurfaceInfo2KHR>
   {
@@ -10079,6 +10431,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfaceFullScreenExclusiveWin32InfoEXT, SwapchainCreateInfoKHR>
   {
@@ -10098,6 +10451,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceLineRasterizationFeaturesEXT, DeviceCreateInfo>
   {
@@ -10106,6 +10460,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceLineRasterizationPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10114,6 +10469,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineRasterizationLineStateCreateInfoEXT, PipelineRasterizationStateCreateInfo>
   {
@@ -10132,6 +10488,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderAtomicFloatFeaturesEXT, DeviceCreateInfo>
   {
@@ -10150,6 +10507,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceIndexTypeUint8FeaturesEXT, DeviceCreateInfo>
   {
@@ -10168,6 +10526,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExtendedDynamicStateFeaturesEXT, DeviceCreateInfo>
   {
@@ -10186,6 +10545,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineExecutablePropertiesFeaturesKHR, DeviceCreateInfo>
   {
@@ -10204,6 +10564,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderAtomicFloat2FeaturesEXT, DeviceCreateInfo>
   {
@@ -10222,6 +10583,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfacePresentScalingCapabilitiesEXT, SurfaceCapabilities2KHR>
   {
@@ -10230,6 +10592,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfacePresentModeCompatibilityEXT, SurfaceCapabilities2KHR>
   {
@@ -10248,6 +10611,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSwapchainMaintenance1FeaturesEXT, DeviceCreateInfo>
   {
@@ -10256,6 +10620,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainPresentFenceInfoEXT, PresentInfoKHR>
   {
@@ -10264,6 +10629,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainPresentModesCreateInfoEXT, SwapchainCreateInfoKHR>
   {
@@ -10272,6 +10638,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainPresentModeInfoEXT, PresentInfoKHR>
   {
@@ -10280,6 +10647,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainPresentScalingCreateInfoEXT, SwapchainCreateInfoKHR>
   {
@@ -10298,6 +10666,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -10306,6 +10675,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesNV, DeviceCreateInfo>
   {
@@ -10314,6 +10684,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<GraphicsPipelineShaderGroupsCreateInfoNV, GraphicsPipelineCreateInfo>
   {
@@ -10332,6 +10703,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceInheritedViewportScissorFeaturesNV, DeviceCreateInfo>
   {
@@ -10340,6 +10712,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<CommandBufferInheritanceViewportScissorInfoNV, CommandBufferInheritanceInfo>
   {
@@ -10358,6 +10731,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTexelBufferAlignmentFeaturesEXT, DeviceCreateInfo>
   {
@@ -10376,6 +10750,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<CommandBufferInheritanceRenderPassTransformInfoQCOM, CommandBufferInheritanceInfo>
   {
@@ -10394,6 +10769,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, DeviceCreateInfo>
   {
@@ -10402,6 +10778,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceDeviceMemoryReportCreateInfoEXT, DeviceCreateInfo>
   {
@@ -10420,6 +10797,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRobustness2FeaturesEXT, DeviceCreateInfo>
   {
@@ -10428,6 +10806,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRobustness2PropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10446,6 +10825,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10454,6 +10834,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, PhysicalDeviceFeatures2>
   {
@@ -10462,6 +10843,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
   {
@@ -10490,6 +10872,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePresentBarrierFeaturesNV, DeviceCreateInfo>
   {
@@ -10498,6 +10881,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SurfaceCapabilitiesPresentBarrierNV, SurfaceCapabilities2KHR>
   {
@@ -10506,6 +10890,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SwapchainPresentBarrierCreateInfoNV, SwapchainCreateInfoKHR>
   {
@@ -10524,6 +10909,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePresentIdFeaturesKHR, PhysicalDeviceFeatures2>
   {
@@ -10532,6 +10918,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePresentIdFeaturesKHR, DeviceCreateInfo>
   {
@@ -10551,6 +10938,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeUsageInfoKHR, VideoProfileInfoKHR>
   {
@@ -10559,6 +10947,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeUsageInfoKHR, QueryPoolCreateInfo>
   {
@@ -10567,6 +10956,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeRateControlInfoKHR, VideoCodingControlInfoKHR>
   {
@@ -10575,6 +10965,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<VideoEncodeRateControlLayerInfoKHR, VideoCodingControlInfoKHR>
   {
@@ -10594,6 +10985,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDiagnosticsConfigFeaturesNV, DeviceCreateInfo>
   {
@@ -10602,6 +10994,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceDiagnosticsConfigCreateInfoNV, DeviceCreateInfo>
   {
@@ -10621,6 +11014,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, MemoryAllocateInfo>
   {
@@ -10629,6 +11023,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, ImageCreateInfo>
   {
@@ -10637,6 +11032,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, ImageViewCreateInfo>
   {
@@ -10645,6 +11041,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, BufferViewCreateInfo>
   {
@@ -10653,6 +11050,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, SemaphoreCreateInfo>
   {
@@ -10661,6 +11059,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalObjectCreateInfoEXT, EventCreateInfo>
   {
@@ -10669,6 +11068,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalDeviceInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10677,6 +11077,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalCommandQueueInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10685,6 +11086,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalBufferInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10693,6 +11095,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportMetalBufferInfoEXT, MemoryAllocateInfo>
   {
@@ -10701,6 +11104,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalTextureInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10709,6 +11113,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportMetalTextureInfoEXT, ImageCreateInfo>
   {
@@ -10717,6 +11122,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalIOSurfaceInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10725,6 +11131,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportMetalIOSurfaceInfoEXT, ImageCreateInfo>
   {
@@ -10733,6 +11140,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ExportMetalSharedEventInfoEXT, ExportMetalObjectsInfoEXT>
   {
@@ -10741,6 +11149,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportMetalSharedEventInfoEXT, SemaphoreCreateInfo>
   {
@@ -10749,6 +11158,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImportMetalSharedEventInfoEXT, EventCreateInfo>
   {
@@ -10778,6 +11188,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10786,6 +11197,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorBufferFeaturesEXT, PhysicalDeviceFeatures2>
   {
@@ -10794,6 +11206,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorBufferFeaturesEXT, DeviceCreateInfo>
   {
@@ -10802,6 +11215,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DescriptorBufferBindingPushDescriptorBufferHandleEXT, DescriptorBufferBindingInfoEXT>
   {
@@ -10810,6 +11224,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, BufferCreateInfo>
   {
@@ -10818,6 +11233,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, ImageCreateInfo>
   {
@@ -10826,6 +11242,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, ImageViewCreateInfo>
   {
@@ -10834,6 +11251,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, SamplerCreateInfo>
   {
@@ -10842,6 +11260,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, AccelerationStructureCreateInfoKHR>
   {
@@ -10850,6 +11269,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpaqueCaptureDescriptorDataCreateInfoEXT, AccelerationStructureCreateInfoNV>
   {
@@ -10868,6 +11288,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceGraphicsPipelineLibraryFeaturesEXT, DeviceCreateInfo>
   {
@@ -10876,6 +11297,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceGraphicsPipelineLibraryPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -10884,6 +11306,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<GraphicsPipelineLibraryCreateInfoEXT, GraphicsPipelineCreateInfo>
   {
@@ -10902,6 +11325,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderEarlyAndLateFragmentTestsFeaturesAMD, DeviceCreateInfo>
   {
@@ -10920,6 +11344,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShaderBarycentricFeaturesKHR, DeviceCreateInfo>
   {
@@ -10928,6 +11353,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShaderBarycentricPropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -10946,6 +11372,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderSubgroupUniformControlFlowFeaturesKHR, DeviceCreateInfo>
   {
@@ -10964,6 +11391,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsFeaturesNV, DeviceCreateInfo>
   {
@@ -10972,6 +11400,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRateEnumsPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -10980,6 +11409,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineFragmentShadingRateEnumStateCreateInfoNV, GraphicsPipelineCreateInfo>
   {
@@ -10998,6 +11428,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AccelerationStructureMotionInfoNV, AccelerationStructureCreateInfoKHR>
   {
@@ -11006,6 +11437,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -11014,6 +11446,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingMotionBlurFeaturesNV, DeviceCreateInfo>
   {
@@ -11032,6 +11465,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMeshShaderFeaturesEXT, DeviceCreateInfo>
   {
@@ -11040,6 +11474,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMeshShaderPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -11058,6 +11493,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT, DeviceCreateInfo>
   {
@@ -11076,6 +11512,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMap2FeaturesEXT, DeviceCreateInfo>
   {
@@ -11084,6 +11521,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMap2PropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -11102,6 +11540,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<CopyCommandTransformInfoQCOM, ImageBlit2>
   {
@@ -11120,6 +11559,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR, DeviceCreateInfo>
   {
@@ -11138,6 +11578,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageCompressionControlFeaturesEXT, DeviceCreateInfo>
   {
@@ -11146,6 +11587,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionControlEXT, ImageCreateInfo>
   {
@@ -11154,6 +11596,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionControlEXT, SwapchainCreateInfoKHR>
   {
@@ -11162,6 +11605,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionControlEXT, PhysicalDeviceImageFormatInfo2>
   {
@@ -11170,6 +11614,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionPropertiesEXT, ImageFormatProperties2>
   {
@@ -11178,6 +11623,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionPropertiesEXT, SurfaceFormat2KHR>
   {
@@ -11186,6 +11632,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageCompressionPropertiesEXT, SubresourceLayout2EXT>
   {
@@ -11204,6 +11651,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT, DeviceCreateInfo>
   {
@@ -11222,6 +11670,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevice4444FormatsFeaturesEXT, DeviceCreateInfo>
   {
@@ -11240,6 +11689,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFaultFeaturesEXT, DeviceCreateInfo>
   {
@@ -11258,6 +11708,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRGBA10X6FormatsFeaturesEXT, DeviceCreateInfo>
   {
@@ -11276,6 +11727,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPipelineFeaturesKHR, DeviceCreateInfo>
   {
@@ -11284,6 +11736,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPipelinePropertiesKHR, PhysicalDeviceProperties2>
   {
@@ -11302,6 +11755,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayQueryFeaturesKHR, DeviceCreateInfo>
   {
@@ -11320,6 +11774,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceVertexInputDynamicStateFeaturesEXT, DeviceCreateInfo>
   {
@@ -11348,6 +11803,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAddressBindingReportFeaturesEXT, DeviceCreateInfo>
   {
@@ -11356,6 +11812,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<DeviceAddressBindingCallbackDataEXT, DebugUtilsMessengerCallbackDataEXT>
   {
@@ -11374,6 +11831,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDepthClipControlFeaturesEXT, DeviceCreateInfo>
   {
@@ -11382,6 +11840,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineViewportDepthClipControlCreateInfoEXT, PipelineViewportStateCreateInfo>
   {
@@ -11400,6 +11859,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT, DeviceCreateInfo>
   {
@@ -11431,6 +11891,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BufferCollectionImageCreateInfoFUCHSIA, ImageCreateInfo>
   {
@@ -11439,6 +11900,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<BufferCollectionBufferCreateInfoFUCHSIA, BufferCreateInfo>
   {
@@ -11458,6 +11920,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, PhysicalDeviceFeatures2>
   {
@@ -11466,6 +11929,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubpassShadingFeaturesHUAWEI, DeviceCreateInfo>
   {
@@ -11474,6 +11938,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubpassShadingPropertiesHUAWEI, PhysicalDeviceProperties2>
   {
@@ -11492,6 +11957,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceInvocationMaskFeaturesHUAWEI, DeviceCreateInfo>
   {
@@ -11510,6 +11976,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExternalMemoryRDMAFeaturesNV, DeviceCreateInfo>
   {
@@ -11528,6 +11995,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelinePropertiesFeaturesEXT, DeviceCreateInfo>
   {
@@ -11546,6 +12014,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT, DeviceCreateInfo>
   {
@@ -11554,6 +12023,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SubpassResolvePerformanceQueryEXT, FormatProperties2>
   {
@@ -11562,6 +12032,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MultisampledRenderToSingleSampledInfoEXT, SubpassDescription2>
   {
@@ -11570,6 +12041,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MultisampledRenderToSingleSampledInfoEXT, RenderingInfo>
   {
@@ -11588,6 +12060,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExtendedDynamicState2FeaturesEXT, DeviceCreateInfo>
   {
@@ -11606,6 +12079,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceColorWriteEnableFeaturesEXT, DeviceCreateInfo>
   {
@@ -11614,6 +12088,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineColorWriteCreateInfoEXT, PipelineColorBlendStateCreateInfo>
   {
@@ -11632,6 +12107,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePrimitivesGeneratedQueryFeaturesEXT, DeviceCreateInfo>
   {
@@ -11650,6 +12126,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingMaintenance1FeaturesKHR, DeviceCreateInfo>
   {
@@ -11668,6 +12145,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageViewMinLodFeaturesEXT, DeviceCreateInfo>
   {
@@ -11676,6 +12154,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<ImageViewMinLodCreateInfoEXT, ImageViewCreateInfo>
   {
@@ -11694,6 +12173,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiDrawFeaturesEXT, DeviceCreateInfo>
   {
@@ -11702,6 +12182,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiDrawPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -11720,6 +12201,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImage2DViewOf3DFeaturesEXT, DeviceCreateInfo>
   {
@@ -11738,6 +12220,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesEXT, DeviceCreateInfo>
   {
@@ -11746,6 +12229,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceOpacityMicromapPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -11754,6 +12238,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AccelerationStructureTrianglesOpacityMicromapEXT, AccelerationStructureGeometryTrianglesDataKHR>
   {
@@ -11772,6 +12257,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceBorderColorSwizzleFeaturesEXT, DeviceCreateInfo>
   {
@@ -11780,6 +12266,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SamplerBorderColorComponentMappingCreateInfoEXT, SamplerCreateInfo>
   {
@@ -11798,6 +12285,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT, DeviceCreateInfo>
   {
@@ -11816,6 +12304,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE, DeviceCreateInfo>
   {
@@ -11834,6 +12323,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceDepthClampZeroOneFeaturesEXT, DeviceCreateInfo>
   {
@@ -11852,6 +12342,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceNonSeamlessCubeMapFeaturesEXT, DeviceCreateInfo>
   {
@@ -11870,6 +12361,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM, DeviceCreateInfo>
   {
@@ -11878,6 +12370,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceFragmentDensityMapOffsetPropertiesQCOM, PhysicalDeviceProperties2>
   {
@@ -11886,6 +12379,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<SubpassFragmentDensityMapOffsetEndInfoQCOM, SubpassEndInfo>
   {
@@ -11904,6 +12398,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCopyMemoryIndirectFeaturesNV, DeviceCreateInfo>
   {
@@ -11912,6 +12407,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceCopyMemoryIndirectPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -11930,6 +12426,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMemoryDecompressionFeaturesNV, DeviceCreateInfo>
   {
@@ -11938,6 +12435,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMemoryDecompressionPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -11956,6 +12454,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceLinearColorAttachmentFeaturesNV, DeviceCreateInfo>
   {
@@ -11974,6 +12473,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageCompressionControlSwapchainFeaturesEXT, DeviceCreateInfo>
   {
@@ -11992,6 +12492,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageProcessingFeaturesQCOM, PhysicalDeviceFeatures2>
   {
@@ -12000,6 +12501,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageProcessingFeaturesQCOM, DeviceCreateInfo>
   {
@@ -12008,6 +12510,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceImageProcessingPropertiesQCOM, PhysicalDeviceProperties2>
   {
@@ -12026,6 +12529,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExtendedDynamicState3FeaturesEXT, DeviceCreateInfo>
   {
@@ -12034,6 +12538,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceExtendedDynamicState3PropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -12052,6 +12557,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceSubpassMergeFeedbackFeaturesEXT, DeviceCreateInfo>
   {
@@ -12060,6 +12566,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassCreationControlEXT, RenderPassCreateInfo2>
   {
@@ -12068,6 +12575,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassCreationControlEXT, SubpassDescription2>
   {
@@ -12076,6 +12584,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassCreationFeedbackCreateInfoEXT, RenderPassCreateInfo2>
   {
@@ -12084,6 +12593,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<RenderPassSubpassFeedbackCreateInfoEXT, SubpassDescription2>
   {
@@ -12112,6 +12622,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderModuleIdentifierFeaturesEXT, DeviceCreateInfo>
   {
@@ -12120,6 +12631,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderModuleIdentifierPropertiesEXT, PhysicalDeviceProperties2>
   {
@@ -12128,6 +12640,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PipelineShaderStageModuleIdentifierCreateInfoEXT, PipelineShaderStageCreateInfo>
   {
@@ -12146,6 +12659,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT, DeviceCreateInfo>
   {
@@ -12164,6 +12678,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceOpticalFlowFeaturesNV, DeviceCreateInfo>
   {
@@ -12172,6 +12687,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceOpticalFlowPropertiesNV, PhysicalDeviceProperties2>
   {
@@ -12180,6 +12696,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpticalFlowImageFormatInfoNV, PhysicalDeviceImageFormatInfo2>
   {
@@ -12188,6 +12705,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpticalFlowImageFormatInfoNV, ImageCreateInfo>
   {
@@ -12196,6 +12714,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<OpticalFlowSessionCreatePrivateDataInfoNV, OpticalFlowSessionCreateInfoNV>
   {
@@ -12214,6 +12733,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceLegacyDitheringFeaturesEXT, DeviceCreateInfo>
   {
@@ -12232,6 +12752,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDevicePipelineProtectedAccessFeaturesEXT, DeviceCreateInfo>
   {
@@ -12250,6 +12771,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceTilePropertiesFeaturesQCOM, DeviceCreateInfo>
   {
@@ -12268,6 +12790,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceAmigoProfilingFeaturesSEC, DeviceCreateInfo>
   {
@@ -12276,6 +12799,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<AmigoProfilingSubmitInfoSEC, SubmitInfo>
   {
@@ -12294,6 +12818,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM, DeviceCreateInfo>
   {
@@ -12312,6 +12837,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingInvocationReorderFeaturesNV, PhysicalDeviceFeatures2>
   {
@@ -12320,6 +12846,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceRayTracingInvocationReorderFeaturesNV, DeviceCreateInfo>
   {
@@ -12338,6 +12865,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceMutableDescriptorTypeFeaturesEXT, DeviceCreateInfo>
   {
@@ -12346,6 +12874,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MutableDescriptorTypeCreateInfoEXT, DescriptorSetLayoutCreateInfo>
   {
@@ -12354,6 +12883,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<MutableDescriptorTypeCreateInfoEXT, DescriptorPoolCreateInfo>
   {
@@ -12372,6 +12902,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderCoreBuiltinsFeaturesARM, DeviceCreateInfo>
   {
@@ -12380,6 +12911,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
   template <>
   struct StructExtends<PhysicalDeviceShaderCoreBuiltinsPropertiesARM, PhysicalDeviceProperties2>
   {

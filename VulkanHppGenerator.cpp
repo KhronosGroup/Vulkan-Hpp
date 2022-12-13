@@ -10024,7 +10024,7 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
 
         static const std::string constructorBySequenceTemplate = R"(
     VULKAN_HPP_CONSTEXPR ${unionName}( ${arguments} )
-      : ${memberName}( { ${callArguments} } )
+      : ${memberName}{ { { ${callArguments} } } }
     {})";
 
         constructors += "\n" + replaceWithMap( constructorBySequenceTemplate,

@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 237, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 238, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -3050,7 +3050,6 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdDebugMarkerInsertEXT( commandBuffer, pMarkerInfo );
     }
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_queue ===
 
     VkResult vkGetPhysicalDeviceVideoCapabilitiesKHR( VkPhysicalDevice              physicalDevice,
@@ -3133,16 +3132,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ::vkCmdControlVideoCodingKHR( commandBuffer, pCodingControlInfo );
     }
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_decode_queue ===
 
     void vkCmdDecodeVideoKHR( VkCommandBuffer commandBuffer, const VkVideoDecodeInfoKHR * pDecodeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkCmdDecodeVideoKHR( commandBuffer, pDecodeInfo );
     }
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     //=== VK_EXT_transform_feedback ===
 
@@ -6376,7 +6372,6 @@ namespace VULKAN_HPP_NAMESPACE
     InvalidShaderNVError( char const * message ) : SystemError( make_error_code( Result::eErrorInvalidShaderNV ), message ) {}
   };
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class ImageUsageNotSupportedKHRError : public SystemError
   {
   public:
@@ -6384,9 +6379,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     ImageUsageNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorImageUsageNotSupportedKHR ), message ) {}
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class VideoPictureLayoutNotSupportedKHRError : public SystemError
   {
   public:
@@ -6399,9 +6392,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class VideoProfileOperationNotSupportedKHRError : public SystemError
   {
   public:
@@ -6415,9 +6406,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class VideoProfileFormatNotSupportedKHRError : public SystemError
   {
   public:
@@ -6430,9 +6419,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class VideoProfileCodecNotSupportedKHRError : public SystemError
   {
   public:
@@ -6443,9 +6430,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VideoProfileCodecNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoProfileCodecNotSupportedKHR ), message ) {}
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   class VideoStdVersionNotSupportedKHRError : public SystemError
   {
   public:
@@ -6455,7 +6440,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     VideoStdVersionNotSupportedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorVideoStdVersionNotSupportedKHR ), message ) {}
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   class InvalidDrmFormatModifierPlaneLayoutEXTError : public SystemError
   {
@@ -6528,24 +6512,12 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorIncompatibleDisplayKHR: throw IncompatibleDisplayKHRError( message );
         case Result::eErrorValidationFailedEXT: throw ValidationFailedEXTError( message );
         case Result::eErrorInvalidShaderNV: throw InvalidShaderNVError( message );
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorImageUsageNotSupportedKHR: throw ImageUsageNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorVideoPictureLayoutNotSupportedKHR: throw VideoPictureLayoutNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorVideoProfileOperationNotSupportedKHR: throw VideoProfileOperationNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorVideoProfileFormatNotSupportedKHR: throw VideoProfileFormatNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorVideoProfileCodecNotSupportedKHR: throw VideoProfileCodecNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
         case Result::eErrorVideoStdVersionNotSupportedKHR: throw VideoStdVersionNotSupportedKHRError( message );
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
         case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
         case Result::eErrorNotPermittedKHR: throw NotPermittedKHRError( message );
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -8174,7 +8146,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
   template <>
   struct StructExtends<QueueFamilyQueryResultStatusPropertiesKHR, QueueFamilyProperties2>
@@ -8238,9 +8209,7 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
   template <>
   struct StructExtends<VideoDecodeCapabilitiesKHR, VideoCapabilitiesKHR>
@@ -8268,7 +8237,6 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_NV_dedicated_allocation ===
   template <>
@@ -8521,10 +8489,9 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-  //=== VK_EXT_video_decode_h264 ===
+  //=== VK_KHR_video_decode_h264 ===
   template <>
-  struct StructExtends<VideoDecodeH264ProfileInfoEXT, VideoProfileInfoKHR>
+  struct StructExtends<VideoDecodeH264ProfileInfoKHR, VideoProfileInfoKHR>
   {
     enum
     {
@@ -8533,7 +8500,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264ProfileInfoEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoDecodeH264ProfileInfoKHR, QueryPoolCreateInfo>
   {
     enum
     {
@@ -8542,7 +8509,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<VideoDecodeH264CapabilitiesKHR, VideoCapabilitiesKHR>
   {
     enum
     {
@@ -8551,7 +8518,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  struct StructExtends<VideoDecodeH264SessionParametersCreateInfoKHR, VideoSessionParametersCreateInfoKHR>
   {
     enum
     {
@@ -8560,7 +8527,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  struct StructExtends<VideoDecodeH264SessionParametersAddInfoKHR, VideoSessionParametersUpdateInfoKHR>
   {
     enum
     {
@@ -8569,7 +8536,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264PictureInfoEXT, VideoDecodeInfoKHR>
+  struct StructExtends<VideoDecodeH264PictureInfoKHR, VideoDecodeInfoKHR>
   {
     enum
     {
@@ -8578,14 +8545,13 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH264DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
+  struct StructExtends<VideoDecodeH264DpbSlotInfoKHR, VideoReferenceSlotInfoKHR>
   {
     enum
     {
       value = true
     };
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_AMD_texture_gather_bias_lod ===
   template <>
@@ -9675,10 +9641,9 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-#  if defined( VK_ENABLE_BETA_EXTENSIONS )
-  //=== VK_EXT_video_decode_h265 ===
+  //=== VK_KHR_video_decode_h265 ===
   template <>
-  struct StructExtends<VideoDecodeH265ProfileInfoEXT, VideoProfileInfoKHR>
+  struct StructExtends<VideoDecodeH265ProfileInfoKHR, VideoProfileInfoKHR>
   {
     enum
     {
@@ -9687,7 +9652,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265ProfileInfoEXT, QueryPoolCreateInfo>
+  struct StructExtends<VideoDecodeH265ProfileInfoKHR, QueryPoolCreateInfo>
   {
     enum
     {
@@ -9696,7 +9661,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265CapabilitiesEXT, VideoCapabilitiesKHR>
+  struct StructExtends<VideoDecodeH265CapabilitiesKHR, VideoCapabilitiesKHR>
   {
     enum
     {
@@ -9705,7 +9670,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265SessionParametersCreateInfoEXT, VideoSessionParametersCreateInfoKHR>
+  struct StructExtends<VideoDecodeH265SessionParametersCreateInfoKHR, VideoSessionParametersCreateInfoKHR>
   {
     enum
     {
@@ -9714,7 +9679,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265SessionParametersAddInfoEXT, VideoSessionParametersUpdateInfoKHR>
+  struct StructExtends<VideoDecodeH265SessionParametersAddInfoKHR, VideoSessionParametersUpdateInfoKHR>
   {
     enum
     {
@@ -9723,7 +9688,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265PictureInfoEXT, VideoDecodeInfoKHR>
+  struct StructExtends<VideoDecodeH265PictureInfoKHR, VideoDecodeInfoKHR>
   {
     enum
     {
@@ -9732,14 +9697,13 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<VideoDecodeH265DpbSlotInfoEXT, VideoReferenceSlotInfoKHR>
+  struct StructExtends<VideoDecodeH265DpbSlotInfoKHR, VideoReferenceSlotInfoKHR>
   {
     enum
     {
       value = true
     };
   };
-#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_global_priority ===
   template <>
@@ -13339,7 +13303,6 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdDebugMarkerEndEXT        vkCmdDebugMarkerEndEXT        = 0;
     PFN_vkCmdDebugMarkerInsertEXT     vkCmdDebugMarkerInsertEXT     = 0;
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_queue ===
     PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR     vkGetPhysicalDeviceVideoCapabilitiesKHR     = 0;
     PFN_vkGetPhysicalDeviceVideoFormatPropertiesKHR vkGetPhysicalDeviceVideoFormatPropertiesKHR = 0;
@@ -13353,27 +13316,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdBeginVideoCodingKHR                    vkCmdBeginVideoCodingKHR                    = 0;
     PFN_vkCmdEndVideoCodingKHR                      vkCmdEndVideoCodingKHR                      = 0;
     PFN_vkCmdControlVideoCodingKHR                  vkCmdControlVideoCodingKHR                  = 0;
-#else
-    PFN_dummy vkGetPhysicalDeviceVideoCapabilitiesKHR_placeholder           = 0;
-    PFN_dummy vkGetPhysicalDeviceVideoFormatPropertiesKHR_placeholder       = 0;
-    PFN_dummy vkCreateVideoSessionKHR_placeholder                           = 0;
-    PFN_dummy vkDestroyVideoSessionKHR_placeholder                          = 0;
-    PFN_dummy vkGetVideoSessionMemoryRequirementsKHR_placeholder            = 0;
-    PFN_dummy vkBindVideoSessionMemoryKHR_placeholder                       = 0;
-    PFN_dummy vkCreateVideoSessionParametersKHR_placeholder                 = 0;
-    PFN_dummy vkUpdateVideoSessionParametersKHR_placeholder                 = 0;
-    PFN_dummy vkDestroyVideoSessionParametersKHR_placeholder                = 0;
-    PFN_dummy vkCmdBeginVideoCodingKHR_placeholder                          = 0;
-    PFN_dummy vkCmdEndVideoCodingKHR_placeholder                            = 0;
-    PFN_dummy vkCmdControlVideoCodingKHR_placeholder                        = 0;
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_decode_queue ===
     PFN_vkCmdDecodeVideoKHR vkCmdDecodeVideoKHR = 0;
-#else
-    PFN_dummy vkCmdDecodeVideoKHR_placeholder                               = 0;
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     //=== VK_EXT_transform_feedback ===
     PFN_vkCmdBindTransformFeedbackBuffersEXT vkCmdBindTransformFeedbackBuffersEXT = 0;
@@ -14438,7 +14383,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDebugMarkerEndEXT        = PFN_vkCmdDebugMarkerEndEXT( vkGetInstanceProcAddr( instance, "vkCmdDebugMarkerEndEXT" ) );
       vkCmdDebugMarkerInsertEXT     = PFN_vkCmdDebugMarkerInsertEXT( vkGetInstanceProcAddr( instance, "vkCmdDebugMarkerInsertEXT" ) );
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_KHR_video_queue ===
       vkGetPhysicalDeviceVideoCapabilitiesKHR =
         PFN_vkGetPhysicalDeviceVideoCapabilitiesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceVideoCapabilitiesKHR" ) );
@@ -14455,12 +14399,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdBeginVideoCodingKHR           = PFN_vkCmdBeginVideoCodingKHR( vkGetInstanceProcAddr( instance, "vkCmdBeginVideoCodingKHR" ) );
       vkCmdEndVideoCodingKHR             = PFN_vkCmdEndVideoCodingKHR( vkGetInstanceProcAddr( instance, "vkCmdEndVideoCodingKHR" ) );
       vkCmdControlVideoCodingKHR         = PFN_vkCmdControlVideoCodingKHR( vkGetInstanceProcAddr( instance, "vkCmdControlVideoCodingKHR" ) );
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_KHR_video_decode_queue ===
       vkCmdDecodeVideoKHR = PFN_vkCmdDecodeVideoKHR( vkGetInstanceProcAddr( instance, "vkCmdDecodeVideoKHR" ) );
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       //=== VK_EXT_transform_feedback ===
       vkCmdBindTransformFeedbackBuffersEXT =
@@ -15567,7 +15508,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdDebugMarkerEndEXT        = PFN_vkCmdDebugMarkerEndEXT( vkGetDeviceProcAddr( device, "vkCmdDebugMarkerEndEXT" ) );
       vkCmdDebugMarkerInsertEXT     = PFN_vkCmdDebugMarkerInsertEXT( vkGetDeviceProcAddr( device, "vkCmdDebugMarkerInsertEXT" ) );
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_KHR_video_queue ===
       vkCreateVideoSessionKHR  = PFN_vkCreateVideoSessionKHR( vkGetDeviceProcAddr( device, "vkCreateVideoSessionKHR" ) );
       vkDestroyVideoSessionKHR = PFN_vkDestroyVideoSessionKHR( vkGetDeviceProcAddr( device, "vkDestroyVideoSessionKHR" ) );
@@ -15580,12 +15520,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdBeginVideoCodingKHR           = PFN_vkCmdBeginVideoCodingKHR( vkGetDeviceProcAddr( device, "vkCmdBeginVideoCodingKHR" ) );
       vkCmdEndVideoCodingKHR             = PFN_vkCmdEndVideoCodingKHR( vkGetDeviceProcAddr( device, "vkCmdEndVideoCodingKHR" ) );
       vkCmdControlVideoCodingKHR         = PFN_vkCmdControlVideoCodingKHR( vkGetDeviceProcAddr( device, "vkCmdControlVideoCodingKHR" ) );
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_KHR_video_decode_queue ===
       vkCmdDecodeVideoKHR = PFN_vkCmdDecodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdDecodeVideoKHR" ) );
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
       //=== VK_EXT_transform_feedback ===
       vkCmdBindTransformFeedbackBuffersEXT = PFN_vkCmdBindTransformFeedbackBuffersEXT( vkGetDeviceProcAddr( device, "vkCmdBindTransformFeedbackBuffersEXT" ) );

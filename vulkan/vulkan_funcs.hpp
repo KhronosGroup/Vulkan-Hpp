@@ -9289,7 +9289,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_queue ===
 
   template <typename Dispatch>
@@ -9302,7 +9301,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice, reinterpret_cast<const VkVideoProfileInfoKHR *>( pVideoProfile ), reinterpret_cast<VkVideoCapabilitiesKHR *>( pCapabilities ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoCapabilitiesKHR>::type
                        PhysicalDevice::getVideoCapabilitiesKHR( const VULKAN_HPP_NAMESPACE::VideoProfileInfoKHR & videoProfile, Dispatch const & d ) const
@@ -9331,7 +9330,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), structureChain );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9347,7 +9346,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                reinterpret_cast<VkVideoFormatPropertiesKHR *>( pVideoFormatProperties ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename VideoFormatPropertiesKHRAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR, VideoFormatPropertiesKHRAllocator>>::type
@@ -9416,7 +9415,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), videoFormatProperties );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::createVideoSessionKHR( const VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR * pCreateInfo,
@@ -9431,7 +9430,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkVideoSessionKHR *>( pVideoSession ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoSessionKHR>::type
                        Device::createVideoSessionKHR( const VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR &   createInfo,
@@ -9451,7 +9450,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), videoSession );
   }
 
-#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionKHR, Dispatch>>::type
                        Device::createVideoSessionKHRUnique( const VULKAN_HPP_NAMESPACE::VideoSessionCreateInfoKHR &   createInfo,
@@ -9472,8 +9471,8 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
       UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionKHR, Dispatch>( videoSession, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
-#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
-#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyVideoSessionKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR             videoSession,
@@ -9484,7 +9483,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkDestroyVideoSessionKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyVideoSessionKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR                     videoSession,
                                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
@@ -9497,7 +9496,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VkVideoSessionKHR>( videoSession ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::VideoSessionKHR             videoSession,
@@ -9508,7 +9507,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkDestroyVideoSessionKHR( m_device, static_cast<VkVideoSessionKHR>( videoSession ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::VideoSessionKHR                     videoSession,
                                           Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
@@ -9521,7 +9520,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VkVideoSessionKHR>( videoSession ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9537,7 +9536,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                           reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( pMemoryRequirements ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename VideoSessionMemoryRequirementsKHRAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
@@ -9560,13 +9559,13 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
-    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
+
     VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
     if ( memoryRequirementsCount < memoryRequirements.size() )
     {
       memoryRequirements.resize( memoryRequirementsCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), memoryRequirements );
+    return memoryRequirements;
   }
 
   template <typename VideoSessionMemoryRequirementsKHRAllocator,
@@ -9597,15 +9596,15 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkVideoSessionMemoryRequirementsKHR *>( memoryRequirements.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
-    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getVideoSessionMemoryRequirementsKHR" );
+
     VULKAN_HPP_ASSERT( memoryRequirementsCount <= memoryRequirements.size() );
     if ( memoryRequirementsCount < memoryRequirements.size() )
     {
       memoryRequirements.resize( memoryRequirementsCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), memoryRequirements );
+    return memoryRequirements;
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9621,7 +9620,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<const VkBindVideoSessionMemoryInfoKHR *>( pBindSessionMemoryInfos ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::bindVideoSessionMemoryKHR(
     VULKAN_HPP_NAMESPACE::VideoSessionKHR                                                               videoSession,
@@ -9638,7 +9637,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9654,7 +9653,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkVideoSessionParametersKHR *>( pVideoSessionParameters ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR>::type
                        Device::createVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoSessionParametersCreateInfoKHR & createInfo,
@@ -9674,7 +9673,7 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), videoSessionParameters );
   }
 
-#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR, Dispatch>>::type
                        Device::createVideoSessionParametersKHRUnique( const VULKAN_HPP_NAMESPACE::VideoSessionParametersCreateInfoKHR & createInfo,
@@ -9695,8 +9694,8 @@ namespace VULKAN_HPP_NAMESPACE
                                   UniqueHandle<VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR, Dispatch>(
                                     videoSessionParameters, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
-#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
-#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -9710,7 +9709,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<const VkVideoSessionParametersUpdateInfoKHR *>( pUpdateInfo ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS VULKAN_HPP_INLINE typename ResultValueType<void>::type
                                           Device::updateVideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR                   videoSessionParameters,
@@ -9726,7 +9725,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyVideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR   videoSessionParameters,
@@ -9738,7 +9737,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, static_cast<VkVideoSessionParametersKHR>( videoSessionParameters ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroyVideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR           videoSessionParameters,
                                                                    Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
@@ -9751,7 +9750,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VkVideoSessionParametersKHR>( videoSessionParameters ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR   videoSessionParameters,
@@ -9763,7 +9762,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, static_cast<VkVideoSessionParametersKHR>( videoSessionParameters ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR           videoSessionParameters,
                                           Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
@@ -9776,7 +9775,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VkVideoSessionParametersKHR>( videoSessionParameters ),
       reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::beginVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoBeginCodingInfoKHR * pBeginInfo,
@@ -9786,7 +9785,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdBeginVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoBeginCodingInfoKHR *>( pBeginInfo ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::beginVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoBeginCodingInfoKHR & beginInfo,
                                                              Dispatch const &                                      d ) const VULKAN_HPP_NOEXCEPT
@@ -9795,7 +9794,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdBeginVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoBeginCodingInfoKHR *>( &beginInfo ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::endVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoEndCodingInfoKHR * pEndCodingInfo,
@@ -9805,7 +9804,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdEndVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoEndCodingInfoKHR *>( pEndCodingInfo ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::endVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoEndCodingInfoKHR & endCodingInfo,
                                                            Dispatch const &                                    d ) const VULKAN_HPP_NOEXCEPT
@@ -9814,7 +9813,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdEndVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoEndCodingInfoKHR *>( &endCodingInfo ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::controlVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoCodingControlInfoKHR * pCodingControlInfo,
@@ -9824,7 +9823,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdControlVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoCodingControlInfoKHR *>( pCodingControlInfo ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::controlVideoCodingKHR( const VULKAN_HPP_NAMESPACE::VideoCodingControlInfoKHR & codingControlInfo,
                                                                Dispatch const &                                        d ) const VULKAN_HPP_NOEXCEPT
@@ -9833,10 +9832,8 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdControlVideoCodingKHR( m_commandBuffer, reinterpret_cast<const VkVideoCodingControlInfoKHR *>( &codingControlInfo ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_decode_queue ===
 
   template <typename Dispatch>
@@ -9847,7 +9844,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdDecodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoDecodeInfoKHR *>( pDecodeInfo ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::decodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoDecodeInfoKHR & decodeInfo,
                                                         Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
@@ -9856,8 +9853,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdDecodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoDecodeInfoKHR *>( &decodeInfo ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_EXT_transform_feedback ===
 

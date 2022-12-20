@@ -91,7 +91,7 @@ SpaceBeforeSquareBrackets : false
 SpaceInEmptyBlock : false
 SpaceInEmptyParentheses : false
 SpacesBeforeTrailingComments : 2
-SpacesInAngles : Never
+SpacesInAngles : false
 SpacesInCStyleCastParentheses : false
 SpacesInConditionalStatement : true
 SpacesInContainerLiterals : false

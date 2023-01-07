@@ -13549,16 +13549,16 @@ namespace VULKAN_HPP_NAMESPACE
       return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
     }
 
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Queue::presentKHR( const VULKAN_HPP_NAMESPACE::PresentInfoKHR & presentInfo ) const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Queue::presentKHR(const VULKAN_HPP_NAMESPACE::PresentInfoKHR& presentInfo) const
     {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkQueuePresentKHR && "Function <vkQueuePresentKHR> needs extension <VK_KHR_swapchain> enabled!" );
+        VULKAN_HPP_ASSERT(getDispatcher()->vkQueuePresentKHR && "Function <vkQueuePresentKHR> needs extension <VK_KHR_swapchain> enabled!");
 
-      VkResult result = getDispatcher()->vkQueuePresentKHR( static_cast<VkQueue>( m_queue ), reinterpret_cast<const VkPresentInfoKHR *>( &presentInfo ) );
-      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-                   VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR",
-                   { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
+        VkResult result = getDispatcher()->vkQueuePresentKHR(static_cast<VkQueue>(m_queue), reinterpret_cast<const VkPresentInfoKHR*>(&presentInfo));
+        resultCheck(static_cast<VULKAN_HPP_NAMESPACE::Result>(result),
+            VULKAN_HPP_NAMESPACE_STRING "::Queue::presentKHR",
+            { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR, VULKAN_HPP_NAMESPACE::Result::eErrorOutOfDateKHR });
 
-      return static_cast<VULKAN_HPP_NAMESPACE::Result>( result );
+        return static_cast<VULKAN_HPP_NAMESPACE::Result>(result);
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceGroupPresentCapabilitiesKHR Device::getGroupPresentCapabilitiesKHR() const

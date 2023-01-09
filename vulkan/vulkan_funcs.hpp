@@ -6777,7 +6777,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                         uint64_t                              objectHandle,
                                                                         VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                         uint64_t                              data,
@@ -6785,11 +6785,11 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkSetPrivateData( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data ) );
+      d.vkSetPrivateData( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data ) );
   }
 #else
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                                  uint64_t                              objectHandle,
                                                                                  VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                                  uint64_t                              data,
@@ -6798,7 +6798,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     VkResult result =
-      d.vkSetPrivateData( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data );
+      d.vkSetPrivateData( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::setPrivateData" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
@@ -6806,19 +6806,19 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_INLINE void Device::getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                  uint64_t                              objectHandle,
                                                  VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                  uint64_t *                            pData,
                                                  Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkGetPrivateData( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), pData );
+    d.vkGetPrivateData( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), pData );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Device::getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Device::getPrivateData( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                           uint64_t                              objectHandle,
                                                                           VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                           Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
@@ -6826,7 +6826,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     uint64_t data;
-    d.vkGetPrivateData( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), &data );
+    d.vkGetPrivateData( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), &data );
 
     return data;
   }
@@ -9155,7 +9155,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Instance::debugReportMessageEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT      flags,
-                                                          VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType,
+                                                          VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_,
                                                           uint64_t                                       object,
                                                           size_t                                         location,
                                                           int32_t                                        messageCode,
@@ -9166,7 +9166,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkDebugReportMessageEXT( m_instance,
                                static_cast<VkDebugReportFlagsEXT>( flags ),
-                               static_cast<VkDebugReportObjectTypeEXT>( objectType ),
+                               static_cast<VkDebugReportObjectTypeEXT>( objectType_ ),
                                object,
                                location,
                                messageCode,
@@ -9177,7 +9177,7 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Instance::debugReportMessageEXT( VULKAN_HPP_NAMESPACE::DebugReportFlagsEXT      flags,
-                                                          VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType,
+                                                          VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT objectType_,
                                                           uint64_t                                       object,
                                                           size_t                                         location,
                                                           int32_t                                        messageCode,
@@ -9189,7 +9189,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkDebugReportMessageEXT( m_instance,
                                static_cast<VkDebugReportFlagsEXT>( flags ),
-                               static_cast<VkDebugReportObjectTypeEXT>( objectType ),
+                               static_cast<VkDebugReportObjectTypeEXT>( objectType_ ),
                                object,
                                location,
                                messageCode,
@@ -17928,7 +17928,7 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                            uint64_t                              objectHandle,
                                                                            VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                            uint64_t                              data,
@@ -17936,11 +17936,11 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkSetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data ) );
+      d.vkSetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data ) );
   }
 #else
   template <typename Dispatch>
-  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                                     uint64_t                              objectHandle,
                                                                                     VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                                     uint64_t                              data,
@@ -17949,7 +17949,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     VkResult result =
-      d.vkSetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data );
+      d.vkSetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), data );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::setPrivateDataEXT" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
@@ -17957,19 +17957,19 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_INLINE void Device::getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                     uint64_t                              objectHandle,
                                                     VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                     uint64_t *                            pData,
                                                     Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkGetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), pData );
+    d.vkGetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), pData );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Device::getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint64_t Device::getPrivateDataEXT( VULKAN_HPP_NAMESPACE::ObjectType      objectType_,
                                                                              uint64_t                              objectHandle,
                                                                              VULKAN_HPP_NAMESPACE::PrivateDataSlot privateDataSlot,
                                                                              Dispatch const &                      d ) const VULKAN_HPP_NOEXCEPT
@@ -17977,7 +17977,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
     uint64_t data;
-    d.vkGetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), &data );
+    d.vkGetPrivateDataEXT( m_device, static_cast<VkObjectType>( objectType_ ), objectHandle, static_cast<VkPrivateDataSlot>( privateDataSlot ), &data );
 
     return data;
   }

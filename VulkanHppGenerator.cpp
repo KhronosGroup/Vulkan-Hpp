@@ -508,8 +508,11 @@ void VulkanHppGenerator::prepareRAIIHandles()
   }
 
   distributeSecondLevelCommands( m_RAIISpecialFunctions );
+}
 
-  // we rename a couple of function parameters to prevent this warning, treated as an error:
+void VulkanHppGenerator::prepareVulkanFuncs()
+{
+  // rename a couple of function parameters to prevent this warning, treated as an error:
   // warning C4458: declaration of 'objectType' hides class member
   for ( auto & command : m_commands )
   {
@@ -13622,6 +13625,7 @@ int main( int argc, char ** argv )
     generator.generateVulkanHppFile();
     generator.generateVulkanEnumsHppFile();
     generator.generateVulkanFormatTraitsHppFile();
+    generator.prepareVulkanFuncs();
     generator.generateVulkanFuncsHppFile();
     generator.generateVulkanHandlesHppFile();
     generator.generateVulkanHashHppFile();

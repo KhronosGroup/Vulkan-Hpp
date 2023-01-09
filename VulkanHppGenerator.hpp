@@ -88,6 +88,7 @@ public:
   void generateVulkanStructsHppFile() const;
   void generateVulkanToStringHppFile() const;
   void prepareRAIIHandles();
+  void prepareVulkanFuncs();
 
 private:
   struct TypeInfo

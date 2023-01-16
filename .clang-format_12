@@ -54,12 +54,14 @@ ConstructorInitializerAllOnOneLineOrOnePerLine : true
 ConstructorInitializerIndentWidth : 2
 ContinuationIndentWidth : 2
 Cpp11BracedListStyle : false
+EmptyLineBeforeAccessModifier : LogicalBlock
 FixNamespaceComments : true
 IncludeBlocks : Regroup
 IndentCaseBlocks : true
 IndentCaseLabels : true
 IndentExternBlock : true
 IndentPPDirectives : AfterHash
+IndentRequires : false
 IndentWidth : 2
 IndentWrappedFunctionNames : true
 KeepEmptyLinesAtTheStartOfBlocks : false

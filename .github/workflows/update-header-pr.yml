@@ -15,14 +15,15 @@ jobs:
         cxx_standard: [11]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     
     - name: Install libraries
       run: sudo apt install clang-format-15
 
     - name: Update Submodules
       run: |
-        git submodule update --init --recursive
         cd Vulkan-Headers
         VK_HEADER_GIT_TAG=$(git describe --always --tags $(git rev-list --tags) | grep 'v[0-9]\.' | head -n1)
         echo "New revision of Vulkan-Headers: $VK_HEADER_GIT_TAG"

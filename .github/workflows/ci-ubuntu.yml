@@ -22,13 +22,12 @@ jobs:
         cxx_standard: [11, 14, 17, 20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     
     - name: Install libraries
       run: sudo apt update && sudo apt install libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
-
-    - name: Update Submodules
-      run: git submodule update --init --recursive
 
     - name: Install Ninja
       uses: ashutoshvarma/setup-ninja@master

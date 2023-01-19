@@ -16,10 +16,9 @@ jobs:
         build_type: [Debug, Release]
         cxx_standard: [11, 14, 17, 20]
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Update Submodules
-      run: git submodule update --init --recursive
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
     - name: Setup MSVC
       uses: TheMrMilchmann/setup-msvc-dev@v1

@@ -206,6 +206,7 @@ private:
   struct EnumData
   {
     EnumData( int line, bool isBitmask_ = false ) : isBitmask( isBitmask_ ), xmlLine( line ) {}
+
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
     void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension );
 
@@ -768,6 +769,27 @@ private:
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,
                                                                              size_t                                             returnParam ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                  size_t                                             initialSkipCount,
+                                                                                  bool                                               definition,
+                                                                                  size_t                                             returnParam ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnHandle( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                   size_t                                             initialSkipCount,
+                                                                                   bool                                               definition,
+                                                                                   size_t                                             returnParam ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValue( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                  size_t                                             initialSkipCount,
+                                                                                  bool                                               definition,
+                                                                                  size_t                                             returnParam ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValue2Vectors( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                          size_t                                             initialSkipCount,
+                                                                                          bool                                               definition,
+                                                                                          size_t                                             returnParam,
+                                                                                          std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoid( std::map<std::string, CommandData>::const_iterator commandIt,
+                                                                                 size_t                                             initialSkipCount,
+                                                                                 bool                                               definition,
+                                                                                 size_t                                             returnParam ) const;
   std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
                                                                              size_t                                             initialSkipCount,
                                                                              bool                                               definition,

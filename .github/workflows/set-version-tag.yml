@@ -2,7 +2,7 @@ name: Set Version Tag
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
   set-version-tag:

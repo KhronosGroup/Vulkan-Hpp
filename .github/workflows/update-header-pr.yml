@@ -20,7 +20,11 @@ jobs:
         submodules: recursive
     
     - name: Install libraries
-      run: sudo apt install clang-format-15
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        sudo echo "deb http://apt.llvm.org/unstable/ llvm-toolchain-15 main" > sudo tee -a "/etc/apt/sources.list.d/llvm.list"
+        sudo apt-get update
+        sudo apt-get install -y clang-format-15
 
     - name: Update Submodules
       run: |

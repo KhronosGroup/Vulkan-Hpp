@@ -6830,6 +6830,44 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI const & physicalDeviceClusterCullingShaderFeaturesHUAWEI )
+      const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderFeaturesHUAWEI.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderFeaturesHUAWEI.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderFeaturesHUAWEI.clustercullingShader );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderFeaturesHUAWEI.multiviewClusterCullingShader );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI const & physicalDeviceClusterCullingShaderPropertiesHUAWEI ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderPropertiesHUAWEI.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderPropertiesHUAWEI.pNext );
+      for ( size_t i = 0; i < 3; ++i )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderPropertiesHUAWEI.maxWorkGroupCount[i] );
+      }
+      for ( size_t i = 0; i < 3; ++i )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderPropertiesHUAWEI.maxWorkGroupSize[i] );
+      }
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceClusterCullingShaderPropertiesHUAWEI.maxOutputClusterCount );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCoherentMemoryFeaturesAMD>
   {
     std::size_t

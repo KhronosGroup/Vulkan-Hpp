@@ -1443,6 +1443,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct AccelerationStructureTrianglesOpacityMicromapEXT;
   struct MicromapTriangleEXT;
 
+  //=== VK_HUAWEI_cluster_culling_shader ===
+  struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
+  struct PhysicalDeviceClusterCullingShaderPropertiesHUAWEI;
+
   //=== VK_EXT_border_color_swizzle ===
   struct PhysicalDeviceBorderColorSwizzleFeaturesEXT;
   struct SamplerBorderColorComponentMappingCreateInfoEXT;
@@ -5298,6 +5302,19 @@ namespace VULKAN_HPP_NAMESPACE
                                       uint32_t                                                                          firstQuery,
                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_HUAWEI_cluster_culling_shader ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawClusterHUAWEI( uint32_t           groupCountX,
+                            uint32_t           groupCountY,
+                            uint32_t           groupCountZ,
+                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void drawClusterIndirectHUAWEI( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                    VULKAN_HPP_NAMESPACE::DeviceSize offset,
+                                    Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_NV_copy_memory_indirect ===
 

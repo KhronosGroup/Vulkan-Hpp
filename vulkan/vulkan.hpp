@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 238, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 239, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5491,6 +5491,18 @@ namespace VULKAN_HPP_NAMESPACE
                                      VkMicromapBuildSizesInfoEXT *       pSizeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetMicromapBuildSizesEXT( device, buildType, pBuildInfo, pSizeInfo );
+    }
+
+    //=== VK_HUAWEI_cluster_culling_shader ===
+
+    void vkCmdDrawClusterHUAWEI( VkCommandBuffer commandBuffer, uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawClusterHUAWEI( commandBuffer, groupCountX, groupCountY, groupCountZ );
+    }
+
+    void vkCmdDrawClusterIndirectHUAWEI( VkCommandBuffer commandBuffer, VkBuffer buffer, VkDeviceSize offset ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdDrawClusterIndirectHUAWEI( commandBuffer, buffer, offset );
     }
 
     //=== VK_EXT_pageable_device_local_memory ===
@@ -12212,6 +12224,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_HUAWEI_cluster_culling_shader ===
+  template <>
+  struct StructExtends<PhysicalDeviceClusterCullingShaderFeaturesHUAWEI, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceClusterCullingShaderFeaturesHUAWEI, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceClusterCullingShaderPropertiesHUAWEI, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_border_color_swizzle ===
   template <>
   struct StructExtends<PhysicalDeviceBorderColorSwizzleFeaturesEXT, PhysicalDeviceFeatures2>
@@ -13945,6 +13985,10 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetDeviceMicromapCompatibilityEXT vkGetDeviceMicromapCompatibilityEXT = 0;
     PFN_vkGetMicromapBuildSizesEXT          vkGetMicromapBuildSizesEXT          = 0;
 
+    //=== VK_HUAWEI_cluster_culling_shader ===
+    PFN_vkCmdDrawClusterHUAWEI         vkCmdDrawClusterHUAWEI         = 0;
+    PFN_vkCmdDrawClusterIndirectHUAWEI vkCmdDrawClusterIndirectHUAWEI = 0;
+
     //=== VK_EXT_pageable_device_local_memory ===
     PFN_vkSetDeviceMemoryPriorityEXT vkSetDeviceMemoryPriorityEXT = 0;
 
@@ -15198,6 +15242,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT( vkGetInstanceProcAddr( instance, "vkGetDeviceMicromapCompatibilityEXT" ) );
       vkGetMicromapBuildSizesEXT          = PFN_vkGetMicromapBuildSizesEXT( vkGetInstanceProcAddr( instance, "vkGetMicromapBuildSizesEXT" ) );
 
+      //=== VK_HUAWEI_cluster_culling_shader ===
+      vkCmdDrawClusterHUAWEI         = PFN_vkCmdDrawClusterHUAWEI( vkGetInstanceProcAddr( instance, "vkCmdDrawClusterHUAWEI" ) );
+      vkCmdDrawClusterIndirectHUAWEI = PFN_vkCmdDrawClusterIndirectHUAWEI( vkGetInstanceProcAddr( instance, "vkCmdDrawClusterIndirectHUAWEI" ) );
+
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetInstanceProcAddr( instance, "vkSetDeviceMemoryPriorityEXT" ) );
 
@@ -16141,6 +16189,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdWriteMicromapsPropertiesEXT    = PFN_vkCmdWriteMicromapsPropertiesEXT( vkGetDeviceProcAddr( device, "vkCmdWriteMicromapsPropertiesEXT" ) );
       vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT( vkGetDeviceProcAddr( device, "vkGetDeviceMicromapCompatibilityEXT" ) );
       vkGetMicromapBuildSizesEXT          = PFN_vkGetMicromapBuildSizesEXT( vkGetDeviceProcAddr( device, "vkGetMicromapBuildSizesEXT" ) );
+
+      //=== VK_HUAWEI_cluster_culling_shader ===
+      vkCmdDrawClusterHUAWEI         = PFN_vkCmdDrawClusterHUAWEI( vkGetDeviceProcAddr( device, "vkCmdDrawClusterHUAWEI" ) );
+      vkCmdDrawClusterIndirectHUAWEI = PFN_vkCmdDrawClusterIndirectHUAWEI( vkGetDeviceProcAddr( device, "vkCmdDrawClusterIndirectHUAWEI" ) );
 
       //=== VK_EXT_pageable_device_local_memory ===
       vkSetDeviceMemoryPriorityEXT = PFN_vkSetDeviceMemoryPriorityEXT( vkGetDeviceProcAddr( device, "vkSetDeviceMemoryPriorityEXT" ) );

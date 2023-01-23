@@ -7070,14 +7070,31 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
   {
     case 0: return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition );
     case 1:
-      if ( commandIt->second.params[returnParams[0]].type.postfix == "**" )
+      if ( commandIt->second.params[returnParams[0]].type.type == "void" )
       {
-        // get a pointer to something
-        if ( commandIt->second.params[returnParams[0]].type.type == "void" )
+        if ( commandIt->second.params[returnParams[0]].type.postfix == "**" )
         {
+          // get a pointer to something
           if ( vectorParams.empty() )
           {
             return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition );
+          }
+        }
+        else
+        {
+          switch ( vectorParams.size() )
+          {
+            case 0: return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition );
+            case 1:
+              {
+                auto returnVectorParamIt = vectorParams.find( returnParams[0] );
+                if ( returnVectorParamIt != vectorParams.end() )
+                {
+                  return generateRAIIHandleCommandEnhanced(
+                    commandIt, initialSkipCount, returnParams, vectorParams, definition, CommandFlavourFlagBits::singular );
+                }
+              }
+              break;
           }
         }
       }
@@ -7087,10 +7104,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandVoid( std::map<std::str
         {
           return generateRAIIHandleCommandFactory( commandIt, initialSkipCount, returnParams, vectorParams, definition );
         }
-      }
-      else if ( commandIt->second.params[returnParams[0]].type.type == "void" )
-      {
-        return generateRAIIHandleCommandEnhanced( commandIt, initialSkipCount, returnParams, vectorParams, definition, CommandFlavourFlagBits::singular );
       }
       else
       {
@@ -11706,7 +11719,8 @@ std::pair<VulkanHppGenerator::NameData, VulkanHppGenerator::TypeInfo> VulkanHppG
                        ( strcmp( child->NextSibling()->Value(), "]" ) == 0 ),
                      line,
                      std::string( "array specifiation is ill-formatted: <" ) + nameData.arraySizes.back() + ">" );
-      checkForError( m_constants.find( nameData.arraySizes.back() ) != m_constants.end(), line, "using unknown enum value <" + nameData.arraySizes.back() + ">" );
+      checkForError(
+        m_constants.find( nameData.arraySizes.back() ) != m_constants.end(), line, "using unknown enum value <" + nameData.arraySizes.back() + ">" );
     }
     else if ( value == "name" )
     {

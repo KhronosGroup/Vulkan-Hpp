@@ -1153,6 +1153,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetRefreshCycleDurationGOOGLE   = PFN_vkGetRefreshCycleDurationGOOGLE( vkGetDeviceProcAddr( device, "vkGetRefreshCycleDurationGOOGLE" ) );
         vkGetPastPresentationTimingGOOGLE = PFN_vkGetPastPresentationTimingGOOGLE( vkGetDeviceProcAddr( device, "vkGetPastPresentationTimingGOOGLE" ) );
 
+        //=== VK_HUAWEI_cluster_culling_shader ===
+        vkCmdDrawClusterHUAWEI         = PFN_vkCmdDrawClusterHUAWEI( vkGetDeviceProcAddr( device, "vkCmdDrawClusterHUAWEI" ) );
+        vkCmdDrawClusterIndirectHUAWEI = PFN_vkCmdDrawClusterIndirectHUAWEI( vkGetDeviceProcAddr( device, "vkCmdDrawClusterIndirectHUAWEI" ) );
+
         //=== VK_HUAWEI_invocation_mask ===
         vkCmdBindInvocationMaskHUAWEI = PFN_vkCmdBindInvocationMaskHUAWEI( vkGetDeviceProcAddr( device, "vkCmdBindInvocationMaskHUAWEI" ) );
 
@@ -2050,6 +2054,10 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_GOOGLE_display_timing ===
       PFN_vkGetRefreshCycleDurationGOOGLE   vkGetRefreshCycleDurationGOOGLE   = 0;
       PFN_vkGetPastPresentationTimingGOOGLE vkGetPastPresentationTimingGOOGLE = 0;
+
+      //=== VK_HUAWEI_cluster_culling_shader ===
+      PFN_vkCmdDrawClusterHUAWEI         vkCmdDrawClusterHUAWEI         = 0;
+      PFN_vkCmdDrawClusterIndirectHUAWEI vkCmdDrawClusterIndirectHUAWEI = 0;
 
       //=== VK_HUAWEI_invocation_mask ===
       PFN_vkCmdBindInvocationMaskHUAWEI vkCmdBindInvocationMaskHUAWEI = 0;
@@ -5744,6 +5752,12 @@ namespace VULKAN_HPP_NAMESPACE
                                         VULKAN_HPP_NAMESPACE::QueryType                                                   queryType,
                                         VULKAN_HPP_NAMESPACE::QueryPool                                                   queryPool,
                                         uint32_t firstQuery ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_HUAWEI_cluster_culling_shader ===
+
+      void drawClusterHUAWEI( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT;
+
+      void drawClusterIndirectHUAWEI( VULKAN_HPP_NAMESPACE::Buffer buffer, VULKAN_HPP_NAMESPACE::DeviceSize offset ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_copy_memory_indirect ===
 
@@ -18807,6 +18821,26 @@ namespace VULKAN_HPP_NAMESPACE
                                                    reinterpret_cast<VkMicromapBuildSizesInfoEXT *>( &sizeInfo ) );
 
       return sizeInfo;
+    }
+
+    //=== VK_HUAWEI_cluster_culling_shader ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawClusterHUAWEI( uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawClusterHUAWEI &&
+                         "Function <vkCmdDrawClusterHUAWEI> needs extension <VK_HUAWEI_cluster_culling_shader> enabled!" );
+
+      getDispatcher()->vkCmdDrawClusterHUAWEI( static_cast<VkCommandBuffer>( m_commandBuffer ), groupCountX, groupCountY, groupCountZ );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::drawClusterIndirectHUAWEI( VULKAN_HPP_NAMESPACE::Buffer     buffer,
+                                                                     VULKAN_HPP_NAMESPACE::DeviceSize offset ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDrawClusterIndirectHUAWEI &&
+                         "Function <vkCmdDrawClusterIndirectHUAWEI> needs extension <VK_HUAWEI_cluster_culling_shader> enabled!" );
+
+      getDispatcher()->vkCmdDrawClusterIndirectHUAWEI(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBuffer>( buffer ), static_cast<VkDeviceSize>( offset ) );
     }
 
     //=== VK_EXT_pageable_device_local_memory ===

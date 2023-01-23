@@ -826,6 +826,8 @@ namespace VULKAN_HPP_NAMESPACE
     eMicromapCreateInfoEXT                                       = VK_STRUCTURE_TYPE_MICROMAP_CREATE_INFO_EXT,
     eMicromapBuildSizesInfoEXT                                   = VK_STRUCTURE_TYPE_MICROMAP_BUILD_SIZES_INFO_EXT,
     eAccelerationStructureTrianglesOpacityMicromapEXT            = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_TRIANGLES_OPACITY_MICROMAP_EXT,
+    ePhysicalDeviceClusterCullingShaderFeaturesHUAWEI            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_FEATURES_HUAWEI,
+    ePhysicalDeviceClusterCullingShaderPropertiesHUAWEI          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CLUSTER_CULLING_SHADER_PROPERTIES_HUAWEI,
     ePhysicalDeviceBorderColorSwizzleFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT,
     eSamplerBorderColorComponentMappingCreateInfoEXT             = VK_STRUCTURE_TYPE_SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT,
     ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT,
@@ -1940,7 +1942,8 @@ namespace VULKAN_HPP_NAMESPACE
     eTessellationEvaluationShaderInvocations = VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT,
     eComputeShaderInvocations                = VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT,
     eTaskShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_TASK_SHADER_INVOCATIONS_BIT_EXT,
-    eMeshShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT
+    eMeshShaderInvocationsEXT                = VK_QUERY_PIPELINE_STATISTIC_MESH_SHADER_INVOCATIONS_BIT_EXT,
+    eClusterCullingShaderInvocationsHUAWEI   = VK_QUERY_PIPELINE_STATISTIC_CLUSTER_CULLING_SHADER_INVOCATIONS_BIT_HUAWEI
   };
 
   using QueryPipelineStatisticFlags = Flags<QueryPipelineStatisticFlagBits>;
@@ -1956,7 +1959,7 @@ namespace VULKAN_HPP_NAMESPACE
       QueryPipelineStatisticFlagBits::eClippingPrimitives | QueryPipelineStatisticFlagBits::eFragmentShaderInvocations |
       QueryPipelineStatisticFlagBits::eTessellationControlShaderPatches | QueryPipelineStatisticFlagBits::eTessellationEvaluationShaderInvocations |
       QueryPipelineStatisticFlagBits::eComputeShaderInvocations | QueryPipelineStatisticFlagBits::eTaskShaderInvocationsEXT |
-      QueryPipelineStatisticFlagBits::eMeshShaderInvocationsEXT;
+      QueryPipelineStatisticFlagBits::eMeshShaderInvocationsEXT | QueryPipelineStatisticFlagBits::eClusterCullingShaderInvocationsHUAWEI;
   };
 
   enum class QueryResultFlagBits : VkQueryResultFlags
@@ -2569,6 +2572,7 @@ namespace VULKAN_HPP_NAMESPACE
     eTaskEXT                = VK_SHADER_STAGE_TASK_BIT_EXT,
     eMeshEXT                = VK_SHADER_STAGE_MESH_BIT_EXT,
     eSubpassShadingHUAWEI   = VK_SHADER_STAGE_SUBPASS_SHADING_BIT_HUAWEI,
+    eClusterCullingHUAWEI   = VK_SHADER_STAGE_CLUSTER_CULLING_BIT_HUAWEI,
     eAnyHitNV               = VK_SHADER_STAGE_ANY_HIT_BIT_NV,
     eCallableNV             = VK_SHADER_STAGE_CALLABLE_BIT_NV,
     eClosestHitNV           = VK_SHADER_STAGE_CLOSEST_HIT_BIT_NV,
@@ -2590,7 +2594,7 @@ namespace VULKAN_HPP_NAMESPACE
       ShaderStageFlagBits::eFragment | ShaderStageFlagBits::eCompute | ShaderStageFlagBits::eAllGraphics | ShaderStageFlagBits::eAll |
       ShaderStageFlagBits::eRaygenKHR | ShaderStageFlagBits::eAnyHitKHR | ShaderStageFlagBits::eClosestHitKHR | ShaderStageFlagBits::eMissKHR |
       ShaderStageFlagBits::eIntersectionKHR | ShaderStageFlagBits::eCallableKHR | ShaderStageFlagBits::eTaskEXT | ShaderStageFlagBits::eMeshEXT |
-      ShaderStageFlagBits::eSubpassShadingHUAWEI;
+      ShaderStageFlagBits::eSubpassShadingHUAWEI | ShaderStageFlagBits::eClusterCullingHUAWEI;
   };
 
   enum class StencilOp
@@ -3461,30 +3465,31 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class DriverId
   {
-    eAmdProprietary          = VK_DRIVER_ID_AMD_PROPRIETARY,
-    eAmdOpenSource           = VK_DRIVER_ID_AMD_OPEN_SOURCE,
-    eMesaRadv                = VK_DRIVER_ID_MESA_RADV,
-    eNvidiaProprietary       = VK_DRIVER_ID_NVIDIA_PROPRIETARY,
-    eIntelProprietaryWindows = VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS,
-    eIntelOpenSourceMESA     = VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA,
-    eImaginationProprietary  = VK_DRIVER_ID_IMAGINATION_PROPRIETARY,
-    eQualcommProprietary     = VK_DRIVER_ID_QUALCOMM_PROPRIETARY,
-    eArmProprietary          = VK_DRIVER_ID_ARM_PROPRIETARY,
-    eGoogleSwiftshader       = VK_DRIVER_ID_GOOGLE_SWIFTSHADER,
-    eGgpProprietary          = VK_DRIVER_ID_GGP_PROPRIETARY,
-    eBroadcomProprietary     = VK_DRIVER_ID_BROADCOM_PROPRIETARY,
-    eMesaLlvmpipe            = VK_DRIVER_ID_MESA_LLVMPIPE,
-    eMoltenvk                = VK_DRIVER_ID_MOLTENVK,
-    eCoreaviProprietary      = VK_DRIVER_ID_COREAVI_PROPRIETARY,
-    eJuiceProprietary        = VK_DRIVER_ID_JUICE_PROPRIETARY,
-    eVerisiliconProprietary  = VK_DRIVER_ID_VERISILICON_PROPRIETARY,
-    eMesaTurnip              = VK_DRIVER_ID_MESA_TURNIP,
-    eMesaV3Dv                = VK_DRIVER_ID_MESA_V3DV,
-    eMesaPanvk               = VK_DRIVER_ID_MESA_PANVK,
-    eSamsungProprietary      = VK_DRIVER_ID_SAMSUNG_PROPRIETARY,
-    eMesaVenus               = VK_DRIVER_ID_MESA_VENUS,
-    eMesaDozen               = VK_DRIVER_ID_MESA_DOZEN,
-    eMesaNvk                 = VK_DRIVER_ID_MESA_NVK
+    eAmdProprietary            = VK_DRIVER_ID_AMD_PROPRIETARY,
+    eAmdOpenSource             = VK_DRIVER_ID_AMD_OPEN_SOURCE,
+    eMesaRadv                  = VK_DRIVER_ID_MESA_RADV,
+    eNvidiaProprietary         = VK_DRIVER_ID_NVIDIA_PROPRIETARY,
+    eIntelProprietaryWindows   = VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS,
+    eIntelOpenSourceMESA       = VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA,
+    eImaginationProprietary    = VK_DRIVER_ID_IMAGINATION_PROPRIETARY,
+    eQualcommProprietary       = VK_DRIVER_ID_QUALCOMM_PROPRIETARY,
+    eArmProprietary            = VK_DRIVER_ID_ARM_PROPRIETARY,
+    eGoogleSwiftshader         = VK_DRIVER_ID_GOOGLE_SWIFTSHADER,
+    eGgpProprietary            = VK_DRIVER_ID_GGP_PROPRIETARY,
+    eBroadcomProprietary       = VK_DRIVER_ID_BROADCOM_PROPRIETARY,
+    eMesaLlvmpipe              = VK_DRIVER_ID_MESA_LLVMPIPE,
+    eMoltenvk                  = VK_DRIVER_ID_MOLTENVK,
+    eCoreaviProprietary        = VK_DRIVER_ID_COREAVI_PROPRIETARY,
+    eJuiceProprietary          = VK_DRIVER_ID_JUICE_PROPRIETARY,
+    eVerisiliconProprietary    = VK_DRIVER_ID_VERISILICON_PROPRIETARY,
+    eMesaTurnip                = VK_DRIVER_ID_MESA_TURNIP,
+    eMesaV3Dv                  = VK_DRIVER_ID_MESA_V3DV,
+    eMesaPanvk                 = VK_DRIVER_ID_MESA_PANVK,
+    eSamsungProprietary        = VK_DRIVER_ID_SAMSUNG_PROPRIETARY,
+    eMesaVenus                 = VK_DRIVER_ID_MESA_VENUS,
+    eMesaDozen                 = VK_DRIVER_ID_MESA_DOZEN,
+    eMesaNvk                   = VK_DRIVER_ID_MESA_NVK,
+    eImaginationOpenSourceMESA = VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA
   };
   using DriverIdKHR = DriverId;
 
@@ -3674,6 +3679,7 @@ namespace VULKAN_HPP_NAMESPACE
     eInvocationMaskHUAWEI             = VK_PIPELINE_STAGE_2_INVOCATION_MASK_BIT_HUAWEI,
     eAccelerationStructureCopyKHR     = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_COPY_BIT_KHR,
     eMicromapBuildEXT                 = VK_PIPELINE_STAGE_2_MICROMAP_BUILD_BIT_EXT,
+    eClusterCullingShaderHUAWEI       = VK_PIPELINE_STAGE_2_CLUSTER_CULLING_SHADER_BIT_HUAWEI,
     eOpticalFlowNV                    = VK_PIPELINE_STAGE_2_OPTICAL_FLOW_BIT_NV,
     eAccelerationStructureBuildNV     = VK_PIPELINE_STAGE_2_ACCELERATION_STRUCTURE_BUILD_BIT_NV,
     eMeshShaderNV                     = VK_PIPELINE_STAGE_2_MESH_SHADER_BIT_NV,
@@ -3707,7 +3713,8 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineStageFlagBits2::eFragmentShadingRateAttachmentKHR | PipelineStageFlagBits2::eAccelerationStructureBuildKHR |
       PipelineStageFlagBits2::eRayTracingShaderKHR | PipelineStageFlagBits2::eFragmentDensityProcessEXT | PipelineStageFlagBits2::eTaskShaderEXT |
       PipelineStageFlagBits2::eMeshShaderEXT | PipelineStageFlagBits2::eSubpassShadingHUAWEI | PipelineStageFlagBits2::eInvocationMaskHUAWEI |
-      PipelineStageFlagBits2::eAccelerationStructureCopyKHR | PipelineStageFlagBits2::eMicromapBuildEXT | PipelineStageFlagBits2::eOpticalFlowNV;
+      PipelineStageFlagBits2::eAccelerationStructureCopyKHR | PipelineStageFlagBits2::eMicromapBuildEXT | PipelineStageFlagBits2::eClusterCullingShaderHUAWEI |
+      PipelineStageFlagBits2::eOpticalFlowNV;
   };
 
   enum class AccessFlagBits2 : VkAccessFlags2

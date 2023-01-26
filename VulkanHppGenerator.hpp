@@ -181,6 +181,14 @@ private:
     int                      xmlLine;
   };
 
+  struct DefineData
+  {
+    DefineData( std::string const & require_, int line ) : require( require_ ), xmlLine( line ) {}
+
+    std::string require;
+    int         xmlLine;
+  };
+
   struct EnumAliasData
   {
     EnumAliasData( std::string const & name_, int line ) : name( name_ ), xmlLine( line ) {}
@@ -205,17 +213,15 @@ private:
 
   struct EnumData
   {
-    EnumData( int line, bool isBitmask_ = false ) : isBitmask( isBitmask_ ), xmlLine( line ) {}
-
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
     void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension );
 
-    std::string                          alias;    // alias for this enum
-    std::map<std::string, EnumAliasData> aliases;  // aliases for the values
-    std::string                          bitwidth;
-    bool                                 isBitmask;
-    std::vector<EnumValueData>           values;
-    int                                  xmlLine;
+    std::string                          alias     = {};  // alias for this enum
+    std::map<std::string, EnumAliasData> aliases   = {};  // aliases for the values
+    std::string                          bitwidth  = {};
+    bool                                 isBitmask = false;
+    std::vector<EnumValueData>           values    = {};
+    int                                  xmlLine   = 0;
   };
 
   struct RequireData
@@ -256,6 +262,14 @@ private:
     std::set<std::string>    depends;
     std::vector<RequireData> requireData;
     int                      xmlLine;
+  };
+
+  struct SkippedExtensionData
+  {
+    SkippedExtensionData( int line, std::string const & platform_ ) : platform( platform_ ), xmlLine( line ) {}
+
+    std::string platform;
+    int         xmlLine;
   };
 
   struct ComponentData
@@ -399,10 +413,8 @@ private:
 
   struct TypeData
   {
-    TypeData( TypeCategory category_, std::string const & referencedIn_ = "" ) : category( category_ ), referencedIn( referencedIn_ ) {}
-
-    TypeCategory category;
-    std::string  referencedIn;
+    TypeCategory category     = TypeCategory::Unknown;
+    std::string  referencedIn = {};
   };
 
   struct VectorParamData
@@ -435,6 +447,7 @@ private:
   void        checkBitmaskCorrectness() const;
   void        checkCommandCorrectness() const;
   void        checkCorrectness() const;
+  void        checkDefineCorrectness() const;
   void        checkEnumCorrectness() const;
   void        checkEnumCorrectness( std::vector<RequireData> const & requireData ) const;
   bool        checkEquivalentSingularConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts,
@@ -445,7 +458,6 @@ private:
   void        checkHandleCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
-  void checkValidStructs( int line, std::map<std::string, std::string> const & attributes ) const;
   std::string              combineDataTypes( std::map<size_t, VectorParamData> const & vectorParams,
                                              std::vector<size_t> const &               returnParams,
                                              bool                                      enumerating,
@@ -959,7 +971,7 @@ private:
                                                                                std::set<size_t> const &                  singularParams ) const;
   void                                                   readCommands( tinyxml2::XMLElement const * element );
   void                                                   readCommandsCommand( tinyxml2::XMLElement const * element );
-  ParamData                           readCommandsCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
+  std::pair<bool, ParamData>          readCommandsCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
   std::pair<std::string, std::string> readCommandsCommandProto( tinyxml2::XMLElement const * element );
   std::string                         readComment( tinyxml2::XMLElement const * element );
   void                                readEnums( tinyxml2::XMLElement const * element );
@@ -967,15 +979,15 @@ private:
   void                                readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
   void                                readExtensions( tinyxml2::XMLElement const * element );
   void                                readExtensionsExtension( tinyxml2::XMLElement const * element );
-  void                                readExtensionsExtensionDisabledRequire( tinyxml2::XMLElement const * element );
-  void                                readExtensionsExtensionDisabledRequireCommand( tinyxml2::XMLElement const * element );
-  void                                readExtensionsExtensionDisabledRequireType( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequire( tinyxml2::XMLElement const * element, std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensionsExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
+  void readExtensionsExtensionRequireSkipped( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
   void readFeature( tinyxml2::XMLElement const * element );
   void readFeatureRequire( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt );
   void readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
+  void readFeatureRequireCommandSkipped( tinyxml2::XMLElement const * element );
+  void readFeatureRequireSkipped( tinyxml2::XMLElement const * element );
   void readFeatureRequireType( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
   void readFormats( tinyxml2::XMLElement const * element );
   void readFormatsFormat( tinyxml2::XMLElement const * element );
@@ -986,7 +998,10 @@ private:
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readPlatformsPlatform( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
+  void                          readRequireCommandSkipped( tinyxml2::XMLElement const * element );
   void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extensionName );
+  void                          readRequireEnumSkipped( tinyxml2::XMLElement const * element );
+  void                          readRequireTypeSkipped( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilities( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilitiesSPIRVCapability( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilitiesSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
@@ -1032,7 +1047,7 @@ private:
   std::map<std::string, BitmaskData>                                  m_bitmasks;
   std::map<std::string, CommandData>                                  m_commands;
   std::map<std::string, std::string>                                  m_constants;
-  std::set<std::string>                                               m_defines;
+  std::map<std::string, DefineData>                                   m_defines;
   std::map<std::string, EnumData>                                     m_enums;
   std::set<std::string>                                               m_extendedStructs;  // structs which are referenced by the structextends tag
   std::map<std::string, ExtensionData>                                m_extensions;
@@ -1044,6 +1059,10 @@ private:
   std::set<std::string>                                               m_includes;
   std::map<std::string, PlatformData>                                 m_platforms;
   std::set<std::string>                                               m_RAIISpecialFunctions;
+  std::map<std::string, EnumData>                                     m_skippedEnums;
+  std::set<std::string>                                               m_skippedCommands;
+  std::set<std::string>                                               m_skippedFeatures;
+  std::map<std::string, TypeData>                                     m_skippedTypes;
   std::map<std::string, StructureData>                                m_structures;
   std::map<std::string, StructureAliasData>                           m_structureAliases;
   std::map<std::string, std::set<std::string>>                        m_structureAliasesInverse;

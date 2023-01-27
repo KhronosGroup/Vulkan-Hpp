@@ -881,6 +881,7 @@ namespace VULKAN_HPP_NAMESPACE
     eMutableDescriptorTypeCreateInfoEXT                          = VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT,
     ePhysicalDeviceShaderCoreBuiltinsFeaturesARM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM,
     ePhysicalDeviceShaderCoreBuiltinsPropertiesARM               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM,
+    ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT,
     eAttachmentDescription2KHR                                   = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentDescriptionStencilLayoutKHR                       = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                                     = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,

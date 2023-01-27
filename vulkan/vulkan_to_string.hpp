@@ -4106,6 +4106,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMutableDescriptorTypeCreateInfoEXT: return "MutableDescriptorTypeCreateInfoEXT";
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsFeaturesARM: return "PhysicalDeviceShaderCoreBuiltinsFeaturesARM";
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsPropertiesARM: return "PhysicalDeviceShaderCoreBuiltinsPropertiesARM";
+      case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT: return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

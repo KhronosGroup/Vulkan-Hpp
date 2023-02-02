@@ -60,10 +60,11 @@ private:
 
 enum class CommandFlavourFlagBits : uint8_t
 {
-  chained       = 1 << 0,
-  singular      = 1 << 1,
-  unique        = 1 << 2,
-  withAllocator = 1 << 3
+  enhanced      = 1 << 0,
+  chained       = 1 << 1,
+  singular      = 1 << 2,
+  unique        = 1 << 3,
+  withAllocator = 1 << 4
 };
 using CommandFlavourFlags = Flags<CommandFlavourFlagBits>;
 
@@ -554,7 +555,7 @@ private:
                                     CommandFlavourFlags                       flavourFlags,
                                     bool                                      raii ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
-  std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandDefinitions() const;
   std::string
     generateCommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
@@ -571,70 +572,80 @@ private:
                                    size_t                         initialSkipCount,
                                    std::set<std::string> const &  tags,
                                    CommandFlavourFlags            flavourFlags = {} ) const;
-  std::string
-    generateCommandResultMultiSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string generateCommandResultMultiSuccessNoErrors0Return( std::string const & name,
-                                                                CommandData const & commandData,
-                                                                size_t              initialSkipCount,
-                                                                bool                definition ) const;
-  std::string generateCommandResultMultiSuccessNoErrors2Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParams ) const;
-  std::string
-    generateCommandResultMultiSuccessWithErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommandResult( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandResultMultiSuccessNoErrors(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandResultMultiSuccessWithErrors(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandResultMultiSuccessWithErrors1Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultMultiSuccessWithErrors2Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
-  std::string generateCommandResultMultiSuccessWithErrors3Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
+  std::string generateCommandResultMultiSuccessWithErrors2Return( std::string const &         name,
+                                                                  CommandData const &         commandData,
+                                                                  size_t                      initialSkipCount,
+                                                                  bool                        definition,
+                                                                  std::vector<size_t> const & returnParamIndices,
+                                                                  bool                        raii ) const;
+  std::string generateCommandResultMultiSuccessWithErrors3Return( std::string const &         name,
+                                                                  CommandData const &         commandData,
+                                                                  size_t                      initialSkipCount,
+                                                                  bool                        definition,
+                                                                  std::vector<size_t> const & returnParamIndices,
+                                                                  bool                        raii ) const;
   std::string
-    generateCommandResultSingleSuccessNoErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string
-    generateCommandResultSingleSuccessWithErrors( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+    generateCommandResultSingleSuccess( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandResultSingleSuccessNoErrors(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandResultSingleSuccessWithErrors(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors1Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnChain(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle1Vector( std::string const &                        name,
-                                                                                CommandData const &                        commandData,
-                                                                                size_t                                     initialSkipCount,
-                                                                                bool                                       definition,
-                                                                                size_t                                     returnParam,
-                                                                                std::pair<size_t, VectorParamData> const & vectorParamIndex ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnHandle2Vector( std::string const &                       name,
-                                                                                CommandData const &                       commandData,
-                                                                                size_t                                    initialSkipCount,
-                                                                                bool                                      definition,
-                                                                                size_t                                    returnParam,
-                                                                                std::map<size_t, VectorParamData> const & vectorParamIndices ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnValue(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultSingleSuccessWithErrors1ReturnValue2Vectors( std::string const &                       name,
-                                                                                CommandData const &                       commandData,
-                                                                                size_t                                    initialSkipCount,
-                                                                                bool                                      definition,
-                                                                                size_t                                    returnParam,
-                                                                                std::map<size_t, VectorParamData> const & vectorParamIndices ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
   std::string generateCommandResultSingleSuccessWithErrors1ReturnVoid(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandResultSingleSuccessWithErrors2Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
-  std::string
-    generateCommandResultWithErrors0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
+  std::string generateCommandResultSingleSuccessWithErrors2Return( std::string const &         name,
+                                                                   CommandData const &         commandData,
+                                                                   size_t                      initialSkipCount,
+                                                                   bool                        definition,
+                                                                   std::vector<size_t> const & returnParamIndices,
+                                                                   bool                        raii ) const;
+  std::string generateCommandResultWithErrors0Return(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandSet( bool                             definition,
                                   std::string const &              standard,
                                   std::vector<std::string> const & enhanced = {},
                                   std::vector<std::string> const & unique   = {} ) const;
   std::string generateCommandSet( std::string const & standard, std::string const & enhanced ) const;
-  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
-  std::string generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommandSetInclusive( std::string const &                      name,
+                                           CommandData const &                      commandData,
+                                           size_t                                   initialSkipCount,
+                                           bool                                     definition,
+                                           std::vector<size_t>                      returnParams,
+                                           std::map<size_t, VectorParamData>        vectorParams,
+                                           bool                                     unique,
+                                           std::vector<CommandFlavourFlags> const & flags,
+                                           bool                                     raii,
+                                           bool                                     raiiFactory,
+                                           std::vector<CommandFlavourFlags> const & raiiFlags ) const;
   std::string
-    generateCommandVoid1Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam ) const;
-  std::string generateCommandVoid2Return(
-    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, std::vector<size_t> const & returnParamIndices ) const;
+    generateCommandSetExclusive( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandStandard( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition ) const;
+  std::string generateCommandVoid( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandValue( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string
+    generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
+  std::string generateCommandVoid1Return(
+    std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
+  std::string generateCommandVoid2Return( std::string const &         name,
+                                          CommandData const &         commandData,
+                                          size_t                      initialSkipCount,
+                                          bool                        definition,
+                                          std::vector<size_t> const & returnParamIndices,
+                                          bool                        raii ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
@@ -732,82 +743,24 @@ private:
                                   std::set<std::string> const &              specialFunctions ) const;
   std::string generateRAIIHandleCommand( std::string const & command, size_t initialSkipCount, bool definition ) const;
   std::string generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
-  std::string generateRAIIHandleCommandEnhanced( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                 size_t                                             initialSkipCount,
-                                                 std::vector<size_t> const &                        returnParams,
-                                                 std::map<size_t, VectorParamData> const &          vectorParamIndices,
-                                                 bool                                               definition,
-                                                 CommandFlavourFlags                                flavourFlags = {} ) const;
-  std::string generateRAIIHandleCommandFactory( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                size_t                                             initialSkipCount,
-                                                std::vector<size_t> const &                        returnParams,
-                                                std::map<size_t, VectorParamData> const &          vectorParams,
-                                                bool                                               definition,
-                                                CommandFlavourFlags                                flavourFlags = {} ) const;
+  std::string generateRAIIHandleCommandEnhanced( std::string const &                       name,
+                                                 CommandData const &                       commandData,
+                                                 size_t                                    initialSkipCount,
+                                                 std::vector<size_t> const &               returnParams,
+                                                 std::map<size_t, VectorParamData> const & vectorParamIndices,
+                                                 bool                                      definition,
+                                                 CommandFlavourFlags                       flavourFlags = {} ) const;
+  std::string generateRAIIHandleCommandFactory( std::string const &                       name,
+                                                CommandData const &                       commandData,
+                                                size_t                                    initialSkipCount,
+                                                std::vector<size_t> const &               returnParams,
+                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                bool                                      definition,
+                                                CommandFlavourFlags                       flavourFlags = {} ) const;
   std::string generateRAIIHandleCommandFactoryArgumentList( std::vector<ParamData> const & params,
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
-  std::string generateRAIIHandleCommandResult( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                   size_t                                             initialSkipCount,
-                                                                   bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessNoErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                          size_t                                             initialSkipCount,
-                                                                          bool                                               definition,
-                                                                          std::vector<size_t> const &                        returnParams ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                     size_t                                             initialSkipCount,
-                                                                     bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors1Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                            size_t                                             initialSkipCount,
-                                                                            bool                                               definition,
-                                                                            size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                            size_t                                             initialSkipCount,
-                                                                            bool                                               definition,
-                                                                            std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultMultiSuccessWithErrors3Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                            size_t                                             initialSkipCount,
-                                                                            bool                                               definition,
-                                                                            std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessNoErrors( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                    size_t                                             initialSkipCount,
-                                                                    bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                      size_t                                             initialSkipCount,
-                                                                      bool                                               definition ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                             size_t                                             initialSkipCount,
-                                                                             bool                                               definition,
-                                                                             size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnChain( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                  size_t                                             initialSkipCount,
-                                                                                  bool                                               definition,
-                                                                                  size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnHandle( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                   size_t                                             initialSkipCount,
-                                                                                   bool                                               definition,
-                                                                                   size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValue( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                  size_t                                             initialSkipCount,
-                                                                                  bool                                               definition,
-                                                                                  size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnValue2Vectors( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                          size_t                                             initialSkipCount,
-                                                                                          bool                                               definition,
-                                                                                          size_t                                             returnParam,
-                                                                                          std::map<size_t, VectorParamData> const & vectorParams ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors1ReturnVoid( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                                 size_t                                             initialSkipCount,
-                                                                                 bool                                               definition,
-                                                                                 size_t                                             returnParam ) const;
-  std::string generateRAIIHandleCommandResultSingleSuccessWithErrors2Return( std::map<std::string, CommandData>::const_iterator commandIt,
-                                                                             size_t                                             initialSkipCount,
-                                                                             bool                                               definition,
-                                                                             std::vector<size_t> const &                        returnParamIndices ) const;
-  std::string generateRAIIHandleCommandValue( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
-  std::string generateRAIIHandleCommandVoid( std::map<std::string, CommandData>::const_iterator commandIt, size_t initialSkipCount, bool definition ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
                                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                      std::string const &                                enter,

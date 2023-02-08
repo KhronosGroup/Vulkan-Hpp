@@ -1565,6 +1565,503 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_pipeline_library_group_handles ===
   struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
 
+  //===================================
+  //=== HANDLE forward declarations ===
+  //===================================
+
+  //=== VK_VERSION_1_0 ===
+  class Instance;
+  class PhysicalDevice;
+  class Device;
+  class Queue;
+  class DeviceMemory;
+  class Fence;
+  class Semaphore;
+  class Event;
+  class QueryPool;
+  class Buffer;
+  class BufferView;
+  class Image;
+  class ImageView;
+  class ShaderModule;
+  class PipelineCache;
+  class Pipeline;
+  class PipelineLayout;
+  class Sampler;
+  class DescriptorPool;
+  class DescriptorSet;
+  class DescriptorSetLayout;
+  class Framebuffer;
+  class RenderPass;
+  class CommandPool;
+  class CommandBuffer;
+
+  //=== VK_VERSION_1_1 ===
+  class SamplerYcbcrConversion;
+  class DescriptorUpdateTemplate;
+
+  //=== VK_VERSION_1_3 ===
+  class PrivateDataSlot;
+
+  //=== VK_KHR_surface ===
+  class SurfaceKHR;
+
+  //=== VK_KHR_swapchain ===
+  class SwapchainKHR;
+
+  //=== VK_KHR_display ===
+  class DisplayKHR;
+  class DisplayModeKHR;
+
+  //=== VK_EXT_debug_report ===
+  class DebugReportCallbackEXT;
+
+  //=== VK_KHR_video_queue ===
+  class VideoSessionKHR;
+  class VideoSessionParametersKHR;
+
+  //=== VK_NVX_binary_import ===
+  class CuModuleNVX;
+  class CuFunctionNVX;
+
+  //=== VK_EXT_debug_utils ===
+  class DebugUtilsMessengerEXT;
+
+  //=== VK_KHR_acceleration_structure ===
+  class AccelerationStructureKHR;
+
+  //=== VK_EXT_validation_cache ===
+  class ValidationCacheEXT;
+
+  //=== VK_NV_ray_tracing ===
+  class AccelerationStructureNV;
+
+  //=== VK_INTEL_performance_query ===
+  class PerformanceConfigurationINTEL;
+
+  //=== VK_KHR_deferred_host_operations ===
+  class DeferredOperationKHR;
+
+  //=== VK_NV_device_generated_commands ===
+  class IndirectCommandsLayoutNV;
+
+#if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+  class BufferCollectionFUCHSIA;
+#endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+  //=== VK_EXT_opacity_micromap ===
+  class MicromapEXT;
+
+  //=== VK_NV_optical_flow ===
+  class OpticalFlowSessionNV;
+
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  //======================
+  //=== UNIQUE HANDLEs ===
+  //======================
+
+  //=== VK_VERSION_1_0 ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<Instance, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<NoParent, Dispatch>;
+  };
+
+  using UniqueInstance = UniqueHandle<Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Device, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<NoParent, Dispatch>;
+  };
+
+  using UniqueDevice = UniqueHandle<Device, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DeviceMemory, Dispatch>
+  {
+  public:
+    using deleter = ObjectFree<Device, Dispatch>;
+  };
+
+  using UniqueDeviceMemory = UniqueHandle<DeviceMemory, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Fence, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueFence = UniqueHandle<Fence, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Semaphore, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueSemaphore = UniqueHandle<Semaphore, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Event, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueEvent = UniqueHandle<Event, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<QueryPool, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueQueryPool = UniqueHandle<QueryPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Buffer, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueBuffer = UniqueHandle<Buffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<BufferView, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueBufferView = UniqueHandle<BufferView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Image, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueImage = UniqueHandle<Image, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<ImageView, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueImageView = UniqueHandle<ImageView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<ShaderModule, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueShaderModule = UniqueHandle<ShaderModule, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<PipelineCache, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniquePipelineCache = UniqueHandle<PipelineCache, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Pipeline, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniquePipeline = UniqueHandle<Pipeline, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<PipelineLayout, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniquePipelineLayout = UniqueHandle<PipelineLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Sampler, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueSampler = UniqueHandle<Sampler, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DescriptorPool, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueDescriptorPool = UniqueHandle<DescriptorPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DescriptorSet, Dispatch>
+  {
+  public:
+    using deleter = PoolFree<Device, DescriptorPool, Dispatch>;
+  };
+
+  using UniqueDescriptorSet = UniqueHandle<DescriptorSet, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DescriptorSetLayout, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<Framebuffer, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueFramebuffer = UniqueHandle<Framebuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<RenderPass, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueRenderPass = UniqueHandle<RenderPass, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<CommandPool, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueCommandPool = UniqueHandle<CommandPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<CommandBuffer, Dispatch>
+  {
+  public:
+    using deleter = PoolFree<Device, CommandPool, Dispatch>;
+  };
+
+  using UniqueCommandBuffer = UniqueHandle<CommandBuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_VERSION_1_1 ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<SamplerYcbcrConversion, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueSamplerYcbcrConversion    = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<DescriptorUpdateTemplate, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueDescriptorUpdateTemplate    = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_VERSION_1_3 ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<PrivateDataSlot, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniquePrivateDataSlot    = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+  using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_KHR_surface ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<SurfaceKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Instance, Dispatch>;
+  };
+
+  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_KHR_swapchain ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<SwapchainKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_EXT_debug_report ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<DebugReportCallbackEXT, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Instance, Dispatch>;
+  };
+
+  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_KHR_video_queue ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<VideoSessionKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueVideoSessionKHR = UniqueHandle<VideoSessionKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<VideoSessionParametersKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueVideoSessionParametersKHR = UniqueHandle<VideoSessionParametersKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_NVX_binary_import ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<CuModuleNVX, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueCuModuleNVX = UniqueHandle<CuModuleNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  template <typename Dispatch>
+  class UniqueHandleTraits<CuFunctionNVX, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueCuFunctionNVX = UniqueHandle<CuFunctionNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_EXT_debug_utils ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<DebugUtilsMessengerEXT, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Instance, Dispatch>;
+  };
+
+  using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_KHR_acceleration_structure ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<AccelerationStructureKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueAccelerationStructureKHR = UniqueHandle<AccelerationStructureKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_EXT_validation_cache ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<ValidationCacheEXT, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_NV_ray_tracing ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<AccelerationStructureNV, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_KHR_deferred_host_operations ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<DeferredOperationKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueDeferredOperationKHR = UniqueHandle<DeferredOperationKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_NV_device_generated_commands ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<IndirectCommandsLayoutNV, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueIndirectCommandsLayoutNV = UniqueHandle<IndirectCommandsLayoutNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+#  if defined( VK_USE_PLATFORM_FUCHSIA )
+  //=== VK_FUCHSIA_buffer_collection ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<BufferCollectionFUCHSIA, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueBufferCollectionFUCHSIA = UniqueHandle<BufferCollectionFUCHSIA, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+#  endif /*VK_USE_PLATFORM_FUCHSIA*/
+
+  //=== VK_EXT_opacity_micromap ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<MicromapEXT, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueMicromapEXT = UniqueHandle<MicromapEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_NV_optical_flow ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<OpticalFlowSessionNV, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniqueOpticalFlowSessionNV = UniqueHandle<OpticalFlowSessionNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
   //===============
   //=== HANDLEs ===
   //===============
@@ -7561,346 +8058,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  class Device;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<AccelerationStructureKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueAccelerationStructureKHR = UniqueHandle<AccelerationStructureKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<AccelerationStructureNV, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Buffer, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueBuffer = UniqueHandle<Buffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#  if defined( VK_USE_PLATFORM_FUCHSIA )
-  template <typename Dispatch>
-  class UniqueHandleTraits<BufferCollectionFUCHSIA, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueBufferCollectionFUCHSIA = UniqueHandle<BufferCollectionFUCHSIA, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#  endif /*VK_USE_PLATFORM_FUCHSIA*/
-  template <typename Dispatch>
-  class UniqueHandleTraits<BufferView, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueBufferView = UniqueHandle<BufferView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<CommandBuffer, Dispatch>
-  {
-  public:
-    using deleter = PoolFree<Device, CommandPool, Dispatch>;
-  };
-
-  using UniqueCommandBuffer = UniqueHandle<CommandBuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<CommandPool, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueCommandPool = UniqueHandle<CommandPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<CuFunctionNVX, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueCuFunctionNVX = UniqueHandle<CuFunctionNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<CuModuleNVX, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueCuModuleNVX = UniqueHandle<CuModuleNVX, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DeferredOperationKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueDeferredOperationKHR = UniqueHandle<DeferredOperationKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorPool, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueDescriptorPool = UniqueHandle<DescriptorPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorSet, Dispatch>
-  {
-  public:
-    using deleter = PoolFree<Device, DescriptorPool, Dispatch>;
-  };
-
-  using UniqueDescriptorSet = UniqueHandle<DescriptorSet, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorSetLayout, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueDescriptorSetLayout = UniqueHandle<DescriptorSetLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DescriptorUpdateTemplate, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueDescriptorUpdateTemplate    = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-  using UniqueDescriptorUpdateTemplateKHR = UniqueHandle<DescriptorUpdateTemplate, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DeviceMemory, Dispatch>
-  {
-  public:
-    using deleter = ObjectFree<Device, Dispatch>;
-  };
-
-  using UniqueDeviceMemory = UniqueHandle<DeviceMemory, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Event, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueEvent = UniqueHandle<Event, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Fence, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueFence = UniqueHandle<Fence, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Framebuffer, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueFramebuffer = UniqueHandle<Framebuffer, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Image, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueImage = UniqueHandle<Image, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<ImageView, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueImageView = UniqueHandle<ImageView, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<IndirectCommandsLayoutNV, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueIndirectCommandsLayoutNV = UniqueHandle<IndirectCommandsLayoutNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<MicromapEXT, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueMicromapEXT = UniqueHandle<MicromapEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<OpticalFlowSessionNV, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueOpticalFlowSessionNV = UniqueHandle<OpticalFlowSessionNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Pipeline, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniquePipeline = UniqueHandle<Pipeline, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<PipelineCache, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniquePipelineCache = UniqueHandle<PipelineCache, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<PipelineLayout, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniquePipelineLayout = UniqueHandle<PipelineLayout, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<PrivateDataSlot, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniquePrivateDataSlot    = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-  using UniquePrivateDataSlotEXT = UniqueHandle<PrivateDataSlot, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<QueryPool, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueQueryPool = UniqueHandle<QueryPool, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<RenderPass, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueRenderPass = UniqueHandle<RenderPass, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Sampler, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueSampler = UniqueHandle<Sampler, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<SamplerYcbcrConversion, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueSamplerYcbcrConversion    = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-  using UniqueSamplerYcbcrConversionKHR = UniqueHandle<SamplerYcbcrConversion, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<Semaphore, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueSemaphore = UniqueHandle<Semaphore, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<ShaderModule, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueShaderModule = UniqueHandle<ShaderModule, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<SwapchainKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<ValidationCacheEXT, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueValidationCacheEXT = UniqueHandle<ValidationCacheEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<VideoSessionKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueVideoSessionKHR = UniqueHandle<VideoSessionKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<VideoSessionParametersKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Device, Dispatch>;
-  };
-
-  using UniqueVideoSessionParametersKHR = UniqueHandle<VideoSessionParametersKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-
   class Device
   {
   public:
@@ -12574,17 +12731,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename Dispatch>
-  class UniqueHandleTraits<Device, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<NoParent, Dispatch>;
-  };
-
-  using UniqueDevice = UniqueHandle<Device, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-
   class PhysicalDevice
   {
   public:
@@ -13941,37 +14087,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  class Instance;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DebugReportCallbackEXT, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Instance, Dispatch>;
-  };
-
-  using UniqueDebugReportCallbackEXT = UniqueHandle<DebugReportCallbackEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<DebugUtilsMessengerEXT, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Instance, Dispatch>;
-  };
-
-  using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-
-  template <typename Dispatch>
-  class UniqueHandleTraits<SurfaceKHR, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<Instance, Dispatch>;
-  };
-
-  using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
-
   class Instance
   {
   public:
@@ -14638,17 +14753,6 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   //=== VK_VERSION_1_0 ===
-
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
-  template <typename Dispatch>
-  class UniqueHandleTraits<Instance, Dispatch>
-  {
-  public:
-    using deleter = ObjectDestroy<NoParent, Dispatch>;
-  };
-
-  using UniqueInstance = UniqueHandle<Instance, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   VULKAN_HPP_NODISCARD Result createInstance( const VULKAN_HPP_NAMESPACE::InstanceCreateInfo *  pCreateInfo,

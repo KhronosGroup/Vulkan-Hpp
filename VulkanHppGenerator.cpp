@@ -193,14 +193,19 @@ void VulkanHppGenerator::generateVulkanHandlesHppFile() const
 namespace VULKAN_HPP_NAMESPACE
 {
 ${structForwardDeclarations}
+${handleForwardDeclarations}
+${uniqueHandles}
 ${handles}
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
-  std::string str = replaceWithMap(
-    vulkanHandlesHppTemplate,
-    { { "handles", generateHandles() }, { "licenseHeader", m_vulkanLicenseHeader }, { "structForwardDeclarations", generateStructForwardDeclarations() } } );
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    { { "handles", generateHandles() },
+                                      { "handleForwardDeclarations", generateHandleForwardDeclarations() },
+                                      { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "structForwardDeclarations", generateStructForwardDeclarations() },
+                                      { "uniqueHandles", generateUniqueHandles() } } );
 
   writeToFile( str, vulkan_handles_hpp );
 }
@@ -545,7 +550,7 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
 {
   // find the handle this command is going to be associated to
   checkForError( !commandData.params.empty(), commandData.xmlLine, "command <" + name + "> with no params" );
-  std::map<std::string, HandleData>::iterator handleIt = m_handles.find( commandData.params[0].type.type );
+  auto handleIt = m_handles.find( commandData.params[0].type.type );
   if ( handleIt == m_handles.end() )
   {
     handleIt = m_handles.begin();
@@ -5626,17 +5631,6 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
   }
   else
   {
-    // append any forward declaration of Deleters used by this handle
-    if ( !handleData.second.childrenHandles.empty() )
-    {
-      str += generateUniqueTypes( handleData.first, handleData.second.childrenHandles );
-    }
-    else if ( handleData.first == "VkPhysicalDevice" )
-    {
-      // special handling for class Device, as it's created from PhysicalDevice, but destroys itself
-      str += generateUniqueTypes( "", { "VkDevice" } );
-    }
-
     // list all the commands that are mapped to members of this class
     std::string commands = generateHandleCommandDeclarations( handleData.second.commands );
 
@@ -5867,21 +5861,7 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
       {
         auto commandIt = m_commands.find( command );
         assert( commandIt != m_commands.end() );
-        if ( commandIt->first == "vkCreateInstance" )
-        {
-          // special handling for createInstance, as we need to explicitly place the forward declarations and the
-          // deleter classes here
-#if !defined( NDEBUG )
-          auto handleIt = m_handles.find( "" );
-          assert( ( handleIt != m_handles.end() ) && ( handleIt->second.childrenHandles.size() == 2 ) );
-          assert( handleIt->second.childrenHandles.find( "VkInstance" ) != handleIt->second.childrenHandles.end() );
-#endif
-
-          str += generateUniqueTypes( "", { "VkInstance" } );
-        }
-        str += "\n";
-
-        str += generateCommand( commandIt->first, commandIt->second, 0, false, false );
+        str += "\n" + generateCommand( commandIt->first, commandIt->second, 0, false, false );
       }
     }
   }
@@ -5892,6 +5872,46 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
   }
 #endif
   return str;
+}
+
+std::string VulkanHppGenerator::generateHandleForwardDeclarations() const
+{
+  const std::string fowardDeclarationsTemplate = R"(
+  //===================================
+  //=== HANDLE forward declarations ===
+  //===================================
+
+${forwardDeclarations}
+)";
+
+  std::string forwardDeclarations;
+  for ( auto const & feature : m_features )
+  {
+    forwardDeclarations += generateHandleForwardDeclarations( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    forwardDeclarations += generateHandleForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
+  }
+
+  return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
+}
+
+std::string VulkanHppGenerator::generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type );
+      if ( handleIt != m_handles.end() )
+      {
+        str += "class " + stripPrefix( handleIt->first, "Vk" ) + ";\n";
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
 }
 
 std::string VulkanHppGenerator::generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const
@@ -9806,56 +9826,81 @@ ${leave})";
     { { "constructors", constructors }, { "enter", enter }, { "leave", leave }, { "members", members }, { "setters", setters }, { "unionName", unionName } } );
 }
 
-std::string VulkanHppGenerator::generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const
+std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const
 {
-  std::string childrenTraits;
-  for ( auto const & childType : childrenTypes )
+  if ( !handleData.second.deleteCommand.empty() )
   {
-    auto handleIt = m_handles.find( childType );
-    assert( handleIt != m_handles.end() );
-
-    std::string type = stripPrefix( childType, "Vk" );
-
-    auto [enter, leave] = generateProtection( handleIt->second.alias.empty() ? getProtectFromType( handleIt->first ) : "" );
-
+    std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    if ( !handleIt->second.alias.empty() )
+    if ( !handleData.second.alias.empty() )
     {
       static const std::string aliasHandleTemplate =
-        R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-)";
+        R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
 
-      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( handleIt->second.alias, "Vk" ) }, { "type", type } } );
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( handleData.second.alias, "Vk" ) }, { "type", type } } );
     }
 
-    static const std::string traitsTemplate = R"(${enter}  template <typename Dispatch>
+    static const std::string uniqueHandleTemplate = R"(  template <typename Dispatch>
   class UniqueHandleTraits<${type}, Dispatch>
   {
   public:
     using deleter = ${deleterType}${deleterAction}<${deleterParent}${deleterPool}, Dispatch>;
   };
   using Unique${type} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
-${aliasHandle}${leave})";
+${aliasHandle})";
 
-    childrenTraits += replaceWithMap( traitsTemplate,
-                                      { { "aliasHandle", aliasHandle },
-                                        { "deleterAction", ( handleIt->second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-                                        { "deleterParent", parentType.empty() ? "NoParent" : stripPrefix( parentType, "Vk" ) },
-                                        { "deleterPool", handleIt->second.deletePool.empty() ? "" : ", " + stripPrefix( handleIt->second.deletePool, "Vk" ) },
-                                        { "deleterType", handleIt->second.deletePool.empty() ? "Object" : "Pool" },
-                                        { "enter", enter },
-                                        { "leave", leave },
-                                        { "type", type } } );
+    return replaceWithMap( uniqueHandleTemplate,
+                           { { "aliasHandle", aliasHandle },
+                             { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
+                             { "deleterParent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix(handleData.second.deleteParent, "Vk" ) },
+                             { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
+                             { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
+                             { "type", type } } );
   }
+  return "";
+}
 
-  static const std::string uniqueTypeTemplate = R"(
+std::string VulkanHppGenerator::generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type );
+      if ( handleIt != m_handles.end() )
+      {
+        str += generateUniqueHandle( *handleIt );
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateUniqueHandles() const
+{
+  std::string uniqueHandlesTemplate = R"(
 #ifndef VULKAN_HPP_NO_SMART_HANDLE
-${parentClass}${childrenTraits}#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+  //======================
+  //=== UNIQUE HANDLEs ===
+  //======================
+
+${uniqueHandles}
+#endif  /*VULKAN_HPP_NO_SMART_HANDLE*/
 )";
 
-  return replaceWithMap(
-    uniqueTypeTemplate,
-    { { "childrenTraits", childrenTraits }, { "parentClass", parentType.empty() ? "" : ( "  class " + stripPrefix( parentType, "Vk" ) + ";\n" ) } } );
+  std::string uniqueHandles;
+  for ( auto const & feature : m_features )
+  {
+    uniqueHandles += generateUniqueHandle( feature.second.requireData, feature.first );
+  }
+  for ( auto const & extIt : m_extensionsByNumber )
+  {
+    uniqueHandles += generateUniqueHandle( extIt.second->second.requireData, extIt.second->first );
+  }
+  assert( uniqueHandles.back() == '\n');
+  uniqueHandles.pop_back();
+  return replaceWithMap( uniqueHandlesTemplate, { { "uniqueHandles", uniqueHandles } } );
 }
 
 std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &                           name,
@@ -12837,6 +12882,7 @@ void VulkanHppGenerator::registerDeleter( std::string const & name, std::pair<st
     auto handleIt = m_handles.find( commandData.second.params[valueIndex].type.type );
     assert( handleIt != m_handles.end() );
     handleIt->second.deleteCommand = name;
+    handleIt->second.deleteParent = key;
   }
 }
 

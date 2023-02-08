@@ -339,6 +339,7 @@ private:
     std::set<std::string> childrenHandles;
     std::set<std::string> commands;
     std::string           deleteCommand;
+    std::string           deleteParent;
     std::string           deletePool;
     std::string           objTypeEnum;
     std::string           parent;
@@ -717,6 +718,8 @@ private:
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleEmpty( HandleData const & handleData ) const;
+  std::string generateHandleForwardDeclarations() const;
+  std::string generateHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateHandleHashStructures() const;
   std::string generateHandles() const;
@@ -889,7 +892,9 @@ private:
                                                              std::vector<std::string> const &          dataTypes,
                                                              CommandFlavourFlags                       flavourFlags ) const;
   std::string                         generateUnion( std::pair<std::string, StructureData> const & structure ) const;
-  std::string                         generateUniqueTypes( std::string const & parentType, std::set<std::string> const & childrenTypes ) const;
+  std::string                         generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string                         generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string                         generateUniqueHandles() const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,
                                                                CommandData const &                           commandData,
                                                                size_t                                        initialSkipCount,

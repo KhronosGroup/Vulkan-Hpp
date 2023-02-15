@@ -265,14 +265,6 @@ private:
     int                      xmlLine;
   };
 
-  struct SkippedExtensionData
-  {
-    SkippedExtensionData( int line, std::string const & platform_ ) : platform( platform_ ), xmlLine( line ) {}
-
-    std::string platform;
-    int         xmlLine;
-  };
-
   struct ComponentData
   {
     ComponentData( int line ) : xmlLine( line ) {}
@@ -939,13 +931,13 @@ private:
   void                                readExtensionsExtension( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequire( tinyxml2::XMLElement const * element, std::map<std::string, ExtensionData>::iterator extensionIt );
   void readExtensionsExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
-  void readExtensionsExtensionRequireSkipped( tinyxml2::XMLElement const * element );
+  void readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
   void readFeature( tinyxml2::XMLElement const * element );
   void readFeatureRequire( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt );
   void readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
-  void readFeatureRequireCommandSkipped( tinyxml2::XMLElement const * element );
-  void readFeatureRequireSkipped( tinyxml2::XMLElement const * element );
+  void readFeatureRequireCommandRemove( tinyxml2::XMLElement const * element );
+  void readFeatureRequireRemove( tinyxml2::XMLElement const * element );
   void readFeatureRequireType( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
   void readFormats( tinyxml2::XMLElement const * element );
   void readFormatsFormat( tinyxml2::XMLElement const * element );
@@ -956,10 +948,10 @@ private:
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readPlatformsPlatform( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  void                          readRequireCommandSkipped( tinyxml2::XMLElement const * element );
+  void                          readRequireCommandRemove( tinyxml2::XMLElement const * element );
   void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extensionName );
-  void                          readRequireEnumSkipped( tinyxml2::XMLElement const * element );
-  void                          readRequireTypeSkipped( tinyxml2::XMLElement const * element );
+  void                          readRequireEnumRemove( tinyxml2::XMLElement const * element );
+  void                          readRequireTypeRemove( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilities( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilitiesSPIRVCapability( tinyxml2::XMLElement const * element );
   void                          readSPIRVCapabilitiesSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
@@ -1017,10 +1009,10 @@ private:
   std::set<std::string>                                               m_includes;
   std::map<std::string, PlatformData>                                 m_platforms;
   std::set<std::string>                                               m_RAIISpecialFunctions;
-  std::map<std::string, EnumData>                                     m_skippedEnums;
-  std::set<std::string>                                               m_skippedCommands;
-  std::set<std::string>                                               m_skippedFeatures;
-  std::map<std::string, TypeData>                                     m_skippedTypes;
+  std::set<std::string>                                               m_removedCommands;
+  std::map<std::string, EnumData>                                     m_removedEnums;
+  std::set<std::string>                                               m_removedFeatures;
+  std::map<std::string, TypeData>                                     m_removedTypes;
   std::map<std::string, StructureData>                                m_structures;
   std::map<std::string, StructureAliasData>                           m_structureAliases;
   std::map<std::string, std::set<std::string>>                        m_structureAliasesInverse;

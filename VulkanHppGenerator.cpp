@@ -10828,7 +10828,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "depends", {} }, { "extension", {} }, { "feature", {} } } );
+  checkAttributes( line, attributes, {}, { { "comment", {}}, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
@@ -10849,9 +10849,8 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
                        "required extension <" + d + "> already listed" );
       }
     }
-    else
+    else if ( attribute.first == "feature" )
     {
-      assert( attribute.first == "feature" );
       if ( m_features.find( attribute.second ) != m_features.end() )
       {
         assert( depends.empty() );

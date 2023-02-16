@@ -1131,14 +1131,16 @@ void VulkanHppGenerator::checkStructCorrectness() const
 {
   for ( auto const & structAlias : m_structureAliases )
   {
-    auto structIt = m_structures.find( structAlias.second.alias );
-    checkForError( structIt != m_structures.end(), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.alias + ">" );
+    checkForError( ( m_structures.find( structAlias.second.alias ) != m_structures.end() ) ||
+                     ( m_removedStructs.find( structAlias.second.alias ) != m_removedStructs.end() ),
+                   structAlias.second.xmlLine,
+                   "unknown struct alias <" + structAlias.second.alias + ">" );
   }
 
   for ( auto const & structAliasInverse : m_structureAliasesInverse )
   {
-    auto structIt = m_structures.find( structAliasInverse.first );
-    if ( structIt == m_structures.end() )
+    if ( ( m_structures.find( structAliasInverse.first ) == m_structures.end() ) &&
+         ( m_removedStructs.find( structAliasInverse.first ) == m_removedStructs.end() ) )
     {
       assert( !structAliasInverse.second.empty() );
       auto aliasIt = m_structureAliases.find( *structAliasInverse.second.begin() );
@@ -9834,8 +9836,7 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
     std::string aliasHandle;
     if ( !handleData.second.alias.empty() )
     {
-      static const std::string aliasHandleTemplate =
-        R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
+      static const std::string aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
 
       aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( handleData.second.alias, "Vk" ) }, { "type", type } } );
     }
@@ -9852,7 +9853,7 @@ ${aliasHandle})";
     return replaceWithMap( uniqueHandleTemplate,
                            { { "aliasHandle", aliasHandle },
                              { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-                             { "deleterParent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix(handleData.second.deleteParent, "Vk" ) },
+                             { "deleterParent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
                              { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
                              { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
                              { "type", type } } );
@@ -9898,7 +9899,7 @@ ${uniqueHandles}
   {
     uniqueHandles += generateUniqueHandle( extIt.second->second.requireData, extIt.second->first );
   }
-  assert( uniqueHandles.back() == '\n');
+  assert( uniqueHandles.back() == '\n' );
   uniqueHandles.pop_back();
   return replaceWithMap( uniqueHandlesTemplate, { { "uniqueHandles", uniqueHandles } } );
 }
@@ -10350,7 +10351,8 @@ void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const * eleme
     checkAttributes( line,
                      attributes,
                      {},
-                     { { "cmdbufferlevel", { "primary", "secondary" } },
+                     { { "api", { "vulkan", "vulkansc" } },
+                       { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
                        { "queues", { "compute", "decode", "encode", "graphics", "opticalflow", "sparse_binding", "transfer" } },
@@ -10365,7 +10367,15 @@ void VulkanHppGenerator::readCommandsCommand( tinyxml2::XMLElement const * eleme
     CommandData commandData( line );
     for ( auto const & attribute : attributes )
     {
-      if ( attribute.first == "errorcodes" )
+      if ( attribute.first == "api" )
+      {
+        if ( attribute.second == "vulkansc" )
+        {
+          return;  // skip stuff marked as "vulkansc" !
+        }
+        assert( attribute.second == "vulkan" );
+      }
+      else if ( attribute.first == "errorcodes" )
       {
         commandData.errorCodes = tokenize( attribute.second, "," );
         // errorCodes are checked in checkCorrectness after complete reading
@@ -10622,7 +10632,8 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
   {
-    checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} } } );
+    checkAttributes(
+      line, attributes, { { "alias", {} }, { "name", {} } }, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "aliased" } } } );
     checkElements( line, getChildElements( element ), {} );
 
     std::string alias, bitpos, name, value;
@@ -10639,6 +10650,10 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
           return;  // skip stuff marked as "vulkansc" !
         }
         assert( attribute.second == "vulkan" );
+      }
+      else if ( attribute.first == "deprecated" )
+      {
+        // the enum value is marked as deprecated/aliased but still exisits -> no modifications needed here
       }
       else if ( attribute.first == "name" )
       {
@@ -10828,14 +10843,24 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "comment", {}}, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
+  checkAttributes( line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
   std::vector<std::string> depends;
   for ( auto const & attribute : attributes )
   {
-    if ( ( attribute.first == "depends" ) || ( attribute.first == "extension" ) )
+    if ( attribute.first == "api" )
+    {
+      if ( attribute.second == "vulkansc" )
+      {
+        // remove stuff marked as "vulkansc"
+        readExtensionsExtensionRequireRemove( element );
+        return;
+      }
+      assert( attribute.second == "vulkan" );
+    }
+    else if ( ( attribute.first == "depends" ) || ( attribute.first == "extension" ) )
     {
       assert( depends.empty() );
       depends = tokenizeAny( attribute.second, ",+" );
@@ -10938,13 +10963,17 @@ void VulkanHppGenerator::readExtensionsExtensionRequireRemove( tinyxml2::XMLElem
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "comment", {} }, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
+  checkAttributes( line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
 
   for ( auto child : children )
   {
     std::string value = child->Value();
+    if ( value == "api" )
+    {
+      // we're already in the remove part, so it doesn't matter that this is marked as "vulkansc" again!
+    }
     if ( value == "command" )
     {
       readRequireCommandRemove( child );
@@ -11576,7 +11605,10 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.find( "alias" ) != attributes.end() )
   {
-    checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "extends", {} } } );
+    checkAttributes( line,
+                     attributes,
+                     { { "alias", {} }, { "name", {} } },
+                     { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "deprecated", { "aliased" } }, { "extends", {} } } );
     checkElements( line, getChildElements( element ), {} );
 
     std::string alias, bitpos, name, extends, extnumber, offset, value;
@@ -11594,6 +11626,10 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
         }
         assert( attribute.second == "vulkan" );
       }
+      else if ( attribute.first == "deprecated" )
+      {
+        // the enum value is marked as deprecated, but still exisits -> no modifications needed here
+      }
       else if ( attribute.first == "extends" )
       {
         extends = attribute.second;
@@ -11606,11 +11642,38 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
 
     if ( !extends.empty() )
     {
-      auto enumIt = m_enums.find( extends );
-      checkForError( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
-
-      // add this enum name to the list of aliases
-      enumIt->second.addEnumAlias( line, name, alias );
+      auto typeIt = m_types.find( extends );
+      if ( typeIt == m_types.end() )
+      {
+        auto removedTypeIt = m_removedTypes.find( extends );
+        checkForError( removedTypeIt != m_removedTypes.end(), line, "feature extends unknown type <" + extends + ">" );
+        typeIt = m_types.insert( *removedTypeIt ).first;
+        switch ( typeIt->second.category )
+        {
+          case TypeCategory::Enum:
+            {
+              auto removedEnumIt = m_removedEnums.find( extends );
+              assert( removedEnumIt != m_removedEnums.end() );
+              m_enums.insert( *removedEnumIt );
+            }
+            break;
+          default: checkForError( false, line, "feature extends unhandled type <" + extends + ">" );
+        }
+      }
+      assert( typeIt != m_types.end() );
+      switch ( typeIt->second.category )
+      {
+        case TypeCategory::Bitmask: break;
+        case TypeCategory::Enum:
+          {
+            auto enumIt = m_enums.find( extends );
+            checkForError( enumIt != m_enums.end(), line, "feature extends unknown enum <" + extends + ">" );
+            // add this enum name to the list of aliases
+            enumIt->second.addEnumAlias( line, name, alias );
+          }
+          break;
+        default: checkForError( false, line, "feature extends unhandled type <" + extends + ">" ); break;
+      }
     }
   }
   else
@@ -11792,8 +11855,27 @@ void VulkanHppGenerator::readRequireTypeRemove( tinyxml2::XMLElement const * ele
         m_handles.erase( name );
         break;
       case TypeCategory::Struct:
-        assert( m_structures.find( name ) != m_structures.end() );
-        m_structures.erase( name );
+        {
+          auto structIt = m_structures.find( name );
+          if ( structIt == m_structures.end() )
+          {
+            auto aliasIt = m_structureAliases.find( name );
+            if ( aliasIt != m_structureAliases.end() )
+            {
+              name     = aliasIt->second.alias;
+              structIt = m_structures.find( name );
+            }
+          }
+          if ( structIt != m_structures.end() )
+          {
+            m_removedStructs.insert( name );
+            m_structures.erase( structIt );
+          }
+          else
+          {
+            checkForError( m_removedStructs.find( name ) != m_removedStructs.end(), line, "tried to remove unknown struct <" + name + ">" );
+          }
+        }
         break;
       default: assert( false ); break;
     }
@@ -12273,7 +12355,10 @@ void VulkanHppGenerator::readTypesTypeBitmask( tinyxml2::XMLElement const * elem
 void VulkanHppGenerator::readTypesTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
-  checkAttributes( line, attributes, { { "category", { "define" } } }, { { "api", { "vulkan", "vulkansc" } }, { "name", {} }, { "requires", {} } } );
+  checkAttributes( line,
+                   attributes,
+                   { { "category", { "define" } } },
+                   { { "api", { "vulkan", "vulkansc" } }, { "deprecated", { "true" } }, { "name", {} }, { "requires", {} } } );
 
   std::string name, require;
   for ( auto const & attribute : attributes )
@@ -12285,6 +12370,10 @@ void VulkanHppGenerator::readTypesTypeDefine( tinyxml2::XMLElement const * eleme
         return;  // skip stuff marked as "vulkansc" !
       }
       assert( attribute.second == "vulkan" );
+    }
+    else if ( attribute.first == "deprecated" )
+    {
+      // the define is marked as deprecated, but still exisits -> no modifications needed here
     }
     else if ( attribute.first == "name" )
     {
@@ -12683,6 +12772,7 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
                    {},
                    { { "altlen", {} },
                      { "api", { "vulkan", "vulkansc" } },
+                     { "deprecated", { "ignored" } },
                      { "externsync", { "true" } },
                      { "len", {} },
                      { "limittype", { "bitmask", "bits", "exact", "max", "min", "mul", "noauto", "pot", "range", "struct" } },
@@ -12713,6 +12803,10 @@ void VulkanHppGenerator::readTypesTypeStructMember( tinyxml2::XMLElement const *
       memberData.len = tokenize( attribute.second, "," );
       checkForError( memberData.len.size() == 1, line, "member attribute <altlen> holds unknown number of data: " + std::to_string( memberData.len.size() ) );
       checkForError( altLens.find( memberData.len[0] ) != altLens.end(), line, "member attribute <altlen> holds unknown value <" + memberData.len[0] + ">" );
+    }
+    else if ( attribute.second == "deprecated" )
+    {
+      // the struct member is marked as deprecated/ignored, but still exisits -> no modifications needed here
     }
     else if ( attribute.first == "len" )
     {
@@ -12881,7 +12975,7 @@ void VulkanHppGenerator::registerDeleter( std::string const & name, std::pair<st
     auto handleIt = m_handles.find( commandData.second.params[valueIndex].type.type );
     assert( handleIt != m_handles.end() );
     handleIt->second.deleteCommand = name;
-    handleIt->second.deleteParent = key;
+    handleIt->second.deleteParent  = key;
   }
 }
 

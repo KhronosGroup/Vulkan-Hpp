@@ -10788,7 +10788,7 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
     else if ( ( attribute.first == "depends" ) || ( attribute.first == "requires" ) )
     {
       // we don't care about the logical implications of ',' and '+' here, we're just interested to get the depends strings
-      depends = tokenizeAny( attribute.second, ",+" );
+      depends = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "requiresCore" )
     {

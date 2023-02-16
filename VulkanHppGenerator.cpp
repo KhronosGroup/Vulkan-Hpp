@@ -10819,7 +10819,7 @@ void VulkanHppGenerator::readExtensionsExtension( tinyxml2::XMLElement const * e
     }
     else
     {
-      readExtensionsExtensionRequireSkipped( child );
+      readExtensionsExtensionRequireRemove( child );
     }
   }
 }
@@ -10858,8 +10858,8 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
       }
       else
       {
-        checkForError( m_skippedFeatures.find( attribute.second ) != m_skippedFeatures.end(), line, "unknown feature <" + attribute.second + ">" );
-        readExtensionsExtensionRequireSkipped( element );
+        checkForError( m_removedFeatures.find( attribute.second ) != m_removedFeatures.end(), line, "unknown feature <" + attribute.second + ">" );
+        readExtensionsExtensionRequireRemove( element );
         return;
       }
     }
@@ -10934,7 +10934,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequireCommand( tinyxml2::XMLEle
   requireData.commands.push_back( name );
 }
 
-void VulkanHppGenerator::readExtensionsExtensionRequireSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -10947,11 +10947,11 @@ void VulkanHppGenerator::readExtensionsExtensionRequireSkipped( tinyxml2::XMLEle
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readRequireCommandSkipped( child );
+      readRequireCommandRemove( child );
     }
     else if ( value == "type" )
     {
-      readRequireTypeSkipped( child );
+      readRequireTypeRemove( child );
     }
   }
 }
@@ -11024,7 +11024,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   {
     checkForError( name == "VK_VERSION_" + modifiedNumber, line, "unexpected formatting of name <" + name + ">" );
     checkForError( m_features.find( name ) == m_features.end(), line, "already specified feature <" + name + ">" );
-    assert( m_skippedFeatures.find( name ) == m_skippedFeatures.end() );
+    assert( m_removedFeatures.find( name ) == m_removedFeatures.end() );
 
     auto featureIt = m_features.insert( std::make_pair( name, number ) ).first;
     for ( auto child : children )
@@ -11044,7 +11044,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   {
     // skip this feature
     checkForError( name == "VKSC_VERSION_" + modifiedNumber, line, "unexpected formatting of name <" + name + ">" );
-    checkForError( m_skippedFeatures.insert( name ).second, line, "already specified skipped feature <" + name + ">" );
+    checkForError( m_removedFeatures.insert( name ).second, line, "already specified skipped feature <" + name + ">" );
     assert( m_features.find( name ) == m_features.end() );
 
     for ( auto child : children )
@@ -11052,7 +11052,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
       std::string value = child->Value();
       if ( value == "require" )
       {
-        readFeatureRequireSkipped( child );
+        readFeatureRequireRemove( child );
       }
     }
   }
@@ -11095,7 +11095,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
   }
 }
 
-void VulkanHppGenerator::readFeatureRequireCommandSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readFeatureRequireCommandRemove( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11130,7 +11130,7 @@ void VulkanHppGenerator::readFeatureRequireCommand( tinyxml2::XMLElement const *
   requireData.commands.push_back( name );
 }
 
-void VulkanHppGenerator::readFeatureRequireSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readFeatureRequireRemove( tinyxml2::XMLElement const * element )
 {
   int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
@@ -11142,15 +11142,15 @@ void VulkanHppGenerator::readFeatureRequireSkipped( tinyxml2::XMLElement const *
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readFeatureRequireCommandSkipped( child );
+      readFeatureRequireCommandRemove( child );
     }
     else if ( value == "enum" )
     {
-      readRequireEnumSkipped( child );
+      readRequireEnumRemove( child );
     }
     else if ( value == "type" )
     {
-      readRequireTypeSkipped( child );
+      readRequireTypeRemove( child );
     }
   }
 }
@@ -11546,7 +11546,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   }
 }
 
-void VulkanHppGenerator::readRequireCommandSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readRequireCommandRemove( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11559,12 +11559,12 @@ void VulkanHppGenerator::readRequireCommandSkipped( tinyxml2::XMLElement const *
   auto commandIt = m_commands.find( name );
   if ( commandIt != m_commands.end() )
   {
-    checkForError( m_skippedCommands.insert( name ).second, line, "to be skipped command <" + name + "> is already marked as skipped" );
+    checkForError( m_removedCommands.insert( name ).second, line, "to be skipped command <" + name + "> is already marked as skipped" );
     m_commands.erase( commandIt );
   }
   else
   {
-    checkForError( m_skippedCommands.find( name ) != m_skippedCommands.end(),
+    checkForError( m_removedCommands.find( name ) != m_removedCommands.end(),
                    line,
                    "to be skipped command <" + name + "> is neither listed as command nor as skipped command" );
   }
@@ -11672,15 +11672,15 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
       if ( enumIt == m_enums.end() )
       {
         // need to re-add a previously removed enum !!
-        enumIt = m_skippedEnums.find( extends );
-        checkForError( enumIt != m_skippedEnums.end(), line, "feature extends unknown enum <" + extends + ">" );
+        enumIt = m_removedEnums.find( extends );
+        checkForError( enumIt != m_removedEnums.end(), line, "feature extends unknown enum <" + extends + ">" );
         enumIt = m_enums.insert( *enumIt ).first;
 
-        auto typeIt = m_skippedTypes.find( extends );
-        assert( ( m_types.find( extends ) == m_types.end() ) || ( typeIt != m_skippedTypes.end() ) );
+        auto typeIt = m_removedTypes.find( extends );
+        assert( ( m_types.find( extends ) == m_types.end() ) || ( typeIt != m_removedTypes.end() ) );
         typeIt->second.referencedIn = extensionName;
         m_types[extends]            = typeIt->second;
-        m_skippedTypes.erase( typeIt );
+        m_removedTypes.erase( typeIt );
       }
 
       // add this enum name to the list of values
@@ -11696,7 +11696,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
   }
 }
 
-void VulkanHppGenerator::readRequireEnumSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readRequireEnumRemove( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11752,7 +11752,7 @@ void VulkanHppGenerator::readRequireEnumSkipped( tinyxml2::XMLElement const * el
   }
 }
 
-void VulkanHppGenerator::readRequireTypeSkipped( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readRequireTypeRemove( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11766,7 +11766,7 @@ void VulkanHppGenerator::readRequireTypeSkipped( tinyxml2::XMLElement const * el
   if ( typeIt != m_types.end() )
   {
     assert( typeIt->second.referencedIn.empty() );
-    assert( m_skippedTypes.find( name ) == m_skippedTypes.end() );
+    assert( m_removedTypes.find( name ) == m_removedTypes.end() );
 
     switch ( typeIt->second.category )
     {
@@ -11778,8 +11778,8 @@ void VulkanHppGenerator::readRequireTypeSkipped( tinyxml2::XMLElement const * el
         {
           auto enumIt = m_enums.find( name );
           assert( enumIt != m_enums.end() );
-          assert( m_skippedEnums.find( name ) == m_skippedEnums.end() );
-          m_skippedEnums[name] = enumIt->second;
+          assert( m_removedEnums.find( name ) == m_removedEnums.end() );
+          m_removedEnums[name] = enumIt->second;
           m_enums.erase( enumIt );
         }
         break;
@@ -11798,7 +11798,7 @@ void VulkanHppGenerator::readRequireTypeSkipped( tinyxml2::XMLElement const * el
       default: assert( false ); break;
     }
 
-    m_skippedTypes[name] = typeIt->second;
+    m_removedTypes[name] = typeIt->second;
     m_types.erase( typeIt );
   }
 }

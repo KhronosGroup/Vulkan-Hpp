@@ -1012,6 +1012,7 @@ private:
   std::set<std::string>                                               m_removedCommands;
   std::map<std::string, EnumData>                                     m_removedEnums;
   std::set<std::string>                                               m_removedFeatures;
+  std::set<std::string>                                               m_removedStructs;
   std::map<std::string, TypeData>                                     m_removedTypes;
   std::map<std::string, StructureData>                                m_structures;
   std::map<std::string, StructureAliasData>                           m_structureAliases;

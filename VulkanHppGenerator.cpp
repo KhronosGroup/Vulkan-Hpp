@@ -5607,12 +5607,18 @@ ${widthDivisorCases}
                            { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 
-std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const
+std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & referencedIn ) const
 {
   std::string functionPointerCheck;
-  if ( m_extensions.find( referencedIn ) != m_extensions.end() )
+  if ( !referencedIn.empty() )
   {
-    std::string message  = "Function <" + function + "> needs extension <" + referencedIn + "> enabled!";
+    std::string message = "Function <" + function + "> needs <" + *referencedIn.begin() + ">";
+    for ( auto it = std::next( referencedIn.begin() ); it != referencedIn.end(); ++it )
+    {
+      message += " or <" + *it + ">";
+    }
+    message += " enabled!";
+
     functionPointerCheck = "VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );";
   }
   return functionPointerCheck;
@@ -6850,7 +6856,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
     // there is a non-const parameter with handle type : the to-be-constructed handle
 
     // check for additional enter/leave guards for the constructors
-    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitle( constructorIt->second.referencedIn ) );
+    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitles( constructorIt->second.referencedIn ) );
     if ( constructorEnter == enter )
     {
       constructorEnter.clear();
@@ -10074,6 +10080,26 @@ std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title )
   return "";
 }
 
+std::string VulkanHppGenerator::getProtectFromTitles( std::set<std::string> const & titles ) const
+{
+  for ( auto titleIt = titles.begin(); titleIt != titles.end(); ++titleIt )
+  {
+    std::string protect = getProtectFromTitle( *titleIt );
+    if ( !protect.empty() )
+    {
+#if !defined( NDEBUG )
+      for ( titleIt = std::next( titleIt ); titleIt != titles.end(); ++titleIt )
+      {
+        std::string p = getProtectFromTitle( *titleIt );
+        assert( p.empty() || ( p == protect ) );
+      }
+#endif
+      return protect;
+    }
+  }
+  return "";
+}
+
 std::string VulkanHppGenerator::getProtectFromType( std::string const & type ) const
 {
   auto typeIt = m_types.find( type );
@@ -10897,7 +10923,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readExtensionsExtensionRequireCommand( child, extensionIt->first, requireData );
+      readRequireCommand( child, extensionIt->first, requireData );
       requireDataEmpty = false;
     }
     else if ( value == "comment" )
@@ -10918,45 +10944,6 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
   {
     extensionIt->second.requireData.push_back( requireData );
   }
-}
-
-void VulkanHppGenerator::readExtensionsExtensionRequireCommand( tinyxml2::XMLElement const * element,
-                                                                std::string const &          extensionName,
-                                                                RequireData &                requireData )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-  assert( !name.empty() );
-
-  // mark this command be part of this extension
-  auto commandIt = m_commands.find( name );
-  checkForError(
-    commandIt != m_commands.end(), line, "command <" + name + "> marked as required in extension <" + extensionName + "> was not listed before as a command!" );
-  if ( commandIt->second.referencedIn.empty() )
-  {
-    commandIt->second.referencedIn = extensionName;
-  }
-  else
-  {
-    checkForError( getPlatform( commandIt->second.referencedIn ) == getPlatform( extensionName ),
-                   line,
-                   "command <" + name + "> is referenced in extensions <" + commandIt->second.referencedIn + "> and <" + extensionName +
-                     "> and thus protected by different platforms <" + getPlatform( commandIt->second.referencedIn ) + "> and <" +
-                     getPlatform( extensionName ) + ">!" );
-  }
-  assert( std::find( requireData.commands.begin(), requireData.commands.end(), name ) == requireData.commands.end() );
-  requireData.commands.push_back( name );
 }
 
 void VulkanHppGenerator::readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element )
@@ -11101,7 +11088,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
     std::string value = child->Value();
     if ( value == "command" )
     {
-      readFeatureRequireCommand( child, featureIt, requireData );
+      readRequireCommand( child, featureIt->first, requireData );
       requireDataEmpty = false;
     }
     else if ( value == "comment" )
@@ -11134,29 +11121,10 @@ void VulkanHppGenerator::readFeatureRequireCommandRemove( tinyxml2::XMLElement c
 
   auto commandIt = m_commands.find( name );
   checkForError( commandIt != m_commands.end(), line, "unknown required command <" + name + ">" );
-  checkForError( commandIt->second.referencedIn.empty(), line, "command <" + name + "> already listed with feature <" + commandIt->second.referencedIn + ">" );
+  checkForError(
+    commandIt->second.referencedIn.empty(), line, "command <" + name + "> already listed with feature <" + *commandIt->second.referencedIn.begin() + ">" );
 
   m_commands.erase( commandIt );
-}
-
-void VulkanHppGenerator::readFeatureRequireCommand( tinyxml2::XMLElement const *                 element,
-                                                    std::map<std::string, FeatureData>::iterator featureIt,
-                                                    RequireData &                                requireData )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "name", {} } } );
-
-  std::string name = attributes.find( "name" )->second;
-
-  auto commandIt = m_commands.find( name );
-  checkForError( commandIt != m_commands.end(), line, "feature <" + featureIt->first + "> requires unknown command <" + name + ">" );
-  checkForError( commandIt->second.referencedIn.empty(), line, "command <" + name + "> already listed with feature <" + commandIt->second.referencedIn + ">" );
-
-  commandIt->second.referencedIn = featureIt->first;
-
-  assert( std::find( requireData.commands.begin(), requireData.commands.end(), name ) == requireData.commands.end() );
-  requireData.commands.push_back( name );
 }
 
 void VulkanHppGenerator::readFeatureRequireRemove( tinyxml2::XMLElement const * element )
@@ -11573,6 +11541,35 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
       readTypes( child );
     }
   }
+}
+
+void VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element, std::string const & title, RequireData & requireData )
+{
+  int                                line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name = attributes.find( "name" )->second;
+
+  // mark this command to be part of this extension
+  auto commandIt = m_commands.find( name );
+  checkForError( commandIt != m_commands.end(), line, "title <" + title + "> requires unknown command <" + name + ">" );
+
+  std::string platform = getPlatform( title );
+  for ( auto const & referencedIn : commandIt->second.referencedIn )
+  {
+    std::string referencedPlatform = getPlatform( referencedIn );
+    checkForError( referencedPlatform == platform,
+                   line,
+                   "command <" + name + "> is referenced in <" + referencedIn + "> and <" + title + "> and thus protected by different platforms <" +
+                     referencedPlatform + "> and <" + platform + ">!" );
+  }
+  checkForError( std::find( requireData.commands.begin(), requireData.commands.end(), name ) == requireData.commands.end(),
+                 line,
+                 "command <" + name + "> already listed for <" + title + ">" );
+  commandIt->second.referencedIn.insert( title );
+  requireData.commands.push_back( name );
 }
 
 void VulkanHppGenerator::readRequireCommandRemove( tinyxml2::XMLElement const * element )

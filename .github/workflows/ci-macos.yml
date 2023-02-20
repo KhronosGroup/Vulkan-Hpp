@@ -1,7 +1,10 @@
 
 name: CI MacOS
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: macos-11

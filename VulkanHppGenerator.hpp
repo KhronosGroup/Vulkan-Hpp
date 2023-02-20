@@ -176,7 +176,7 @@ private:
     std::vector<std::string> errorCodes;
     std::string              handle;
     std::vector<ParamData>   params;
-    std::string              referencedIn;
+    std::set<std::string>    referencedIn;
     std::string              returnType;
     std::vector<std::string> successCodes;
     int                      xmlLine;
@@ -705,7 +705,7 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateFormatTraits() const;
-  std::string generateFunctionPointerCheck( std::string const & function, std::string const & referencedIn ) const;
+  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & referencedIn ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
@@ -899,6 +899,7 @@ private:
   std::string                         getProtect( EnumValueData const & evd ) const;
   std::string                         getProtectFromPlatform( std::string const & platform ) const;
   std::string                         getProtectFromTitle( std::string const & title ) const;
+  std::string                         getProtectFromTitles( std::set<std::string> const & titles ) const;
   std::string                         getProtectFromType( std::string const & type ) const;
   std::string                         getVectorSize( std::vector<ParamData> const &            params,
                                                      std::map<size_t, VectorParamData> const & vectorParamIndices,
@@ -930,12 +931,10 @@ private:
   void                                readExtensions( tinyxml2::XMLElement const * element );
   void                                readExtensionsExtension( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequire( tinyxml2::XMLElement const * element, std::map<std::string, ExtensionData>::iterator extensionIt );
-  void readExtensionsExtensionRequireCommand( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
   void readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element );
   void readExtensionsExtensionRequireType( tinyxml2::XMLElement const * element, std::string const & extensionName, RequireData & requireData );
   void readFeature( tinyxml2::XMLElement const * element );
   void readFeatureRequire( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt );
-  void readFeatureRequireCommand( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
   void readFeatureRequireCommandRemove( tinyxml2::XMLElement const * element );
   void readFeatureRequireRemove( tinyxml2::XMLElement const * element );
   void readFeatureRequireType( tinyxml2::XMLElement const * element, std::map<std::string, FeatureData>::iterator featureIt, RequireData & requireData );
@@ -948,6 +947,7 @@ private:
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readPlatformsPlatform( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
+  void                          readRequireCommand( tinyxml2::XMLElement const * element, std::string const & title, RequireData & requireData );
   void                          readRequireCommandRemove( tinyxml2::XMLElement const * element );
   void                          readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extensionName );
   void                          readRequireEnumRemove( tinyxml2::XMLElement const * element );

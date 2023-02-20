@@ -176,7 +176,7 @@ private:
     std::vector<std::string> errorCodes;
     std::string              handle;
     std::vector<ParamData>   params;
-    std::set<std::string>    referencedIn;
+    std::set<std::string>    requiredIn;
     std::string              returnType;
     std::vector<std::string> successCodes;
     int                      xmlLine;
@@ -407,8 +407,8 @@ private:
 
   struct TypeData
   {
-    TypeCategory category     = TypeCategory::Unknown;
-    std::string  referencedIn = {};
+    TypeCategory          category   = TypeCategory::Unknown;
+    std::set<std::string> requiredIn = {};
   };
 
   struct VectorParamData
@@ -419,7 +419,7 @@ private:
 
 private:
   void        addCommand( std::string const & name, CommandData & commandData );
-  void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & referencedIn );
+  void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredIn );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
   bool        allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const;
   void        appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
@@ -705,7 +705,7 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateFormatTraits() const;
-  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & referencedIn ) const;
+  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredIn ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
@@ -856,7 +856,7 @@ private:
   std::string
     generateSizeCheck( std::vector<std::vector<MemberData>::const_iterator> const & arrayIts, std::string const & structName, bool mutualExclusiveLens ) const;
   std::string generateStaticAssertions() const;
-  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::string generateStruct( std::pair<std::string, StructureData> const & structure, std::set<std::string> & listedStructs ) const;
   std::string generateStructCompareOperators( std::pair<std::string, StructureData> const & structure ) const;
   std::string generateStructConstructors( std::pair<std::string, StructureData> const & structData ) const;
@@ -871,7 +871,8 @@ private:
   std::string
     generateStructExtendsStructs( std::vector<RequireData> const & requireData, std::set<std::string> & listedStructs, std::string const & title ) const;
   std::string generateStructForwardDeclarations() const;
-  std::string generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string
+    generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedStructs ) const;
   std::tuple<std::string, std::string, std::string, std::string> generateStructMembers( std::pair<std::string, StructureData> const & structData ) const;
   std::string                         generateStructSetter( std::string const & structureName, std::vector<MemberData> const & memberData, size_t index ) const;
   std::string                         generateStructSubConstructor( std::pair<std::string, StructureData> const & structData ) const;
@@ -1014,9 +1015,9 @@ private:
   std::set<std::string>                                               m_removedFeatures;
   std::set<std::string>                                               m_removedStructs;
   std::map<std::string, TypeData>                                     m_removedTypes;
-  std::map<std::string, StructureData>                                m_structures;
-  std::map<std::string, StructureAliasData>                           m_structureAliases;
-  std::map<std::string, std::set<std::string>>                        m_structureAliasesInverse;
+  std::map<std::string, StructureData>                                m_structs;
+  std::map<std::string, StructureAliasData>                           m_structsAliases;
+  std::map<std::string, std::set<std::string>>                        m_structsAliasesInverse;
   std::set<std::string>                                               m_tags;
   std::map<std::string, TypeData>                                     m_types;
   std::string                                                         m_typesafeCheck;

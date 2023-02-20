@@ -562,7 +562,7 @@ void VulkanHppGenerator::addCommand( std::string const & name, CommandData & com
   checkForError( m_commands.insert( std::make_pair( name, commandData ) ).second, commandData.xmlLine, "already encountered command <" + name + ">" );
 }
 
-void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & referencedIn )
+void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredIn )
 {
   for ( auto & require : requireData )
   {
@@ -591,7 +591,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
           m_enums.insert( std::make_pair( flagBits, EnumData{ .isBitmask = true, .xmlLine = 0 } ) );
 
           assert( m_types.find( flagBits ) == m_types.end() );
-          m_types.insert( std::make_pair( flagBits, TypeData{ .category = TypeCategory::Bitmask, .referencedIn = referencedIn } ) );
+          m_types.insert( std::make_pair( flagBits, TypeData{ .category = TypeCategory::Bitmask, .requiredIn = { requiredIn } } ) );
         }
         else
         {
@@ -769,11 +769,11 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
 {
   for ( auto const & bitmask : m_bitmasks )
   {
-    // check that a bitmask is referenced somewhere
+    // check that a bitmask is required somewhere
     // I think, it's not forbidden to not reference a bitmask, but it would probably be not intended?
     auto typeIt = m_types.find( bitmask.first );
     assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.referencedIn.empty(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> not listed in any feature or extension" );
+    checkForError( !typeIt->second.requiredIn.empty(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> not required in any feature or extension" );
 
     // check that the requirement is an enum
     if ( !bitmask.second.requirements.empty() )
@@ -805,7 +805,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   {
     // check that a command is referenced somewhere
     // I think, it's not forbidden to not reference a function, but it would probably be not intended?
-    checkForError( !command.second.referencedIn.empty(), command.second.xmlLine, "command <" + command.first + "> not listed in any feature or extension" );
+    checkForError( !command.second.requiredIn.empty(), command.second.xmlLine, "command <" + command.first + "> not required in any feature or extension" );
 
     // check for unknown error or succes codes
     for ( auto const & ec : command.second.errorCodes )
@@ -860,11 +860,11 @@ void VulkanHppGenerator::checkEnumCorrectness() const
 {
   for ( auto const & e : m_enums )
   {
-    // check that a bitmask is referenced somewhere
+    // check that a bitmask is required somewhere
     // it's not forbidden to not reference a bitmask, and in fact that happens! So just warn here
     auto typeIt = m_types.find( e.first );
     assert( typeIt != m_types.end() );
-    checkForWarning( !typeIt->second.referencedIn.empty(), e.second.xmlLine, "enum <" + e.first + "> not listed in any feature or extension" );
+    checkForWarning( !typeIt->second.requiredIn.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
 
     // check that the aliasNames are known enum values or known aliases
     for ( auto const & alias : e.second.aliases )
@@ -944,10 +944,10 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
               {
                 auto requireTypeIt = m_types.find( bitmaskIt->second.requirements );
                 assert( requireTypeIt != m_types.end() );
-                checkForError( !requireTypeIt->second.referencedIn.empty(),
+                checkForError( !requireTypeIt->second.requiredIn.empty(),
                                bitmaskIt->second.xmlLine,
                                "bitmask <" + bitmaskIt->first + "> requires <" + bitmaskIt->second.requirements +
-                                 "> which is not listed for any feature or extension!" );
+                                 "> which is not required by any feature or extension!" );
               }
             }
             else
@@ -1129,40 +1129,39 @@ void VulkanHppGenerator::checkHandleCorrectness() const
 
 void VulkanHppGenerator::checkStructCorrectness() const
 {
-  for ( auto const & structAlias : m_structureAliases )
+  for ( auto const & structAlias : m_structsAliases )
   {
-    checkForError( ( m_structures.find( structAlias.second.alias ) != m_structures.end() ) ||
+    checkForError( ( m_structs.find( structAlias.second.alias ) != m_structs.end() ) ||
                      ( m_removedStructs.find( structAlias.second.alias ) != m_removedStructs.end() ),
                    structAlias.second.xmlLine,
                    "unknown struct alias <" + structAlias.second.alias + ">" );
   }
 
-  for ( auto const & structAliasInverse : m_structureAliasesInverse )
+  for ( auto const & structAliasInverse : m_structsAliasesInverse )
   {
-    if ( ( m_structures.find( structAliasInverse.first ) == m_structures.end() ) &&
-         ( m_removedStructs.find( structAliasInverse.first ) == m_removedStructs.end() ) )
+    if ( ( m_structs.find( structAliasInverse.first ) == m_structs.end() ) && ( m_removedStructs.find( structAliasInverse.first ) == m_removedStructs.end() ) )
     {
       assert( !structAliasInverse.second.empty() );
-      auto aliasIt = m_structureAliases.find( *structAliasInverse.second.begin() );
-      assert( aliasIt != m_structureAliases.end() );
+      auto aliasIt = m_structsAliases.find( *structAliasInverse.second.begin() );
+      assert( aliasIt != m_structsAliases.end() );
       checkForError( false, aliasIt->second.xmlLine, "struct <" + aliasIt->first + "> uses unknown alias <" + aliasIt->second.alias + ">" );
     }
   }
 
   std::set<std::string> sTypeValues;
-  for ( auto const & structure : m_structures )
+  for ( auto const & structure : m_structs )
   {
     // check that a struct is referenced somewhere
     // I think, it's not forbidden to not reference a struct, but it would probably be not intended?
     auto typeIt = m_types.find( structure.first );
     assert( typeIt != m_types.end() );
     checkForError(
-      !typeIt->second.referencedIn.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not listed in any feature or extension" );
+      !typeIt->second.requiredIn.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any feature or extension" );
 
     // check for existence of all structs that are extended by this struct
     for ( auto const & extend : structure.second.structExtends )
     {
-      checkForError( ( m_structures.find( extend ) != m_structures.end() ) || ( m_structureAliases.find( extend ) != m_structureAliases.end() ),
+      checkForError( ( m_structs.find( extend ) != m_structs.end() ) || ( m_structsAliases.find( extend ) != m_structsAliases.end() ),
                      structure.second.xmlLine,
                      "struct <" + structure.first + "> extends unknown <" + extend + ">" );
     }
@@ -1200,9 +1199,9 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
     {
       auto typeIt = m_types.find( member.type.type );
       assert( typeIt != m_types.end() );
-      checkForError( !typeIt->second.referencedIn.empty(),
+      checkForError( !typeIt->second.requiredIn.empty(),
                      member.xmlLine,
-                     "struct member type <" + member.type.type + "> used in struct <" + structureName + "> is never listed for any feature or extension" );
+                     "struct member type <" + member.type.type + "> used in struct <" + structureName + "> is never required for any feature or extension" );
     }
 
     // if a member specifies a selector, that member is a union and the selector is an enum
@@ -1213,8 +1212,8 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
       assert( selectorIt != members.end() );
       auto selectorEnumIt = m_enums.find( selectorIt->type.type );
       assert( selectorEnumIt != m_enums.end() );
-      auto unionIt = m_structures.find( member.type.type );
-      assert( ( unionIt != m_structures.end() ) && unionIt->second.isUnion );
+      auto unionIt = m_structs.find( member.type.type );
+      assert( ( unionIt != m_structs.end() ) && unionIt->second.isUnion );
       for ( auto const & unionMember : unionIt->second.members )
       {
         // check that each union member has a selection, that is a value of the seleting enum
@@ -1326,9 +1325,9 @@ std::string VulkanHppGenerator::combineDataTypes( std::map<size_t, VectorParamDa
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains an array
-  auto structureIt = m_structures.find( type );
+  auto structureIt = m_structs.find( type );
   bool found       = false;
-  if ( structureIt != m_structures.end() )
+  if ( structureIt != m_structs.end() )
   {
     for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
     {
@@ -1341,9 +1340,9 @@ bool VulkanHppGenerator::containsArray( std::string const & type ) const
 bool VulkanHppGenerator::containsFuncPointer( std::string const & type ) const
 {
   // a simple recursive check if a type contains a funcpointer
-  auto structureIt = m_structures.find( type );
+  auto structureIt = m_structs.find( type );
   bool found       = false;
-  if ( structureIt != m_structures.end() )
+  if ( structureIt != m_structs.end() )
   {
     for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
     {
@@ -1369,9 +1368,9 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
 bool VulkanHppGenerator::containsUnion( std::string const & type ) const
 {
   // a simple recursive check if a type is or contains a union
-  auto structureIt = m_structures.find( type );
+  auto structureIt = m_structs.find( type );
   bool found       = false;
-  if ( structureIt != m_structures.end() )
+  if ( structureIt != m_structs.end() )
   {
     found = structureIt->second.isUnion;
     for ( auto memberIt = structureIt->second.members.begin(); memberIt != structureIt->second.members.end() && !found; ++memberIt )
@@ -1526,8 +1525,8 @@ std::vector<std::map<std::string, VulkanHppGenerator::CommandData>::const_iterat
             if ( pd.type.type != destructorParam.type.type )
             {
               // check if the destructor param type equals a structure member type
-              auto structureIt = m_structures.find( pd.type.type );
-              return ( structureIt != m_structures.end() ) &&
+              auto structureIt = m_structs.find( pd.type.type );
+              return ( structureIt != m_structs.end() ) &&
                      ( findStructMemberItByType( destructorParam.type.type, structureIt->second.members ) != structureIt->second.members.end() );
             }
             return true;
@@ -1666,9 +1665,9 @@ std::string VulkanHppGenerator::determineSubStruct( std::pair<std::string, Struc
              ( std::find_if_not( sd.second.members.begin(), sd.second.members.end(), isMember ) == sd.second.members.end() );
     };
 
-    // look for a struct in m_structures that starts identically to structure
-    auto structIt = std::find_if( m_structures.begin(), m_structures.end(), isSubStruct );
-    return ( structIt == m_structures.end() ) ? "" : structIt->first;
+    // look for a struct in m_structs that starts identically to structure
+    auto structIt = std::find_if( m_structs.begin(), m_structs.end(), isSubStruct );
+    return ( structIt == m_structs.end() ) ? "" : structIt->first;
   }
   return "";
 }
@@ -5607,17 +5606,16 @@ ${widthDivisorCases}
                            { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 
-std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & referencedIn ) const
+std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredIn ) const
 {
   std::string functionPointerCheck;
-  if ( !referencedIn.empty() )
+  if ( !requiredIn.empty() )
   {
-    std::string message = "Function <" + function + "> needs <" + *referencedIn.begin() + ">";
-    for ( auto it = std::next( referencedIn.begin() ); it != referencedIn.end(); ++it )
+    std::string message = "Function <" + function + "> requires <" + *requiredIn.begin() + ">";
+    for ( auto it = std::next( requiredIn.begin() ); it != requiredIn.end(); ++it )
     {
       message += " or <" + *it + ">";
     }
-    message += " enabled!";
 
     functionPointerCheck = "VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );";
   }
@@ -6584,10 +6582,12 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     }
     if ( !firstLevelCommands.empty() || !secondLevelCommands.empty() )
     {
+      std::string handleProtect = getProtectFromType( handle.first );
+      std::string titleProtect  = getProtectFromTitle( extIt.second->first );
       std::string enter, leave;
-      if ( extIt.second->first != m_types.find( handle.first )->second.referencedIn )
+      if ( !titleProtect.empty() && ( titleProtect != handleProtect ) )
       {
-        std::tie( enter, leave ) = generateProtection( getProtectFromTitle( extIt.second->first ) );
+        std::tie( enter, leave ) = generateProtection( titleProtect );
       }
       functionDeclarations += "\n" + enter + "  //=== " + extIt.second->first + " ===\n";
       for ( auto const & command : firstLevelCommands )
@@ -6685,7 +6685,7 @@ ${vectorSizeCheck}
                              { "dataDeclarations", dataDeclarations },
                              { "dataPreparation", dataPreparation },
                              { "dataSizeChecks", dataSizeChecks },
-                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.referencedIn ) },
+                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredIn ) },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
@@ -6856,7 +6856,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
     // there is a non-const parameter with handle type : the to-be-constructed handle
 
     // check for additional enter/leave guards for the constructors
-    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitles( constructorIt->second.referencedIn ) );
+    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitles( constructorIt->second.requiredIn ) );
     if ( constructorEnter == enter )
     {
       constructorEnter.clear();
@@ -7186,8 +7186,8 @@ std::string
 #endif
           for ( auto constructorParam : constructorIt->second.params )
           {
-            auto structureIt = m_structures.find( constructorParam.type.type );
-            if ( structureIt != m_structures.end() )
+            auto structureIt = m_structs.find( constructorParam.type.type );
+            if ( structureIt != m_structs.end() )
             {
               auto structureMemberIt = findStructMemberItByType( destructorParam.type.type, structureIt->second.members );
               if ( structureMemberIt != structureIt->second.members.end() )
@@ -7488,8 +7488,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorVector( std::pair<s
       constructorIt->second.params.begin(), constructorIt->second.params.end(), [&lenParts]( ParamData const & pd ) { return pd.name == lenParts[0]; } );
 #if !defined( NDEBUG )
     assert( lenIt != constructorIt->second.params.end() );
-    auto structureIt = m_structures.find( lenIt->type.type );
-    assert( structureIt != m_structures.end() );
+    auto structureIt = m_structs.find( lenIt->type.type );
+    assert( structureIt != m_structs.end() );
     assert( isStructMember( lenParts[1], structureIt->second.members ) );
     assert( constructorIt->second.successCodes.size() == 1 );
 #endif
@@ -8013,8 +8013,8 @@ std::string VulkanHppGenerator::generateRAIIHandleSingularConstructorArguments( 
 #endif
           for ( auto const & constructorParam : constructorIt->second.params )
           {
-            auto structureIt = m_structures.find( constructorParam.type.type );
-            if ( structureIt != m_structures.end() )
+            auto structureIt = m_structs.find( constructorParam.type.type );
+            if ( structureIt != m_structs.end() )
             {
               auto memberIt = findStructMemberItByType( destructorParam.type.type, structureIt->second.members );
               if ( memberIt != structureIt->second.members.end() )
@@ -8499,19 +8499,22 @@ std::string VulkanHppGenerator::generateSizeCheck( std::vector<std::vector<Membe
 
 std::string VulkanHppGenerator::generateStaticAssertions() const
 {
-  std::string staticAssertions;
+  std::string           staticAssertions;
+  std::set<std::string> listedStructs;
   for ( auto const & feature : m_features )
   {
-    staticAssertions += generateStaticAssertions( feature.second.requireData, feature.first );
+    staticAssertions += generateStaticAssertions( feature.second.requireData, feature.first, listedStructs );
   }
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    staticAssertions += generateStaticAssertions( extIt.second->second.requireData, extIt.second->first );
+    staticAssertions += generateStaticAssertions( extIt.second->second.requireData, extIt.second->first, listedStructs );
   }
   return staticAssertions;
 }
 
-std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireData> const & requireData, std::string const & title ) const
+std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireData> const & requireData,
+                                                          std::string const &              title,
+                                                          std::set<std::string> &          listedStructs ) const
 {
   std::string str;
   for ( auto const & require : requireData )
@@ -8529,8 +8532,8 @@ VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPAC
       }
       else
       {
-        auto structIt = m_structures.find( type );
-        if ( structIt != m_structures.end() )
+        auto structIt = m_structs.find( type );
+        if ( ( structIt != m_structs.end() ) && listedStructs.insert( type ).second )
         {
           std::string const assertionTemplate = R"(
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${structureType} ) == sizeof( Vk${structureType} ), "struct and wrapper have different size!" );
@@ -8552,8 +8555,8 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = m_structures.find( member.type.type );
-    if ( ( structIt != m_structures.end() ) && ( structure.first != member.type.type ) && ( listedStructs.find( member.type.type ) == listedStructs.end() ) )
+    auto structIt = m_structs.find( member.type.type );
+    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && ( listedStructs.find( member.type.type ) == listedStructs.end() ) )
     {
       str += generateStruct( *structIt, listedStructs );
     }
@@ -8561,8 +8564,8 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
 
   if ( !structure.second.subStruct.empty() )
   {
-    auto structureIt = m_structures.find( structure.second.subStruct );
-    if ( ( structureIt != m_structures.end() ) && ( listedStructs.find( structureIt->first ) == listedStructs.end() ) )
+    auto structureIt = m_structs.find( structure.second.subStruct );
+    if ( ( structureIt != m_structs.end() ) && ( listedStructs.find( structureIt->first ) == listedStructs.end() ) )
     {
       str += generateStruct( *structureIt, listedStructs );
     }
@@ -8926,8 +8929,8 @@ std::string VulkanHppGenerator::generateStructHashStructure( std::pair<std::stri
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = m_structures.find( member.type.type );
-    if ( ( structIt != m_structures.end() ) && ( structure.first != member.type.type ) && ( listedStructs.find( member.type.type ) == listedStructs.end() ) )
+    auto structIt = m_structs.find( member.type.type );
+    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && ( listedStructs.find( member.type.type ) == listedStructs.end() ) )
     {
       str += generateStructHashStructure( *structIt, listedStructs );
     }
@@ -8948,7 +8951,7 @@ ${hashSum}
 ${leave})";
 
     auto [enter, leave] =
-      generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+      generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
 
     std::string structureType = stripPrefix( structure.first, "Vk" );
     std::string structureName = startLowerCase( structureType );
@@ -8984,7 +8987,7 @@ ${hashes}
   // Note reordering structs or handles by features and extensions is not possible!
   std::set<std::string> listedStructs;
   std::string           hashes;
-  for ( auto const & structure : m_structures )
+  for ( auto const & structure : m_structs )
   {
     if ( listedStructs.find( structure.first ) == listedStructs.end() )
     {
@@ -9062,7 +9065,7 @@ ${structs}
   // Note reordering structs or handles by features and extensions is not possible!
   std::set<std::string> listedStructs;
   std::string           structs;
-  for ( auto const & structure : m_structures )
+  for ( auto const & structure : m_structs )
   {
     if ( listedStructs.find( structure.first ) == listedStructs.end() )
     {
@@ -9075,7 +9078,7 @@ ${structs}
 std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
 {
   auto [enter, leave] =
-    generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+    generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
 
   std::string str = "\n" + enter;
 
@@ -9195,8 +9198,8 @@ ${members}
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureType", structureType } } );
   }
 
-  auto aliasIt = m_structureAliasesInverse.find( structure.first );
-  if ( aliasIt != m_structureAliasesInverse.end() )
+  auto aliasIt = m_structsAliasesInverse.find( structure.first );
+  if ( aliasIt != m_structsAliasesInverse.end() )
   {
     for ( std::string const & alias : aliasIt->second )
     {
@@ -9240,31 +9243,28 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
   {
     for ( auto const & type : require.types )
     {
-      auto structIt = m_structures.find( type );
-      if ( structIt != m_structures.end() )
+      auto structIt = m_structs.find( type );
+      if ( ( structIt != m_structs.end() ) && listedStructs.insert( type ).second )
       {
-        assert( listedStructs.find( type ) == listedStructs.end() );
-        listedStructs.insert( type );
-
         auto [enter, leave] = generateProtection( getProtectFromTitle( title ) );
 
         // append all allowed structure chains
         for ( auto extendName : structIt->second.structExtends )
         {
-          std::map<std::string, StructureData>::const_iterator itExtend = m_structures.find( extendName );
-          if ( itExtend == m_structures.end() )
+          std::map<std::string, StructureData>::const_iterator itExtend = m_structs.find( extendName );
+          if ( itExtend == m_structs.end() )
           {
             // look if the extendName acutally is an alias of some other structure
-            auto aliasIt = m_structureAliases.find( extendName );
-            if ( aliasIt != m_structureAliases.end() )
+            auto aliasIt = m_structsAliases.find( extendName );
+            if ( aliasIt != m_structsAliases.end() )
             {
-              itExtend = m_structures.find( aliasIt->second.alias );
-              assert( itExtend != m_structures.end() );
+              itExtend = m_structs.find( aliasIt->second.alias );
+              assert( itExtend != m_structs.end() );
             }
           }
 
-          auto [subEnter, subLeave] = generateProtection(
-            m_structureAliasesInverse.find( itExtend->first ) == m_structureAliasesInverse.end() ? getProtectFromType( itExtend->first ) : "" );
+          auto [subEnter, subLeave] =
+            generateProtection( m_structsAliasesInverse.find( itExtend->first ) == m_structsAliasesInverse.end() ? getProtectFromType( itExtend->first ) : "" );
 
           if ( enter != subEnter )
           {
@@ -9295,33 +9295,36 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations() const
 ${forwardDeclarations}
 )";
 
-  std::string forwardDeclarations;
+  std::string           forwardDeclarations;
+  std::set<std::string> listedStructs;
   for ( auto const & feature : m_features )
   {
-    forwardDeclarations += generateStructForwardDeclarations( feature.second.requireData, feature.first );
+    forwardDeclarations += generateStructForwardDeclarations( feature.second.requireData, feature.first, listedStructs );
   }
   for ( auto const & extIt : m_extensionsByNumber )
   {
-    forwardDeclarations += generateStructForwardDeclarations( extIt.second->second.requireData, extIt.second->first );
+    forwardDeclarations += generateStructForwardDeclarations( extIt.second->second.requireData, extIt.second->first, listedStructs );
   }
 
   return replaceWithMap( fowardDeclarationsTemplate, { { "forwardDeclarations", forwardDeclarations } } );
 }
 
-std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const
+std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<RequireData> const & requireData,
+                                                                   std::string const &              title,
+                                                                   std::set<std::string> &          listedStructs ) const
 {
   std::string str;
   for ( auto const & require : requireData )
   {
     for ( auto const & type : require.types )
     {
-      auto structIt = m_structures.find( type );
-      if ( structIt != m_structures.end() )
+      auto structIt = m_structs.find( type );
+      if ( ( structIt != m_structs.end() ) && listedStructs.insert( type ).second )
       {
         std::string structureType = stripPrefix( structIt->first, "Vk" );
         str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
-        auto inverseIt = m_structureAliasesInverse.find( type );
-        if ( inverseIt != m_structureAliasesInverse.end() )
+        auto inverseIt = m_structsAliasesInverse.find( type );
+        if ( inverseIt != m_structsAliasesInverse.end() )
         {
           for ( auto alias : inverseIt->second )
           {
@@ -9440,15 +9443,14 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
       assignment = member.name + " = " + member.name + "_";
     }
 
-    str +=
-      replaceWithMap( templateString,
-                      { { "assignment", assignment },
-                        { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
-                        { "memberName", member.name },
-                        { "MemberName", startUpperCase( member.name ) },
-                        { "memberType", memberType },
-                        { "reference", ( member.type.postfix.empty() && ( m_structures.find( member.type.type ) != m_structures.end() ) ) ? "const & " : "" },
-                        { "structureName", structureName } } );
+    str += replaceWithMap( templateString,
+                           { { "assignment", assignment },
+                             { "constexpr", isReinterpretation ? "" : "VULKAN_HPP_CONSTEXPR_14 " },
+                             { "memberName", member.name },
+                             { "MemberName", startUpperCase( member.name ) },
+                             { "memberType", memberType },
+                             { "reference", ( member.type.postfix.empty() && ( m_structs.find( member.type.type ) != m_structs.end() ) ) ? "const & " : "" },
+                             { "structureName", structureName } } );
 
     if ( hasLen( memberData, member ) )
     {
@@ -9519,8 +9521,8 @@ std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::str
 {
   if ( !structData.second.subStruct.empty() )
   {
-    auto const & subStruct = m_structures.find( structData.second.subStruct );
-    assert( subStruct != m_structures.end() );
+    auto const & subStruct = m_structs.find( structData.second.subStruct );
+    assert( subStruct != m_structs.end() );
 
     std::string subStructArgumentName = startLowerCase( stripPrefix( subStruct->first, "Vk" ) );
 
@@ -9680,7 +9682,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
 std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureData> const & structure ) const
 {
   auto [enter, leave] =
-    generateProtection( m_structureAliasesInverse.find( structure.first ) == m_structureAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+    generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
   std::string unionName = stripPrefix( structure.first, "Vk" );
 
   bool               firstMember = true;
@@ -10047,8 +10049,8 @@ std::string VulkanHppGenerator::getPlatform( std::string const & title ) const
 
 std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std::string const & type ) const
 {
-  auto structIt = m_structures.find( type );
-  assert( structIt != m_structures.end() );
+  auto structIt = m_structs.find( type );
+  assert( structIt != m_structs.end() );
   auto memberIt = std::find_if(
     structIt->second.members.begin(), structIt->second.members.end(), []( MemberData const & md ) { return md.name.find( "Pool" ) != std::string::npos; } );
   assert( memberIt != structIt->second.members.end() );
@@ -10104,7 +10106,7 @@ std::string VulkanHppGenerator::getProtectFromType( std::string const & type ) c
 {
   auto typeIt = m_types.find( type );
   assert( typeIt != m_types.end() );
-  return getProtectFromTitle( typeIt->second.referencedIn );
+  return getProtectFromTitles( typeIt->second.requiredIn );
 }
 
 std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &            params,
@@ -10217,8 +10219,8 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vec
     if ( paramIt != params.end() )
     {
 #if !defined( NDEBUG )
-      auto structureIt = m_structures.find( paramIt->type.type );
-      assert( structureIt != m_structures.end() );
+      auto structureIt = m_structs.find( paramIt->type.type );
+      assert( structureIt != m_structs.end() );
       assert( isStructMember( nameParts[1], structureIt->second.members ) );
 #endif
       return true;
@@ -10239,8 +10241,8 @@ bool VulkanHppGenerator::isLenByStructMember( std::string const & name, ParamDat
   if ( ( nameParts.size() == 2 ) && ( nameParts[0] == param.name ) )
   {
 #if !defined( NDEBUG )
-    auto structureIt = m_structures.find( param.type.type );
-    assert( structureIt != m_structures.end() );
+    auto structureIt = m_structs.find( param.type.type );
+    assert( structureIt != m_structs.end() );
     assert( isStructMember( nameParts[1], structureIt->second.members ) );
 #endif
     return true;
@@ -10281,16 +10283,16 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
 {
   if ( type.starts_with( "Vk" ) )
   {
-    auto it = m_structures.find( type );
-    if ( it == m_structures.end() )
+    auto it = m_structs.find( type );
+    if ( it == m_structs.end() )
     {
-      auto aliasIt = m_structureAliases.find( type );
-      if ( aliasIt != m_structureAliases.end() )
+      auto aliasIt = m_structsAliases.find( type );
+      if ( aliasIt != m_structsAliases.end() )
       {
-        it = m_structures.find( aliasIt->second.alias );
+        it = m_structs.find( aliasIt->second.alias );
       }
     }
-    if ( it != m_structures.end() )
+    if ( it != m_structs.end() )
     {
       return m_extendedStructs.find( it->first ) != m_extendedStructs.end();
     }
@@ -10506,7 +10508,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandsC
       std::vector<std::string> validStructs = tokenize( attribute.second, "," );
       for ( auto const & vs : validStructs )
       {
-        checkForError( m_structures.find( vs ) != m_structures.end(), line, "unknown struct <" + vs + "> listed in attribute <validstructs>" );
+        checkForError( m_structs.find( vs ) != m_structs.end(), line, "unknown struct <" + vs + "> listed in attribute <validstructs>" );
       }
     }
   }
@@ -10981,32 +10983,24 @@ void VulkanHppGenerator::readExtensionsExtensionRequireType( tinyxml2::XMLElemen
   checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
-  std::string name;
-  for ( auto const & attribute : attributes )
-  {
-    if ( attribute.first == "name" )
-    {
-      name = attribute.second;
-    }
-  }
-  assert( !name.empty() );
+  std::string name = attributes.find( "name" )->second;
 
   auto typeIt = m_types.find( name );
   checkForError( typeIt != m_types.end(), line, "failed to find required type <" + name + ">" );
-  if ( typeIt->second.referencedIn.empty() )
+  std::string platform = getPlatform( extensionName );
+  for ( auto const & requiredIn : typeIt->second.requiredIn )
   {
-    typeIt->second.referencedIn = extensionName;
-    assert( std::find( requireData.types.begin(), requireData.types.end(), name ) == requireData.types.end() );
-    requireData.types.push_back( name );
-  }
-  else
-  {
-    checkForError( getPlatform( typeIt->second.referencedIn ) == getPlatform( extensionName ),
+    std::string requiredInPlatform = getPlatform( requiredIn );
+    checkForError( requiredInPlatform == platform,
                    line,
-                   "type <" + name + "> is referenced in extensions <" + typeIt->second.referencedIn + "> and <" + extensionName +
-                     "> and thus protected by different platforms <" + getPlatform( typeIt->second.referencedIn ) + "> and <" + getPlatform( extensionName ) +
-                     ">!" );
+                   "type <" + name + "> is required in <" + requiredIn + "> and <" + extensionName + "> and thus protected by different platforms <" +
+                     requiredInPlatform + "> and <" + platform + ">!" );
   }
+  checkForError( std::find( requireData.types.begin(), requireData.types.end(), name ) == requireData.types.end(),
+                 line,
+                 "type <" + name + "> already required for <" + extensionName + ">" );
+  typeIt->second.requiredIn.insert( extensionName );
+  requireData.types.push_back( name );
 }
 
 void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
@@ -11120,9 +11114,11 @@ void VulkanHppGenerator::readFeatureRequireCommandRemove( tinyxml2::XMLElement c
   std::string name = attributes.find( "name" )->second;
 
   auto commandIt = m_commands.find( name );
-  checkForError( commandIt != m_commands.end(), line, "unknown required command <" + name + ">" );
-  checkForError(
-    commandIt->second.referencedIn.empty(), line, "command <" + name + "> already listed with feature <" + *commandIt->second.referencedIn.begin() + ">" );
+  checkForError( commandIt != m_commands.end(), line, "unknown to be removed command <" + name + ">" );
+  if ( !commandIt->second.requiredIn.empty() )
+  {
+    checkForError( false, line, "to be removed command <" + name + "> already required in <" + *commandIt->second.requiredIn.begin() + ">" );
+  }
 
   m_commands.erase( commandIt );
 }
@@ -11170,10 +11166,12 @@ void VulkanHppGenerator::readFeatureRequireType( tinyxml2::XMLElement const *   
   {
     auto typeIt = m_types.find( name );
     checkForError( typeIt != m_types.end(), line, "feature <" + featureIt->first + "> requires unknown type <" + name + ">" );
-    checkForError( typeIt->second.referencedIn.empty() || ( typeIt->second.referencedIn == featureIt->first ),
-                   line,
-                   "type <" + name + "> already listed on feature <" + typeIt->second.referencedIn + ">" );
-    typeIt->second.referencedIn = featureIt->first;
+    if ( !typeIt->second.requiredIn.empty() )
+    {
+      assert( typeIt->second.requiredIn.size() == 1 );
+      checkForError( false, line, "type <" + name + "> already required by feature <" + *typeIt->second.requiredIn.begin() + ">" );
+    }
+    checkForError( typeIt->second.requiredIn.insert( featureIt->first ).second, line, "type <" + name + "> already required by this feature" );
 
     requireData.types.push_back( name );
   }
@@ -11557,18 +11555,18 @@ void VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * elemen
   checkForError( commandIt != m_commands.end(), line, "title <" + title + "> requires unknown command <" + name + ">" );
 
   std::string platform = getPlatform( title );
-  for ( auto const & referencedIn : commandIt->second.referencedIn )
+  for ( auto const & requiredIn : commandIt->second.requiredIn )
   {
-    std::string referencedPlatform = getPlatform( referencedIn );
-    checkForError( referencedPlatform == platform,
+    std::string requiredInPlatform = getPlatform( requiredIn );
+    checkForError( requiredInPlatform == platform,
                    line,
-                   "command <" + name + "> is referenced in <" + referencedIn + "> and <" + title + "> and thus protected by different platforms <" +
-                     referencedPlatform + "> and <" + platform + ">!" );
+                   "command <" + name + "> is required in <" + requiredIn + "> and <" + title + "> and thus protected by different platforms <" +
+                     requiredInPlatform + "> and <" + platform + ">!" );
   }
   checkForError( std::find( requireData.commands.begin(), requireData.commands.end(), name ) == requireData.commands.end(),
                  line,
-                 "command <" + name + "> already listed for <" + title + ">" );
-  commandIt->second.referencedIn.insert( title );
+                 "command <" + name + "> already required for <" + title + ">" );
+  commandIt->second.requiredIn.insert( title );
   requireData.commands.push_back( name );
 }
 
@@ -11729,19 +11727,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
     if ( !extends.empty() )
     {
       auto enumIt = m_enums.find( extends );
-      if ( enumIt == m_enums.end() )
-      {
-        // need to re-add a previously removed enum !!
-        enumIt = m_removedEnums.find( extends );
-        checkForError( enumIt != m_removedEnums.end(), line, "feature extends unknown enum <" + extends + ">" );
-        enumIt = m_enums.insert( *enumIt ).first;
-
-        auto typeIt = m_removedTypes.find( extends );
-        assert( ( m_types.find( extends ) == m_types.end() ) || ( typeIt != m_removedTypes.end() ) );
-        typeIt->second.referencedIn = extensionName;
-        m_types[extends]            = typeIt->second;
-        m_removedTypes.erase( typeIt );
-      }
+      checkForError( enumIt != m_enums.end(), line, "trying to extend unknown enum <" + extends + ">" );
 
       // add this enum name to the list of values
       checkForError( bitpos.empty() + offset.empty() + value.empty() == 2,
@@ -11825,7 +11811,7 @@ void VulkanHppGenerator::readRequireTypeRemove( tinyxml2::XMLElement const * ele
   auto typeIt = m_types.find( name );
   if ( typeIt != m_types.end() )
   {
-    assert( typeIt->second.referencedIn.empty() );
+    assert( typeIt->second.requiredIn.empty() );
     assert( m_removedTypes.find( name ) == m_removedTypes.end() );
 
     switch ( typeIt->second.category )
@@ -11853,20 +11839,20 @@ void VulkanHppGenerator::readRequireTypeRemove( tinyxml2::XMLElement const * ele
         break;
       case TypeCategory::Struct:
         {
-          auto structIt = m_structures.find( name );
-          if ( structIt == m_structures.end() )
+          auto structIt = m_structs.find( name );
+          if ( structIt == m_structs.end() )
           {
-            auto aliasIt = m_structureAliases.find( name );
-            if ( aliasIt != m_structureAliases.end() )
+            auto aliasIt = m_structsAliases.find( name );
+            if ( aliasIt != m_structsAliases.end() )
             {
               name     = aliasIt->second.alias;
-              structIt = m_structures.find( name );
+              structIt = m_structs.find( name );
             }
           }
-          if ( structIt != m_structures.end() )
+          if ( structIt != m_structs.end() )
           {
             m_removedStructs.insert( name );
-            m_structures.erase( structIt );
+            m_structs.erase( structIt );
           }
           else
           {
@@ -11985,8 +11971,8 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableProperty( int
   }
   assert( !member.empty() && !property.empty() && !value.empty() );
 
-  auto propertyIt = m_structures.find( property );
-  checkForError( propertyIt != m_structures.end(), xmlLine, "unknown property <" + property + "> specified for SPIR-V capability" );
+  auto propertyIt = m_structs.find( property );
+  checkForError( propertyIt != m_structs.end(), xmlLine, "unknown property <" + property + "> specified for SPIR-V capability" );
   auto memberIt = findStructMemberIt( member, propertyIt->second.members );
   checkForError( memberIt != propertyIt->second.members.end(), xmlLine, "unknown member <" + member + "> specified for SPIR-V capability" );
   if ( memberIt->type.type == "VkBool32" )
@@ -12028,8 +12014,7 @@ void VulkanHppGenerator::readSPIRVCapabilitiesSPIRVCapabilityEnableStruct( int x
     }
     else if ( attribute.first == "struct" )
     {
-      checkForError( ( m_structures.find( attribute.second ) != m_structures.end() ) ||
-                       ( m_structureAliases.find( attribute.second ) != m_structureAliases.end() ),
+      checkForError( ( m_structs.find( attribute.second ) != m_structs.end() ) || ( m_structsAliases.find( attribute.second ) != m_structsAliases.end() ),
                      xmlLine,
                      "unknown structure <" + attribute.second + "> specified for SPIR-V capability" );
       checkForError( attributes.find( "feature" ) != attributes.end(),
@@ -12642,8 +12627,8 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
     }
 
     checkForError(
-      m_structureAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second, line, "structure alias <" + name + "> already used" );
-    checkForError( m_structureAliasesInverse[alias].insert( name ).second, line, "structure alias <" + name + "> already used with structure <" + alias + ">" );
+      m_structsAliases.insert( std::make_pair( name, StructureAliasData( alias, line ) ) ).second, line, "structure alias <" + name + "> already used" );
+    checkForError( m_structsAliasesInverse[alias].insert( name ).second, line, "structure alias <" + name + "> already used with structure <" + alias + ">" );
     checkForError( m_types.insert( std::make_pair( name, TypeData{ .category = TypeCategory::Struct } ) ).second,
                    line,
                    "struct <" + name + "> already specified as a type" );
@@ -12689,8 +12674,8 @@ void VulkanHppGenerator::readTypesTypeStruct( tinyxml2::XMLElement const * eleme
     // make this warn a check, as soon as vk.xml has been fixed on attribute "allowduplicate" !
     checkForWarning( !allowDuplicate || !structExtends.empty(), line, "attribute <allowduplicate> is true, but no structures are listed in <structextends>" );
 
-    checkForError( m_structures.find( name ) == m_structures.end(), line, "struct <" + name + "> already specfied" );
-    std::map<std::string, StructureData>::iterator it = m_structures.insert( std::make_pair( name, StructureData( structExtends, line ) ) ).first;
+    checkForError( m_structs.find( name ) == m_structs.end(), line, "struct <" + name + "> already specfied" );
+    std::map<std::string, StructureData>::iterator it = m_structs.insert( std::make_pair( name, StructureData( structExtends, line ) ) ).first;
     it->second.allowDuplicate                         = allowDuplicate;
     it->second.isUnion                                = isUnion;
     it->second.returnedOnly                           = returnedOnly;

@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -918,7 +918,9 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDeviceFaultInfoEXT = PFN_vkGetDeviceFaultInfoEXT( vkGetDeviceProcAddr( device, "vkGetDeviceFaultInfoEXT" ) );
 
         //=== VK_EXT_discard_rectangles ===
-        vkCmdSetDiscardRectangleEXT = PFN_vkCmdSetDiscardRectangleEXT( vkGetDeviceProcAddr( device, "vkCmdSetDiscardRectangleEXT" ) );
+        vkCmdSetDiscardRectangleEXT       = PFN_vkCmdSetDiscardRectangleEXT( vkGetDeviceProcAddr( device, "vkCmdSetDiscardRectangleEXT" ) );
+        vkCmdSetDiscardRectangleEnableEXT = PFN_vkCmdSetDiscardRectangleEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetDiscardRectangleEnableEXT" ) );
+        vkCmdSetDiscardRectangleModeEXT   = PFN_vkCmdSetDiscardRectangleModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetDiscardRectangleModeEXT" ) );
 
         //=== VK_EXT_display_control ===
         vkDisplayPowerControlEXT  = PFN_vkDisplayPowerControlEXT( vkGetDeviceProcAddr( device, "vkDisplayPowerControlEXT" ) );
@@ -1573,7 +1575,8 @@ namespace VULKAN_HPP_NAMESPACE
         vkCompileDeferredNV = PFN_vkCompileDeferredNV( vkGetDeviceProcAddr( device, "vkCompileDeferredNV" ) );
 
         //=== VK_NV_scissor_exclusive ===
-        vkCmdSetExclusiveScissorNV = PFN_vkCmdSetExclusiveScissorNV( vkGetDeviceProcAddr( device, "vkCmdSetExclusiveScissorNV" ) );
+        vkCmdSetExclusiveScissorEnableNV = PFN_vkCmdSetExclusiveScissorEnableNV( vkGetDeviceProcAddr( device, "vkCmdSetExclusiveScissorEnableNV" ) );
+        vkCmdSetExclusiveScissorNV       = PFN_vkCmdSetExclusiveScissorNV( vkGetDeviceProcAddr( device, "vkCmdSetExclusiveScissorNV" ) );
 
         //=== VK_NV_shading_rate_image ===
         vkCmdBindShadingRateImageNV = PFN_vkCmdBindShadingRateImageNV( vkGetDeviceProcAddr( device, "vkCmdBindShadingRateImageNV" ) );
@@ -1856,7 +1859,9 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetDeviceFaultInfoEXT vkGetDeviceFaultInfoEXT = 0;
 
       //=== VK_EXT_discard_rectangles ===
-      PFN_vkCmdSetDiscardRectangleEXT vkCmdSetDiscardRectangleEXT = 0;
+      PFN_vkCmdSetDiscardRectangleEXT       vkCmdSetDiscardRectangleEXT       = 0;
+      PFN_vkCmdSetDiscardRectangleEnableEXT vkCmdSetDiscardRectangleEnableEXT = 0;
+      PFN_vkCmdSetDiscardRectangleModeEXT   vkCmdSetDiscardRectangleModeEXT   = 0;
 
       //=== VK_EXT_display_control ===
       PFN_vkDisplayPowerControlEXT  vkDisplayPowerControlEXT  = 0;
@@ -2359,7 +2364,8 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCompileDeferredNV                            vkCompileDeferredNV                            = 0;
 
       //=== VK_NV_scissor_exclusive ===
-      PFN_vkCmdSetExclusiveScissorNV vkCmdSetExclusiveScissorNV = 0;
+      PFN_vkCmdSetExclusiveScissorEnableNV vkCmdSetExclusiveScissorEnableNV = 0;
+      PFN_vkCmdSetExclusiveScissorNV       vkCmdSetExclusiveScissorNV       = 0;
 
       //=== VK_NV_shading_rate_image ===
       PFN_vkCmdBindShadingRateImageNV          vkCmdBindShadingRateImageNV          = 0;
@@ -5392,6 +5398,10 @@ namespace VULKAN_HPP_NAMESPACE
       void setDiscardRectangleEXT( uint32_t                                                                     firstDiscardRectangle,
                                    VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Rect2D> const & discardRectangles ) const VULKAN_HPP_NOEXCEPT;
 
+      void setDiscardRectangleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 discardRectangleEnable ) const VULKAN_HPP_NOEXCEPT;
+
+      void setDiscardRectangleModeEXT( VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode ) const VULKAN_HPP_NOEXCEPT;
+
       //=== VK_KHR_create_renderpass2 ===
 
       void beginRenderPass2KHR( const VULKAN_HPP_NAMESPACE::RenderPassBeginInfo & renderPassBegin,
@@ -5526,6 +5536,10 @@ namespace VULKAN_HPP_NAMESPACE
                                          uint32_t                         stride ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_NV_scissor_exclusive ===
+
+      void setExclusiveScissorEnableNV( uint32_t                                                                     firstExclusiveScissor,
+                                        VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & exclusiveScissorEnables ) const
+        VULKAN_HPP_NOEXCEPT;
 
       void setExclusiveScissorNV( uint32_t                                                                     firstExclusiveScissor,
                                   VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Rect2D> const & exclusiveScissors ) const VULKAN_HPP_NOEXCEPT;
@@ -15471,6 +15485,24 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<const VkRect2D *>( discardRectangles.data() ) );
     }
 
+    VULKAN_HPP_INLINE void CommandBuffer::setDiscardRectangleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 discardRectangleEnable ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDiscardRectangleEnableEXT &&
+                         "Function <vkCmdSetDiscardRectangleEnableEXT> requires <VK_EXT_discard_rectangles>" );
+
+      getDispatcher()->vkCmdSetDiscardRectangleEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkBool32>( discardRectangleEnable ) );
+    }
+
+    VULKAN_HPP_INLINE void
+      CommandBuffer::setDiscardRectangleModeEXT( VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetDiscardRectangleModeEXT &&
+                         "Function <vkCmdSetDiscardRectangleModeEXT> requires <VK_EXT_discard_rectangles>" );
+
+      getDispatcher()->vkCmdSetDiscardRectangleModeEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                        static_cast<VkDiscardRectangleModeEXT>( discardRectangleMode ) );
+    }
+
     //=== VK_EXT_hdr_metadata ===
 
     VULKAN_HPP_INLINE void Device::setHdrMetadataEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainKHR> const &   swapchains,
@@ -17016,6 +17048,19 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     //=== VK_NV_scissor_exclusive ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::setExclusiveScissorEnableNV(
+      uint32_t                                                                     firstExclusiveScissor,
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & exclusiveScissorEnables ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetExclusiveScissorEnableNV &&
+                         "Function <vkCmdSetExclusiveScissorEnableNV> requires <VK_NV_scissor_exclusive>" );
+
+      getDispatcher()->vkCmdSetExclusiveScissorEnableNV( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                         firstExclusiveScissor,
+                                                         exclusiveScissorEnables.size(),
+                                                         reinterpret_cast<const VkBool32 *>( exclusiveScissorEnables.data() ) );
+    }
 
     VULKAN_HPP_INLINE void CommandBuffer::setExclusiveScissorNV(
       uint32_t firstExclusiveScissor, VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Rect2D> const & exclusiveScissors ) const VULKAN_HPP_NOEXCEPT

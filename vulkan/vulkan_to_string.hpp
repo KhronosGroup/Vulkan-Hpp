@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -4056,6 +4056,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceBorderColorSwizzleFeaturesEXT: return "PhysicalDeviceBorderColorSwizzleFeaturesEXT";
       case StructureType::eSamplerBorderColorComponentMappingCreateInfoEXT: return "SamplerBorderColorComponentMappingCreateInfoEXT";
       case StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT: return "PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderCorePropertiesARM: return "PhysicalDeviceShaderCorePropertiesARM";
+      case StructureType::ePhysicalDeviceImageSlicedViewOf3DFeaturesEXT: return "PhysicalDeviceImageSlicedViewOf3DFeaturesEXT";
+      case StructureType::eImageViewSlicedCreateInfoEXT: return "ImageViewSlicedCreateInfoEXT";
       case StructureType::ePhysicalDeviceDescriptorSetHostMappingFeaturesVALVE: return "PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE";
       case StructureType::eDescriptorSetBindingReferenceVALVE: return "DescriptorSetBindingReferenceVALVE";
       case StructureType::eDescriptorSetLayoutHostMappingInfoVALVE: return "DescriptorSetLayoutHostMappingInfoVALVE";
@@ -4107,6 +4110,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsFeaturesARM: return "PhysicalDeviceShaderCoreBuiltinsFeaturesARM";
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsPropertiesARM: return "PhysicalDeviceShaderCoreBuiltinsPropertiesARM";
       case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT: return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
+      case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
+      case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5152,10 +5157,13 @@ namespace VULKAN_HPP_NAMESPACE
       case DynamicState::ePrimitiveRestartEnable: return "PrimitiveRestartEnable";
       case DynamicState::eViewportWScalingNV: return "ViewportWScalingNV";
       case DynamicState::eDiscardRectangleEXT: return "DiscardRectangleEXT";
+      case DynamicState::eDiscardRectangleEnableEXT: return "DiscardRectangleEnableEXT";
+      case DynamicState::eDiscardRectangleModeEXT: return "DiscardRectangleModeEXT";
       case DynamicState::eSampleLocationsEXT: return "SampleLocationsEXT";
       case DynamicState::eRayTracingPipelineStackSizeKHR: return "RayTracingPipelineStackSizeKHR";
       case DynamicState::eViewportShadingRatePaletteNV: return "ViewportShadingRatePaletteNV";
       case DynamicState::eViewportCoarseSampleOrderNV: return "ViewportCoarseSampleOrderNV";
+      case DynamicState::eExclusiveScissorEnableNV: return "ExclusiveScissorEnableNV";
       case DynamicState::eExclusiveScissorNV: return "ExclusiveScissorNV";
       case DynamicState::eFragmentShadingRateKHR: return "FragmentShadingRateKHR";
       case DynamicState::eLineStippleEXT: return "LineStippleEXT";

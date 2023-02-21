@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //

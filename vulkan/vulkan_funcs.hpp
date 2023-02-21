@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -12139,6 +12139,22 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDiscardRectangleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 discardRectangleEnable,
+                                                                      Dispatch const &             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDiscardRectangleEnableEXT( m_commandBuffer, static_cast<VkBool32>( discardRectangleEnable ) );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDiscardRectangleModeEXT( VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode,
+                                                                    Dispatch const &                              d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDiscardRectangleModeEXT( m_commandBuffer, static_cast<VkDiscardRectangleModeEXT>( discardRectangleMode ) );
+  }
+
   //=== VK_EXT_hdr_metadata ===
 
   template <typename Dispatch>
@@ -15727,6 +15743,31 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   //=== VK_NV_scissor_exclusive ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setExclusiveScissorEnableNV( uint32_t                             firstExclusiveScissor,
+                                                                     uint32_t                             exclusiveScissorCount,
+                                                                     const VULKAN_HPP_NAMESPACE::Bool32 * pExclusiveScissorEnables,
+                                                                     Dispatch const &                     d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetExclusiveScissorEnableNV(
+      m_commandBuffer, firstExclusiveScissor, exclusiveScissorCount, reinterpret_cast<const VkBool32 *>( pExclusiveScissorEnables ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setExclusiveScissorEnableNV( uint32_t                                                                     firstExclusiveScissor,
+                                                VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & exclusiveScissorEnables,
+                                                Dispatch const &                                                             d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetExclusiveScissorEnableNV(
+      m_commandBuffer, firstExclusiveScissor, exclusiveScissorEnables.size(), reinterpret_cast<const VkBool32 *>( exclusiveScissorEnables.data() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::setExclusiveScissorNV( uint32_t                             firstExclusiveScissor,

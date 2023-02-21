@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -1454,6 +1454,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_pageable_device_local_memory ===
   struct PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT;
 
+  //=== VK_ARM_shader_core_properties ===
+  struct PhysicalDeviceShaderCorePropertiesARM;
+
+  //=== VK_EXT_image_sliced_view_of_3d ===
+  struct PhysicalDeviceImageSlicedViewOf3DFeaturesEXT;
+  struct ImageViewSlicedCreateInfoEXT;
+
   //=== VK_VALVE_descriptor_set_host_mapping ===
   struct PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE;
   struct DescriptorSetBindingReferenceVALVE;
@@ -1564,6 +1571,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pipeline_library_group_handles ===
   struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
+
+  //=== VK_QCOM_multiview_per_view_render_areas ===
+  struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
+  struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -4945,6 +4956,14 @@ namespace VULKAN_HPP_NAMESPACE
                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setDiscardRectangleEnableEXT( VULKAN_HPP_NAMESPACE::Bool32 discardRectangleEnable,
+                                       Dispatch const & d           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setDiscardRectangleModeEXT( VULKAN_HPP_NAMESPACE::DiscardRectangleModeEXT discardRectangleMode,
+                                     Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
     //=== VK_KHR_create_renderpass2 ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -5235,6 +5254,18 @@ namespace VULKAN_HPP_NAMESPACE
                                        Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_NV_scissor_exclusive ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setExclusiveScissorEnableNV( uint32_t                             firstExclusiveScissor,
+                                      uint32_t                             exclusiveScissorCount,
+                                      const VULKAN_HPP_NAMESPACE::Bool32 * pExclusiveScissorEnables,
+                                      Dispatch const & d                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setExclusiveScissorEnableNV( uint32_t                                                                     firstExclusiveScissor,
+                                      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & exclusiveScissorEnables,
+                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void setExclusiveScissorNV( uint32_t                             firstExclusiveScissor,

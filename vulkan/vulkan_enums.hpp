@@ -1,4 +1,4 @@
-// Copyright 2015-2022 The Khronos Group Inc.
+// Copyright 2015-2023 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -831,6 +831,9 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceBorderColorSwizzleFeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BORDER_COLOR_SWIZZLE_FEATURES_EXT,
     eSamplerBorderColorComponentMappingCreateInfoEXT             = VK_STRUCTURE_TYPE_SAMPLER_BORDER_COLOR_COMPONENT_MAPPING_CREATE_INFO_EXT,
     ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PAGEABLE_DEVICE_LOCAL_MEMORY_FEATURES_EXT,
+    ePhysicalDeviceShaderCorePropertiesARM                       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM,
+    ePhysicalDeviceImageSlicedViewOf3DFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT,
+    eImageViewSlicedCreateInfoEXT                                = VK_STRUCTURE_TYPE_IMAGE_VIEW_SLICED_CREATE_INFO_EXT,
     ePhysicalDeviceDescriptorSetHostMappingFeaturesVALVE         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE,
     eDescriptorSetBindingReferenceVALVE                          = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_BINDING_REFERENCE_VALVE,
     eDescriptorSetLayoutHostMappingInfoVALVE                     = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_HOST_MAPPING_INFO_VALVE,
@@ -882,6 +885,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderCoreBuiltinsFeaturesARM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM,
     ePhysicalDeviceShaderCoreBuiltinsPropertiesARM               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM,
     ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT,
+    ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM,
+    eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM          = VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM,
     eAttachmentDescription2KHR                                   = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2_KHR,
     eAttachmentDescriptionStencilLayoutKHR                       = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_STENCIL_LAYOUT_KHR,
     eAttachmentReference2KHR                                     = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2_KHR,
@@ -2366,10 +2371,13 @@ namespace VULKAN_HPP_NAMESPACE
     ePrimitiveRestartEnable              = VK_DYNAMIC_STATE_PRIMITIVE_RESTART_ENABLE,
     eViewportWScalingNV                  = VK_DYNAMIC_STATE_VIEWPORT_W_SCALING_NV,
     eDiscardRectangleEXT                 = VK_DYNAMIC_STATE_DISCARD_RECTANGLE_EXT,
+    eDiscardRectangleEnableEXT           = VK_DYNAMIC_STATE_DISCARD_RECTANGLE_ENABLE_EXT,
+    eDiscardRectangleModeEXT             = VK_DYNAMIC_STATE_DISCARD_RECTANGLE_MODE_EXT,
     eSampleLocationsEXT                  = VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT,
     eRayTracingPipelineStackSizeKHR      = VK_DYNAMIC_STATE_RAY_TRACING_PIPELINE_STACK_SIZE_KHR,
     eViewportShadingRatePaletteNV        = VK_DYNAMIC_STATE_VIEWPORT_SHADING_RATE_PALETTE_NV,
     eViewportCoarseSampleOrderNV         = VK_DYNAMIC_STATE_VIEWPORT_COARSE_SAMPLE_ORDER_NV,
+    eExclusiveScissorEnableNV            = VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_ENABLE_NV,
     eExclusiveScissorNV                  = VK_DYNAMIC_STATE_EXCLUSIVE_SCISSOR_NV,
     eFragmentShadingRateKHR              = VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR,
     eLineStippleEXT                      = VK_DYNAMIC_STATE_LINE_STIPPLE_EXT,

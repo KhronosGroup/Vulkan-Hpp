@@ -882,14 +882,39 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     {
       if ( !v.protect.empty() )
       {
+#if !defined(NDEBUG)
+        bool checked = false;
+#endif
         auto extIt = m_extensions.find( v.extension );
         assert( extIt != m_extensions.end() );
         auto platformIt = m_platforms.find( extIt->second.platform );
-        assert( platformIt != m_platforms.end() );
-        checkForError( v.protect == platformIt->second.protect,
-                       v.xmlLine,
-                       "attribute <protect> of enum value <" + v.name + "> is \"" + v.protect + "\" but corresponding extension <" + v.extension +
-                         "> belongs to platform <" + platformIt->first + "> with protection \"" + platformIt->second.protect + "\"" );
+        if ( platformIt != m_platforms.end() )
+        {
+          checkForError( v.protect == platformIt->second.protect,
+                         v.xmlLine,
+                         "attribute <protect> of enum value <" + v.name + "> is \"" + v.protect + "\" but corresponding extension <" + v.extension +
+                           "> belongs to platform <" + platformIt->first + "> with protection \"" + platformIt->second.protect + "\"" );
+#if !defined( NDEBUG )
+          checked = true;
+#endif
+        }
+        for ( auto const & depends : v.depends )
+        {
+          extIt = m_extensions.find( depends );
+          assert( extIt != m_extensions.end() );
+          platformIt = m_platforms.find( extIt->second.platform );
+          if ( platformIt != m_platforms.end() )
+          {
+            checkForError( v.protect == platformIt->second.protect,
+                           v.xmlLine,
+                           "attribute <protect> of enum value <" + v.name + "> is \"" + v.protect + "\" but corresponding extension <" + v.extension +
+                             "> belongs to platform <" + platformIt->first + "> with protection \"" + platformIt->second.protect + "\"" );
+#if !defined( NDEBUG )
+            checked = true;
+#endif
+          }
+        }
+        assert( checked );
       }
     }
   }
@@ -10062,8 +10087,19 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
 
 std::string VulkanHppGenerator::getProtect( EnumValueData const & evd ) const
 {
-  assert( evd.protect.empty() || ( evd.protect == getProtectFromTitle( evd.extension ) ) );
-  return evd.protect.empty() ? getProtectFromTitle( evd.extension ) : evd.protect;
+  if ( evd.protect.empty() )
+  {
+    std::string protect = getProtectFromTitle( evd.extension );
+    for ( auto dependsIt = evd.depends.begin(); protect.empty() && dependsIt != evd.depends.end(); ++dependsIt )
+    {
+      protect = getProtectFromTitle( *dependsIt );
+    }
+    return protect;
+  }
+  else
+  {
+    return evd.protect;
+  }
 }
 
 std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platform ) const
@@ -10718,7 +10754,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
     checkForError( bitpos.empty() ^ value.empty(), line, "invalid set of attributes for enum <" + name + ">" );
-    enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "" );
+    enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), "", {} );
   }
 }
 
@@ -10934,7 +10970,7 @@ void VulkanHppGenerator::readExtensionsExtensionRequire( tinyxml2::XMLElement co
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionIt->first );
+      readRequireEnum( child, extensionIt->first, depends );
     }
     else if ( value == "type" )
     {
@@ -11091,7 +11127,7 @@ void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * elemen
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, "" );
+      readRequireEnum( child, "", {} );
     }
     else if ( value == "type" )
     {
@@ -11594,7 +11630,7 @@ void VulkanHppGenerator::readRequireCommandRemove( tinyxml2::XMLElement const * 
   }
 }
 
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extensionName )
+void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & extensionName, std::vector<std::string> const & depends )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11733,7 +11769,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
       checkForError( bitpos.empty() + offset.empty() + value.empty() == 2,
                      line,
                      "exactly one out of bitpos = <" + bitpos + ">, offset = <" + offset + ">, and value = <" + value + "> are supposed to be empty" );
-      enumIt->second.addEnumValue( element->GetLineNum(), name, protect, !bitpos.empty(), extensionName );
+      enumIt->second.addEnumValue( element->GetLineNum(), name, protect, !bitpos.empty(), extensionName, depends );
     }
     else if ( value.empty() )
     {
@@ -13072,12 +13108,12 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(
-  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension )
+  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension, std::vector<std::string> const & depends )
 {
   auto valueIt = std::find_if( values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
   if ( valueIt == values.end() )
   {
-    values.emplace_back( line, valueName, protect, extension, bitpos );
+    values.emplace_back( line, valueName, protect, extension, depends, bitpos );
   }
 }
 

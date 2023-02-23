@@ -8098,10 +8098,8 @@ std::string VulkanHppGenerator::generateRAIIHandleVectorSizeCheck( std::string c
     size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params, skippedParams );
     std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
 
-    if ( cvm.second.size() == 1 )
+    if ( ( cvm.second.size() == 1 ) && ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) ) )
     {
-      assert( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) );
-
       std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
       assert( lenParts.size() == 2 );
       std::string sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
@@ -9972,10 +9970,8 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
     size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params, skippedParams );
     std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
 
-    if ( cvm.second.size() == 1 )
+    if ( ( cvm.second.size() == 1 ) && ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) ) )
     {
-      assert( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) );
-
       std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
       assert( lenParts.size() == 2 );
       std::string sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];

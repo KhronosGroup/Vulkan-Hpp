@@ -1204,6 +1204,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceDiagnosticsConfigFeaturesNV;
   struct DeviceDiagnosticsConfigCreateInfoNV;
 
+  //=== VK_NV_low_latency ===
+  struct QueryLowLatencySupportNV;
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
   //=== VK_EXT_metal_objects ===
   struct ExportMetalObjectCreateInfoEXT;

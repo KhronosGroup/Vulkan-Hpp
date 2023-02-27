@@ -5297,6 +5297,24 @@ namespace VULKAN_HPP_NAMESPACE
     eUpdate = VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR
   };
 
+  //=== VK_KHR_ray_tracing_pipeline ===
+
+  enum class RayTracingShaderGroupTypeKHR
+  {
+    eGeneral            = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR,
+    eTrianglesHitGroup  = VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR,
+    eProceduralHitGroup = VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR
+  };
+  using RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
+
+  enum class ShaderGroupShaderKHR
+  {
+    eGeneral      = VK_SHADER_GROUP_SHADER_GENERAL_KHR,
+    eClosestHit   = VK_SHADER_GROUP_SHADER_CLOSEST_HIT_KHR,
+    eAnyHit       = VK_SHADER_GROUP_SHADER_ANY_HIT_KHR,
+    eIntersection = VK_SHADER_GROUP_SHADER_INTERSECTION_KHR
+  };
+
   //=== VK_NV_framebuffer_mixed_samples ===
 
   enum class CoverageModulationModeNV
@@ -6112,24 +6130,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR DirectFBSurfaceCreateFlagsEXT allFlags  = {};
   };
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
-
-  //=== VK_KHR_ray_tracing_pipeline ===
-
-  enum class RayTracingShaderGroupTypeKHR
-  {
-    eGeneral            = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR,
-    eTrianglesHitGroup  = VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR,
-    eProceduralHitGroup = VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR
-  };
-  using RayTracingShaderGroupTypeNV = RayTracingShaderGroupTypeKHR;
-
-  enum class ShaderGroupShaderKHR
-  {
-    eGeneral      = VK_SHADER_GROUP_SHADER_GENERAL_KHR,
-    eClosestHit   = VK_SHADER_GROUP_SHADER_CLOSEST_HIT_KHR,
-    eAnyHit       = VK_SHADER_GROUP_SHADER_ANY_HIT_KHR,
-    eIntersection = VK_SHADER_GROUP_SHADER_INTERSECTION_KHR
-  };
 
   //=== VK_EXT_device_address_binding_report ===
 

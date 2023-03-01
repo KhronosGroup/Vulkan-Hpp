@@ -559,7 +559,7 @@ void VulkanHppGenerator::addCommandsToHandle( std::vector<RequireData> const & r
   }
 }
 
-void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredIn )
+void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy )
 {
   for ( auto & require : requireData )
   {
@@ -588,7 +588,7 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
           m_enums.insert( std::make_pair( flagBits, EnumData{ .isBitmask = true, .xmlLine = 0 } ) );
 
           assert( m_types.find( flagBits ) == m_types.end() );
-          m_types.insert( std::make_pair( flagBits, TypeData{ .category = TypeCategory::Bitmask, .xmlLine = 0, .requiredIn = { requiredIn } } ) );
+          m_types.insert( std::make_pair( flagBits, TypeData{ .category = TypeCategory::Bitmask, .xmlLine = 0, .requiredBy = { requiredBy } } ) );
         }
         else
         {
@@ -770,7 +770,7 @@ void VulkanHppGenerator::checkBitmaskCorrectness() const
     // I think, it's not forbidden to not reference a bitmask, but it would probably be not intended?
     auto typeIt = m_types.find( bitmask.first );
     assert( typeIt != m_types.end() );
-    checkForError( !typeIt->second.requiredIn.empty(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> not required in any feature or extension" );
+    checkForError( !typeIt->second.requiredBy.empty(), bitmask.second.xmlLine, "bitmask <" + bitmask.first + "> not required in any feature or extension" );
 
     // check that the requirement is an enum
     if ( !bitmask.second.require.empty() )
@@ -802,7 +802,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   {
     // check that a command is referenced somewhere
     // I think, it's not forbidden to not reference a function, but it would probably be not intended?
-    checkForError( !command.second.requiredIn.empty(), command.second.xmlLine, "command <" + command.first + "> not required in any feature or extension" );
+    checkForError( !command.second.requiredBy.empty(), command.second.xmlLine, "command <" + command.first + "> not required in any feature or extension" );
 
     // check for unknown error or succes codes
     for ( auto const & ec : command.second.errorCodes )
@@ -818,9 +818,9 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     if ( ( command.second.returnType == "VkResult" ) && command.second.successCodes.empty() )
     {
       // emit an error if this function is required in at least valid feature or extension
-      // disabled or not supported features/extensions are still listed in requiredIn, but not in m_features/m_extensions
+      // disabled or not supported features/extensions are still listed in requiredBy, but not in m_features/m_extensions
       bool functionUsed = false;
-      for ( auto const & require : command.second.requiredIn )
+      for ( auto const & require : command.second.requiredBy )
       {
         functionUsed |= isFeature( require ) || isExtension( require );
       }
@@ -873,7 +873,7 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     // some bitmasks are never required, so make this a warning only
     auto typeIt = m_types.find( e.first );
     assert( typeIt != m_types.end() );
-    checkForWarning( !typeIt->second.requiredIn.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
+    checkForWarning( !typeIt->second.requiredBy.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
 
     // check that the aliasNames are known enum values or known aliases
     for ( auto const & alias : e.second.aliases )
@@ -884,47 +884,6 @@ void VulkanHppGenerator::checkEnumCorrectness() const
           ( e.second.aliases.find( alias.second.name ) != e.second.aliases.end() ),
         alias.second.xmlLine,
         "enum <" + alias.first + "> uses unknown alias <" + alias.second.name + ">" );
-    }
-
-    // check that any protection fits to the corresponding extension
-    for ( auto const & v : e.second.values )
-    {
-      if ( !v.protect.empty() )
-      {
-#if !defined( NDEBUG )
-        bool checked = false;
-#endif
-        auto extensionIt = findExtension( v.extension );
-        assert( extensionIt != m_extensions.end() );
-        auto platformIt = m_platforms.find( extensionIt->platform );
-        if ( platformIt != m_platforms.end() )
-        {
-          checkForError( v.protect == platformIt->second.protect,
-                         v.xmlLine,
-                         "attribute <protect> of enum value <" + v.name + "> is \"" + v.protect + "\" but corresponding extension <" + v.extension +
-                           "> belongs to platform <" + platformIt->first + "> with protection \"" + platformIt->second.protect + "\"" );
-#if !defined( NDEBUG )
-          checked = true;
-#endif
-        }
-        for ( auto const & depends : v.depends )
-        {
-          extensionIt = findExtension( depends );
-          assert( extensionIt != m_extensions.end() );
-          platformIt = m_platforms.find( extensionIt->platform );
-          if ( platformIt != m_platforms.end() )
-          {
-            checkForError( v.protect == platformIt->second.protect,
-                           v.xmlLine,
-                           "attribute <protect> of enum value <" + v.name + "> is \"" + v.protect + "\" but corresponding extension <" + v.extension +
-                             "> belongs to platform <" + platformIt->first + "> with protection \"" + platformIt->second.protect + "\"" );
-#if !defined( NDEBUG )
-            checked = true;
-#endif
-          }
-        }
-        assert( checked );
-      }
     }
   }
 
@@ -978,7 +937,7 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
               {
                 auto requireTypeIt = m_types.find( bitmaskIt->second.require );
                 assert( requireTypeIt != m_types.end() );
-                checkForError( !requireTypeIt->second.requiredIn.empty(),
+                checkForError( !requireTypeIt->second.requiredBy.empty(),
                                bitmaskIt->second.xmlLine,
                                "bitmask <" + bitmaskIt->first + "> requires <" + bitmaskIt->second.require +
                                  "> which is not required by any feature or extension!" );
@@ -1160,15 +1119,13 @@ void VulkanHppGenerator::checkStructCorrectness() const
 {
   for ( auto const & structAlias : m_structsAliases )
   {
-    checkForError( ( m_structs.find( structAlias.second.name ) != m_structs.end() ) ||
-                     ( m_removedStructs.find( structAlias.second.name ) != m_removedStructs.end() ),
-                   structAlias.second.xmlLine,
-                   "unknown struct alias <" + structAlias.second.name + ">" );
+    checkForError(
+      m_structs.find( structAlias.second.name ) != m_structs.end(), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.name + ">" );
   }
 
   for ( auto const & structAliasInverse : m_structsAliasesInverse )
   {
-    if ( ( m_structs.find( structAliasInverse.first ) == m_structs.end() ) && ( m_removedStructs.find( structAliasInverse.first ) == m_removedStructs.end() ) )
+    if ( m_structs.find( structAliasInverse.first ) == m_structs.end() )
     {
       assert( !structAliasInverse.second.empty() );
       auto aliasIt = m_structsAliases.find( *structAliasInverse.second.begin() );
@@ -1185,7 +1142,7 @@ void VulkanHppGenerator::checkStructCorrectness() const
     auto typeIt = m_types.find( structure.first );
     assert( typeIt != m_types.end() );
     checkForError(
-      !typeIt->second.requiredIn.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any feature or extension" );
+      !typeIt->second.requiredBy.empty(), structure.second.xmlLine, "structure <" + structure.first + "> not required by any feature or extension" );
 
     // check for existence of all structs that are extended by this struct
     for ( auto const & extend : structure.second.structExtends )
@@ -1231,7 +1188,7 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
     {
       auto memberTypeIt = m_types.find( member.type.type );
       assert( memberTypeIt != m_types.end() );
-      checkForError( !memberTypeIt->second.requiredIn.empty(),
+      checkForError( !memberTypeIt->second.requiredBy.empty(),
                      member.xmlLine,
                      "struct member type <" + member.type.type + "> used in struct <" + structureName + "> is never required for any feature or extension" );
     }
@@ -1811,7 +1768,7 @@ std::map<std::string, VulkanHppGenerator::AliasData>::const_iterator VulkanHppGe
   return it;
 }
 
-std::string VulkanHppGenerator::findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const
+std::string VulkanHppGenerator::findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const
 {
   std::string baseName = aliasName;
   auto        aliasIt  = aliases.find( baseName );
@@ -2167,14 +2124,11 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      // determine the values protect, if any
-      std::string valueProtect = getProtect( value );
-
       // if the value's protect differs from the surrounding protect, generate protection code
       std::string enter, leave;
-      if ( !valueProtect.empty() && ( valueProtect != surroundingProtect ) )
+      if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
       {
-        tie( enter, leave ) = generateProtection( valueProtect );
+        tie( enter, leave ) = generateProtection( value.protect );
       }
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
       allFlags +=
@@ -2285,7 +2239,7 @@ ${toStringChecks}
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      auto [enter, leave]   = generateProtection( getProtect( value ) );
+      auto [enter, leave]   = generateProtection( value.protect );
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
       if ( value.singleBit )
       {
@@ -4990,14 +4944,13 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   std::map<std::string, std::string> valueToNameMap;
   for ( auto const & value : enumData.second.values )
   {
-    // determine the values protect, if any
-    std::string valueProtect = getProtect( value );
+    assert( value.required );
 
     // if the value's protect differs from the surrounding protect, generate protection code
     std::string enter, leave;
-    if ( !valueProtect.empty() && ( valueProtect != surroundingProtect ) )
+    if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
     {
-      tie( enter, leave ) = generateProtection( valueProtect );
+      tie( enter, leave ) = generateProtection( value.protect );
     }
     if ( previousEnter != enter )
     {
@@ -5023,25 +4976,6 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     auto valueToNameIt = valueToNameMap.find( aliasName );
     if ( valueToNameIt == valueToNameMap.end() )
     {
-#if !defined( NDEBUG )
-      auto enumIt = std::find_if(
-        enumData.second.values.begin(), enumData.second.values.end(), [&alias]( EnumValueData const & evd ) { return alias.second.name == evd.name; } );
-      if ( enumIt == enumData.second.values.end() )
-      {
-        auto aliasIt = enumData.second.aliases.find( alias.second.name );
-        assert( aliasIt != enumData.second.aliases.end() );
-        auto nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
-        while ( nextAliasIt != enumData.second.aliases.end() )
-        {
-          aliasIt     = nextAliasIt;
-          nextAliasIt = enumData.second.aliases.find( aliasIt->second.name );
-        }
-        enumIt = std::find_if(
-          enumData.second.values.begin(), enumData.second.values.end(), [&aliasIt]( EnumValueData const & evd ) { return aliasIt->second.name == evd.name; } );
-      }
-      assert( enumIt != enumData.second.values.end() );
-      assert( enumIt->extension.empty() || generateProtection( getProtectFromTitle( enumIt->extension ) ).first.empty() );
-#endif
       enumValues += "    " + aliasName + " = " + alias.first + ",\n";
 
       // map the aliasName to the name of the base
@@ -5235,7 +5169,7 @@ std::string VulkanHppGenerator::generateEnumToString( std::pair<std::string, Enu
     std::string cases, previousEnter, previousLeave;
     for ( auto const & value : enumData.second.values )
     {
-      auto [enter, leave] = generateProtection( getProtect( value ) );
+      auto [enter, leave] = generateProtection( value.protect );
       if ( previousEnter != enter )
       {
         cases += previousLeave + enter;
@@ -5728,13 +5662,13 @@ ${widthDivisorCases}
                            { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 
-std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredIn ) const
+std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const
 {
   std::string functionPointerCheck;
-  if ( !requiredIn.empty() )
+  if ( !requiredBy.empty() )
   {
-    std::string message = "Function <" + function + "> requires <" + *requiredIn.begin() + ">";
-    for ( auto it = std::next( requiredIn.begin() ); it != requiredIn.end(); ++it )
+    std::string message = "Function <" + function + "> requires <" + *requiredBy.begin() + ">";
+    for ( auto it = std::next( requiredBy.begin() ); it != requiredBy.end(); ++it )
     {
       message += " or <" + *it + ">";
     }
@@ -6806,7 +6740,7 @@ ${vectorSizeCheck}
                              { "dataDeclarations", dataDeclarations },
                              { "dataPreparation", dataPreparation },
                              { "dataSizeChecks", dataSizeChecks },
-                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredIn ) },
+                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy ) },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
@@ -6979,7 +6913,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
     // there is a non-const parameter with handle type : the to-be-constructed handle
 
     // check for additional enter/leave guards for the constructors
-    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitles( constructorIt->second.requiredIn ) );
+    auto [constructorEnter, constructorLeave] = generateProtection( getProtectFromTitles( constructorIt->second.requiredBy ) );
     if ( constructorEnter == enter )
     {
       constructorEnter.clear();
@@ -8300,7 +8234,7 @@ ${leave})";
   {
     if ( value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]   = generateProtection( getProtect( value ) );
+      auto [enter, leave]   = generateProtection( value.protect );
       std::string valueName = generateEnumValueName( enumIt->first, value.name, false );
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( valueName, "eError" ) + "Error" },
@@ -9745,7 +9679,7 @@ std::string VulkanHppGenerator::generateThrowResultException() const
   {
     if ( value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]   = generateProtection( getProtect( value ) );
+      auto [enter, leave]   = generateProtection( value.protect );
       std::string valueName = generateEnumValueName( enumIt->first, value.name, false );
       cases += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) + "Error( message );\n" + leave;
     }
@@ -10206,23 +10140,6 @@ std::pair<std::string, std::string> VulkanHppGenerator::getPoolTypeAndName( std:
   return std::make_pair( memberIt->type.type, memberIt->name );
 }
 
-std::string VulkanHppGenerator::getProtect( EnumValueData const & evd ) const
-{
-  if ( evd.protect.empty() )
-  {
-    std::string protect = getProtectFromTitle( evd.extension );
-    for ( auto dependsIt = evd.depends.begin(); protect.empty() && dependsIt != evd.depends.end(); ++dependsIt )
-    {
-      protect = getProtectFromTitle( *dependsIt );
-    }
-    return protect;
-  }
-  else
-  {
-    return evd.protect;
-  }
-}
-
 std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & platform ) const
 {
   auto platformIt = m_platforms.find( platform );
@@ -10263,7 +10180,7 @@ std::string VulkanHppGenerator::getProtectFromType( std::string const & type ) c
 {
   auto typeIt = m_types.find( type );
   assert( typeIt != m_types.end() );
-  return getProtectFromTitles( typeIt->second.requiredIn );
+  return getProtectFromTitles( typeIt->second.requiredBy );
 }
 
 std::string VulkanHppGenerator::getVectorSize( std::vector<ParamData> const &            params,
@@ -10476,14 +10393,14 @@ bool VulkanHppGenerator::isTypeRequired( std::string const & type ) const
 {
   auto typeIt = m_types.find( type );
   assert( typeIt != m_types.end() );
-  return !typeIt->second.requiredIn.empty();
+  return !typeIt->second.requiredBy.empty();
 }
 
 bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
 {
   auto typeIt = m_types.find( type );
   assert( typeIt != m_types.end() );
-  for ( auto const & require : typeIt->second.requiredIn )
+  for ( auto const & require : typeIt->second.requiredBy )
   {
     auto featureIt = findFeature( require );
     if ( featureIt != m_features.end() )
@@ -10926,7 +10843,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
     checkForError( bitpos.empty() ^ value.empty(), line, "both or none of \"bitpos\" and \"value\" are set for enum <" + name + "> which is invalid" );
-    enumIt->second.addEnumValue( line, name, "", !bitpos.empty(), "", {} );
+    enumIt->second.addEnumValue( line, name, "", !bitpos.empty(), true );
   }
 }
 
@@ -10981,7 +10898,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionData.name, extensionSupported && requireSupported, requireData.depends );
+      readRequireEnum( child, extensionData.name, extensionData.platform, extensionSupported && requireSupported );
     }
     else if ( value == "type" )
     {
@@ -11108,32 +11025,6 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   }
 }
 
-void VulkanHppGenerator::readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} }, { "extension", {} }, { "feature", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
-
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "api" )
-    {
-      // we're already in the remove part, so it doesn't matter that this is marked as "vulkansc" again!
-    }
-    if ( value == "command" )
-    {
-      readRequireCommandRemove( child );
-    }
-    else if ( value == "type" )
-    {
-      readRequireTypeRemove( child );
-    }
-  }
-}
-
 void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
@@ -11232,7 +11123,7 @@ VulkanHppGenerator::RequireData
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, featureName, featureSupported, {} );
+      readRequireEnum( child, featureName, "", featureSupported );
     }
     else if ( value == "type" )
     {
@@ -11611,7 +11502,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   }
 }
 
-std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredIn )
+std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredBy )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11627,39 +11518,12 @@ std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const *
     commandIt = m_commands.find( aliasIt->second.name );
     assert( commandIt != m_commands.end() );
   }
-  commandIt->second.requiredIn.insert( requiredIn );
+  commandIt->second.requiredBy.insert( requiredBy );
 
   return name;
 }
 
-void VulkanHppGenerator::readRequireCommandRemove( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-
-  // some commands might be skipped by multiple extensions!
-  auto commandIt = m_commands.find( name );
-  if ( commandIt != m_commands.end() )
-  {
-    checkForError( m_removedCommands.insert( name ).second, line, "to be skipped command <" + name + "> is already marked as skipped" );
-    m_commands.erase( commandIt );
-  }
-  else
-  {
-    checkForError( m_removedCommands.find( name ) != m_removedCommands.end(),
-                   line,
-                   "to be skipped command <" + name + "> is neither listed as command nor as skipped command" );
-  }
-}
-
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     element,
-                                          std::string const &              requiredIn,
-                                          bool                             supported,
-                                          std::vector<std::string> const & depends )
+void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11712,6 +11576,11 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
         value = attribute.second;
       }
     }
+    assert( protect.empty() || ( protect == getProtectFromPlatform( platform ) ) );
+    if ( protect.empty() )
+    {
+      protect = getProtectFromPlatform( platform );
+    }
 
     if ( extends.empty() )
     {
@@ -11719,13 +11588,13 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
       {
         auto typeIt = m_types.find( name );
         checkForError( typeIt != m_types.end(), line, "unknown required enum <" + name + ">" );
-        typeIt->second.requiredIn.insert( requiredIn );
+        typeIt->second.requiredBy.insert( requiredBy );
       }
       else
       {
         if ( api.empty() || ( api == "vulkan" ) )
         {
-          checkForError( m_types.insert( { name, { TypeCategory::Constant, line, { requiredIn } } } ).second,
+          checkForError( m_types.insert( { name, { TypeCategory::Constant, line, { requiredBy } } } ).second,
                          line,
                          "required enum <" + name + "> specified by value <" + value + "> is already specified" );
         }
@@ -11739,13 +11608,13 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
       auto typeIt = m_types.find( extends );
       checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
       checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
-      typeIt->second.requiredIn.insert( requiredIn );
+      typeIt->second.requiredBy.insert( requiredBy );
       auto enumIt = m_enums.find( extends );
       assert( enumIt != m_enums.end() );
 
       if ( ( api.empty() || ( api == "vulkan" ) ) && supported )
       {
-        enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), requiredIn, depends );
+        enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), supported );
       }
     }
   }
@@ -11780,7 +11649,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
     if ( extends.empty() )
     {
       checkForError(
-        m_types.insert( { name, { TypeCategory::Constant, line, { requiredIn } } } ).second, line, "required enum <" + name + "> already specified" );
+        m_types.insert( { name, { TypeCategory::Constant, line, { requiredBy } } } ).second, line, "required enum <" + name + "> already specified" );
       assert( m_constantsAliases.find( name ) == m_constantsAliases.end() );
       m_constantsAliases[name] = { alias, line };
     }
@@ -11789,7 +11658,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
       auto typeIt = m_types.find( extends );
       checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
       checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
-      typeIt->second.requiredIn.insert( requiredIn );
+      typeIt->second.requiredBy.insert( requiredBy );
 
       auto enumIt = m_enums.find( extends );
       assert( enumIt != m_enums.end() );
@@ -11801,7 +11670,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const *     eleme
   }
 }
 
-std::string VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredIn )
+std::string VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredBy )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -11811,79 +11680,9 @@ std::string VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * el
   std::string name   = attributes.find( "name" )->second;
   auto        typeIt = m_types.find( name );
   checkForError( typeIt != m_types.end(), line, "unknown required type <" + name + ">" );
-  typeIt->second.requiredIn.insert( requiredIn );
+  typeIt->second.requiredBy.insert( requiredBy );
 
   return name;
-}
-
-void VulkanHppGenerator::readRequireTypeRemove( tinyxml2::XMLElement const * element )
-{
-  int                                line       = element->GetLineNum();
-  std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name = attributes.find( "name" )->second;
-
-  // some types are not really types, but defines
-  auto typeIt = m_types.find( name );
-  if ( typeIt != m_types.end() )
-  {
-    assert( typeIt->second.requiredIn.empty() );
-    assert( m_removedTypes.find( name ) == m_removedTypes.end() );
-
-    switch ( typeIt->second.category )
-    {
-      case TypeCategory::Bitmask:
-        assert( m_bitmasks.find( name ) != m_bitmasks.end() );
-        m_bitmasks.erase( name );
-        break;
-      case TypeCategory::Enum:
-        {
-          auto enumIt = m_enums.find( name );
-          assert( enumIt != m_enums.end() );
-          assert( m_removedEnums.find( name ) == m_removedEnums.end() );
-          m_removedEnums[name] = enumIt->second;
-          m_enums.erase( enumIt );
-        }
-        break;
-      case TypeCategory::FuncPointer:
-        assert( m_funcPointers.find( name ) != m_funcPointers.end() );
-        m_funcPointers.erase( name );
-        break;
-      case TypeCategory::Handle:
-        assert( m_handles.find( name ) != m_handles.end() );
-        m_handles.erase( name );
-        break;
-      case TypeCategory::Struct:
-        {
-          auto structIt = m_structs.find( name );
-          if ( structIt == m_structs.end() )
-          {
-            auto aliasIt = m_structsAliases.find( name );
-            if ( aliasIt != m_structsAliases.end() )
-            {
-              name     = aliasIt->second.name;
-              structIt = m_structs.find( name );
-            }
-          }
-          if ( structIt != m_structs.end() )
-          {
-            m_removedStructs.insert( name );
-            m_structs.erase( structIt );
-          }
-          else
-          {
-            checkForError( m_removedStructs.find( name ) != m_removedStructs.end(), line, "tried to remove unknown struct <" + name + ">" );
-          }
-        }
-        break;
-      default: assert( false ); break;
-    }
-
-    m_removedTypes[name] = typeIt->second;
-    m_types.erase( typeIt );
-  }
 }
 
 void VulkanHppGenerator::readSPIRVCapability( tinyxml2::XMLElement const * element )
@@ -12979,16 +12778,20 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
   auto aliasIt = aliases.find( name );
   checkForError(
     ( aliasIt == aliases.end() ) || ( aliasIt->second.name == aliasName ), line, "enum alias <" + name + "> already listed for a different enum value" );
-  aliases.insert( std::make_pair( name, EnumAliasData( aliasName, line ) ) );
+  aliases[name] = { aliasName, line };
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(
-  int line, std::string const & valueName, std::string const & protect, bool bitpos, std::string const & extension, std::vector<std::string> const & depends )
+  int line, std::string const & valueName, std::string const & protect, bool singleBit, bool required )
 {
   auto valueIt = std::find_if( values.begin(), values.end(), [&valueName]( EnumValueData const & evd ) { return evd.name == valueName; } );
   if ( valueIt == values.end() )
   {
-    values.emplace_back( line, valueName, protect, extension, depends, bitpos );
+    values.emplace_back( EnumValueData{ valueName, protect, required, singleBit, line } );
+  }
+  else
+  {
+    assert( ( valueIt->protect == protect ) && ( valueIt->required == required ) && ( valueIt->singleBit == singleBit ) );
   }
 }
 

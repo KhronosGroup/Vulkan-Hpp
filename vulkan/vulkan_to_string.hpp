@@ -7301,6 +7301,31 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  //=== VK_KHR_ray_tracing_pipeline ===
+
+  VULKAN_HPP_INLINE std::string to_string( RayTracingShaderGroupTypeKHR value )
+  {
+    switch ( value )
+    {
+      case RayTracingShaderGroupTypeKHR::eGeneral: return "General";
+      case RayTracingShaderGroupTypeKHR::eTrianglesHitGroup: return "TrianglesHitGroup";
+      case RayTracingShaderGroupTypeKHR::eProceduralHitGroup: return "ProceduralHitGroup";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderGroupShaderKHR value )
+  {
+    switch ( value )
+    {
+      case ShaderGroupShaderKHR::eGeneral: return "General";
+      case ShaderGroupShaderKHR::eClosestHit: return "ClosestHit";
+      case ShaderGroupShaderKHR::eAnyHit: return "AnyHit";
+      case ShaderGroupShaderKHR::eIntersection: return "Intersection";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   //=== VK_NV_framebuffer_mixed_samples ===
 
   VULKAN_HPP_INLINE std::string to_string( CoverageModulationModeNV value )
@@ -8025,31 +8050,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
-
-  //=== VK_KHR_ray_tracing_pipeline ===
-
-  VULKAN_HPP_INLINE std::string to_string( RayTracingShaderGroupTypeKHR value )
-  {
-    switch ( value )
-    {
-      case RayTracingShaderGroupTypeKHR::eGeneral: return "General";
-      case RayTracingShaderGroupTypeKHR::eTrianglesHitGroup: return "TrianglesHitGroup";
-      case RayTracingShaderGroupTypeKHR::eProceduralHitGroup: return "ProceduralHitGroup";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( ShaderGroupShaderKHR value )
-  {
-    switch ( value )
-    {
-      case ShaderGroupShaderKHR::eGeneral: return "General";
-      case ShaderGroupShaderKHR::eClosestHit: return "ClosestHit";
-      case ShaderGroupShaderKHR::eAnyHit: return "AnyHit";
-      case ShaderGroupShaderKHR::eIntersection: return "Intersection";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
 
   //=== VK_EXT_device_address_binding_report ===
 

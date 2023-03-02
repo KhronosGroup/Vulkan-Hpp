@@ -176,7 +176,7 @@ private:
     std::vector<std::string> errorCodes;
     std::string              handle;
     std::vector<ParamData>   params;
-    std::set<std::string>    requiredIn;
+    std::set<std::string>    requiredBy;
     std::string              returnType;
     std::vector<std::string> successCodes;
     int                      xmlLine;
@@ -196,49 +196,25 @@ private:
     int         xmlLine    = 0;
   };
 
-  struct EnumAliasData
-  {
-    EnumAliasData( std::string const & name_, int line ) : name( name_ ), xmlLine( line ) {}
-
-    std::string name;
-    int         xmlLine;
-  };
-
   struct EnumValueData
   {
-    EnumValueData( int                              line,
-                   std::string const &              name_,
-                   std::string const &              protect_,
-                   std::string const &              extension_,
-                   std::vector<std::string> const & depends_,
-                   bool                             singleBit_ )
-      : name( name_ ), depends( depends_ ), extension( extension_ ), protect( protect_ ), singleBit( singleBit_ ), xmlLine( line )
-    {
-    }
-
-    std::string              name;
-    std::vector<std::string> depends;
-    std::string              extension;
-    std::string              protect;
-    bool                     singleBit;
-    int                      xmlLine;
+    std::string name      = {};
+    std::string protect   = {};
+    bool        required  = false;
+    bool        singleBit = false;
+    int         xmlLine   = 0;
   };
 
   struct EnumData
   {
     void addEnumAlias( int line, std::string const & name, std::string const & alias );
-    void addEnumValue( int                              line,
-                       std::string const &              valueName,
-                       std::string const &              protect,
-                       bool                             bitpos,
-                       std::string const &              extension,
-                       std::vector<std::string> const & depends );
+    void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool singleBit, bool required );
 
-    std::map<std::string, EnumAliasData> aliases   = {};  // aliases for the values
-    std::string                          bitwidth  = {};
-    bool                                 isBitmask = false;
-    std::vector<EnumValueData>           values    = {};
-    int                                  xmlLine   = 0;
+    std::map<std::string, AliasData> aliases   = {};  // aliases for the values
+    std::string                      bitwidth  = {};
+    bool                             isBitmask = false;
+    std::vector<EnumValueData>       values    = {};
+    int                              xmlLine   = 0;
   };
 
   struct RemoveData
@@ -430,7 +406,7 @@ private:
   {
     TypeCategory          category   = TypeCategory::Unknown;
     int                   xmlLine    = 0;
-    std::set<std::string> requiredIn = {};
+    std::set<std::string> requiredBy = {};
   };
 
   struct VectorParamData
@@ -442,7 +418,7 @@ private:
 private:
   void        addCommand( std::string const & name, CommandData & commandData );
   void        addCommandsToHandle( std::vector<RequireData> const & requireData );
-  void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredIn );
+  void        addMissingFlagBits( std::vector<RequireData> & requireData, std::string const & requiredBy );
   std::string addTitleAndProtection( std::string const & title, std::string const & strIf, std::string const & strElse = {} ) const;
   bool        allVectorSizesSupported( std::vector<ParamData> const & params, std::map<size_t, VectorParamData> const & vectorParams ) const;
   void        appendDispatchLoaderDynamicCommands( std::vector<RequireData> const & requireData,
@@ -508,7 +484,7 @@ private:
   std::set<size_t>                                 determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
-  std::string                                      findBaseName( std::string aliasName, std::map<std::string, EnumAliasData> const & aliases ) const;
+  std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
   std::vector<ExtensionData>::const_iterator       findExtension( std::string const & name ) const;
   std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
   std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
@@ -732,7 +708,7 @@ private:
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
   std::string                         generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateFormatTraits() const;
-  std::string                         generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredIn ) const;
+  std::string                         generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;
   std::string                         generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string                         generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
@@ -926,7 +902,6 @@ private:
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
-  std::string                         getProtect( EnumValueData const & evd ) const;
   std::string                         getProtectFromPlatform( std::string const & platform ) const;
   std::string                         getProtectFromTitle( std::string const & title ) const;
   std::string                         getProtectFromTitles( std::set<std::string> const & titles ) const;
@@ -965,7 +940,6 @@ private:
   void                          readExtension( tinyxml2::XMLElement const * element );
   void                          readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
   void                          readExtensions( tinyxml2::XMLElement const * element );
-  void                          readExtensionsExtensionRequireRemove( tinyxml2::XMLElement const * element );
   void                          readFeature( tinyxml2::XMLElement const * element );
   RemoveData                    readFeatureRemove( tinyxml2::XMLElement const * element );
   RequireData                   readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & featureName, bool featureSupported );
@@ -979,11 +953,9 @@ private:
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
-  std::string                   readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredIn );
-  void                          readRequireCommandRemove( tinyxml2::XMLElement const * element );
-  void        readRequireEnum( tinyxml2::XMLElement const * element, std::string const & requiredIn, bool supported, std::vector<std::string> const & depends );
-  std::string readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredIn );
-  void        readRequireTypeRemove( tinyxml2::XMLElement const * element );
+  std::string                   readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredBy );
+  void        readRequireEnum( tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported );
+  std::string readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredBy );
   void        readSPIRVCapability( tinyxml2::XMLElement const * element );
   void        readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
   void        readSPIRVCapabilities( tinyxml2::XMLElement const * element );
@@ -1040,11 +1012,6 @@ private:
   std::map<std::string, IncludeData>           m_includes;
   std::map<std::string, PlatformData>          m_platforms;
   std::set<std::string>                        m_RAIISpecialFunctions;
-  std::set<std::string>                        m_removedCommands;
-  std::map<std::string, EnumData>              m_removedEnums;
-  std::set<std::string>                        m_removedFeatures;
-  std::set<std::string>                        m_removedStructs;
-  std::map<std::string, TypeData>              m_removedTypes;
   std::map<std::string, StructureData>         m_structs;
   std::map<std::string, AliasData>             m_structsAliases;
   std::map<std::string, std::set<std::string>> m_structsAliasesInverse;

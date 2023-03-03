@@ -198,6 +198,7 @@ private:
 
   struct EnumValueData
   {
+    std::string alias     = {};
     std::string name      = {};
     std::string protect   = {};
     bool        required  = false;
@@ -207,14 +208,13 @@ private:
 
   struct EnumData
   {
-    void addEnumAlias( int line, std::string const & name, std::string const & alias );
+    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool required );
     void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool singleBit, bool required );
 
-    std::map<std::string, AliasData> aliases   = {};  // aliases for the values
-    std::string                      bitwidth  = {};
-    bool                             isBitmask = false;
-    std::vector<EnumValueData>       values    = {};
-    int                              xmlLine   = 0;
+    std::string                bitwidth  = {};
+    bool                       isBitmask = false;
+    std::vector<EnumValueData> values    = {};
+    int                        xmlLine   = 0;
   };
 
   struct RemoveData

@@ -4940,76 +4940,79 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     bitmask  = generateBitmask( bitmaskIt, surroundingProtect );
   }
 
-  auto                               aliasEnumIt = findAlias( enumData.first, m_enumsAliases );
-  std::string                        enumValues, previousEnter, previousLeave;
+  auto        aliasEnumIt = findAlias( enumData.first, m_enumsAliases );
+  std::string enumValues, previousEnter, previousLeave;
+#if !defined( NDEBUG )
   std::map<std::string, std::string> valueToNameMap;
+#else
+  std::set<std::string> valueSet;
+#endif
   for ( auto const & value : enumData.second.values )
   {
     assert( value.required );
-    if ( value.alias.empty() )
-    {
-      std::string valueName     = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask );
-      auto        valueToNameIt = valueToNameMap.find( value.name );
-      assert( ( valueToNameIt == valueToNameMap.end() ) || ( value.alias == valueToNameIt->second ) );
-      if ( valueToNameIt == valueToNameMap.end() )
-      {
-        // if the value's protect differs from the surrounding protect, generate protection code
-        std::string enter, leave;
-        if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
-        {
-          tie( enter, leave ) = generateProtection( value.protect );
-        }
-        if ( previousEnter != enter )
-        {
-          enumValues += previousLeave + enter;
-        }
-        enumValues += "    " + valueName + " = " + value.name + ",\n";
-
-        valueToNameMap[valueName] = value.name;
-
-        previousEnter = enter;
-        previousLeave = leave;
-      }
-    }
-    else
-    {
-      auto valueIt =
-        std::find_if( enumData.second.values.begin(), enumData.second.values.end(), [&value]( EnumValueData const & evd ) { return evd.name == value.name; } );
-      assert( ( valueIt != enumData.second.values.end() ) && !valueIt->alias.empty() );
-
-      std::string aliasName =
-        generateEnumValueName( ( aliasEnumIt == m_enumsAliases.end() ) ? enumData.first : aliasEnumIt->first, valueIt->name, enumData.second.isBitmask );
-      // make sure to only list alias values that differ from all previous values
-      auto valueToNameIt = valueToNameMap.find( aliasName );
-      if ( valueToNameIt == valueToNameMap.end() )
-      {
-        enumValues += "    " + aliasName + " = " + valueIt->name + ",\n";
-
-        // map the aliasName to the name of the base
-        std::string baseName = valueIt->name;
-        while ( !valueIt->alias.empty() )
-        {
-          baseName = valueIt->alias;
-          valueIt  = std::find_if(
-            enumData.second.values.begin(), enumData.second.values.end(), [&baseName]( EnumValueData const & evd ) { return evd.name == baseName; } );
-        }
-        valueToNameMap[aliasName] = baseName;
-      }
+    std::string valueName = generateEnumValueName(
+      value.alias.empty() || ( aliasEnumIt == m_enumsAliases.end() ) ? enumData.first : aliasEnumIt->first, value.name, enumData.second.isBitmask );
 #if !defined( NDEBUG )
+    auto valueToNameIt = valueToNameMap.find( valueName );
+    if ( valueToNameIt == valueToNameMap.end() )
+#else
+    if ( valueSet.find( valueName ) == valueSet.end() )
+#endif
+    {
+      // if the value's protect differs from the surrounding protect, generate protection code
+      std::string enter, leave;
+      if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
+      {
+        tie( enter, leave ) = generateProtection( value.protect );
+      }
+      if ( previousEnter != enter )
+      {
+        enumValues += previousLeave + enter;
+      }
+      enumValues += "    " + valueName + " = " + value.name + ",\n";
+
+#if !defined( NDEBUG )
+      if ( value.alias.empty() )
+      {
+        valueToNameMap[valueName] = value.name;
+      }
       else
       {
-        // verify, that the identical value represents the identical name
-        std::string baseName = valueIt->name;
+        // map the aliasName to the name of the base
+        std::string baseName = value.name;
+        auto        valueIt  = std::find_if(
+          enumData.second.values.begin(), enumData.second.values.end(), [&baseName]( EnumValueData const & evd ) { return evd.name == baseName; } );
         while ( !valueIt->alias.empty() )
         {
           baseName = valueIt->alias;
           valueIt  = std::find_if(
             enumData.second.values.begin(), enumData.second.values.end(), [&baseName]( EnumValueData const & evd ) { return evd.name == baseName; } );
         }
-        assert( baseName == valueToNameIt->second );
+        valueToNameMap[valueName] = baseName;
       }
+#else
+      valueSet.insert( valueName );
 #endif
+
+      previousEnter = enter;
+      previousLeave = leave;
     }
+#if !defined( NDEBUG )
+    else
+    {
+      // verify, that the identical value represents the identical name
+      auto valueIt =
+        std::find_if( enumData.second.values.begin(), enumData.second.values.end(), [&value]( EnumValueData const & evd ) { return evd.name == value.name; } );
+      std::string baseName = valueIt->name;
+      while ( !valueIt->alias.empty() )
+      {
+        baseName = valueIt->alias;
+        valueIt  = std::find_if(
+          enumData.second.values.begin(), enumData.second.values.end(), [&baseName]( EnumValueData const & evd ) { return evd.name == baseName; } );
+      }
+      assert( baseName == valueToNameIt->second );
+    }
+#endif
   }
   enumValues += previousLeave;
 

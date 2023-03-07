@@ -163,6 +163,7 @@ option (VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF)
 if (VULKAN_HPP_RUN_GENERATOR)
   add_custom_command(
     COMMAND ${PROJECT_NAME}
+    COMMAND ${PROJECT_NAME} -api vulkansc
     OUTPUT "${vulkan_hpp}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     COMMENT "run ${PROJECT_NAME}"

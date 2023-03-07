@@ -336,7 +336,7 @@ ${DispatchLoaderDynamic}
                                       { "Exceptions", readSnippet( "Exceptions.hpp" ) },
                                       { "Flags", readSnippet( "Flags.hpp" ) },
                                       { "headerVersion", m_version },
-                                      { "includes", readSnippet( "includes.hpp" ) },
+                                      { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan", m_api } } ) },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
                                       { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },

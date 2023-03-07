@@ -23,13 +23,13 @@
 #elif 199711L < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 11
 #else
-#  error "vulkan.hpp needs at least c++ standard version 11"
+#  error "vulkansc.hpp needs at least c++ standard version 11"
 #endif
 
 #include <algorithm>
 #include <array>   // ArrayWrapperND
 #include <string>  // std::string
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkansc.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>  // std::string_view
 #endif

@@ -76,18 +76,18 @@ constexpr CommandFlavourFlags operator|( CommandFlavourFlagBits const & lhs, Com
 class VulkanHppGenerator
 {
 public:
-  VulkanHppGenerator( tinyxml2::XMLDocument const & document );
+  VulkanHppGenerator( tinyxml2::XMLDocument const & document, std::string const & api );
 
-  void generateVulkanEnumsHppFile() const;
-  void generateVulkanFormatTraitsHppFile() const;
-  void generateVulkanFuncsHppFile() const;
-  void generateVulkanHandlesHppFile() const;
-  void generateVulkanHashHppFile() const;
-  void generateVulkanHppFile() const;
-  void generateVulkanRAIIHppFile() const;
-  void generateVulkanStaticAssertionsHppFile() const;
-  void generateVulkanStructsHppFile() const;
-  void generateVulkanToStringHppFile() const;
+  void generateEnumsHppFile() const;
+  void generateFormatTraitsHppFile() const;
+  void generateFuncsHppFile() const;
+  void generateHandlesHppFile() const;
+  void generateHashHppFile() const;
+  void generateHppFile() const;
+  void generateRAIIHppFile() const;
+  void generateStaticAssertionsHppFile() const;
+  void generateStructsHppFile() const;
+  void generateToStringHppFile() const;
   void prepareRAIIHandles();
   void prepareVulkanFuncs();
 
@@ -201,20 +201,20 @@ private:
     std::string alias     = {};
     std::string name      = {};
     std::string protect   = {};
-    bool        required  = false;
     bool        singleBit = false;
     int         xmlLine   = 0;
   };
 
   struct EnumData
   {
-    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool required );
-    void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool singleBit, bool required );
+    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
+    void addEnumValue( int line, std::string const & valueName, std::string const & protect, bool singleBit, bool supported );
 
-    std::string                bitwidth  = {};
-    bool                       isBitmask = false;
-    std::vector<EnumValueData> values    = {};
-    int                        xmlLine   = 0;
+    std::string                bitwidth          = {};
+    bool                       isBitmask         = false;
+    std::vector<EnumValueData> unsupportedValues = {};
+    std::vector<EnumValueData> values            = {};
+    int                        xmlLine           = 0;
   };
 
   struct RemoveData
@@ -236,7 +236,7 @@ private:
   {
     std::string              name        = {};
     std::string              number      = {};
-    RemoveData               removeData  = {};
+    std::vector<RemoveData>  removeData  = {};
     std::vector<RequireData> requireData = {};
   };
 
@@ -485,10 +485,10 @@ private:
   void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
   std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
-  std::vector<ExtensionData>::const_iterator       findExtension( std::string const & name ) const;
   std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
   std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
+  std::vector<ExtensionData>::const_iterator       findSupportedExtension( std::string const & name ) const;
   std::string                                      findTag( std::string const & name, std::string const & postfix = "" ) const;
   std::pair<std::string, std::string>              generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                                std::vector<std::string> const &          returnDataTypes,
@@ -669,11 +669,12 @@ private:
                                                 std::vector<std::string> const &          dataTypes,
                                                 std::string const &                       dataType,
                                                 std::string const &                       returnVariable ) const;
-  std::string generateDataDeclarations3Returns( CommandData const &              commandData,
-                                                std::vector<size_t> const &      returnParams,
-                                                CommandFlavourFlags              flavourFlags,
-                                                bool                             raii,
-                                                std::vector<std::string> const & dataTypes ) const;
+  std::string generateDataDeclarations3Returns( CommandData const &                       commandData,
+                                                std::vector<size_t> const &               returnParams,
+                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                CommandFlavourFlags                       flavourFlags,
+                                                bool                                      raii,
+                                                std::vector<std::string> const &          dataTypes ) const;
   std::string generateDataPreparation( CommandData const &                       commandData,
                                        size_t                                    initialSkipCount,
                                        std::vector<size_t> const &               returnParams,
@@ -911,6 +912,10 @@ private:
                                                      size_t                                    returnParam,
                                                      std::string const &                       returnParamType,
                                                      std::set<size_t> const &                  templatedParams ) const;
+  void                                handleRemoval( RemoveData const & removeData );
+  bool                                handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData );
+  void                                handleRemovals();
+  bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
   bool                                hasLen( std::vector<MemberData> const & members, MemberData const & md ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                isDeviceCommand( CommandData const & commandData ) const;
@@ -923,6 +928,9 @@ private:
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
+  bool isSupported( std::set<std::string> const & requiredBy ) const;
+  bool isSupportedExtension( std::string const & name ) const;
+  bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
@@ -991,6 +999,7 @@ private:
   std::string              toString( TypeCategory category );
 
 private:
+  std::string                                  m_api;
   std::map<std::string, BaseTypeData>          m_baseTypes;
   std::map<std::string, BitmaskData>           m_bitmasks;
   std::map<std::string, AliasData>             m_bitmasksAliases;
@@ -1018,6 +1027,8 @@ private:
   std::map<std::string, TagData>               m_tags;
   std::map<std::string, TypeData>              m_types;
   std::string                                  m_typesafeCheck;
+  std::set<std::string>                        m_unsupportedExtensions;
+  std::set<std::string>                        m_unsupportedFeatures;
   std::string                                  m_version;
   std::string                                  m_vulkanLicenseHeader;
 };

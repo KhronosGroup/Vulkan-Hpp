@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <array>   // ArrayWrapperND
 #include <string>  // std::string
-#include <vulkan/vulkansc.h>
+#include <vulkan/vulkan_sc_core.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>  // std::string_view
 #endif

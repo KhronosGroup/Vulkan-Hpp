@@ -164,6 +164,7 @@ private:
     std::string              name;
     std::vector<std::string> arraySizes;
     std::string              len;
+    std::vector<std::string> lenParams;
     bool                     optional;
     std::string              stride;
     int                      xmlLine;

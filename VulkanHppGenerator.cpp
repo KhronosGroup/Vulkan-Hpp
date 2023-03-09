@@ -30,6 +30,7 @@ void                               checkElements( int                           
                                                   std::set<std::string> const &                     optional = {} );
 void                               checkForError( bool condition, int line, std::string const & message );
 void                               checkForWarning( bool condition, int line, std::string const & message );
+std::vector<std::string>           filterConstants( std::vector<std::string> const & names );
 std::string                        generateCArraySizes( std::vector<std::string> const & sizes );
 std::string                        generateNamespacedType( std::string const & type );
 std::string                        generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
@@ -38,6 +39,7 @@ std::string                        generateStandardArrayWrapper( std::string con
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
+bool                                             isNumber( std::string const & name );
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node );
 std::string                                      readSnippet( std::string const & snippetFile );
 std::string                                      replaceWithMap( std::string const & input, std::map<std::string, std::string> replacements );
@@ -55,7 +57,7 @@ std::string                                      trimEnd( std::string const & in
 std::string                                      trimStars( std::string const & input );
 void                                             writeToFile( std::string const & str, std::string const & fileName );
 
-const std::set<std::string> altLens             = { "2*VK_UUID_SIZE", "codeSize / 4", "(rasterizationSamples + 31) / 32", "(samples + 31) / 32" };
+const std::set<std::string> altLens             = { "2*VK_UUID_SIZE", "codeSize / 4", "(rasterizationSamples + 31) / 32" };
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
 
 //
@@ -1702,16 +1704,13 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
     {
       VectorParamData & vpd = vectorParams[i];
 
-      std::string len;
-      if ( altLens.find( params[i].len ) != altLens.end() )
+      if ( !params[i].lenParams.empty() )
       {
-        checkForError( params[i].len == "(samples + 31) / 32", params[i].xmlLine, "unknown command parameter len <" + params[i].len + ">" );
-        len = "samples";
+        assert( params[i].lenParams.size() == 1 );
+        assert( params[i].len == "(" + params[i].lenParams[0] + " + 31) / 32" );
       }
-      else
-      {
-        len = params[i].len;
-      }
+      std::string len = params[i].lenParams.empty() ? params[i].len : params[i].lenParams[0];
+
       auto lenIt =
         std::find_if( params.begin(), params.end(), [&len, this]( auto const & pd ) { return ( len == pd.name ) || isLenByStructMember( len, pd ); } );
       assert( lenIt != params.end() );
@@ -8310,7 +8309,7 @@ std::string VulkanHppGenerator::generateRAIIHandleVectorSizeCheck( std::string c
     throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${firstVectorName}.size() * sizeof( ${firstDataType} ) != ${secondVectorName}.size() * sizeof( ${secondDataType} )" );
   })#";
 
-  std::string const throwTemplateByLen = R"#(    if ( ${vectorName}.size() != ${sizeValue} )
+  std::string const throwTemplateSingle = R"#(    if ( ${vectorName}.size() != ${sizeValue} )
     {
       throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${vectorName}.size() != ${sizeValue}" );
     })#";
@@ -8324,13 +8323,24 @@ std::string VulkanHppGenerator::generateRAIIHandleVectorSizeCheck( std::string c
     size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params, skippedParams );
     std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
 
-    if ( ( cvm.second.size() == 1 ) && ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) ) )
+    if ( cvm.second.size() == 1 )
     {
-      std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
-      assert( lenParts.size() == 2 );
-      std::string sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
+      std::string sizeValue;
+      if ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) )
+      {
+        std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
+        assert( lenParts.size() == 2 );
+        sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
+      }
+      else
+      {
+        assert( !commandData.params[cvm.second[0]].lenParams.empty() );
+        assert( commandData.params[cvm.second[0]].len == "(" + commandData.params[cvm.second[0]].lenParams[0] + " + 31) / 32" );
+        assert( commandData.params[cvm.first].type.type == "VkSampleCountFlagBits" );
+        sizeValue = "( static_cast<uint32_t>( " + commandData.params[cvm.second[0]].lenParams[0] + " ) + 31 ) / 32";
+      }
       sizeChecks += replaceWithMap(
-        throwTemplateByLen, { { "className", className }, { "commandName", commandName }, { "sizeValue", sizeValue }, { "vectorName", firstVectorName } } );
+        throwTemplateSingle, { { "className", className }, { "commandName", commandName }, { "sizeValue", sizeValue }, { "vectorName", firstVectorName } } );
     }
     else
     {
@@ -10186,7 +10196,7 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
   std::string const assertTemplate = "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() == ${secondVectorName}.size() );";
   std::string const assertTemplateVoid =
     "    VULKAN_HPP_ASSERT( ${zeroSizeCheck}${firstVectorName}.size() * sizeof( ${firstDataType} ) == ${secondVectorName}.size() * sizeof( ${secondDataType} ) );";
-  std::string const assertTemplateByLen = "    VULKAN_HPP_ASSERT( ${vectorName}.size() == ${sizeValue} );";
+  std::string const assertTemplateSingle = "    VULKAN_HPP_ASSERT( ${vectorName}.size() == ${sizeValue} );";
   std::string const throwTemplate =
     R"#(    if ( ${zeroSizeCheck}${firstVectorName}.size() != ${secondVectorName}.size() )
   {
@@ -10197,7 +10207,7 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
   {
     throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${firstVectorName}.size() * sizeof( ${firstDataType} ) != ${secondVectorName}.size() * sizeof( ${secondDataType} )" );
   })#";
-  std::string const throwTemplateByLen = R"#(    if ( ${vectorName}.size() != ${sizeValue} )
+  std::string const throwTemplateSingle = R"#(    if ( ${vectorName}.size() != ${sizeValue} )
     {
       throw LogicError( VULKAN_HPP_NAMESPACE_STRING "::${className}::${commandName}: ${vectorName}.size() != ${sizeValue}" );
     })#";
@@ -10211,13 +10221,24 @@ std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &    
     size_t      defaultStartIndex = determineDefaultStartIndex( commandData.params, skippedParams );
     std::string firstVectorName   = startLowerCase( stripPrefix( commandData.params[cvm.second[0]].name, "p" ) );
 
-    if ( ( cvm.second.size() == 1 ) && ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) ) )
+    if ( cvm.second.size() == 1 )
     {
-      std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
-      assert( lenParts.size() == 2 );
-      std::string sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
-      assertions += replaceWithMap( assertTemplateByLen, { { "sizeValue", sizeValue }, { "vectorName", firstVectorName } } );
-      throws += replaceWithMap( throwTemplateByLen,
+      std::string sizeValue;
+      if ( isLenByStructMember( commandData.params[cvm.second[0]].len, commandData.params[cvm.first] ) )
+      {
+        std::vector<std::string> lenParts = tokenize( commandData.params[cvm.second[0]].len, "->" );
+        assert( lenParts.size() == 2 );
+        sizeValue = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + lenParts[1];
+      }
+      else
+      {
+        assert( !commandData.params[cvm.second[0]].lenParams.empty() );
+        assert( commandData.params[cvm.second[0]].len == "(" + commandData.params[cvm.second[0]].lenParams[0] + " + 31) / 32" );
+        assert( commandData.params[cvm.first].type.type == "VkSampleCountFlagBits" );
+        sizeValue = "( static_cast<uint32_t>( " + commandData.params[cvm.second[0]].lenParams[0] + " ) + 31 ) / 32";
+      }
+      assertions += replaceWithMap( assertTemplateSingle, { { "sizeValue", sizeValue }, { "vectorName", firstVectorName } } );
+      throws += replaceWithMap( throwTemplateSingle,
                                 { { "className", className }, { "commandName", commandName }, { "sizeValue", sizeValue }, { "vectorName", firstVectorName } } );
     }
     else
@@ -10817,7 +10838,8 @@ std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needs
   return std::make_pair( std::find_if( countToVectorMap.begin(),
                                        countToVectorMap.end(),
                                        [this, &params]( auto const & cvm ) {
-                                         return ( 1 < cvm.second.size() ) || isLenByStructMember( params[cvm.second[0]].len, params[cvm.first] );
+                                         return ( 1 < cvm.second.size() ) || isLenByStructMember( params[cvm.second[0]].len, params[cvm.first] ) ||
+                                                !params[cvm.second[0]].lenParams.empty();
                                        } ) != countToVectorMap.end(),
                          countToVectorMap );
 }
@@ -10893,6 +10915,25 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
         std::tie( name, commandData.returnType ) = readCommandProto( child );
       }
     }
+
+    std::for_each( commandData.params.begin(),
+                   commandData.params.end(),
+                   [&commandData]( ParamData & currentParam )
+                   {
+                     std::for_each( currentParam.lenParams.begin(),
+                                    currentParam.lenParams.end(),
+                                    [&commandData, &currentParam]( std::string const & lenName )
+                                    {
+                                      checkForError( std::find_if( commandData.params.begin(),
+                                                                   commandData.params.end(),
+                                                                   [&lenName]( ParamData const & pd )
+                                                                   { return pd.name == lenName; } ) != commandData.params.end(),
+                                                     currentParam.xmlLine,
+                                                     "param <" + currentParam.name + "> uses unknown len parameter <" + lenName +
+                                                       "> in its \"altlen\" attribute <" + currentParam.len + ">" );
+                                    } );
+                   } );
+
     assert( !name.empty() );
     checkForError( ( commandData.returnType == "VkResult" ) || commandData.errorCodes.empty(),
                    line,
@@ -10940,8 +10981,8 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
     if ( attribute.first == "altlen" )
     {
       assert( paramData.len.empty() );
-      paramData.len = attribute.second;
-      checkForError( altLens.find( paramData.len ) != altLens.end(), line, "attribute <altlen> holds unknown value <" + paramData.len + ">" );
+      paramData.len       = attribute.second;
+      paramData.lenParams = filterConstants( tokenizeAny( attribute.second, " /()+" ) );
     }
     else if ( attribute.first == "api" )
     {
@@ -13296,6 +13337,21 @@ void checkForWarning( bool condition, int line, std::string const & message )
   }
 }
 
+std::vector<std::string> filterConstants( std::vector<std::string> const & names )
+{
+  std::vector<std::string> filteredNames;
+  std::for_each( names.begin(),
+                 names.end(),
+                 [&filteredNames]( std::string const & name )
+                 {
+                   if ( !isNumber( name ) )
+                   {
+                     filteredNames.push_back( name );
+                   }
+                 } );
+  return filteredNames;
+}
+
 std::string generateCArraySizes( std::vector<std::string> const & sizes )
 {
   std::string arraySizes;
@@ -13357,6 +13413,11 @@ std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContainer con
     childElements.push_back( childElement );
   }
   return childElements;
+}
+
+bool isNumber( std::string const & name )
+{
+  return name.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node )

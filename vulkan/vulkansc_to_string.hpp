@@ -486,6 +486,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & PipelineCacheCreateFlagBits::eExternallySynchronized )
       result += "ExternallySynchronized | ";
+    if ( value & PipelineCacheCreateFlagBits::eReadOnly )
+      result += "ReadOnly | ";
     if ( value & PipelineCacheCreateFlagBits::eUseApplicationStorage )
       result += "UseApplicationStorage | ";
 
@@ -2100,6 +2102,7 @@ namespace VULKAN_HPP_NAMESPACE
       case VendorId::eCodeplay: return "Codeplay";
       case VendorId::eMESA: return "MESA";
       case VendorId::ePocl: return "Pocl";
+      case VendorId::eMobileye: return "Mobileye";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3929,6 +3932,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case PipelineCacheCreateFlagBits::eExternallySynchronized: return "ExternallySynchronized";
+      case PipelineCacheCreateFlagBits::eReadOnly: return "ReadOnly";
       case PipelineCacheCreateFlagBits::eUseApplicationStorage: return "UseApplicationStorage";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }

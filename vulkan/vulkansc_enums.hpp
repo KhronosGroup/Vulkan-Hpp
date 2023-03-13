@@ -499,7 +499,8 @@ namespace VULKAN_HPP_NAMESPACE
     eKazan    = VK_VENDOR_ID_KAZAN,
     eCodeplay = VK_VENDOR_ID_CODEPLAY,
     eMESA     = VK_VENDOR_ID_MESA,
-    ePocl     = VK_VENDOR_ID_POCL
+    ePocl     = VK_VENDOR_ID_POCL,
+    eMobileye = VK_VENDOR_ID_MOBILEYE
   };
 
   enum class Format
@@ -2832,7 +2833,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
-      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eUseApplicationStorage;
+      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eReadOnly | PipelineCacheCreateFlagBits::eUseApplicationStorage;
   };
 
   enum class PipelineCacheValidationVersion

@@ -160,14 +160,14 @@ private:
   {
     ParamData( int line ) : optional( false ), xmlLine( line ) {}
 
-    TypeInfo                 type;
-    std::string              name;
-    std::vector<std::string> arraySizes;
-    std::string              len;
-    std::vector<std::string> lenParams;
-    bool                     optional;
-    std::string              stride;
-    int                      xmlLine;
+    TypeInfo                                    type;
+    std::string                                 name;
+    std::vector<std::string>                    arraySizes;
+    std::string                                 lenExpression;
+    std::vector<std::pair<std::string, size_t>> lenParams;
+    bool                                        optional;
+    std::string                                 stride;
+    int                                         xmlLine;
   };
 
   struct CommandData
@@ -344,18 +344,19 @@ private:
   {
     MemberData( int line ) : xmlLine( line ) {}
 
-    TypeInfo                 type;
-    std::string              name;
-    std::vector<std::string> arraySizes;
-    std::string              bitCount;
-    std::vector<std::string> len;
-    bool                     noAutoValidity = false;
-    std::vector<bool>        optional;
-    std::vector<std::string> selection;
-    std::string              selector;
-    std::string              value;
-    std::string              usedConstant;
-    int                      xmlLine;
+    TypeInfo                                    type;
+    std::string                                 name;
+    std::vector<std::string>                    arraySizes;
+    std::string                                 bitCount;
+    std::vector<std::string>                    lenExpressions;
+    std::vector<std::pair<std::string, size_t>> lenMembers;
+    bool                                        noAutoValidity = false;
+    std::vector<bool>                           optional;
+    std::vector<std::string>                    selection;
+    std::string                                 selector;
+    std::string                                 value;
+    std::string                                 usedConstant;
+    int                                         xmlLine;
   };
 
   struct PlatformData
@@ -484,9 +485,11 @@ private:
   std::map<size_t, VectorParamData>                determineVectorParams( std::vector<ParamData> const & params ) const;
   std::set<size_t>                                 determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
+  void                                             filterLenMembers();
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
   std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
   std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
+  std::vector<ParamData>::const_iterator           findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator       findSupportedExtension( std::string const & name ) const;
@@ -917,7 +920,7 @@ private:
   bool                                handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData );
   void                                handleRemovals();
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
-  bool                                hasLen( std::vector<MemberData> const & members, MemberData const & md ) const;
+  bool                                hasLen( MemberData const & md ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                isDeviceCommand( CommandData const & commandData ) const;
   bool                                isExtension( std::string const & name ) const;
@@ -937,7 +940,8 @@ private:
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
                                                                                std::vector<size_t> const &               returnParams,
-                                                                               std::set<size_t> const &                  singularParams ) const;
+                                                                               std::set<size_t> const &                  singularParams,
+                                                                               std::set<size_t> const &                  skippedParams ) const;
   void                                                   readCommand( tinyxml2::XMLElement const * element );
   std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
   std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );

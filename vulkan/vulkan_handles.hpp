@@ -581,8 +581,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH264SessionParametersCreateInfoEXT;
   struct VideoEncodeH264SessionParametersAddInfoEXT;
   struct VideoEncodeH264VclFrameInfoEXT;
-  struct VideoEncodeH264ReferenceListsInfoEXT;
-  struct VideoEncodeH264EmitPictureParametersInfoEXT;
   struct VideoEncodeH264DpbSlotInfoEXT;
   struct VideoEncodeH264NaluSliceInfoEXT;
   struct VideoEncodeH264ProfileInfoEXT;
@@ -598,11 +596,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct VideoEncodeH265SessionParametersCreateInfoEXT;
   struct VideoEncodeH265SessionParametersAddInfoEXT;
   struct VideoEncodeH265VclFrameInfoEXT;
-  struct VideoEncodeH265EmitPictureParametersInfoEXT;
   struct VideoEncodeH265DpbSlotInfoEXT;
   struct VideoEncodeH265NaluSliceSegmentInfoEXT;
   struct VideoEncodeH265ProfileInfoEXT;
-  struct VideoEncodeH265ReferenceListsInfoEXT;
   struct VideoEncodeH265RateControlInfoEXT;
   struct VideoEncodeH265RateControlLayerInfoEXT;
   struct VideoEncodeH265QpEXT;
@@ -1207,6 +1203,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_encode_queue ===
   struct VideoEncodeInfoKHR;
   struct VideoEncodeCapabilitiesKHR;
+  struct QueryPoolVideoEncodeFeedbackCreateInfoKHR;
   struct VideoEncodeUsageInfoKHR;
   struct VideoEncodeRateControlInfoKHR;
   struct VideoEncodeRateControlLayerInfoKHR;

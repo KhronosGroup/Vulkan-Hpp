@@ -1706,9 +1706,10 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
 
       if ( params[i].lenParams.empty() )
       {
-        std::string len = params[i].lenExpression;
-        assert( std::find_if( params.begin(), params.end(), [&len]( auto const & pd ) { return ( len == pd.name ); } ) == params.end() );
-        auto lenIt = std::find_if( params.begin(), params.end(), [this, &len]( auto const & pd ) { return isLenByStructMember( len, pd ); } );
+        std::string const & lenExpression = params[i].lenExpression;
+        assert( std::find_if( params.begin(), params.end(), [&lenExpression]( auto const & pd ) { return ( lenExpression == pd.name ); } ) == params.end() );
+        auto lenIt =
+          std::find_if( params.begin(), params.end(), [this, &lenExpression]( auto const & pd ) { return isLenByStructMember( lenExpression, pd ); } );
         assert( lenIt != params.end() );
         vpd.lenParam = std::distance( params.begin(), lenIt );
       }
@@ -1717,12 +1718,9 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
         assert( params[i].lenParams.size() == 1 );
         vpd.lenParam = params[i].lenParams[0].second;
       }
-      if ( !params[i].stride.empty() )
+      if ( !params[i].strideParam.first.empty() )
       {
-        std::string const & stride   = params[i].stride;
-        auto                strideIt = std::find_if( params.begin(), params.end(), [&stride]( auto const & pd ) { return stride == pd.name; } );
-        assert( strideIt != params.end() );
-        vpd.strideParam = std::distance( params.begin(), strideIt );
+        vpd.strideParam = params[i].strideParam.second;
       }
     }
   }
@@ -2004,10 +2002,10 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
               type.replace( pos, 4, stripPrefix( params[i].name, "p" ) + "Type" );
             }
             argumentList +=
-              std::string( "VULKAN_HPP_NAMESPACE::" ) + ( params[i].stride.empty() ? "" : "Strided" ) + "ArrayProxy<" + type + "> const & " + name;
+              std::string( "VULKAN_HPP_NAMESPACE::" ) + ( params[i].strideParam.first.empty() ? "" : "Strided" ) + "ArrayProxy<" + type + "> const & " + name;
             if ( params[i].optional && !definition )
             {
-              assert( params[i].stride.empty() );
+              assert( params[i].strideParam.first.empty() );
               argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
               hasDefaultAssignment = true;
             }
@@ -2618,6 +2616,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
   {
     if ( param.arraySizes.empty() )
     {
+      // check if this param is used as the len of an other param
       auto pointerIt = std::find_if( params.begin(), params.end(), [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
       if ( pointerIt != params.end() )
       {
@@ -2632,7 +2631,9 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
       {
         argument = "static_cast<" + param.type.compose( "" ) + ">( " + param.name + " )";
       }
-      assert( std::find_if( params.begin(), params.end(), [&param]( ParamData const & pd ) { return pd.stride == param.name; } ) == params.end() );
+      // check if this param is used as the stride of an other param
+      assert( std::find_if( params.begin(), params.end(), [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } ) ==
+              params.end() );
     }
     else
     {
@@ -2674,12 +2675,13 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
     {
       assert( !param.optional );
       assert( param.arraySizes.size() <= 1 );
-      pointerIt = std::find_if( params.begin(), params.end(), [&param]( ParamData const & pd ) { return pd.stride == param.name; } );
+      pointerIt = std::find_if( params.begin(), params.end(), [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } );
       if ( pointerIt != params.end() )
       {
         // this parameter is the stride of some other -> replace it with that parameter's stride
         assert( param.arraySizes.empty() );
         assert( param.type.type == "uint32_t" );
+        assert( pointerIt->strideParam.first == param.name );
         argument = startLowerCase( stripPrefix( pointerIt->name, "p" ) ) + ".stride()";
       }
       else
@@ -10978,6 +10980,13 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                          ">" );
         lenParam.second = std::distance( commandData.params.cbegin(), paramIt );
       }
+      if ( !param.strideParam.first.empty() )
+      {
+        auto paramIt = findParamIt( param.strideParam.first, commandData.params );
+        checkForError(
+          paramIt != commandData.params.end(), param.xmlLine, "param <" + param.name + "> uses unknown stride parameter <" + param.strideParam.first + ">" );
+        param.strideParam.second = std::distance( commandData.params.cbegin(), paramIt );
+      }
     }
 
     assert( !name.empty() );
@@ -10987,12 +10996,6 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     checkForError( ( commandData.returnType == "VkResult" ) || commandData.successCodes.empty(),
                    line,
                    "command <" + name + "> does not return a VkResult but specifies successcodes" );
-    for ( auto const & param : commandData.params )
-    {
-      checkForError( param.stride.empty() || isParam( param.stride, commandData.params ),
-                     param.xmlLine,
-                     "attribute <stride> holds an unknown value <" + param.stride + ">" );
-    }
 
     if ( api.empty() || ( api == m_api ) )
     {
@@ -11054,7 +11057,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
     }
     else if ( attribute.first == "stride" )
     {
-      paramData.stride = attribute.second;
+      paramData.strideParam.first = attribute.second;
     }
     else if ( attribute.first == "optional" )
     {

@@ -166,7 +166,7 @@ private:
     std::string                                 lenExpression;
     std::vector<std::pair<std::string, size_t>> lenParams;
     bool                                        optional;
-    std::string                                 stride;
+    std::pair<std::string, size_t>              strideParam;
     int                                         xmlLine;
   };
 

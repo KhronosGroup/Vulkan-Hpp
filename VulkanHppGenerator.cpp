@@ -3584,6 +3584,20 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
             {
               return generateCommandSetExclusive( name, commandData, initialSkipCount, definition, raii );
             }
+            else
+            {
+              return generateCommandSetInclusive( name,
+                                                  commandData,
+                                                  initialSkipCount,
+                                                  definition,
+                                                  returnParams,
+                                                  vectorParams,
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced },
+                                                  raii,
+                                                  false,
+                                                  { CommandFlavourFlagBits::enhanced } );
+            }
             break;
           case 1:
             if ( !raii )

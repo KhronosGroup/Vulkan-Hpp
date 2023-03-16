@@ -12070,7 +12070,6 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
         value = attribute.second;
       }
     }
-    assert( protect.empty() || ( protect == getProtectFromPlatform( platform ) ) );
     if ( protect.empty() )
     {
       protect = getProtectFromPlatform( platform );

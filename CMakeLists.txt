@@ -139,6 +139,17 @@ set(VK_GENERATED_VULKAN_HEADERS
   ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
   ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
   ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
+  # VulkanSC headers
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_enums.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_format_traits.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_funcs.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_handles.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_hash.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_raii.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_static_assertions.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_structs.hpp
+  ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkansc_to_string.hpp
   )
 
 file(TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp)

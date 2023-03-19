@@ -1311,6 +1311,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPipelineExecutableInternalRepresentationsKHR =
           PFN_vkGetPipelineExecutableInternalRepresentationsKHR( vkGetDeviceProcAddr( device, "vkGetPipelineExecutableInternalRepresentationsKHR" ) );
 
+        //=== VK_KHR_map_memory2 ===
+        vkMapMemory2KHR   = PFN_vkMapMemory2KHR( vkGetDeviceProcAddr( device, "vkMapMemory2KHR" ) );
+        vkUnmapMemory2KHR = PFN_vkUnmapMemory2KHR( vkGetDeviceProcAddr( device, "vkUnmapMemory2KHR" ) );
+
         //=== VK_EXT_swapchain_maintenance1 ===
         vkReleaseSwapchainImagesEXT = PFN_vkReleaseSwapchainImagesEXT( vkGetDeviceProcAddr( device, "vkReleaseSwapchainImagesEXT" ) );
 
@@ -2150,6 +2154,10 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetPipelineExecutablePropertiesKHR              vkGetPipelineExecutablePropertiesKHR              = 0;
       PFN_vkGetPipelineExecutableStatisticsKHR              vkGetPipelineExecutableStatisticsKHR              = 0;
       PFN_vkGetPipelineExecutableInternalRepresentationsKHR vkGetPipelineExecutableInternalRepresentationsKHR = 0;
+
+      //=== VK_KHR_map_memory2 ===
+      PFN_vkMapMemory2KHR   vkMapMemory2KHR   = 0;
+      PFN_vkUnmapMemory2KHR vkUnmapMemory2KHR = 0;
 
       //=== VK_EXT_swapchain_maintenance1 ===
       PFN_vkReleaseSwapchainImagesEXT vkReleaseSwapchainImagesEXT = 0;
@@ -3943,6 +3951,12 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>
                            getPipelineExecutableInternalRepresentationsKHR( const VULKAN_HPP_NAMESPACE::PipelineExecutableInfoKHR & executableInfo ) const;
+
+      //=== VK_KHR_map_memory2 ===
+
+      VULKAN_HPP_NODISCARD void * mapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR & memoryMapInfo ) const;
+
+      void unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR & memoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_swapchain_maintenance1 ===
 
@@ -18031,6 +18045,27 @@ namespace VULKAN_HPP_NAMESPACE
         internalRepresentations.resize( internalRepresentationCount );
       }
       return internalRepresentations;
+    }
+
+    //=== VK_KHR_map_memory2 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE void * Device::mapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR & memoryMapInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkMapMemory2KHR && "Function <vkMapMemory2KHR> requires <VK_KHR_map_memory2>" );
+
+      void *   pData;
+      VkResult result =
+        getDispatcher()->vkMapMemory2KHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkMemoryMapInfoKHR *>( &memoryMapInfo ), &pData );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::mapMemory2KHR" );
+
+      return pData;
+    }
+
+    VULKAN_HPP_INLINE void Device::unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR & memoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkUnmapMemory2KHR && "Function <vkUnmapMemory2KHR> requires <VK_KHR_map_memory2>" );
+
+      getDispatcher()->vkUnmapMemory2KHR( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkMemoryUnmapInfoKHR *>( &memoryUnmapInfo ) );
     }
 
     //=== VK_EXT_swapchain_maintenance1 ===

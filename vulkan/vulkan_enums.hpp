@@ -790,6 +790,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelineExecutableInfoKHR                               = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INFO_KHR,
     ePipelineExecutableStatisticKHR                          = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_STATISTIC_KHR,
     ePipelineExecutableInternalRepresentationKHR             = VK_STRUCTURE_TYPE_PIPELINE_EXECUTABLE_INTERNAL_REPRESENTATION_KHR,
+    eMemoryMapInfoKHR                                        = VK_STRUCTURE_TYPE_MEMORY_MAP_INFO_KHR,
+    eMemoryUnmapInfoKHR                                      = VK_STRUCTURE_TYPE_MEMORY_UNMAP_INFO_KHR,
     ePhysicalDeviceShaderAtomicFloat2FeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT,
     eSurfacePresentModeEXT                                   = VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_EXT,
     eSurfacePresentScalingCapabilitiesEXT                    = VK_STRUCTURE_TYPE_SURFACE_PRESENT_SCALING_CAPABILITIES_EXT,
@@ -5591,6 +5593,21 @@ namespace VULKAN_HPP_NAMESPACE
     eInt64   = VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_INT64_KHR,
     eUint64  = VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_UINT64_KHR,
     eFloat64 = VK_PIPELINE_EXECUTABLE_STATISTIC_FORMAT_FLOAT64_KHR
+  };
+
+  //=== VK_KHR_map_memory2 ===
+
+  enum class MemoryUnmapFlagBitsKHR : VkMemoryUnmapFlagsKHR
+  {
+  };
+
+  using MemoryUnmapFlagsKHR = Flags<MemoryUnmapFlagBitsKHR>;
+
+  template <>
+  struct FlagTraits<MemoryUnmapFlagBitsKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryUnmapFlagsKHR allFlags  = {};
   };
 
   //=== VK_EXT_surface_maintenance1 ===

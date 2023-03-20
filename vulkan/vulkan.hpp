@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 243, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 244, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -4857,6 +4857,18 @@ namespace VULKAN_HPP_NAMESPACE
                                                          VkPipelineExecutableInternalRepresentationKHR * pInternalRepresentations ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetPipelineExecutableInternalRepresentationsKHR( device, pExecutableInfo, pInternalRepresentationCount, pInternalRepresentations );
+    }
+
+    //=== VK_KHR_map_memory2 ===
+
+    VkResult vkMapMemory2KHR( VkDevice device, const VkMemoryMapInfoKHR * pMemoryMapInfo, void ** ppData ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkMapMemory2KHR( device, pMemoryMapInfo, ppData );
+    }
+
+    VkResult vkUnmapMemory2KHR( VkDevice device, const VkMemoryUnmapInfoKHR * pMemoryUnmapInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkUnmapMemory2KHR( device, pMemoryUnmapInfo );
     }
 
     //=== VK_EXT_swapchain_maintenance1 ===
@@ -13943,6 +13955,10 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetPipelineExecutableStatisticsKHR              vkGetPipelineExecutableStatisticsKHR              = 0;
     PFN_vkGetPipelineExecutableInternalRepresentationsKHR vkGetPipelineExecutableInternalRepresentationsKHR = 0;
 
+    //=== VK_KHR_map_memory2 ===
+    PFN_vkMapMemory2KHR   vkMapMemory2KHR   = 0;
+    PFN_vkUnmapMemory2KHR vkUnmapMemory2KHR = 0;
+
     //=== VK_EXT_swapchain_maintenance1 ===
     PFN_vkReleaseSwapchainImagesEXT vkReleaseSwapchainImagesEXT = 0;
 
@@ -15174,6 +15190,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetPipelineExecutableInternalRepresentationsKHR =
         PFN_vkGetPipelineExecutableInternalRepresentationsKHR( vkGetInstanceProcAddr( instance, "vkGetPipelineExecutableInternalRepresentationsKHR" ) );
 
+      //=== VK_KHR_map_memory2 ===
+      vkMapMemory2KHR   = PFN_vkMapMemory2KHR( vkGetInstanceProcAddr( instance, "vkMapMemory2KHR" ) );
+      vkUnmapMemory2KHR = PFN_vkUnmapMemory2KHR( vkGetInstanceProcAddr( instance, "vkUnmapMemory2KHR" ) );
+
       //=== VK_EXT_swapchain_maintenance1 ===
       vkReleaseSwapchainImagesEXT = PFN_vkReleaseSwapchainImagesEXT( vkGetInstanceProcAddr( instance, "vkReleaseSwapchainImagesEXT" ) );
 
@@ -16149,6 +16169,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetPipelineExecutableStatisticsKHR = PFN_vkGetPipelineExecutableStatisticsKHR( vkGetDeviceProcAddr( device, "vkGetPipelineExecutableStatisticsKHR" ) );
       vkGetPipelineExecutableInternalRepresentationsKHR =
         PFN_vkGetPipelineExecutableInternalRepresentationsKHR( vkGetDeviceProcAddr( device, "vkGetPipelineExecutableInternalRepresentationsKHR" ) );
+
+      //=== VK_KHR_map_memory2 ===
+      vkMapMemory2KHR   = PFN_vkMapMemory2KHR( vkGetDeviceProcAddr( device, "vkMapMemory2KHR" ) );
+      vkUnmapMemory2KHR = PFN_vkUnmapMemory2KHR( vkGetDeviceProcAddr( device, "vkUnmapMemory2KHR" ) );
 
       //=== VK_EXT_swapchain_maintenance1 ===
       vkReleaseSwapchainImagesEXT = PFN_vkReleaseSwapchainImagesEXT( vkGetDeviceProcAddr( device, "vkReleaseSwapchainImagesEXT" ) );

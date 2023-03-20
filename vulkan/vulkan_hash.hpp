@@ -6143,6 +6143,22 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR const & memoryMapInfoKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.flags );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.memory );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.offset );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryMapInfoKHR.size );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::MemoryOpaqueCaptureAddressAllocateInfo>
   {
     std::size_t
@@ -6203,6 +6219,20 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, memoryType.propertyFlags );
       VULKAN_HPP_HASH_COMBINE( seed, memoryType.heapIndex );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR const & memoryUnmapInfoKHR ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, memoryUnmapInfoKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryUnmapInfoKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryUnmapInfoKHR.flags );
+      VULKAN_HPP_HASH_COMBINE( seed, memoryUnmapInfoKHR.memory );
       return seed;
     }
   };

@@ -823,12 +823,12 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     // check that functions returning a VkResult specify successcodes
     if ( ( command.second.returnType == "VkResult" ) && command.second.successCodes.empty() )
     {
-      // emit an error if this function is required in at least valid feature or extension
+      // emit an error if this function is required in at least one supported feature or extension
       // disabled or not supported features/extensions are still listed in requiredBy, but not in m_features/m_extensions
       bool functionUsed = false;
       for ( auto const & require : command.second.requiredBy )
       {
-        functionUsed |= isFeature( require ) || isSupportedExtension( require );
+        functionUsed |= isSupportedFeature( require ) || isSupportedExtension( require );
       }
       if ( functionUsed )
       {
@@ -1027,19 +1027,19 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     // check for existence of any deprecation, obsoletion, or promotion
     if ( !extension.deprecatedBy.empty() )
     {
-      checkForError( isExtension( extension.deprecatedBy ) || isFeature( extension.deprecatedBy ),
+      checkForError( isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
                      extension.xmlLine,
                      "extension deprecated by unknown extension/version <" + extension.promotedTo + ">" );
     }
     if ( !extension.obsoletedBy.empty() )
     {
-      checkForError( isExtension( extension.obsoletedBy ) || isFeature( extension.obsoletedBy ),
+      checkForError( isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
                      extension.xmlLine,
                      "extension obsoleted by unknown extension/version <" + extension.promotedTo + ">" );
     }
     if ( !extension.promotedTo.empty() )
     {
-      checkForError( isExtension( extension.promotedTo ) || isFeature( extension.promotedTo ),
+      checkForError( isFeature( extension.promotedTo ) || isExtension( extension.promotedTo ),
                      extension.xmlLine,
                      "extension promoted to unknown extension/version <" + extension.promotedTo + ">" );
     }
@@ -10398,7 +10398,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( st
 
 std::string VulkanHppGenerator::getPlatform( std::string const & title ) const
 {
-  if ( !isFeature( title ) )
+  if ( !isSupportedFeature( title ) )
   {
     auto extensionIt = findSupportedExtension( title );
     assert( extensionIt != m_extensions.end() );
@@ -10428,7 +10428,7 @@ std::string VulkanHppGenerator::getProtectFromPlatform( std::string const & plat
 
 std::string VulkanHppGenerator::getProtectFromTitle( std::string const & title ) const
 {
-  if ( !isFeature( title ) )
+  if ( !isSupportedFeature( title ) )
   {
     auto extensionIt = findSupportedExtension( title );
     return ( extensionIt != m_extensions.end() ) ? getProtectFromPlatform( extensionIt->platform ) : "";
@@ -10817,13 +10817,13 @@ bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy )
 {
   for ( auto const & r : requiredBy )
   {
-    if ( isFeature( r ) || isSupportedExtension( r ) )
+    if ( isSupportedFeature( r ) || isSupportedExtension( r ) )
     {
       return true;
     }
     else
     {
-      assert( m_unsupportedExtensions.find( r ) != m_unsupportedExtensions.end() );
+      assert( ( m_unsupportedFeatures.find( r ) != m_unsupportedFeatures.end() ) || ( m_unsupportedExtensions.find( r ) != m_unsupportedExtensions.end() ) );
     }
   }
   return false;
@@ -11498,7 +11498,6 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     checkForError( ( m_tags.find( tag ) != m_tags.end() ), line, "name <" + extensionData.name + "> is using an unknown tag <" + tag + ">" );
   }
 
-  checkForError( !isExtension( extensionData.name ), line, "extension <" + extensionData.name + "> already specified" );
   if ( extensionSupported )
   {
     m_extensions.push_back( extensionData );
@@ -11555,14 +11554,14 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   checkForError( featureData.name == ( ( std::find( api.begin(), api.end(), "vulkan" ) != api.end() ) ? "VK_VERSION_" : "VKSC_VERSION_" ) + modifiedNumber,
                  line,
                  "unexpected formatting of name <" + featureData.name + ">" );
+  checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
   if ( featureSupported )
   {
-    checkForError( !isFeature( featureData.name ), line, "feature <" + featureData.name + "> already specified" );
     m_features.push_back( featureData );
   }
   else
   {
-    checkForError( m_unsupportedFeatures.insert( featureData.name ).second, line, "unsupported feature <" + featureData.name + "> already specified" );
+    m_unsupportedFeatures.insert( featureData.name );
   }
 }
 

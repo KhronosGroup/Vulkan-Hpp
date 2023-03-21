@@ -126,75 +126,71 @@ private:
       return ( ( prefix.find( '*' ) == std::string::npos ) && ( postfix.find( '*' ) == std::string::npos ) );
     }
 
-    std::string prefix;
-    std::string type;
-    std::string postfix;
+    std::string prefix  = {};
+    std::string type    = {};
+    std::string postfix = {};
   };
 
   struct AliasData
   {
-    std::string name;
-    int         xmlLine;
+    std::string name    = {};
+    int         xmlLine = {};
   };
 
   struct BaseTypeData
   {
-    TypeInfo typeInfo;
-    int      xmlLine;
+    TypeInfo typeInfo = {};
+    int      xmlLine  = {};
   };
 
   struct BitmaskData
   {
-    std::string require;
-    std::string type;
-    int         xmlLine;
+    std::string require = {};
+    std::string type    = {};
+    int         xmlLine = {};
   };
 
   struct NameData
   {
-    std::string              name;
-    std::vector<std::string> arraySizes;
+    std::string              name       = {};
+    std::vector<std::string> arraySizes = {};
   };
 
   struct ParamData
   {
-    ParamData( int line ) : optional( false ), xmlLine( line ) {}
-
-    TypeInfo                                    type;
-    std::string                                 name;
-    std::vector<std::string>                    arraySizes;
-    std::string                                 lenExpression;
-    std::vector<std::pair<std::string, size_t>> lenParams;
-    bool                                        optional;
-    std::pair<std::string, size_t>              strideParam;
-    int                                         xmlLine;
+    TypeInfo                                    type          = {};
+    std::string                                 name          = {};
+    std::vector<std::string>                    arraySizes    = {};
+    std::string                                 lenExpression = {};
+    std::vector<std::pair<std::string, size_t>> lenParams     = {};
+    bool                                        optional      = false;
+    std::pair<std::string, size_t>              strideParam   = {};
+    int                                         xmlLine       = {};
   };
 
   struct CommandData
   {
-    CommandData( int line ) : xmlLine( line ) {}
-
-    std::vector<std::string> errorCodes;
-    std::string              handle;
-    std::vector<ParamData>   params;
-    std::set<std::string>    requiredBy;
-    std::string              returnType;
-    std::vector<std::string> successCodes;
-    int                      xmlLine;
+    std::vector<std::string> errorCodes   = {};
+    std::string              handle       = {};
+    std::vector<ParamData>   params       = {};
+    std::set<std::string>    requiredBy   = {};
+    std::string              returnType   = {};
+    std::vector<std::string> successCodes = {};
+    int                      xmlLine      = {};
   };
 
   struct ConstantData
   {
-    std::string type;
-    std::string value;
-    int         xmlLine;
+    std::string type    = {};
+    std::string value   = {};
+    int         xmlLine = {};
   };
 
   struct DefineData
   {
     bool        deprecated = false;
     std::string require    = {};
-    int         xmlLine    = 0;
+    int         xmlLine    = {};
   };
 
   struct EnumValueData
@@ -203,7 +199,7 @@ private:
     std::string name      = {};
     std::string protect   = {};
     bool        singleBit = false;
-    int         xmlLine   = 0;
+    int         xmlLine   = {};
   };
 
   struct EnumData
@@ -215,7 +211,7 @@ private:
     bool                       isBitmask         = false;
     std::vector<EnumValueData> unsupportedValues = {};
     std::vector<EnumValueData> values            = {};
-    int                        xmlLine           = 0;
+    int                        xmlLine           = {};
   };
 
   struct RemoveData
@@ -223,6 +219,7 @@ private:
     std::vector<std::string> commands = {};
     std::vector<std::string> enums    = {};
     std::vector<std::string> types    = {};
+    int                      xmlLine  = {};
   };
 
   struct RequireData
@@ -230,7 +227,7 @@ private:
     std::vector<std::string> depends  = {};
     std::vector<std::string> commands = {};
     std::vector<std::string> types    = {};
-    int                      xmlLine  = 0;
+    int                      xmlLine  = {};
   };
 
   struct FeatureData
@@ -239,6 +236,7 @@ private:
     std::string              number      = {};
     std::vector<RemoveData>  removeData  = {};
     std::vector<RequireData> requireData = {};
+    int                      xmlLine     = {};
   };
 
   struct ExtensionData
@@ -262,130 +260,111 @@ private:
 
   struct ComponentData
   {
-    ComponentData( int line ) : xmlLine( line ) {}
-
-    std::string bits;
-    std::string name;
-    std::string numericFormat;
-    std::string planeIndex;
-    int         xmlLine;
+    std::string bits          = {};
+    std::string name          = {};
+    std::string numericFormat = {};
+    std::string planeIndex    = {};
+    int         xmlLine       = {};
   };
 
   struct PlaneData
   {
-    PlaneData( int line ) : xmlLine( line ) {}
-
-    std::string compatible;
-    std::string heightDivisor;
-    std::string widthDivisor;
-    int         xmlLine;
+    std::string compatible    = {};
+    std::string heightDivisor = {};
+    std::string widthDivisor  = {};
+    int         xmlLine       = {};
   };
 
   struct FormatData
   {
-    FormatData( int line ) : xmlLine( line ) {}
-
-    std::string                blockExtent;
-    std::string                blockSize;
-    std::string                chroma;
-    std::string                classAttribute;
-    std::vector<ComponentData> components;
-    std::string                compressed;
-    std::string                packed;
-    std::vector<PlaneData>     planes;
-    std::string                spirvImageFormat;
-    std::string                texelsPerBlock;
-    int                        xmlLine;
+    std::string                blockExtent      = {};
+    std::string                blockSize        = {};
+    std::string                chroma           = {};
+    std::string                classAttribute   = {};
+    std::vector<ComponentData> components       = {};
+    std::string                compressed       = {};
+    std::string                packed           = {};
+    std::vector<PlaneData>     planes           = {};
+    std::string                spirvImageFormat = {};
+    std::string                texelsPerBlock   = {};
+    int                        xmlLine          = {};
   };
 
   struct FuncPointerArgumentData
   {
-    std::string name;
-    std::string type;
-    int         xmlLine;
+    std::string name    = {};
+    std::string type    = {};
+    int         xmlLine = {};
   };
 
   struct FuncPointerData
   {
-    std::vector<FuncPointerArgumentData> arguments;
-    std::string                          require;
-    int                                  xmlLine;
+    std::vector<FuncPointerArgumentData> arguments = {};
+    std::string                          require   = {};
+    int                                  xmlLine   = {};
   };
 
   struct HandleData
   {
-    HandleData( std::string const & p, std::string const & objType, bool isDispatchable, int line )
-      : objTypeEnum( objType ), parent( p ), isDispatchable( isDispatchable ), xmlLine( line )
-    {
-    }
-
-    std::set<std::string> childrenHandles;
-    std::set<std::string> commands;
-    std::string           deleteCommand;
-    std::string           deleteParent;
-    std::string           deletePool;
-    std::string           objTypeEnum;
-    std::string           parent;
-    std::set<std::string> secondLevelCommands;
-    bool                  isDispatchable;
-    int                   xmlLine;
+    std::set<std::string> childrenHandles     = {};
+    std::set<std::string> commands            = {};
+    std::string           deleteCommand       = {};
+    std::string           deleteParent        = {};
+    std::string           deletePool          = {};
+    std::string           objTypeEnum         = {};
+    std::string           parent              = {};
+    std::set<std::string> secondLevelCommands = {};
+    bool                  isDispatchable      = {};
+    int                   xmlLine             = {};
 
     // RAII data
-    std::map<std::string, CommandData>::const_iterator              destructorIt;
-    std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts;
+    std::map<std::string, CommandData>::const_iterator              destructorIt   = {};
+    std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts = {};
   };
 
   struct IncludeData
   {
-    int xmlLine = 0;
+    int xmlLine = {};
   };
 
   struct MemberData
   {
-    MemberData( int line ) : xmlLine( line ) {}
-
-    TypeInfo                                    type;
-    std::string                                 name;
-    std::vector<std::string>                    arraySizes;
-    std::string                                 bitCount;
-    std::vector<std::string>                    lenExpressions;
-    std::vector<std::pair<std::string, size_t>> lenMembers;
-    bool                                        noAutoValidity = false;
-    std::vector<bool>                           optional;
-    std::vector<std::string>                    selection;
-    std::string                                 selector;
-    std::string                                 value;
-    std::string                                 usedConstant;
-    int                                         xmlLine;
+    TypeInfo                                    type           = {};
+    std::string                                 name           = {};
+    std::vector<std::string>                    arraySizes     = {};
+    std::string                                 bitCount       = {};
+    std::vector<std::string>                    lenExpressions = {};
+    std::vector<std::pair<std::string, size_t>> lenMembers     = {};
+    bool                                        noAutoValidity = {};
+    std::vector<bool>                           optional       = {};
+    std::vector<std::string>                    selection      = {};
+    std::string                                 selector       = {};
+    std::string                                 value          = {};
+    std::string                                 usedConstant   = {};
+    int                                         xmlLine        = {};
   };
 
   struct PlatformData
   {
-    PlatformData( std::string const & protect_, int line ) : protect( protect_ ), xmlLine( line ) {}
-
-    std::string protect;
-    int         xmlLine;
+    std::string protect = {};
+    int         xmlLine = {};
   };
 
   struct StructureData
   {
-    StructureData( std::vector<std::string> const & extends, int line ) : structExtends( extends ), xmlLine( line ) {}
-
-    bool                     allowDuplicate      = false;
-    bool                     isUnion             = false;
-    bool                     returnedOnly        = false;
-    bool                     mutualExclusiveLens = false;
-    std::vector<MemberData>  members;
-    std::vector<std::string> structExtends;
-    std::string              subStruct;
-    int                      xmlLine;
+    bool                     allowDuplicate      = {};
+    bool                     isUnion             = {};
+    bool                     returnedOnly        = {};
+    bool                     mutualExclusiveLens = {};
+    std::vector<MemberData>  members             = {};
+    std::vector<std::string> structExtends       = {};
+    std::string              subStruct           = {};
+    int                      xmlLine             = {};
   };
 
   struct TagData
   {
-    TagData( int line ) : xmlLine( line ) {}
-
-    int xmlLine;
+    int xmlLine = {};
   };
 
   enum class TypeCategory
@@ -407,8 +386,8 @@ private:
   struct TypeData
   {
     TypeCategory          category   = TypeCategory::Unknown;
-    int                   xmlLine    = 0;
     std::set<std::string> requiredBy = {};
+    int                   xmlLine    = {};
   };
 
   struct VectorParamData
@@ -1004,35 +983,35 @@ private:
   std::string              toString( TypeCategory category );
 
 private:
-  std::string                                  m_api;
-  std::map<std::string, BaseTypeData>          m_baseTypes;
-  std::map<std::string, BitmaskData>           m_bitmasks;
-  std::map<std::string, AliasData>             m_bitmasksAliases;
-  std::map<std::string, CommandData>           m_commands;
-  std::map<std::string, AliasData>             m_commandsAliases;
-  std::map<std::string, ConstantData>          m_constants;
-  std::map<std::string, AliasData>             m_constantsAliases;
-  std::map<std::string, DefineData>            m_defines;
-  std::map<std::string, EnumData>              m_enums;
-  std::map<std::string, AliasData>             m_enumsAliases;
-  std::set<std::string>                        m_extendedStructs;  // structs which are referenced by the structextends tag
-  std::vector<ExtensionData>                   m_extensions;
-  std::map<std::string, ExternalTypeData>      m_externalTypes;
-  std::vector<FeatureData>                     m_features;
-  std::map<std::string, FormatData>            m_formats;
-  std::map<std::string, FuncPointerData>       m_funcPointers;
-  std::map<std::string, HandleData>            m_handles;
-  std::map<std::string, AliasData>             m_handlesAliases;
-  std::map<std::string, IncludeData>           m_includes;
-  std::map<std::string, PlatformData>          m_platforms;
-  std::set<std::string>                        m_RAIISpecialFunctions;
-  std::map<std::string, StructureData>         m_structs;
-  std::map<std::string, AliasData>             m_structsAliases;
-  std::map<std::string, TagData>               m_tags;
-  std::map<std::string, TypeData>              m_types;
-  std::string                                  m_typesafeCheck;
-  std::set<std::string>                        m_unsupportedExtensions;
-  std::set<std::string>                        m_unsupportedFeatures;
-  std::string                                  m_version;
-  std::string                                  m_vulkanLicenseHeader;
+  std::string                             m_api;
+  std::map<std::string, BaseTypeData>     m_baseTypes;
+  std::map<std::string, AliasData>        m_bitmaskAliases;
+  std::map<std::string, BitmaskData>      m_bitmasks;
+  std::map<std::string, AliasData>        m_commandAliases;
+  std::map<std::string, CommandData>      m_commands;
+  std::map<std::string, AliasData>        m_constantAliases;
+  std::map<std::string, ConstantData>     m_constants;
+  std::map<std::string, DefineData>       m_defines;
+  std::map<std::string, AliasData>        m_enumAliases;
+  std::map<std::string, EnumData>         m_enums;
+  std::set<std::string>                   m_extendedStructs;  // structs which are referenced by the structextends tag
+  std::vector<ExtensionData>              m_extensions;
+  std::map<std::string, ExternalTypeData> m_externalTypes;
+  std::vector<FeatureData>                m_features;
+  std::map<std::string, FormatData>       m_formats;
+  std::map<std::string, FuncPointerData>  m_funcPointers;
+  std::map<std::string, AliasData>        m_handleAliases;
+  std::map<std::string, HandleData>       m_handles;
+  std::map<std::string, IncludeData>      m_includes;
+  std::map<std::string, PlatformData>     m_platforms;
+  std::set<std::string>                   m_RAIISpecialFunctions;
+  std::map<std::string, AliasData>        m_structAliases;
+  std::map<std::string, StructureData>    m_structs;
+  std::map<std::string, TagData>          m_tags;
+  std::map<std::string, TypeData>         m_types;
+  std::string                             m_typesafeCheck;
+  std::set<std::string>                   m_unsupportedExtensions;
+  std::set<std::string>                   m_unsupportedFeatures;
+  std::string                             m_version;
+  std::string                             m_vulkanLicenseHeader;
 };

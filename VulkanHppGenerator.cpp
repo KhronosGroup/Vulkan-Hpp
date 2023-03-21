@@ -1129,17 +1129,6 @@ void VulkanHppGenerator::checkStructCorrectness() const
       m_structs.find( structAlias.second.name ) != m_structs.end(), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.name + ">" );
   }
 
-  for ( auto const & structAliasInverse : m_structsAliasesInverse )
-  {
-    if ( m_structs.find( structAliasInverse.first ) == m_structs.end() )
-    {
-      assert( !structAliasInverse.second.empty() );
-      auto aliasIt = m_structsAliases.find( *structAliasInverse.second.begin() );
-      assert( aliasIt != m_structsAliases.end() );
-      checkForError( false, aliasIt->second.xmlLine, "struct <" + aliasIt->first + "> uses unknown alias <" + aliasIt->second.name + ">" );
-    }
-  }
-
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structs )
   {
@@ -9271,8 +9260,7 @@ ${hashSum}
   };
 ${leave})";
 
-    auto [enter, leave] =
-      generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+    auto [enter, leave] = generateProtection( getProtectFromType( structure.first ) );
 
     std::string structureType = stripPrefix( structure.first, "Vk" );
     std::string structureName = startLowerCase( structureType );
@@ -9398,8 +9386,7 @@ ${structs}
 
 std::string VulkanHppGenerator::generateStructure( std::pair<std::string, StructureData> const & structure ) const
 {
-  auto [enter, leave] =
-    generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+  auto [enter, leave] = generateProtection( getProtectFromType( structure.first ) );
 
   std::string str = "\n" + enter;
 
@@ -9519,12 +9506,11 @@ ${members}
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureType", structureType } } );
   }
 
-  auto aliasIt = m_structsAliasesInverse.find( structure.first );
-  if ( aliasIt != m_structsAliasesInverse.end() )
+  for ( auto const & alias : m_structsAliases )
   {
-    for ( std::string const & alias : aliasIt->second )
+    if ( alias.second.name == structure.first )
     {
-      str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureType + ";\n";
+      str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
     }
   }
 
@@ -9584,8 +9570,7 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
             }
           }
 
-          auto [subEnter, subLeave] =
-            generateProtection( m_structsAliasesInverse.find( itExtend->first ) == m_structsAliasesInverse.end() ? getProtectFromType( itExtend->first ) : "" );
+          auto [subEnter, subLeave] = generateProtection( getProtectFromType( itExtend->first ) );
 
           if ( enter != subEnter )
           {
@@ -9644,12 +9629,12 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
       {
         std::string structureType = stripPrefix( structIt->first, "Vk" );
         str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
-        auto inverseIt = m_structsAliasesInverse.find( type );
-        if ( inverseIt != m_structsAliasesInverse.end() )
+
+        for ( auto const & alias : m_structsAliases )
         {
-          for ( auto alias : inverseIt->second )
+          if ( alias.second.name == type )
           {
-            str += "  using " + stripPrefix( alias, "Vk" ) + " = " + structureType + ";\n";
+            str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
           }
         }
       }
@@ -10011,8 +9996,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
 
 std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureData> const & structure ) const
 {
-  auto [enter, leave] =
-    generateProtection( m_structsAliasesInverse.find( structure.first ) == m_structsAliasesInverse.end() ? getProtectFromType( structure.first ) : "" );
+  auto [enter, leave]   = generateProtection( getProtectFromType( structure.first ) );
   std::string unionName = stripPrefix( structure.first, "Vk" );
 
   bool               firstMember = true;
@@ -12909,7 +12893,6 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     checkForError( m_types.insert( { name, { TypeCategory::Struct, line } } ).second, line, "struct <" + name + "> already specified" );
     assert( m_structsAliases.find( name ) == m_structsAliases.end() );
     m_structsAliases[name] = { alias, line };
-    checkForError( m_structsAliasesInverse[alias].insert( name ).second, line, "structure alias <" + name + "> already used with structure <" + alias + ">" );
   }
 
   else

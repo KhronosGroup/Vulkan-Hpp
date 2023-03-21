@@ -31295,6 +31295,7 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = PhysicalDeviceExternalMemoryHostPropertiesEXT;
   };
 
+#if defined( VK_USE_PLATFORM_SCI )
   struct PhysicalDeviceExternalMemorySciBufFeaturesNV
   {
     using NativeType = VkPhysicalDeviceExternalMemorySciBufFeaturesNV;
@@ -31302,7 +31303,7 @@ namespace VULKAN_HPP_NAMESPACE
     static const bool                                  allowDuplicate = false;
     static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceExternalMemorySciBufFeaturesNV;
 
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
     VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalMemorySciBufFeaturesNV( VULKAN_HPP_NAMESPACE::Bool32 sciBufImport_ = {},
                                                                        VULKAN_HPP_NAMESPACE::Bool32 sciBufExport_ = {},
                                                                        void *                       pNext_        = nullptr ) VULKAN_HPP_NOEXCEPT
@@ -31320,7 +31321,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     PhysicalDeviceExternalMemorySciBufFeaturesNV & operator=( PhysicalDeviceExternalMemorySciBufFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
     PhysicalDeviceExternalMemorySciBufFeaturesNV & operator=( VkPhysicalDeviceExternalMemorySciBufFeaturesNV const & rhs ) VULKAN_HPP_NOEXCEPT
     {
@@ -31328,7 +31329,7 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
     VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceExternalMemorySciBufFeaturesNV & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
     {
       pNext = pNext_;
@@ -31346,7 +31347,7 @@ namespace VULKAN_HPP_NAMESPACE
       sciBufExport = sciBufExport_;
       return *this;
     }
-#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
 
     operator VkPhysicalDeviceExternalMemorySciBufFeaturesNV const &() const VULKAN_HPP_NOEXCEPT
     {
@@ -31358,35 +31359,35 @@ namespace VULKAN_HPP_NAMESPACE
       return *reinterpret_cast<VkPhysicalDeviceExternalMemorySciBufFeaturesNV *>( this );
     }
 
-#if defined( VULKAN_HPP_USE_REFLECT )
-#  if 14 <= VULKAN_HPP_CPP_VERSION
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
     auto
-#  else
+#    else
     std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Bool32 const &, VULKAN_HPP_NAMESPACE::Bool32 const &>
-#  endif
+#    endif
       reflect() const VULKAN_HPP_NOEXCEPT
     {
       return std::tie( sType, pNext, sciBufImport, sciBufExport );
     }
-#endif
+#  endif
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
     auto operator<=>( PhysicalDeviceExternalMemorySciBufFeaturesNV const & ) const = default;
-#else
+#  else
     bool operator==( PhysicalDeviceExternalMemorySciBufFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if defined( VULKAN_HPP_USE_REFLECT )
       return this->reflect() == rhs.reflect();
-#  else
+#    else
       return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( sciBufImport == rhs.sciBufImport ) && ( sciBufExport == rhs.sciBufExport );
-#  endif
+#    endif
     }
 
     bool operator!=( PhysicalDeviceExternalMemorySciBufFeaturesNV const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
+#  endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType sType        = StructureType::ePhysicalDeviceExternalMemorySciBufFeaturesNV;
@@ -31402,6 +31403,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using PhysicalDeviceExternalSciBufFeaturesNV = PhysicalDeviceExternalMemorySciBufFeaturesNV;
+#endif /*VK_USE_PLATFORM_SCI*/
 
 #if defined( VK_USE_PLATFORM_SCI )
   struct PhysicalDeviceExternalSciSync2FeaturesNV

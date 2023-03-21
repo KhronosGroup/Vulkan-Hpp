@@ -4324,6 +4324,7 @@ namespace std
     }
   };
 
+#  if defined( VK_USE_PLATFORM_SCI )
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalMemorySciBufFeaturesNV>
   {
@@ -4338,6 +4339,7 @@ namespace std
       return seed;
     }
   };
+#  endif /*VK_USE_PLATFORM_SCI*/
 
 #  if defined( VK_USE_PLATFORM_SCI )
   template <>

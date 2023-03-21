@@ -1028,7 +1028,6 @@ private:
   std::set<std::string>                        m_RAIISpecialFunctions;
   std::map<std::string, StructureData>         m_structs;
   std::map<std::string, AliasData>             m_structsAliases;
-  std::map<std::string, std::set<std::string>> m_structsAliasesInverse;
   std::map<std::string, TagData>               m_tags;
   std::map<std::string, TypeData>              m_types;
   std::string                                  m_typesafeCheck;

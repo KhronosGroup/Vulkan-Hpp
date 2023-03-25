@@ -7434,6 +7434,38 @@ namespace std
     }
   };
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDisplacementMicromapFeaturesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDisplacementMicromapFeaturesNV const & physicalDeviceDisplacementMicromapFeaturesNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapFeaturesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapFeaturesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapFeaturesNV.displacementMicromap );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDisplacementMicromapPropertiesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDisplacementMicromapPropertiesNV const & physicalDeviceDisplacementMicromapPropertiesNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapPropertiesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapPropertiesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDisplacementMicromapPropertiesNV.maxDisplacementMicromapSubdivisionLevel );
+      return seed;
+    }
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDriverProperties>
   {

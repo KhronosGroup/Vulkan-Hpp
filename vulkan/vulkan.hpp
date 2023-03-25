@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 244, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 245, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -12285,6 +12285,45 @@ namespace VULKAN_HPP_NAMESPACE
       value = true
     };
   };
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_displacement_micromap ===
+  template <>
+  struct StructExtends<PhysicalDeviceDisplacementMicromapFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDisplacementMicromapFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDisplacementMicromapPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<AccelerationStructureTrianglesDisplacementMicromapNV, AccelerationStructureGeometryTrianglesDataKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_HUAWEI_cluster_culling_shader ===
   template <>

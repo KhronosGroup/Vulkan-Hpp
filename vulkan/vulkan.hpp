@@ -6579,7 +6579,7 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorInvalidVideoStdParametersKHR: throw InvalidVideoStdParametersKHRError( message );
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
         case Result::eErrorCompressionExhaustedEXT: throw CompressionExhaustedEXTError( message );
-        default: throw SystemError( make_error_code( result ) );
+        default: throw SystemError( make_error_code( result ), message );
       }
     }
   }  // namespace

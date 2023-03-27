@@ -9938,7 +9938,7 @@ std::string VulkanHppGenerator::generateThrowResultException() const
       switch ( result )
       {
 ${cases}
-        default: throw SystemError( make_error_code( result ) );
+        default: throw SystemError( make_error_code( result ), message );
       }
     }
   })";

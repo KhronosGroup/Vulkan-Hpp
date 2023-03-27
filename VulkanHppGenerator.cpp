@@ -12969,7 +12969,8 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     static std::set<std::string> mutualExclusiveStructs = {
       "VkAccelerationStructureBuildGeometryInfoKHR", "VkAccelerationStructureTrianglesOpacityMicromapEXT", "VkMicromapBuildInfoEXT", "VkWriteDescriptorSet"
     };
-    static std::set<std::string> multipleLenStructs = { "VkImageConstraintsInfoFUCHSIA",
+    static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
+                                                        "VkImageConstraintsInfoFUCHSIA",
                                                         "VkIndirectCommandsLayoutTokenNV",
                                                         "VkPresentInfoKHR",
                                                         "VkSemaphoreWaitInfo",

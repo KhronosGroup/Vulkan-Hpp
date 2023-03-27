@@ -1447,6 +1447,13 @@ namespace VULKAN_HPP_NAMESPACE
   struct AccelerationStructureTrianglesOpacityMicromapEXT;
   struct MicromapTriangleEXT;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_displacement_micromap ===
+  struct PhysicalDeviceDisplacementMicromapFeaturesNV;
+  struct PhysicalDeviceDisplacementMicromapPropertiesNV;
+  struct AccelerationStructureTrianglesDisplacementMicromapNV;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_HUAWEI_cluster_culling_shader ===
   struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
   struct PhysicalDeviceClusterCullingShaderPropertiesHUAWEI;

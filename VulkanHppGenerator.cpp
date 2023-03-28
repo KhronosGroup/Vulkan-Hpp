@@ -118,6 +118,53 @@ ${indexTypeTraits}
   writeToFile( str, vulkan_enums_hpp );
 }
 
+void VulkanHppGenerator::generateExtensionInspectionFile() const
+{
+  std::string const vulkan_extension_inspection_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_extension_inspection.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_extension_inspection_hpp << " ..." << std::endl;
+
+  std::string const vulkanExtensionInspectionHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_EXTENSION_INSPECTION_HPP
+#  define VULKAN_EXTENSION_INSPECTION_HPP
+
+#include <vulkan/${api}.hpp>
+
+namespace VULKAN_HPP_NAMESPACE
+{
+  //======================================
+  //=== Extension inspection functions ===
+  //======================================
+
+  VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name );
+
+  //=====================================================
+  //=== Extension inspection function implementations ===
+  //=====================================================
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name )
+  {
+    return ${deviceTest};
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )
+  {
+    return ${instanceTest};
+  }
+}   // namespace VULKAN_HPP_NAMESPACE
+
+#endif
+)";
+
+  std::string str = replaceWithMap( vulkanExtensionInspectionHppTemplate,
+                                    { { "api", m_api },
+                                      { "deviceTest", generateExtensionTypeTest( "device" ) },
+                                      { "instanceTest", generateExtensionTypeTest( "instance" ) },
+                                      { "licenseHeader", m_vulkanLicenseHeader } } );
+
+  writeToFile( str, vulkan_extension_inspection_hpp );
+}
+
 void VulkanHppGenerator::generateFormatTraitsHppFile() const
 {
   std::string const vulkan_format_traits_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_format_traits.hpp";
@@ -5502,6 +5549,28 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
     result = result.substr( 0, result.length() - tag.length() ) + tag;
   }
   return result;
+}
+
+std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & type ) const
+{
+  std::string deviceTest, previousEnter, previousLeave;
+  for ( auto const & extension : m_extensions )
+  {
+    if ( extension.type == type )
+    {
+      auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
+      deviceTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( name == \"" + extension.name + "\" ) || ";
+      previousEnter = enter;
+      previousLeave = leave;
+    }
+  }
+  assert( deviceTest.ends_with( " || " ) );
+  deviceTest = deviceTest.substr( 0, deviceTest.length() - 4 );
+  if ( !previousLeave.empty() )
+  {
+    deviceTest += "\n" + previousLeave;
+  }
+  return deviceTest;
 }
 
 std::string VulkanHppGenerator::generateFailureCheck( std::vector<std::string> const & successCodes ) const
@@ -11459,9 +11528,14 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     {
       supported = tokenize( attribute.second, "," );
     }
+    else if ( attribute.first == "type" )
+    {
+      extensionData.type = attribute.second;
+    }
   }
 
   bool extensionSupported = supported.empty() || ( std::find( supported.begin(), supported.end(), m_api ) != supported.end() );
+  checkForError( !extensionSupported || !extensionData.type.empty(), line, "missing attribute \"type\" for supported extension <" + extensionData.name + ">" );
   for ( auto child : children )
   {
     readExtensionRequire( child, extensionData, extensionSupported );
@@ -13834,6 +13908,7 @@ int main( int argc, char ** argv )
 
     generator.generateHppFile();
     generator.generateEnumsHppFile();
+    generator.generateExtensionInspectionFile();
     generator.generateFormatTraitsHppFile();
     generator.prepareVulkanFuncs();
     generator.generateFuncsHppFile();

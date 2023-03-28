@@ -186,6 +186,11 @@ static_assert( VK_HEADER_VERSION == 245, "Wrong VK_HEADER_VERSION!" );
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
+#  if __cpp_constexpr >= 201907
+#    define VULKAN_HPP_CONSTEXPR_20 constexpr
+#  else
+#    define VULKAN_HPP_CONSTEXPR_20
+#  endif
 #  define VULKAN_HPP_CONST_OR_CONSTEXPR constexpr
 #else
 #  define VULKAN_HPP_CONSTEXPR
@@ -13153,7 +13158,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

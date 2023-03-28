@@ -79,6 +79,7 @@ public:
   VulkanHppGenerator( tinyxml2::XMLDocument const & document, std::string const & api );
 
   void generateEnumsHppFile() const;
+  void generateExtensionInspectionFile() const;
   void generateFormatTraitsHppFile() const;
   void generateFuncsHppFile() const;
   void generateHandlesHppFile() const;
@@ -249,6 +250,7 @@ private:
     std::string              promotedTo   = {};
     std::vector<std::string> depends      = {};
     std::vector<RequireData> requireData  = {};
+    std::string              type         = {};
     int                      xmlLine      = 0;
   };
 
@@ -690,6 +692,7 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
+  std::string                         generateExtensionTypeTest( std::string const & type ) const;
   std::string                         generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateFormatTraits() const;
   std::string                         generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;

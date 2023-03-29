@@ -140,13 +140,16 @@ static_assert( VK_HEADER_VERSION == 245, "Wrong VK_HEADER_VERSION!" );
 #  undef MemoryBarrier
 #endif
 
+#if defined( __GNUC__ )
+#  define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
+#endif
+
 #if !defined( VULKAN_HPP_HAS_UNRESTRICTED_UNIONS )
 #  if defined( __clang__ )
 #    if __has_feature( cxx_unrestricted_unions )
 #      define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
 #    endif
 #  elif defined( __GNUC__ )
-#    define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
 #    if 40600 <= GCC_VERSION
 #      define VULKAN_HPP_HAS_UNRESTRICTED_UNIONS
 #    endif
@@ -181,12 +184,12 @@ static_assert( VK_HEADER_VERSION == 245, "Wrong VK_HEADER_VERSION!" );
 
 #if defined( __cpp_constexpr )
 #  define VULKAN_HPP_CONSTEXPR constexpr
-#  if __cpp_constexpr >= 201304
+#  if 201304 <= __cpp_constexpr
 #    define VULKAN_HPP_CONSTEXPR_14 constexpr
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
-#  if __cpp_constexpr >= 201907
+#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110300 < GCC_VERSION ) )
 #    define VULKAN_HPP_CONSTEXPR_20 constexpr
 #  else
 #    define VULKAN_HPP_CONSTEXPR_20

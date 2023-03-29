@@ -1071,24 +1071,29 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
 {
   for ( auto const & extension : m_extensions )
   {
-    // check for existence of any deprecation, obsoletion, or promotion
+    // check for existence of any depends, deprecation, obsoletion, or promotion
+    for ( auto const & depends : extension.depends )
+    {
+      checkForError(
+        isFeature( depends ) || isExtension( depends ), extension.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + depends + ">" );
+    }
     if ( !extension.deprecatedBy.empty() )
     {
       checkForError( isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
                      extension.xmlLine,
-                     "extension deprecated by unknown extension/version <" + extension.promotedTo + ">" );
+                     "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.promotedTo + ">" );
     }
     if ( !extension.obsoletedBy.empty() )
     {
       checkForError( isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
                      extension.xmlLine,
-                     "extension obsoleted by unknown extension/version <" + extension.promotedTo + ">" );
+                     "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.promotedTo + ">" );
     }
     if ( !extension.promotedTo.empty() )
     {
       checkForError( isFeature( extension.promotedTo ) || isExtension( extension.promotedTo ),
                      extension.xmlLine,
-                     "extension promoted to unknown extension/version <" + extension.promotedTo + ">" );
+                     "extension <" + extension.name + "> is promoted to unknown extension/version <" + extension.promotedTo + ">" );
     }
 
     // check for existence of any requirement
@@ -11483,7 +11488,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     if ( attribute.first == "depends" )
     {
       // we don't care about the logical implications of ',' and '+' here, we're just interested to get the depends strings
-      extensionData.depends = tokenize( attribute.second, "," );
+      extensionData.depends = tokenizeAny( attribute.second, ",+()" );
     }
     else if ( attribute.first == "deprecatedby" )
     {
@@ -13750,6 +13755,7 @@ std::vector<std::string> tokenize( std::string const & tokenString, std::string 
 
 std::vector<std::string> tokenizeAny( std::string const & tokenString, std::string const & separators )
 {
+  size_t                   len = tokenString.length();
   std::vector<std::string> tokens;
   if ( !tokenString.empty() )
   {
@@ -13757,7 +13763,7 @@ std::vector<std::string> tokenizeAny( std::string const & tokenString, std::stri
     do
     {
       end = tokenString.find_first_of( separators, start );
-      if ( start != end )
+      if ( ( start != end ) && ( start < len ) )
       {
         tokens.push_back( trim( tokenString.substr( start, end - start ) ) );
       }

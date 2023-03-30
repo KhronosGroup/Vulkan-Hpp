@@ -243,6 +243,7 @@ private:
   struct ExtensionData
   {
     std::string              deprecatedBy = {};
+    bool                     isDeprecated = false;
     std::string              name         = {};
     std::string              number       = {};
     std::string              obsoletedBy  = {};
@@ -692,6 +693,8 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
+  std::string                         generateExtensionDeprecatedBy() const;
+  std::string                         generateExtensionDeprecatedTest() const;
   std::string                         generateExtensionTypeTest( std::string const & type ) const;
   std::string                         generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateFormatTraits() const;

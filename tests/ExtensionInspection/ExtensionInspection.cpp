@@ -17,15 +17,14 @@
 
 #include <vulkan/vulkan_extension_inspection.hpp>
 
-#if defined( _MSC_VER )
-#  pragma warning( disable : 4189 )  // local variable is initialized but not referenced
-#elif defined( __clang__ ) || defined( __GNUC__ )
-#  pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
 int main( int /*argc*/, char ** /*argv*/ )
 {
   bool ok = vk::isInstanceExtension( VK_KHR_SURFACE_EXTENSION_NAME ) && vk::isDeviceExtension( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
+  (void)ok;   // keep the compiler silent
+  if ( vk::isExtensionDeprecated( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ) )
+  {
+    std::string ext = vk::getExtensionDeprecatedBy( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
+  }
 
   return 0;
 }

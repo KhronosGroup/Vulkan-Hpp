@@ -16,12 +16,28 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name );
-  VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
   //=====================================================
   //=== Extension inspection function implementations ===
   //=====================================================
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name )
+  {
+    (void)name;
+
+#if defined( VK_USE_PLATFORM_SCI )
+    if ( name == "VK_NV_external_sci_sync" )
+    {
+      return "VK_NV_external_sci_sync2";
+    }
+#endif /*VK_USE_PLATFORM_SCI*/
+
+    return "";
+  }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name )
   {
@@ -52,6 +68,16 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_NV_external_sci_sync2" )
 #endif /*VK_USE_PLATFORM_SCI*/
       ;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionDeprecated( std::string const & name )
+  {
+    (void)name;
+    return
+#if defined( VK_USE_PLATFORM_SCI )
+      ( name == "VK_NV_external_sci_sync" ) ||
+#endif /*VK_USE_PLATFORM_SCI*/
+      false;
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )

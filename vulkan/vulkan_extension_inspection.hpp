@@ -16,12 +16,85 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name );
-  VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
   //=====================================================
   //=== Extension inspection function implementations ===
   //=====================================================
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name )
+  {
+    if ( name == "VK_EXT_debug_report" )
+    {
+      return "VK_EXT_debug_utils";
+    }
+    if ( name == "VK_NV_glsl_shader" )
+    {
+      return "";
+    }
+    if ( name == "VK_NV_dedicated_allocation" )
+    {
+      return "VK_KHR_dedicated_allocation";
+    }
+    if ( name == "VK_AMD_gpu_shader_half_float" )
+    {
+      return "VK_KHR_shader_float16_int8";
+    }
+    if ( name == "VK_IMG_format_pvrtc" )
+    {
+      return "";
+    }
+    if ( name == "VK_NV_external_memory_capabilities" )
+    {
+      return "VK_KHR_external_memory_capabilities";
+    }
+    if ( name == "VK_NV_external_memory" )
+    {
+      return "VK_KHR_external_memory";
+    }
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+    if ( name == "VK_NV_external_memory_win32" )
+    {
+      return "VK_KHR_external_memory_win32";
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+    if ( name == "VK_EXT_validation_flags" )
+    {
+      return "VK_EXT_validation_features";
+    }
+    if ( name == "VK_EXT_shader_subgroup_ballot" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_shader_subgroup_vote" )
+    {
+      return "VK_VERSION_1_1";
+    }
+#if defined( VK_USE_PLATFORM_IOS_MVK )
+    if ( name == "VK_MVK_ios_surface" )
+    {
+      return "VK_EXT_metal_surface";
+    }
+#endif /*VK_USE_PLATFORM_IOS_MVK*/
+#if defined( VK_USE_PLATFORM_MACOS_MVK )
+    if ( name == "VK_MVK_macos_surface" )
+    {
+      return "VK_EXT_metal_surface";
+    }
+#endif /*VK_USE_PLATFORM_MACOS_MVK*/
+    if ( name == "VK_AMD_gpu_shader_int16" )
+    {
+      return "VK_KHR_shader_float16_int8";
+    }
+    if ( name == "VK_EXT_buffer_device_address" )
+    {
+      return "VK_KHR_buffer_device_address";
+    }
+    return "";
+  }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name )
   {
@@ -166,6 +239,24 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_QCOM_multiview_per_view_viewports" ) || ( name == "VK_NV_ray_tracing_invocation_reorder" ) ||
            ( name == "VK_EXT_mutable_descriptor_type" ) || ( name == "VK_ARM_shader_core_builtins" ) || ( name == "VK_EXT_pipeline_library_group_handles" ) ||
            ( name == "VK_QCOM_multiview_per_view_render_areas" );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionDeprecated( std::string const & name )
+  {
+    return ( name == "VK_EXT_debug_report" ) || ( name == "VK_NV_glsl_shader" ) || ( name == "VK_NV_dedicated_allocation" ) ||
+           ( name == "VK_AMD_gpu_shader_half_float" ) || ( name == "VK_IMG_format_pvrtc" ) || ( name == "VK_NV_external_memory_capabilities" ) ||
+           ( name == "VK_NV_external_memory" ) ||
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+           ( name == "VK_NV_external_memory_win32" ) ||
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+           ( name == "VK_EXT_validation_flags" ) || ( name == "VK_EXT_shader_subgroup_ballot" ) || ( name == "VK_EXT_shader_subgroup_vote" ) ||
+#if defined( VK_USE_PLATFORM_IOS_MVK )
+           ( name == "VK_MVK_ios_surface" ) ||
+#endif /*VK_USE_PLATFORM_IOS_MVK*/
+#if defined( VK_USE_PLATFORM_MACOS_MVK )
+           ( name == "VK_MVK_macos_surface" ) ||
+#endif /*VK_USE_PLATFORM_MACOS_MVK*/
+           ( name == "VK_AMD_gpu_shader_int16" ) || ( name == "VK_EXT_buffer_device_address" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )

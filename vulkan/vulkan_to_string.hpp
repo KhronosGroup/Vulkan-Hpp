@@ -3206,6 +3206,32 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
+  //=== VK_EXT_shader_object ===
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderCreateFlagsEXT value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & ShaderCreateFlagBitsEXT::eLinkStage )
+      result += "LinkStage | ";
+    if ( value & ShaderCreateFlagBitsEXT::eAllowVaryingSubgroupSize )
+      result += "AllowVaryingSubgroupSize | ";
+    if ( value & ShaderCreateFlagBitsEXT::eRequireFullSubgroups )
+      result += "RequireFullSubgroups | ";
+    if ( value & ShaderCreateFlagBitsEXT::eNoTaskShader )
+      result += "NoTaskShader | ";
+    if ( value & ShaderCreateFlagBitsEXT::eDispatchBase )
+      result += "DispatchBase | ";
+    if ( value & ShaderCreateFlagBitsEXT::eFragmentShadingRateAttachment )
+      result += "FragmentShadingRateAttachment | ";
+    if ( value & ShaderCreateFlagBitsEXT::eFragmentDensityMapAttachment )
+      result += "FragmentDensityMapAttachment | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
   //=======================
   //=== ENUMs to_string ===
   //=======================
@@ -3277,6 +3303,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorInvalidVideoStdParametersKHR: return "ErrorInvalidVideoStdParametersKHR";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case Result::eErrorCompressionExhaustedEXT: return "ErrorCompressionExhaustedEXT";
+      case Result::eErrorIncompatibleShaderBinaryEXT: return "ErrorIncompatibleShaderBinaryEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4019,6 +4046,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceMultiDrawFeaturesEXT: return "PhysicalDeviceMultiDrawFeaturesEXT";
       case StructureType::ePhysicalDeviceMultiDrawPropertiesEXT: return "PhysicalDeviceMultiDrawPropertiesEXT";
       case StructureType::ePhysicalDeviceImage2DViewOf3DFeaturesEXT: return "PhysicalDeviceImage2DViewOf3DFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderTileImageFeaturesEXT: return "PhysicalDeviceShaderTileImageFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderTileImagePropertiesEXT: return "PhysicalDeviceShaderTileImagePropertiesEXT";
       case StructureType::eMicromapBuildInfoEXT: return "MicromapBuildInfoEXT";
       case StructureType::eMicromapVersionInfoEXT: return "MicromapVersionInfoEXT";
       case StructureType::eCopyMicromapInfoEXT: return "CopyMicromapInfoEXT";
@@ -4081,6 +4110,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eOpticalFlowSessionCreatePrivateDataInfoNV: return "OpticalFlowSessionCreatePrivateDataInfoNV";
       case StructureType::ePhysicalDeviceLegacyDitheringFeaturesEXT: return "PhysicalDeviceLegacyDitheringFeaturesEXT";
       case StructureType::ePhysicalDevicePipelineProtectedAccessFeaturesEXT: return "PhysicalDevicePipelineProtectedAccessFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderObjectFeaturesEXT: return "PhysicalDeviceShaderObjectFeaturesEXT";
+      case StructureType::ePhysicalDeviceShaderObjectPropertiesEXT: return "PhysicalDeviceShaderObjectPropertiesEXT";
+      case StructureType::eShaderCreateInfoEXT: return "ShaderCreateInfoEXT";
       case StructureType::ePhysicalDeviceTilePropertiesFeaturesQCOM: return "PhysicalDeviceTilePropertiesFeaturesQCOM";
       case StructureType::eTilePropertiesQCOM: return "TilePropertiesQCOM";
       case StructureType::ePhysicalDeviceAmigoProfilingFeaturesSEC: return "PhysicalDeviceAmigoProfilingFeaturesSEC";
@@ -4162,6 +4194,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
       case ObjectType::eMicromapEXT: return "MicromapEXT";
       case ObjectType::eOpticalFlowSessionNV: return "OpticalFlowSessionNV";
+      case ObjectType::eShaderEXT: return "ShaderEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8309,6 +8342,33 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case OpticalFlowExecuteFlagBitsNV::eDisableTemporalHints: return "DisableTemporalHints";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_EXT_shader_object ===
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderCreateFlagBitsEXT value )
+  {
+    switch ( value )
+    {
+      case ShaderCreateFlagBitsEXT::eLinkStage: return "LinkStage";
+      case ShaderCreateFlagBitsEXT::eAllowVaryingSubgroupSize: return "AllowVaryingSubgroupSize";
+      case ShaderCreateFlagBitsEXT::eRequireFullSubgroups: return "RequireFullSubgroups";
+      case ShaderCreateFlagBitsEXT::eNoTaskShader: return "NoTaskShader";
+      case ShaderCreateFlagBitsEXT::eDispatchBase: return "DispatchBase";
+      case ShaderCreateFlagBitsEXT::eFragmentShadingRateAttachment: return "FragmentShadingRateAttachment";
+      case ShaderCreateFlagBitsEXT::eFragmentDensityMapAttachment: return "FragmentDensityMapAttachment";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( ShaderCodeTypeEXT value )
+  {
+    switch ( value )
+    {
+      case ShaderCodeTypeEXT::eBinary: return "Binary";
+      case ShaderCodeTypeEXT::eSpirv: return "Spirv";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

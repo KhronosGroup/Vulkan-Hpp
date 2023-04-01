@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 245, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 246, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5854,6 +5854,35 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdOpticalFlowExecuteNV( commandBuffer, session, pExecuteInfo );
     }
 
+    //=== VK_EXT_shader_object ===
+
+    VkResult vkCreateShadersEXT( VkDevice                      device,
+                                 uint32_t                      createInfoCount,
+                                 const VkShaderCreateInfoEXT * pCreateInfos,
+                                 const VkAllocationCallbacks * pAllocator,
+                                 VkShaderEXT *                 pShaders ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateShadersEXT( device, createInfoCount, pCreateInfos, pAllocator, pShaders );
+    }
+
+    void vkDestroyShaderEXT( VkDevice device, VkShaderEXT shader, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyShaderEXT( device, shader, pAllocator );
+    }
+
+    VkResult vkGetShaderBinaryDataEXT( VkDevice device, VkShaderEXT shader, size_t * pDataSize, void * pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetShaderBinaryDataEXT( device, shader, pDataSize, pData );
+    }
+
+    void vkCmdBindShadersEXT( VkCommandBuffer               commandBuffer,
+                              uint32_t                      stageCount,
+                              const VkShaderStageFlagBits * pStages,
+                              const VkShaderEXT *           pShaders ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdBindShadersEXT( commandBuffer, stageCount, pStages, pShaders );
+    }
+
     //=== VK_QCOM_tile_properties ===
 
     VkResult vkGetFramebufferTilePropertiesQCOM( VkDevice               device,
@@ -6543,6 +6572,14 @@ namespace VULKAN_HPP_NAMESPACE
     CompressionExhaustedEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorCompressionExhaustedEXT ), message ) {}
   };
 
+  class IncompatibleShaderBinaryEXTError : public SystemError
+  {
+  public:
+    IncompatibleShaderBinaryEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorIncompatibleShaderBinaryEXT ), message ) {}
+
+    IncompatibleShaderBinaryEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorIncompatibleShaderBinaryEXT ), message ) {}
+  };
+
   namespace
   {
     [[noreturn]] void throwResultException( Result result, char const * message )
@@ -6587,6 +6624,7 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorInvalidVideoStdParametersKHR: throw InvalidVideoStdParametersKHRError( message );
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
         case Result::eErrorCompressionExhaustedEXT: throw CompressionExhaustedEXTError( message );
+        case Result::eErrorIncompatibleShaderBinaryEXT: throw IncompatibleShaderBinaryEXTError( message );
         default: throw SystemError( make_error_code( result ), message );
       }
     }
@@ -7964,6 +8002,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfo, PipelineShaderStageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfo, ShaderCreateInfoEXT>
   {
     enum
     {
@@ -12257,6 +12304,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_shader_tile_image ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderTileImageFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderTileImageFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderTileImagePropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_opacity_micromap ===
   template <>
   struct StructExtends<PhysicalDeviceOpacityMicromapFeaturesEXT, PhysicalDeviceFeatures2>
@@ -12913,6 +12988,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_shader_object ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderObjectFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderObjectFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderObjectPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_QCOM_tile_properties ===
   template <>
   struct StructExtends<PhysicalDeviceTilePropertiesFeaturesQCOM, PhysicalDeviceFeatures2>
@@ -13161,7 +13264,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif
@@ -14262,6 +14365,12 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkDestroyOpticalFlowSessionNV                vkDestroyOpticalFlowSessionNV                = 0;
     PFN_vkBindOpticalFlowSessionImageNV              vkBindOpticalFlowSessionImageNV              = 0;
     PFN_vkCmdOpticalFlowExecuteNV                    vkCmdOpticalFlowExecuteNV                    = 0;
+
+    //=== VK_EXT_shader_object ===
+    PFN_vkCreateShadersEXT       vkCreateShadersEXT       = 0;
+    PFN_vkDestroyShaderEXT       vkDestroyShaderEXT       = 0;
+    PFN_vkGetShaderBinaryDataEXT vkGetShaderBinaryDataEXT = 0;
+    PFN_vkCmdBindShadersEXT      vkCmdBindShadersEXT      = 0;
 
     //=== VK_QCOM_tile_properties ===
     PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
@@ -15545,6 +15654,12 @@ namespace VULKAN_HPP_NAMESPACE
       vkBindOpticalFlowSessionImageNV = PFN_vkBindOpticalFlowSessionImageNV( vkGetInstanceProcAddr( instance, "vkBindOpticalFlowSessionImageNV" ) );
       vkCmdOpticalFlowExecuteNV       = PFN_vkCmdOpticalFlowExecuteNV( vkGetInstanceProcAddr( instance, "vkCmdOpticalFlowExecuteNV" ) );
 
+      //=== VK_EXT_shader_object ===
+      vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetInstanceProcAddr( instance, "vkCreateShadersEXT" ) );
+      vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetInstanceProcAddr( instance, "vkDestroyShaderEXT" ) );
+      vkGetShaderBinaryDataEXT = PFN_vkGetShaderBinaryDataEXT( vkGetInstanceProcAddr( instance, "vkGetShaderBinaryDataEXT" ) );
+      vkCmdBindShadersEXT      = PFN_vkCmdBindShadersEXT( vkGetInstanceProcAddr( instance, "vkCmdBindShadersEXT" ) );
+
       //=== VK_QCOM_tile_properties ===
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetFramebufferTilePropertiesQCOM" ) );
       vkGetDynamicRenderingTilePropertiesQCOM =
@@ -16495,6 +16610,12 @@ namespace VULKAN_HPP_NAMESPACE
       vkDestroyOpticalFlowSessionNV   = PFN_vkDestroyOpticalFlowSessionNV( vkGetDeviceProcAddr( device, "vkDestroyOpticalFlowSessionNV" ) );
       vkBindOpticalFlowSessionImageNV = PFN_vkBindOpticalFlowSessionImageNV( vkGetDeviceProcAddr( device, "vkBindOpticalFlowSessionImageNV" ) );
       vkCmdOpticalFlowExecuteNV       = PFN_vkCmdOpticalFlowExecuteNV( vkGetDeviceProcAddr( device, "vkCmdOpticalFlowExecuteNV" ) );
+
+      //=== VK_EXT_shader_object ===
+      vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );
+      vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetDeviceProcAddr( device, "vkDestroyShaderEXT" ) );
+      vkGetShaderBinaryDataEXT = PFN_vkGetShaderBinaryDataEXT( vkGetDeviceProcAddr( device, "vkGetShaderBinaryDataEXT" ) );
+      vkCmdBindShadersEXT      = PFN_vkCmdBindShadersEXT( vkGetDeviceProcAddr( device, "vkCmdBindShadersEXT" ) );
 
       //=== VK_QCOM_tile_properties ===
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );

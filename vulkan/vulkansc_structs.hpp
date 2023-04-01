@@ -45371,6 +45371,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
+  using ShaderRequiredSubgroupSizeCreateInfoEXT              = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
 
   struct PipelineTessellationDomainOriginStateCreateInfo
   {

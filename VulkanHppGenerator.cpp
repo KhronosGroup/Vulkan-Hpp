@@ -7861,7 +7861,10 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership( std:
     }
 #endif
     constructorArguments += ", VULKAN_HPP_NAMESPACE::Result successCode = VULKAN_HPP_NAMESPACE::Result::eSuccess";
-    initializationList += ", m_constructorSuccessCode( successCode )";
+    if ( isMultiSuccessCodeConstructor( handle.second.constructorIts ) )
+    {
+      initializationList += ", m_constructorSuccessCode( successCode )";
+    }
   }
 
   std::string dispatcherInitializer;
@@ -7988,18 +7991,25 @@ std::string
   std::string callArguments      = generateRAIIHandleConstructorCallArguments( handle, constructorIt, false, singularParams, true );
   std::string initializationList = generateRAIIHandleConstructorInitializationList( handle, constructorIt, handle.second.destructorIt, false );
   assert( !initializationList.empty() );
-  std::string failureCheck = generateFailureCheck( constructorIt->second.successCodes );
-  failureCheck             = std::regex_replace( failureCheck, std::regex( "result" ), "m_constructorSuccessCode" );
+  std::string resultVariable = "VULKAN_HPP_NAMESPACE::Result result";
+  std::string failureCheck   = generateFailureCheck( constructorIt->second.successCodes );
+  std::string result         = "result";
+  if ( isMultiSuccessCodeConstructor( handle.second.constructorIts ) )
+  {
+    resultVariable = "m_constructorSuccessCode";
+    failureCheck   = std::regex_replace( failureCheck, std::regex( "result" ), "m_constructorSuccessCode" );
+    result         = "m_constructorSuccessCode";
+  }
 
   const std::string singularConstructorTemplate =
     R"(
 ${enter}    ${handleType}( ${constructorArguments} )
       : ${initializationList}, m_dispatcher( ${firstArgument}.getDispatcher() )
     {
-      m_constructorSuccessCode = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${constructorCall}( ${callArguments} ) );
+      ${resultVariable} = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${constructorCall}( ${callArguments} ) );
       if ( ${failureCheck} )
       {
-        throwResultException( m_constructorSuccessCode, "${constructorCall}" );
+        throwResultException( ${result}, "${constructorCall}" );
       }
     }
 ${leave})";
@@ -8013,7 +8023,9 @@ ${leave})";
                            { "firstArgument", constructorIt->second.params[0].name },
                            { "failureCheck", failureCheck },
                            { "leave", leave },
-                           { "handleType", stripPrefix( handle.first, "Vk" ) } } );
+                           { "handleType", stripPrefix( handle.first, "Vk" ) },
+                           { "result", result },
+                           { "resultVariable", resultVariable } } );
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstructorVoid( std::pair<std::string, HandleData> const &         handle,

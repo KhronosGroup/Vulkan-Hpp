@@ -223,7 +223,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_EXT_pipeline_properties" ) || ( name == "VK_EXT_multisampled_render_to_single_sampled" ) ||
            ( name == "VK_EXT_extended_dynamic_state2" ) || ( name == "VK_EXT_color_write_enable" ) || ( name == "VK_EXT_primitives_generated_query" ) ||
            ( name == "VK_KHR_ray_tracing_maintenance1" ) || ( name == "VK_EXT_global_priority_query" ) || ( name == "VK_EXT_image_view_min_lod" ) ||
-           ( name == "VK_EXT_multi_draw" ) || ( name == "VK_EXT_image_2d_view_of_3d" ) || ( name == "VK_EXT_opacity_micromap" ) ||
+           ( name == "VK_EXT_multi_draw" ) || ( name == "VK_EXT_image_2d_view_of_3d" ) || ( name == "VK_EXT_shader_tile_image" ) ||
+           ( name == "VK_EXT_opacity_micromap" ) ||
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
            ( name == "VK_NV_displacement_micromap" ) ||
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -235,8 +236,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_EXT_image_compression_control_swapchain" ) || ( name == "VK_QCOM_image_processing" ) || ( name == "VK_EXT_extended_dynamic_state3" ) ||
            ( name == "VK_EXT_subpass_merge_feedback" ) || ( name == "VK_EXT_shader_module_identifier" ) ||
            ( name == "VK_EXT_rasterization_order_attachment_access" ) || ( name == "VK_NV_optical_flow" ) || ( name == "VK_EXT_legacy_dithering" ) ||
-           ( name == "VK_EXT_pipeline_protected_access" ) || ( name == "VK_QCOM_tile_properties" ) || ( name == "VK_SEC_amigo_profiling" ) ||
-           ( name == "VK_QCOM_multiview_per_view_viewports" ) || ( name == "VK_NV_ray_tracing_invocation_reorder" ) ||
+           ( name == "VK_EXT_pipeline_protected_access" ) || ( name == "VK_EXT_shader_object" ) || ( name == "VK_QCOM_tile_properties" ) ||
+           ( name == "VK_SEC_amigo_profiling" ) || ( name == "VK_QCOM_multiview_per_view_viewports" ) || ( name == "VK_NV_ray_tracing_invocation_reorder" ) ||
            ( name == "VK_EXT_mutable_descriptor_type" ) || ( name == "VK_ARM_shader_core_builtins" ) || ( name == "VK_EXT_pipeline_library_group_handles" ) ||
            ( name == "VK_QCOM_multiview_per_view_render_areas" );
   }

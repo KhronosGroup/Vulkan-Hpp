@@ -5421,6 +5421,15 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct StructExtends<PipelineShaderStageRequiredSubgroupSizeCreateInfo, ShaderCreateInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
   struct StructExtends<PhysicalDeviceInlineUniformBlockFeatures, PhysicalDeviceFeatures2>
   {
     enum

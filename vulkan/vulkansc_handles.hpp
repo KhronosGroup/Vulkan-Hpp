@@ -410,6 +410,7 @@ namespace VULKAN_HPP_NAMESPACE
   using PhysicalDeviceSubgroupSizeControlPropertiesEXT = PhysicalDeviceSubgroupSizeControlProperties;
   struct PipelineShaderStageRequiredSubgroupSizeCreateInfo;
   using PipelineShaderStageRequiredSubgroupSizeCreateInfoEXT = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
+  using ShaderRequiredSubgroupSizeCreateInfoEXT              = PipelineShaderStageRequiredSubgroupSizeCreateInfo;
   struct PhysicalDeviceInlineUniformBlockFeatures;
   using PhysicalDeviceInlineUniformBlockFeaturesEXT = PhysicalDeviceInlineUniformBlockFeatures;
   struct PhysicalDeviceInlineUniformBlockProperties;

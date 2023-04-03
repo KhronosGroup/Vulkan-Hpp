@@ -14010,6 +14010,10 @@ int main( int argc, char ** argv )
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";
 #endif
+
+/**
+temp
+*/
   }
   catch ( std::exception const & e )
   {

@@ -17,8 +17,10 @@ namespace VULKAN_HPP_NAMESPACE
   //======================================
 
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionPromoted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
   //=====================================================
@@ -92,6 +94,325 @@ namespace VULKAN_HPP_NAMESPACE
     if ( name == "VK_EXT_buffer_device_address" )
     {
       return "VK_KHR_buffer_device_address";
+    }
+    return "";
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name )
+  {
+    if ( name == "VK_KHR_sampler_mirror_clamp_to_edge" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_debug_marker" )
+    {
+      return "VK_EXT_debug_utils";
+    }
+    if ( name == "VK_AMD_draw_indirect_count" )
+    {
+      return "VK_KHR_draw_indirect_count";
+    }
+    if ( name == "VK_KHR_dynamic_rendering" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_multiview" )
+    {
+      return "VK_VERSION_1_1";
+    }
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+    if ( name == "VK_NV_win32_keyed_mutex" )
+    {
+      return "VK_KHR_win32_keyed_mutex";
+    }
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+    if ( name == "VK_KHR_get_physical_device_properties2" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_device_group" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_shader_draw_parameters" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_EXT_texture_compression_astc_hdr" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_maintenance1" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_device_group_creation" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_external_memory_capabilities" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_external_memory" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_external_semaphore_capabilities" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_external_semaphore" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_shader_float16_int8" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_16bit_storage" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_descriptor_update_template" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_imageless_framebuffer" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_create_renderpass2" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_external_fence_capabilities" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_external_fence" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_maintenance2" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_variable_pointers" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_dedicated_allocation" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_EXT_sampler_filter_minmax" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_storage_buffer_storage_class" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_EXT_inline_uniform_block" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_relaxed_block_layout" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_get_memory_requirements2" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_image_format_list" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_sampler_ycbcr_conversion" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_bind_memory2" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_EXT_descriptor_indexing" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_shader_viewport_index_layer" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_maintenance3" )
+    {
+      return "VK_VERSION_1_1";
+    }
+    if ( name == "VK_KHR_draw_indirect_count" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_global_priority" )
+    {
+      return "VK_KHR_global_priority";
+    }
+    if ( name == "VK_KHR_shader_subgroup_extended_types" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_8bit_storage" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_shader_atomic_int64" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_pipeline_creation_feedback" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_driver_properties" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_shader_float_controls" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_depth_stencil_resolve" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_NV_fragment_shader_barycentric" )
+    {
+      return "VK_KHR_fragment_shader_barycentric";
+    }
+    if ( name == "VK_KHR_timeline_semaphore" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_vulkan_memory_model" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_shader_terminate_invocation" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_scalar_block_layout" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_subgroup_size_control" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_spirv_1_4" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_separate_depth_stencil_layouts" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_tooling_info" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_separate_stencil_usage" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_uniform_buffer_standard_layout" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_KHR_buffer_device_address" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_host_query_reset" )
+    {
+      return "VK_VERSION_1_2";
+    }
+    if ( name == "VK_EXT_extended_dynamic_state" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_shader_demote_to_helper_invocation" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_shader_integer_dot_product" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_texel_buffer_alignment" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_shader_non_semantic_info" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_private_data" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_pipeline_creation_cache_control" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_synchronization2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_zero_initialize_workgroup_memory" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_ycbcr_2plane_444_formats" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_image_robustness" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_copy_commands2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_4444_formats" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_ARM_rasterization_order_attachment_access" )
+    {
+      return "VK_EXT_rasterization_order_attachment_access";
+    }
+    if ( name == "VK_VALVE_mutable_descriptor_type" )
+    {
+      return "VK_EXT_mutable_descriptor_type";
+    }
+    if ( name == "VK_KHR_format_feature_flags2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_extended_dynamic_state2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_global_priority_query" )
+    {
+      return "VK_KHR_global_priority";
+    }
+    if ( name == "VK_KHR_maintenance4" )
+    {
+      return "VK_VERSION_1_3";
     }
     return "";
   }
@@ -258,6 +579,40 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_MVK_macos_surface" ) ||
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
            ( name == "VK_AMD_gpu_shader_int16" ) || ( name == "VK_EXT_buffer_device_address" );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionPromoted( std::string const & name )
+  {
+    return ( name == "VK_KHR_sampler_mirror_clamp_to_edge" ) || ( name == "VK_EXT_debug_marker" ) || ( name == "VK_AMD_draw_indirect_count" ) ||
+           ( name == "VK_KHR_dynamic_rendering" ) || ( name == "VK_KHR_multiview" ) ||
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+           ( name == "VK_NV_win32_keyed_mutex" ) ||
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+           ( name == "VK_KHR_get_physical_device_properties2" ) || ( name == "VK_KHR_device_group" ) || ( name == "VK_KHR_shader_draw_parameters" ) ||
+           ( name == "VK_EXT_texture_compression_astc_hdr" ) || ( name == "VK_KHR_maintenance1" ) || ( name == "VK_KHR_device_group_creation" ) ||
+           ( name == "VK_KHR_external_memory_capabilities" ) || ( name == "VK_KHR_external_memory" ) || ( name == "VK_KHR_external_semaphore_capabilities" ) ||
+           ( name == "VK_KHR_external_semaphore" ) || ( name == "VK_KHR_shader_float16_int8" ) || ( name == "VK_KHR_16bit_storage" ) ||
+           ( name == "VK_KHR_descriptor_update_template" ) || ( name == "VK_KHR_imageless_framebuffer" ) || ( name == "VK_KHR_create_renderpass2" ) ||
+           ( name == "VK_KHR_external_fence_capabilities" ) || ( name == "VK_KHR_external_fence" ) || ( name == "VK_KHR_maintenance2" ) ||
+           ( name == "VK_KHR_variable_pointers" ) || ( name == "VK_KHR_dedicated_allocation" ) || ( name == "VK_EXT_sampler_filter_minmax" ) ||
+           ( name == "VK_KHR_storage_buffer_storage_class" ) || ( name == "VK_EXT_inline_uniform_block" ) || ( name == "VK_KHR_relaxed_block_layout" ) ||
+           ( name == "VK_KHR_get_memory_requirements2" ) || ( name == "VK_KHR_image_format_list" ) || ( name == "VK_KHR_sampler_ycbcr_conversion" ) ||
+           ( name == "VK_KHR_bind_memory2" ) || ( name == "VK_EXT_descriptor_indexing" ) || ( name == "VK_EXT_shader_viewport_index_layer" ) ||
+           ( name == "VK_KHR_maintenance3" ) || ( name == "VK_KHR_draw_indirect_count" ) || ( name == "VK_EXT_global_priority" ) ||
+           ( name == "VK_KHR_shader_subgroup_extended_types" ) || ( name == "VK_KHR_8bit_storage" ) || ( name == "VK_KHR_shader_atomic_int64" ) ||
+           ( name == "VK_EXT_pipeline_creation_feedback" ) || ( name == "VK_KHR_driver_properties" ) || ( name == "VK_KHR_shader_float_controls" ) ||
+           ( name == "VK_KHR_depth_stencil_resolve" ) || ( name == "VK_NV_fragment_shader_barycentric" ) || ( name == "VK_KHR_timeline_semaphore" ) ||
+           ( name == "VK_KHR_vulkan_memory_model" ) || ( name == "VK_KHR_shader_terminate_invocation" ) || ( name == "VK_EXT_scalar_block_layout" ) ||
+           ( name == "VK_EXT_subgroup_size_control" ) || ( name == "VK_KHR_spirv_1_4" ) || ( name == "VK_KHR_separate_depth_stencil_layouts" ) ||
+           ( name == "VK_EXT_tooling_info" ) || ( name == "VK_EXT_separate_stencil_usage" ) || ( name == "VK_KHR_uniform_buffer_standard_layout" ) ||
+           ( name == "VK_KHR_buffer_device_address" ) || ( name == "VK_EXT_host_query_reset" ) || ( name == "VK_EXT_extended_dynamic_state" ) ||
+           ( name == "VK_EXT_shader_demote_to_helper_invocation" ) || ( name == "VK_KHR_shader_integer_dot_product" ) ||
+           ( name == "VK_EXT_texel_buffer_alignment" ) || ( name == "VK_KHR_shader_non_semantic_info" ) || ( name == "VK_EXT_private_data" ) ||
+           ( name == "VK_EXT_pipeline_creation_cache_control" ) || ( name == "VK_KHR_synchronization2" ) ||
+           ( name == "VK_KHR_zero_initialize_workgroup_memory" ) || ( name == "VK_EXT_ycbcr_2plane_444_formats" ) || ( name == "VK_EXT_image_robustness" ) ||
+           ( name == "VK_KHR_copy_commands2" ) || ( name == "VK_EXT_4444_formats" ) || ( name == "VK_ARM_rasterization_order_attachment_access" ) ||
+           ( name == "VK_VALVE_mutable_descriptor_type" ) || ( name == "VK_KHR_format_feature_flags2" ) || ( name == "VK_EXT_extended_dynamic_state2" ) ||
+           ( name == "VK_EXT_global_priority_query" ) || ( name == "VK_KHR_maintenance4" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )

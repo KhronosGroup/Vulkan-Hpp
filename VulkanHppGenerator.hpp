@@ -695,6 +695,8 @@ private:
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
   std::string                         generateExtensionDeprecatedBy() const;
   std::string                         generateExtensionDeprecatedTest() const;
+  std::string                         generateExtensionPromotedTest() const;
+  std::string                         generateExtensionPromotedTo() const;
   std::string                         generateExtensionTypeTest( std::string const & type ) const;
   std::string                         generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string                         generateFormatTraits() const;

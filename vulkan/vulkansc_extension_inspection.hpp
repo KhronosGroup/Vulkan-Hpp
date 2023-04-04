@@ -17,8 +17,10 @@ namespace VULKAN_HPP_NAMESPACE
   //======================================
 
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionPromoted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
   //=====================================================
@@ -36,6 +38,63 @@ namespace VULKAN_HPP_NAMESPACE
     }
 #endif /*VK_USE_PLATFORM_SCI*/
 
+    return "";
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name )
+  {
+    if ( name == "VK_EXT_texture_compression_astc_hdr" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_global_priority" )
+    {
+      return "VK_KHR_global_priority";
+    }
+    if ( name == "VK_KHR_shader_terminate_invocation" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_subgroup_size_control" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_extended_dynamic_state" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_shader_demote_to_helper_invocation" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_texel_buffer_alignment" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_synchronization2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_ycbcr_2plane_444_formats" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_image_robustness" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_KHR_copy_commands2" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_4444_formats" )
+    {
+      return "VK_VERSION_1_3";
+    }
+    if ( name == "VK_EXT_extended_dynamic_state2" )
+    {
+      return "VK_VERSION_1_3";
+    }
     return "";
   }
 
@@ -78,6 +137,15 @@ namespace VULKAN_HPP_NAMESPACE
       ( name == "VK_NV_external_sci_sync" ) ||
 #endif /*VK_USE_PLATFORM_SCI*/
       false;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionPromoted( std::string const & name )
+  {
+    return ( name == "VK_EXT_texture_compression_astc_hdr" ) || ( name == "VK_EXT_global_priority" ) || ( name == "VK_KHR_shader_terminate_invocation" ) ||
+           ( name == "VK_EXT_subgroup_size_control" ) || ( name == "VK_EXT_extended_dynamic_state" ) ||
+           ( name == "VK_EXT_shader_demote_to_helper_invocation" ) || ( name == "VK_EXT_texel_buffer_alignment" ) || ( name == "VK_KHR_synchronization2" ) ||
+           ( name == "VK_EXT_ycbcr_2plane_444_formats" ) || ( name == "VK_EXT_image_robustness" ) || ( name == "VK_KHR_copy_commands2" ) ||
+           ( name == "VK_EXT_4444_formats" ) || ( name == "VK_EXT_extended_dynamic_state2" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )

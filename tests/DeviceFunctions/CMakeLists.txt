@@ -18,7 +18,7 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 
 	find_package(Vulkan REQUIRED)
 
-	project(DeviceFunctions)
+	project(DeviceFunctions LANGUAGES CXX)
 
 	set(HEADERS
 	)

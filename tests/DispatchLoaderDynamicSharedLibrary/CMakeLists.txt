@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(DispatchLoaderDynamicSharedLibrary)
+project(DispatchLoaderDynamicSharedLibrary LANGUAGES CXX)
 
 set(HEADERS
 )

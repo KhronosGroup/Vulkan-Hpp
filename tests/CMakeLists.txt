@@ -14,9 +14,6 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(Vulkan-Hpp_Tests)
-
-
 option (TESTS_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON)
 option (TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF)
 

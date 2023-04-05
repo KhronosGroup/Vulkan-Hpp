@@ -15,7 +15,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 if (NOT TESTS_BUILD_ONLY_DYNAMIC)
-	project(Hash)
+	project(Hash LANGUAGES CXX)
 
 	set(HEADERS
 	)

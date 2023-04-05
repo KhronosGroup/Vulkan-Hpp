@@ -693,16 +693,16 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
-  std::string                         generateExtensionDeprecatedBy() const;
-  std::string                         generateExtensionDeprecatedTest() const;
-  std::string                         generateExtensionPromotedTest() const;
-  std::string                         generateExtensionPromotedTo() const;
-  std::string                         generateExtensionTypeTest( std::string const & type ) const;
-  std::string                         generateFailureCheck( std::vector<std::string> const & successCodes ) const;
-  std::string                         generateFormatTraits() const;
-  std::string                         generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;
-  std::string                         generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
-  std::string                         generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
+  template <class Predicate, class Extraction>
+  std::string generateExtensionReplacedBy( Predicate p, Extraction e ) const;
+  template <class Predicate>
+  std::string generateExtensionReplacedTest( Predicate p ) const;
+  std::string generateExtensionTypeTest( std::string const & type ) const;
+  std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
+  std::string generateFormatTraits() const;
+  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;
+  std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
+  std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleEmpty( HandleData const & handleData ) const;
   std::string generateHandleForwardDeclarations() const;

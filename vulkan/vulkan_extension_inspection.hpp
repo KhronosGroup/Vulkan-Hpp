@@ -17,9 +17,11 @@ namespace VULKAN_HPP_NAMESPACE
   //======================================
 
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionObsoleted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionPromoted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
@@ -94,6 +96,15 @@ namespace VULKAN_HPP_NAMESPACE
     if ( name == "VK_EXT_buffer_device_address" )
     {
       return "VK_KHR_buffer_device_address";
+    }
+    return "";
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & name )
+  {
+    if ( name == "VK_AMD_negative_viewport_height" )
+    {
+      return "VK_KHR_maintenance1";
     }
     return "";
   }
@@ -579,6 +590,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( name == "VK_MVK_macos_surface" ) ||
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
            ( name == "VK_AMD_gpu_shader_int16" ) || ( name == "VK_EXT_buffer_device_address" );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionObsoleted( std::string const & name )
+  {
+    return ( name == "VK_AMD_negative_viewport_height" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionPromoted( std::string const & name )

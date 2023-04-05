@@ -136,9 +136,11 @@ namespace VULKAN_HPP_NAMESPACE
   //======================================
 
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionObsoleted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isExtensionPromoted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
 
@@ -150,6 +152,12 @@ namespace VULKAN_HPP_NAMESPACE
   {
     ${voidName}
     ${deprecatedBy}
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & name )
+  {
+    ${voidName}
+    ${obsoletedBy}
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name )
@@ -168,6 +176,12 @@ namespace VULKAN_HPP_NAMESPACE
     return ${deprecatedTest};
   }
 
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionObsoleted( std::string const & name )
+  {
+    ${voidName}
+    return ${obsoletedTest};
+  }
+
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionPromoted( std::string const & name )
   {
     return ${promotedTest};
@@ -182,16 +196,25 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
-  std::string str = replaceWithMap( vulkanExtensionInspectionHppTemplate,
-                                    { { "api", m_api },
-                                      { "deviceTest", generateExtensionTypeTest( "device" ) },
-                                      { "deprecatedBy", generateExtensionDeprecatedBy() },
-                                      { "deprecatedTest", generateExtensionDeprecatedTest() },
-                                      { "instanceTest", generateExtensionTypeTest( "instance" ) },
-                                      { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "promotedTest", generateExtensionPromotedTest() },
-                                      { "promotedTo", generateExtensionPromotedTo() },
-                                      { "voidName", ( m_api == "vulkan" ) ? "" : "(void)name;" } } );
+  std::string str =
+    replaceWithMap( vulkanExtensionInspectionHppTemplate,
+                    { { "api", m_api },
+                      { "deviceTest", generateExtensionTypeTest( "device" ) },
+                      { "deprecatedBy",
+                        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return extension.isDeprecated; },
+                                                     []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
+                      { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
+                      { "instanceTest", generateExtensionTypeTest( "instance" ) },
+                      { "licenseHeader", m_vulkanLicenseHeader },
+                      { "obsoletedBy",
+                        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); },
+                                                     []( ExtensionData const & extension ) { return extension.obsoletedBy; } ) },
+                      { "obsoletedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.obsoletedBy.empty(); } ) },
+                      { "promotedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); } ) },
+                      { "promotedTo",
+                        generateExtensionReplacedBy( []( ExtensionData const & extension ) { return !extension.promotedTo.empty(); },
+                                                     []( ExtensionData const & extension ) { return extension.promotedTo; } ) },
+                      { "voidName", ( m_api == "vulkan" ) ? "" : "(void)name;" } } );
 
   writeToFile( str, vulkan_extension_inspection_hpp );
 }
@@ -5587,99 +5610,59 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
   return result;
 }
 
-std::string VulkanHppGenerator::generateExtensionDeprecatedBy() const
+template <class Predicate, class Extraction>
+std::string VulkanHppGenerator::generateExtensionReplacedBy( Predicate p, Extraction e ) const
 {
-  std::string deprecatedBy, previousEnter, previousLeave;
+  std::string replacedBy, previousEnter, previousLeave;
   for ( auto const & extension : m_extensions )
   {
-    if ( extension.isDeprecated )
+    if ( p( extension ) )
     {
       auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      deprecatedBy += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "  if ( name == \"" + extension.name + "\" ) { return \"" +
-                      extension.deprecatedBy + "\"; }";
+      replacedBy += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "  if ( name == \"" + extension.name + "\" ) { return \"" +
+                    e( extension ) + "\"; }";
       previousEnter = enter;
       previousLeave = leave;
     }
   }
   if ( !previousLeave.empty() )
   {
-    deprecatedBy += "\n" + previousLeave;
+    replacedBy += "\n" + previousLeave;
   }
-  deprecatedBy += "\n  return \"\";";
-  return deprecatedBy;
+  replacedBy += "\n  return \"\";";
+  return replacedBy;
 }
 
-std::string VulkanHppGenerator::generateExtensionDeprecatedTest() const
+template <class Predicate>
+std::string VulkanHppGenerator::generateExtensionReplacedTest( Predicate p ) const
 {
-  std::string deprecatedTest, previousEnter, previousLeave;
+  std::string replacedTest, previousEnter, previousLeave;
+  bool        unprotectedEntry = false;
   for ( auto const & extension : m_extensions )
   {
-    if ( extension.isDeprecated )
+    if ( p( extension ) )
     {
       auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      deprecatedTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( name == \"" + extension.name + "\" ) || ";
+      unprotectedEntry |= enter.empty();
+      replacedTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( name == \"" + extension.name + "\" ) || ";
       previousEnter = enter;
       previousLeave = leave;
     }
   }
-  if ( m_api == "vulkan" )
+  if ( unprotectedEntry )
   {
-    assert( deprecatedTest.ends_with( " || " ) );
-    deprecatedTest = deprecatedTest.substr( 0, deprecatedTest.length() - 4 );
+    assert( replacedTest.ends_with( " || " ) );
+    replacedTest = replacedTest.substr( 0, replacedTest.length() - 4 );
   }
   if ( !previousLeave.empty() )
   {
-    deprecatedTest += "\n" + previousLeave;
+    replacedTest += "\n" + previousLeave;
   }
-  if ( m_api != "vulkan" )
+  if ( !unprotectedEntry )
   {
-    deprecatedTest += "false";  // there might be no deprecations at all, so add a "false" at the end...
+    replacedTest += "false";  // there might be no replacements at all, so add a "false" at the end...
   }
-  return deprecatedTest;
-}
-
-std::string VulkanHppGenerator::generateExtensionPromotedTest() const
-{
-  std::string promotedTest, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
-  {
-    if ( !extension.promotedTo.empty() )
-    {
-      auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      promotedTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( name == \"" + extension.name + "\" ) || ";
-      previousEnter = enter;
-      previousLeave = leave;
-    }
-  }
-  assert( promotedTest.ends_with( " || " ) );
-  promotedTest = promotedTest.substr( 0, promotedTest.length() - 4 );
-  if ( !previousLeave.empty() )
-  {
-    promotedTest += "\n" + previousLeave;
-  }
-  return promotedTest;
-}
-
-std::string VulkanHppGenerator::generateExtensionPromotedTo() const
-{
-  std::string promotedTo, previousEnter, previousLeave;
-  for ( auto const & extension : m_extensions )
-  {
-    if ( !extension.promotedTo.empty() )
-    {
-      auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      promotedTo += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "  if ( name == \"" + extension.name + "\" ) { return \"" +
-                      extension.promotedTo + "\"; }";
-      previousEnter = enter;
-      previousLeave = leave;
-    }
-  }
-  if ( !previousLeave.empty() )
-  {
-    promotedTo += "\n" + previousLeave;
-  }
-  promotedTo += "\n  return \"\";";
-  return promotedTo;
+  return replacedTest;
 }
 
 std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & type ) const

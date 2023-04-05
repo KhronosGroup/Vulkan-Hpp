@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 3.12)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-project(VulkanHppGenerator)
+project(VulkanHppGenerator LANGUAGES CXX)
 
 find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
 
@@ -186,7 +186,7 @@ function(vulkan_hpp__setup_sample)
     message(FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_sample")
   endif()
 
-  project(${TARGET_NAME})
+  project(${TARGET_NAME} LANGUAGES CXX)
 
   add_executable(${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES})
 

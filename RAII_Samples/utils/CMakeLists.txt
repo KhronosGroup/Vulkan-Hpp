@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(RAII_utils)
+project(RAII_utils LANGUAGES CXX)
 
 set(HEADERS
   shaders.hpp

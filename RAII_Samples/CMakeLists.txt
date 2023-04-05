@@ -14,8 +14,6 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(Vulkan-Hpp_RAIISamples)
-
 option (SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON)
 option (SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF)
 

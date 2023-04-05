@@ -18,7 +18,7 @@ if (NOT TESTS_BUILD_ONLY_DYNAMIC)
 
   find_package(Vulkan REQUIRED)
 
-  project(DispatchLoaderStatic)
+  project(DispatchLoaderStatic LANGUAGES CXX)
 
   set(HEADERS
   )

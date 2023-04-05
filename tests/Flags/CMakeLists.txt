@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-project(Flags)
+project(Flags LANGUAGES CXX)
 
 set(HEADERS
 )

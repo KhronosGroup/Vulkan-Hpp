@@ -15,6 +15,18 @@
 // VulkanHpp Tests : ExtensionInspection
 //                   Compile test on using extension inspection functions
 
+// ignore warning 4189: local variable is initialized but not referenced
+#if defined( _MSC_VER )
+#  pragma warning( disable : 4189 )
+#elif defined( __clang__ )
+#  pragma clang diagnostic ignored "-Wunused-variable"
+#elif defined( __GNUC__ )
+#  pragma GCC diagnostic ignored "-Wunused-variable"
+#  pragma GCC diagnostic   ignored "-Wunused-but-set-variable"
+#else
+// unknow compiler... just ignore the warnings for yourselves ;)
+#endif
+
 #include <vulkan/vulkan_extension_inspection.hpp>
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -22,22 +34,32 @@ int main( int /*argc*/, char ** /*argv*/ )
 #if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110300 < GCC_VERSION ) )
   static_assert( vk::isInstanceExtension( VK_KHR_SURFACE_EXTENSION_NAME ), "static_assert test failed" );
   static_assert( vk::isDeviceExtension( VK_KHR_SWAPCHAIN_EXTENSION_NAME ), "static assert test failed" );
-  static_assert( vk::isExtensionDeprecated( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ), "static assert test failed" );
+  static_assert( vk::isDeprecatedExtension( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ), "static assert test failed" );
   static_assert( vk::getExtensionDeprecatedBy( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ) == VK_EXT_DEBUG_UTILS_EXTENSION_NAME, "static assert test failed" );
-  static_assert( vk::isExtensionPromoted( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ), "static assert test failed" );
+  static_assert( vk::isPromotedExtension( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ), "static assert test failed" );
   static_assert( vk::getExtensionPromotedTo( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ) == "VK_VERSION_1_2", "static assert test failed" );
+  static_assert( vk::isObsoletedExtension( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME ), "static assert test failed" );
+  static_assert( vk::getExtensionObsoletedBy( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME ) == VK_KHR_MAINTENANCE_1_EXTENSION_NAME,
+                 "static assert test failed" );
 #endif
 
-  bool ok = vk::isInstanceExtension( VK_KHR_SURFACE_EXTENSION_NAME ) && vk::isDeviceExtension( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
-  (void)ok;  // keep the compiler silent
-  if ( vk::isExtensionDeprecated( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ) )
-  {
-    std::string ext = vk::getExtensionDeprecatedBy( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
-  }
-  if ( vk::isExtensionPromoted( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME ) )
-  {
-    std::string ext = vk::getExtensionPromotedTo( VK_KHR_SAMPLER_MIRROR_CLAMP_TO_EDGE_EXTENSION_NAME );
-  }
+  std::set<std::string> const & instanceExtensions = vk::getInstanceExtensions();
+  assert( instanceExtensions.find( VK_KHR_SURFACE_EXTENSION_NAME ) != instanceExtensions.end() );
+
+  std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
+  assert( deviceExtensions.find( VK_KHR_SWAPCHAIN_EXTENSION_NAME ) != deviceExtensions.end() );
+
+  std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
+  auto                                       deprecatedIt         = deprecatedExtensions.find( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
+  assert( ( deprecatedIt != deprecatedExtensions.end() ) && ( deprecatedIt->second == VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) );
+
+  std::map<std::string, std::string> const & obsoletedExtensions = vk::getObsoletedExtensions();
+  auto                                       obsoletedIt         = obsoletedExtensions.find( VK_AMD_NEGATIVE_VIEWPORT_HEIGHT_EXTENSION_NAME );
+  assert( ( obsoletedIt != obsoletedExtensions.end() ) && ( obsoletedIt->second == VK_KHR_MAINTENANCE_1_EXTENSION_NAME ) );
+
+  std::map<std::string, std::string> const & promotedExtensions = vk::getPromotedExtensions();
+  auto                                       promotedIt         = promotedExtensions.find( VK_EXT_DEBUG_MARKER_EXTENSION_NAME );
+  assert( ( promotedIt != promotedExtensions.end() ) && ( promotedIt->second == VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) );
 
   return 0;
 }

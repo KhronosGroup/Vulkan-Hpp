@@ -8,6 +8,8 @@
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #define VULKAN_EXTENSION_INSPECTION_HPP
 
+#include <map>
+#include <set>
 #include <vulkan/vulkansc.hpp>
 
 namespace VULKAN_HPP_NAMESPACE
@@ -16,18 +18,143 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
+  std::set<std::string> const &              getDeviceExtensions();
+  std::set<std::string> const &              getInstanceExtensions();
+  std::map<std::string, std::string> const & getDeprecatedExtensions();
+  std::map<std::string, std::string> const & getObsoletedExtensions();
+  std::map<std::string, std::string> const & getPromotedExtensions();
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isDeprecatedExtension( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isDeviceExtension( std::string const & name );
-  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionDeprecated( std::string const & name );
-  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionObsoleted( std::string const & name );
-  VULKAN_HPP_CONSTEXPR_20 bool        isExtensionPromoted( std::string const & name );
   VULKAN_HPP_CONSTEXPR_20 bool        isInstanceExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isObsoletedExtension( std::string const & name );
+  VULKAN_HPP_CONSTEXPR_20 bool        isPromotedExtension( std::string const & name );
 
   //=====================================================
   //=== Extension inspection function implementations ===
   //=====================================================
+
+  VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
+  {
+    static std::map<std::string, std::string> deprecatedExtensions = {
+#if defined( VK_USE_PLATFORM_SCI )
+      { "VK_NV_external_sci_sync", "VK_NV_external_sci_sync2" }
+#endif /*VK_USE_PLATFORM_SCI*/
+    };
+    return deprecatedExtensions;
+  }
+
+  VULKAN_HPP_INLINE std::set<std::string> const & getDeviceExtensions()
+  {
+    static std::set<std::string> deviceExtensions = {
+      "VK_KHR_swapchain",
+      "VK_KHR_display_swapchain",
+      "VK_EXT_depth_range_unrestricted",
+      "VK_NV_private_vendor_info",
+      "VK_EXT_texture_compression_astc_hdr",
+      "VK_EXT_astc_decode_mode",
+      "VK_KHR_external_memory_fd",
+      "VK_KHR_external_semaphore_fd",
+      "VK_KHR_incremental_present",
+      "VK_EXT_display_control",
+      "VK_EXT_discard_rectangles",
+      "VK_EXT_conservative_rasterization",
+      "VK_EXT_depth_clip_enable",
+      "VK_EXT_hdr_metadata",
+      "VK_KHR_shared_presentable_image",
+      "VK_KHR_external_fence_fd",
+      "VK_KHR_performance_query",
+      "VK_EXT_external_memory_dma_buf",
+      "VK_EXT_queue_family_foreign",
+      "VK_EXT_shader_stencil_export",
+      "VK_EXT_sample_locations",
+      "VK_EXT_blend_operation_advanced",
+      "VK_EXT_post_depth_coverage",
+      "VK_EXT_image_drm_format_modifier",
+      "VK_EXT_filter_cubic",
+      "VK_EXT_global_priority",
+      "VK_EXT_external_memory_host",
+      "VK_KHR_shader_clock",
+      "VK_EXT_calibrated_timestamps",
+      "VK_EXT_vertex_attribute_divisor",
+      "VK_KHR_swapchain_mutable_format",
+      "VK_EXT_pci_bus_info",
+      "VK_KHR_shader_terminate_invocation",
+      "VK_EXT_subgroup_size_control",
+      "VK_KHR_fragment_shading_rate",
+      "VK_EXT_shader_image_atomic_int64",
+      "VK_EXT_memory_budget",
+      "VK_EXT_fragment_shader_interlock",
+      "VK_EXT_ycbcr_image_arrays",
+      "VK_EXT_line_rasterization",
+      "VK_EXT_shader_atomic_float",
+      "VK_EXT_index_type_uint8",
+      "VK_EXT_extended_dynamic_state",
+      "VK_EXT_shader_demote_to_helper_invocation",
+      "VK_EXT_texel_buffer_alignment",
+      "VK_EXT_robustness2",
+      "VK_EXT_custom_border_color",
+      "VK_KHR_object_refresh",
+      "VK_KHR_synchronization2",
+      "VK_EXT_ycbcr_2plane_444_formats",
+      "VK_EXT_image_robustness",
+      "VK_KHR_copy_commands2",
+      "VK_EXT_4444_formats",
+      "VK_EXT_vertex_input_dynamic_state",
+#if defined( VK_USE_PLATFORM_SCI )
+      "VK_NV_external_sci_sync",
+      "VK_NV_external_memory_sci_buf",
+#endif /*VK_USE_PLATFORM_SCI*/
+      "VK_EXT_extended_dynamic_state2",
+      "VK_EXT_color_write_enable",
+#if defined( VK_USE_PLATFORM_SCI )
+      "VK_NV_external_sci_sync2"
+#endif /*VK_USE_PLATFORM_SCI*/
+    };
+    return deviceExtensions;
+  }
+
+  VULKAN_HPP_INLINE std::set<std::string> const & getInstanceExtensions()
+  {
+    static std::set<std::string> instanceExtensions = { "VK_KHR_surface",
+                                                        "VK_KHR_display",
+                                                        "VK_EXT_direct_mode_display",
+                                                        "VK_EXT_display_surface_counter",
+                                                        "VK_EXT_swapchain_colorspace",
+                                                        "VK_KHR_get_surface_capabilities2",
+                                                        "VK_KHR_get_display_properties2",
+                                                        "VK_EXT_debug_utils",
+                                                        "VK_EXT_validation_features",
+                                                        "VK_EXT_headless_surface",
+                                                        "VK_EXT_application_parameters" };
+    return instanceExtensions;
+  }
+
+  VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
+  {
+    static std::map<std::string, std::string> obsoletedExtensions = {};
+    return obsoletedExtensions;
+  }
+
+  VULKAN_HPP_INLINE std::map<std::string, std::string> const & getPromotedExtensions()
+  {
+    static std::map<std::string, std::string> promotedExtensions = { { "VK_EXT_texture_compression_astc_hdr", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_global_priority", "VK_KHR_global_priority" },
+                                                                     { "VK_KHR_shader_terminate_invocation", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_subgroup_size_control", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_extended_dynamic_state", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_shader_demote_to_helper_invocation", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_texel_buffer_alignment", "VK_VERSION_1_3" },
+                                                                     { "VK_KHR_synchronization2", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_ycbcr_2plane_444_formats", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_image_robustness", "VK_VERSION_1_3" },
+                                                                     { "VK_KHR_copy_commands2", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_4444_formats", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_extended_dynamic_state2", "VK_VERSION_1_3" } };
+    return promotedExtensions;
+  }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & name )
   {
@@ -107,6 +234,16 @@ namespace VULKAN_HPP_NAMESPACE
     return "";
   }
 
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & name )
+  {
+    (void)name;
+    return
+#if defined( VK_USE_PLATFORM_SCI )
+      ( name == "VK_NV_external_sci_sync" ) ||
+#endif /*VK_USE_PLATFORM_SCI*/
+      false;
+  }
+
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & name )
   {
     return ( name == "VK_KHR_swapchain" ) || ( name == "VK_KHR_display_swapchain" ) || ( name == "VK_EXT_depth_range_unrestricted" ) ||
@@ -138,37 +275,27 @@ namespace VULKAN_HPP_NAMESPACE
       ;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionDeprecated( std::string const & name )
-  {
-    (void)name;
-    return
-#if defined( VK_USE_PLATFORM_SCI )
-      ( name == "VK_NV_external_sci_sync" ) ||
-#endif /*VK_USE_PLATFORM_SCI*/
-      false;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionObsoleted( std::string const & name )
-  {
-    (void)name;
-    return false;
-  }
-
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isExtensionPromoted( std::string const & name )
-  {
-    return ( name == "VK_EXT_texture_compression_astc_hdr" ) || ( name == "VK_EXT_global_priority" ) || ( name == "VK_KHR_shader_terminate_invocation" ) ||
-           ( name == "VK_EXT_subgroup_size_control" ) || ( name == "VK_EXT_extended_dynamic_state" ) ||
-           ( name == "VK_EXT_shader_demote_to_helper_invocation" ) || ( name == "VK_EXT_texel_buffer_alignment" ) || ( name == "VK_KHR_synchronization2" ) ||
-           ( name == "VK_EXT_ycbcr_2plane_444_formats" ) || ( name == "VK_EXT_image_robustness" ) || ( name == "VK_KHR_copy_commands2" ) ||
-           ( name == "VK_EXT_4444_formats" ) || ( name == "VK_EXT_extended_dynamic_state2" );
-  }
-
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & name )
   {
     return ( name == "VK_KHR_surface" ) || ( name == "VK_KHR_display" ) || ( name == "VK_EXT_direct_mode_display" ) ||
            ( name == "VK_EXT_display_surface_counter" ) || ( name == "VK_EXT_swapchain_colorspace" ) || ( name == "VK_KHR_get_surface_capabilities2" ) ||
            ( name == "VK_KHR_get_display_properties2" ) || ( name == "VK_EXT_debug_utils" ) || ( name == "VK_EXT_validation_features" ) ||
            ( name == "VK_EXT_headless_surface" ) || ( name == "VK_EXT_application_parameters" );
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & name )
+  {
+    (void)name;
+    return false;
+  }
+
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & name )
+  {
+    return ( name == "VK_EXT_texture_compression_astc_hdr" ) || ( name == "VK_EXT_global_priority" ) || ( name == "VK_KHR_shader_terminate_invocation" ) ||
+           ( name == "VK_EXT_subgroup_size_control" ) || ( name == "VK_EXT_extended_dynamic_state" ) ||
+           ( name == "VK_EXT_shader_demote_to_helper_invocation" ) || ( name == "VK_EXT_texel_buffer_alignment" ) || ( name == "VK_KHR_synchronization2" ) ||
+           ( name == "VK_EXT_ycbcr_2plane_444_formats" ) || ( name == "VK_EXT_image_robustness" ) || ( name == "VK_KHR_copy_commands2" ) ||
+           ( name == "VK_EXT_4444_formats" ) || ( name == "VK_EXT_extended_dynamic_state2" );
   }
 }  // namespace VULKAN_HPP_NAMESPACE
 

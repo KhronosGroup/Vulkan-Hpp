@@ -31,5 +31,5 @@ add_executable(ExtensionInspection
 	${SOURCES}
 )
 
-set_target_properties(ExtensionInspection PROPERTIES FOLDER "Tests")
+set_target_properties(ExtensionInspection PROPERTIES CXX_STANDARD 20 FOLDER "Tests")
 target_link_libraries(ExtensionInspection PRIVATE utils)

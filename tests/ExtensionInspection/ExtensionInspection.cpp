@@ -22,7 +22,7 @@
 #  pragma clang diagnostic ignored "-Wunused-variable"
 #elif defined( __GNUC__ )
 #  pragma GCC diagnostic ignored "-Wunused-variable"
-#  pragma GCC diagnostic   ignored "-Wunused-but-set-variable"
+#  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #else
 // unknow compiler... just ignore the warnings for yourselves ;)
 #endif
@@ -48,6 +48,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
   assert( deviceExtensions.find( VK_KHR_SWAPCHAIN_EXTENSION_NAME ) != deviceExtensions.end() );
+
+  std::map<std::string, std::vector<std::string>> depends = vk::getExtensionDepends( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
+  assert( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
+          ( depends.begin()->second[0] == VK_KHR_DISPLAY_EXTENSION_NAME ) );
 
   std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
   auto                                       deprecatedIt         = deprecatedExtensions.find( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );

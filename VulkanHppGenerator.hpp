@@ -242,17 +242,17 @@ private:
 
   struct ExtensionData
   {
-    std::string              deprecatedBy = {};
-    bool                     isDeprecated = false;
-    std::string              name         = {};
-    std::string              number       = {};
-    std::string              obsoletedBy  = {};
-    std::string              platform     = {};
-    std::string              promotedTo   = {};
-    std::vector<std::string> depends      = {};
-    std::vector<RequireData> requireData  = {};
-    std::string              type         = {};
-    int                      xmlLine      = 0;
+    std::string                                     deprecatedBy = {};
+    bool                                            isDeprecated = false;
+    std::string                                     name         = {};
+    std::string                                     number       = {};
+    std::string                                     obsoletedBy  = {};
+    std::string                                     platform     = {};
+    std::string                                     promotedTo   = {};
+    std::map<std::string, std::vector<std::string>> depends      = {};
+    std::vector<RequireData>                        requireData  = {};
+    std::string                                     type         = {};
+    int                                             xmlLine      = 0;
   };
 
   struct ExternalTypeData
@@ -693,6 +693,7 @@ private:
   std::string generateEnumToString( std::pair<std::string, EnumData> const & enumData ) const;
   std::pair<std::string, std::string> generateEnumSuffixes( std::string const & name, bool bitmask ) const;
   std::string                         generateEnumValueName( std::string const & enumName, std::string const & valueName, bool bitmask ) const;
+  std::string                         generateExtensionDependencies() const;
   template <class Predicate, class Extraction>
   std::string generateExtensionReplacedBy( Predicate p, Extraction e ) const;
   template <class Predicate>

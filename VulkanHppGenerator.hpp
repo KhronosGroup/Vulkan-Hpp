@@ -697,6 +697,7 @@ private:
   std::string generateExtensionReplacedBy( Predicate p, Extraction e ) const;
   template <class Predicate>
   std::string generateExtensionReplacedTest( Predicate p ) const;
+  std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
   std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateFormatTraits() const;
@@ -824,6 +825,8 @@ private:
                                                  size_t                                        initialSkipCount,
                                                  std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                                  std::set<size_t> const &                      skippedParams ) const;
+  template <class Predicate, class Extraction>
+  std::string generateReplacedExtensionsList( Predicate p, Extraction e ) const;
   std::string generateResultAssignment( CommandData const & commandData ) const;
   std::string generateResultCheck(
     CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName, bool enumerating ) const;

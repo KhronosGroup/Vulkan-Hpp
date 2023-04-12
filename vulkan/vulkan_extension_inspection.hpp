@@ -22,6 +22,7 @@ namespace VULKAN_HPP_NAMESPACE
   std::set<std::string> const &                           getInstanceExtensions();
   std::map<std::string, std::string> const &              getDeprecatedExtensions();
   std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );
+  std::pair<bool, std::vector<std::string> const &>       getExtensionDepends( std::string const & version, std::string const & extension );
   std::map<std::string, std::string> const &              getObsoletedExtensions();
   std::map<std::string, std::string> const &              getPromotedExtensions();
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );
@@ -800,6 +801,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
+  }
+
+  VULKAN_HPP_INLINE std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension )
+  {
+#if !defined( NDEBUG )
+    static std::set<std::string> versions = { "VK_VERSION_1_0", "VK_VERSION_1_1", "VK_VERSION_1_2", "VK_VERSION_1_3" };
+    assert( versions.find( version ) != versions.end() );
+#endif
+    static std::vector<std::string> noDependencies;
+
+    std::map<std::string, std::vector<std::string>> const & dependencies = getExtensionDepends( extension );
+    if ( dependencies.empty() )
+    {
+      return { true, noDependencies };
+    }
+    auto depIt = dependencies.lower_bound( version );
+    if ( ( depIt == dependencies.end() ) || ( depIt->first != version ) )
+    {
+      depIt = std::prev( depIt );
+    }
+    if ( depIt == dependencies.end() )
+    {
+      return { false, noDependencies };
+    }
+    else
+    {
+      return { true, depIt->second };
+    }
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()

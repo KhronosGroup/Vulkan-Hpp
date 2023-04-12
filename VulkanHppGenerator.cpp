@@ -141,6 +141,7 @@ namespace VULKAN_HPP_NAMESPACE
   std::set<std::string> const &                           getInstanceExtensions();
   std::map<std::string, std::string> const &              getDeprecatedExtensions();
   std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );
+  ${getExtensionDependsByVersionDeclaration}
   std::map<std::string, std::string> const &              getObsoletedExtensions();
   std::map<std::string, std::string> const &              getPromotedExtensions();
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );
@@ -181,6 +182,8 @@ namespace VULKAN_HPP_NAMESPACE
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
   }
+
+  ${getExtensionDependsByVersionDefinition}
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
   {
@@ -255,6 +258,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                      []( ExtensionData const & extension ) { return extension.deprecatedBy; } ) },
                       { "deprecatedTest", generateExtensionReplacedTest( []( ExtensionData const & extension ) { return extension.isDeprecated; } ) },
                       { "extensionDependencies", generateExtensionDependencies() },
+                      { "getExtensionDependsByVersionDeclaration", generateExtensionDependsByVersion( false ) },
+                      { "getExtensionDependsByVersionDefinition", generateExtensionDependsByVersion( true ) },
                       { "instanceExtensions", generateExtensionsList( "instance" ) },
                       { "instanceTest", generateExtensionTypeTest( "instance" ) },
                       { "licenseHeader", m_vulkanLicenseHeader },
@@ -5676,7 +5681,7 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
 std::string VulkanHppGenerator::generateExtensionDependencies() const
 {
   std::string extensionDependencies, previousEnter, previousLeave;
-  for (auto const& extension : m_extensions)
+  for ( auto const & extension : m_extensions )
   {
     if ( !extension.depends.empty() )
     {
@@ -5713,6 +5718,60 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
     extensionDependencies += "\n" + previousLeave;
   }
   return extensionDependencies;
+}
+
+std::string VulkanHppGenerator::generateExtensionDependsByVersion( bool definition ) const
+{
+  if (m_api != "vulkan")
+  {
+    return "";
+  }
+
+  if ( definition )
+  {
+    const std::string generateExtensionDependsTemplate = R"(  VULKAN_HPP_INLINE std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension )
+    {
+#if !defined( NDEBUG )
+      static std::set<std::string> versions = { ${versions} };
+      assert( versions.find( version ) != versions.end() );
+#endif
+      static std::vector<std::string> noDependencies;
+
+      std::map<std::string, std::vector<std::string>> const & dependencies = getExtensionDepends( extension );
+      if ( dependencies.empty() )
+      {
+        return { true, noDependencies };
+      }
+      auto depIt = dependencies.lower_bound( version );
+      if ( ( depIt == dependencies.end() ) || ( depIt->first != version ) )
+      {
+        depIt = std::prev( depIt );
+      }
+      if ( depIt == dependencies.end() )
+      {
+        return { false, noDependencies };
+      }
+      else
+      {
+        return { true, depIt->second };
+      }
+    }
+)";
+
+    std::string versions;
+    for (auto const& feature : m_features)
+    {
+      versions += "\"" + feature.name + "\", ";
+    }
+    assert( versions.ends_with( ", " ) );
+    versions = versions.substr( 0, versions.length() - 2 );
+
+    return replaceWithMap( generateExtensionDependsTemplate, { { "versions", versions } } );
+  }
+  else
+  {
+    return "std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension );";
+  }
 }
 
 template <class Predicate, class Extraction>

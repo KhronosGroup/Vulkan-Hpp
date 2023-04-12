@@ -22,8 +22,9 @@ namespace VULKAN_HPP_NAMESPACE
   std::set<std::string> const &                           getInstanceExtensions();
   std::map<std::string, std::string> const &              getDeprecatedExtensions();
   std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );
-  std::map<std::string, std::string> const &              getObsoletedExtensions();
-  std::map<std::string, std::string> const &              getPromotedExtensions();
+
+  std::map<std::string, std::string> const & getObsoletedExtensions();
+  std::map<std::string, std::string> const & getPromotedExtensions();
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension );
   VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension );

@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 246, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 247, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -13264,7 +13264,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

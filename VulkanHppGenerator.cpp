@@ -5722,14 +5722,15 @@ std::string VulkanHppGenerator::generateExtensionDependencies() const
 
 std::string VulkanHppGenerator::generateExtensionDependsByVersion( bool definition ) const
 {
-  if (m_api != "vulkan")
+  if ( m_api != "vulkan" )
   {
     return "";
   }
 
   if ( definition )
   {
-    const std::string generateExtensionDependsTemplate = R"(  VULKAN_HPP_INLINE std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension )
+    const std::string generateExtensionDependsTemplate =
+      R"(  VULKAN_HPP_INLINE std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension )
     {
 #if !defined( NDEBUG )
       static std::set<std::string> versions = { ${versions} };
@@ -5759,7 +5760,7 @@ std::string VulkanHppGenerator::generateExtensionDependsByVersion( bool definiti
 )";
 
     std::string versions;
-    for (auto const& feature : m_features)
+    for ( auto const & feature : m_features )
     {
       versions += "\"" + feature.name + "\", ";
     }
@@ -11810,13 +11811,14 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "platform", {} },
                      { "promotedto", {} },
                      { "provisional", { "true" } },
+                     { "ratified", { "vulkan", "vulkansc" } },
                      { "sortorder", { "1" } },
                      { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
                      { "type", { "device", "instance" } } } );
   checkElements( line, children, { { "require", false } } );
 
   ExtensionData            extensionData{ .xmlLine = line };
-  std::vector<std::string> supported;
+  std::vector<std::string> ratified, supported;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "depends" )
@@ -11900,6 +11902,10 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      "while attribute <provisional> is set to \"true\", attribute <platform> is not set to \"provisional\" but to \"" + extensionData.platform +
                        "\"" );
     }
+    else if ( attribute.first == "ratified" )
+    {
+      ratified = tokenize( attribute.second, "," );
+    }
     else if ( attribute.first == "supported" )
     {
       supported = tokenize( attribute.second, "," );
@@ -11910,6 +11916,10 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     }
   }
 
+  checkForWarning( ( std::find( supported.begin(), supported.end(), "disabled" ) != supported.end() ) || extensionData.isDeprecated || ratified.empty() ||
+                     ( supported == ratified ),
+                   line,
+                   "attribute \"ratified\" differs from attribute \"supported\"" );
   bool extensionSupported = supported.empty() || ( std::find( supported.begin(), supported.end(), m_api ) != supported.end() );
   checkForError( !extensionSupported || !extensionData.type.empty(), line, "missing attribute \"type\" for supported extension <" + extensionData.name + ">" );
   for ( auto child : children )

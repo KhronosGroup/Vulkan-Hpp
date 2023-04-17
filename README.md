@@ -564,6 +564,42 @@ With the additional header `vulkan_format_traits.hpp`, a couple of trait functio
 
 With the additional header `vulkan_hash.hpp`, you get specializations of `std::hash` for the handle wrapper classes and, with C++14, for the structure wrappers. With `VULKAN_HPP_HASH_COMBINE`, you can define your own hash combining algorithm for the structure elements.
 
+### Extension Inspection
+
+With the additional header `vulkan_extension_inspection.hpp`, some functions to inspect extensions are provided. With C++20 and above, some of those functions are marked as `constexpr`, that is with appropriate arguments, they are resolved by the compiler.
+Each extension is identified by a string holding its name. Note that there exists a define with that name for each extension.
+Some functions might provide information that depends on the vulkan version. As all functions here work solely on strings, the vulkan versions are encoded by a string beginning with "VK_VERSION_", followed by the major and the minor version, separated by an undersore, like this: "VK_VERSION_1_0".
+- `std::set<std::string> const & getDeviceExtensions();`
+	Gets all device extensions specified for the current platform. Note, that not all of them might be supported by the actual devices.
+- `std::set<std::string> const & getInstanceExtensions();`
+	Gets all instance extensions specified for the current platform. Note, that not all of them might be supported by the actual instances.
+- `std::map<std::string, std::string> const & getDeprecatedExtensions();`
+	Gets a map of all deprecated extensions to the extension or vulkan version that is supposed to replace that functionality.
+- `std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );`
+	Some extensions depends on other extensions. That dependencies might differ for different vulkan versions. This function gets a vector of extensions per vulkan version that the given extension depends on.
+- `std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension );`
+	The `first` member of the returned `std::pair` is true, if the given extension is specified for the given vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of extensions, the given extension depends on for the given vulkan version.
+- `std::map<std::string, std::string> const & getObsoletedExtensions();`
+	Gets a map of all obsoleted extensions to the extension or vulkan version that has obsoleted that extension.
+- `std::map<std::string, std::string> const & getPromotedExtensions();`
+	Gets a map of all extensions that got promoted to another extension or to a vulkan version to that extension of vulkan version.
+- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionDeprecatedBy( std::string const & extension );`
+	Gets the extension or vulkan version the given extension is deprecated by.
+- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionObsoletedBy( std::string const & extension );`
+	Gets the extension or vulkan version the given extension is obsoleted by.
+- `VULKAN_HPP_CONSTEXPR_20 std::string getExtensionPromotedTo( std::string const & extension );`
+	Gets the extension or vulkan version the given extension is promoted to.
+- `VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & extension );`
+	Returns `true` if the given extension is deprecated by some other extension or vulkan version.
+- `VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension );`
+	Returns `true` if the given extension is a device extension.
+- `VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension );`
+	Returns `true` if the given extension is an instance extension.
+- `VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension );`
+	Returns `true` if the given extension is obsoleted by some other extension or vulkan version.
+- `VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension );`
+	Returns `true` if the given extension is promoted to some other extension or vulkan version.
+
 ### Samples and Tests
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.

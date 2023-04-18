@@ -12,28 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(UniqueHandleDefaultArguments LANGUAGES CXX)
+vulkan_hpp__setup_library( NAME UniqueHandleDefaultArguments SOURCES UniqueHandleDefaultArguments.cpp )
 
-set(HEADERS
-)
-
-set(SOURCES
-  UniqueHandleDefaultArguments.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_library(UniqueHandleDefaultArguments
-  ${HEADERS}
-  ${SOURCES}
-)
-
-if (UNIX)
-  target_link_libraries(UniqueHandleDefaultArguments PRIVATE ${CMAKE_DL_LIBS})
+if( UNIX )
+	target_link_libraries( UniqueHandleDefaultArguments PRIVATE ${CMAKE_DL_LIBS} )
 endif()
 
-set_target_properties(UniqueHandleDefaultArguments PROPERTIES FOLDER "Tests")
-target_link_libraries(UniqueHandleDefaultArguments PRIVATE utils)
+set_target_properties( UniqueHandleDefaultArguments PROPERTIES FOLDER "Tests" )
+target_link_libraries( UniqueHandleDefaultArguments PRIVATE utils )

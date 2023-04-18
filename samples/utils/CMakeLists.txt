@@ -12,39 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(utils LANGUAGES CXX)
+vulkan_hpp__setup_library( NAME utils HEADERS math.hpp shaders.hpp utils.hpp SOURCES math.cpp shaders.cpp utils.cpp )
 
-set(HEADERS
-  math.hpp
-  shaders.hpp
-  utils.hpp
-)
-
-set(SOURCES
-  math.cpp
-  shaders.cpp
-  utils.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_library(utils 
-  ${SOURCES}
-  ${HEADERS}
-)
-
-if (VULKAN_HPP_RUN_GENERATOR)
-  add_dependencies(utils build_vulkan_hpp)
+if( VULKAN_HPP_RUN_GENERATOR )
+	add_dependencies( utils build_vulkan_hpp )
 endif()
 
-target_link_libraries(utils PUBLIC glm)
-target_link_libraries(utils PUBLIC glfw)
-target_link_libraries(utils PUBLIC glslang)
-target_link_libraries(utils PUBLIC glslang-default-resource-limits)
-target_link_libraries(utils PUBLIC SPIRV)
-target_compile_definitions(utils PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+target_link_libraries( utils PUBLIC glm )
+target_link_libraries( utils PUBLIC glfw )
+target_link_libraries( utils PUBLIC glslang )
+target_link_libraries( utils PUBLIC glslang-default-resource-limits )
+target_link_libraries( utils PUBLIC SPIRV )
+target_compile_definitions (utils PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
 
-target_precompile_headers(utils PRIVATE <vulkan/vulkan.hpp>)
+target_precompile_headers( utils PRIVATE <vulkan/vulkan.hpp> )

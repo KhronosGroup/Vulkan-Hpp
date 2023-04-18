@@ -12,24 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(Flags LANGUAGES CXX)
+vulkan_hpp__setup_test( NAME Flags )
 
-set(HEADERS
-)
-
-set(SOURCES
-  Flags.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(Flags
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(Flags PROPERTIES FOLDER "Tests")
-target_link_libraries(Flags PRIVATE utils)
+set_target_properties( Flags PROPERTIES FOLDER "Tests" )
+target_link_libraries( Flags PRIVATE utils )

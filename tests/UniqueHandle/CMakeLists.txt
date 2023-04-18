@@ -12,24 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(UniqueHandle LANGUAGES CXX)
+vulkan_hpp__setup_test( NAME UniqueHandle )
 
-set(HEADERS
-)
-
-set(SOURCES
-  UniqueHandle.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(UniqueHandle
-  ${HEADERS}
-  ${SOURCES}
-)
-
-set_target_properties(UniqueHandle PROPERTIES FOLDER "Tests")
-target_link_libraries(UniqueHandle PRIVATE utils)
+set_target_properties( UniqueHandle PROPERTIES FOLDER "Tests" )
+target_link_libraries( UniqueHandle PRIVATE utils )

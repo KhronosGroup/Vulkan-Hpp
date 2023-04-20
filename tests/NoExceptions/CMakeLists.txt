@@ -12,27 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(NoExceptions LANGUAGES CXX)
+vulkan_hpp__setup_test( NAME NoExceptions )
 
-set(HEADERS
-)
-
-set(SOURCES
-  NoExceptions.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(NoExceptions
-  ${HEADERS}
-  ${SOURCES}
-)
-if (UNIX)
-    target_link_libraries(NoExceptions PRIVATE ${CMAKE_DL_LIBS})
+if( UNIX )
+	target_link_libraries( NoExceptions PRIVATE ${CMAKE_DL_LIBS} )
 endif ()
 
-set_target_properties(NoExceptions PROPERTIES FOLDER "Tests")
-target_link_libraries(NoExceptions PRIVATE utils)
+set_target_properties( NoExceptions PROPERTIES FOLDER "Tests" )
+target_link_libraries( NoExceptions PRIVATE utils )

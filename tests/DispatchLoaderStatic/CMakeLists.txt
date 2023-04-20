@@ -12,34 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-if (NOT TESTS_BUILD_ONLY_DYNAMIC)
+if( NOT TESTS_BUILD_ONLY_DYNAMIC )
+	find_package( Vulkan REQUIRED )
 
-  find_package(Vulkan REQUIRED)
+	vulkan_hpp__setup_test( NAME DispatchLoaderStatic )
 
-  project(DispatchLoaderStatic LANGUAGES CXX)
-
-  set(HEADERS
-  )
-
-  set(SOURCES
-    DispatchLoaderStatic.cpp
-  )
-
-  source_group(headers FILES ${HEADERS})
-  source_group(sources FILES ${SOURCES})
-
-  add_executable(DispatchLoaderStatic
-    ${HEADERS}
-    ${SOURCES}
-    )
-
-  if (UNIX)
-    target_link_libraries(DispatchLoaderStatic PRIVATE ${CMAKE_DL_LIBS})
-  endif()
-
-  set_target_properties(DispatchLoaderStatic PROPERTIES FOLDER "Tests")
-  target_link_libraries(DispatchLoaderStatic PRIVATE utils ${Vulkan_LIBRARIES})
-
+	if( UNIX )
+		target_link_libraries( DispatchLoaderStatic PRIVATE ${CMAKE_DL_LIBS} )
+	endif()
+ 
+	set_target_properties( DispatchLoaderStatic PROPERTIES FOLDER "Tests" )
+	target_link_libraries( DispatchLoaderStatic PRIVATE utils ${Vulkan_LIBRARIES} )
 endif()

@@ -12,24 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required( VERSION 3.2 )
 
-project(ExtensionInspection LANGUAGES CXX)
+vulkan_hpp__setup_test( NAME ExtensionInspection )
 
-set(HEADERS
-)
-
-set(SOURCES
-	ExtensionInspection.cpp
-)
-
-source_group(headers FILES ${HEADERS})
-source_group(sources FILES ${SOURCES})
-
-add_executable(ExtensionInspection
-	${HEADERS}
-	${SOURCES}
-)
-
-set_target_properties(ExtensionInspection PROPERTIES CXX_STANDARD 20 FOLDER "Tests")
-target_link_libraries(ExtensionInspection PRIVATE utils)
+set_target_properties( ExtensionInspection PROPERTIES CXX_STANDARD 20 FOLDER "Tests" )
+target_link_libraries( ExtensionInspection PRIVATE utils )

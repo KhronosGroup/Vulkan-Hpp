@@ -70,6 +70,7 @@ function( vulkan_hpp__setup_library )
 		endif()
 		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON )
+		target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )	
 	endif()
 endfunction()
 
@@ -90,12 +91,16 @@ function( vulkan_hpp__setup_sample )
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
 	endif()
+	
+	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
 	if( TARGET_INCLUDE_DIRS )
 		target_include_directories( ${TARGET_NAME} PUBLIC ${TARGET_INCLUDE_DIRS} )
 	endif()
+	
 	if( TARGET_LIBS )
 		target_link_libraries( ${TARGET_NAME} PRIVATE "${TARGET_LIBS}" )
 	endif()
+	
 	if( VULKAN_HPP_PRECOMPILE )
 		if( TARGET_PCH_REUSE )
 			target_precompile_headers( ${TARGET_NAME} REUSE_FROM "${TARGET_PCH_REUSE}" )
@@ -195,10 +200,12 @@ function( vulkan_hpp__setup_test )
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON )
+	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
 endfunction()
 
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
+# find a clang-format version to format the generated header files
 find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
 if( CLANG_FORMAT_EXECUTABLE )
 	# get the clang-format version string
@@ -236,6 +243,13 @@ else()
 	message( WARNING " Could not find clang-format. Generated vulkan.hpp and vulkan_raii.hpp will not be nicely formatted." )
 endif()
 
+# all the options for this project
+option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
+option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
+option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
+option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
+
+# look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
 if( NOT DEFINED VulkanRegistry_DIR )
 	if( DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR )
 		set( VulkanRegistry_DIR "${VULKAN_HPP_VULKAN_HEADERS_SRC_DIR}/registry" )
@@ -246,75 +260,47 @@ endif()
 file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/vk.xml vk_spec )
 string( REPLACE "\\" "\\\\" vk_spec ${vk_spec} )
 
-project( VulkanHppGenerator LANGUAGES CXX )
-
-if( NOT DEFINED VulkanHeaders_INCLUDE_DIR )
-	if( DEFINED VULKAN_HPP_PATH )
-		set( VulkanHeaders_INCLUDE_DIR ${VULKAN_HPP_PATH} )
-	else()
-		set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
-	endif()
-endif()
-include_directories( ${VulkanHeaders_INCLUDE_DIR} )
-
-set( HEADERS VulkanHppGenerator.hpp )
-
-set( SOURCES VulkanHppGenerator.cpp )
-
+# gather the tinyxml2 sources, to be used directly in the generator project
 if( NOT DEFINED VULKAN_HPP_TINYXML2_SRC_DIR )
 	set( VULKAN_HPP_TINYXML2_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tinyxml2" )
 endif()
-
 set( TINYXML2_SOURCES ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp )
-
 set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
+source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 
-source_group( headers FILES ${HEADERS} )
-source_group( sources FILES ${SOURCES} )
 
-source_group( TinyXML2\\headers FILES ${TINYXML2_HEADERS} )
-source_group( TinyXML2\\sources FILES ${TINYXML2_SOURCES} )
+# The generator project !
+project( VulkanHppGenerator LANGUAGES CXX )
 
-add_executable( VulkanHppGenerator
-	${HEADERS}
-	${SOURCES}
-	${TINYXML2_SOURCES}
-	${TINYXML2_HEADERS}
-)
+add_executable( ${PROJECT_NAME} VulkanHppGenerator.cpp VulkanHppGenerator.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
 
 target_compile_definitions( ${PROJECT_NAME} PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
-
-set( VK_GENERATED_VULKAN_HEADERS
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
-	${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
-)
-
-file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
-string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
 if( MSVC )
 	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX )
 	if( MSVC_VER GREATER_EQUAL 1910 )
 		target_compile_options( ${PROJECT_NAME} PRIVATE /permissive- )
 	endif()
-else( MSVC )
+else()
 	target_compile_options( ${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror )
-endif( MSVC )
+endif()
 
 target_include_directories( ${PROJECT_NAME} PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
 
-option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
+set_target_properties( ${PROJECT_NAME} PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
+
+# if the generator is to be run, add a custom command and target
 if( VULKAN_HPP_RUN_GENERATOR )
+	if( NOT DEFINED VulkanHeaders_INCLUDE_DIR )
+		if( DEFINED VULKAN_HPP_PATH )
+			set( VulkanHeaders_INCLUDE_DIR ${VULKAN_HPP_PATH} )
+		else()
+			set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
+		endif()
+	endif()
+	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
+	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
+
 	add_custom_command(
 		COMMAND ${PROJECT_NAME}
 		COMMAND ${PROJECT_NAME} -api vulkansc
@@ -326,10 +312,7 @@ if( VULKAN_HPP_RUN_GENERATOR )
 	add_custom_target( build_vulkan_hpp ALL DEPENDS "${vulkan_hpp}" "${vk_spec}" )
 endif()
 
-option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
-
-option( SAMPLES_BUILD "Build samples" OFF )
-if( SAMPLES_BUILD )
+if( VULKAN_HPP_SAMPLES_BUILD )
 	# external libraries
 	add_subdirectory( glm )
 	set( GLFW_BUILD_EXAMPLES OFF )
@@ -341,12 +324,24 @@ if( SAMPLES_BUILD )
 	add_subdirectory( RAII_Samples )
 endif()
 
-option( TESTS_BUILD "Build tests" OFF )
-if( TESTS_BUILD )
+if( VULKAN_HPP_TESTS_BUILD )
 	add_subdirectory( tests )
 endif()
 
 if( ${VULKAN_HPP_INSTALL} )
 	include( GNUInstallDirs )
+
+	set( VK_GENERATED_VULKAN_HEADERS
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_enums.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_format_traits.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
+	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
 endif()

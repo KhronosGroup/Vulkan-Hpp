@@ -3649,12 +3649,13 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors3Retu
   switch ( vectorParams.size() )
   {
     case 1:
-      if ( commandData.params[returnParams[0]].type.type == "VkBool32" )
+      if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
+           !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
       {
-        if ( commandData.params[returnParams[1]].type.type == "uint32_t" )
+        if ( ( commandData.params[returnParams[1]].type.type == "size_t" ) || ( commandData.params[returnParams[1]].type.type == "uint32_t" ) )
         {
-          if ( ( commandData.params[returnParams[2]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[2]].type.type ) &&
-               !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) )
+          if ( ( commandData.params[returnParams[2]].type.type == "void" ) ||
+               ( !isHandleType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) ) )
           {
             if ( returnParams[1] == vectorParams.begin()->second.lenParam )
             {
@@ -4616,8 +4617,7 @@ std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &   
       assert( !( flavourFlags & CommandFlavourFlagBits::unique ) );
       return generateDataDeclarations2Returns( commandData, returnParams, vectorParams, flavourFlags, raii, dataTypes, dataType, returnVariable );
     case 3:
-      assert( templatedParams.empty() &&
-              !( flavourFlags & ( CommandFlavourFlagBits::chained | CommandFlavourFlagBits::singular | CommandFlavourFlagBits::unique ) ) );
+      assert( !( flavourFlags & ( CommandFlavourFlagBits::chained | CommandFlavourFlagBits::singular | CommandFlavourFlagBits::unique ) ) );
       return generateDataDeclarations3Returns( commandData, returnParams, vectorParams, flavourFlags, raii, dataTypes );
     default: assert( false ); return "";
   }
@@ -4695,9 +4695,9 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
         std::string firstDataVariable  = startLowerCase( stripPrefix( commandData.params[returnParams[0]].name, "p" ) );
         std::string secondDataVariable = startLowerCase( stripPrefix( commandData.params[returnParams[1]].name, "p" ) );
 
-        std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data;
-    ${firstDataType} & ${firstDataVariable} = data.first;
-    ${secondDataType} & ${secondDataVariable} = data.second;)";
+        std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data_;
+    ${firstDataType} & ${firstDataVariable} = data_.first;
+    ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
         return replaceWithMap( dataDeclarationTemplate,
                                { { "firstDataType", dataTypes[0] },
@@ -4755,9 +4755,9 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
         {
           firstDataVariable = stripPluralS( firstDataVariable );
 
-          std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data;
-    ${firstDataType} & ${firstDataVariable} = data.first;
-    ${secondDataType} & ${secondDataVariable} = data.second;)";
+          std::string const dataDeclarationTemplate = R"(std::pair<${firstDataType},${secondDataType}> data_;
+    ${firstDataType} & ${firstDataVariable} = data_.first;
+    ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
           return replaceWithMap( dataDeclarationTemplate,
                                  { { "firstDataType", dataTypes[0] },
@@ -4776,9 +4776,9 @@ std::string VulkanHppGenerator::generateDataDeclarations2Returns( CommandData co
           std::string vectorSize = startLowerCase( stripPrefix( commandData.params[vectorParams.begin()->first].name, "p" ) ) + ".size()";
 
           std::string const dataDeclarationTemplate =
-            R"(std::pair<std::vector<${firstDataType}${allocatorType}>,${secondDataType}> data( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
-    std::vector<${firstDataType}${allocatorType}> & ${firstDataVariable} = data.first;
-    ${secondDataType} & ${secondDataVariable} = data.second;)";
+            R"(std::pair<std::vector<${firstDataType}${allocatorType}>,${secondDataType}> data_( std::piecewise_construct, std::forward_as_tuple( ${vectorSize}${allocateInitializer} ), std::forward_as_tuple( 0 ) );
+    std::vector<${firstDataType}${allocatorType}> & ${firstDataVariable} = data_.first;
+    ${secondDataType} & ${secondDataVariable} = data_.second;)";
 
           return replaceWithMap( dataDeclarationTemplate,
                                  { { "allocateInitializer", allocateInitializer },
@@ -4817,15 +4817,15 @@ std::string VulkanHppGenerator::generateDataDeclarations3Returns( CommandData co
           vectorAllocatorType = startUpperCase( stripPrefix( dataTypes[2], "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
           pairConstructor =
             ( flavourFlags & CommandFlavourFlagBits::withAllocator )
-              ? ( "( std::piecewise_construct, std::forward_as_tuple( false ), std::forward_as_tuple( " + startLowerCase( vectorAllocatorType ) + " ) )" )
+              ? ( "( std::piecewise_construct, std::forward_as_tuple(), std::forward_as_tuple( " + startLowerCase( vectorAllocatorType ) + " ) )" )
               : "";
           vectorAllocatorType = ", " + vectorAllocatorType;
         }
 
         std::string const dataDeclarationsTemplate =
-          R"(std::pair<${valueType},std::vector<${vectorElementType}${vectorAllocatorType}>> data${pairConstructor};
-    ${valueType} & ${valueVariable} = data.first;
-    std::vector<${vectorElementType}${vectorAllocatorType}> & ${vectorVariable} = data.second;
+          R"(std::pair<${valueType},std::vector<${vectorElementType}${vectorAllocatorType}>> data_${pairConstructor};
+    ${valueType} & ${valueVariable} = data_.first;
+    std::vector<${vectorElementType}${vectorAllocatorType}> & ${vectorVariable} = data_.second;
     ${counterType} ${counterVariable};)";
 
         return replaceWithMap( dataDeclarationsTemplate,
@@ -4861,9 +4861,9 @@ std::string VulkanHppGenerator::generateDataDeclarations3Returns( CommandData co
         }
 
         std::string const dataDeclarationsTemplate =
-          R"(std::pair<std::vector<${firstVectorElementType}${firstVectorAllocatorType}>, std::vector<${secondVectorElementType}${secondVectorAllocatorType}>> data${pairConstructor};
-    std::vector<${firstVectorElementType}${firstVectorAllocatorType}> & ${firstVectorVariable} = data.first;
-    std::vector<${secondVectorElementType}${secondVectorAllocatorType}> & ${secondVectorVariable} = data.second;
+          R"(std::pair<std::vector<${firstVectorElementType}${firstVectorAllocatorType}>, std::vector<${secondVectorElementType}${secondVectorAllocatorType}>> data_${pairConstructor};
+    std::vector<${firstVectorElementType}${firstVectorAllocatorType}> & ${firstVectorVariable} = data_.first;
+    std::vector<${secondVectorElementType}${secondVectorAllocatorType}> & ${secondVectorVariable} = data_.second;
     ${counterType} ${counterVariable};)";
 
         return replaceWithMap( dataDeclarationsTemplate,
@@ -9124,8 +9124,8 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
       {
         auto vectorParamIt = vectorParams.find( returnParams[1] );
         if ( vectorParamIt == vectorParams.end() )
-        {  // the return variable is simply named "data", and holds the multi-return value stuff
-          returnVariable = "data";
+        {  // the return variable is simply named "data_", and holds the multi-return value stuff
+          returnVariable = "data_";
         }
         else
         {
@@ -9142,7 +9142,7 @@ std::string VulkanHppGenerator::generateReturnVariable( CommandData const &     
               ( ( vectorParams.size() == 2 ) && ( vectorParams.begin()->first == returnParams[1] ) &&
                 ( vectorParams.begin()->second.lenParam == returnParams[0] ) && ( std::next( vectorParams.begin() )->first == returnParams[2] ) &&
                 ( std::next( vectorParams.begin() )->second.lenParam == returnParams[0] ) ) );
-      returnVariable = "data";
+      returnVariable = "data_";
       break;
   }
   return returnVariable;

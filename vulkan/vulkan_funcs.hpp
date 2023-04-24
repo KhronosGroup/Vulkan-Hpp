@@ -12501,9 +12501,9 @@ namespace VULKAN_HPP_NAMESPACE
 
     std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
               std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>
-                                                                                                                     data;
-    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator> &                       counters            = data.first;
-    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator> & counterDescriptions = data.second;
+                                                                                                                     data_;
+    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator> &                       counters            = data_.first;
+    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator> & counterDescriptions = data_.second;
     uint32_t                                                                                                         counterCount;
     VkResult                                                                                                         result;
     do
@@ -12529,7 +12529,7 @@ namespace VULKAN_HPP_NAMESPACE
       counters.resize( counterCount );
       counterDescriptions.resize( counterCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 
   template <typename PerformanceCounterKHRAllocator,
@@ -12552,10 +12552,10 @@ namespace VULKAN_HPP_NAMESPACE
 
     std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
               std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>
-      data(
+      data_(
         std::piecewise_construct, std::forward_as_tuple( performanceCounterKHRAllocator ), std::forward_as_tuple( performanceCounterDescriptionKHRAllocator ) );
-    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator> &                       counters            = data.first;
-    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator> & counterDescriptions = data.second;
+    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator> &                       counters            = data_.first;
+    std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator> & counterDescriptions = data_.second;
     uint32_t                                                                                                         counterCount;
     VkResult                                                                                                         result;
     do
@@ -12581,7 +12581,7 @@ namespace VULKAN_HPP_NAMESPACE
       counters.resize( counterCount );
       counterDescriptions.resize( counterCount );
     }
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -16068,15 +16068,15 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data(
+    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data_(
       std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
-    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data.first;
-    uint64_t &                                 maxDeviation = data.second;
+    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
+    uint64_t &                                 maxDeviation = data_.second;
     VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
       m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 
   template <typename Uint64_tAllocator,
@@ -16090,15 +16090,15 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data(
+    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data_(
       std::piecewise_construct, std::forward_as_tuple( timestampInfos.size(), uint64_tAllocator ), std::forward_as_tuple( 0 ) );
-    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data.first;
-    uint64_t &                                 maxDeviation = data.second;
+    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
+    uint64_t &                                 maxDeviation = data_.second;
     VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
       m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 
   template <typename Dispatch>
@@ -16107,14 +16107,14 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::pair<uint64_t, uint64_t> data;
-    uint64_t &                    timestamp    = data.first;
-    uint64_t &                    maxDeviation = data.second;
+    std::pair<uint64_t, uint64_t> data_;
+    uint64_t &                    timestamp    = data_.first;
+    uint64_t &                    maxDeviation = data_.second;
     VkResult                      result =
       d.vkGetCalibratedTimestampsEXT( m_device, 1, reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( &timestampInfo ), &timestamp, &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
 
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -19244,9 +19244,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> data;
-    VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT &                                                    faultCounts = data.first;
-    VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT &                                                      faultInfo   = data.second;
+    std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> data_;
+    VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT &                                                    faultCounts = data_.first;
+    VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT &                                                      faultInfo   = data_.second;
     VkResult                                                                                        result =
       d.vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
@@ -19254,7 +19254,7 @@ namespace VULKAN_HPP_NAMESPACE
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
 
     return ResultValue<std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

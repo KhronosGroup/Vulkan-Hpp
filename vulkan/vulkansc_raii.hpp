@@ -8764,9 +8764,9 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetFaultData && "Function <vkGetFaultData> requires <VKSC_VERSION_1_0>" );
 
-      std::pair<VULKAN_HPP_NAMESPACE::Bool32, std::vector<VULKAN_HPP_NAMESPACE::FaultData>> data;
-      VULKAN_HPP_NAMESPACE::Bool32 &                                                        unrecordedFaults = data.first;
-      std::vector<VULKAN_HPP_NAMESPACE::FaultData> &                                        faults           = data.second;
+      std::pair<VULKAN_HPP_NAMESPACE::Bool32, std::vector<VULKAN_HPP_NAMESPACE::FaultData>> data_;
+      VULKAN_HPP_NAMESPACE::Bool32 &                                                        unrecordedFaults = data_.first;
+      std::vector<VULKAN_HPP_NAMESPACE::FaultData> &                                        faults           = data_.second;
       uint32_t                                                                              faultCount;
       VkResult                                                                              result;
       do
@@ -8788,7 +8788,7 @@ namespace VULKAN_HPP_NAMESPACE
       } while ( result == VK_INCOMPLETE );
       resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultData" );
 
-      return data;
+      return data_;
     }
 
     //=== VK_KHR_surface ===
@@ -9365,9 +9365,9 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR &&
                          "Function <vkEnumeratePhysicalDeviceQueueFamilyPerformanceQueryCountersKHR> requires <VK_KHR_performance_query>" );
 
-      std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>, std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>> data;
-      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> &            counters            = data.first;
-      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR> & counterDescriptions = data.second;
+      std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>, std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>> data_;
+      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR> &            counters            = data_.first;
+      std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR> & counterDescriptions = data_.second;
       uint32_t                                                              counterCount;
       VkResult                                                              result;
       do
@@ -9394,7 +9394,7 @@ namespace VULKAN_HPP_NAMESPACE
         counters.resize( counterCount );
         counterDescriptions.resize( counterCount );
       }
-      return data;
+      return data_;
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE uint32_t PhysicalDevice::getQueueFamilyPerformanceQueryPassesKHR(
@@ -9818,9 +9818,9 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsEXT && "Function <vkGetCalibratedTimestampsEXT> requires <VK_EXT_calibrated_timestamps>" );
 
-      std::pair<std::vector<uint64_t>, uint64_t> data( std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
-      std::vector<uint64_t> &                    timestamps   = data.first;
-      uint64_t &                                 maxDeviation = data.second;
+      std::pair<std::vector<uint64_t>, uint64_t> data_( std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
+      std::vector<uint64_t> &                    timestamps   = data_.first;
+      uint64_t &                                 maxDeviation = data_.second;
       VkResult                                   result       = getDispatcher()->vkGetCalibratedTimestampsEXT( static_cast<VkDevice>( m_device ),
                                                                        timestampInfos.size(),
                                                                        reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ),
@@ -9828,7 +9828,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                        &maxDeviation );
       resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
-      return data;
+      return data_;
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint64_t, uint64_t>
@@ -9836,14 +9836,14 @@ namespace VULKAN_HPP_NAMESPACE
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsEXT && "Function <vkGetCalibratedTimestampsEXT> requires <VK_EXT_calibrated_timestamps>" );
 
-      std::pair<uint64_t, uint64_t> data;
-      uint64_t &                    timestamp    = data.first;
-      uint64_t &                    maxDeviation = data.second;
+      std::pair<uint64_t, uint64_t> data_;
+      uint64_t &                    timestamp    = data_.first;
+      uint64_t &                    maxDeviation = data_.second;
       VkResult                      result       = getDispatcher()->vkGetCalibratedTimestampsEXT(
         static_cast<VkDevice>( m_device ), 1, reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( &timestampInfo ), &timestamp, &maxDeviation );
       resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
 
-      return data;
+      return data_;
     }
 
     //=== VK_KHR_fragment_shading_rate ===

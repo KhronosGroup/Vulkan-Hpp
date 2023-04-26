@@ -445,6 +445,7 @@ private:
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                     containsUnion( std::string const & type ) const;
+  std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
                                                std::map<size_t, VectorParamData> const &          vectorParams,
@@ -479,6 +480,7 @@ private:
   std::pair<std::string, std::string>              generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                                std::vector<std::string> const &          returnDataTypes,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                                               std::vector<size_t> const &               chainedReturnParams,
                                                                                CommandFlavourFlags                       flavourFlags,
                                                                                bool                                      definition ) const;
   std::string                                      generateArgumentListEnhanced( std::vector<ParamData> const &            params,
@@ -495,7 +497,7 @@ private:
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
                                          std::set<size_t> const &                  templatedParams,
-                                         CommandFlavourFlags                       flavourFlags,
+                                         std::vector<size_t> const &               chainedReturnParams,
                                          bool                                      raii ) const;
   std::string generateBaseTypes() const;
   std::string generateBitmask( std::map<std::string, BitmaskData>::const_iterator bitmaskIt, std::string const & surroundingProtect ) const;
@@ -848,7 +850,7 @@ private:
                                   std::map<size_t, VectorParamData> const & vectorParams,
                                   CommandFlavourFlags                       flavourFlags,
                                   bool                                      raii,
-                                  std::string const &                       dataType ) const;
+                                  std::vector<std::string> const &          dataTypes ) const;
   std::string generateReturnVariable( CommandData const &                       commandData,
                                       std::vector<size_t> const &               returnParams,
                                       std::map<size_t, VectorParamData> const & vectorParams,

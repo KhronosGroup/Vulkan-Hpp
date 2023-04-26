@@ -15,6 +15,11 @@
       return m_owner;
     }
 
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
+    }
+
   protected:
     template <typename T>
     void destroy( T t ) VULKAN_HPP_NOEXCEPT

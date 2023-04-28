@@ -1558,6 +1558,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_pipeline_protected_access ===
   struct PhysicalDevicePipelineProtectedAccessFeaturesEXT;
 
+  //=== VK_KHR_ray_tracing_position_fetch ===
+  struct PhysicalDeviceRayTracingPositionFetchFeaturesKHR;
+
   //=== VK_EXT_shader_object ===
   struct PhysicalDeviceShaderObjectFeaturesEXT;
   struct PhysicalDeviceShaderObjectPropertiesEXT;

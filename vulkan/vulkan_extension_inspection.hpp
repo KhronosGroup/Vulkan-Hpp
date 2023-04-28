@@ -376,6 +376,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_optical_flow",
       "VK_EXT_legacy_dithering",
       "VK_EXT_pipeline_protected_access",
+      "VK_KHR_ray_tracing_position_fetch",
       "VK_EXT_shader_object",
       "VK_QCOM_tile_properties",
       "VK_SEC_amigo_profiling",
@@ -787,6 +788,7 @@ namespace VULKAN_HPP_NAMESPACE
         { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2", "VK_KHR_format_feature_flags2", "VK_KHR_synchronization2" } } } },
       { "VK_EXT_legacy_dithering", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } } } },
       { "VK_EXT_pipeline_protected_access", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } } } },
+      { "VK_KHR_ray_tracing_position_fetch", { { "VK_VERSION_1_0", { "VK_KHR_acceleration_structure" } } } },
       { "VK_EXT_shader_object",
         { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2", "VK_KHR_dynamic_rendering" } },
           { "VK_VERSION_1_1", { "VK_KHR_dynamic_rendering" } },
@@ -1500,10 +1502,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_extended_dynamic_state3" ) || ( extension == "VK_EXT_subpass_merge_feedback" ) ||
            ( extension == "VK_EXT_shader_module_identifier" ) || ( extension == "VK_EXT_rasterization_order_attachment_access" ) ||
            ( extension == "VK_NV_optical_flow" ) || ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" ) ||
-           ( extension == "VK_EXT_shader_object" ) || ( extension == "VK_QCOM_tile_properties" ) || ( extension == "VK_SEC_amigo_profiling" ) ||
-           ( extension == "VK_QCOM_multiview_per_view_viewports" ) || ( extension == "VK_NV_ray_tracing_invocation_reorder" ) ||
-           ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_ARM_shader_core_builtins" ) ||
-           ( extension == "VK_EXT_pipeline_library_group_handles" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" );
+           ( extension == "VK_KHR_ray_tracing_position_fetch" ) || ( extension == "VK_EXT_shader_object" ) || ( extension == "VK_QCOM_tile_properties" ) ||
+           ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
+           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
+           ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
+           ( extension == "VK_QCOM_multiview_per_view_render_areas" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

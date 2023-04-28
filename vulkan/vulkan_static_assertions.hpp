@@ -6337,6 +6337,16 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineProtectedAccessFeaturesEXT>::value,
                           "PhysicalDevicePipelineProtectedAccessFeaturesEXT is not nothrow_move_constructible!" );
 
+//=== VK_KHR_ray_tracing_position_fetch ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR ) ==
+                            sizeof( VkPhysicalDeviceRayTracingPositionFetchFeaturesKHR ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR>::value,
+                          "PhysicalDeviceRayTracingPositionFetchFeaturesKHR is not nothrow_move_constructible!" );
+
 //=== VK_EXT_shader_object ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ShaderEXT ) == sizeof( VkShaderEXT ), "handle and wrapper have different size!" );

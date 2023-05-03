@@ -14,6 +14,7 @@
 
       OwnerType getOwner() const VULKAN_HPP_NOEXCEPT { return m_owner; }
       PoolType getPool() const VULKAN_HPP_NOEXCEPT { return m_pool; }
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
 
     protected:
       template <typename T>

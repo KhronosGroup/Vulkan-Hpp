@@ -17,6 +17,7 @@
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT { return m_owner; }
     Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
 
   protected:
     template <typename T>
@@ -47,6 +48,7 @@
     {}
 
     Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
 
   protected:
     template <typename T>

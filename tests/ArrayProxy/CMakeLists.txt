@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-if( NOT TESTS_BUILD_ONLY_DYNAMIC )
+if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
 	vulkan_hpp__setup_test( NAME ArrayProxy )
-
-	set_target_properties( ArrayProxy PROPERTIES FOLDER "Tests" )
-	target_link_libraries( ArrayProxy PRIVATE utils )
 endif()

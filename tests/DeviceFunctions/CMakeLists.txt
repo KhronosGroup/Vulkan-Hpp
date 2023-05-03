@@ -12,13 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-if( NOT TESTS_BUILD_ONLY_DYNAMIC )
-	vulkan_hpp__setup_test( NAME DeviceFunctions )
-
+if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
 	find_package( Vulkan REQUIRED )
 
-	set_target_properties( DeviceFunctions PROPERTIES FOLDER "Tests" )
-	target_link_libraries( DeviceFunctions PRIVATE utils ${Vulkan_LIBRARIES} )
+	vulkan_hpp__setup_test( NAME DeviceFunctions LIBRARIES ${Vulkan_LIBRARIES} )
 endif()

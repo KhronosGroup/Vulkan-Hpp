@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-vulkan_hpp__setup_library( NAME RAII_utils HEADERS shaders.hpp utils.hpp )
+vulkan_hpp__setup_library(
+	NAME RAII_utils
+	HEADERS shaders.hpp utils.hpp
+	FOLDER "RAII_Samples" )
 
 target_link_libraries( RAII_utils INTERFACE utils )
 target_compile_definitions( RAII_utils INTERFACE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )

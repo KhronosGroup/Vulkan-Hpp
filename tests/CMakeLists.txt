@@ -12,30 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-option( TESTS_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-option( TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
-
-if( NOT (TESTS_BUILD_ONLY_DYNAMIC AND TESTS_BUILD_WITH_LOCAL_VULKAN_HPP) )
-	find_package( Vulkan REQUIRED )
-endif()
-
-if( MSVC )
-	add_compile_options( /W4 /WX /permissive- )
-else()
-	add_compile_options( -Wall -Wextra -pedantic -Werror )
-endif()
-
-if( TESTS_BUILD_WITH_LOCAL_VULKAN_HPP )
-	include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
-	include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Headers/include" )
-else()
-	include_directories( "${Vulkan_INCLUDE_DIRS}" )
-endif()
-
-include_directories ("${CMAKE_CURRENT_SOURCE_DIR}/../glm" )
-
 add_subdirectory( ArrayProxy )
 add_subdirectory( ArrayProxyNoTemporaries )
 add_subdirectory( DesignatedInitializers )

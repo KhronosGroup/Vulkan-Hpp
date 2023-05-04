@@ -6001,6 +6001,11 @@ namespace VULKAN_HPP_NAMESPACE
       return m_allocationCallbacks;
     }
 
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
+    }
+
   protected:
     template <typename T>
     void destroy( T t ) VULKAN_HPP_NOEXCEPT
@@ -6033,6 +6038,11 @@ namespace VULKAN_HPP_NAMESPACE
     Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
     {
       return m_allocationCallbacks;
+    }
+
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
     }
 
   protected:
@@ -6073,6 +6083,11 @@ namespace VULKAN_HPP_NAMESPACE
       return m_allocationCallbacks;
     }
 
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
+    }
+
   protected:
     template <typename T>
     void destroy( T t ) VULKAN_HPP_NOEXCEPT
@@ -6102,6 +6117,11 @@ namespace VULKAN_HPP_NAMESPACE
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
     {
       return m_owner;
+    }
+
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
     }
 
   protected:
@@ -6138,6 +6158,11 @@ namespace VULKAN_HPP_NAMESPACE
     PoolType getPool() const VULKAN_HPP_NOEXCEPT
     {
       return m_pool;
+    }
+
+    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+    {
+      return *m_dispatch;
     }
 
   protected:
@@ -13283,7 +13308,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

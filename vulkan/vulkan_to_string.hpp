@@ -325,7 +325,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & PipelineStageFlagBits::eTopOfPipe )
@@ -392,7 +392,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & ImageAspectFlagBits::eColor )
@@ -684,7 +684,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( CullModeFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & CullModeFlagBits::eFront )
@@ -962,7 +962,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( AccessFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & AccessFlagBits::eIndirectCommandRead )
@@ -1434,7 +1434,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ResolveModeFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & ResolveModeFlagBits::eSampleZero )
@@ -1511,7 +1511,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags2 value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & PipelineStageFlagBits2::eTopOfPipe )
@@ -1605,7 +1605,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( AccessFlags2 value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & AccessFlagBits2::eIndirectCommandRead )
@@ -2012,7 +2012,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoCodecOperationFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -2032,7 +2032,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoChromaSubsamplingFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Invalid";
 
     std::string result;
     if ( value & VideoChromaSubsamplingFlagBitsKHR::eMonochrome )
@@ -2050,7 +2050,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoComponentBitDepthFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Invalid";
 
     std::string result;
     if ( value & VideoComponentBitDepthFlagBitsKHR::e8 )
@@ -2141,7 +2141,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeUsageFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Default";
 
     std::string result;
     if ( value & VideoDecodeUsageFlagBitsKHR::eTranscoding )
@@ -2339,7 +2339,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoDecodeH264PictureLayoutFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Progressive";
 
     std::string result;
     if ( value & VideoDecodeH264PictureLayoutFlagBitsKHR::eInterlacedInterleavedLines )
@@ -2817,7 +2817,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeUsageFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Default";
 
     std::string result;
     if ( value & VideoEncodeUsageFlagBitsKHR::eTranscoding )
@@ -2835,7 +2835,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeContentFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Default";
 
     std::string result;
     if ( value & VideoEncodeContentFlagBitsKHR::eCamera )
@@ -2856,7 +2856,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( VideoEncodeRateControlModeFlagsKHR value )
   {
     if ( !value )
-      return "{}";
+      return "Default";
 
     std::string result;
     if ( value & VideoEncodeRateControlModeFlagBitsKHR::eDisabled )
@@ -2953,7 +2953,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFlagsEXT value )
   {
     if ( !value )
-      return "{}";
+      return "Default";
 
     std::string result;
     if ( value & ImageCompressionFlagBitsEXT::eFixedRateDefault )
@@ -2969,7 +2969,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ImageCompressionFixedRateFlagsEXT value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & ImageCompressionFixedRateFlagBitsEXT::e1Bpc )
@@ -3141,7 +3141,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( OpticalFlowUsageFlagsNV value )
   {
     if ( !value )
-      return "{}";
+      return "Unknown";
 
     std::string result;
     if ( value & OpticalFlowUsageFlagBitsNV::eInput )
@@ -3161,7 +3161,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( OpticalFlowGridSizeFlagsNV value )
   {
     if ( !value )
-      return "{}";
+      return "Unknown";
 
     std::string result;
     if ( value & OpticalFlowGridSizeFlagBitsNV::e1X1 )

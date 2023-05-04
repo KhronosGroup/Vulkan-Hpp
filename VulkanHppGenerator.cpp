@@ -2467,7 +2467,7 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} value )
   {
     if ( !value )
-      return "{}";
+      return "${emptyValue}";
 
     std::string result;
 ${toStringChecks}
@@ -2475,19 +2475,26 @@ ${toStringChecks}
   }
 )";
 
+    std::string emptyValue = "{}";
     std::string toStringChecks;
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      auto [enter, leave]   = generateProtection( value.protect );
       std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
-      if ( value.singleBit )
+      if ( value.value == "0" )
       {
+        assert( emptyValue == "{}" );
+        emptyValue = valueName.substr( 1 );
+      }
+      else if ( !value.bitpos.empty() )
+      {
+        assert( value.alias.empty() );
+        auto [enter, leave] = generateProtection( value.protect );
         toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
                           " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
+        previousEnter = enter;
+        previousLeave = leave;
       }
-      previousEnter = enter;
-      previousLeave = leave;
     }
     if ( !previousLeave.empty() )
     {
@@ -2496,7 +2503,7 @@ ${toStringChecks}
       previousLeave.resize( previousLeave.size() - strlen( "\n" ) );
     }
 
-    str += replaceWithMap( bitmaskToStringTemplate, { { "bitmaskName", bitmaskName }, { "toStringChecks", toStringChecks } } );
+    str += replaceWithMap( bitmaskToStringTemplate, { { "bitmaskName", bitmaskName }, { "emptyValue", emptyValue }, { "toStringChecks", toStringChecks } } );
   }
 
   return str;
@@ -11832,7 +11839,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
     checkForError( bitpos.empty() ^ value.empty(), line, "both or none of \"bitpos\" and \"value\" are set for enum <" + name + "> which is invalid" );
-    enumIt->second.addEnumValue( line, name, "", !bitpos.empty(), true );
+    enumIt->second.addEnumValue( line, name, "", bitpos, value, true );
   }
 }
 
@@ -12669,7 +12676,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
       auto enumIt = m_enums.find( extends );
       assert( enumIt != m_enums.end() );
 
-      enumIt->second.addEnumValue( line, name, protect, !bitpos.empty(), ( api.empty() || ( api == m_api ) ) && supported );
+      enumIt->second.addEnumValue( line, name, protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
     }
   }
   else
@@ -13846,36 +13853,37 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
   {
     if ( supported )
     {
-      checkForError( ( valueIt->alias == alias ) && ( valueIt->protect == protect ) && !valueIt->singleBit,
+      checkForError( ( valueIt->alias == alias ) && ( valueIt->protect == protect ) && valueIt->bitpos.empty() && valueIt->value.empty(),
                      line,
                      "enum alias <" + name + "> already specified with different attributes" );
     }
     else
     {
-      checkForWarning( ( valueIt->alias == alias ) && ( valueIt->protect == protect ) && !valueIt->singleBit,
+      checkForWarning( ( valueIt->alias == alias ) && ( valueIt->protect == protect ) && valueIt->bitpos.empty() && valueIt->value.empty(),
                        line,
                        "enum alias <" + name + "> already specified with different attributes" );
     }
   }
   else
   {
-    valuesRef.push_back( { alias, name, protect, false, line } );
+    valuesRef.push_back( { alias, "", name, protect, "", line } );
   }
 }
 
-void VulkanHppGenerator::EnumData::addEnumValue( int line, std::string const & name, std::string const & protect, bool singleBit, bool supported )
+void VulkanHppGenerator::EnumData::addEnumValue(
+  int line, std::string const & name, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported )
 {
   auto & valuesRef = supported ? values : unsupportedValues;
   auto   valueIt   = std::find_if( valuesRef.begin(), valuesRef.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } );
   if ( valueIt != valuesRef.end() )
   {
-    checkForError( valueIt->alias.empty() && ( valueIt->protect == protect ) && ( valueIt->singleBit == singleBit ),
+    checkForError( valueIt->alias.empty() && ( valueIt->protect == protect ) && ( valueIt->bitpos == bitpos ) && ( valueIt->value == value ),
                    line,
                    "enum value <" + name + "> already specified with different attributes" );
   }
   else
   {
-    valuesRef.push_back( { "", name, protect, singleBit, line } );
+    valuesRef.push_back( { "", bitpos, name, protect, value, line } );
   }
 }
 

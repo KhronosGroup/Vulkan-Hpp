@@ -254,7 +254,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & PipelineStageFlagBits::eTopOfPipe )
@@ -305,7 +305,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & ImageAspectFlagBits::eColor )
@@ -515,7 +515,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( CullModeFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & CullModeFlagBits::eFront )
@@ -671,7 +671,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( AccessFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & AccessFlagBits::eIndirectCommandRead )
@@ -1076,7 +1076,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( ResolveModeFlags value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & ResolveModeFlagBits::eSampleZero )
@@ -1149,7 +1149,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlags2 value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & PipelineStageFlagBits2::eTopOfPipe )
@@ -1225,7 +1225,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( AccessFlags2 value )
   {
     if ( !value )
-      return "{}";
+      return "None";
 
     std::string result;
     if ( value & AccessFlagBits2::eIndirectCommandRead )

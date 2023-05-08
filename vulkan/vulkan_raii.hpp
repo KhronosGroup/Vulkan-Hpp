@@ -1603,6 +1603,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );
         vkGetDynamicRenderingTilePropertiesQCOM =
           PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
+
+        //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
+        vkCmdSetAttachmentFeedbackLoopEnableEXT =
+          PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAttachmentFeedbackLoopEnableEXT" ) );
       }
 
     public:
@@ -2399,6 +2403,9 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_QCOM_tile_properties ===
       PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
       PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
+
+      //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
+      PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT vkCmdSetAttachmentFeedbackLoopEnableEXT = 0;
     };
 
     //========================================
@@ -5920,6 +5927,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void bindShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderStageFlagBits> const & stages,
                            VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderEXT> const &           shaders ) const;
+
+      //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
+
+      void setAttachmentFeedbackLoopEnableEXT( VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask ) const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device        = {};
@@ -20130,6 +20141,17 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
 
       return properties;
+    }
+
+    //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::setAttachmentFeedbackLoopEnableEXT( VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetAttachmentFeedbackLoopEnableEXT &&
+                         "Function <vkCmdSetAttachmentFeedbackLoopEnableEXT> requires <VK_EXT_attachment_feedback_loop_dynamic_state>" );
+
+      getDispatcher()->vkCmdSetAttachmentFeedbackLoopEnableEXT( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                                static_cast<VkImageAspectFlags>( aspectMask ) );
     }
 
   }  // namespace VULKAN_HPP_RAII_NAMESPACE

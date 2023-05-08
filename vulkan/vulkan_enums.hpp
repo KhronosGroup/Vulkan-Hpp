@@ -1076,7 +1076,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceShaderCoreBuiltinsPropertiesARM               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_PROPERTIES_ARM,
     ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_LIBRARY_GROUP_HANDLES_FEATURES_EXT,
     ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM,
-    eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM          = VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM
+    eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM          = VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM,
+    ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ATTACHMENT_FEEDBACK_LOOP_DYNAMIC_STATE_FEATURES_EXT
   };
 
   enum class PipelineCacheHeaderVersion
@@ -2450,7 +2451,8 @@ namespace VULKAN_HPP_NAMESPACE
     eCoverageModulationTableNV           = VK_DYNAMIC_STATE_COVERAGE_MODULATION_TABLE_NV,
     eShadingRateImageEnableNV            = VK_DYNAMIC_STATE_SHADING_RATE_IMAGE_ENABLE_NV,
     eRepresentativeFragmentTestEnableNV  = VK_DYNAMIC_STATE_REPRESENTATIVE_FRAGMENT_TEST_ENABLE_NV,
-    eCoverageReductionModeNV             = VK_DYNAMIC_STATE_COVERAGE_REDUCTION_MODE_NV
+    eCoverageReductionModeNV             = VK_DYNAMIC_STATE_COVERAGE_REDUCTION_MODE_NV,
+    eAttachmentFeedbackLoopEnableEXT     = VK_DYNAMIC_STATE_ATTACHMENT_FEEDBACK_LOOP_ENABLE_EXT
   };
 
   enum class FrontFace

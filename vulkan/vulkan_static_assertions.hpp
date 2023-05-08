@@ -6497,4 +6497,14 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Multivie
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM>::value,
                           "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM is not nothrow_move_constructible!" );
 
+//=== VK_EXT_attachment_feedback_loop_dynamic_state ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT ) ==
+                            sizeof( VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT>::value,
+                          "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT is not nothrow_move_constructible!" );
+
 #endif

@@ -4130,6 +4130,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT: return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
       case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
       case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
+      case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5222,6 +5223,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DynamicState::eShadingRateImageEnableNV: return "ShadingRateImageEnableNV";
       case DynamicState::eRepresentativeFragmentTestEnableNV: return "RepresentativeFragmentTestEnableNV";
       case DynamicState::eCoverageReductionModeNV: return "CoverageReductionModeNV";
+      case DynamicState::eAttachmentFeedbackLoopEnableEXT: return "AttachmentFeedbackLoopEnableEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

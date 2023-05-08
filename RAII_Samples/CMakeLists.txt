@@ -12,28 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-option( SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-option( SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
-
-if( NOT (SAMPLES_BUILD_ONLY_DYNAMIC AND SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP) )
-	find_package( Vulkan REQUIRED )
-endif()
-
-if( MSVC )
-	add_compile_options( /W4 /WX /permissive- )
-else()
-	add_compile_options( -Wall -Wextra -pedantic -Werror )
-endif()
-
-if( SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP )
-	include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
-	include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/../Vulkan-Headers/include" )
-else()
-	include_directories( "${Vulkan_INCLUDE_DIRS}" )
-endif()
-
 add_subdirectory( utils )
 add_subdirectory( 01_InitInstance )
 add_subdirectory( 02_EnumerateDevices )

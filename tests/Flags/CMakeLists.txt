@@ -12,9 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
 vulkan_hpp__setup_test( NAME Flags )
-
-set_target_properties( Flags PROPERTIES FOLDER "Tests" )
-target_link_libraries( Flags PRIVATE utils )

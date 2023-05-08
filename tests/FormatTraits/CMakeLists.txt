@@ -12,9 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
 vulkan_hpp__setup_test( NAME FormatTraits )
-
-set_target_properties( FormatTraits PROPERTIES FOLDER "Tests" )
-target_link_libraries( FormatTraits PRIVATE utils )

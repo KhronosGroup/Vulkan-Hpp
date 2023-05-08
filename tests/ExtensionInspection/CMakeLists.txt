@@ -12,9 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required( VERSION 3.2 )
-
-vulkan_hpp__setup_test( NAME ExtensionInspection )
-
-set_target_properties( ExtensionInspection PROPERTIES CXX_STANDARD 20 FOLDER "Tests" )
-target_link_libraries( ExtensionInspection PRIVATE utils )
+vulkan_hpp__setup_test( NAME ExtensionInspection CXX_STANDARD 20 )

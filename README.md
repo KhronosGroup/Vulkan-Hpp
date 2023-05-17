@@ -575,10 +575,10 @@ Some functions might provide information that depends on the vulkan version. As 
 	Gets all instance extensions specified for the current platform. Note, that not all of them might be supported by the actual instances.
 - `std::map<std::string, std::string> const & getDeprecatedExtensions();`
 	Gets a map of all deprecated extensions to the extension or vulkan version that is supposed to replace that functionality.
-- `std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );`
-	Some extensions depends on other extensions. That dependencies might differ for different vulkan versions. This function gets a vector of extensions per vulkan version that the given extension depends on.
-- `std::pair<bool, std::vector<std::string> const &> getExtensionDepends( std::string const & version, std::string const & extension );`
-	The `first` member of the returned `std::pair` is true, if the given extension is specified for the given vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of extensions, the given extension depends on for the given vulkan version.
+- `std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );`
+	Some extensions depends on other extensions. That dependencies might differ for different vulkan versions, and there might be different sets of dependencies for the very same vulkan version. This function gets a vector of vectors of extensions per vulkan version that the given extension depends on.
+- `std::pair<bool, std::vector<std::vector<std::string>> const &> getExtensionDepends( std::string const & version, std::string const & extension );`
+	The `first` member of the returned `std::pair` is true, if the given extension is specified for the given vulkan version, otherwise `false`. The `second` member of the returned `std::pair` is a vector of vectors of extensions, listing the separate sets of extensions the given extension depends on for the given vulkan version.
 - `std::map<std::string, std::string> const & getObsoletedExtensions();`
 	Gets a map of all obsoleted extensions to the extension or vulkan version that has obsoleted that extension.
 - `std::map<std::string, std::string> const & getPromotedExtensions();`

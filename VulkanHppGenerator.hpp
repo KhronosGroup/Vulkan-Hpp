@@ -244,17 +244,17 @@ private:
 
   struct ExtensionData
   {
-    std::string                                     deprecatedBy = {};
-    bool                                            isDeprecated = false;
-    std::string                                     name         = {};
-    std::string                                     number       = {};
-    std::string                                     obsoletedBy  = {};
-    std::string                                     platform     = {};
-    std::string                                     promotedTo   = {};
-    std::map<std::string, std::vector<std::string>> depends      = {};
-    std::vector<RequireData>                        requireData  = {};
-    std::string                                     type         = {};
-    int                                             xmlLine      = 0;
+    std::string                                                  deprecatedBy = {};
+    bool                                                         isDeprecated = false;
+    std::string                                                  name         = {};
+    std::string                                                  number       = {};
+    std::string                                                  obsoletedBy  = {};
+    std::string                                                  platform     = {};
+    std::string                                                  promotedTo   = {};
+    std::map<std::string, std::vector<std::vector<std::string>>> depends      = {};
+    std::vector<RequireData>                                     requireData  = {};
+    std::string                                                  type         = {};
+    int                                                          xmlLine      = 0;
   };
 
   struct ExternalTypeData

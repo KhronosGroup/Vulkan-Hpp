@@ -18,10 +18,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  std::set<std::string> const &                           getDeviceExtensions();
-  std::set<std::string> const &                           getInstanceExtensions();
-  std::map<std::string, std::string> const &              getDeprecatedExtensions();
-  std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension );
+  std::set<std::string> const &                                        getDeviceExtensions();
+  std::set<std::string> const &                                        getInstanceExtensions();
+  std::map<std::string, std::string> const &                           getDeprecatedExtensions();
+  std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );
 
   std::map<std::string, std::string> const & getObsoletedExtensions();
   std::map<std::string, std::string> const & getPromotedExtensions();
@@ -134,84 +134,364 @@ namespace VULKAN_HPP_NAMESPACE
     return instanceExtensions;
   }
 
-  VULKAN_HPP_INLINE std::map<std::string, std::vector<std::string>> const & getExtensionDepends( std::string const & extension )
+  VULKAN_HPP_INLINE std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )
   {
-    static std::map<std::string, std::vector<std::string>>                        noDependencies;
-    static std::map<std::string, std::map<std::string, std::vector<std::string>>> dependencies = {
-      { "VK_KHR_swapchain", { { "VK_VERSION_1_0", { "VK_KHR_surface" } } } },
-      { "VK_KHR_display", { { "VK_VERSION_1_0", { "VK_KHR_surface" } } } },
-      { "VK_KHR_display_swapchain", { { "VK_VERSION_1_0", { "VK_KHR_swapchain", "VK_KHR_display" } } } },
-      { "VK_EXT_texture_compression_astc_hdr", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_astc_decode_mode", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_external_memory_fd", { { "VK_VERSION_1_0", { "VK_KHR_external_memory" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_external_semaphore_fd", { { "VK_VERSION_1_0", { "VK_KHR_external_semaphore" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_incremental_present", { { "VK_VERSION_1_0", { "VK_KHR_swapchain" } } } },
-      { "VK_EXT_direct_mode_display", { { "VK_VERSION_1_0", { "VK_KHR_display" } } } },
-      { "VK_EXT_display_surface_counter", { { "VK_VERSION_1_0", { "VK_KHR_display" } } } },
-      { "VK_EXT_display_control", { { "VK_VERSION_1_0", { "VK_EXT_display_surface_counter", "VK_KHR_swapchain" } } } },
-      { "VK_EXT_discard_rectangles", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_conservative_rasterization", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_depth_clip_enable", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_swapchain_colorspace", { { "VK_VERSION_1_0", { "VK_KHR_surface" } } } },
-      { "VK_EXT_hdr_metadata", { { "VK_VERSION_1_0", { "VK_KHR_swapchain" } } } },
+    static std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
+    static std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = {
+      { "VK_KHR_swapchain",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } },
+      { "VK_KHR_display",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } },
+      { "VK_KHR_display_swapchain",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+              "VK_KHR_display",
+            } } } } },
+      { "VK_EXT_texture_compression_astc_hdr",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_astc_decode_mode",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_external_memory_fd",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_memory",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_external_semaphore_fd",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_semaphore",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_incremental_present",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+            } } } } },
+      { "VK_EXT_direct_mode_display",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_display",
+            } } } } },
+      { "VK_EXT_display_surface_counter",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_display",
+            } } } } },
+      { "VK_EXT_display_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_EXT_display_surface_counter",
+              "VK_KHR_swapchain",
+            } } } } },
+      { "VK_EXT_discard_rectangles",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_conservative_rasterization",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_depth_clip_enable",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_swapchain_colorspace",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } },
+      { "VK_EXT_hdr_metadata",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+            } } } } },
       { "VK_KHR_shared_presentable_image",
-        { { "VK_VERSION_1_0", { "VK_KHR_swapchain", "VK_KHR_get_surface_capabilities2", "VK_KHR_get_physical_device_properties2" } },
-          { "VK_VERSION_1_1", { "VK_KHR_swapchain", "VK_KHR_get_surface_capabilities2" } } } },
-      { "VK_KHR_external_fence_fd", { { "VK_VERSION_1_0", { "VK_KHR_external_fence" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_performance_query", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_get_surface_capabilities2", { { "VK_VERSION_1_0", { "VK_KHR_surface" } } } },
-      { "VK_KHR_get_display_properties2", { { "VK_VERSION_1_0", { "VK_KHR_display" } } } },
-      { "VK_EXT_external_memory_dma_buf", { { "VK_VERSION_1_0", { "VK_KHR_external_memory_fd" } } } },
-      { "VK_EXT_queue_family_foreign", { { "VK_VERSION_1_0", { "VK_KHR_external_memory" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_sample_locations", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_blend_operation_advanced", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+              "VK_KHR_get_surface_capabilities2",
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_swapchain",
+              "VK_KHR_get_surface_capabilities2",
+            } } } } },
+      { "VK_KHR_external_fence_fd",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_fence",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_performance_query",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_get_surface_capabilities2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } },
+      { "VK_KHR_get_display_properties2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_display",
+            } } } } },
+      { "VK_EXT_external_memory_dma_buf",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_memory_fd",
+            } } } } },
+      { "VK_EXT_queue_family_foreign",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_memory",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_sample_locations",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_blend_operation_advanced",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_EXT_image_drm_format_modifier",
         { { "VK_VERSION_1_0",
-            { "VK_KHR_bind_memory2", "VK_KHR_get_physical_device_properties2", "VK_KHR_sampler_ycbcr_conversion", "VK_KHR_image_format_list" } },
-          { "VK_VERSION_1_1", { "VK_KHR_image_format_list" } },
-          { "VK_VERSION_1_2", {} } } },
-      { "VK_EXT_external_memory_host", { { "VK_VERSION_1_0", { "VK_KHR_external_memory" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_shader_clock", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_calibrated_timestamps", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_vertex_attribute_divisor", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
+            { {
+              "VK_KHR_bind_memory2",
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_sampler_ycbcr_conversion",
+              "VK_KHR_image_format_list",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_image_format_list",
+            } } },
+          { "VK_VERSION_1_2", { {} } } } },
+      { "VK_EXT_external_memory_host",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_external_memory",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_shader_clock",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_calibrated_timestamps",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_vertex_attribute_divisor",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_swapchain_mutable_format",
-        { { "VK_VERSION_1_0", { "VK_KHR_swapchain", "VK_KHR_maintenance2", "VK_KHR_image_format_list" } },
-          { "VK_VERSION_1_1", { "VK_KHR_swapchain", "VK_KHR_image_format_list" } },
-          { "VK_VERSION_1_2", { "VK_KHR_swapchain" } } } },
-      { "VK_EXT_pci_bus_info", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_shader_terminate_invocation", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_subgroup_size_control", { { "VK_VERSION_1_1", {} } } },
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+              "VK_KHR_maintenance2",
+              "VK_KHR_image_format_list",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_swapchain",
+              "VK_KHR_image_format_list",
+            } } },
+          { "VK_VERSION_1_2",
+            { {
+              "VK_KHR_swapchain",
+            } } } } },
+      { "VK_EXT_pci_bus_info",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_shader_terminate_invocation",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_subgroup_size_control", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_fragment_shading_rate",
-        { { "VK_VERSION_1_0", { "VK_KHR_create_renderpass2", "VK_KHR_get_physical_device_properties2" } },
-          { "VK_VERSION_1_1", { "VK_KHR_create_renderpass2" } },
-          { "VK_VERSION_1_2", {} } } },
-      { "VK_EXT_shader_image_atomic_int64", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_memory_budget", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_fragment_shader_interlock", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_ycbcr_image_arrays", { { "VK_VERSION_1_0", { "VK_KHR_sampler_ycbcr_conversion" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_headless_surface", { { "VK_VERSION_1_0", { "VK_KHR_surface" } } } },
-      { "VK_EXT_line_rasterization", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_shader_atomic_float", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_index_type_uint8", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_extended_dynamic_state", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_shader_demote_to_helper_invocation", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_texel_buffer_alignment", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_robustness2", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_custom_border_color", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_synchronization2", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_ycbcr_2plane_444_formats", { { "VK_VERSION_1_0", { "VK_KHR_sampler_ycbcr_conversion" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_image_robustness", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_KHR_copy_commands2", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_4444_formats", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_vertex_input_dynamic_state", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_create_renderpass2",
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_create_renderpass2",
+            } } },
+          { "VK_VERSION_1_2", { {} } } } },
+      { "VK_EXT_shader_image_atomic_int64",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_memory_budget",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_fragment_shader_interlock",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_ycbcr_image_arrays",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_sampler_ycbcr_conversion",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_headless_surface",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_surface",
+            } } } } },
+      { "VK_EXT_line_rasterization",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_shader_atomic_float",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_index_type_uint8",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_extended_dynamic_state",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_shader_demote_to_helper_invocation",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_texel_buffer_alignment",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_robustness2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_custom_border_color",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_synchronization2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_ycbcr_2plane_444_formats",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_sampler_ycbcr_conversion",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_image_robustness",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_copy_commands2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_4444_formats",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_vertex_input_dynamic_state",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
 #if defined( VK_USE_PLATFORM_SCI )
-      { "VK_NV_external_sci_sync", { { "VK_VERSION_1_1", {} } } },
-      { "VK_NV_external_memory_sci_buf", { { "VK_VERSION_1_1", {} } } },
+      { "VK_NV_external_sci_sync", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_NV_external_memory_sci_buf", { { "VK_VERSION_1_1", { {} } } } },
 #endif /*VK_USE_PLATFORM_SCI*/
-      { "VK_EXT_extended_dynamic_state2", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
-      { "VK_EXT_color_write_enable", { { "VK_VERSION_1_0", { "VK_KHR_get_physical_device_properties2" } }, { "VK_VERSION_1_1", {} } } },
+      { "VK_EXT_extended_dynamic_state2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_color_write_enable",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
 #if defined( VK_USE_PLATFORM_SCI )
-      { "VK_NV_external_sci_sync2", { { "VK_VERSION_1_1", {} } } }
+      { "VK_NV_external_sci_sync2", { { "VK_VERSION_1_1", { {} } } } }
 #endif /*VK_USE_PLATFORM_SCI*/
     };
     auto depIt = dependencies.find( extension );

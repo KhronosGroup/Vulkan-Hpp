@@ -49,18 +49,18 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::set<std::string> const & deviceExtensions = vk::getDeviceExtensions();
   assert( deviceExtensions.find( VK_KHR_SWAPCHAIN_EXTENSION_NAME ) != deviceExtensions.end() );
 
-  std::map<std::string, std::vector<std::string>> depends = vk::getExtensionDepends( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
+  std::map<std::string, std::vector<std::vector<std::string>>> depends = vk::getExtensionDepends( VK_KHR_SWAPCHAIN_EXTENSION_NAME );
   assert( ( depends.size() == 1 ) && ( depends.begin()->first == "VK_VERSION_1_0" ) && ( depends.begin()->second.size() == 1 ) &&
-          ( depends.begin()->second[0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+          ( depends.begin()->second[0].size() == 1 ) && ( depends.begin()->second[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
 
   auto [available0, deps0] = vk::getExtensionDepends( "VK_VERSION_1_0", VK_KHR_SURFACE_EXTENSION_NAME );
   assert( available0 && deps0.empty() );
 
   auto [available1, deps1] = vk::getExtensionDepends( "VK_VERSION_1_0", VK_KHR_SWAPCHAIN_EXTENSION_NAME );
-  assert( available1 && ( deps1.size() == 1 ) && ( deps1[0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+  assert( available1 && ( deps1.size() == 1 ) && ( deps1[0].size() == 1 ) && ( deps1[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
 
   auto [available2, deps2] = vk::getExtensionDepends( "VK_VERSION_1_1", VK_KHR_SWAPCHAIN_EXTENSION_NAME );
-  assert( available2 && ( deps2.size() == 1 ) && ( deps2[0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
+  assert( available2 && ( deps2.size() == 1 ) && ( deps2[0].size() == 1 ) && ( deps2[0][0] == VK_KHR_SURFACE_EXTENSION_NAME ) );
 
   auto [available3, deps3] = vk::getExtensionDepends( "VK_VERSION_1_1", VK_EXT_SHADER_TILE_IMAGE_EXTENSION_NAME );
   assert( !available3 );

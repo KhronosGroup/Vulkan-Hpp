@@ -33,7 +33,7 @@ Other than the `vk::Device`, you can assign the `vk::raii::Device` to a smart po
 
 Note that, as the vk::raii objects own the actual Vulkan resource, all vk::raii objects are moveable, but not copyable.
 
-For simplicity, in the rest of this document a vk::raii object is always directly instantiated on the stack. Obviously, that’s not essential. You could assign them as well to a std::unique_ptr, a std::shared_ptr, or any other smart pointer or object managing data structure. And you can even assign them to a dumb pointer by using the new operator.
+For simplicity, in the rest of this document a vk::raii object is always directly instantiated on the stack. Obviously, that's not essential. You could assign them as well to a std::unique_ptr, a std::shared_ptr, or any other smart pointer or object managing data structure. And you can even assign them to a dumb pointer by using the new operator.
 
 Similar to a `vk::Device`, a `vk::raii::Device` provides the functions related to that class. But other than the `vk::Device`, you don't need to provide a device-specific dispatcher to those functions to get multi-device functionality. That's already managed by the `vk::raii::Device`.
 

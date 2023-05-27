@@ -637,6 +637,11 @@ private:
                                           bool                        raii ) const;
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateCppModuleConstexprDefines() const;
+  std::string generateCppModuleHandleUsings() const;
+  std::string generateCppModuleStructUsings() const;
+  std::string generateCppModuleUniqueHandleUsings() const;
+  std::string generateCppModuleFuncsUsings() const;
+  std::string generateCppModuleEnumUsings() const;
   std::string generateCppModuleUsings() const;
   std::string generateCppModuleRaiiUsings() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
@@ -738,6 +743,7 @@ private:
                                 bool                                      raii ) const;
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
   std::pair<std::string, std::string> generateProtection( std::string const & protect ) const;
+  std::pair<std::string, std::string> generateNotProtection( std::string const & protect ) const;
   std::string                         generateRAIICommandDefinitions() const;
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;

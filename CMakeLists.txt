@@ -26,6 +26,19 @@
 
 cmake_minimum_required(VERSION 3.12)
 
+if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
+	cmake_minimum_required( VERSION 3.25 )
+	# test if CMake version is >= 3.25 but < 3.26
+	if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.25 AND ${CMAKE_VERSION} VERSION_LESS 3.26 )
+		# CMake 3.25
+		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
+	elseif( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
+		# CMake 3.26; need to handle future versions here
+		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
+	endif()
+	set( CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1 )
+endif()
+
 function( vulkan_hpp__setup_platform )
 	set( options )
 	set( oneValueArgs NAME )
@@ -300,6 +313,7 @@ option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
 option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
 option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
+option( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES "Build Vulkan-Hpp as C++20 module" OFF )
 
 # look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
 if( NOT DEFINED VulkanRegistry_DIR )
@@ -387,6 +401,25 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.cppm
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.ixx
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
+	
+endif()
+
+# Build Vulkan-Hpp as a module
+if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
+	# create a target to provide VulkanHpp as C++20 module
+	add_library( VulkanHppModule )
+	set_target_properties( VulkanHppModule PROPERTIES 
+		CXX_STANDARD_REQUIRED ON
+		CXX_EXTENSIONS OFF )
+	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+	target_sources( VulkanHppModule 
+		PUBLIC 
+		# if Visual Studio, use .ixx, otherwise .cppm
+		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.ixx )
+	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
+	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()

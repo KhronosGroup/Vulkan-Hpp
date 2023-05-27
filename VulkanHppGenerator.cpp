@@ -16,7 +16,9 @@
 
 #include <algorithm>
 #include <cassert>
+#include <filesystem>
 #include <fstream>
+#include <ranges>
 #include <regex>
 #include <sstream>
 
@@ -680,6 +682,39 @@ ${enumsToString}
     { { "bitmasksToString", generateBitmasksToString() }, { "enumsToString", generateEnumsToString() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 
   writeToFile( str, vulkan_to_string_hpp );
+}
+
+void VulkanHppGenerator::generateCppModuleFile() const
+{
+  std::string const vulkan_ixx = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".ixx";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_ixx << "..." << std::endl;
+
+  std::string const vulkanCppmTemplate = R"(${licenseHeader}
+module;
+
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_raii.hpp>
+
+export module ${api};
+
+export namespace VULKAN_HPP_NAMESPACE
+{
+  ${usings}
+  export namespace VULKAN_HPP_RAII_NAMESPACE {
+    ${raiiUsings}
+  } // namespace VULKAN_HPP_RAII_NAMESPACE
+  ${constexprDefines}
+} // namespace VULKAN_HPP_NAMESPACE
+)";
+
+  auto const str = replaceWithMap( vulkanCppmTemplate,
+                                   { { "licenseHeader", m_vulkanLicenseHeader },
+                                     { "api", m_api },
+                                     { "usings", generateCppModuleUsings() },
+                                     { "raiiUsings", generateCppModuleRaiiUsings() },
+                                     { "constexprDefines", generateCppModuleConstexprDefines() } } );
+
+  writeToFile( str, vulkan_ixx );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()
@@ -4674,6 +4709,89 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
   // structs with a VkBaseInStructure and VkBaseOutStructure can't be a constexpr!
   bool isConstExpression = ( structName != "VkBaseInStructure" ) && ( structName != "VkBaseOutStructure" );
   return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( ( containsUnion( structName ) || containsArray( structName ) ) ? "_14 " : " " ) ) : "";
+}
+
+std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
+{
+  return {};
+}
+
+std::string VulkanHppGenerator::generateCppModuleUsings() const
+{
+  auto const usingTemplate       = std::string{ R"(  //================
+  //    STRUCTs
+  //================
+
+  ${structUsings}
+
+  //================
+  //    HANDLEs
+  //================
+
+  ${handleUsings})" };
+
+  return {};
+}
+
+std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
+{
+  auto const raiiUsingTemplate = std::string{ R"(    using VULKAN_HPP_RAII_NAMESPACE::${className};)" };
+  auto       usings            = std::stringstream{};
+
+  // A lot of hard-coded stuff spread throughout the RAII generators, which we consolidate here
+  auto const exchangeUsing           = R"(    using VULKAN_HPP_RAII_NAMESPACE::exchange;)";
+  auto const contextUsing            = R"(    using VULKAN_HPP_RAII_NAMESPACE::Context;)";
+  auto const contextDispatcherUsing  = R"(    using VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher;)";
+  auto const instanceDispatcherUsing = R"(    using VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher;)";
+  auto const deviceDispatcherUsing   = R"(    using VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher;)";
+  usings << exchangeUsing << contextUsing << contextDispatcherUsing << instanceDispatcherUsing << deviceDispatcherUsing << std::endl;
+
+  // now, insert features and extensions with protection, and strip Vk prefix
+  for ( auto const & feature : m_features )
+  {
+    auto featureUsings = std::stringstream{};
+    for ( auto const & require : feature.requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto handleIt = m_handles.find( type ); handleIt != m_handles.end() )
+        {
+          featureUsings << replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) } } ) << std::endl;
+
+          // if there is an array constructor, generate the plural type also
+          if ( !generateRAIIHandleConstructors( *handleIt ).second.empty())
+          {
+            featureUsings << replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) + "s" } } ) << std::endl;
+          }
+        }
+      }
+    }
+    usings << addTitleAndProtection( feature.name, featureUsings.str() );
+  }
+
+  for ( auto const & extension : m_extensions )
+  {
+    auto extensionUsings = std::stringstream{};
+    for ( auto const & require : extension.requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto handleIt = m_handles.find( type ); handleIt != m_handles.end() )
+        {
+          extensionUsings << replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) } } ) << std::endl;
+
+          // if there is an array constructor, generate the plural type also
+          if ( !generateRAIIHandleConstructors( *handleIt ).second.empty() )
+          {
+            extensionUsings << replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) + "s" } } ) << std::endl;
+          }
+        }
+      }
+    }
+    usings << addTitleAndProtection( extension.name, extensionUsings.str() );
+  }
+
+  return usings.str();
 }
 
 std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &                       commandData,
@@ -14733,6 +14851,7 @@ int main( int argc, char ** argv )
     generator.generateStaticAssertionsHppFile();
     generator.generateStructsHppFile();
     generator.generateToStringHppFile();
+    generator.generateCppModuleFile();
 
 #if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VulkanHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";

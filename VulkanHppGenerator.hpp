@@ -89,6 +89,7 @@ public:
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
+  void generateCppModuleFile() const;
   void prepareRAIIHandles();
   void prepareVulkanFuncs();
 
@@ -635,6 +636,9 @@ private:
                                           std::vector<size_t> const & returnParamIndices,
                                           bool                        raii ) const;
   std::string generateConstexprString( std::string const & structName ) const;
+  std::string generateCppModuleConstexprDefines() const;
+  std::string generateCppModuleUsings() const;
+  std::string generateCppModuleRaiiUsings() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,

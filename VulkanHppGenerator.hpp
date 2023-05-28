@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <map>
+#include <optional>
 #include <set>
 #include <tinyxml2.h>
 #include <vector>
@@ -190,9 +191,13 @@ private:
 
   struct DefineData
   {
-    bool        deprecated = false;
-    std::string require    = {};
-    int         xmlLine    = {};
+    bool                       deprecated         = false;
+    std::string                require            = {};
+    int                        xmlLine            = {};
+    std::string                deprecationReason  = {};
+    std::optional<std::string> possibleCallee     = {};
+    std::vector<std::string>   params             = {};
+    std::optional<std::string> possibleDefinition = {};
   };
 
   struct EnumValueData
@@ -400,6 +405,22 @@ private:
   {
     size_t lenParam    = INVALID_INDEX;
     size_t strideParam = INVALID_INDEX;
+  };
+
+  struct MacroVisitor final : tinyxml2::XMLVisitor
+  {
+    // comments, then name, then parameters and definition together, because that's how they appear in the xml!
+    // guaranteed to be 3 elements long
+    std::vector<std::string> macro;
+
+    bool Visit( tinyxml2::XMLText const & text ) override
+    {
+      if ( auto const nodeText = text.Value(); nodeText != nullptr )
+      {
+        macro.emplace_back( nodeText );
+      }
+      return true;
+    }
   };
 
 private:

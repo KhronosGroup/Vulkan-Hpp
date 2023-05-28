@@ -23,6 +23,14 @@
 #include <regex>
 #include <sstream>
 
+struct MacroData
+{
+  std::string                deprecatedComment = {};
+  std::optional<std::string> calleeMacro       = {};
+  std::vector<std::string>   params            = {};
+  std::optional<std::string> definition        = {};
+};
+
 void                                        checkAttributes( int                                                  line,
                                                              std::map<std::string, std::string> const &           attributes,
                                                              std::map<std::string, std::set<std::string>> const & required,
@@ -58,6 +66,7 @@ std::string                                      toString( tinyxml2::XMLError er
 std::string                                      trim( std::string const & input );
 std::string                                      trimEnd( std::string const & input );
 std::string                                      trimStars( std::string const & input );
+MacroData                                        parseMacro( std::vector<std::string> const & completeMacro );
 void                                             writeToFile( std::string const & str, std::string const & fileName );
 
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
@@ -3199,7 +3208,7 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
     {
       if ( listedCommands.insert( command ).second )
       {
-         str += generateCommandDefinitions( command, getCommandData( command ).handle );
+        str += generateCommandDefinitions( command, getCommandData( command ).handle );
       }
     }
   }
@@ -4714,9 +4723,79 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
 
 std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
 {
-  auto const constexprDefineTemplate = std::string{ R"(  constexpr auto c${constName} = ${macro};
+  auto const constexprFunctionTemplate = std::string{ R"(  ${deprecated}consteval auto c${constName}( ${arguments} )
+  {
+    return ${implementation};
+  }
 )" };
-  return {};
+  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}constexpr auto c${constName} = ${callee}( ${arguments} );
+)" };
+  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}constexpr auto c${constName} = ${value};
+)" };
+  auto const deprecatedAttribute       = std::string{ R"([[deprecated("${reason}")]] )" };
+
+  auto constexprDefines = std::stringstream{};
+
+  for ( auto const & [macro, data] : m_defines | std::views::filter( []( auto const & m_define ) { return m_define.first != "VK_DEFINE_HANDLE"; } ) )
+  {
+    // make `macro` camelCase and strip the `Vk` prefix
+    auto const constName  = stripPrefix( toCamelCase( macro ), "Vk" );
+    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
+
+    // function: has parameters, no callee macro, has implementation, possibly has deprecated attribute
+    if ( !data.possibleCallee.has_value() && data.params.size() > 0 && data.possibleDefinition.has_value() )
+    {
+      // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
+      auto parameterStream = std::stringstream{};
+      for ( auto const i : std::views::iota( 0u, data.params.size() ) )
+      {
+        parameterStream << "auto const " << data.params.at( i );
+        if ( i < data.params.size() - 1 && data.params.size() > 1 )
+        {
+          parameterStream << ", ";
+        }
+      }
+
+      auto const functionString = replaceWithMap(
+        constexprFunctionTemplate,
+        { { "arguments", parameterStream.str() }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", *data.possibleDefinition } } );
+
+      constexprDefines << functionString;
+    }
+    // caller: has callee and parameters, but no definition
+    if ( !data.possibleCallee.has_value() && data.params.size() > 0 && !data.possibleDefinition.has_value() )
+    {
+      auto argumentStream = std::stringstream{};
+      // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
+      for ( auto const i : std::views::iota( 0u, data.params.size() ) )
+      {
+        if ( i < data.params.size() - 1 && data.params.size() > 1 )
+        {
+          argumentStream << data.params.at( i ) << ", ";
+        }
+      }
+      auto const callerString = replaceWithMap(
+        constexprCallTemplate,
+        { { "arguments", argumentStream.str() }, { "callee", *data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
+      constexprDefines << callerString;
+    }
+    // value: no callee, no parameters, has definition
+    if ( !data.possibleCallee.has_value() && data.params.size() == 0 && data.possibleDefinition.has_value() )
+    {
+      auto const valueString =
+        replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", deprecated }, { "value", *data.possibleDefinition } } );
+      constexprDefines << valueString;
+    }
+  }
+
+  for ( auto const & [macro, data] : m_constants )
+  {
+    // make `macro` camelCase and strip the `Vk` prefix
+    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
+    constexprDefines << replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", "" }, { "value", data.value } } );
+  }
+
+  return constexprDefines.str();
 }
 
 std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
@@ -4849,8 +4928,10 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
 )" };
 
   // TODO: generate the loose functions in `vulkan_funcs.hpp` instead of hard-coding them here
-  auto funcUsings = std::stringstream{};
-  auto const funcs = std::array{"createInstance", "createInstanceUnique", "enumerateInstanceExtensionProperties", "enumerateInstanceLayerProperties", "enumerateInstanceVersion"};
+  auto       funcUsings = std::stringstream{};
+  auto const funcs      = std::array{
+    "createInstance", "createInstanceUnique", "enumerateInstanceExtensionProperties", "enumerateInstanceLayerProperties", "enumerateInstanceVersion"
+  };
 
   for ( auto const & func : funcs )
   {
@@ -4889,7 +4970,8 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
           }
 
           if ( auto const bitmaskIt = std::ranges::find_if(
-                 m_bitmasks, [&enumIt]( std::pair<std::string, BitmaskData> const & bitmask ) { return bitmask.second.require == enumIt->first; } ); bitmaskIt != m_bitmasks.end() )
+                 m_bitmasks, [&enumIt]( std::pair<std::string, BitmaskData> const & bitmask ) { return bitmask.second.require == enumIt->first; } );
+               bitmaskIt != m_bitmasks.end() )
           {
             localUsings << replaceWithMap( usingTemplate, { { "enumName", stripPrefix( bitmaskIt->first, "Vk" ) } } );
           }
@@ -4920,7 +5002,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderStatic" };
+  auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase" };
   auto const hardCodedEnhancedModeTypes =
     std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle" };
   auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy", "ObjectFree", "ObjectRelease", "PoolFree" };
@@ -4931,6 +5013,12 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   {
     usings << replaceWithMap( usingTemplate, { { "className", className } } );
   }
+
+  auto const & [noPrototypesEnter, noPrototypesLeave] = generateNotProtection( "VK_NO_PROTOTYPES" );
+
+  usings << noPrototypesEnter;
+  usings << replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } );
+  usings << noPrototypesLeave;
 
   // insert the Flags bitwise operators
   auto const flagsBitWiseOperatorsUsings = std::array{ "operator&", "operator|", "operator^", "operator~" };
@@ -4975,7 +5063,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings << generateCppModuleEnumUsings();
 
   // to_string, toHexString
-  auto const toString = std::array{ "to_string", "toHexString" };
+  auto const toString                       = std::array{ "to_string", "toHexString" };
   auto const [toStringEnter, toStringLeave] = generateNotProtection( "VULKAN_HPP_NO_TO_STRING" );
 
   usings << toStringEnter;
@@ -5013,8 +5101,6 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
   usings << resultExceptionsUsings.rdbuf();
 
-  usings << replaceWithMap( usingTemplate, { { "className", "throwResultException" } } );
-
   usings << exceptionsLeave;
 
   // ResultValue
@@ -5032,7 +5118,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings << generateCppModuleHandleUsings();
   usings << generateCppModuleUniqueHandleUsings();
   usings << generateCppModuleFuncsUsings();
-  
+
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateNotProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE" );
   usings << enterDisableEnhanced << replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) << leaveDisableEnhanced;
 
@@ -14021,9 +14107,13 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
 
   if ( api.empty() || ( api == m_api ) )
   {
+    MacroVisitor definesVisitor{};
+    element->Accept( &definesVisitor );
+    auto const & [deprecatedReason, possibleCallee, params, possibleDefinition] = parseMacro( definesVisitor.macro );
+
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
     assert( m_defines.find( name ) == m_defines.end() );
-    m_defines[name] = { deprecated, require, line };
+    m_defines[name] = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
   }
 }
 
@@ -15052,6 +15142,60 @@ std::string trimStars( std::string const & input )
     pos = result.find( '*', pos + 1 );
   }
   return result;
+}
+
+// function to take three or four-vector of strings containing a macro definition, and return
+// a tuple with possibly the deprecation reason, possibly the called macro, the macro parameters, and possibly the definition
+MacroData parseMacro( std::vector<std::string> const & completeMacro )
+{
+  // #define macro definition
+  // #define macro( params ) definition
+  // #define macro1 macro2( params )
+  auto const paramsRegex  = std::regex{ R"((\(.*?\)))" };
+  auto const commentRegex = std::regex{ R"(\s*//.*)" };
+
+  auto rawComment = completeMacro[0];
+  std::erase( rawComment, '/' );
+  auto const strippedComment = trim( stripPostfix( stripPrefix( rawComment, " DEPRECATED:" ), "#define " ) );
+
+  // macro with parameters and implementation
+  if ( completeMacro.size() == 3 )
+  {
+    auto const & paramsAndDefinitionAndTrailingComment = completeMacro[2];
+
+    if ( paramsAndDefinitionAndTrailingComment.find( '(' ) == std::string::npos )
+    {
+      // no opening parenthesis found => no parameters
+      return { strippedComment, {}, {}, std::regex_replace( paramsAndDefinitionAndTrailingComment, commentRegex, "" ) };
+    }
+
+    // match the first set of parentheses only
+    auto paramsMatch = std::smatch{};
+    std::regex_search( paramsAndDefinitionAndTrailingComment, paramsMatch, paramsRegex );
+
+    // remove the leading and trailing parentheses and tokenise the remaining string
+    auto params = tokenize( stripPrefix( stripPostfix( paramsMatch[1].str(), ")" ), "(" ), "," );
+
+    // replace the parameters with empty string, leaving behind the implementation and (possibly) a trailing comment
+    auto implementation = std::regex_replace( paramsAndDefinitionAndTrailingComment, paramsRegex, "", std::regex_constants::format_first_only );
+    implementation      = implementation.substr( 0, implementation.find( "//" ) );
+    std::erase( implementation, '\\' );
+    implementation = trim( implementation );
+
+    return { strippedComment, {}, params, implementation };
+  }
+  if ( completeMacro.size() == 4 )
+  {
+    auto const & calledMacro            = toCamelCase( stripPrefix( completeMacro[2], "VK_" ) );
+    auto const & argsAndTrailingComment = completeMacro[3];
+
+    auto argsMatch = std::smatch{};
+    std::regex_search( argsAndTrailingComment, argsMatch, paramsRegex );
+    auto args = tokenize( stripPrefix( stripPostfix( argsMatch[1].str(), ")" ), "(" ), "," );
+
+    return { strippedComment, calledMacro, args, {} };
+  }
+  return {};
 }
 
 void writeToFile( std::string const & str, std::string const & fileName )

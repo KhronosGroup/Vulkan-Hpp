@@ -2592,6 +2592,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
   using VULKAN_HPP_NAMESPACE::UniqueShaderEXT;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+  using VULKAN_HPP_NAMESPACE::createInstance;
+  using VULKAN_HPP_NAMESPACE::createInstanceUnique;
+  using VULKAN_HPP_NAMESPACE::enumerateInstanceExtensionProperties;
+  using VULKAN_HPP_NAMESPACE::enumerateInstanceLayerProperties;
+  using VULKAN_HPP_NAMESPACE::enumerateInstanceVersion;
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   using VULKAN_HPP_NAMESPACE::StructExtends;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

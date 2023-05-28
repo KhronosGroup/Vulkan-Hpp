@@ -3199,7 +3199,7 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
     {
       if ( listedCommands.insert( command ).second )
       {
-        str += generateCommandDefinitions( command, getCommandData( command ).handle );
+         str += generateCommandDefinitions( command, getCommandData( command ).handle );
       }
     }
   }
@@ -4845,9 +4845,19 @@ std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
 
 std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
 {
-  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};)" };
-  // TODO: generate the loose functions in `vulkan_funcs.hpp`
-  return {};
+  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};
+)" };
+
+  // TODO: generate the loose functions in `vulkan_funcs.hpp` instead of hard-coding them here
+  auto funcUsings = std::stringstream{};
+  auto const funcs = std::array{"createInstance", "createInstanceUnique", "enumerateInstanceExtensionProperties", "enumerateInstanceLayerProperties", "enumerateInstanceVersion"};
+
+  for ( auto const & func : funcs )
+  {
+    funcUsings << replaceWithMap( usingTemplate, { { "funcName", func } } );
+  }
+
+  return funcUsings.str();
 }
 
 std::string VulkanHppGenerator::generateCppModuleEnumUsings() const

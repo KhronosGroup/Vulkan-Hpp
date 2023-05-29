@@ -1596,6 +1596,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_pipeline_library_group_handles ===
   struct PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
 
+  //=== VK_EXT_dynamic_rendering_unused_attachments ===
+  struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
+
   //=== VK_QCOM_multiview_per_view_render_areas ===
   struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
   struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;

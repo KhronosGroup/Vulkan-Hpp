@@ -5930,7 +5930,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
 
-      void setAttachmentFeedbackLoopEnableEXT( VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask ) const VULKAN_HPP_NOEXCEPT;
+      void setAttachmentFeedbackLoopEnableEXT( VULKAN_HPP_NAMESPACE::ImageAspectFlags aspectMask VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT ) const
+        VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device        = {};

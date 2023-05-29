@@ -385,6 +385,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_mutable_descriptor_type",
       "VK_ARM_shader_core_builtins",
       "VK_EXT_pipeline_library_group_handles",
+      "VK_EXT_dynamic_rendering_unused_attachments",
       "VK_QCOM_multiview_per_view_render_areas",
       "VK_EXT_attachment_feedback_loop_dynamic_state"
     };
@@ -1875,6 +1876,17 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_ray_tracing_pipeline",
               "VK_KHR_pipeline_library",
             } } } } },
+      { "VK_EXT_dynamic_rendering_unused_attachments",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_dynamic_rendering",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_dynamic_rendering",
+            } } },
+          { "VK_VERSION_1_3", { {} } } } },
       { "VK_EXT_attachment_feedback_loop_dynamic_state",
         { { "VK_VERSION_1_0",
             { {
@@ -2588,7 +2600,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
            ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
            ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
-           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" );
+           ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
+           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

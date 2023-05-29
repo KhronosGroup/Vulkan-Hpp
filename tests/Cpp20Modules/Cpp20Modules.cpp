@@ -11,7 +11,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   try
   {
     // initialize the vk::ApplicationInfo structure
-    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, vk::cMakeApiVersion( 1, 1, 0, 0 ) );
+    vk::ApplicationInfo applicationInfo( AppName.c_str(), 1, EngineName.c_str(), 1, vk::cMakeApiVersion( 1, 0, 0, 0 ) );
 
     // initialize the vk::InstanceCreateInfo
     vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );

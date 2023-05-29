@@ -8382,7 +8382,7 @@ ${enter}    ${handleType}s( ${constructorArguments} )
       }
       else
       {
-        throwResultException( result, "${constructorCall}" );
+        detail::throwResultException( result, "${constructorCall}" );
       }
     }
 ${leave})";
@@ -8671,7 +8671,7 @@ ${enter}    ${handleType}( ${constructorArguments} )
       VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${getDispatcher}->${constructorCall}( ${callArguments} ) );
       if ( ${failureCheck} )
       {
-        throwResultException( result, "${constructorCall}" );
+        detail::throwResultException( result, "${constructorCall}" );
       }${dispatcherInit}
     }
 ${leave})";
@@ -8803,7 +8803,7 @@ ${enter}    ${handleType}s( ${constructorArguments} )
       }
       else
       {
-        throwResultException( result, "${constructorCall}" );
+        detail::throwResultException( result, "${constructorCall}" );
       }
     }
 ${leave})";
@@ -8857,7 +8857,7 @@ ${enter}    ${handleType}( ${constructorArguments} )
       ${resultVariable} = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->${constructorCall}( ${callArguments} ) );
       if ( ${failureCheck} )
       {
-        throwResultException( ${result}, "${constructorCall}" );
+        detail::throwResultException( ${result}, "${constructorCall}" );
       }
     }
 ${leave})";
@@ -11047,9 +11047,9 @@ std::string VulkanHppGenerator::generateThrowResultException() const
   cases.pop_back();  // remove last newline
 
   const std::string throwTemplate = R"(
-  namespace
+  namespace detail
   {
-    [[noreturn]] void throwResultException( Result result, char const * message )
+    [[noreturn]] VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
     {
       switch ( result )
       {

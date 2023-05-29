@@ -7,7 +7,7 @@
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      detail::throwResultException( result, message );
     }
 #endif
   }
@@ -22,7 +22,7 @@
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      detail::throwResultException( result, message );
     }
 #endif
   }

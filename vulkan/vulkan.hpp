@@ -6027,7 +6027,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
   extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 #  else
-  static inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
   {
     static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
     return dls;
@@ -6904,7 +6904,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE void resultCheck( Result result, char const * message, std::initializer_list<Result> successCodes )
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    ignore( result );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
+    ignore( result );        // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     ignore( message );
     ignore( successCodes );  // just in case VULKAN_HPP_ASSERT_ON_RESULT is empty
     VULKAN_HPP_ASSERT_ON_RESULT( std::find( successCodes.begin(), successCodes.end(), result ) != successCodes.end() );

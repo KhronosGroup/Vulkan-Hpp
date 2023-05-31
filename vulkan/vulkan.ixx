@@ -1061,7 +1061,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseImageFormatInfo2KHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceSubgroupProperties;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVariablePointerFeatures;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVariablePointerFeaturesKHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVariablePointersFeatures;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVariablePointersFeaturesKHR;
   using VULKAN_HPP_NAMESPACE::PipelineTessellationDomainOriginStateCreateInfo;
   using VULKAN_HPP_NAMESPACE::PipelineTessellationDomainOriginStateCreateInfoKHR;
   using VULKAN_HPP_NAMESPACE::ProtectedSubmitInfo;
@@ -1093,6 +1095,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::AttachmentReferenceStencilLayoutKHR;
   using VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfo;
   using VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoEXT;
+  using VULKAN_HPP_NAMESPACE::BufferDeviceAddressInfoKHR;
   using VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfo;
   using VULKAN_HPP_NAMESPACE::BufferOpaqueCaptureAddressCreateInfoKHR;
   using VULKAN_HPP_NAMESPACE::ConformanceVersion;
@@ -1143,6 +1146,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicInt64Features;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicInt64FeaturesKHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFloat16Int8Features;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderFloat16Int8FeaturesKHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderSubgroupExtendedTypesFeatures;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderSubgroupExtendedTypesFeaturesKHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceTimelineSemaphoreFeatures;
@@ -1283,6 +1287,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ResolveImageInfo2KHR;
   using VULKAN_HPP_NAMESPACE::SemaphoreSubmitInfo;
   using VULKAN_HPP_NAMESPACE::SemaphoreSubmitInfoKHR;
+  using VULKAN_HPP_NAMESPACE::ShaderRequiredSubgroupSizeCreateInfoEXT;
   using VULKAN_HPP_NAMESPACE::SubmitInfo2;
   using VULKAN_HPP_NAMESPACE::SubmitInfo2KHR;
   using VULKAN_HPP_NAMESPACE::WriteDescriptorSetInlineUniformBlock;

@@ -4854,10 +4854,20 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
           auto const structureType = stripPrefix( structIt->first, "Vk" );
           localUsings << replaceWithMap( usingTemplate, { { "className", structureType } } );
 
-          if ( auto const & aliasIt = findAlias( structIt->first, m_structAliases ); aliasIt != m_structAliases.end() )
+          /*if ( auto const & aliasIt = findAlias( structIt->first, m_structAliases ); aliasIt != m_structAliases.end() )
           {
             auto const aliasName = stripPrefix( aliasIt->first, "Vk" );
             localUsings << replaceWithMap( usingTemplate, { { "className", aliasName } } );
+          }*/
+
+          // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple aliases for a given struct, and that's ok. Maybe we should refactor 
+          for ( auto const & [alias, aliasData] : m_structAliases )
+          {
+            if ( aliasData.name == structIt->first )
+            {
+              auto const aliasName = stripPrefix( alias, "Vk" );
+              localUsings << replaceWithMap( usingTemplate, { { "className", aliasName } } );
+            }
           }
         }
       }

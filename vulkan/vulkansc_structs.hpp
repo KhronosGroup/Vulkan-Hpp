@@ -18639,7 +18639,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_CONSTEXPR FaultCallbackInfo( uint32_t                          faultCount_       = {},
                                             VULKAN_HPP_NAMESPACE::FaultData * pFaults_          = {},
                                             PFN_vkFaultCallbackFunction       pfnFaultCallback_ = {},
-                                            void *                            pNext_            = nullptr ) VULKAN_HPP_NOEXCEPT
+                                            const void *                      pNext_            = nullptr ) VULKAN_HPP_NOEXCEPT
       : pNext( pNext_ )
       , faultCount( faultCount_ )
       , pFaults( pFaults_ )
@@ -18654,7 +18654,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
     FaultCallbackInfo( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<VULKAN_HPP_NAMESPACE::FaultData> const & faults_,
                        PFN_vkFaultCallbackFunction                                                            pfnFaultCallback_ = {},
-                       void *                                                                                 pNext_            = nullptr )
+                       const void *                                                                           pNext_            = nullptr )
       : pNext( pNext_ ), faultCount( static_cast<uint32_t>( faults_.size() ) ), pFaults( faults_.data() ), pfnFaultCallback( pfnFaultCallback_ )
     {
     }
@@ -18670,7 +18670,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
 #if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
-    VULKAN_HPP_CONSTEXPR_14 FaultCallbackInfo & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 FaultCallbackInfo & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
     {
       pNext = pNext_;
       return *this;
@@ -18719,7 +18719,7 @@ namespace VULKAN_HPP_NAMESPACE
     auto
 #  else
     std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &,
-               void * const &,
+               const void * const &,
                uint32_t const &,
                VULKAN_HPP_NAMESPACE::FaultData * const &,
                PFN_vkFaultCallbackFunction const &>
@@ -18747,7 +18747,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType sType            = StructureType::eFaultCallbackInfo;
-    void *                              pNext            = {};
+    const void *                        pNext            = {};
     uint32_t                            faultCount       = {};
     VULKAN_HPP_NAMESPACE::FaultData *   pFaults          = {};
     PFN_vkFaultCallbackFunction         pfnFaultCallback = {};

@@ -5953,7 +5953,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<PerformanceQueryReservationInfoKHR, DeviceObjectReservationCreateInfo>
+  struct StructExtends<PerformanceQueryReservationInfoKHR, DeviceCreateInfo>
   {
     enum
     {
@@ -6755,7 +6755,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
-  struct StructExtends<DeviceSemaphoreSciSyncPoolReservationCreateInfoNV, DeviceObjectReservationCreateInfo>
+  struct StructExtends<DeviceSemaphoreSciSyncPoolReservationCreateInfoNV, DeviceCreateInfo>
   {
     enum
     {

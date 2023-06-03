@@ -1515,6 +1515,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceImageProcessingFeaturesQCOM;
   struct PhysicalDeviceImageProcessingPropertiesQCOM;
 
+  //=== VK_EXT_external_memory_acquire_unmodified ===
+  struct ExternalMemoryAcquireUnmodifiedEXT;
+
   //=== VK_EXT_extended_dynamic_state3 ===
   struct PhysicalDeviceExtendedDynamicState3FeaturesEXT;
   struct PhysicalDeviceExtendedDynamicState3PropertiesEXT;

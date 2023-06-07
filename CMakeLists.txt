@@ -401,7 +401,6 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
-		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.cppm
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.ixx
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
@@ -418,7 +417,6 @@ if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
 	target_sources( VulkanHppModule 
 		PUBLIC 
-		# if Visual Studio, use .ixx, otherwise .cppm
 		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.ixx )
 	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )

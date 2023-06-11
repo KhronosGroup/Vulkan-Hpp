@@ -18494,6 +18494,241 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_video_encode_queue ===
 
   template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeQualityLevelInfoKHR * pQualityLevelInfo,
+                                                             VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR *               pQualityLevelProperties,
+                                                             Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR( m_physicalDevice,
+                                                                 reinterpret_cast<const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *>( pQualityLevelInfo ),
+                                                                 reinterpret_cast<VkVideoEncodeQualityLevelPropertiesKHR *>( pQualityLevelProperties ) ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR>::type
+    PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeQualityLevelInfoKHR & qualityLevelInfo,
+                                                             Dispatch const &                                                           d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR qualityLevelProperties;
+    VkResult                                                   result =
+      d.vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR( m_physicalDevice,
+                                                                 reinterpret_cast<const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *>( &qualityLevelInfo ),
+                                                                 reinterpret_cast<VkVideoEncodeQualityLevelPropertiesKHR *>( &qualityLevelProperties ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), qualityLevelProperties );
+  }
+
+  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>>::type
+    PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeQualityLevelInfoKHR & qualityLevelInfo,
+                                                             Dispatch const &                                                           d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    StructureChain<X, Y, Z...>                                   structureChain;
+    VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR & qualityLevelProperties =
+      structureChain.template get<VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR>();
+    VkResult result =
+      d.vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR( m_physicalDevice,
+                                                                 reinterpret_cast<const VkPhysicalDeviceVideoEncodeQualityLevelInfoKHR *>( &qualityLevelInfo ),
+                                                                 reinterpret_cast<VkVideoEncodeQualityLevelPropertiesKHR *>( &qualityLevelProperties ) );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), structureChain );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR * pVideoSessionParametersInfo,
+                                                 VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR *  pFeedbackInfo,
+                                                 size_t *                                                             pDataSize,
+                                                 void *                                                               pData,
+                                                 Dispatch const &                                                     d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                               reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( pVideoSessionParametersInfo ),
+                                               reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( pFeedbackInfo ),
+                                               pDataSize,
+                                               pData ) );
+  }
+
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Uint8_tAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
+    Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
+                                                 Dispatch const &                                                     d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>> data_;
+    VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR &                                                  feedbackInfo = data_.first;
+    std::vector<uint8_t, Uint8_tAllocator> &                                                                             data         = data_.second;
+    size_t                                                                                                               dataSize;
+    VkResult                                                                                                             result;
+    do
+    {
+      result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                        reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                        reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                        &dataSize,
+                                                        nullptr );
+      if ( ( result == VK_SUCCESS ) && dataSize )
+      {
+        data.resize( dataSize );
+        result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                          reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                          reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                          &dataSize,
+                                                          reinterpret_cast<void *>( data.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getEncodedVideoSessionParametersKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+
+  template <typename Uint8_tAllocator,
+            typename Dispatch,
+            typename B2,
+            typename std::enable_if<std::is_same<typename B2::value_type, uint8_t>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
+    Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
+                                                 Uint8_tAllocator &                                                   uint8_tAllocator,
+                                                 Dispatch const &                                                     d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>> data_(
+      std::piecewise_construct, std::forward_as_tuple(), std::forward_as_tuple( uint8_tAllocator ) );
+    VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR & feedbackInfo = data_.first;
+    std::vector<uint8_t, Uint8_tAllocator> &                            data         = data_.second;
+    size_t                                                              dataSize;
+    VkResult                                                            result;
+    do
+    {
+      result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                        reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                        reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                        &dataSize,
+                                                        nullptr );
+      if ( ( result == VK_SUCCESS ) && dataSize )
+      {
+        data.resize( dataSize );
+        result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                          reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                          reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                          &dataSize,
+                                                          reinterpret_cast<void *>( data.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getEncodedVideoSessionParametersKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+
+  template <typename X, typename Y, typename... Z, typename Uint8_tAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
+    Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
+                                                 Dispatch const &                                                     d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>> data_;
+    VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR &                                 feedbackInfo =
+      data_.first.template get<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR>();
+    std::vector<uint8_t, Uint8_tAllocator> & data = data_.second;
+    size_t                                   dataSize;
+    VkResult                                 result;
+    do
+    {
+      result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                        reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                        reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                        &dataSize,
+                                                        nullptr );
+      if ( ( result == VK_SUCCESS ) && dataSize )
+      {
+        structureChains.resize( dataSize );
+        data.resize( dataSize );
+        for ( size_t i = 0; i < dataSize; i++ )
+        {
+          data[i].pNext = structureChains[i].template get<void>().pNext;
+        }
+        result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                          reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                          reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                          &dataSize,
+                                                          reinterpret_cast<void *>( data.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getEncodedVideoSessionParametersKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+
+  template <typename X,
+            typename Y,
+            typename... Z,
+            typename Uint8_tAllocator,
+            typename Dispatch,
+            typename B2,
+            typename std::enable_if<std::is_same<typename B2::value_type, StructureChain>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
+    typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
+    Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
+                                                 StructureChainAllocator &                                            structureChainAllocator,
+                                                 Dispatch const &                                                     d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>> data_(
+      std::piecewise_construct, std::forward_as_tuple(), std::forward_as_tuple( uint8_tAllocator ) );
+    VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR & feedbackInfo =
+      data_.first.template get<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR>();
+    std::vector<uint8_t, Uint8_tAllocator> & data = data_.second;
+    size_t                                   dataSize;
+    VkResult                                 result;
+    do
+    {
+      result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                        reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                        reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                        &dataSize,
+                                                        nullptr );
+      if ( ( result == VK_SUCCESS ) && dataSize )
+      {
+        structureChains.resize( dataSize );
+        data.resize( dataSize );
+        for ( size_t i = 0; i < dataSize; i++ )
+        {
+          data[i].pNext = structureChains[i].template get<void>().pNext;
+        }
+        result = d.vkGetEncodedVideoSessionParametersKHR( m_device,
+                                                          reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),
+                                                          reinterpret_cast<VkVideoEncodeSessionParametersFeedbackInfoKHR *>( &feedbackInfo ),
+                                                          &dataSize,
+                                                          reinterpret_cast<void *>( data.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getEncodedVideoSessionParametersKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::encodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeInfoKHR * pEncodeInfo,
                                                         Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
   {

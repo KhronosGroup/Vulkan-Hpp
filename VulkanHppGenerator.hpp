@@ -473,6 +473,7 @@ private:
   void                                             filterLenMembers();
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
   std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
+  EnumValueData const *                            findEnumValueData( std::map<std::string, EnumData>::const_iterator enumIt, std::string const & name ) const;
   std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
   std::vector<ParamData>::const_iterator           findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
@@ -974,6 +975,19 @@ private:
   void        readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
   void        readSPIRVExtensions( tinyxml2::XMLElement const * element );
   void        readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion );
+  void        readSync( tinyxml2::XMLElement const * element );
+  void        readSyncAccess( tinyxml2::XMLElement const *                    element,
+                              std::map<std::string, EnumData>::const_iterator accessFlagBitsIt,
+                              std::map<std::string, EnumData>::const_iterator accessFlagBits2It,
+                              std::map<std::string, EnumData>::const_iterator stageFlagBits2It );
+  void        readSyncAccessEquivalent( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator accessFlagBits2It );
+  void        readSyncAccessSupport( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator stageFlagBits2It );
+  void        readSyncPipeline( tinyxml2::XMLElement const * element );
+  void        readSyncStage( tinyxml2::XMLElement const *                    element,
+                             std::map<std::string, EnumData>::const_iterator stageFlagBitsIt,
+                             std::map<std::string, EnumData>::const_iterator stageFlagBits2It );
+  void        readSyncStageEquivalent( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator stageFlagBits2It );
+  void        readSyncStageSupport( tinyxml2::XMLElement const * element );
   void        readTag( tinyxml2::XMLElement const * element );
   void        readTags( tinyxml2::XMLElement const * element );
   void        readTypeBasetype( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes );

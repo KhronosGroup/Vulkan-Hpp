@@ -18684,11 +18684,11 @@ namespace VULKAN_HPP_NAMESPACE
             typename Uint8_tAllocator,
             typename Dispatch,
             typename B2,
-            typename std::enable_if<std::is_same<typename B2::value_type, StructureChain>::value, int>::type>
+            typename std::enable_if<std::is_same<typename B2::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
     Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                                 StructureChainAllocator &                                            structureChainAllocator,
+                                                 Uint8_tAllocator &                                                   uint8_tAllocator,
                                                  Dispatch const &                                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );

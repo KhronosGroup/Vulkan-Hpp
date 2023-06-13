@@ -491,6 +491,7 @@ private:
                                                                                  std::set<size_t> const &                  skippedParams,
                                                                                  std::set<size_t> const &                  singularParams,
                                                                                  std::set<size_t> const &                  templatedParams,
+                                                                                 std::vector<size_t> const &               chainedReturnParams,
                                                                                  bool                                      definition,
                                                                                  CommandFlavourFlags                       flavourFlags,
                                                                                  bool                                      withDispatcher ) const;
@@ -886,6 +887,7 @@ private:
   std::string                         generateThrowResultException() const;
   std::string                         generateTypenameCheck( std::vector<size_t> const &               returnParams,
                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                             std::vector<size_t> const &               chainedReturnParams,
                                                              bool                                      definition,
                                                              std::vector<std::string> const &          dataTypes,
                                                              CommandFlavourFlags                       flavourFlags ) const;

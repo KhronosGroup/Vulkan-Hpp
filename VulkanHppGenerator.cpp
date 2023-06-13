@@ -2099,6 +2099,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
                                                               std::set<size_t> const &                  skippedParams,
                                                               std::set<size_t> const &                  singularParams,
                                                               std::set<size_t> const &                  templatedParams,
+                                                              std::vector<size_t> const &               chainedReturnParams,
                                                               bool                                      definition,
                                                               CommandFlavourFlags                       flavourFlags,
                                                               bool                                      withDispatcher ) const
@@ -2212,7 +2213,22 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   }
   if ( withAllocators )
   {
+    bool useStructureChainAllocator = false;
     if ( flavourFlags & CommandFlavourFlagBits::chained )
+    {
+      // use StructureChainAllocator only, if a vector param is a chained return param
+      auto it = std::find_if(
+        chainedReturnParams.begin(), chainedReturnParams.end(), [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } );
+      if ( it != chainedReturnParams.end() )
+      {
+        // assert that there's no other chained vector param !
+        assert( std::find_if( std::next( it ),
+                              chainedReturnParams.end(),
+                              [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } ) == chainedReturnParams.end() );
+        useStructureChainAllocator = true;
+      }
+    }
+    if ( useStructureChainAllocator )
     {
       if ( encounteredArgument )
       {
@@ -3224,14 +3240,14 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, false );
   auto [allocatorTemplates, uniqueHandleAllocatorTemplates] =
     generateAllocatorTemplates( returnParams, dataTypes, vectorParams, chainedReturnParams, flavourFlags, definition );
-  std::string typenameCheck  = generateTypenameCheck( returnParams, vectorParams, definition, dataTypes, flavourFlags );
+  std::string typenameCheck  = generateTypenameCheck( returnParams, vectorParams, chainedReturnParams, definition, dataTypes, flavourFlags );
   std::string nodiscard      = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
   std::string returnType     = generateReturnType( commandData, returnParams, vectorParams, flavourFlags, false, dataTypes );
   std::string className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string classSeparator = commandData.handle.empty() ? "" : "::";
   std::string commandName    = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string argumentList   = generateArgumentListEnhanced(
-    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, definition, flavourFlags, true );
+    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, chainedReturnParams, definition, flavourFlags, true );
   std::string constString    = commandData.handle.empty() ? "" : " const";
   std::string noexceptString = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, false );
 
@@ -7327,7 +7343,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
 
   std::string argumentTemplates = generateArgumentTemplates( commandData.params, returnParams, vectorParams, templatedParams, chainedReturnParams, true );
   std::string argumentList      = generateArgumentListEnhanced(
-    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, definition, flavourFlags, false );
+    commandData.params, returnParams, vectorParams, skippedParams, singularParams, templatedParams, chainedReturnParams, definition, flavourFlags, false );
   std::string commandName = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
   std::string nodiscard   = generateNoDiscard(
     !returnParams.empty() || ( ( commandData.returnType != "VkResult" ) && ( commandData.returnType != "void" ) ), 1 < commandData.successCodes.size(), false );
@@ -10491,6 +10507,7 @@ ${cases}
 
 std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const &               returnParams,
                                                        std::map<size_t, VectorParamData> const & vectorParams,
+                                                       std::vector<size_t> const &               chainedReturnParams,
                                                        bool                                      definition,
                                                        std::vector<std::string> const &          dataTypes,
                                                        CommandFlavourFlags                       flavourFlags ) const
@@ -10502,7 +10519,10 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
     {
       if ( vectorParams.find( returnParams[i] ) != vectorParams.end() )
       {
-        std::string elementType = ( flavourFlags & CommandFlavourFlagBits::chained ) ? "StructureChain" : stripPrefix( dataTypes[i], "VULKAN_HPP_NAMESPACE::" );
+        std::string elementType         = ( ( flavourFlags & CommandFlavourFlagBits::chained ) &&
+                                    ( std::find( chainedReturnParams.begin(), chainedReturnParams.end(), returnParams[i] ) != chainedReturnParams.end() ) )
+                                          ? "StructureChain"
+                                          : stripPrefix( dataTypes[i], "VULKAN_HPP_NAMESPACE::" );
         std::string extendedElementType = elementType;
         if ( flavourFlags & CommandFlavourFlagBits::unique )
         {
@@ -11973,7 +11993,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
         { "(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)+(VK_KHR_dynamic_rendering,VK_VERSION_1_3)",
           "VK_KHR_get_physical_device_properties2+VK_KHR_dynamic_rendering,VK_VERSION_1_1+VK_KHR_dynamic_rendering,VK_VERSION_1_3" }
       };
-      auto                     canonicalIt = complexToCanonicalDepends.find( attribute.second );
+      auto        canonicalIt = complexToCanonicalDepends.find( attribute.second );
       std::string depends;
       if ( canonicalIt == complexToCanonicalDepends.end() )
       {

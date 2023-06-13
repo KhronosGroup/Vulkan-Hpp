@@ -12198,13 +12198,13 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename X,
               typename Y,
               typename... Z,
-              typename Uint8_tAllocator                                                                        = std::allocator<uint8_t>,
-              typename Dispatch                                                                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename B2                                                                                      = StructureChainAllocator,
-              typename std::enable_if<std::is_same<typename B2::value_type, StructureChain>::value, int>::type = 0>
+              typename Uint8_tAllocator                                                                 = std::allocator<uint8_t>,
+              typename Dispatch                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B2                                                                               = Uint8_tAllocator,
+              typename std::enable_if<std::is_same<typename B2::value_type, uint8_t>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
       getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
-                                           StructureChainAllocator &                                            structureChainAllocator,
+                                           Uint8_tAllocator &                                                   uint8_tAllocator,
                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_ENABLE_BETA_EXTENSIONS*/

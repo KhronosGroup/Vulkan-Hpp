@@ -59,7 +59,6 @@ std::string                                      stripPostfix( std::string const
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
 std::string                                      toCamelCase( std::string const & value );
 std::string                                      toUpperCase( std::string const & name );
-std::string                                      toPascalCase( std::string const & value );
 std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
 std::vector<std::string>                         tokenizeAny( std::string const & tokenString, std::string const & separators );
 std::string                                      toString( tinyxml2::XMLError error );
@@ -520,6 +519,7 @@ ${structExtendsStructs}
 
 ${DynamicLoader}
 ${DispatchLoaderDynamic}
+${constexprDefines}
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
@@ -531,6 +531,7 @@ ${DispatchLoaderDynamic}
                       { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
                       { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
                       { "baseTypes", generateBaseTypes() },
+                      { "constexprDefines", generateConstexprDefinesAndUsings().first },
                       { "defines", readSnippet( "defines.hpp" ) },
                       { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
                       { "DispatchLoaderDefault", readSnippet( "DispatchLoaderDefault.hpp" ) },
@@ -710,10 +711,11 @@ export module ${api};
 export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
+
+  ${constexprUsings}
   export namespace VULKAN_HPP_RAII_NAMESPACE {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
-  ${constexprDefines}
 } // namespace VULKAN_HPP_NAMESPACE
 )";
 
@@ -722,7 +724,7 @@ export namespace VULKAN_HPP_NAMESPACE
                                      { "api", m_api },
                                      { "usings", generateCppModuleUsings() },
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "constexprDefines", generateCppModuleConstexprDefines() } } );
+                                     { "constexprUsings", generateConstexprDefinesAndUsings().second } } );
 
   writeToFile( str, vulkan_ixx );
 }
@@ -4721,20 +4723,33 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
   return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( ( containsUnion( structName ) || containsArray( structName ) ) ? "_14 " : " " ) ) : "";
 }
 
-std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
+std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefinesAndUsings() const
 {
-  auto const constexprFunctionTemplate = std::string{ R"(  ${deprecated}consteval auto ${constName}( ${arguments} )
+  auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName}( ${arguments} )
   {
     return ${implementation};
   }
 )" };
-  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}constexpr auto ${constName} = ${callee}( ${arguments} );
+  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName} = ${callee}( ${arguments} );
 )" };
-  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}constexpr ${type} ${constName} = ${value};
+  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR ${type} ${constName} = ${value};
 )" };
-  auto const deprecatedAttribute       = std::string{ R"([[deprecated("${reason}")]] )" };
+  auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 
-  auto constexprDefines = std::stringstream{};
+  auto const constexprUsingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${constName};
+)" };
+
+  auto constexprDefines = std::stringstream{} << R"(
+  //=========================================
+  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=========================================
+)";
+  auto constexprUsings  = std::stringstream{} << R"(
+  //=========================================
+  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=========================================
+)";
 
   // handle the value and callee macros first so they are visible for use in functions below.
 
@@ -4742,9 +4757,11 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
   for ( auto const & [macro, data] : m_constants )
   {
     // make `macro` PascalCase, and strip the `Vk` prefix
-    auto const constName = stripPrefix( toPascalCase( macro ), "Vk" );
+    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
+
     constexprDefines << replaceWithMap( constexprValueTemplate,
                                         { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
+    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // M_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
@@ -4765,10 +4782,12 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
 
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = stripPrefix( toPascalCase( macro ), "Vk" );
+    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
     auto const valueString =
       replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "deprecated", deprecated }, { "value", macro } } );
+
     constexprDefines << valueString;
+    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // functions
@@ -4780,12 +4799,12 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
-    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
+    auto const constName = startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) );
     // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
     auto parametersString = std::string{};
     for ( auto const & paramString : data.params )
     {
-      parametersString += "auto const " + paramString + ", ";
+      parametersString += "T const " + paramString + ", ";
     }
     // trim the last two characters (i.e. the last comma and the space)
     parametersString.resize( parametersString.size() - 2 );
@@ -4795,6 +4814,7 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
       { { "arguments", parametersString }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
 
     constexprDefines << functionString;
+    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // callers
@@ -4806,7 +4826,7 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName      = stripPrefix( toCamelCase( macro ), "Vk" );
+    auto const constName       = stripPrefix( toCamelCase( macro ), "Vk" );
     auto       argumentsString = std::string{};
     // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
     for ( auto const & argString : data.params )
@@ -4817,11 +4837,12 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
     argumentsString.resize( argumentsString.size() - 2 );
     auto const callerString =
       replaceWithMap( constexprCallTemplate,
-                      { { "arguments", argumentsString }, { "callee", data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
+                      { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
     constexprDefines << callerString;
+    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
-  return constexprDefines.str();
+  return { constexprDefines.str(), constexprUsings.str() };
 }
 
 std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
@@ -15105,11 +15126,6 @@ std::string toUpperCase( std::string const & name )
     previousIsDigit     = !!isdigit( c );
   }
   return convertedName;
-}
-
-std::string toPascalCase( std::string const & value )
-{
-  return startUpperCase( toCamelCase( value ) );
 }
 
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )

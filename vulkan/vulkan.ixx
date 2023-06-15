@@ -2638,6 +2638,51 @@ export namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DYNAMIC_LOADER_TOOL*/
   using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
 
+  //=========================================
+  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=========================================
+  using VULKAN_HPP_NAMESPACE::ApiVersion;
+  using VULKAN_HPP_NAMESPACE::ApiVersion10;
+  using VULKAN_HPP_NAMESPACE::ApiVersion11;
+  using VULKAN_HPP_NAMESPACE::ApiVersion12;
+  using VULKAN_HPP_NAMESPACE::ApiVersion13;
+  using VULKAN_HPP_NAMESPACE::apiVersionMajor;
+  using VULKAN_HPP_NAMESPACE::apiVersionMinor;
+  using VULKAN_HPP_NAMESPACE::apiVersionPatch;
+  using VULKAN_HPP_NAMESPACE::apiVersionVariant;
+  using VULKAN_HPP_NAMESPACE::AttachmentUnused;
+  using VULKAN_HPP_NAMESPACE::False;
+  using VULKAN_HPP_NAMESPACE::HeaderVersion;
+  using VULKAN_HPP_NAMESPACE::HeaderVersionComplete;
+  using VULKAN_HPP_NAMESPACE::LodClampNone;
+  using VULKAN_HPP_NAMESPACE::LuidSize;
+  using VULKAN_HPP_NAMESPACE::makeApiVersion;
+  using VULKAN_HPP_NAMESPACE::makeVersion;
+  using VULKAN_HPP_NAMESPACE::MaxDescriptionSize;
+  using VULKAN_HPP_NAMESPACE::MaxDeviceGroupSize;
+  using VULKAN_HPP_NAMESPACE::MaxDriverInfoSize;
+  using VULKAN_HPP_NAMESPACE::MaxDriverNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxExtensionNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKhr;
+  using VULKAN_HPP_NAMESPACE::MaxMemoryHeaps;
+  using VULKAN_HPP_NAMESPACE::MaxMemoryTypes;
+  using VULKAN_HPP_NAMESPACE::MaxPhysicalDeviceNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxShaderModuleIdentifierSizeExt;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyExternal;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyForeignExt;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyIgnored;
+  using VULKAN_HPP_NAMESPACE::Remaining3DSlicesExt;
+  using VULKAN_HPP_NAMESPACE::RemainingArrayLayers;
+  using VULKAN_HPP_NAMESPACE::RemainingMipLevels;
+  using VULKAN_HPP_NAMESPACE::ShaderUnusedKhr;
+  using VULKAN_HPP_NAMESPACE::SubpassExternal;
+  using VULKAN_HPP_NAMESPACE::True;
+  using VULKAN_HPP_NAMESPACE::UuidSize;
+  using VULKAN_HPP_NAMESPACE::versionMajor;
+  using VULKAN_HPP_NAMESPACE::versionMinor;
+  using VULKAN_HPP_NAMESPACE::versionPatch;
+  using VULKAN_HPP_NAMESPACE::WholeSize;
+
   export namespace VULKAN_HPP_RAII_NAMESPACE
   {
     using VULKAN_HPP_RAII_NAMESPACE::Context;
@@ -2744,85 +2789,4 @@ export namespace VULKAN_HPP_NAMESPACE
     using VULKAN_HPP_RAII_NAMESPACE::ShaderEXTs;
 
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
-
-  constexpr uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
-  constexpr uint32_t False                            = VK_FALSE;
-  constexpr float    LodClampNone                     = VK_LOD_CLAMP_NONE;
-  constexpr uint32_t LuidSize                         = VK_LUID_SIZE;
-  constexpr uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
-  constexpr uint32_t MaxDeviceGroupSize               = VK_MAX_DEVICE_GROUP_SIZE;
-  constexpr uint32_t MaxDriverInfoSize                = VK_MAX_DRIVER_INFO_SIZE;
-  constexpr uint32_t MaxDriverNameSize                = VK_MAX_DRIVER_NAME_SIZE;
-  constexpr uint32_t MaxExtensionNameSize             = VK_MAX_EXTENSION_NAME_SIZE;
-  constexpr uint32_t MaxGlobalPrioritySizeKhr         = VK_MAX_GLOBAL_PRIORITY_SIZE_KHR;
-  constexpr uint32_t MaxMemoryHeaps                   = VK_MAX_MEMORY_HEAPS;
-  constexpr uint32_t MaxMemoryTypes                   = VK_MAX_MEMORY_TYPES;
-  constexpr uint32_t MaxPhysicalDeviceNameSize        = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
-  constexpr uint32_t MaxShaderModuleIdentifierSizeExt = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
-  constexpr uint32_t QueueFamilyExternal              = VK_QUEUE_FAMILY_EXTERNAL;
-  constexpr uint32_t QueueFamilyForeignExt            = VK_QUEUE_FAMILY_FOREIGN_EXT;
-  constexpr uint32_t QueueFamilyIgnored               = VK_QUEUE_FAMILY_IGNORED;
-  constexpr uint32_t Remaining3DSlicesExt             = VK_REMAINING_3D_SLICES_EXT;
-  constexpr uint32_t RemainingArrayLayers             = VK_REMAINING_ARRAY_LAYERS;
-  constexpr uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
-  constexpr uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
-  constexpr uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
-  constexpr uint32_t True                             = VK_TRUE;
-  constexpr uint32_t UuidSize                         = VK_UUID_SIZE;
-  constexpr uint64_t WholeSize                        = VK_WHOLE_SIZE;
-  constexpr uint32_t HeaderVersion                    = VK_HEADER_VERSION;
-
-  consteval auto ApiVersionMajor( auto const version )
-  {
-    return ( ( (uint32_t)( version ) >> 22U ) & 0x7FU );
-  }
-
-  consteval auto ApiVersionMinor( auto const version )
-  {
-    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
-  }
-
-  consteval auto ApiVersionPatch( auto const version )
-  {
-    return ( (uint32_t)(version)&0xFFFU );
-  }
-
-  consteval auto ApiVersionVariant( auto const version )
-  {
-    return ( (uint32_t)( version ) >> 29U );
-  }
-
-  consteval auto MakeApiVersion( auto const variant, auto const major, auto const minor, auto const patch )
-  {
-    return ( ( ( (uint32_t)( variant ) ) << 29U ) | ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
-  }
-
-  [[deprecated( "This define is deprecated. VK_MAKE_API_VERSION should be used instead." )]] consteval auto
-    MakeVersion( auto const major, auto const minor, auto const patch )
-  {
-    return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
-  }
-
-  [[deprecated( "This define is deprecated. VK_API_VERSION_MAJOR should be used instead." )]] consteval auto VersionMajor( auto const version )
-  {
-    return ( (uint32_t)( version ) >> 22U );
-  }
-
-  [[deprecated( "This define is deprecated. VK_API_VERSION_MINOR should be used instead." )]] consteval auto VersionMinor( auto const version )
-  {
-    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
-  }
-
-  [[deprecated( "This define is deprecated. VK_API_VERSION_PATCH should be used instead." )]] consteval auto VersionPatch( auto const version )
-  {
-    return ( (uint32_t)(version)&0xFFFU );
-  }
-
-  constexpr auto ApiVersion            = MakeApiVersion( 0, 1, 0, 0 );
-  constexpr auto ApiVersion10          = MakeApiVersion( 0, 1, 0, 0 );
-  constexpr auto ApiVersion11          = MakeApiVersion( 0, 1, 1, 0 );
-  constexpr auto ApiVersion12          = MakeApiVersion( 0, 1, 2, 0 );
-  constexpr auto ApiVersion13          = MakeApiVersion( 0, 1, 3, 0 );
-  constexpr auto HeaderVersionComplete = MakeApiVersion( 0, 1, 3, VK_HEADER_VERSION );
-
 }  // namespace VULKAN_HPP_NAMESPACE

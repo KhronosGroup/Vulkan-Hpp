@@ -655,25 +655,25 @@ private:
                                           bool                        definition,
                                           std::vector<size_t> const & returnParamIndices,
                                           bool                        raii ) const;
-  std::string generateConstexprString( std::string const & structName ) const;
-  std::string generateCppModuleConstexprDefines() const;
-  std::string generateCppModuleHandleUsings() const;
-  std::string generateCppModuleStructUsings() const;
-  std::string generateCppModuleUniqueHandleUsings() const;
-  std::string generateCppModuleFuncsUsings() const;
-  std::string generateCppModuleEnumUsings() const;
-  std::string generateCppModuleUsings() const;
-  std::string generateCppModuleRaiiUsings() const;
-  std::string generateDataDeclarations( CommandData const &                       commandData,
-                                        std::vector<size_t> const &               returnParams,
-                                        std::map<size_t, VectorParamData> const & vectorParams,
-                                        std::set<size_t> const &                  templatedParams,
-                                        CommandFlavourFlags                       flavourFlags,
-                                        bool                                      raii,
-                                        std::vector<std::string> const &          dataTypes,
-                                        std::string const &                       dataType,
-                                        std::string const &                       returnType,
-                                        std::string const &                       returnVariable ) const;
+  std::string                         generateConstexprString( std::string const & structName ) const;
+  std::pair<std::string, std::string> generateConstexprDefinesAndUsings() const;
+  std::string                         generateCppModuleHandleUsings() const;
+  std::string                         generateCppModuleStructUsings() const;
+  std::string                         generateCppModuleUniqueHandleUsings() const;
+  std::string                         generateCppModuleFuncsUsings() const;
+  std::string                         generateCppModuleEnumUsings() const;
+  std::string                         generateCppModuleUsings() const;
+  std::string                         generateCppModuleRaiiUsings() const;
+  std::string                         generateDataDeclarations( CommandData const & commandData,
+                                        std::vector<size_t> const &                 returnParams,
+                                        std::map<size_t, VectorParamData> const &   vectorParams,
+                                        std::set<size_t> const &                    templatedParams,
+                                        CommandFlavourFlags                         flavourFlags,
+                                        bool                                        raii,
+                                        std::vector<std::string> const &            dataTypes,
+                                        std::string const &                         dataType,
+                                        std::string const &                         returnType,
+                                        std::string const &                         returnVariable ) const;
   std::string generateDataDeclarations1Return( CommandData const &                       commandData,
                                                std::vector<size_t> const &               returnParams,
                                                std::map<size_t, VectorParamData> const & vectorParams,
@@ -1055,6 +1055,7 @@ private:
   std::map<std::string, AliasData>        m_commandAliases;
   std::map<std::string, CommandData>      m_commands;
   std::map<std::string, AliasData>        m_constantAliases;
+  std::vector<std::string>                m_constexprs;
   std::map<std::string, ConstantData>     m_constants;
   std::map<std::string, DefineData>       m_defines;
   std::map<std::string, AliasData>        m_enumAliases;

@@ -59,6 +59,7 @@ std::string                                      stripPostfix( std::string const
 std::string                                      stripPrefix( std::string const & value, std::string const & prefix );
 std::string                                      toCamelCase( std::string const & value );
 std::string                                      toUpperCase( std::string const & name );
+std::string                                      toPascalCase( std::string const & value );
 std::vector<std::string>                         tokenize( std::string const & tokenString, std::string const & separator );
 std::vector<std::string>                         tokenizeAny( std::string const & tokenString, std::string const & separators );
 std::string                                      toString( tinyxml2::XMLError error );
@@ -4722,76 +4723,102 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
 
 std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
 {
-  auto const constexprFunctionTemplate = std::string{ R"(  ${deprecated}consteval auto c${constName}( ${arguments} )
+  auto const constexprFunctionTemplate = std::string{ R"(  ${deprecated}consteval auto ${constName}( ${arguments} )
   {
     return ${implementation};
   }
 )" };
-  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}constexpr auto c${constName} = ${callee}( ${arguments} );
+  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}constexpr auto ${constName} = ${callee}( ${arguments} );
 )" };
-  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}constexpr auto c${constName} = ${value};
+  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}constexpr ${type} ${constName} = ${value};
 )" };
   auto const deprecatedAttribute       = std::string{ R"([[deprecated("${reason}")]] )" };
 
   auto constexprDefines = std::stringstream{};
 
-  for ( auto const & [macro, data] : m_defines | std::views::filter( []( auto const & m_define ) { return m_define.first != "VK_DEFINE_HANDLE"; } ) )
-  {
-    // make `macro` camelCase and strip the `Vk` prefix
-    auto const constName  = stripPrefix( toCamelCase( macro ), "Vk" );
-    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
+  // handle the value and callee macros first so they are visible for use in functions below.
 
-    // function: has parameters, no callee macro, has implementation, possibly has deprecated attribute
-    if ( data.possibleCallee.empty() && data.params.size() > 0 && !data.possibleDefinition.empty() )
-    {
-      // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
-      auto parameterStream = std::stringstream{};
-      for ( auto const i : std::views::iota( 0u, data.params.size() ) )
-      {
-        parameterStream << "auto const " << data.params.at( i );
-        if ( i < data.params.size() - 1 && data.params.size() > 1 )
-        {
-          parameterStream << ", ";
-        }
-      }
-
-      auto const functionString = replaceWithMap(
-        constexprFunctionTemplate,
-        { { "arguments", parameterStream.str() }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
-
-      constexprDefines << functionString;
-    }
-    // caller: has callee and parameters, but no definition
-    if ( data.possibleCallee.empty() && data.params.size() > 0 && data.possibleDefinition.empty() )
-    {
-      auto argumentStream = std::stringstream{};
-      // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
-      for ( auto const i : std::views::iota( 0u, data.params.size() ) )
-      {
-        if ( i < data.params.size() - 1 && data.params.size() > 1 )
-        {
-          argumentStream << data.params.at( i ) << ", ";
-        }
-      }
-      auto const callerString = replaceWithMap(
-        constexprCallTemplate,
-        { { "arguments", argumentStream.str() }, { "callee", data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
-      constexprDefines << callerString;
-    }
-    // value: no callee, no parameters, has definition
-    if ( data.possibleCallee.empty() && data.params.size() == 0 && !data.possibleDefinition.empty() )
-    {
-      auto const valueString =
-        replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", deprecated }, { "value", data.possibleDefinition } } );
-      constexprDefines << valueString;
-    }
-  }
-
+  // hardcoded constants.
   for ( auto const & [macro, data] : m_constants )
   {
+    // make `macro` PascalCase, and strip the `Vk` prefix
+    auto const constName = stripPrefix( toPascalCase( macro ), "Vk" );
+    constexprDefines << replaceWithMap( constexprValueTemplate,
+                                        { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
+  }
+
+  // M_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
+  // VKSC_API_VARIANT is in the spec, but not defined anywhere in the headers
+  // Likewise for VKSC_API_VERSION_1_0
+  auto badlyFormedRemoved =
+    m_defines | std::views::filter(
+                  []( auto const & m_define )
+                  { return !( m_define.first == "VK_DEFINE_HANDLE" || m_define.first == "VKSC_API_VARIANT" || m_define.first == "VKSC_API_VERSION_1_0" ); } );
+
+  // values
+  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
+                                                            []( auto const & m_define ) {
+                                                              return m_define.second.possibleCallee.empty() && m_define.second.params.empty() &&
+                                                                     !m_define.second.possibleDefinition.empty();
+                                                            } ) )
+  {
+    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
+
+    // make `macro` PascalCase and strip the `Vk` prefix
+    auto const constName = stripPrefix( toPascalCase( macro ), "Vk" );
+    auto const valueString =
+      replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "deprecated", deprecated }, { "value", macro } } );
+    constexprDefines << valueString;
+  }
+
+  // functions
+  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
+                                                            []( auto const & m_define ) {
+                                                              return m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
+                                                                     !m_define.second.possibleDefinition.empty();
+                                                            } ) )
+  {
+    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
     auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
-    constexprDefines << replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", "" }, { "value", data.value } } );
+    // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
+    auto parametersString = std::string{};
+    for ( auto const & paramString : data.params )
+    {
+      parametersString += "auto const " + paramString + ", ";
+    }
+    // trim the last two characters (i.e. the last comma and the space)
+    parametersString.resize( parametersString.size() - 2 );
+
+    auto const functionString = replaceWithMap(
+      constexprFunctionTemplate,
+      { { "arguments", parametersString }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
+
+    constexprDefines << functionString;
+  }
+
+  // callers
+  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
+                                                            []( auto const & m_define ) {
+                                                              return !m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
+                                                                     m_define.second.possibleDefinition.empty();
+                                                            } ) )
+  {
+    auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
+    // make `macro` PascalCase and strip the `Vk` prefix
+    auto const constName      = stripPrefix( toCamelCase( macro ), "Vk" );
+    auto       argumentsString = std::string{};
+    // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
+    for ( auto const & argString : data.params )
+    {
+      argumentsString += argString + ", ";
+    }
+    // trim the last two characters (i.e. the last comma and the space)
+    argumentsString.resize( argumentsString.size() - 2 );
+    auto const callerString =
+      replaceWithMap( constexprCallTemplate,
+                      { { "arguments", argumentsString }, { "callee", data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
+    constexprDefines << callerString;
   }
 
   return constexprDefines.str();
@@ -4835,7 +4862,7 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
 
 std::string VulkanHppGenerator::generateCppModuleStructUsings() const
 {
-  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
+  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${structName};
 )" };
 
   auto structUsings  = std::stringstream{};
@@ -4851,12 +4878,12 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
         if ( auto const & structIt = m_structs.find( type ); structIt != m_structs.end() && listedStructs.insert( type ).second )
         {
           auto const structureType = stripPrefix( structIt->first, "Vk" );
-          localUsings << replaceWithMap( usingTemplate, { { "className", structureType } } );
+          localUsings << replaceWithMap( usingTemplate, { { "structName", structureType } } );
 
           /*if ( auto const & aliasIt = findAlias( structIt->first, m_structAliases ); aliasIt != m_structAliases.end() )
           {
             auto const aliasName = stripPrefix( aliasIt->first, "Vk" );
-            localUsings << replaceWithMap( usingTemplate, { { "className", aliasName } } );
+            localUsings << replaceWithMap( usingTemplate, { { "structName", aliasName } } );
           }*/
 
           // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple
@@ -4866,7 +4893,7 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
             if ( aliasData.name == structIt->first )
             {
               auto const aliasName = stripPrefix( alias, "Vk" );
-              localUsings << replaceWithMap( usingTemplate, { { "className", aliasName } } );
+              localUsings << replaceWithMap( usingTemplate, { { "structName", aliasName } } );
             }
           }
         }
@@ -15078,6 +15105,11 @@ std::string toUpperCase( std::string const & name )
     previousIsDigit     = !!isdigit( c );
   }
   return convertedName;
+}
+
+std::string toPascalCase( std::string const & value )
+{
+  return startUpperCase( toCamelCase( value ) );
 }
 
 std::vector<std::string> tokenize( std::string const & tokenString, std::string const & separator )

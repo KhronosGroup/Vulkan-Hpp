@@ -17,7 +17,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <filesystem>
 #include <fstream>
 #include <ranges>
 #include <regex>
@@ -25,10 +24,10 @@
 
 struct MacroData
 {
-  std::string                deprecatedComment = {};
-  std::optional<std::string> calleeMacro       = {};
-  std::vector<std::string>   params            = {};
-  std::optional<std::string> definition        = {};
+  std::string              deprecatedComment = {};
+  std::string              calleeMacro       = {};
+  std::vector<std::string> params            = {};
+  std::string              definition        = {};
 };
 
 void                                        checkAttributes( int                                                  line,
@@ -4743,7 +4742,7 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
 
     // function: has parameters, no callee macro, has implementation, possibly has deprecated attribute
-    if ( !data.possibleCallee.has_value() && data.params.size() > 0 && data.possibleDefinition.has_value() )
+    if ( data.possibleCallee.empty() && data.params.size() > 0 && !data.possibleDefinition.empty() )
     {
       // for every parameter, need to use auto const and append a comma if needed (i.e. has more than one parameter, and not for the last one)
       auto parameterStream = std::stringstream{};
@@ -4758,12 +4757,12 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
 
       auto const functionString = replaceWithMap(
         constexprFunctionTemplate,
-        { { "arguments", parameterStream.str() }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", *data.possibleDefinition } } );
+        { { "arguments", parameterStream.str() }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
 
       constexprDefines << functionString;
     }
     // caller: has callee and parameters, but no definition
-    if ( !data.possibleCallee.has_value() && data.params.size() > 0 && !data.possibleDefinition.has_value() )
+    if ( data.possibleCallee.empty() && data.params.size() > 0 && data.possibleDefinition.empty() )
     {
       auto argumentStream = std::stringstream{};
       // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
@@ -4776,14 +4775,14 @@ std::string VulkanHppGenerator::generateCppModuleConstexprDefines() const
       }
       auto const callerString = replaceWithMap(
         constexprCallTemplate,
-        { { "arguments", argumentStream.str() }, { "callee", *data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
+        { { "arguments", argumentStream.str() }, { "callee", data.possibleCallee }, { "constName", constName }, { "deprecated", deprecated } } );
       constexprDefines << callerString;
     }
     // value: no callee, no parameters, has definition
-    if ( !data.possibleCallee.has_value() && data.params.size() == 0 && data.possibleDefinition.has_value() )
+    if ( data.possibleCallee.empty() && data.params.size() == 0 && !data.possibleDefinition.empty() )
     {
       auto const valueString =
-        replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", deprecated }, { "value", *data.possibleDefinition } } );
+        replaceWithMap( constexprValueTemplate, { { "constName", constName }, { "deprecated", deprecated }, { "value", data.possibleDefinition } } );
       constexprDefines << valueString;
     }
   }
@@ -4860,7 +4859,8 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
             localUsings << replaceWithMap( usingTemplate, { { "className", aliasName } } );
           }*/
 
-          // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple aliases for a given struct, and that's ok. Maybe we should refactor 
+          // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple
+          // aliases for a given struct, and that's ok. Maybe we should refactor
           for ( auto const & [alias, aliasData] : m_structAliases )
           {
             if ( aliasData.name == structIt->first )

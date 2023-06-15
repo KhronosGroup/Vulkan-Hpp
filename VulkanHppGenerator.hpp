@@ -16,7 +16,6 @@
 
 #include <iostream>
 #include <map>
-#include <optional>
 #include <set>
 #include <tinyxml2.h>
 #include <vector>
@@ -191,13 +190,13 @@ private:
 
   struct DefineData
   {
-    bool                       deprecated         = false;
-    std::string                require            = {};
-    int                        xmlLine            = {};
-    std::string                deprecationReason  = {};
-    std::optional<std::string> possibleCallee     = {};
-    std::vector<std::string>   params             = {};
-    std::optional<std::string> possibleDefinition = {};
+    bool                     deprecated         = false;
+    std::string              require            = {};
+    int                      xmlLine            = {};
+    std::string              deprecationReason  = {};
+    std::string              possibleCallee     = {};
+    std::vector<std::string> params             = {};
+    std::string              possibleDefinition = {};
   };
 
   struct EnumValueData

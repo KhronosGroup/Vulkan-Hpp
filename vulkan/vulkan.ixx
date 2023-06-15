@@ -387,7 +387,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_video_encode_h264 ===
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilityFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilityFlagsEXT;
-  using VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlStructureEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264StdFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264StdFlagsEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -396,7 +399,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265CapabilityFlagsEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265CtbSizeFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265CtbSizeFlagsEXT;
-  using VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlStructureEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265StdFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265StdFlagsEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265TransformBlockSizeFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265TransformBlockSizeFlagsEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -1403,14 +1409,19 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264CapabilitiesEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264DpbSlotInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264FrameSizeEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264GopRemainingFrameInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264NaluSliceInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264PictureInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264ProfileInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264QpEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264QualityLevelPropertiesEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264RateControlLayerInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264SessionCreateInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264SessionParametersAddInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH264SessionParametersCreateInfoEXT;
-  using VULKAN_HPP_NAMESPACE::VideoEncodeH264VclFrameInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264SessionParametersFeedbackInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH264SessionParametersGetInfoEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -1418,14 +1429,19 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265CapabilitiesEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265DpbSlotInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265FrameSizeEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265GopRemainingFrameInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265NaluSliceSegmentInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265PictureInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265ProfileInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265QpEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265QualityLevelPropertiesEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265RateControlLayerInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265SessionCreateInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265SessionParametersAddInfoEXT;
   using VULKAN_HPP_NAMESPACE::VideoEncodeH265SessionParametersCreateInfoEXT;
-  using VULKAN_HPP_NAMESPACE::VideoEncodeH265VclFrameInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265SessionParametersFeedbackInfoEXT;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeH265SessionParametersGetInfoEXT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_video_decode_h264 ===
@@ -2028,11 +2044,16 @@ export namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeQualityLevelInfoKHR;
   using VULKAN_HPP_NAMESPACE::QueryPoolVideoEncodeFeedbackCreateInfoKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeCapabilitiesKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeRateControlInfoKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeRateControlLayerInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR;
   using VULKAN_HPP_NAMESPACE::VideoEncodeUsageInfoKHR;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -2337,6 +2358,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessingFeaturesQCOM;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessingPropertiesQCOM;
 
+  //=== VK_EXT_external_memory_acquire_unmodified ===
+  using VULKAN_HPP_NAMESPACE::ExternalMemoryAcquireUnmodifiedEXT;
+
   //=== VK_EXT_extended_dynamic_state3 ===
   using VULKAN_HPP_NAMESPACE::ColorBlendAdvancedEXT;
   using VULKAN_HPP_NAMESPACE::ColorBlendEquationEXT;
@@ -2417,6 +2441,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pipeline_library_group_handles ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT;
+
+  //=== VK_EXT_dynamic_rendering_unused_attachments ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
 
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
@@ -2706,7 +2733,7 @@ export namespace VULKAN_HPP_NAMESPACE
     using VULKAN_HPP_RAII_NAMESPACE::BufferCollectionFUCHSIA;
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 
-       //=== VK_EXT_opacity_micromap ===
+    //=== VK_EXT_opacity_micromap ===
     using VULKAN_HPP_RAII_NAMESPACE::MicromapEXT;
 
     //=== VK_NV_optical_flow ===
@@ -2740,7 +2767,7 @@ export namespace VULKAN_HPP_NAMESPACE
     return ( (uint32_t)( version ) >> 29U );
   }
 
-  constexpr auto cHeaderVersion = 250;
+  constexpr auto cHeaderVersion = 253;
 
   consteval auto cMakeApiVersion( auto const variant, auto const major, auto const minor, auto const patch )
   {

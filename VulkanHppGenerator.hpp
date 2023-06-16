@@ -1055,7 +1055,6 @@ private:
   std::map<std::string, AliasData>        m_commandAliases;
   std::map<std::string, CommandData>      m_commands;
   std::map<std::string, AliasData>        m_constantAliases;
-  std::vector<std::string>                m_constexprs;
   std::map<std::string, ConstantData>     m_constants;
   std::map<std::string, DefineData>       m_defines;
   std::map<std::string, AliasData>        m_enumAliases;

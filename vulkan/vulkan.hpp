@@ -17146,7 +17146,7 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   //=========================================
-  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
   //=========================================
   VULKAN_HPP_CONSTEXPR uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
   VULKAN_HPP_CONSTEXPR uint32_t False                            = VK_FALSE;

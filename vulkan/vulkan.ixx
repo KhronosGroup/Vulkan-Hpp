@@ -14,19 +14,25 @@ export module vulkan;
 
 export namespace VULKAN_HPP_NAMESPACE
 {
+  //=====================================
+  //=== HARDCODED TYPEs AND FUNCTIONs ===
+  //=====================================
   using VULKAN_HPP_NAMESPACE::ArrayWrapper1D;
   using VULKAN_HPP_NAMESPACE::ArrayWrapper2D;
   using VULKAN_HPP_NAMESPACE::DispatchLoaderBase;
   using VULKAN_HPP_NAMESPACE::Flags;
   using VULKAN_HPP_NAMESPACE::FlagTraits;
+
 #if !defined( VK_NO_PROTOTYPES )
   using VULKAN_HPP_NAMESPACE::DispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
+
   using VULKAN_HPP_NAMESPACE::operator&;
   using VULKAN_HPP_NAMESPACE::operator|;
   using VULKAN_HPP_NAMESPACE::operator^;
   using VULKAN_HPP_NAMESPACE::operator~;
   using VULKAN_HPP_DEFAULT_DISPATCHER_TYPE;
+
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   using VULKAN_HPP_NAMESPACE::ArrayProxy;
   using VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries;
@@ -35,18 +41,27 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::StructureChain;
   using VULKAN_HPP_NAMESPACE::UniqueHandle;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   using VULKAN_HPP_NAMESPACE::ObjectDestroy;
   using VULKAN_HPP_NAMESPACE::ObjectFree;
   using VULKAN_HPP_NAMESPACE::ObjectRelease;
   using VULKAN_HPP_NAMESPACE::PoolFree;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
+  //==================
+  //=== BASE TYPEs ===
+  //==================
   using VULKAN_HPP_NAMESPACE::Bool32;
-  using VULKAN_HPP_NAMESPACE::CppType;
   using VULKAN_HPP_NAMESPACE::DeviceAddress;
   using VULKAN_HPP_NAMESPACE::DeviceSize;
   using VULKAN_HPP_NAMESPACE::RemoteAddressNV;
   using VULKAN_HPP_NAMESPACE::SampleMask;
+
+  //=============
+  //=== ENUMs ===
+  //=============
+  using VULKAN_HPP_NAMESPACE::CppType;
 
   //=== VK_VERSION_1_0 ===
   using VULKAN_HPP_NAMESPACE::AccessFlagBits;
@@ -783,12 +798,24 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ShaderCreateFlagsEXT;
 
   //=== VK_NV_ray_tracing_invocation_reorder ===
-  using VULKAN_HPP_NAMESPACE::IndexTypeValue;
   using VULKAN_HPP_NAMESPACE::RayTracingInvocationReorderModeNV;
+
+  //=========================
+  //=== Index Type Traits ===
+  //=========================
+  using VULKAN_HPP_NAMESPACE::IndexTypeValue;
+
+  //======================
+  //=== ENUM to_string ===
+  //======================
 #if !defined( VULKAN_HPP_NO_TO_STRING )
   using VULKAN_HPP_NAMESPACE::to_string;
   using VULKAN_HPP_NAMESPACE::toHexString;
 #endif /*VULKAN_HPP_NO_TO_STRING*/
+
+  //=============================
+  //=== EXCEPTIONs AND ERRORs ===
+  //=============================
 #if !defined( VULKAN_HPP_NO_EXCEPTIONS )
   using VULKAN_HPP_NAMESPACE::DeviceLostError;
   using VULKAN_HPP_NAMESPACE::Error;
@@ -828,20 +855,28 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::VideoProfileFormatNotSupportedKHRError;
   using VULKAN_HPP_NAMESPACE::VideoProfileOperationNotSupportedKHRError;
   using VULKAN_HPP_NAMESPACE::VideoStdVersionNotSupportedKHRError;
+
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
   using VULKAN_HPP_NAMESPACE::FullScreenExclusiveModeLostEXTError;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
   using VULKAN_HPP_NAMESPACE::InvalidVideoStdParametersKHRError;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   using VULKAN_HPP_NAMESPACE::CompressionExhaustedEXTError;
   using VULKAN_HPP_NAMESPACE::IncompatibleShaderBinaryEXTError;
 #endif /*VULKAN_HPP_NO_EXCEPTIONS*/
+
   using VULKAN_HPP_NAMESPACE::createResultValueType;
   using VULKAN_HPP_NAMESPACE::ignore;
   using VULKAN_HPP_NAMESPACE::resultCheck;
   using VULKAN_HPP_NAMESPACE::ResultValue;
   using VULKAN_HPP_NAMESPACE::ResultValueType;
+
+  //===============
+  //=== STRUCTs ===
+  //===============
 
   //=== VK_VERSION_1_0 ===
   using VULKAN_HPP_NAMESPACE::AllocationCallbacks;
@@ -2452,6 +2487,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
 
+  //===============
+  //=== HANDLEs ===
+  //===============
+
   //=== VK_VERSION_1_0 ===
   using VULKAN_HPP_NAMESPACE::Buffer;
   using VULKAN_HPP_NAMESPACE::BufferView;
@@ -2541,6 +2580,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_shader_object ===
   using VULKAN_HPP_NAMESPACE::ShaderEXT;
+
+  //======================
+  //=== UNIQUE HANDLEs ===
+  //======================
+
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 
   //=== VK_VERSION_1_0 ===
@@ -2625,21 +2669,31 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
   using VULKAN_HPP_NAMESPACE::UniqueShaderEXT;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
+  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
   using VULKAN_HPP_NAMESPACE::createInstance;
-  using VULKAN_HPP_NAMESPACE::createInstanceUnique;
   using VULKAN_HPP_NAMESPACE::enumerateInstanceExtensionProperties;
   using VULKAN_HPP_NAMESPACE::enumerateInstanceLayerProperties;
   using VULKAN_HPP_NAMESPACE::enumerateInstanceVersion;
+
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+  using VULKAN_HPP_NAMESPACE::createInstanceUnique;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   using VULKAN_HPP_NAMESPACE::StructExtends;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
 #if defined( VULKAN_HPP_DYNAMIC_LOADER_TOOL )
   using VULKAN_HPP_NAMESPACE::DynamicLoader;
 #endif /*VULKAN_HPP_DYNAMIC_LOADER_TOOL*/
+
   using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
 
   //=========================================
-  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
   //=========================================
   using VULKAN_HPP_NAMESPACE::ApiVersion;
   using VULKAN_HPP_NAMESPACE::ApiVersion10;
@@ -2685,11 +2739,19 @@ export namespace VULKAN_HPP_NAMESPACE
 
   export namespace VULKAN_HPP_RAII_NAMESPACE
   {
+    //======================
+    //=== RAII HARDCODED ===
+    //======================
+
     using VULKAN_HPP_RAII_NAMESPACE::Context;
     using VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher;
     using VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher;
     using VULKAN_HPP_RAII_NAMESPACE::exchange;
     using VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher;
+
+    //====================
+    //=== RAII HANDLEs ===
+    //====================
 
     //=== VK_VERSION_1_0 ===
     using VULKAN_HPP_RAII_NAMESPACE::Buffer;

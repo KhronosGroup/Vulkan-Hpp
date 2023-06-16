@@ -4742,12 +4742,12 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
 
   auto constexprDefines = std::stringstream{} << R"(
   //=========================================
-  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
   //=========================================
 )";
   auto constexprUsings  = std::stringstream{} << R"(
   //=========================================
-  //=== CONSTEXPR VARIABLES AND FUNCTIONS ===
+  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
   //=========================================
 )";
 
@@ -4835,9 +4835,10 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
     }
     // trim the last two characters (i.e. the last comma and the space)
     argumentsString.resize( argumentsString.size() - 2 );
-    auto const callerString =
-      replaceWithMap( constexprCallTemplate,
-                      { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
+
+    auto const callerString = replaceWithMap(
+      constexprCallTemplate,
+      { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
     constexprDefines << callerString;
     constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
@@ -4850,7 +4851,11 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto handleUsings = std::stringstream{};
+  auto handleUsings = std::stringstream{} << R"(
+  //===============
+  //=== HANDLEs === 
+  //===============
+)";
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
@@ -4886,7 +4891,11 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${structName};
 )" };
 
-  auto structUsings  = std::stringstream{};
+  auto structUsings  = std::stringstream{} << R"(
+  //===============
+  //=== STRUCTs ===
+  //===============
+)";
   auto listedStructs = std::set<std::string>{};
 
   auto const generateUsingsAndProtection = [&listedStructs, &usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
@@ -4941,10 +4950,14 @@ std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::Unique${handleName};
 )" };
 
-  auto uniqueHandleUsings                         = std::stringstream{};
+  auto uniqueHandleUsings                         = std::stringstream{} << R"(
+  //======================
+  //=== UNIQUE HANDLEs ===
+  //======================
+)";
   auto const [smartHandleEnter, smartHandleLeave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
 
-  uniqueHandleUsings << smartHandleEnter;
+  uniqueHandleUsings << std::endl << smartHandleEnter;
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
@@ -4972,10 +4985,10 @@ std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
     uniqueHandleUsings << generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
-  uniqueHandleUsings << replaceWithMap( R"(  using VULKAN_HPP_NAMESPACE::${handleName};
-)",
-                                        { { "handleName", "UniqueHandleTraits" } } );
-  uniqueHandleUsings << smartHandleLeave;
+  uniqueHandleUsings << R"(  using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
+)";
+
+  uniqueHandleUsings << smartHandleLeave << std::endl;
 
   return uniqueHandleUsings.str();
 }
@@ -4984,17 +4997,20 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
 {
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};
 )" };
+  
+  auto       funcUsings = std::stringstream{} << R"(  //===========================
+  //=== COMMAND Definitions ===
+  //===========================
+)";
 
-  // TODO: generate the loose functions in `vulkan_funcs.hpp` instead of hard-coding them here
-  auto       funcUsings = std::stringstream{};
-  auto const funcs      = std::array{
-    "createInstance", "createInstanceUnique", "enumerateInstanceExtensionProperties", "enumerateInstanceLayerProperties", "enumerateInstanceVersion"
-  };
-
-  for ( auto const & func : funcs )
+  for ( auto const & func :
+        m_handles.at( "" ).commands | std::views::transform( []( auto const & func ) { return startLowerCase( stripPrefix( func, "vk" ) ); } ) )
   {
     funcUsings << replaceWithMap( usingTemplate, { { "funcName", func } } );
   }
+
+  auto const [enter, leave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
+  funcUsings << std::endl << enter << replaceWithMap( usingTemplate, { { "funcName", "createInstanceUnique" } } ) << leave << std::endl;
 
   return funcUsings.str();
 }
@@ -5004,7 +5020,11 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${enumName};
 )" };
 
-  auto enumUsings  = std::stringstream{};
+  auto enumUsings  = std::stringstream{} << R"(
+  //=============
+  //=== ENUMs ===
+  //=============
+)";
   auto listedEnums = std::set<std::string>{};
 
   // insert CppType first
@@ -5050,7 +5070,12 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
   }
 
   // finally insert IndexTypeValue
-  enumUsings << replaceWithMap( usingTemplate, { { "enumName", "IndexTypeValue" } } );
+  auto const indexTypeComment = R"(
+  //=========================
+  //=== Index Type Traits ===
+  //=========================
+)";
+  enumUsings << indexTypeComment << replaceWithMap( usingTemplate, { { "enumName", "IndexTypeValue" } } );
 
   return enumUsings.str();
 }
@@ -5065,7 +5090,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle" };
   auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy", "ObjectFree", "ObjectRelease", "PoolFree" };
 
-  auto usings = std::stringstream{};
+  auto usings = std::stringstream{} << R"(  //=====================================
+  //=== HARDCODED TYPEs AND FUNCTIONs ===
+  //=====================================
+)";
 
   for ( auto const & className : hardCodedTypes )
   {
@@ -5074,9 +5102,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   auto const & [noPrototypesEnter, noPrototypesLeave] = generateNotProtection( "VK_NO_PROTOTYPES" );
 
-  usings << noPrototypesEnter;
-  usings << replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } );
-  usings << noPrototypesLeave;
+  usings << std::endl << noPrototypesEnter << replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } ) << noPrototypesLeave << std::endl;
 
   // insert the Flags bitwise operators
   auto const flagsBitWiseOperatorsUsings = std::array{ "operator&", "operator|", "operator^", "operator~" };
@@ -5086,7 +5112,8 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
 
   // delete the namespace declaration for the default dispatcher macro using statement
-  usings << replaceWithMap( "using ${macro};", { { "macro", "VULKAN_HPP_DEFAULT_DISPATCHER_TYPE" } } ) << std::endl;
+  usings << R"(using VULKAN_HPP_DEFAULT_DISPATCHER_TYPE;
+)";
 
   auto enhancedModeUsings = std::stringstream{};
   for ( auto const & className : hardCodedEnhancedModeTypes )
@@ -5095,7 +5122,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
   // protect the enhanced-mode usings with a macro
   auto [enterEnhancedMode, leaveEnhancedMode] = generateNotProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE" );
-  usings << enterEnhancedMode << enhancedModeUsings.rdbuf() << leaveEnhancedMode;
+  usings << std::endl << enterEnhancedMode << enhancedModeUsings.rdbuf() << leaveEnhancedMode << std::endl;
 
   auto noSmartHandleUsings = std::stringstream{};
   for ( auto const & className : hardCodedSmartHandleTypes )
@@ -5104,10 +5131,14 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
   // likewise for the smart-handle usings
   auto [enterNoSmartHandle, leaveNoSmartHandle] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
-  usings << enterNoSmartHandle << noSmartHandleUsings.str() << leaveNoSmartHandle;
+  usings << std::endl << enterNoSmartHandle << noSmartHandleUsings.str() << leaveNoSmartHandle << std::endl;
 
   // now generate baseTypes
-  auto baseTypes = std::stringstream{};
+  auto baseTypes = std::stringstream{} << R"(
+  //==================
+  //=== BASE TYPEs ===
+  //==================
+)";
   for ( auto const & baseType : m_baseTypes )
   {
     if ( baseType.first != "VkFlags" && baseType.first != "VkFlags64" && !baseType.second.typeInfo.type.empty() )
@@ -5124,25 +5155,34 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const toString                       = std::array{ "to_string", "toHexString" };
   auto const [toStringEnter, toStringLeave] = generateNotProtection( "VULKAN_HPP_NO_TO_STRING" );
 
-  usings << toStringEnter;
+  usings << R"(
+  //======================
+  //=== ENUM to_string ===
+  //======================
+)" << toStringEnter;
   for ( auto const & name : toString )
   {
     usings << replaceWithMap( usingTemplate, { { "className", name } } );
   }
-  usings << toStringLeave;
+  usings << toStringLeave << std::endl;
 
   // hardcoded exceptions and functions
   auto const hardCodedExceptionTypesAndFunctions =
     std::array{ "ErrorCategoryImpl", "Error", "LogicError", "SystemError", "errorCategory", "make_error_code", "make_error_condition" };
+  auto [exceptionsEnter, exceptionsLeave] = generateNotProtection( "VULKAN_HPP_NO_EXCEPTIONS" );
 
-  auto exceptionsUsings = std::stringstream{};
+  auto exceptionsUsings = std::stringstream{} << R"(
+  //=============================
+  //=== EXCEPTIONs AND ERRORs ===
+  //=============================
+)" << exceptionsEnter;
+  
   for ( auto const & name : hardCodedExceptionTypesAndFunctions )
   {
     exceptionsUsings << replaceWithMap( usingTemplate, { { "className", name } } );
   }
-  auto [exceptionsEnter, exceptionsLeave] = generateNotProtection( "VULKAN_HPP_NO_EXCEPTIONS" );
 
-  usings << exceptionsEnter << exceptionsUsings.rdbuf();
+  usings << exceptionsUsings.rdbuf();
 
   // result Exceptions
   auto resultExceptionsUsings = std::stringstream{};
@@ -5152,14 +5192,18 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     if ( alias.empty() && enumName.starts_with( "VK_ERROR" ) )
     {
       auto [enter, leave]  = generateProtection( protect );
+      enter = enter.empty() ? enter : "\n" + enter;
+      leave = leave.empty() ? leave : leave + "\n";
+
       auto const valueName = generateEnumValueName( name, enumName, false );
       auto const className = stripPrefix( valueName, "eError" ) + "Error";
+
       resultExceptionsUsings << enter << replaceWithMap( usingTemplate, { { "className", className } } ) << leave;
     }
   }
   usings << resultExceptionsUsings.rdbuf();
 
-  usings << exceptionsLeave;
+  usings << exceptionsLeave << std::endl;
 
   // ResultValue
   auto const hardCodedResultValueTypes = std::array{ "ignore", "ResultValue", "ResultValueType", "createResultValueType" };
@@ -5178,10 +5222,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings << generateCppModuleFuncsUsings();
 
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateNotProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE" );
-  usings << enterDisableEnhanced << replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) << leaveDisableEnhanced;
+  usings << std::endl << enterDisableEnhanced << replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) << leaveDisableEnhanced << std::endl;
 
   auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_DYNAMIC_LOADER_TOOL" );
-  usings << enterDynamicLoader << replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) << leaveDynamicLoader;
+  usings << std::endl << enterDynamicLoader << replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) << leaveDynamicLoader << std::endl;
 
   usings << replaceWithMap( usingTemplate, { { "className", "DispatchLoaderDynamic" } } ) << std::endl;
 
@@ -5195,15 +5239,22 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
   auto       usings            = std::stringstream{};
 
   // A lot of hard-coded stuff spread throughout the RAII generators, which we consolidate here
-  auto const hardcoded = R"(    using VULKAN_HPP_RAII_NAMESPACE::exchange;
+  auto const hardcoded = R"(    //======================
+    //=== RAII HARDCODED ===
+    //======================
+
+    using VULKAN_HPP_RAII_NAMESPACE::exchange;
     using VULKAN_HPP_RAII_NAMESPACE::Context;
     using VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher;
     using VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher;
     using VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher;
-
 )";
 
-  usings << hardcoded;
+  usings << hardcoded << R"(
+    //====================
+    //=== RAII HANDLEs ===
+    //====================
+)";
 
   // now, insert features and extensions with protection, and strip Vk prefix
   for ( auto const & feature : m_features )

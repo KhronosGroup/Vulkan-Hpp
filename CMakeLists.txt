@@ -44,7 +44,7 @@ function( vulkan_hpp__setup_platform )
 	set( oneValueArgs NAME )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-	
+
 	if( WIN32 )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC NOMINMAX VK_USE_PLATFORM_WIN32_KHR )
 	elseif( APPLE )
@@ -78,7 +78,7 @@ function( vulkan_hpp__setup_warning_level )
 	set( oneValueArgs NAME )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-	
+
 	if( MSVC )
 		target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX )
 		if( MSVC_VER GREATER_EQUAL 1910 )
@@ -103,9 +103,9 @@ function( vulkan_hpp__setup_library )
 	set( oneValueArgs FOLDER NAME )
 	set( multiValueArgs HEADERS SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-	
+
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
-	
+
 	if( "${TARGET_SOURCES}" STREQUAL "" )
 		add_library( ${TARGET_NAME} INTERFACE ${TARGET_HEADERS} )
 	else()
@@ -136,7 +136,7 @@ function( vulkan_hpp__setup_sample )
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 
 	add_executable( ${TARGET_NAME} ${TARGET_HEADERS} ${TARGET_SOURCES} )
-	
+
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
@@ -146,15 +146,15 @@ function( vulkan_hpp__setup_sample )
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
 	endif()
-	
+
 	if( TARGET_INCLUDE_DIRS )
 		target_include_directories( ${TARGET_NAME} PUBLIC ${TARGET_INCLUDE_DIRS} )
 	endif()
-	
+
 	if( TARGET_LIBS )
 		target_link_libraries( ${TARGET_NAME} PRIVATE "${TARGET_LIBS}" )
 	endif()
-	
+
 	if( VULKAN_HPP_PRECOMPILE )
 		if( TARGET_PCH_REUSE )
 			target_precompile_headers( ${TARGET_NAME} REUSE_FROM "${TARGET_PCH_REUSE}" )
@@ -254,7 +254,7 @@ function( vulkan_hpp__setup_test )
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )
 
 	add_executable( ${TARGET_NAME} ${TARGET_NAME}.cpp )
-	
+
 	vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
@@ -401,23 +401,23 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
-		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.ixx
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.cppm
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
-	
+
 endif()
 
 # Build Vulkan-Hpp as a module
 if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	# create a target to provide VulkanHpp as C++20 module
 	add_library( VulkanHppModule )
-	set_target_properties( VulkanHppModule PROPERTIES 
+	set_target_properties( VulkanHppModule PROPERTIES
 		CXX_STANDARD_REQUIRED ON
 		CXX_EXTENSIONS OFF )
 	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
-	target_sources( VulkanHppModule 
-		PUBLIC 
-		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.ixx )
+	target_sources( VulkanHppModule
+		PUBLIC
+		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
 	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()

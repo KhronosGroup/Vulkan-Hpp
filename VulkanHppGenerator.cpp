@@ -708,6 +708,8 @@ module;
 
 export module ${api};
 
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+
 export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}

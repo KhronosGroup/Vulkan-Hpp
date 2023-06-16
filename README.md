@@ -169,7 +169,7 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
                                      .pEngineName        = EngineName,
                                      .engineVersion      = 1,
                                      .apiVersion         = VK_API_VERSION_1_1 };
-        
+
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = & applicationInfo };
 ```
@@ -177,7 +177,7 @@ instead of
 ```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo( AppName, 1, EngineName, 1, VK_API_VERSION_1_1 );
-        
+
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo( {}, &applicationInfo );
 ```
@@ -600,6 +600,113 @@ Some functions might provide information that depends on the vulkan version. As 
 - `VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension );`
 	Returns `true` if the given extension is promoted to some other extension or vulkan version.
 
+### C++20 standard module
+
+#### Overview
+
+<!-- todo: add a link to the file -->
+Vulkan-Hpp now provides a [C++ standard module](https://en.cppreference.com/w/cpp/language/modules) in [`vulkan.cppm`](vulkan/vulkan.cppm).
+C++ modules are intended to supersede headers so that declarations and definitions may be easily shared across translation units without repeatedly parsing headers; therefore, they can potentially drastically improve compile times for large projects.
+In particular, Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and it is hoped that the C++ module will shorten compile times for projects currently using Vulkan-Hpp.
+
+#### Compiler support
+
+This feature requires a recent compiler with complete C++20 support:
+
+* Visual Studio 2019 16.10 or later (providing `cl.exe` 19.28 or later)
+* Clang 15.0.0 or later
+
+If you intend to use CMake's [experimental C++ module support](https://www.kitware.com/import-cmake-c20-modules/) (and possibly Ninja), then more recent tools are required:
+
+* Visual Studio 17.4 or later (providing `cl.exe` 19.34 or later)
+* Clang 16.0.0 or later
+* CMake 3.25 or later
+* Ninja 1.10.2 or later
+
+Either way, GCC does not completely support C++ modules, is therefore not recommended for use.
+
+##### Usage with CMake
+
+CMake is recommended for use with the Vulkan C++ module, as it provides a convenient platform-agnostic way to configure your project.
+As mentioned above, note that CMake's module support is experimental, and usage may change in the future.
+Consult the blog post at the link above for more information.
+
+CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
+**Note that this module does not yet provide an IMPORTED target for the Vulkan C++ module, so you must set it up manually.**
+
+To use CMake with C++ modules, you must first enable its experimental support, set up `vulkan.cppm` as the source for a library target with `FILE_SET` configured  `TYPE = CXX_MODULES`, and then link it into your project.
+
+```cmake
+# enable C++ module support
+cmake_minimum_required( VERSION 3.25 )
+# test if CMake version is ≥ 3.26
+if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
+  # CMake 3.26; need to handle future versions here
+  set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
+else()
+  # CMake 3.25
+  set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
+endif()
+set( CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1 )
+
+...
+
+# find Vulkan SDK
+find_package( Vulkan REQUIRED )
+
+# set up Vulkan C++ module
+add_library(VulkanCppModule)
+target_sources(VulkanCppModule PRIVATE
+  FILE_SET CXX_MODULES
+  FILES ${Vulkan_INCLUDE_DIR}/vulkan.cppm
+)
+
+# link Vulkan C++ module into your project
+add_executable(YourProject main.cpp)
+target_link_libraries(YourProject VulkanCppModule)
+```
+
+Once this is done, in `main.cpp`, simply import the Vulkan module. An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). Note that the module is imported as `vulkan`, not `vulkan.hpp`.
+
+```cpp
+import vulkan;
+
+auto main(int argc, char* const argv[]) -> int
+{
+  auto appInfo = vk::ApplicationInfo( "My App", 1, "My Engine", 1, vk::makeApiVersion( 1, 0, 0, 0 ) );
+  // ...
+}
+```
+
+Finally, you can configure and build your project as usual. Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.
+
+##### Command-line usage
+
+If you want to use the Vulkan-Hpp C++ module without CMake, you must first pre-compile it, and then import it into your project.
+You will also need to define any macros that control various features of Vulkan-Hpp, such as `VULKAN_HPP_NO_EXCEPTIONS` and `VULKAN_HPP_NO_SMART_HANDLE`.
+Different compilers have different command-lines for module pre-compilation; however, for initial use, some examples are provided below, assuming the same `main.cpp` consumer as above.
+
+For MSVC, source `vcvars64.bat` or use a Developer Command Prompt/PowerShell instance, and run the following:
+
+```cmd
+cl.exe /std:c++20 /interface /TP <path-to-vulkan-hpp>\vulkan.cppm
+cl.exe /std:c++20 /reference vulkan=vulkan.ifc main.cpp vulkan.obj
+.\main.exe
+```
+
+For Clang, run the following:
+
+```shell
+clang++ -std=c++20 <path-to-vulkan-hpp>/vulkan.cppm -precompile -o vulkan.pcm
+clang++ -std=c++20 -fprebuilt-module-path=. main.cpp vulkan.pcm -o main
+./main
+```
+
+More information about module compilation may be found at the respective compiler's documentation:
+
+* [MSVC](https://learn.microsoft.com/en-us/cpp/cpp/modules-cpp?view=msvc-170)
+* [Clang](https://clang.llvm.org/docs/StandardCPlusPlusModules.html)
+
 ### Samples and Tests
 
 When you configure your project using CMake, you can enable SAMPLES_BUILD to add some sample projects to your solution. Most of them are ports from the LunarG samples, but there are some more, like CreateDebugUtilsMessenger, InstanceVersion, PhysicalDeviceDisplayProperties, PhysicalDeviceExtensions, PhysicalDeviceFeatures, PhysicalDeviceGroups, PhysicalDeviceMemoryProperties, PhysicalDeviceProperties, PhysicalDeviceQueueFamilyProperties, and RayTracing. All those samples should just compile and run.
@@ -721,7 +828,7 @@ With this define you can include a reflection mechanism on the vk-structures. It
 
 Feel free to submit a PR to add to this list.
 
-- [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp 
+- [Examples](https://github.com/jherico/vulkan) A port of Sascha Willems [examples](https://github.com/SaschaWillems/Vulkan) to Vulkan-Hpp
 - [Vookoo](https://github.com/andy-thomason/Vookoo/) Stateful helper classes for Vulkan-Hpp, [Introduction Article](https://accu.org/journals/overload/25/139/overload139.pdf#page=14).
 
 ## License

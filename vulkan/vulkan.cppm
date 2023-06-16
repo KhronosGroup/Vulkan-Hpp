@@ -10,6 +10,7 @@ module;
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_extension_inspection.hpp>
 #include <vulkan/vulkan_format_traits.hpp>
+#include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
 export module vulkan;
@@ -659,6 +660,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeNV;
   using VULKAN_HPP_NAMESPACE::IndirectStateFlagBitsNV;
   using VULKAN_HPP_NAMESPACE::IndirectStateFlagsNV;
+
+  //=== VK_EXT_depth_bias_control ===
+  using VULKAN_HPP_NAMESPACE::DepthBiasRepresentationEXT;
 
   //=== VK_EXT_device_memory_report ===
   using VULKAN_HPP_NAMESPACE::DeviceMemoryReportEventTypeEXT;
@@ -2055,6 +2059,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::CommandBufferInheritanceRenderPassTransformInfoQCOM;
   using VULKAN_HPP_NAMESPACE::RenderPassTransformBeginInfoQCOM;
 
+  //=== VK_EXT_depth_bias_control ===
+  using VULKAN_HPP_NAMESPACE::DepthBiasInfoEXT;
+  using VULKAN_HPP_NAMESPACE::DepthBiasRepresentationInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthBiasControlFeaturesEXT;
+
   //=== VK_EXT_device_memory_report ===
   using VULKAN_HPP_NAMESPACE::DeviceDeviceMemoryReportCreateInfoEXT;
   using VULKAN_HPP_NAMESPACE::DeviceMemoryReportCallbackDataEXT;
@@ -2490,6 +2499,15 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  using VULKAN_HPP_NAMESPACE::ExternalFormatQNX;
+  using VULKAN_HPP_NAMESPACE::ImportScreenBufferInfoQNX;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+  using VULKAN_HPP_NAMESPACE::ScreenBufferFormatPropertiesQNX;
+  using VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //===============
   //=== HANDLEs ===

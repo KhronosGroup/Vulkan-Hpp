@@ -697,8 +697,8 @@ ${enumsToString}
 
 void VulkanHppGenerator::generateCppModuleFile() const
 {
-  std::string const vulkan_ixx = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".ixx";
-  std::cout << "VulkanHppGenerator: Generating " << vulkan_ixx << "..." << std::endl;
+  std::string const vulkan_cppm = std::string( BASE_PATH ) + "/vulkan/" + m_api + ".cppm";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_cppm << "..." << std::endl;
 
   std::string const vulkanCppmTemplate = R"(${licenseHeader}
 module;
@@ -726,7 +726,7 @@ export namespace VULKAN_HPP_NAMESPACE
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
                                      { "constexprUsings", generateConstexprDefinesAndUsings().second } } );
 
-  writeToFile( str, vulkan_ixx );
+  writeToFile( str, vulkan_cppm );
 }
 
 void VulkanHppGenerator::prepareRAIIHandles()

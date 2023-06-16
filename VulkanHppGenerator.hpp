@@ -649,12 +649,12 @@ private:
     generateCommandVoid0Return( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandVoid1Return(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, size_t returnParam, bool raii ) const;
-  std::string generateCommandVoid2Return( std::string const &         name,
-                                          CommandData const &         commandData,
-                                          size_t                      initialSkipCount,
-                                          bool                        definition,
-                                          std::vector<size_t> const & returnParamIndices,
-                                          bool                        raii ) const;
+  std::string                         generateCommandVoid2Return( std::string const &         name,
+                                                                  CommandData const &         commandData,
+                                                                  size_t                      initialSkipCount,
+                                                                  bool                        definition,
+                                                                  std::vector<size_t> const & returnParamIndices,
+                                                                  bool                        raii ) const;
   std::string                         generateConstexprString( std::string const & structName ) const;
   std::pair<std::string, std::string> generateConstexprDefinesAndUsings() const;
   std::string                         generateCppModuleHandleUsings() const;
@@ -662,67 +662,69 @@ private:
   std::string                         generateCppModuleUniqueHandleUsings() const;
   std::string                         generateCppModuleFuncsUsings() const;
   std::string                         generateCppModuleEnumUsings() const;
+  std::string                         generateCppModuleFormatTraitsUsings() const;
+  std::string                         generateCppModuleExtensionInspectionUsings() const;
   std::string                         generateCppModuleUsings() const;
   std::string                         generateCppModuleRaiiUsings() const;
-  std::string                         generateDataDeclarations( CommandData const & commandData,
-                                        std::vector<size_t> const &                 returnParams,
-                                        std::map<size_t, VectorParamData> const &   vectorParams,
-                                        std::set<size_t> const &                    templatedParams,
-                                        CommandFlavourFlags                         flavourFlags,
-                                        bool                                        raii,
-                                        std::vector<std::string> const &            dataTypes,
-                                        std::string const &                         dataType,
-                                        std::string const &                         returnType,
-                                        std::string const &                         returnVariable ) const;
-  std::string generateDataDeclarations1Return( CommandData const &                       commandData,
-                                               std::vector<size_t> const &               returnParams,
-                                               std::map<size_t, VectorParamData> const & vectorParams,
-                                               std::set<size_t> const &                  templatedParams,
-                                               CommandFlavourFlags                       flavourFlags,
-                                               std::vector<std::string> const &          dataTypes,
-                                               std::string const &                       dataType,
-                                               std::string const &                       returnType,
-                                               std::string const &                       returnVariable ) const;
-  std::string generateDataDeclarations2Returns( CommandData const &                       commandData,
-                                                std::vector<size_t> const &               returnParams,
-                                                std::map<size_t, VectorParamData> const & vectorParams,
-                                                CommandFlavourFlags                       flavourFlags,
-                                                bool                                      raii,
-                                                std::vector<std::string> const &          dataTypes,
-                                                std::string const &                       dataType,
-                                                std::string const &                       returnVariable ) const;
-  std::string generateDataDeclarations3Returns( CommandData const &                       commandData,
-                                                std::vector<size_t> const &               returnParams,
-                                                std::map<size_t, VectorParamData> const & vectorParams,
-                                                CommandFlavourFlags                       flavourFlags,
-                                                bool                                      raii,
-                                                std::vector<std::string> const &          dataTypes ) const;
-  std::string generateDataPreparation( CommandData const &                       commandData,
-                                       size_t                                    initialSkipCount,
-                                       std::vector<size_t> const &               returnParams,
-                                       std::map<size_t, VectorParamData> const & vectorParams,
-                                       std::set<size_t> const &                  templatedParams,
-                                       CommandFlavourFlags                       flavourFlags,
-                                       bool                                      enumerating ) const;
-  std::string generateDataSizeChecks( CommandData const &                       commandData,
-                                      std::vector<size_t> const &               returnParams,
-                                      std::vector<std::string> const &          returnParamTypes,
-                                      std::map<size_t, VectorParamData> const & vectorParams,
-                                      std::set<size_t> const &                  templatedParams,
-                                      bool                                      singular ) const;
-  std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
-  std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
-  std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
-  std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & firstArg ) const;
-  std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
-                                                    std::set<std::string> &          listedCommands,
-                                                    std::string const &              title ) const;
-  std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
-  std::string generateEnumInitializer( TypeInfo const &                   type,
-                                       std::vector<std::string> const &   arraySizes,
-                                       std::vector<EnumValueData> const & values,
-                                       bool                               bitmask ) const;
-  std::string generateEnums() const;
+  std::string                         generateDataDeclarations( CommandData const &                       commandData,
+                                                                std::vector<size_t> const &               returnParams,
+                                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                                std::set<size_t> const &                  templatedParams,
+                                                                CommandFlavourFlags                       flavourFlags,
+                                                                bool                                      raii,
+                                                                std::vector<std::string> const &          dataTypes,
+                                                                std::string const &                       dataType,
+                                                                std::string const &                       returnType,
+                                                                std::string const &                       returnVariable ) const;
+  std::string                         generateDataDeclarations1Return( CommandData const &                       commandData,
+                                                                       std::vector<size_t> const &               returnParams,
+                                                                       std::map<size_t, VectorParamData> const & vectorParams,
+                                                                       std::set<size_t> const &                  templatedParams,
+                                                                       CommandFlavourFlags                       flavourFlags,
+                                                                       std::vector<std::string> const &          dataTypes,
+                                                                       std::string const &                       dataType,
+                                                                       std::string const &                       returnType,
+                                                                       std::string const &                       returnVariable ) const;
+  std::string                         generateDataDeclarations2Returns( CommandData const &                       commandData,
+                                                                        std::vector<size_t> const &               returnParams,
+                                                                        std::map<size_t, VectorParamData> const & vectorParams,
+                                                                        CommandFlavourFlags                       flavourFlags,
+                                                                        bool                                      raii,
+                                                                        std::vector<std::string> const &          dataTypes,
+                                                                        std::string const &                       dataType,
+                                                                        std::string const &                       returnVariable ) const;
+  std::string                         generateDataDeclarations3Returns( CommandData const &                       commandData,
+                                                                        std::vector<size_t> const &               returnParams,
+                                                                        std::map<size_t, VectorParamData> const & vectorParams,
+                                                                        CommandFlavourFlags                       flavourFlags,
+                                                                        bool                                      raii,
+                                                                        std::vector<std::string> const &          dataTypes ) const;
+  std::string                         generateDataPreparation( CommandData const &                       commandData,
+                                                               size_t                                    initialSkipCount,
+                                                               std::vector<size_t> const &               returnParams,
+                                                               std::map<size_t, VectorParamData> const & vectorParams,
+                                                               std::set<size_t> const &                  templatedParams,
+                                                               CommandFlavourFlags                       flavourFlags,
+                                                               bool                                      enumerating ) const;
+  std::string                         generateDataSizeChecks( CommandData const &                       commandData,
+                                                              std::vector<size_t> const &               returnParams,
+                                                              std::vector<std::string> const &          returnParamTypes,
+                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                              std::set<size_t> const &                  templatedParams,
+                                                              bool                                      singular ) const;
+  std::string                         generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
+  std::string                         generateDispatchLoaderStatic() const;   // uses exported symbols from loader
+  std::string                         generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
+  std::string                         generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & firstArg ) const;
+  std::string                         generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
+                                                                            std::set<std::string> &          listedCommands,
+                                                                            std::string const &              title ) const;
+  std::string                         generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
+  std::string                         generateEnumInitializer( TypeInfo const &                   type,
+                                                               std::vector<std::string> const &   arraySizes,
+                                                               std::vector<EnumValueData> const & values,
+                                                               bool                               bitmask ) const;
+  std::string                         generateEnums() const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumsToString() const;
   std::string generateEnumsToString( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;

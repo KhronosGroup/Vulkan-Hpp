@@ -8,6 +8,8 @@
 module;
 
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_extension_inspection.hpp>
+#include <vulkan/vulkan_format_traits.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
 export module vulkan;
@@ -2493,6 +2495,8 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== HANDLEs ===
   //===============
 
+  using VULKAN_HPP_NAMESPACE::isVulkanHandleType;
+
   //=== VK_VERSION_1_0 ===
   using VULKAN_HPP_NAMESPACE::Buffer;
   using VULKAN_HPP_NAMESPACE::BufferView;
@@ -2693,6 +2697,45 @@ export namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DYNAMIC_LOADER_TOOL*/
 
   using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
+
+  //=====================
+  //=== Format Traits ===
+  //=====================
+  using VULKAN_HPP_NAMESPACE::blockExtent;
+  using VULKAN_HPP_NAMESPACE::blockSize;
+  using VULKAN_HPP_NAMESPACE::compatibilityClass;
+  using VULKAN_HPP_NAMESPACE::componentBits;
+  using VULKAN_HPP_NAMESPACE::componentCount;
+  using VULKAN_HPP_NAMESPACE::componentName;
+  using VULKAN_HPP_NAMESPACE::componentNumericFormat;
+  using VULKAN_HPP_NAMESPACE::componentPlaneIndex;
+  using VULKAN_HPP_NAMESPACE::componentsAreCompressed;
+  using VULKAN_HPP_NAMESPACE::compressionScheme;
+  using VULKAN_HPP_NAMESPACE::isCompressed;
+  using VULKAN_HPP_NAMESPACE::packed;
+  using VULKAN_HPP_NAMESPACE::planeCompatibleFormat;
+  using VULKAN_HPP_NAMESPACE::planeCount;
+  using VULKAN_HPP_NAMESPACE::planeHeightDivisor;
+  using VULKAN_HPP_NAMESPACE::planeWidthDivisor;
+  using VULKAN_HPP_NAMESPACE::texelsPerBlock;
+
+  //======================================
+  //=== Extension inspection functions ===
+  //======================================
+  using VULKAN_HPP_NAMESPACE::getDeprecatedExtensions;
+  using VULKAN_HPP_NAMESPACE::getDeviceExtensions;
+  using VULKAN_HPP_NAMESPACE::getExtensionDepends;
+  using VULKAN_HPP_NAMESPACE::getExtensionDeprecatedBy;
+  using VULKAN_HPP_NAMESPACE::getExtensionObsoletedBy;
+  using VULKAN_HPP_NAMESPACE::getExtensionPromotedTo;
+  using VULKAN_HPP_NAMESPACE::getInstanceExtensions;
+  using VULKAN_HPP_NAMESPACE::getObsoletedExtensions;
+  using VULKAN_HPP_NAMESPACE::getPromotedExtensions;
+  using VULKAN_HPP_NAMESPACE::isDeprecatedExtension;
+  using VULKAN_HPP_NAMESPACE::isDeviceExtension;
+  using VULKAN_HPP_NAMESPACE::isInstanceExtension;
+  using VULKAN_HPP_NAMESPACE::isObsoletedExtension;
+  using VULKAN_HPP_NAMESPACE::isPromotedExtension;
 
   //=========================================
   //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===

@@ -18,6 +18,7 @@
 #include <array>
 #include <cassert>
 #include <fstream>
+#include <numeric>
 #include <ranges>
 #include <regex>
 #include <sstream>
@@ -704,6 +705,8 @@ void VulkanHppGenerator::generateCppModuleFile() const
 module;
 
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_extension_inspection.hpp>
+#include <vulkan/vulkan_format_traits.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
 export module ${api};
@@ -4857,6 +4860,8 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
   //===============
   //=== HANDLEs === 
   //===============
+
+  using VULKAN_HPP_NAMESPACE::isVulkanHandleType;
 )";
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
@@ -4999,8 +5004,8 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
 {
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};
 )" };
-  
-  auto       funcUsings = std::stringstream{} << R"(  //===========================
+
+  auto funcUsings = std::stringstream{} << R"(  //===========================
   //=== COMMAND Definitions ===
   //===========================
 )";
@@ -5080,6 +5085,71 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
   enumUsings << indexTypeComment << replaceWithMap( usingTemplate, { { "enumName", "IndexTypeValue" } } );
 
   return enumUsings.str();
+}
+
+std::string VulkanHppGenerator::generateCppModuleFormatTraitsUsings() const
+{
+  // everything is hardcoded, so things are very easy...
+  auto const formatTraits = std::string{ R"(
+  //=====================
+  //=== Format Traits ===
+  //=====================
+)" };
+
+  auto const usingTemplate        = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${function};
+)" };
+  auto const formatTraitFunctions = std::array{ "blockExtent",
+                                                "blockSize",
+                                                "compatibilityClass",
+                                                "componentBits",
+                                                "componentCount",
+                                                "componentName",
+                                                "componentNumericFormat",
+                                                "componentPlaneIndex",
+                                                "componentsAreCompressed",
+                                                "compressionScheme",
+                                                "isCompressed",
+                                                "packed",
+                                                "planeCompatibleFormat",
+                                                "planeCount",
+                                                "planeHeightDivisor",
+                                                "planeWidthDivisor",
+                                                "texelsPerBlock" };
+
+  auto usings = formatTraitFunctions |
+                std::views::transform(
+                  [&]( auto const & func ) {
+                    return replaceWithMap( usingTemplate, { { "function", func } } );
+                  } ) |
+                std::views::common;
+
+  return std::accumulate( usings.begin(), usings.end(), formatTraits );
+}
+
+std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() const
+{
+  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${function};
+)" };
+
+  auto const extensionInspections = std::string{ R"(  
+  //======================================
+  //=== Extension inspection functions ===
+  //======================================
+)" };
+
+  auto const extensionInspectionFunctions =
+    std::array{ "getDeviceExtensions",    "getInstanceExtensions", "getDeprecatedExtensions",  "getExtensionDepends",     "getExtensionDepends",
+                "getObsoletedExtensions", "getPromotedExtensions", "getExtensionDeprecatedBy", "getExtensionObsoletedBy", "getExtensionPromotedTo",
+                "isDeprecatedExtension",  "isDeviceExtension",     "isInstanceExtension",      "isObsoletedExtension",    "isPromotedExtension" };
+
+  auto usings = extensionInspectionFunctions |
+                std::views::transform(
+                  [&]( auto const & func ) {
+                    return replaceWithMap( usingTemplate, { { "function", func } } );
+                  } ) |
+                std::views::common;
+
+  return std::accumulate( usings.begin(), usings.end(), extensionInspections );
 }
 
 std::string VulkanHppGenerator::generateCppModuleUsings() const
@@ -5178,7 +5248,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   //=== EXCEPTIONs AND ERRORs ===
   //=============================
 )" << exceptionsEnter;
-  
+
   for ( auto const & name : hardCodedExceptionTypesAndFunctions )
   {
     exceptionsUsings << replaceWithMap( usingTemplate, { { "className", name } } );
@@ -5193,9 +5263,9 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   {
     if ( alias.empty() && enumName.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]  = generateProtection( protect );
-      enter = enter.empty() ? enter : "\n" + enter;
-      leave = leave.empty() ? leave : leave + "\n";
+      auto [enter, leave] = generateProtection( protect );
+      enter               = enter.empty() ? enter : "\n" + enter;
+      leave               = leave.empty() ? leave : leave + "\n";
 
       auto const valueName = generateEnumValueName( name, enumName, false );
       auto const className = stripPrefix( valueName, "eError" ) + "Error";
@@ -5230,6 +5300,9 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings << std::endl << enterDynamicLoader << replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) << leaveDynamicLoader << std::endl;
 
   usings << replaceWithMap( usingTemplate, { { "className", "DispatchLoaderDynamic" } } ) << std::endl;
+
+  usings << generateCppModuleFormatTraitsUsings();
+  usings << generateCppModuleExtensionInspectionUsings();
 
   return usings.str();
 }

@@ -18164,6 +18164,101 @@ namespace VULKAN_HPP_NAMESPACE
 
   using ExternalFencePropertiesKHR = ExternalFenceProperties;
 
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  struct ExternalFormatQNX
+  {
+    using NativeType = VkExternalFormatQNX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eExternalFormatQNX;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ExternalFormatQNX( uint64_t externalFormat_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , externalFormat( externalFormat_ )
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR ExternalFormatQNX( ExternalFormatQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ExternalFormatQNX( VkExternalFormatQNX const & rhs ) VULKAN_HPP_NOEXCEPT : ExternalFormatQNX( *reinterpret_cast<ExternalFormatQNX const *>( &rhs ) ) {}
+
+    ExternalFormatQNX & operator=( ExternalFormatQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ExternalFormatQNX & operator=( VkExternalFormatQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ExternalFormatQNX const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 ExternalFormatQNX & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ExternalFormatQNX & setExternalFormat( uint64_t externalFormat_ ) VULKAN_HPP_NOEXCEPT
+    {
+      externalFormat = externalFormat_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkExternalFormatQNX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkExternalFormatQNX *>( this );
+    }
+
+    operator VkExternalFormatQNX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkExternalFormatQNX *>( this );
+    }
+
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#    else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, uint64_t const &>
+#    endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, externalFormat );
+    }
+#  endif
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ExternalFormatQNX const & ) const = default;
+#  else
+    bool operator==( ExternalFormatQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#    if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#    else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( externalFormat == rhs.externalFormat );
+#    endif
+    }
+
+    bool operator!=( ExternalFormatQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType          = StructureType::eExternalFormatQNX;
+    void *                              pNext          = {};
+    uint64_t                            externalFormat = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eExternalFormatQNX>
+  {
+    using Type = ExternalFormatQNX;
+  };
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
   struct ExternalImageFormatProperties
   {
     using NativeType = VkExternalImageFormatProperties;
@@ -25678,6 +25773,104 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif /*VK_USE_PLATFORM_SCI*/
 
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  struct ImportScreenBufferInfoQNX
+  {
+    using NativeType = VkImportScreenBufferInfoQNX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eImportScreenBufferInfoQNX;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ImportScreenBufferInfoQNX( struct _screen_buffer * buffer_ = {}, const void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , buffer( buffer_ )
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR ImportScreenBufferInfoQNX( ImportScreenBufferInfoQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ImportScreenBufferInfoQNX( VkImportScreenBufferInfoQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ImportScreenBufferInfoQNX( *reinterpret_cast<ImportScreenBufferInfoQNX const *>( &rhs ) )
+    {
+    }
+
+    ImportScreenBufferInfoQNX & operator=( ImportScreenBufferInfoQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ImportScreenBufferInfoQNX & operator=( VkImportScreenBufferInfoQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ImportScreenBufferInfoQNX const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 ImportScreenBufferInfoQNX & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 ImportScreenBufferInfoQNX & setBuffer( struct _screen_buffer * buffer_ ) VULKAN_HPP_NOEXCEPT
+    {
+      buffer = buffer_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkImportScreenBufferInfoQNX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkImportScreenBufferInfoQNX *>( this );
+    }
+
+    operator VkImportScreenBufferInfoQNX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkImportScreenBufferInfoQNX *>( this );
+    }
+
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#    else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, const void * const &, struct _screen_buffer * const &>
+#    endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, buffer );
+    }
+#  endif
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ImportScreenBufferInfoQNX const & ) const = default;
+#  else
+    bool operator==( ImportScreenBufferInfoQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#    if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#    else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( buffer == rhs.buffer );
+#    endif
+    }
+
+    bool operator!=( ImportScreenBufferInfoQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType  = StructureType::eImportScreenBufferInfoQNX;
+    const void *                        pNext  = {};
+    struct _screen_buffer *             buffer = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eImportScreenBufferInfoQNX>
+  {
+    using Type = ImportScreenBufferInfoQNX;
+  };
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
   struct ImportSemaphoreFdInfoKHR
   {
     using NativeType = VkImportSemaphoreFdInfoKHR;
@@ -31404,6 +31597,108 @@ namespace VULKAN_HPP_NAMESPACE
 
   using PhysicalDeviceExternalSciBufFeaturesNV = PhysicalDeviceExternalMemorySciBufFeaturesNV;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  struct PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX
+  {
+    using NativeType = VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX( VULKAN_HPP_NAMESPACE::Bool32 screenBufferImport_ = {},
+                                                                              void *                       pNext_              = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , screenBufferImport( screenBufferImport_ )
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR
+      PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX( PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX( VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX( *reinterpret_cast<PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const *>( &rhs ) )
+    {
+    }
+
+    PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX &
+      operator=( PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX & operator=( VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const *>( &rhs );
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX & setPNext( void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX &
+      setScreenBufferImport( VULKAN_HPP_NAMESPACE::Bool32 screenBufferImport_ ) VULKAN_HPP_NOEXCEPT
+    {
+      screenBufferImport = screenBufferImport_;
+      return *this;
+    }
+#  endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX *>( this );
+    }
+
+    operator VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkPhysicalDeviceExternalMemoryScreenBufferFeaturesQNX *>( this );
+    }
+
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#    else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::Bool32 const &>
+#    endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, screenBufferImport );
+    }
+#  endif
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & ) const = default;
+#  else
+    bool operator==( PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#    if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#    else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( screenBufferImport == rhs.screenBufferImport );
+#    endif
+    }
+
+    bool operator!=( PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType              = StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+    void *                              pNext              = {};
+    VULKAN_HPP_NAMESPACE::Bool32        screenBufferImport = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX>
+  {
+    using Type = PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+  };
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
 #if defined( VK_USE_PLATFORM_SCI )
   struct PhysicalDeviceExternalSciSync2FeaturesNV
@@ -50825,6 +51120,228 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = SciSyncAttributesInfoNV;
   };
 #endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  struct ScreenBufferFormatPropertiesQNX
+  {
+    using NativeType = VkScreenBufferFormatPropertiesQNX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eScreenBufferFormatPropertiesQNX;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ScreenBufferFormatPropertiesQNX(
+      VULKAN_HPP_NAMESPACE::Format                      format_                           = VULKAN_HPP_NAMESPACE::Format::eUndefined,
+      uint64_t                                          externalFormat_                   = {},
+      uint64_t                                          screenUsage_                      = {},
+      VULKAN_HPP_NAMESPACE::FormatFeatureFlags          formatFeatures_                   = {},
+      VULKAN_HPP_NAMESPACE::ComponentMapping            samplerYcbcrConversionComponents_ = {},
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel_              = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity,
+      VULKAN_HPP_NAMESPACE::SamplerYcbcrRange           suggestedYcbcrRange_              = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull,
+      VULKAN_HPP_NAMESPACE::ChromaLocation              suggestedXChromaOffset_           = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+      VULKAN_HPP_NAMESPACE::ChromaLocation              suggestedYChromaOffset_           = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven,
+      void *                                            pNext_                            = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , format( format_ )
+      , externalFormat( externalFormat_ )
+      , screenUsage( screenUsage_ )
+      , formatFeatures( formatFeatures_ )
+      , samplerYcbcrConversionComponents( samplerYcbcrConversionComponents_ )
+      , suggestedYcbcrModel( suggestedYcbcrModel_ )
+      , suggestedYcbcrRange( suggestedYcbcrRange_ )
+      , suggestedXChromaOffset( suggestedXChromaOffset_ )
+      , suggestedYChromaOffset( suggestedYChromaOffset_ )
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR ScreenBufferFormatPropertiesQNX( ScreenBufferFormatPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ScreenBufferFormatPropertiesQNX( VkScreenBufferFormatPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ScreenBufferFormatPropertiesQNX( *reinterpret_cast<ScreenBufferFormatPropertiesQNX const *>( &rhs ) )
+    {
+    }
+
+    ScreenBufferFormatPropertiesQNX & operator=( ScreenBufferFormatPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ScreenBufferFormatPropertiesQNX & operator=( VkScreenBufferFormatPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ScreenBufferFormatPropertiesQNX const *>( &rhs );
+      return *this;
+    }
+
+    operator VkScreenBufferFormatPropertiesQNX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkScreenBufferFormatPropertiesQNX *>( this );
+    }
+
+    operator VkScreenBufferFormatPropertiesQNX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkScreenBufferFormatPropertiesQNX *>( this );
+    }
+
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#    else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &,
+               void * const &,
+               VULKAN_HPP_NAMESPACE::Format const &,
+               uint64_t const &,
+               uint64_t const &,
+               VULKAN_HPP_NAMESPACE::FormatFeatureFlags const &,
+               VULKAN_HPP_NAMESPACE::ComponentMapping const &,
+               VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion const &,
+               VULKAN_HPP_NAMESPACE::SamplerYcbcrRange const &,
+               VULKAN_HPP_NAMESPACE::ChromaLocation const &,
+               VULKAN_HPP_NAMESPACE::ChromaLocation const &>
+#    endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType,
+                       pNext,
+                       format,
+                       externalFormat,
+                       screenUsage,
+                       formatFeatures,
+                       samplerYcbcrConversionComponents,
+                       suggestedYcbcrModel,
+                       suggestedYcbcrRange,
+                       suggestedXChromaOffset,
+                       suggestedYChromaOffset );
+    }
+#  endif
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ScreenBufferFormatPropertiesQNX const & ) const = default;
+#  else
+    bool operator==( ScreenBufferFormatPropertiesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#    if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#    else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( format == rhs.format ) && ( externalFormat == rhs.externalFormat ) &&
+             ( screenUsage == rhs.screenUsage ) && ( formatFeatures == rhs.formatFeatures ) &&
+             ( samplerYcbcrConversionComponents == rhs.samplerYcbcrConversionComponents ) && ( suggestedYcbcrModel == rhs.suggestedYcbcrModel ) &&
+             ( suggestedYcbcrRange == rhs.suggestedYcbcrRange ) && ( suggestedXChromaOffset == rhs.suggestedXChromaOffset ) &&
+             ( suggestedYChromaOffset == rhs.suggestedYChromaOffset );
+#    endif
+    }
+
+    bool operator!=( ScreenBufferFormatPropertiesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType               sType                            = StructureType::eScreenBufferFormatPropertiesQNX;
+    void *                                            pNext                            = {};
+    VULKAN_HPP_NAMESPACE::Format                      format                           = VULKAN_HPP_NAMESPACE::Format::eUndefined;
+    uint64_t                                          externalFormat                   = {};
+    uint64_t                                          screenUsage                      = {};
+    VULKAN_HPP_NAMESPACE::FormatFeatureFlags          formatFeatures                   = {};
+    VULKAN_HPP_NAMESPACE::ComponentMapping            samplerYcbcrConversionComponents = {};
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion suggestedYcbcrModel              = VULKAN_HPP_NAMESPACE::SamplerYcbcrModelConversion::eRgbIdentity;
+    VULKAN_HPP_NAMESPACE::SamplerYcbcrRange           suggestedYcbcrRange              = VULKAN_HPP_NAMESPACE::SamplerYcbcrRange::eItuFull;
+    VULKAN_HPP_NAMESPACE::ChromaLocation              suggestedXChromaOffset           = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+    VULKAN_HPP_NAMESPACE::ChromaLocation              suggestedYChromaOffset           = VULKAN_HPP_NAMESPACE::ChromaLocation::eCositedEven;
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eScreenBufferFormatPropertiesQNX>
+  {
+    using Type = ScreenBufferFormatPropertiesQNX;
+  };
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  struct ScreenBufferPropertiesQNX
+  {
+    using NativeType = VkScreenBufferPropertiesQNX;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eScreenBufferPropertiesQNX;
+
+#  if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR ScreenBufferPropertiesQNX( VULKAN_HPP_NAMESPACE::DeviceSize allocationSize_ = {},
+                                                    uint32_t                         memoryTypeBits_ = {},
+                                                    void *                           pNext_          = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , allocationSize( allocationSize_ )
+      , memoryTypeBits( memoryTypeBits_ )
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR ScreenBufferPropertiesQNX( ScreenBufferPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    ScreenBufferPropertiesQNX( VkScreenBufferPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+      : ScreenBufferPropertiesQNX( *reinterpret_cast<ScreenBufferPropertiesQNX const *>( &rhs ) )
+    {
+    }
+
+    ScreenBufferPropertiesQNX & operator=( ScreenBufferPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    ScreenBufferPropertiesQNX & operator=( VkScreenBufferPropertiesQNX const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX const *>( &rhs );
+      return *this;
+    }
+
+    operator VkScreenBufferPropertiesQNX const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkScreenBufferPropertiesQNX *>( this );
+    }
+
+    operator VkScreenBufferPropertiesQNX &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkScreenBufferPropertiesQNX *>( this );
+    }
+
+#  if defined( VULKAN_HPP_USE_REFLECT )
+#    if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#    else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::DeviceSize const &, uint32_t const &>
+#    endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, allocationSize, memoryTypeBits );
+    }
+#  endif
+
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( ScreenBufferPropertiesQNX const & ) const = default;
+#  else
+    bool operator==( ScreenBufferPropertiesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#    if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#    else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( allocationSize == rhs.allocationSize ) && ( memoryTypeBits == rhs.memoryTypeBits );
+#    endif
+    }
+
+    bool operator!=( ScreenBufferPropertiesQNX const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#  endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType          = StructureType::eScreenBufferPropertiesQNX;
+    void *                              pNext          = {};
+    VULKAN_HPP_NAMESPACE::DeviceSize    allocationSize = {};
+    uint32_t                            memoryTypeBits = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eScreenBufferPropertiesQNX>
+  {
+    using Type = ScreenBufferPropertiesQNX;
+  };
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   struct SemaphoreCreateInfo
   {

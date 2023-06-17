@@ -933,6 +933,10 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & ExternalMemoryHandleTypeFlagBits::eSciBufNV )
       result += "SciBufNV | ";
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    if ( value & ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX )
+      result += "ScreenBufferQNX | ";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -2034,6 +2038,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalSciSync2FeaturesNV: return "PhysicalDeviceExternalSciSync2FeaturesNV";
       case StructureType::eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV: return "DeviceSemaphoreSciSyncPoolReservationCreateInfoNV";
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      case StructureType::eScreenBufferPropertiesQNX: return "ScreenBufferPropertiesQNX";
+      case StructureType::eScreenBufferFormatPropertiesQNX: return "ScreenBufferFormatPropertiesQNX";
+      case StructureType::eImportScreenBufferInfoQNX: return "ImportScreenBufferInfoQNX";
+      case StructureType::eExternalFormatQNX: return "ExternalFormatQNX";
+      case StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX: return "PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3524,6 +3535,9 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCI )
       case ExternalMemoryHandleTypeFlagBits::eSciBufNV: return "SciBufNV";
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      case ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX: return "ScreenBufferQNX";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

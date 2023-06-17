@@ -112,8 +112,11 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_extended_dynamic_state2",
       "VK_EXT_color_write_enable",
 #if defined( VK_USE_PLATFORM_SCI )
-      "VK_NV_external_sci_sync2"
+      "VK_NV_external_sci_sync2",
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      "VK_QNX_external_memory_screen_buffer"
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     };
     return deviceExtensions;
   }
@@ -491,8 +494,21 @@ namespace VULKAN_HPP_NAMESPACE
             } } },
           { "VK_VERSION_1_1", { {} } } } },
 #if defined( VK_USE_PLATFORM_SCI )
-      { "VK_NV_external_sci_sync2", { { "VK_VERSION_1_1", { {} } } } }
+      { "VK_NV_external_sci_sync2", { { "VK_VERSION_1_1", { {} } } } },
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      { "VK_QNX_external_memory_screen_buffer",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_sampler_ycbcr_conversion",
+              "VK_KHR_external_memory",
+              "VK_KHR_dedicated_allocation",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_EXT_queue_family_foreign",
+            } } } } }
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -638,8 +654,11 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_SCI*/
            ( extension == "VK_EXT_extended_dynamic_state2" ) || ( extension == "VK_EXT_color_write_enable" ) ||
 #if defined( VK_USE_PLATFORM_SCI )
-           ( extension == "VK_NV_external_sci_sync2" )
+           ( extension == "VK_NV_external_sci_sync2" ) ||
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+           ( extension == "VK_QNX_external_memory_screen_buffer" )
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       ;
   }
 

@@ -442,8 +442,15 @@ namespace VULKAN_HPP_NAMESPACE
     eSemaphoreSciSyncPoolCreateInfoNV                  = VK_STRUCTURE_TYPE_SEMAPHORE_SCI_SYNC_POOL_CREATE_INFO_NV,
     eSemaphoreSciSyncCreateInfoNV                      = VK_STRUCTURE_TYPE_SEMAPHORE_SCI_SYNC_CREATE_INFO_NV,
     ePhysicalDeviceExternalSciSync2FeaturesNV          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SCI_SYNC_2_FEATURES_NV,
-    eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV = VK_STRUCTURE_TYPE_DEVICE_SEMAPHORE_SCI_SYNC_POOL_RESERVATION_CREATE_INFO_NV
+    eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV = VK_STRUCTURE_TYPE_DEVICE_SEMAPHORE_SCI_SYNC_POOL_RESERVATION_CREATE_INFO_NV,
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    eScreenBufferPropertiesQNX                           = VK_STRUCTURE_TYPE_SCREEN_BUFFER_PROPERTIES_QNX,
+    eScreenBufferFormatPropertiesQNX                     = VK_STRUCTURE_TYPE_SCREEN_BUFFER_FORMAT_PROPERTIES_QNX,
+    eImportScreenBufferInfoQNX                           = VK_STRUCTURE_TYPE_IMPORT_SCREEN_BUFFER_INFO_QNX,
+    eExternalFormatQNX                                   = VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_QNX,
+    ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_SCREEN_BUFFER_FEATURES_QNX
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
   };
 
   enum class PipelineCacheHeaderVersion
@@ -2230,8 +2237,11 @@ namespace VULKAN_HPP_NAMESPACE
     eHostAllocationEXT          = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
     eHostMappedForeignMemoryEXT = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_MAPPED_FOREIGN_MEMORY_BIT_EXT,
 #if defined( VK_USE_PLATFORM_SCI )
-    eSciBufNV = VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCI_BUF_BIT_NV
+    eSciBufNV = VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCI_BUF_BIT_NV,
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    eScreenBufferQNX = VK_EXTERNAL_MEMORY_HANDLE_TYPE_SCREEN_BUFFER_BIT_QNX
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
   };
   using ExternalMemoryHandleTypeFlagBitsKHR = ExternalMemoryHandleTypeFlagBits;
 
@@ -2250,6 +2260,9 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_SCI )
       | ExternalMemoryHandleTypeFlagBits::eSciBufNV
 #endif /*VK_USE_PLATFORM_SCI*/
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      | ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       ;
   };
 

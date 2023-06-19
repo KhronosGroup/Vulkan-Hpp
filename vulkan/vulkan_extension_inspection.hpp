@@ -279,6 +279,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_KHR_shader_integer_dot_product",
       "VK_EXT_texel_buffer_alignment",
       "VK_QCOM_render_pass_transform",
+      "VK_EXT_depth_bias_control",
       "VK_EXT_device_memory_report",
       "VK_EXT_robustness2",
       "VK_EXT_custom_border_color",
@@ -388,7 +389,10 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_pipeline_library_group_handles",
       "VK_EXT_dynamic_rendering_unused_attachments",
       "VK_QCOM_multiview_per_view_render_areas",
-      "VK_EXT_attachment_feedback_loop_dynamic_state"
+      "VK_EXT_attachment_feedback_loop_dynamic_state",
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      "VK_QNX_external_memory_screen_buffer"
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     };
     return deviceExtensions;
   }
@@ -1372,6 +1376,11 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_swapchain",
               "VK_KHR_surface",
             } } } } },
+      { "VK_EXT_depth_bias_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } },
       { "VK_EXT_device_memory_report",
         { { "VK_VERSION_1_0",
             { {
@@ -1898,7 +1907,20 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
               "VK_EXT_attachment_feedback_loop_layout",
+            } } } } },
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      { "VK_QNX_external_memory_screen_buffer",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_sampler_ycbcr_conversion",
+              "VK_KHR_external_memory",
+              "VK_KHR_dedicated_allocation",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_EXT_queue_family_foreign",
             } } } } }
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -2551,10 +2573,10 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) || ( extension == "VK_NV_device_generated_commands" ) ||
            ( extension == "VK_NV_inherited_viewport_scissor" ) || ( extension == "VK_KHR_shader_integer_dot_product" ) ||
            ( extension == "VK_EXT_texel_buffer_alignment" ) || ( extension == "VK_QCOM_render_pass_transform" ) ||
-           ( extension == "VK_EXT_device_memory_report" ) || ( extension == "VK_EXT_robustness2" ) || ( extension == "VK_EXT_custom_border_color" ) ||
-           ( extension == "VK_GOOGLE_user_type" ) || ( extension == "VK_KHR_pipeline_library" ) || ( extension == "VK_NV_present_barrier" ) ||
-           ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_KHR_present_id" ) || ( extension == "VK_EXT_private_data" ) ||
-           ( extension == "VK_EXT_pipeline_creation_cache_control" ) ||
+           ( extension == "VK_EXT_depth_bias_control" ) || ( extension == "VK_EXT_device_memory_report" ) || ( extension == "VK_EXT_robustness2" ) ||
+           ( extension == "VK_EXT_custom_border_color" ) || ( extension == "VK_GOOGLE_user_type" ) || ( extension == "VK_KHR_pipeline_library" ) ||
+           ( extension == "VK_NV_present_barrier" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_KHR_present_id" ) ||
+           ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" ) ||
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
            ( extension == "VK_KHR_video_encode_queue" ) ||
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -2608,7 +2630,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
            ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
            ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
-           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" );
+           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) ||
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+           ( extension == "VK_QNX_external_memory_screen_buffer" )
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+      ;
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

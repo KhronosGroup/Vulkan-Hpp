@@ -1188,6 +1188,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct RenderPassTransformBeginInfoQCOM;
   struct CommandBufferInheritanceRenderPassTransformInfoQCOM;
 
+  //=== VK_EXT_depth_bias_control ===
+  struct PhysicalDeviceDepthBiasControlFeaturesEXT;
+  struct DepthBiasInfoEXT;
+  struct DepthBiasRepresentationInfoEXT;
+
   //=== VK_EXT_device_memory_report ===
   struct PhysicalDeviceDeviceMemoryReportFeaturesEXT;
   struct DeviceDeviceMemoryReportCreateInfoEXT;
@@ -1623,6 +1628,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   struct PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  struct ScreenBufferPropertiesQNX;
+  struct ScreenBufferFormatPropertiesQNX;
+  struct ImportScreenBufferInfoQNX;
+  struct ExternalFormatQNX;
+  struct PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -5632,6 +5646,17 @@ namespace VULKAN_HPP_NAMESPACE
                                     VULKAN_HPP_NAMESPACE::Pipeline          pipeline,
                                     uint32_t                                groupIndex,
                                     Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_EXT_depth_bias_control ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setDepthBias2EXT( const VULKAN_HPP_NAMESPACE::DepthBiasInfoEXT * pDepthBiasInfo,
+                           Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setDepthBias2EXT( const VULKAN_HPP_NAMESPACE::DepthBiasInfoEXT & depthBiasInfo,
+                           Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     //=== VK_KHR_video_encode_queue ===
@@ -12958,6 +12983,23 @@ namespace VULKAN_HPP_NAMESPACE
                          getDynamicRenderingTilePropertiesQCOM( const VULKAN_HPP_NAMESPACE::RenderingInfo & renderingInfo,
                                                                 Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( const struct _screen_buffer *                     buffer,
+                                                              VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX * pProperties,
+                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX>::type
+      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>>::type
+      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {

@@ -1297,6 +1297,10 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
     if ( value & ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV )
       result += "RdmaAddressNV | ";
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    if ( value & ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX )
+      result += "ScreenBufferQNX | ";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -3992,6 +3996,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceTexelBufferAlignmentFeaturesEXT: return "PhysicalDeviceTexelBufferAlignmentFeaturesEXT";
       case StructureType::eCommandBufferInheritanceRenderPassTransformInfoQCOM: return "CommandBufferInheritanceRenderPassTransformInfoQCOM";
       case StructureType::eRenderPassTransformBeginInfoQCOM: return "RenderPassTransformBeginInfoQCOM";
+      case StructureType::ePhysicalDeviceDepthBiasControlFeaturesEXT: return "PhysicalDeviceDepthBiasControlFeaturesEXT";
+      case StructureType::eDepthBiasInfoEXT: return "DepthBiasInfoEXT";
+      case StructureType::eDepthBiasRepresentationInfoEXT: return "DepthBiasRepresentationInfoEXT";
       case StructureType::ePhysicalDeviceDeviceMemoryReportFeaturesEXT: return "PhysicalDeviceDeviceMemoryReportFeaturesEXT";
       case StructureType::eDeviceDeviceMemoryReportCreateInfoEXT: return "DeviceDeviceMemoryReportCreateInfoEXT";
       case StructureType::eDeviceMemoryReportCallbackDataEXT: return "DeviceMemoryReportCallbackDataEXT";
@@ -4220,6 +4227,13 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
       case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
       case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      case StructureType::eScreenBufferPropertiesQNX: return "ScreenBufferPropertiesQNX";
+      case StructureType::eScreenBufferFormatPropertiesQNX: return "ScreenBufferFormatPropertiesQNX";
+      case StructureType::eImportScreenBufferInfoQNX: return "ImportScreenBufferInfoQNX";
+      case StructureType::eExternalFormatQNX: return "ExternalFormatQNX";
+      case StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX: return "PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6001,6 +6015,9 @@ namespace VULKAN_HPP_NAMESPACE
       case ExternalMemoryHandleTypeFlagBits::eZirconVmoFUCHSIA: return "ZirconVmoFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
       case ExternalMemoryHandleTypeFlagBits::eRdmaAddressNV: return "RdmaAddressNV";
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      case ExternalMemoryHandleTypeFlagBits::eScreenBufferQNX: return "ScreenBufferQNX";
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -7860,6 +7877,19 @@ namespace VULKAN_HPP_NAMESPACE
       case IndirectCommandsLayoutUsageFlagBitsNV::eExplicitPreprocess: return "ExplicitPreprocess";
       case IndirectCommandsLayoutUsageFlagBitsNV::eIndexedSequences: return "IndexedSequences";
       case IndirectCommandsLayoutUsageFlagBitsNV::eUnorderedSequences: return "UnorderedSequences";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_EXT_depth_bias_control ===
+
+  VULKAN_HPP_INLINE std::string to_string( DepthBiasRepresentationEXT value )
+  {
+    switch ( value )
+    {
+      case DepthBiasRepresentationEXT::eLeastRepresentableValueFormat: return "LeastRepresentableValueFormat";
+      case DepthBiasRepresentationEXT::eLeastRepresentableValueForceUnorm: return "LeastRepresentableValueForceUnorm";
+      case DepthBiasRepresentationEXT::eFloat: return "Float";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

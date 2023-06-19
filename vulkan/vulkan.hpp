@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 253, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 254, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -4930,6 +4930,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkDestroyIndirectCommandsLayoutNV( device, indirectCommandsLayout, pAllocator );
     }
 
+    //=== VK_EXT_depth_bias_control ===
+
+    void vkCmdSetDepthBias2EXT( VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT * pDepthBiasInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetDepthBias2EXT( commandBuffer, pDepthBiasInfo );
+    }
+
     //=== VK_EXT_acquire_drm_display ===
 
     VkResult vkAcquireDrmDisplayEXT( VkPhysicalDevice physicalDevice, int32_t drmFd, VkDisplayKHR display ) const VULKAN_HPP_NOEXCEPT
@@ -5923,6 +5930,17 @@ namespace VULKAN_HPP_NAMESPACE
     {
       return ::vkCmdSetAttachmentFeedbackLoopEnableEXT( commandBuffer, aspectMask );
     }
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+
+    VkResult vkGetScreenBufferPropertiesQNX( VkDevice                      device,
+                                             const struct _screen_buffer * buffer,
+                                             VkScreenBufferPropertiesQNX * pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetScreenBufferPropertiesQNX( device, buffer, pProperties );
+    }
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
   };
 #endif
 
@@ -11020,6 +11038,43 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_depth_bias_control ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthBiasControlFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDepthBiasControlFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DepthBiasRepresentationInfoEXT, DepthBiasInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DepthBiasRepresentationInfoEXT, PipelineRasterizationStateCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_device_memory_report ===
   template <>
   struct StructExtends<PhysicalDeviceDeviceMemoryReportFeaturesEXT, PhysicalDeviceFeatures2>
@@ -13482,6 +13537,63 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  template <>
+  struct StructExtends<ScreenBufferFormatPropertiesQNX, ScreenBufferPropertiesQNX>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ImportScreenBufferInfoQNX, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatQNX, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatQNX, SamplerYcbcrConversionCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
@@ -14371,6 +14483,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCreateIndirectCommandsLayoutNV           vkCreateIndirectCommandsLayoutNV           = 0;
     PFN_vkDestroyIndirectCommandsLayoutNV          vkDestroyIndirectCommandsLayoutNV          = 0;
 
+    //=== VK_EXT_depth_bias_control ===
+    PFN_vkCmdSetDepthBias2EXT vkCmdSetDepthBias2EXT = 0;
+
     //=== VK_EXT_acquire_drm_display ===
     PFN_vkAcquireDrmDisplayEXT vkAcquireDrmDisplayEXT = 0;
     PFN_vkGetDrmDisplayEXT     vkGetDrmDisplayEXT     = 0;
@@ -14633,6 +14748,13 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
     PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT vkCmdSetAttachmentFeedbackLoopEnableEXT = 0;
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+    PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX = 0;
+#else
+    PFN_dummy vkGetScreenBufferPropertiesQNX_placeholder                          = 0;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -15620,6 +15742,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCreateIndirectCommandsLayoutNV   = PFN_vkCreateIndirectCommandsLayoutNV( vkGetInstanceProcAddr( instance, "vkCreateIndirectCommandsLayoutNV" ) );
       vkDestroyIndirectCommandsLayoutNV  = PFN_vkDestroyIndirectCommandsLayoutNV( vkGetInstanceProcAddr( instance, "vkDestroyIndirectCommandsLayoutNV" ) );
 
+      //=== VK_EXT_depth_bias_control ===
+      vkCmdSetDepthBias2EXT = PFN_vkCmdSetDepthBias2EXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthBias2EXT" ) );
+
       //=== VK_EXT_acquire_drm_display ===
       vkAcquireDrmDisplayEXT = PFN_vkAcquireDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkAcquireDrmDisplayEXT" ) );
       vkGetDrmDisplayEXT     = PFN_vkGetDrmDisplayEXT( vkGetInstanceProcAddr( instance, "vkGetDrmDisplayEXT" ) );
@@ -15930,6 +16055,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
       vkCmdSetAttachmentFeedbackLoopEnableEXT =
         PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT( vkGetInstanceProcAddr( instance, "vkCmdSetAttachmentFeedbackLoopEnableEXT" ) );
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      //=== VK_QNX_external_memory_screen_buffer ===
+      vkGetScreenBufferPropertiesQNX = PFN_vkGetScreenBufferPropertiesQNX( vkGetInstanceProcAddr( instance, "vkGetScreenBufferPropertiesQNX" ) );
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -16614,6 +16744,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCreateIndirectCommandsLayoutNV   = PFN_vkCreateIndirectCommandsLayoutNV( vkGetDeviceProcAddr( device, "vkCreateIndirectCommandsLayoutNV" ) );
       vkDestroyIndirectCommandsLayoutNV  = PFN_vkDestroyIndirectCommandsLayoutNV( vkGetDeviceProcAddr( device, "vkDestroyIndirectCommandsLayoutNV" ) );
 
+      //=== VK_EXT_depth_bias_control ===
+      vkCmdSetDepthBias2EXT = PFN_vkCmdSetDepthBias2EXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthBias2EXT" ) );
+
       //=== VK_EXT_private_data ===
       vkCreatePrivateDataSlotEXT = PFN_vkCreatePrivateDataSlotEXT( vkGetDeviceProcAddr( device, "vkCreatePrivateDataSlotEXT" ) );
       if ( !vkCreatePrivateDataSlot )
@@ -16893,6 +17026,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
       vkCmdSetAttachmentFeedbackLoopEnableEXT =
         PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAttachmentFeedbackLoopEnableEXT" ) );
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      //=== VK_QNX_external_memory_screen_buffer ===
+      vkGetScreenBufferPropertiesQNX = PFN_vkGetScreenBufferPropertiesQNX( vkGetDeviceProcAddr( device, "vkGetScreenBufferPropertiesQNX" ) );
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     }
 
     template <typename DynamicLoader>

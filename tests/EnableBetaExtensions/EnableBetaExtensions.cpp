@@ -18,7 +18,13 @@
 #define VK_ENABLE_BETA_EXTENSIONS
 #include <vulkan/vulkan.hpp>
 
-int main(int /*argc*/, char** /*argv*/)
+int main( int /*argc*/, char ** /*argv*/ )
 {
+  vk::Device device;
+
+  vk::VideoEncodeSessionParametersGetInfoKHR videoSessionParametersInfo;
+  auto                                       stuff = device.getEncodedVideoSessionParametersKHR<vk::VideoEncodeSessionParametersFeedbackInfoKHR,
+                                                          vk::VideoEncodeH264SessionParametersFeedbackInfoEXT,
+                                                          vk::VideoEncodeH265SessionParametersFeedbackInfoEXT>( videoSessionParametersInfo );
   return 0;
 }

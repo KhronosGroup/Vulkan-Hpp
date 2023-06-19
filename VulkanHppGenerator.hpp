@@ -540,6 +540,7 @@ private:
                                     size_t                                    initialSkipCount,
                                     std::set<size_t> const &                  singularParams,
                                     std::set<size_t> const &                  templatedParams,
+                                    std::vector<size_t> const &               chainedReturnParams,
                                     CommandFlavourFlags                       flavourFlags,
                                     bool                                      raii ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
@@ -936,6 +937,7 @@ private:
   bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
+  bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
                                                                                std::vector<size_t> const &               returnParams,

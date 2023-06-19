@@ -12,11 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-vulkan_hpp__setup_library(
-	NAME UniqueHandleDefaultArguments
-	SOURCES UniqueHandleDefaultArguments.cpp
-	FOLDER "Tests" )
-
-if( UNIX )
-	target_link_libraries( UniqueHandleDefaultArguments PRIVATE ${CMAKE_DL_LIBS} )
-endif()
+vulkan_hpp__setup_test( NAME UniqueHandleDefaultArguments )

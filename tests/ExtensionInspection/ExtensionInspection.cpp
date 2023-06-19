@@ -31,7 +31,7 @@
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-#if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110300 < GCC_VERSION ) )
+#if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
   static_assert( vk::isInstanceExtension( VK_KHR_SURFACE_EXTENSION_NAME ), "static_assert test failed" );
   static_assert( vk::isDeviceExtension( VK_KHR_SWAPCHAIN_EXTENSION_NAME ), "static assert test failed" );
   static_assert( vk::isDeprecatedExtension( VK_EXT_DEBUG_REPORT_EXTENSION_NAME ), "static assert test failed" );

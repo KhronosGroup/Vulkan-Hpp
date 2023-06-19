@@ -23,9 +23,10 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 #if defined( __x86_64__ ) || defined( _M_X64 )
 // On 32-bit systems the test is ambiguous.
-void test()
+int main( int /*argc*/, char ** /*argv*/ )
 {
   VkSurfaceKHR surface       = 0;
   auto         uniqueSurface = vk::UniqueSurfaceKHR( surface, vk::Instance() );
+  return 0;
 }
 #endif

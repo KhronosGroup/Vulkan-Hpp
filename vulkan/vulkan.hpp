@@ -189,7 +189,7 @@ static_assert( VK_HEADER_VERSION == 254, "Wrong VK_HEADER_VERSION!" );
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
-#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110300 < GCC_VERSION ) )
+#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
 #    define VULKAN_HPP_CONSTEXPR_20 constexpr
 #  else
 #    define VULKAN_HPP_CONSTEXPR_20

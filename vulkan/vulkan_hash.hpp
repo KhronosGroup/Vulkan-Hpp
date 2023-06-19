@@ -2871,6 +2871,35 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DepthBiasInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DepthBiasInfoEXT const & depthBiasInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasInfoEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasInfoEXT.depthBiasConstantFactor );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasInfoEXT.depthBiasClamp );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasInfoEXT.depthBiasSlopeFactor );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::DepthBiasRepresentationInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::DepthBiasRepresentationInfoEXT const & depthBiasRepresentationInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasRepresentationInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasRepresentationInfoEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasRepresentationInfoEXT.depthBiasRepresentation );
+      VULKAN_HPP_HASH_COMBINE( seed, depthBiasRepresentationInfoEXT.depthBiasExact );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::DescriptorAddressInfoEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::DescriptorAddressInfoEXT const & descriptorAddressInfoEXT ) const VULKAN_HPP_NOEXCEPT
@@ -4394,6 +4423,21 @@ namespace std
   };
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ExternalFormatQNX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ExternalFormatQNX const & externalFormatQNX ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, externalFormatQNX.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, externalFormatQNX.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, externalFormatQNX.externalFormat );
+      return seed;
+    }
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::ExternalImageFormatProperties>
   {
@@ -5779,6 +5823,21 @@ namespace std
     }
   };
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ImportScreenBufferInfoQNX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ImportScreenBufferInfoQNX const & importScreenBufferInfoQNX ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, importScreenBufferInfoQNX.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, importScreenBufferInfoQNX.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, importScreenBufferInfoQNX.buffer );
+      return seed;
+    }
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::ImportSemaphoreFdInfoKHR>
@@ -7177,6 +7236,23 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthBiasControlFeaturesEXT>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthBiasControlFeaturesEXT const & physicalDeviceDepthBiasControlFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.depthBiasControl );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.leastRepresentableValueForceUnormRepresentation );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.floatRepresentation );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDepthBiasControlFeaturesEXT.depthBiasExact );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampZeroOneFeaturesEXT const & physicalDeviceDepthClampZeroOneFeaturesEXT ) const
@@ -7745,6 +7821,23 @@ namespace std
       return seed;
     }
   };
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX const & physicalDeviceExternalMemoryScreenBufferFeaturesQNX ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalMemoryScreenBufferFeaturesQNX.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalMemoryScreenBufferFeaturesQNX.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExternalMemoryScreenBufferFeaturesQNX.screenBufferImport );
+      return seed;
+    }
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalSemaphoreInfo>
@@ -12697,6 +12790,45 @@ namespace std
       return seed;
     }
   };
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ScreenBufferFormatPropertiesQNX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ScreenBufferFormatPropertiesQNX const & screenBufferFormatPropertiesQNX ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.format );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.externalFormat );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.screenUsage );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.formatFeatures );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.samplerYcbcrConversionComponents );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.suggestedYcbcrModel );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.suggestedYcbcrRange );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.suggestedXChromaOffset );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferFormatPropertiesQNX.suggestedYChromaOffset );
+      return seed;
+    }
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX const & screenBufferPropertiesQNX ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferPropertiesQNX.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferPropertiesQNX.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferPropertiesQNX.allocationSize );
+      VULKAN_HPP_HASH_COMBINE( seed, screenBufferPropertiesQNX.memoryTypeBits );
+      return seed;
+    }
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
 #  if defined( VK_USE_PLATFORM_SCREEN_QNX )
   template <>

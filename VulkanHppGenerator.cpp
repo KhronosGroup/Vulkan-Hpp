@@ -2234,22 +2234,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   }
   if ( withAllocators )
   {
-    bool useStructureChainAllocator = false;
-    if ( flavourFlags & CommandFlavourFlagBits::chained )
-    {
-      // use StructureChainAllocator only, if a vector param is a chained return param
-      auto it = std::find_if(
-        chainedReturnParams.begin(), chainedReturnParams.end(), [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } );
-      if ( it != chainedReturnParams.end() )
-      {
-        // assert that there's no other chained vector param !
-        assert( std::find_if( std::next( it ),
-                              chainedReturnParams.end(),
-                              [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } ) == chainedReturnParams.end() );
-        useStructureChainAllocator = true;
-      }
-    }
-    if ( useStructureChainAllocator )
+    if ( ( flavourFlags & CommandFlavourFlagBits::chained ) && needsStructureChainResize( vectorParams, chainedReturnParams ) )
     {
       if ( encounteredArgument )
       {
@@ -2928,6 +2913,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                                       size_t                                    initialSkipCount,
                                                       std::set<size_t> const &                  singularParams,
                                                       std::set<size_t> const &                  templatedParams,
+                                                      std::vector<size_t> const &               chainedReturnParams,
                                                       CommandFlavourFlags                       flavourFlags,
                                                       bool                                      raii ) const
 {
@@ -2951,7 +2937,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     std::string vectorName          = startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) );
     std::string vectorSize          = startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) );
 
-    if ( flavourFlags & CommandFlavourFlagBits::chained )
+    if ( ( flavourFlags & CommandFlavourFlagBits::chained ) && needsStructureChainResize( vectorParams, chainedReturnParams ) )
     {
       assert( vectorParams.size() == 1 );
       // chained data needs some more handling!!
@@ -3282,8 +3268,8 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
     std::string dataPreparation =
       generateDataPreparation( commandData, initialSkipCount, returnParams, vectorParams, templatedParams, flavourFlags, enumerating );
     std::string dataSizeChecks = generateDataSizeChecks( commandData, returnParams, dataTypes, vectorParams, templatedParams, singular );
-    std::string callSequence =
-      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, flavourFlags, false );
+    std::string callSequence   = generateCallSequence(
+      name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, false );
     std::string resultCheck     = generateResultCheck( commandData, className, classSeparator, commandName, enumerating );
     std::string returnStatement = generateReturnStatement( name,
                                                            commandData,
@@ -7391,8 +7377,8 @@ ${vectorSizeCheck}
   }
 )";
 
-    std::string callSequence =
-      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, flavourFlags, true );
+    std::string callSequence = generateCallSequence(
+      name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, templatedParams, chainedReturnParams, flavourFlags, true );
     std::string className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
     std::string returnVariable = generateReturnVariable( commandData, returnParams, vectorParams, flavourFlags );
     std::string dataDeclarations =
@@ -11443,6 +11429,19 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
   }
   return false;
+}
+
+bool VulkanHppGenerator::needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams,
+                                                    std::vector<size_t> const &               chainedReturnParams ) const
+{
+  auto it = std::find_if(
+    chainedReturnParams.begin(), chainedReturnParams.end(), [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } );
+  // assert that there's no other chained vector param !
+  assert(
+    ( it == chainedReturnParams.end() ) ||
+    ( std::find_if( std::next( it ), chainedReturnParams.end(), [&vectorParams]( size_t crp ) { return vectorParams.find( crp ) != vectorParams.end(); } ) ==
+      chainedReturnParams.end() ) );
+  return ( it != chainedReturnParams.end() );
 }
 
 std::pair<bool, std::map<size_t, std::vector<size_t>>> VulkanHppGenerator::needsVectorSizeCheck( std::vector<ParamData> const &            params,

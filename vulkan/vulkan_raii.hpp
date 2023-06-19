@@ -18567,12 +18567,7 @@ namespace VULKAN_HPP_NAMESPACE
           nullptr );
         if ( ( result == VK_SUCCESS ) && dataSize )
         {
-          structureChains.resize( dataSize );
           data.resize( dataSize );
-          for ( size_t i = 0; i < dataSize; i++ )
-          {
-            data[i].pNext = structureChains[i].template get<void>().pNext;
-          }
           result = getDispatcher()->vkGetEncodedVideoSessionParametersKHR(
             static_cast<VkDevice>( m_device ),
             reinterpret_cast<const VkVideoEncodeSessionParametersGetInfoKHR *>( &videoSessionParametersInfo ),

@@ -36,12 +36,12 @@ jobs:
       
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -GNinja
-            -DSAMPLES_BUILD=ON
-            -DSAMPLES_BUILD_ONLY_DYNAMIC=ON
-            -DSAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON
-            -DTESTS_BUILD=ON
-            -DTESTS_BUILD_ONLY_DYNAMIC=ON
-            -DTESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+            -DVULKAN_HPP_SAMPLES_BUILD=ON
+            -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON
+            -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON
+            -DVULKAN_HPP_TESTS_BUILD=ON
+            -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON
+            -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
             -DVULKAN_HPP_RUN_GENERATOR=ON
             -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}
             -DCMAKE_C_COMPILER=${{matrix.compiler.c}}

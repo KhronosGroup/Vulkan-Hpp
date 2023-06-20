@@ -2474,33 +2474,33 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_video_decode_queue" ) || ( extension == "VK_AMD_gcn_shader" ) || ( extension == "VK_NV_dedicated_allocation" ) ||
            ( extension == "VK_EXT_transform_feedback" ) || ( extension == "VK_NVX_binary_import" ) || ( extension == "VK_NVX_image_view_handle" ) ||
            ( extension == "VK_AMD_draw_indirect_count" ) || ( extension == "VK_AMD_negative_viewport_height" ) ||
-           ( extension == "VK_AMD_gpu_shader_half_float" ) || ( extension == "VK_AMD_shader_ballot" ) ||
+           ( extension == "VK_AMD_gpu_shader_half_float" ) || ( extension == "VK_AMD_shader_ballot" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-           ( extension == "VK_EXT_video_encode_h264" ) || ( extension == "VK_EXT_video_encode_h265" ) ||
+        || ( extension == "VK_EXT_video_encode_h264" ) || ( extension == "VK_EXT_video_encode_h265" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-           ( extension == "VK_KHR_video_decode_h264" ) || ( extension == "VK_AMD_texture_gather_bias_lod" ) || ( extension == "VK_AMD_shader_info" ) ||
+        || ( extension == "VK_KHR_video_decode_h264" ) || ( extension == "VK_AMD_texture_gather_bias_lod" ) || ( extension == "VK_AMD_shader_info" ) ||
            ( extension == "VK_KHR_dynamic_rendering" ) || ( extension == "VK_AMD_shader_image_load_store_lod" ) ||
            ( extension == "VK_NV_corner_sampled_image" ) || ( extension == "VK_KHR_multiview" ) || ( extension == "VK_IMG_format_pvrtc" ) ||
-           ( extension == "VK_NV_external_memory" ) ||
+           ( extension == "VK_NV_external_memory" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_NV_external_memory_win32" ) || ( extension == "VK_NV_win32_keyed_mutex" ) ||
+        || ( extension == "VK_NV_external_memory_win32" ) || ( extension == "VK_NV_win32_keyed_mutex" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_device_group" ) || ( extension == "VK_KHR_shader_draw_parameters" ) || ( extension == "VK_EXT_shader_subgroup_ballot" ) ||
+        || ( extension == "VK_KHR_device_group" ) || ( extension == "VK_KHR_shader_draw_parameters" ) || ( extension == "VK_EXT_shader_subgroup_ballot" ) ||
            ( extension == "VK_EXT_shader_subgroup_vote" ) || ( extension == "VK_EXT_texture_compression_astc_hdr" ) ||
            ( extension == "VK_EXT_astc_decode_mode" ) || ( extension == "VK_EXT_pipeline_robustness" ) || ( extension == "VK_KHR_maintenance1" ) ||
-           ( extension == "VK_KHR_external_memory" ) ||
+           ( extension == "VK_KHR_external_memory" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_KHR_external_memory_win32" ) ||
+        || ( extension == "VK_KHR_external_memory_win32" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_external_memory_fd" ) ||
+        || ( extension == "VK_KHR_external_memory_fd" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_KHR_win32_keyed_mutex" ) ||
+        || ( extension == "VK_KHR_win32_keyed_mutex" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_external_semaphore" ) ||
+        || ( extension == "VK_KHR_external_semaphore" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_KHR_external_semaphore_win32" ) ||
+        || ( extension == "VK_KHR_external_semaphore_win32" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_external_semaphore_fd" ) || ( extension == "VK_KHR_push_descriptor" ) || ( extension == "VK_EXT_conditional_rendering" ) ||
+        || ( extension == "VK_KHR_external_semaphore_fd" ) || ( extension == "VK_KHR_push_descriptor" ) || ( extension == "VK_EXT_conditional_rendering" ) ||
            ( extension == "VK_KHR_shader_float16_int8" ) || ( extension == "VK_KHR_16bit_storage" ) || ( extension == "VK_KHR_incremental_present" ) ||
            ( extension == "VK_KHR_descriptor_update_template" ) || ( extension == "VK_NV_clip_space_w_scaling" ) || ( extension == "VK_EXT_display_control" ) ||
            ( extension == "VK_GOOGLE_display_timing" ) || ( extension == "VK_NV_sample_mask_override_coverage" ) ||
@@ -2508,17 +2508,17 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NVX_multiview_per_view_attributes" ) || ( extension == "VK_NV_viewport_swizzle" ) ||
            ( extension == "VK_EXT_discard_rectangles" ) || ( extension == "VK_EXT_conservative_rasterization" ) ||
            ( extension == "VK_EXT_depth_clip_enable" ) || ( extension == "VK_EXT_hdr_metadata" ) || ( extension == "VK_KHR_imageless_framebuffer" ) ||
-           ( extension == "VK_KHR_create_renderpass2" ) || ( extension == "VK_KHR_shared_presentable_image" ) || ( extension == "VK_KHR_external_fence" ) ||
+           ( extension == "VK_KHR_create_renderpass2" ) || ( extension == "VK_KHR_shared_presentable_image" ) || ( extension == "VK_KHR_external_fence" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_KHR_external_fence_win32" ) ||
+        || ( extension == "VK_KHR_external_fence_win32" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_external_fence_fd" ) || ( extension == "VK_KHR_performance_query" ) || ( extension == "VK_KHR_maintenance2" ) ||
+        || ( extension == "VK_KHR_external_fence_fd" ) || ( extension == "VK_KHR_performance_query" ) || ( extension == "VK_KHR_maintenance2" ) ||
            ( extension == "VK_KHR_variable_pointers" ) || ( extension == "VK_EXT_external_memory_dma_buf" ) || ( extension == "VK_EXT_queue_family_foreign" ) ||
-           ( extension == "VK_KHR_dedicated_allocation" ) ||
+           ( extension == "VK_KHR_dedicated_allocation" )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-           ( extension == "VK_ANDROID_external_memory_android_hardware_buffer" ) ||
+        || ( extension == "VK_ANDROID_external_memory_android_hardware_buffer" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
-           ( extension == "VK_EXT_sampler_filter_minmax" ) || ( extension == "VK_KHR_storage_buffer_storage_class" ) ||
+        || ( extension == "VK_EXT_sampler_filter_minmax" ) || ( extension == "VK_KHR_storage_buffer_storage_class" ) ||
            ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_AMD_mixed_attachment_samples" ) || ( extension == "VK_AMD_shader_fragment_mask" ) ||
            ( extension == "VK_EXT_inline_uniform_block" ) || ( extension == "VK_EXT_shader_stencil_export" ) || ( extension == "VK_EXT_sample_locations" ) ||
            ( extension == "VK_KHR_relaxed_block_layout" ) || ( extension == "VK_KHR_get_memory_requirements2" ) ||
@@ -2528,22 +2528,22 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_fill_rectangle" ) || ( extension == "VK_NV_shader_sm_builtins" ) || ( extension == "VK_EXT_post_depth_coverage" ) ||
            ( extension == "VK_KHR_sampler_ycbcr_conversion" ) || ( extension == "VK_KHR_bind_memory2" ) ||
            ( extension == "VK_EXT_image_drm_format_modifier" ) || ( extension == "VK_EXT_validation_cache" ) || ( extension == "VK_EXT_descriptor_indexing" ) ||
-           ( extension == "VK_EXT_shader_viewport_index_layer" ) ||
+           ( extension == "VK_EXT_shader_viewport_index_layer" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-           ( extension == "VK_KHR_portability_subset" ) ||
+        || ( extension == "VK_KHR_portability_subset" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-           ( extension == "VK_NV_shading_rate_image" ) || ( extension == "VK_NV_ray_tracing" ) || ( extension == "VK_NV_representative_fragment_test" ) ||
+        || ( extension == "VK_NV_shading_rate_image" ) || ( extension == "VK_NV_ray_tracing" ) || ( extension == "VK_NV_representative_fragment_test" ) ||
            ( extension == "VK_KHR_maintenance3" ) || ( extension == "VK_KHR_draw_indirect_count" ) || ( extension == "VK_EXT_filter_cubic" ) ||
            ( extension == "VK_QCOM_render_pass_shader_resolve" ) || ( extension == "VK_EXT_global_priority" ) ||
            ( extension == "VK_KHR_shader_subgroup_extended_types" ) || ( extension == "VK_KHR_8bit_storage" ) ||
            ( extension == "VK_EXT_external_memory_host" ) || ( extension == "VK_AMD_buffer_marker" ) || ( extension == "VK_KHR_shader_atomic_int64" ) ||
            ( extension == "VK_KHR_shader_clock" ) || ( extension == "VK_AMD_pipeline_compiler_control" ) || ( extension == "VK_EXT_calibrated_timestamps" ) ||
            ( extension == "VK_AMD_shader_core_properties" ) || ( extension == "VK_KHR_video_decode_h265" ) || ( extension == "VK_KHR_global_priority" ) ||
-           ( extension == "VK_AMD_memory_overallocation_behavior" ) || ( extension == "VK_EXT_vertex_attribute_divisor" ) ||
+           ( extension == "VK_AMD_memory_overallocation_behavior" ) || ( extension == "VK_EXT_vertex_attribute_divisor" )
 #if defined( VK_USE_PLATFORM_GGP )
-           ( extension == "VK_GGP_frame_token" ) ||
+        || ( extension == "VK_GGP_frame_token" )
 #endif /*VK_USE_PLATFORM_GGP*/
-           ( extension == "VK_EXT_pipeline_creation_feedback" ) || ( extension == "VK_KHR_driver_properties" ) ||
+        || ( extension == "VK_EXT_pipeline_creation_feedback" ) || ( extension == "VK_KHR_driver_properties" ) ||
            ( extension == "VK_KHR_shader_float_controls" ) || ( extension == "VK_NV_shader_subgroup_partitioned" ) ||
            ( extension == "VK_KHR_depth_stencil_resolve" ) || ( extension == "VK_KHR_swapchain_mutable_format" ) ||
            ( extension == "VK_NV_compute_shader_derivatives" ) || ( extension == "VK_NV_mesh_shader" ) ||
@@ -2562,11 +2562,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_tooling_info" ) || ( extension == "VK_EXT_separate_stencil_usage" ) || ( extension == "VK_KHR_present_wait" ) ||
            ( extension == "VK_NV_cooperative_matrix" ) || ( extension == "VK_NV_coverage_reduction_mode" ) ||
            ( extension == "VK_EXT_fragment_shader_interlock" ) || ( extension == "VK_EXT_ycbcr_image_arrays" ) ||
-           ( extension == "VK_KHR_uniform_buffer_standard_layout" ) || ( extension == "VK_EXT_provoking_vertex" ) ||
+           ( extension == "VK_KHR_uniform_buffer_standard_layout" ) || ( extension == "VK_EXT_provoking_vertex" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_EXT_full_screen_exclusive" ) ||
+        || ( extension == "VK_EXT_full_screen_exclusive" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_KHR_buffer_device_address" ) || ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_shader_atomic_float" ) ||
+        || ( extension == "VK_KHR_buffer_device_address" ) || ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_shader_atomic_float" ) ||
            ( extension == "VK_EXT_host_query_reset" ) || ( extension == "VK_EXT_index_type_uint8" ) || ( extension == "VK_EXT_extended_dynamic_state" ) ||
            ( extension == "VK_KHR_deferred_host_operations" ) || ( extension == "VK_KHR_pipeline_executable_properties" ) ||
            ( extension == "VK_KHR_map_memory2" ) || ( extension == "VK_EXT_shader_atomic_float2" ) || ( extension == "VK_EXT_swapchain_maintenance1" ) ||
@@ -2576,15 +2576,15 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_depth_bias_control" ) || ( extension == "VK_EXT_device_memory_report" ) || ( extension == "VK_EXT_robustness2" ) ||
            ( extension == "VK_EXT_custom_border_color" ) || ( extension == "VK_GOOGLE_user_type" ) || ( extension == "VK_KHR_pipeline_library" ) ||
            ( extension == "VK_NV_present_barrier" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_KHR_present_id" ) ||
-           ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" ) ||
+           ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-           ( extension == "VK_KHR_video_encode_queue" ) ||
+        || ( extension == "VK_KHR_video_encode_queue" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-           ( extension == "VK_NV_device_diagnostics_config" ) || ( extension == "VK_QCOM_render_pass_store_ops" ) || ( extension == "VK_NV_low_latency" ) ||
+        || ( extension == "VK_NV_device_diagnostics_config" ) || ( extension == "VK_QCOM_render_pass_store_ops" ) || ( extension == "VK_NV_low_latency" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )
-           ( extension == "VK_EXT_metal_objects" ) ||
+        || ( extension == "VK_EXT_metal_objects" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
-           ( extension == "VK_KHR_synchronization2" ) || ( extension == "VK_EXT_descriptor_buffer" ) || ( extension == "VK_EXT_graphics_pipeline_library" ) ||
+        || ( extension == "VK_KHR_synchronization2" ) || ( extension == "VK_EXT_descriptor_buffer" ) || ( extension == "VK_EXT_graphics_pipeline_library" ) ||
            ( extension == "VK_AMD_shader_early_and_late_fragment_tests" ) || ( extension == "VK_KHR_fragment_shader_barycentric" ) ||
            ( extension == "VK_KHR_shader_subgroup_uniform_control_flow" ) || ( extension == "VK_KHR_zero_initialize_workgroup_memory" ) ||
            ( extension == "VK_NV_fragment_shading_rate_enums" ) || ( extension == "VK_NV_ray_tracing_motion_blur" ) || ( extension == "VK_EXT_mesh_shader" ) ||
@@ -2593,28 +2593,27 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_workgroup_memory_explicit_layout" ) || ( extension == "VK_KHR_copy_commands2" ) ||
            ( extension == "VK_EXT_image_compression_control" ) || ( extension == "VK_EXT_attachment_feedback_loop_layout" ) ||
            ( extension == "VK_EXT_4444_formats" ) || ( extension == "VK_EXT_device_fault" ) ||
-           ( extension == "VK_ARM_rasterization_order_attachment_access" ) || ( extension == "VK_EXT_rgba10x6_formats" ) ||
+           ( extension == "VK_ARM_rasterization_order_attachment_access" ) || ( extension == "VK_EXT_rgba10x6_formats" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_NV_acquire_winrt_display" ) ||
+        || ( extension == "VK_NV_acquire_winrt_display" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_VALVE_mutable_descriptor_type" ) || ( extension == "VK_EXT_vertex_input_dynamic_state" ) ||
+        || ( extension == "VK_VALVE_mutable_descriptor_type" ) || ( extension == "VK_EXT_vertex_input_dynamic_state" ) ||
            ( extension == "VK_EXT_physical_device_drm" ) || ( extension == "VK_EXT_device_address_binding_report" ) ||
            ( extension == "VK_EXT_depth_clip_control" ) || ( extension == "VK_EXT_primitive_topology_list_restart" ) ||
-           ( extension == "VK_KHR_format_feature_flags2" ) ||
+           ( extension == "VK_KHR_format_feature_flags2" )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-           ( extension == "VK_FUCHSIA_external_memory" ) || ( extension == "VK_FUCHSIA_external_semaphore" ) ||
-           ( extension == "VK_FUCHSIA_buffer_collection" ) ||
+        || ( extension == "VK_FUCHSIA_external_memory" ) || ( extension == "VK_FUCHSIA_external_semaphore" ) || ( extension == "VK_FUCHSIA_buffer_collection" )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-           ( extension == "VK_HUAWEI_subpass_shading" ) || ( extension == "VK_HUAWEI_invocation_mask" ) || ( extension == "VK_NV_external_memory_rdma" ) ||
+        || ( extension == "VK_HUAWEI_subpass_shading" ) || ( extension == "VK_HUAWEI_invocation_mask" ) || ( extension == "VK_NV_external_memory_rdma" ) ||
            ( extension == "VK_EXT_pipeline_properties" ) || ( extension == "VK_EXT_multisampled_render_to_single_sampled" ) ||
            ( extension == "VK_EXT_extended_dynamic_state2" ) || ( extension == "VK_EXT_color_write_enable" ) ||
            ( extension == "VK_EXT_primitives_generated_query" ) || ( extension == "VK_KHR_ray_tracing_maintenance1" ) ||
            ( extension == "VK_EXT_global_priority_query" ) || ( extension == "VK_EXT_image_view_min_lod" ) || ( extension == "VK_EXT_multi_draw" ) ||
-           ( extension == "VK_EXT_image_2d_view_of_3d" ) || ( extension == "VK_EXT_shader_tile_image" ) || ( extension == "VK_EXT_opacity_micromap" ) ||
+           ( extension == "VK_EXT_image_2d_view_of_3d" ) || ( extension == "VK_EXT_shader_tile_image" ) || ( extension == "VK_EXT_opacity_micromap" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-           ( extension == "VK_NV_displacement_micromap" ) ||
+        || ( extension == "VK_NV_displacement_micromap" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-           ( extension == "VK_EXT_load_store_op_none" ) || ( extension == "VK_HUAWEI_cluster_culling_shader" ) ||
+        || ( extension == "VK_EXT_load_store_op_none" ) || ( extension == "VK_HUAWEI_cluster_culling_shader" ) ||
            ( extension == "VK_EXT_border_color_swizzle" ) || ( extension == "VK_EXT_pageable_device_local_memory" ) || ( extension == "VK_KHR_maintenance4" ) ||
            ( extension == "VK_ARM_shader_core_properties" ) || ( extension == "VK_EXT_image_sliced_view_of_3d" ) ||
            ( extension == "VK_VALVE_descriptor_set_host_mapping" ) || ( extension == "VK_EXT_depth_clamp_zero_one" ) ||
@@ -2630,70 +2629,70 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
            ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
            ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
-           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) ||
+           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" )
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
-           ( extension == "VK_QNX_external_memory_screen_buffer" )
+        || ( extension == "VK_QNX_external_memory_screen_buffer" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       ;
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )
   {
-    return ( extension == "VK_KHR_surface" ) || ( extension == "VK_KHR_display" ) ||
+    return ( extension == "VK_KHR_surface" ) || ( extension == "VK_KHR_display" )
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
-           ( extension == "VK_KHR_xlib_surface" ) ||
+        || ( extension == "VK_KHR_xlib_surface" )
 #endif /*VK_USE_PLATFORM_XLIB_KHR*/
 #if defined( VK_USE_PLATFORM_XCB_KHR )
-           ( extension == "VK_KHR_xcb_surface" ) ||
+        || ( extension == "VK_KHR_xcb_surface" )
 #endif /*VK_USE_PLATFORM_XCB_KHR*/
 #if defined( VK_USE_PLATFORM_WAYLAND_KHR )
-           ( extension == "VK_KHR_wayland_surface" ) ||
+        || ( extension == "VK_KHR_wayland_surface" )
 #endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
-           ( extension == "VK_KHR_android_surface" ) ||
+        || ( extension == "VK_KHR_android_surface" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
-           ( extension == "VK_KHR_win32_surface" ) ||
+        || ( extension == "VK_KHR_win32_surface" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-           ( extension == "VK_EXT_debug_report" ) ||
+        || ( extension == "VK_EXT_debug_report" )
 #if defined( VK_USE_PLATFORM_GGP )
-           ( extension == "VK_GGP_stream_descriptor_surface" ) ||
+        || ( extension == "VK_GGP_stream_descriptor_surface" )
 #endif /*VK_USE_PLATFORM_GGP*/
-           ( extension == "VK_NV_external_memory_capabilities" ) || ( extension == "VK_KHR_get_physical_device_properties2" ) ||
-           ( extension == "VK_EXT_validation_flags" ) ||
+        || ( extension == "VK_NV_external_memory_capabilities" ) || ( extension == "VK_KHR_get_physical_device_properties2" ) ||
+           ( extension == "VK_EXT_validation_flags" )
 #if defined( VK_USE_PLATFORM_VI_NN )
-           ( extension == "VK_NN_vi_surface" ) ||
+        || ( extension == "VK_NN_vi_surface" )
 #endif /*VK_USE_PLATFORM_VI_NN*/
-           ( extension == "VK_KHR_device_group_creation" ) || ( extension == "VK_KHR_external_memory_capabilities" ) ||
-           ( extension == "VK_KHR_external_semaphore_capabilities" ) || ( extension == "VK_EXT_direct_mode_display" ) ||
+        || ( extension == "VK_KHR_device_group_creation" ) || ( extension == "VK_KHR_external_memory_capabilities" ) ||
+           ( extension == "VK_KHR_external_semaphore_capabilities" ) || ( extension == "VK_EXT_direct_mode_display" )
 #if defined( VK_USE_PLATFORM_XLIB_XRANDR_EXT )
-           ( extension == "VK_EXT_acquire_xlib_display" ) ||
+        || ( extension == "VK_EXT_acquire_xlib_display" )
 #endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
-           ( extension == "VK_EXT_display_surface_counter" ) || ( extension == "VK_EXT_swapchain_colorspace" ) ||
+        || ( extension == "VK_EXT_display_surface_counter" ) || ( extension == "VK_EXT_swapchain_colorspace" ) ||
            ( extension == "VK_KHR_external_fence_capabilities" ) || ( extension == "VK_KHR_get_surface_capabilities2" ) ||
-           ( extension == "VK_KHR_get_display_properties2" ) ||
+           ( extension == "VK_KHR_get_display_properties2" )
 #if defined( VK_USE_PLATFORM_IOS_MVK )
-           ( extension == "VK_MVK_ios_surface" ) ||
+        || ( extension == "VK_MVK_ios_surface" )
 #endif /*VK_USE_PLATFORM_IOS_MVK*/
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
-           ( extension == "VK_MVK_macos_surface" ) ||
+        || ( extension == "VK_MVK_macos_surface" )
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-           ( extension == "VK_EXT_debug_utils" ) ||
+        || ( extension == "VK_EXT_debug_utils" )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
-           ( extension == "VK_FUCHSIA_imagepipe_surface" ) ||
+        || ( extension == "VK_FUCHSIA_imagepipe_surface" )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
 #if defined( VK_USE_PLATFORM_METAL_EXT )
-           ( extension == "VK_EXT_metal_surface" ) ||
+        || ( extension == "VK_EXT_metal_surface" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
-           ( extension == "VK_KHR_surface_protected_capabilities" ) || ( extension == "VK_EXT_validation_features" ) ||
-           ( extension == "VK_EXT_headless_surface" ) || ( extension == "VK_EXT_surface_maintenance1" ) || ( extension == "VK_EXT_acquire_drm_display" ) ||
+        || ( extension == "VK_KHR_surface_protected_capabilities" ) || ( extension == "VK_EXT_validation_features" ) ||
+           ( extension == "VK_EXT_headless_surface" ) || ( extension == "VK_EXT_surface_maintenance1" ) || ( extension == "VK_EXT_acquire_drm_display" )
 #if defined( VK_USE_PLATFORM_DIRECTFB_EXT )
-           ( extension == "VK_EXT_directfb_surface" ) ||
+        || ( extension == "VK_EXT_directfb_surface" )
 #endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
-           ( extension == "VK_QNX_screen_surface" ) ||
+        || ( extension == "VK_QNX_screen_surface" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
-           ( extension == "VK_KHR_portability_enumeration" ) || ( extension == "VK_GOOGLE_surfaceless_query" ) ||
+        || ( extension == "VK_KHR_portability_enumeration" ) || ( extension == "VK_GOOGLE_surfaceless_query" ) ||
            ( extension == "VK_LUNARG_direct_driver_loading" );
   }
 

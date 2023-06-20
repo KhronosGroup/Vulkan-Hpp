@@ -49,9 +49,12 @@ function( vulkan_hpp__setup_vulkan_include )
 	set( multiValueArgs )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 	
-	if( VULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP )
+	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
 		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}" )
 		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
+		if( VULKAN_HPP_RUN_GENERATOR )
+			add_dependencies( ${TARGET_NAME} build_vulkan_hpp )
+		endif()
 	else()
 		target_include_directories( ${TARGET_NAME} PUBLIC "${Vulkan_INCLUDE_DIRS}" )
 	endif()
@@ -113,7 +116,7 @@ function( vulkan_hpp__setup_sample )
 	set( multiValueArgs HEADERS INCLUDE_DIRS LIBS PCH SOURCES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	if( NOT (VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP) )
+	if( NOT (VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP) )
 		find_package( Vulkan REQUIRED )
 	endif()
 
@@ -168,7 +171,7 @@ function( vulkan_hpp__setup_sample_static )
 			SOURCES      ${TARGET_NAME}.cpp
 			LIBS         ${Vulkan_LIBRARIES} )
 
-		target_compile_definitions( 01_InitInstance PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
 	endif()
 endfunction()
 
@@ -224,7 +227,7 @@ function( vulkan_hpp__setup_test )
 	set( multiValueArgs LIBRARIES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-	if( NOT (VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP) )
+	if( NOT (VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC AND VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP) )
 		find_package( Vulkan REQUIRED )
 	endif()
 
@@ -294,10 +297,9 @@ option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sam
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
 option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
 option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
-option( VULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
-option( VULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
+option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 
 # look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
 if( NOT DEFINED VulkanRegistry_DIR )

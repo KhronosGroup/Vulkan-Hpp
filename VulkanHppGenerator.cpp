@@ -5923,18 +5923,18 @@ std::string VulkanHppGenerator::generateExtensionsList( std::string const & type
 std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & type ) const
 {
   std::string typeTest, previousEnter, previousLeave;
+  bool        first = true;
   for ( auto const & extension : m_extensions )
   {
     if ( extension.type == type )
     {
       auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      typeTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "( extension == \"" + extension.name + "\" ) || ";
+      typeTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( first ? "" : " || ") + "( extension == \"" + extension.name + "\" )";
       previousEnter = enter;
       previousLeave = leave;
+      first         = false;
     }
   }
-  assert( typeTest.ends_with( " || " ) );
-  typeTest = typeTest.substr( 0, typeTest.length() - 4 );
   if ( !previousLeave.empty() )
   {
     typeTest += "\n" + previousLeave;

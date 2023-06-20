@@ -1053,6 +1053,16 @@ namespace VULKAN_HPP_NAMESPACE
       return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
     }
 
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
+    StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      T &    lhs   = get<T, Which>();
+      void * pNext = lhs.pNext;
+      lhs          = rhs;
+      lhs.pNext    = pNext;
+      return *this;
+    }
+
     template <typename ClassType, size_t Which = 0>
     typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
       isLinked() const VULKAN_HPP_NOEXCEPT

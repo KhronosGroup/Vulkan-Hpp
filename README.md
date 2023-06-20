@@ -607,7 +607,7 @@ Some functions might provide information that depends on the vulkan version. As 
 <!-- todo: add a link to the file -->
 Vulkan-Hpp now provides a [C++ standard module](https://en.cppreference.com/w/cpp/language/modules) in [`vulkan.cppm`](vulkan/vulkan.cppm).
 C++ modules are intended to supersede headers so that declarations and definitions may be easily shared across translation units without repeatedly parsing headers; therefore, they can potentially drastically improve compile times for large projects.
-In particular, Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and it is hoped that the C++ module will shorten compile times for projects currently using Vulkan-Hpp.
+In particular, Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and it is hoped that the C++ module will shorten compile times for projects currently using it.
 
 #### Compiler support
 
@@ -678,7 +678,11 @@ auto main(int argc, char* const argv[]) -> int
 }
 ```
 
-Finally, you can configure and build your project as usual. Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.
+Finally, you can configure and build your project as usual. 
+Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.
+Furthermore, the C++ module also pre-defines `VULKAN_HPP_DEFAULT_DISPATCHER_DYNAMIC_STORAGE` by default.
+Therefore, if you wish to use dynamic dispatch with the Vulkan-Hpp C++ module, all that is necessary is to define the macro `	VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1` in your project.
+
 
 ##### Command-line usage
 

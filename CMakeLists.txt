@@ -26,7 +26,6 @@
 
 if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	cmake_minimum_required( VERSION 3.25 )
-	# test if CMake version is >= 3.25 but < 3.26
 	if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
 		# CMake 3.26; need to handle future versions here
 		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )

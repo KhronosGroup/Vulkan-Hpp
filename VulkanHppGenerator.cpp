@@ -4770,7 +4770,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
     constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
-  // M_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
+  // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
   // VKSC_API_VARIANT is in the spec, but not defined anywhere in the headers
   // Likewise for VKSC_API_VERSION_1_0
   auto badlyFormedRemoved =

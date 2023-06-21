@@ -504,6 +504,7 @@ ${throwResultException}
 
 ${ResultValue}
 ${resultChecks}
+${constexprDefines}
 } // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
@@ -520,7 +521,6 @@ ${structExtendsStructs}
 
 ${DynamicLoader}
 ${DispatchLoaderDynamic}
-${constexprDefines}
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
@@ -532,7 +532,7 @@ ${constexprDefines}
                       { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
                       { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
                       { "baseTypes", generateBaseTypes() },
-                      { "constexprDefines", generateConstexprDefinesAndUsings().first },
+                      { "constexprDefines", const_cast<VulkanHppGenerator *>( this )->generateConstexprDefines() },
                       { "defines", readSnippet( "defines.hpp" ) },
                       { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
                       { "DispatchLoaderDefault", readSnippet( "DispatchLoaderDefault.hpp" ) },
@@ -718,7 +718,6 @@ export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
 
-  ${constexprUsings}
   export namespace VULKAN_HPP_RAII_NAMESPACE {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
@@ -730,7 +729,7 @@ export namespace VULKAN_HPP_NAMESPACE
                                      { "api", m_api },
                                      { "usings", generateCppModuleUsings() },
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "constexprUsings", generateConstexprDefinesAndUsings().second } } );
+                                     { "constexprUsings", generateConstexprUsings() } } );
 
   writeToFile( str, vulkan_cppm );
 }
@@ -4729,7 +4728,7 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
   return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( ( containsUnion( structName ) || containsArray( structName ) ) ? "_14 " : " " ) ) : "";
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefinesAndUsings() const
+std::string VulkanHppGenerator::generateConstexprDefines()
 {
   auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
   ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName}( ${arguments} )
@@ -4743,19 +4742,11 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
 )" };
   auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 
-  auto const constexprUsingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${constName};
+  auto constexprDefines = std::string{ R"(
+  //=========================================
+  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+  //=========================================
 )" };
-
-  auto constexprDefines = std::stringstream{} << R"(
-  //=========================================
-  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
-  //=========================================
-)";
-  auto constexprUsings  = std::stringstream{} << R"(
-  //=========================================
-  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
-  //=========================================
-)";
 
   // handle the value and callee macros first so they are visible for use in functions below.
 
@@ -4765,9 +4756,9 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
     // make `macro` PascalCase, and strip the `Vk` prefix
     auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
 
-    constexprDefines << replaceWithMap( constexprValueTemplate,
-                                        { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
-    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+    constexprDefines +=
+      replaceWithMap( constexprValueTemplate, { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
+    m_constexprNames.push_back( constName );
   }
 
   // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
@@ -4792,8 +4783,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
     auto const valueString =
       replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "deprecated", deprecated }, { "value", macro } } );
 
-    constexprDefines << valueString;
-    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+    constexprDefines += valueString;
+    m_constexprNames.push_back( constName );
   }
 
   // functions
@@ -4819,8 +4810,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
       constexprFunctionTemplate,
       { { "arguments", parametersString }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
 
-    constexprDefines << functionString;
-    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+    constexprDefines += functionString;
+    m_constexprNames.push_back( constName );
   }
 
   // callers
@@ -4845,11 +4836,30 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateConstexprDefines
     auto const callerString = replaceWithMap(
       constexprCallTemplate,
       { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
-    constexprDefines << callerString;
-    constexprUsings << replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+    constexprDefines += callerString;
+    m_constexprNames.push_back( constName );
   }
 
-  return { constexprDefines.str(), constexprUsings.str() };
+  return constexprDefines;
+}
+
+std::string VulkanHppGenerator::generateConstexprUsings() const
+{
+  auto constexprUsings = std::string{ R"(
+  //=========================================
+  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+  //=========================================
+)" };
+
+  auto const constexprUsingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${constName};
+)" };
+
+  for ( auto const & constName : m_constexprNames )
+  {
+    constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+  }
+
+  return constexprUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
@@ -4857,41 +4867,41 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto handleUsings = std::stringstream{} << R"(
+  auto handleUsings = std::string{ R"(
   //===============
   //=== HANDLEs === 
   //===============
 
   using VULKAN_HPP_NAMESPACE::isVulkanHandleType;
-)";
+)" };
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::stringstream{};
+    auto usings = std::string{};
     for ( auto const & require : requireData )
     {
       for ( auto const & type : require.types )
       {
         if ( auto const & handleIt = m_handles.find( type ); handleIt != m_handles.end() )
         {
-          usings << replaceWithMap( usingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
+          usings += replaceWithMap( usingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
         }
       }
     }
-    return addTitleAndProtection( title, usings.str() );
+    return addTitleAndProtection( title, usings );
   };
 
   for ( auto const & feature : m_features )
   {
-    handleUsings << generateUsingsAndProtection( feature.requireData, feature.name );
+    handleUsings += generateUsingsAndProtection( feature.requireData, feature.name );
   }
 
   for ( auto const & extension : m_extensions )
   {
-    handleUsings << generateUsingsAndProtection( extension.requireData, extension.name );
+    handleUsings += generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
-  return handleUsings.str();
+  return handleUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleStructUsings() const
@@ -4899,16 +4909,16 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${structName};
 )" };
 
-  auto structUsings  = std::stringstream{} << R"(
+  auto structUsings  = std::string{ R"(
   //===============
   //=== STRUCTs ===
   //===============
-)";
+)" };
   auto listedStructs = std::set<std::string>{};
 
   auto const generateUsingsAndProtection = [&listedStructs, &usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto localUsings = std::stringstream{};
+    auto localUsings = std::string{};
     for ( auto const & require : requireData )
     {
       for ( auto const & type : require.types )
@@ -4916,13 +4926,7 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
         if ( auto const & structIt = m_structs.find( type ); structIt != m_structs.end() && listedStructs.insert( type ).second )
         {
           auto const structureType = stripPrefix( structIt->first, "Vk" );
-          localUsings << replaceWithMap( usingTemplate, { { "structName", structureType } } );
-
-          /*if ( auto const & aliasIt = findAlias( structIt->first, m_structAliases ); aliasIt != m_structAliases.end() )
-          {
-            auto const aliasName = stripPrefix( aliasIt->first, "Vk" );
-            localUsings << replaceWithMap( usingTemplate, { { "structName", aliasName } } );
-          }*/
+          localUsings += replaceWithMap( usingTemplate, { { "structName", structureType } } );
 
           // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple
           // aliases for a given struct, and that's ok. Maybe we should refactor
@@ -4931,74 +4935,73 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
             if ( aliasData.name == structIt->first )
             {
               auto const aliasName = stripPrefix( alias, "Vk" );
-              localUsings << replaceWithMap( usingTemplate, { { "structName", aliasName } } );
+              localUsings += replaceWithMap( usingTemplate, { { "structName", aliasName } } );
             }
           }
         }
       }
     }
-    return addTitleAndProtection( title, localUsings.str() );
+    return addTitleAndProtection( title, localUsings );
   };
 
   for ( auto const & feature : m_features )
   {
-    structUsings << generateUsingsAndProtection( feature.requireData, feature.name );
+    structUsings += generateUsingsAndProtection( feature.requireData, feature.name );
   }
 
   for ( auto const & extension : m_extensions )
   {
-    structUsings << generateUsingsAndProtection( extension.requireData, extension.name );
+    structUsings += generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
-  return structUsings.str();
+  return structUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
 {
-  auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::Unique${handleName};
+  auto const usingTemplate                        = std::string{ R"(  using VULKAN_HPP_NAMESPACE::Unique${handleName};
 )" };
-
-  auto uniqueHandleUsings                         = std::stringstream{} << R"(
+  auto       uniqueHandleUsings                   = std::string{ R"(
   //======================
   //=== UNIQUE HANDLEs ===
   //======================
-)";
+)" };
   auto const [smartHandleEnter, smartHandleLeave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
 
-  uniqueHandleUsings << std::endl << smartHandleEnter;
+  uniqueHandleUsings += "\n" + smartHandleEnter;
 
   auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto usings = std::stringstream{};
+    auto usings = std::string{};
     for ( auto const & require : requireData )
     {
       for ( auto const & type : require.types )
       {
         if ( auto const & handleIt = m_handles.find( type ); handleIt != m_handles.end() && !handleIt->second.deleteCommand.empty() )
         {
-          usings << replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleIt->first, "Vk" ) } } );
+          usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleIt->first, "Vk" ) } } );
         }
       }
     }
-    return addTitleAndProtection( title, usings.str() );
+    return addTitleAndProtection( title, usings );
   };
 
   for ( auto const & feature : m_features )
   {
-    uniqueHandleUsings << generateUsingsAndProtection( feature.requireData, feature.name );
+    uniqueHandleUsings += generateUsingsAndProtection( feature.requireData, feature.name );
   }
 
   for ( auto const & extension : m_extensions )
   {
-    uniqueHandleUsings << generateUsingsAndProtection( extension.requireData, extension.name );
+    uniqueHandleUsings += generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
-  uniqueHandleUsings << R"(  using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
+  uniqueHandleUsings += R"(  using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
 )";
 
-  uniqueHandleUsings << smartHandleLeave << std::endl;
+  uniqueHandleUsings += smartHandleLeave + "\n";
 
-  return uniqueHandleUsings.str();
+  return uniqueHandleUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
@@ -5006,21 +5009,22 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};
 )" };
 
-  auto funcUsings = std::stringstream{} << R"(  //===========================
+  auto funcUsings = std::string{ R"(  
+  //===========================
   //=== COMMAND Definitions ===
   //===========================
-)";
+)" };
 
   for ( auto const & func :
         m_handles.at( "" ).commands | std::views::transform( []( auto const & func ) { return startLowerCase( stripPrefix( func, "vk" ) ); } ) )
   {
-    funcUsings << replaceWithMap( usingTemplate, { { "funcName", func } } );
+    funcUsings += replaceWithMap( usingTemplate, { { "funcName", func } } );
   }
 
   auto const [enter, leave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
-  funcUsings << std::endl << enter << replaceWithMap( usingTemplate, { { "funcName", "createInstanceUnique" } } ) << leave << std::endl;
+  funcUsings += enter + replaceWithMap( usingTemplate, { { "funcName", "createInstanceUnique" } } ) + leave + "\n";
 
-  return funcUsings.str();
+  return funcUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
@@ -5028,19 +5032,19 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${enumName};
 )" };
 
-  auto enumUsings  = std::stringstream{} << R"(
+  auto enumUsings  = std::string{ R"(
   //=============
   //=== ENUMs ===
   //=============
-)";
+)" };
   auto listedEnums = std::set<std::string>{};
 
   // insert CppType first
-  enumUsings << replaceWithMap( usingTemplate, { { "enumName", "CppType" } } );
+  enumUsings += replaceWithMap( usingTemplate, { { "enumName", "CppType" } } );
 
   auto const generateUsingsAndProtection = [&listedEnums, &usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto localUsings = std::stringstream{};
+    auto localUsings = std::string{};
     for ( auto const & require : requireData )
     {
       for ( auto const & type : require.types )
@@ -5048,33 +5052,33 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
         if ( auto const & enumIt = m_enums.find( type ); enumIt != m_enums.end() && listedEnums.insert( type ).second )
         {
           auto const enumName = stripPrefix( enumIt->first, "Vk" );
-          localUsings << replaceWithMap( usingTemplate, { { "enumName", enumName } } );
+          localUsings += replaceWithMap( usingTemplate, { { "enumName", enumName } } );
 
           if ( auto const aliasIt = findAlias( enumIt->first, m_enumAliases ); aliasIt != m_enumAliases.end() )
           {
-            localUsings << replaceWithMap( usingTemplate, { { "enumName", stripPrefix( aliasIt->first, "Vk" ) } } );
+            localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( aliasIt->first, "Vk" ) } } );
           }
 
           if ( auto const bitmaskIt = std::ranges::find_if(
                  m_bitmasks, [&enumIt]( std::pair<std::string, BitmaskData> const & bitmask ) { return bitmask.second.require == enumIt->first; } );
                bitmaskIt != m_bitmasks.end() )
           {
-            localUsings << replaceWithMap( usingTemplate, { { "enumName", stripPrefix( bitmaskIt->first, "Vk" ) } } );
+            localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( bitmaskIt->first, "Vk" ) } } );
           }
         }
       }
     }
-    return addTitleAndProtection( title, localUsings.str() );
+    return addTitleAndProtection( title, localUsings );
   };
 
   for ( auto const & feature : m_features )
   {
-    enumUsings << generateUsingsAndProtection( feature.requireData, feature.name );
+    enumUsings += generateUsingsAndProtection( feature.requireData, feature.name );
   }
 
   for ( auto const & extension : m_extensions )
   {
-    enumUsings << generateUsingsAndProtection( extension.requireData, extension.name );
+    enumUsings += generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
   // finally insert IndexTypeValue
@@ -5083,9 +5087,9 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
   //=== Index Type Traits ===
   //=========================
 )";
-  enumUsings << indexTypeComment << replaceWithMap( usingTemplate, { { "enumName", "IndexTypeValue" } } );
+  enumUsings += indexTypeComment + replaceWithMap( usingTemplate, { { "enumName", "IndexTypeValue" } } );
 
-  return enumUsings.str();
+  return enumUsings;
 }
 
 std::string VulkanHppGenerator::generateCppModuleFormatTraitsUsings() const
@@ -5287,6 +5291,8 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   // resultCheck
   usings << replaceWithMap( usingTemplate, { { "className", "resultCheck" } } ) << std::endl;
+
+  usings << generateConstexprUsings() << std::endl;
 
   // structs, handles, UniqueHandles, etc
   usings << generateCppModuleStructUsings();

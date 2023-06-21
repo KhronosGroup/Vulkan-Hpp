@@ -882,6 +882,51 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ResultValue;
   using VULKAN_HPP_NAMESPACE::ResultValueType;
 
+  //=========================================
+  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+  //=========================================
+  using VULKAN_HPP_NAMESPACE::ApiVersion;
+  using VULKAN_HPP_NAMESPACE::ApiVersion10;
+  using VULKAN_HPP_NAMESPACE::ApiVersion11;
+  using VULKAN_HPP_NAMESPACE::ApiVersion12;
+  using VULKAN_HPP_NAMESPACE::ApiVersion13;
+  using VULKAN_HPP_NAMESPACE::apiVersionMajor;
+  using VULKAN_HPP_NAMESPACE::apiVersionMinor;
+  using VULKAN_HPP_NAMESPACE::apiVersionPatch;
+  using VULKAN_HPP_NAMESPACE::apiVersionVariant;
+  using VULKAN_HPP_NAMESPACE::AttachmentUnused;
+  using VULKAN_HPP_NAMESPACE::False;
+  using VULKAN_HPP_NAMESPACE::HeaderVersion;
+  using VULKAN_HPP_NAMESPACE::HeaderVersionComplete;
+  using VULKAN_HPP_NAMESPACE::LodClampNone;
+  using VULKAN_HPP_NAMESPACE::LuidSize;
+  using VULKAN_HPP_NAMESPACE::makeApiVersion;
+  using VULKAN_HPP_NAMESPACE::makeVersion;
+  using VULKAN_HPP_NAMESPACE::MaxDescriptionSize;
+  using VULKAN_HPP_NAMESPACE::MaxDeviceGroupSize;
+  using VULKAN_HPP_NAMESPACE::MaxDriverInfoSize;
+  using VULKAN_HPP_NAMESPACE::MaxDriverNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxExtensionNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKhr;
+  using VULKAN_HPP_NAMESPACE::MaxMemoryHeaps;
+  using VULKAN_HPP_NAMESPACE::MaxMemoryTypes;
+  using VULKAN_HPP_NAMESPACE::MaxPhysicalDeviceNameSize;
+  using VULKAN_HPP_NAMESPACE::MaxShaderModuleIdentifierSizeExt;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyExternal;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyForeignExt;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyIgnored;
+  using VULKAN_HPP_NAMESPACE::Remaining3DSlicesExt;
+  using VULKAN_HPP_NAMESPACE::RemainingArrayLayers;
+  using VULKAN_HPP_NAMESPACE::RemainingMipLevels;
+  using VULKAN_HPP_NAMESPACE::ShaderUnusedKhr;
+  using VULKAN_HPP_NAMESPACE::SubpassExternal;
+  using VULKAN_HPP_NAMESPACE::True;
+  using VULKAN_HPP_NAMESPACE::UuidSize;
+  using VULKAN_HPP_NAMESPACE::versionMajor;
+  using VULKAN_HPP_NAMESPACE::versionMinor;
+  using VULKAN_HPP_NAMESPACE::versionPatch;
+  using VULKAN_HPP_NAMESPACE::WholeSize;
+
   //===============
   //=== STRUCTs ===
   //===============
@@ -2754,51 +2799,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::isInstanceExtension;
   using VULKAN_HPP_NAMESPACE::isObsoletedExtension;
   using VULKAN_HPP_NAMESPACE::isPromotedExtension;
-
-  //=========================================
-  //=== CONSTEXPR VARIABLEs AND FUNCTIONs ===
-  //=========================================
-  using VULKAN_HPP_NAMESPACE::ApiVersion;
-  using VULKAN_HPP_NAMESPACE::ApiVersion10;
-  using VULKAN_HPP_NAMESPACE::ApiVersion11;
-  using VULKAN_HPP_NAMESPACE::ApiVersion12;
-  using VULKAN_HPP_NAMESPACE::ApiVersion13;
-  using VULKAN_HPP_NAMESPACE::apiVersionMajor;
-  using VULKAN_HPP_NAMESPACE::apiVersionMinor;
-  using VULKAN_HPP_NAMESPACE::apiVersionPatch;
-  using VULKAN_HPP_NAMESPACE::apiVersionVariant;
-  using VULKAN_HPP_NAMESPACE::AttachmentUnused;
-  using VULKAN_HPP_NAMESPACE::False;
-  using VULKAN_HPP_NAMESPACE::HeaderVersion;
-  using VULKAN_HPP_NAMESPACE::HeaderVersionComplete;
-  using VULKAN_HPP_NAMESPACE::LodClampNone;
-  using VULKAN_HPP_NAMESPACE::LuidSize;
-  using VULKAN_HPP_NAMESPACE::makeApiVersion;
-  using VULKAN_HPP_NAMESPACE::makeVersion;
-  using VULKAN_HPP_NAMESPACE::MaxDescriptionSize;
-  using VULKAN_HPP_NAMESPACE::MaxDeviceGroupSize;
-  using VULKAN_HPP_NAMESPACE::MaxDriverInfoSize;
-  using VULKAN_HPP_NAMESPACE::MaxDriverNameSize;
-  using VULKAN_HPP_NAMESPACE::MaxExtensionNameSize;
-  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKhr;
-  using VULKAN_HPP_NAMESPACE::MaxMemoryHeaps;
-  using VULKAN_HPP_NAMESPACE::MaxMemoryTypes;
-  using VULKAN_HPP_NAMESPACE::MaxPhysicalDeviceNameSize;
-  using VULKAN_HPP_NAMESPACE::MaxShaderModuleIdentifierSizeExt;
-  using VULKAN_HPP_NAMESPACE::QueueFamilyExternal;
-  using VULKAN_HPP_NAMESPACE::QueueFamilyForeignExt;
-  using VULKAN_HPP_NAMESPACE::QueueFamilyIgnored;
-  using VULKAN_HPP_NAMESPACE::Remaining3DSlicesExt;
-  using VULKAN_HPP_NAMESPACE::RemainingArrayLayers;
-  using VULKAN_HPP_NAMESPACE::RemainingMipLevels;
-  using VULKAN_HPP_NAMESPACE::ShaderUnusedKhr;
-  using VULKAN_HPP_NAMESPACE::SubpassExternal;
-  using VULKAN_HPP_NAMESPACE::True;
-  using VULKAN_HPP_NAMESPACE::UuidSize;
-  using VULKAN_HPP_NAMESPACE::versionMajor;
-  using VULKAN_HPP_NAMESPACE::versionMinor;
-  using VULKAN_HPP_NAMESPACE::versionPatch;
-  using VULKAN_HPP_NAMESPACE::WholeSize;
 
   export namespace VULKAN_HPP_RAII_NAMESPACE
   {

@@ -765,8 +765,7 @@ private:
                                 bool                                      vectorSizeCheck,
                                 bool                                      raii ) const;
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
-  std::pair<std::string, std::string> generateProtection( std::string const & protect ) const;
-  std::pair<std::string, std::string> generateNotProtection( std::string const & protect ) const;
+  std::pair<std::string, std::string> generateProtection( std::string const & protect, bool defined = true ) const;
   std::string                         generateRAIICommandDefinitions() const;
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;

@@ -18,7 +18,6 @@
 #include <array>
 #include <cassert>
 #include <fstream>
-#include <numeric>
 #include <ranges>
 #include <regex>
 #include <sstream>
@@ -4762,19 +4761,15 @@ std::string VulkanHppGenerator::generateConstexprDefines()
   }
 
   // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
-  // VKSC_API_VARIANT is in the spec, but not defined anywhere in the headers
-  // Likewise for VKSC_API_VERSION_1_0
-  auto badlyFormedRemoved =
-    m_defines | std::views::filter(
-                  []( auto const & m_define )
-                  { return !( m_define.first == "VK_DEFINE_HANDLE" || m_define.first == "VKSC_API_VARIANT" || m_define.first == "VKSC_API_VERSION_1_0" ); } );
+  // Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
+  auto validDefines =
+    m_defines | std::views::filter( []( auto const & define ) { return !( define.first == "VK_DEFINE_HANDLE" || !define.first.starts_with( "VK_" ) ); } );
 
   // values
-  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
-                                                            []( auto const & m_define ) {
-                                                              return m_define.second.possibleCallee.empty() && m_define.second.params.empty() &&
-                                                                     !m_define.second.possibleDefinition.empty();
-                                                            } ) )
+  for ( auto const & [macro, data] :
+        validDefines | std::views::filter(
+                         []( auto const & m_define )
+                         { return m_define.second.possibleCallee.empty() && m_define.second.params.empty() && !m_define.second.possibleDefinition.empty(); } ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
 
@@ -4788,11 +4783,11 @@ std::string VulkanHppGenerator::generateConstexprDefines()
   }
 
   // functions
-  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
-                                                            []( auto const & m_define ) {
-                                                              return m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
-                                                                     !m_define.second.possibleDefinition.empty();
-                                                            } ) )
+  for ( auto const & [macro, data] : validDefines | std::views::filter(
+                                                      []( auto const & m_define ) {
+                                                        return m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
+                                                               !m_define.second.possibleDefinition.empty();
+                                                      } ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
@@ -4815,11 +4810,11 @@ std::string VulkanHppGenerator::generateConstexprDefines()
   }
 
   // callers
-  for ( auto const & [macro, data] : badlyFormedRemoved | std::views::filter(
-                                                            []( auto const & m_define ) {
-                                                              return !m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
-                                                                     m_define.second.possibleDefinition.empty();
-                                                            } ) )
+  for ( auto const & [macro, data] : validDefines | std::views::filter(
+                                                      []( auto const & m_define ) {
+                                                        return !m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
+                                                               m_define.second.possibleDefinition.empty();
+                                                      } ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` PascalCase and strip the `Vk` prefix
@@ -4966,7 +4961,7 @@ std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
   //=== UNIQUE HANDLEs ===
   //======================
 )" };
-  auto const [smartHandleEnter, smartHandleLeave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
+  auto const [smartHandleEnter, smartHandleLeave] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
 
   uniqueHandleUsings += "\n" + smartHandleEnter;
 
@@ -5021,7 +5016,7 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
     funcUsings += replaceWithMap( usingTemplate, { { "funcName", func } } );
   }
 
-  auto const [enter, leave] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
+  auto const [enter, leave] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
   funcUsings += "\n" + enter + replaceWithMap( usingTemplate, { { "funcName", "createInstanceUnique" } } ) + leave + "\n";
 
   return funcUsings;
@@ -5173,7 +5168,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     usings += replaceWithMap( usingTemplate, { { "className", className } } );
   }
 
-  auto const & [noPrototypesEnter, noPrototypesLeave] = generateNotProtection( "VK_NO_PROTOTYPES" );
+  auto const & [noPrototypesEnter, noPrototypesLeave] = generateProtection( "VK_NO_PROTOTYPES", false );
 
   usings += "\n" + noPrototypesEnter + replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } ) + noPrototypesLeave + "\n";
 
@@ -5194,7 +5189,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     enhancedModeUsings += replaceWithMap( usingTemplate, { { "className", std::string{ className } } } );
   }
   // protect the enhanced-mode usings with a macro
-  auto [enterEnhancedMode, leaveEnhancedMode] = generateNotProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE" );
+  auto [enterEnhancedMode, leaveEnhancedMode] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterEnhancedMode + enhancedModeUsings + leaveEnhancedMode + "\n";
 
   auto noSmartHandleUsings = std::string{};
@@ -5203,7 +5198,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     noSmartHandleUsings += replaceWithMap( usingTemplate, { { "className", std::string{ className } } } );
   }
   // likewise for the smart-handle usings
-  auto [enterNoSmartHandle, leaveNoSmartHandle] = generateNotProtection( "VULKAN_HPP_NO_SMART_HANDLE" );
+  auto [enterNoSmartHandle, leaveNoSmartHandle] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
   usings += "\n" + enterNoSmartHandle + noSmartHandleUsings + leaveNoSmartHandle + "\n";
 
   // now generate baseTypes
@@ -5226,7 +5221,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   // to_string, toHexString
   auto const toString                       = std::array{ "to_string", "toHexString" };
-  auto const [toStringEnter, toStringLeave] = generateNotProtection( "VULKAN_HPP_NO_TO_STRING" );
+  auto const [toStringEnter, toStringLeave] = generateProtection( "VULKAN_HPP_NO_TO_STRING", false );
 
   usings += R"(
   //======================
@@ -5242,7 +5237,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   // hardcoded exceptions and functions
   auto const hardCodedExceptionTypesAndFunctions =
     std::array{ "ErrorCategoryImpl", "Error", "LogicError", "SystemError", "errorCategory", "make_error_code", "make_error_condition" };
-  auto [exceptionsEnter, exceptionsLeave] = generateNotProtection( "VULKAN_HPP_NO_EXCEPTIONS" );
+  auto [exceptionsEnter, exceptionsLeave] = generateProtection( "VULKAN_HPP_NO_EXCEPTIONS", false );
 
   auto exceptionsUsings = std::string{ R"(
   //=============================
@@ -5296,7 +5291,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += generateCppModuleUniqueHandleUsings();
   usings += generateCppModuleFuncsUsings();
 
-  auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateNotProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE" );
+  auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
   auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_DYNAMIC_LOADER_TOOL" );
@@ -7626,15 +7621,16 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
   return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "NoParent" ) ? "" : "*this, " ) + allocator + "d )";
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & protect ) const
+std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & protect, bool defined ) const
 {
-  return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( "#if defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
+  auto const openProtect = defined ? "#if defined( " : "#if !defined( ";
+  return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( openProtect + protect + " )\n", "#endif /*" + protect + "*/\n" );
 }
 
-std::pair<std::string, std::string> VulkanHppGenerator::generateNotProtection( std::string const & protect ) const
-{
-  return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( "#if !defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
-}
+// std::pair<std::string, std::string> VulkanHppGenerator::generateNotProtection( std::string const & protect ) const
+//{
+//   return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( "#if !defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
+// }
 
 std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
 {

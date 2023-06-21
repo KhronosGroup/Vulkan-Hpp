@@ -67,6 +67,19 @@ int main( int /*argc*/, char ** /*argv*/ )
                        vk::PhysicalDevicePushDescriptorPropertiesKHR>
       sc7;
 
+#if !defined(NDEBUG)
+    void * pNext = sc7.get<vk::PhysicalDeviceIDProperties>().pNext;
+#endif
+    sc7.assign<vk::PhysicalDeviceIDProperties>( {} );
+    assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+
+#if !defined(NDEBUG)
+    void * pNext1 = sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext;
+#endif
+    sc7.assign<vk::PhysicalDeviceMaintenance3Properties>( {} ).assign<vk::PhysicalDeviceIDProperties>( {} );
+    assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
+    assert( pNext1 == sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext );
+
     // some checks on unmodified chains
     assert( sc7.isLinked<vk::PhysicalDeviceProperties2>() );
     assert( sc7.isLinked<vk::PhysicalDeviceMaintenance3Properties>() );

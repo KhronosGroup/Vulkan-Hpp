@@ -531,7 +531,7 @@ ${DispatchLoaderDynamic}
                       { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
                       { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
                       { "baseTypes", generateBaseTypes() },
-                      { "constexprDefines", const_cast<VulkanHppGenerator *>( this )->generateConstexprDefines() },
+                      { "constexprDefines", generateConstexprDefines() },
                       { "defines", readSnippet( "defines.hpp" ) },
                       { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
                       { "DispatchLoaderDefault", readSnippet( "DispatchLoaderDefault.hpp" ) },
@@ -727,8 +727,7 @@ export namespace VULKAN_HPP_NAMESPACE
                                    { { "licenseHeader", m_vulkanLicenseHeader },
                                      { "api", m_api },
                                      { "usings", generateCppModuleUsings() },
-                                     { "raiiUsings", generateCppModuleRaiiUsings() },
-                                     { "constexprUsings", generateConstexprUsings() } } );
+                                     { "raiiUsings", generateCppModuleRaiiUsings() } } );
 
   writeToFile( str, vulkan_cppm );
 }
@@ -4727,7 +4726,7 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
   return isConstExpression ? ( std::string( "VULKAN_HPP_CONSTEXPR" ) + ( ( containsUnion( structName ) || containsArray( structName ) ) ? "_14 " : " " ) ) : "";
 }
 
-std::string VulkanHppGenerator::generateConstexprDefines()
+std::string VulkanHppGenerator::generateConstexprDefines() const
 {
   auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
   ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName}( ${arguments} )
@@ -4757,19 +4756,12 @@ std::string VulkanHppGenerator::generateConstexprDefines()
 
     constexprDefines +=
       replaceWithMap( constexprValueTemplate, { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
-    m_constexprNames.push_back( constName );
   }
 
-  // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
-  // Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
-  auto validDefines =
-    m_defines | std::views::filter( []( auto const & define ) { return !( define.first == "VK_DEFINE_HANDLE" || !define.first.starts_with( "VK_" ) ); } );
+  auto const validDefines = validMacros( m_defines );
 
   // values
-  for ( auto const & [macro, data] :
-        validDefines | std::views::filter(
-                         []( auto const & m_define )
-                         { return m_define.second.possibleCallee.empty() && m_define.second.params.empty() && !m_define.second.possibleDefinition.empty(); } ) )
+  for ( auto const & [macro, data] : valueMacros( validDefines ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
 
@@ -4779,15 +4771,10 @@ std::string VulkanHppGenerator::generateConstexprDefines()
       replaceWithMap( constexprValueTemplate, { { "type", "uint32_t" }, { "constName", constName }, { "deprecated", deprecated }, { "value", macro } } );
 
     constexprDefines += valueString;
-    m_constexprNames.push_back( constName );
   }
 
   // functions
-  for ( auto const & [macro, data] : validDefines | std::views::filter(
-                                                      []( auto const & m_define ) {
-                                                        return m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
-                                                               !m_define.second.possibleDefinition.empty();
-                                                      } ) )
+  for ( auto const & [macro, data] : calleeMacros( validDefines ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
@@ -4806,15 +4793,10 @@ std::string VulkanHppGenerator::generateConstexprDefines()
       { { "arguments", parametersString }, { "constName", constName }, { "deprecated", deprecated }, { "implementation", data.possibleDefinition } } );
 
     constexprDefines += functionString;
-    m_constexprNames.push_back( constName );
   }
 
   // callers
-  for ( auto const & [macro, data] : validDefines | std::views::filter(
-                                                      []( auto const & m_define ) {
-                                                        return !m_define.second.possibleCallee.empty() && !m_define.second.params.empty() &&
-                                                               m_define.second.possibleDefinition.empty();
-                                                      } ) )
+  for ( auto const & [macro, data] : callerMacros( validDefines ) )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` PascalCase and strip the `Vk` prefix
@@ -4832,7 +4814,6 @@ std::string VulkanHppGenerator::generateConstexprDefines()
       constexprCallTemplate,
       { { "arguments", argumentsString }, { "callee", startLowerCase( data.possibleCallee ) }, { "constName", constName }, { "deprecated", deprecated } } );
     constexprDefines += callerString;
-    m_constexprNames.push_back( constName );
   }
 
   return constexprDefines;
@@ -4849,8 +4830,40 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   auto const constexprUsingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${constName};
 )" };
 
-  for ( auto const & constName : m_constexprNames )
+  auto const pascalCasePrefixStrip = []( std::string const & macro ) { return stripPrefix( toCamelCase( macro ), "Vk" ); };
+  auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
+
+  // constants
+  for ( auto const & macro : m_constants | std::views::keys )
   {
+    // make `macro` PascalCase and strip the `Vk` prefix
+    auto const constName = pascalCasePrefixStrip( macro );
+    constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+  }
+
+  auto const validDefines = validMacros( m_defines );
+
+  // values
+  for ( auto const & macro : valueMacros( validDefines ) | std::views::keys )
+  {
+    // make `macro` PascalCase and strip the `Vk` prefix
+    auto const constName = pascalCasePrefixStrip( macro );
+    constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+  }
+
+  // callees
+  for ( auto const & macro : calleeMacros( validDefines ) | std::views::keys )
+  {
+    // make `macro` camelCase and strip the `Vk` prefix
+    auto const constName = camelCasePrefixStrip( macro );
+    constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+  }
+
+  // callers
+  for ( auto const & macro : callerMacros( validDefines ) | std::views::keys )
+  {
+    // make `macro` PascalCase and strip the `Vk` prefix
+    auto const constName = pascalCasePrefixStrip( macro );
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
@@ -7626,11 +7639,6 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std:
   auto const openProtect = defined ? "#if defined( " : "#if !defined( ";
   return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( openProtect + protect + " )\n", "#endif /*" + protect + "*/\n" );
 }
-
-// std::pair<std::string, std::string> VulkanHppGenerator::generateNotProtection( std::string const & protect ) const
-//{
-//   return protect.empty() ? std::make_pair( "", "" ) : std::make_pair( "#if !defined( " + protect + " )\n", "#endif /*" + protect + "*/\n" );
-// }
 
 std::string VulkanHppGenerator::generateRAIICommandDefinitions() const
 {
@@ -11959,6 +11967,42 @@ bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::strin
   return false;
 }
 
+std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::calleeMacros( std::map<std::string, DefineData> defines ) const
+{
+  std::map<std::string, DefineData> calleeMacros{};
+
+  std::ranges::copy_if( defines,
+                        std::inserter( calleeMacros, calleeMacros.end() ),
+                        []( auto const & define )
+                        { return define.second.possibleCallee.empty() && !define.second.params.empty() && !define.second.possibleDefinition.empty(); } );
+
+  return calleeMacros;
+}
+
+std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::callerMacros( std::map<std::string, DefineData> defines ) const
+{
+  std::map<std::string, DefineData> callerMacros{};
+
+  std::ranges::copy_if( defines,
+                        std::inserter( callerMacros, callerMacros.end() ),
+                        []( auto const & define )
+                        { return !define.second.possibleCallee.empty() && !define.second.params.empty() && define.second.possibleDefinition.empty(); } );
+
+  return callerMacros;
+}
+
+std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::valueMacros( std::map<std::string, DefineData> defines ) const
+{
+  std::map<std::string, DefineData> valueMacros{};
+
+  std::ranges::copy_if( defines,
+                        std::inserter( valueMacros, valueMacros.end() ),
+                        []( auto const & define )
+                        { return define.second.possibleCallee.empty() && define.second.params.empty() && !define.second.possibleDefinition.empty(); } );
+
+  return valueMacros;
+}
+
 bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) const
 {
   return !commandData.handle.empty() && !commandData.params.empty() && ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&
@@ -12156,6 +12200,18 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
   }
   return false;
+}
+
+// VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
+// Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
+std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::validMacros( std::map<std::string, DefineData> defines ) const
+{
+  std::map<std::string, DefineData> validDefines{};
+  std::ranges::copy_if( defines,
+                        std::inserter( validDefines, validDefines.end() ),
+                        []( auto const & define ) { return !( define.first == "VK_DEFINE_HANDLE" || !define.first.starts_with( "VK_" ) ); } );
+
+  return validDefines;
 }
 
 bool VulkanHppGenerator::needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams,

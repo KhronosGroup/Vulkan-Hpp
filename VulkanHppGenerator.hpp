@@ -656,7 +656,7 @@ private:
                                           std::vector<size_t> const & returnParamIndices,
                                           bool                        raii ) const;
   std::string generateConstexprString( std::string const & structName ) const;
-  std::string generateConstexprDefines();
+  std::string generateConstexprDefines() const;
   std::string generateConstexprUsings() const;
   std::string generateCppModuleHandleUsings() const;
   std::string generateCppModuleStructUsings() const;
@@ -954,6 +954,9 @@ private:
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
   bool                                hasLen( MemberData const & md ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
+  std::map<std::string, DefineData>   calleeMacros( std::map<std::string, DefineData> defines ) const;
+  std::map<std::string, DefineData>   callerMacros( std::map<std::string, DefineData> defines ) const;
+  std::map<std::string, DefineData>   valueMacros( std::map<std::string, DefineData> defines ) const;
   bool                                isDeviceCommand( CommandData const & commandData ) const;
   bool                                isExtension( std::string const & name ) const;
   bool                                isFeature( std::string const & name ) const;
@@ -969,6 +972,7 @@ private:
   bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
+  std::map<std::string, DefineData> validMacros( std::map<std::string, DefineData> defines ) const;
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
@@ -1058,7 +1062,6 @@ private:
   std::map<std::string, CommandData>      m_commands;
   std::map<std::string, AliasData>        m_constantAliases;
   std::map<std::string, ConstantData>     m_constants;
-  std::vector<std::string>                m_constexprNames;
   std::map<std::string, DefineData>       m_defines;
   std::map<std::string, AliasData>        m_enumAliases;
   std::map<std::string, EnumData>         m_enums;

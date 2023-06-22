@@ -67,13 +67,19 @@ int main( int /*argc*/, char ** /*argv*/ )
                        vk::PhysicalDevicePushDescriptorPropertiesKHR>
       sc7;
 
-#if !defined(NDEBUG)
+#if ( 17 <= VULKAN_HPP_CPP_VERSION )
+    // test for structured binding from a StructureChain
+    auto const & [p0, p1] = sc1;
+    auto & [p2, p3]       = sc2;
+#endif
+
+#if !defined( NDEBUG )
     void * pNext = sc7.get<vk::PhysicalDeviceIDProperties>().pNext;
 #endif
     sc7.assign<vk::PhysicalDeviceIDProperties>( {} );
     assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
 
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
     void * pNext1 = sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext;
 #endif
     sc7.assign<vk::PhysicalDeviceMaintenance3Properties>( {} ).assign<vk::PhysicalDeviceIDProperties>( {} );

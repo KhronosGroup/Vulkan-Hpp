@@ -244,3 +244,23 @@
       }
     }
   };
+  // interupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
+}
+
+namespace std
+{
+  template <typename... Elements>
+  struct tuple_size<VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
+  {
+    static constexpr size_t value = std::tuple_size<std::tuple<Elements...>>::value;
+  };
+
+  template <std::size_t Index, typename... Elements>
+  struct tuple_element<Index, VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
+  {
+    using type = typename std::tuple_element<Index, std::tuple<Elements...>>::type;
+  };
+}  // namespace std
+
+namespace VULKAN_HPP_NAMESPACE
+{

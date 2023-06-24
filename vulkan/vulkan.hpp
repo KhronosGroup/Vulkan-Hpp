@@ -114,7 +114,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 254, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 255, "Wrong VK_HEADER_VERSION!" );
 
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
@@ -5954,6 +5954,15 @@ namespace VULKAN_HPP_NAMESPACE
                                                       VkTilePropertiesQCOM *  pProperties ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetDynamicRenderingTilePropertiesQCOM( device, pRenderingInfo, pProperties );
+    }
+
+    //=== VK_KHR_cooperative_matrix ===
+
+    VkResult vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR( VkPhysicalDevice                   physicalDevice,
+                                                                uint32_t *                         pPropertyCount,
+                                                                VkCooperativeMatrixPropertiesKHR * pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR( physicalDevice, pPropertyCount, pProperties );
     }
 
     //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
@@ -13513,6 +13522,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_KHR_cooperative_matrix ===
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesKHR, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesKHR, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCooperativeMatrixPropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_QCOM_multiview_per_view_render_areas ===
   template <>
   struct StructExtends<PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM, PhysicalDeviceFeatures2>
@@ -14777,6 +14814,9 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_QCOM_tile_properties ===
     PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
     PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
+
+    //=== VK_KHR_cooperative_matrix ===
+    PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR = 0;
 
     //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
     PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT vkCmdSetAttachmentFeedbackLoopEnableEXT = 0;
@@ -16083,6 +16123,10 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetFramebufferTilePropertiesQCOM" ) );
       vkGetDynamicRenderingTilePropertiesQCOM =
         PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
+
+      //=== VK_KHR_cooperative_matrix ===
+      vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR =
+        PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR" ) );
 
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
       vkCmdSetAttachmentFeedbackLoopEnableEXT =

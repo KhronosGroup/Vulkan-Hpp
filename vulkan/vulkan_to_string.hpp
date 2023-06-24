@@ -4224,6 +4224,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsPropertiesARM: return "PhysicalDeviceShaderCoreBuiltinsPropertiesARM";
       case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT: return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
       case StructureType::ePhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT: return "PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT";
+      case StructureType::ePhysicalDeviceCooperativeMatrixFeaturesKHR: return "PhysicalDeviceCooperativeMatrixFeaturesKHR";
+      case StructureType::eCooperativeMatrixPropertiesKHR: return "CooperativeMatrixPropertiesKHR";
+      case StructureType::ePhysicalDeviceCooperativeMatrixPropertiesKHR: return "PhysicalDeviceCooperativeMatrixPropertiesKHR";
       case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
       case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
       case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
@@ -8533,6 +8536,39 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case RayTracingInvocationReorderModeNV::eNone: return "None";
       case RayTracingInvocationReorderModeNV::eReorder: return "Reorder";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_cooperative_matrix ===
+
+  VULKAN_HPP_INLINE std::string to_string( ScopeKHR value )
+  {
+    switch ( value )
+    {
+      case ScopeKHR::eDevice: return "Device";
+      case ScopeKHR::eWorkgroup: return "Workgroup";
+      case ScopeKHR::eSubgroup: return "Subgroup";
+      case ScopeKHR::eQueueFamily: return "QueueFamily";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( ComponentTypeKHR value )
+  {
+    switch ( value )
+    {
+      case ComponentTypeKHR::eFloat16: return "Float16";
+      case ComponentTypeKHR::eFloat32: return "Float32";
+      case ComponentTypeKHR::eFloat64: return "Float64";
+      case ComponentTypeKHR::eSint8: return "Sint8";
+      case ComponentTypeKHR::eSint16: return "Sint16";
+      case ComponentTypeKHR::eSint32: return "Sint32";
+      case ComponentTypeKHR::eSint64: return "Sint64";
+      case ComponentTypeKHR::eUint8: return "Uint8";
+      case ComponentTypeKHR::eUint16: return "Uint16";
+      case ComponentTypeKHR::eUint32: return "Uint32";
+      case ComponentTypeKHR::eUint64: return "Uint64";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

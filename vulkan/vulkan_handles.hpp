@@ -1622,6 +1622,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_dynamic_rendering_unused_attachments ===
   struct PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
 
+  //=== VK_KHR_cooperative_matrix ===
+  struct CooperativeMatrixPropertiesKHR;
+  struct PhysicalDeviceCooperativeMatrixFeaturesKHR;
+  struct PhysicalDeviceCooperativeMatrixPropertiesKHR;
+
   //=== VK_QCOM_multiview_per_view_render_areas ===
   struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
   struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
@@ -14466,6 +14471,28 @@ namespace VULKAN_HPP_NAMESPACE
       getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo,
                                     OpticalFlowImageFormatPropertiesNVAllocator &              opticalFlowImageFormatPropertiesNVAllocator,
                                     Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_KHR_cooperative_matrix ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getCooperativeMatrixPropertiesKHR( uint32_t *                                             pPropertyCount,
+                                                                   VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR * pProperties,
+                                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename CooperativeMatrixPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR>,
+              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR, CooperativeMatrixPropertiesKHRAllocator>>::type
+      getCooperativeMatrixPropertiesKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename CooperativeMatrixPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR>,
+              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename B1                                      = CooperativeMatrixPropertiesKHRAllocator,
+              typename std::enable_if<std::is_same<typename B1::value_type, CooperativeMatrixPropertiesKHR>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD
+      typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR, CooperativeMatrixPropertiesKHRAllocator>>::type
+      getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator & cooperativeMatrixPropertiesKHRAllocator,
+                                         Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT

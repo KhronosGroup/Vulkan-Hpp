@@ -727,6 +727,15 @@ namespace VULKAN_HPP_NAMESPACE
   struct DeviceSemaphoreSciSyncPoolReservationCreateInfoNV;
 #endif /*VK_USE_PLATFORM_SCI*/
 
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  struct ScreenBufferPropertiesQNX;
+  struct ScreenBufferFormatPropertiesQNX;
+  struct ImportScreenBufferInfoQNX;
+  struct ExternalFormatQNX;
+  struct PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================
@@ -6678,6 +6687,23 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif     /*VK_USE_PLATFORM_SCI*/
 
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getScreenBufferPropertiesQNX( const struct _screen_buffer *                     buffer,
+                                                              VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX * pProperties,
+                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX>::type
+      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>>::type
+      getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
+
     operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {
       return m_device;
@@ -8086,4 +8112,29 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
 }  // namespace VULKAN_HPP_NAMESPACE
+
+// operators to compare vk::-handles with nullptr
+template <typename T>
+typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( const T & v, std::nullptr_t )
+{
+  return !v;
+}
+
+template <typename T>
+typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( std::nullptr_t, const T & v )
+{
+  return !v;
+}
+
+template <typename T>
+typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( const T & v, std::nullptr_t )
+{
+  return v;
+}
+
+template <typename T>
+typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( std::nullptr_t, const T & v )
+{
+  return v;
+}
 #endif

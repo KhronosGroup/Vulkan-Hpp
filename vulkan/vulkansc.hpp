@@ -189,7 +189,7 @@ static_assert( VK_HEADER_VERSION == 12, "Wrong VK_HEADER_VERSION!" );
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
-#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110300 < GCC_VERSION ) )
+#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
 #    define VULKAN_HPP_CONSTEXPR_20 constexpr
 #  else
 #    define VULKAN_HPP_CONSTEXPR_20
@@ -1053,6 +1053,17 @@ namespace VULKAN_HPP_NAMESPACE
       return std::tie( get<T0>(), get<T1>(), get<Ts>()... );
     }
 
+    // assign a complete structure to the StructureChain without modifying the chaining
+    template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
+    StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      T &    lhs   = get<T, Which>();
+      void * pNext = lhs.pNext;
+      lhs          = rhs;
+      lhs.pNext    = pNext;
+      return *this;
+    }
+
     template <typename ClassType, size_t Which = 0>
     typename std::enable_if<std::is_same<ClassType, typename std::tuple_element<0, std::tuple<ChainElements...>>::type>::value && ( Which == 0 ), bool>::type
       isLinked() const VULKAN_HPP_NOEXCEPT
@@ -1169,6 +1180,27 @@ namespace VULKAN_HPP_NAMESPACE
       }
     }
   };
+
+  // interupt the VULKAN_HPP_NAMESPACE for a moment to add specializations of std::tuple_size and std::tuple_element for the StructureChain!
+}
+
+namespace std
+{
+  template <typename... Elements>
+  struct tuple_size<VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
+  {
+    static constexpr size_t value = std::tuple_size<std::tuple<Elements...>>::value;
+  };
+
+  template <std::size_t Index, typename... Elements>
+  struct tuple_element<Index, VULKAN_HPP_NAMESPACE::StructureChain<Elements...>>
+  {
+    using type = typename std::tuple_element<Index, std::tuple<Elements...>>::type;
+  };
+}  // namespace std
+
+namespace VULKAN_HPP_NAMESPACE
+{
 
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   template <typename Type, typename Dispatch>
@@ -3450,6 +3482,17 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCreateSemaphoreSciSyncPoolNV( device, pCreateInfo, pAllocator, pSemaphorePool );
     }
 #  endif /*VK_USE_PLATFORM_SCI*/
+
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+
+    VkResult vkGetScreenBufferPropertiesQNX( VkDevice                      device,
+                                             const struct _screen_buffer * buffer,
+                                             VkScreenBufferPropertiesQNX * pProperties ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetScreenBufferPropertiesQNX( device, buffer, pProperties );
+    }
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
   };
 #endif
 
@@ -6764,6 +6807,63 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #  endif /*VK_USE_PLATFORM_SCI*/
 
+#  if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  template <>
+  struct StructExtends<ScreenBufferFormatPropertiesQNX, ScreenBufferPropertiesQNX>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ImportScreenBufferInfoQNX, MemoryAllocateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatQNX, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatQNX, SamplerYcbcrConversionCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
@@ -7286,6 +7386,13 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     PFN_dummy vkCreateSemaphoreSciSyncPoolNV_placeholder                      = 0;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+    //=== VK_QNX_external_memory_screen_buffer ===
+    PFN_vkGetScreenBufferPropertiesQNX vkGetScreenBufferPropertiesQNX = 0;
+#else
+    PFN_dummy vkGetScreenBufferPropertiesQNX_placeholder                      = 0;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -7824,6 +7931,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_external_sci_sync2 ===
       vkCreateSemaphoreSciSyncPoolNV = PFN_vkCreateSemaphoreSciSyncPoolNV( vkGetInstanceProcAddr( instance, "vkCreateSemaphoreSciSyncPoolNV" ) );
 #endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      //=== VK_QNX_external_memory_screen_buffer ===
+      vkGetScreenBufferPropertiesQNX = PFN_vkGetScreenBufferPropertiesQNX( vkGetInstanceProcAddr( instance, "vkGetScreenBufferPropertiesQNX" ) );
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -8212,6 +8324,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_external_sci_sync2 ===
       vkCreateSemaphoreSciSyncPoolNV = PFN_vkCreateSemaphoreSciSyncPoolNV( vkGetDeviceProcAddr( device, "vkCreateSemaphoreSciSyncPoolNV" ) );
 #endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+      //=== VK_QNX_external_memory_screen_buffer ===
+      vkGetScreenBufferPropertiesQNX = PFN_vkGetScreenBufferPropertiesQNX( vkGetDeviceProcAddr( device, "vkGetScreenBufferPropertiesQNX" ) );
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
     }
 
     template <typename DynamicLoader>

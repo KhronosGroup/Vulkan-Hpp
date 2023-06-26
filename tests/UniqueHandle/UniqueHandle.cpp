@@ -262,6 +262,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     );
 
     // create a GraphicsPipeline
+    vk::ResultValue<vk::UniquePipeline> rv = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo );
+#if 17 <= VULKAN_HPP_CPP_VERSION
+    auto [r, v] = std::move( rv );
+#endif
+    // auto trv = rv.asTuple();    // asTuple() on an l-value is deprecated !!
+    auto trv1 = std::move( rv ).asTuple();
+
     vk::UniquePipeline graphicsPipeline = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo ).value;
 
     vk::UniquePipeline graphicsPipeline2 =

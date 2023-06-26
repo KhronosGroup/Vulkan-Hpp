@@ -40,12 +40,20 @@
       , value(std::move(v))
     {}
 
-    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple()
+    VULKAN_HPP_DEPRECATED(
+      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
+      std::tuple<Result, UniqueHandle<Type, Dispatch>>
+      asTuple() &
     {
       return std::make_tuple( result, std::move( value ) );
     }
 
-    Result                        result;
+    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple() &&
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
+    Result                       result;
     UniqueHandle<Type, Dispatch>  value;
   };
 
@@ -61,7 +69,15 @@
       , value( std::move( v ) )
     {}
 
-    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple()
+    VULKAN_HPP_DEPRECATED(
+      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
+      std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>>
+      asTuple() &
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
+    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple() &&
     {
       return std::make_tuple( result, std::move( value ) );
     }

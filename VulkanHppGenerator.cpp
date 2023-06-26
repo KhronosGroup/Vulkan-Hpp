@@ -5333,49 +5333,37 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
     //====================
 )" };
 
-  // now, insert features and extensions with protection, and strip Vk prefix
-  for ( auto const & feature : m_features )
+  auto const generateUsingsAndProtection = [&raiiUsingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
   {
-    auto featureUsings = std::string{};
-    for ( auto const & require : feature.requireData )
+    auto usings = std::string{};
+    for ( auto const & require : requireData )
     {
       for ( auto const & type : require.types )
       {
-        if ( auto handleIt = m_handles.find( type ); handleIt != m_handles.end() )
+        if ( auto const & handleIt = m_handles.find( type ); handleIt != m_handles.end() )
         {
-          featureUsings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) } } );
+          usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );
 
           // if there is an array constructor, generate the plural type also
           if ( !generateRAIIHandleConstructors( *handleIt ).second.empty() )
           {
-            featureUsings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) + "s" } } );
+            usings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) + "s" } } );
           }
         }
       }
     }
-    usings += addTitleAndProtection( feature.name, featureUsings );
+    return addTitleAndProtection( title, usings );
+  };
+
+  // now, insert features and extensions with protection, and strip Vk prefix
+  for ( auto const & feature : m_features )
+  {
+    usings += generateUsingsAndProtection( feature.requireData, feature.name );
   }
 
   for ( auto const & extension : m_extensions )
   {
-    auto extensionUsings = std::string{};
-    for ( auto const & require : extension.requireData )
-    {
-      for ( auto const & type : require.types )
-      {
-        if ( auto handleIt = m_handles.find( type ); handleIt != m_handles.end() )
-        {
-          extensionUsings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) } } );
-
-          // if there is an array constructor, generate the plural type also
-          if ( !generateRAIIHandleConstructors( *handleIt ).second.empty() )
-          {
-            extensionUsings += replaceWithMap( raiiUsingTemplate, { { "className", stripPrefix( type, "Vk" ) + "s" } } );
-          }
-        }
-      }
-    }
-    usings += addTitleAndProtection( extension.name, extensionUsings );
+    usings += generateUsingsAndProtection( extension.requireData, extension.name );
   }
 
   return usings;

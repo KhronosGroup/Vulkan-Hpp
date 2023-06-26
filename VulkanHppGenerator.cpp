@@ -4758,10 +4758,8 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       replaceWithMap( constexprValueTemplate, { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
   }
 
-  auto const validDefines = validMacros( m_defines );
-
   // values
-  for ( auto const & [macro, data] : valueMacros( validDefines ) )
+  for ( auto const & [macro, data] : m_definesPartition.values )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
 
@@ -4774,7 +4772,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   }
 
   // functions
-  for ( auto const & [macro, data] : calleeMacros( validDefines ) )
+  for ( auto const & [macro, data] : m_definesPartition.callees )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` camelCase and strip the `Vk` prefix
@@ -4796,7 +4794,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   }
 
   // callers
-  for ( auto const & [macro, data] : callerMacros( validDefines ) )
+  for ( auto const & [macro, data] : m_definesPartition.callers )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
     // make `macro` PascalCase and strip the `Vk` prefix
@@ -4841,10 +4839,8 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
-  auto const validDefines = validMacros( m_defines );
-
   // values
-  for ( auto const & macro : valueMacros( validDefines ) | std::views::keys )
+  for ( auto const & macro : m_definesPartition.values | std::views::keys )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
     auto const constName = pascalCasePrefixStrip( macro );
@@ -4852,7 +4848,7 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   }
 
   // callees
-  for ( auto const & macro : calleeMacros( validDefines ) | std::views::keys )
+  for ( auto const & macro : m_definesPartition.callees | std::views::keys )
   {
     // make `macro` camelCase and strip the `Vk` prefix
     auto const constName = camelCasePrefixStrip( macro );
@@ -4860,7 +4856,7 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   }
 
   // callers
-  for ( auto const & macro : callerMacros( validDefines ) | std::views::keys )
+  for ( auto const & macro : m_definesPartition.callers | std::views::keys )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
     auto const constName = pascalCasePrefixStrip( macro );
@@ -11967,42 +11963,6 @@ bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::strin
   return false;
 }
 
-std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::calleeMacros( std::map<std::string, DefineData> defines ) const
-{
-  std::map<std::string, DefineData> calleeMacros{};
-
-  std::ranges::copy_if( defines,
-                        std::inserter( calleeMacros, calleeMacros.end() ),
-                        []( auto const & define )
-                        { return define.second.possibleCallee.empty() && !define.second.params.empty() && !define.second.possibleDefinition.empty(); } );
-
-  return calleeMacros;
-}
-
-std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::callerMacros( std::map<std::string, DefineData> defines ) const
-{
-  std::map<std::string, DefineData> callerMacros{};
-
-  std::ranges::copy_if( defines,
-                        std::inserter( callerMacros, callerMacros.end() ),
-                        []( auto const & define )
-                        { return !define.second.possibleCallee.empty() && !define.second.params.empty() && define.second.possibleDefinition.empty(); } );
-
-  return callerMacros;
-}
-
-std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::valueMacros( std::map<std::string, DefineData> defines ) const
-{
-  std::map<std::string, DefineData> valueMacros{};
-
-  std::ranges::copy_if( defines,
-                        std::inserter( valueMacros, valueMacros.end() ),
-                        []( auto const & define )
-                        { return define.second.possibleCallee.empty() && define.second.params.empty() && !define.second.possibleDefinition.empty(); } );
-
-  return valueMacros;
-}
-
 bool VulkanHppGenerator::isDeviceCommand( CommandData const & commandData ) const
 {
   return !commandData.handle.empty() && !commandData.params.empty() && ( m_handles.find( commandData.params[0].type.type ) != m_handles.end() ) &&
@@ -12200,18 +12160,6 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
   }
   return false;
-}
-
-// VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
-// Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
-std::map<std::string, VulkanHppGenerator::DefineData> VulkanHppGenerator::validMacros( std::map<std::string, DefineData> defines ) const
-{
-  std::map<std::string, DefineData> validDefines{};
-  std::ranges::copy_if( defines,
-                        std::inserter( validDefines, validDefines.end() ),
-                        []( auto const & define ) { return !( define.first == "VK_DEFINE_HANDLE" || !define.first.starts_with( "VK_" ) ); } );
-
-  return validDefines;
 }
 
 bool VulkanHppGenerator::needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams,
@@ -14251,6 +14199,46 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
   }
 }
 
+VulkanHppGenerator::DefinesPartition VulkanHppGenerator::partitionDefines( std::map<std::string, DefineData> const & defines )
+{
+  DefinesPartition partition{};
+  for ( auto const & define : defines )
+  {
+    // VK_DEFINE_HANDLE is macro magic that cannot be constexpr-ed
+    // Also filter out the VKSC_ macros, as although they are in the spec, they are not defined in any header.
+    if ( define.first.starts_with( "VK_" ) && ( define.first != "VK_DEFINE_HANDLE" ) )
+    {
+      if ( define.second.possibleCallee.empty() )
+      {
+        if ( define.second.possibleDefinition.empty() )
+        {
+#if !defined( NDEBUG )
+          const std::set<std::string> ignoredDefines{ "VK_DEFINE_NON_DISPATCHABLE_HANDLE", "VK_NULL_HANDLE", "VK_USE_64_BIT_PTR_DEFINES" };
+#endif
+          assert( ignoredDefines.find( define.first ) != ignoredDefines.end() );
+        }
+        else
+        {
+          if ( define.second.params.empty() )
+          {
+            partition.values.insert( define );
+          }
+          else
+          {
+            partition.callees.insert( define );
+          }
+        }
+      }
+      else
+      {
+        assert( !define.second.params.empty() && define.second.possibleDefinition.empty() );
+        partition.callers.insert( define );
+      }
+    }
+  }
+  return partition;
+}
+
 void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, std::map<std::string, std::string> const & attributes )
 {
   int line = element->GetLineNum();
@@ -14347,7 +14335,8 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
 
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
     assert( m_defines.find( name ) == m_defines.end() );
-    m_defines[name] = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
+    m_defines[name]    = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
+    m_definesPartition = partitionDefines( m_defines );
   }
 }
 

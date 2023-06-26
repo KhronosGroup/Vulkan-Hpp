@@ -1058,7 +1058,6 @@ private:
   std::string              toString( TypeCategory category );
 
 private:
-  DefinesPartition                        m_definesPartition;  // the partition of the defines into groups of mutually exclusive defines
   std::string                             m_api;
   std::map<std::string, BaseTypeData>     m_baseTypes;
   std::map<std::string, AliasData>        m_bitmaskAliases;
@@ -1068,6 +1067,7 @@ private:
   std::map<std::string, AliasData>        m_constantAliases;
   std::map<std::string, ConstantData>     m_constants;
   std::map<std::string, DefineData>       m_defines;
+  DefinesPartition                        m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, AliasData>        m_enumAliases;
   std::map<std::string, EnumData>         m_enums;
   std::set<std::string>                   m_extendedStructs;  // structs which are referenced by the structextends tag

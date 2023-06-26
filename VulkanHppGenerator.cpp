@@ -101,6 +101,8 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
     addCommandsToHandle( extension.requireData );
     addMissingFlagBits( extension.requireData, extension.name );
   }
+
+  m_definesPartition = partitionDefines( m_defines );
 }
 
 void VulkanHppGenerator::generateEnumsHppFile() const
@@ -14324,7 +14326,6 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
     assert( m_defines.find( name ) == m_defines.end() );
     m_defines[name]    = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
-    m_definesPartition = partitionDefines( m_defines );
   }
 }
 

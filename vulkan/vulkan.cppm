@@ -808,6 +808,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_invocation_reorder ===
   using VULKAN_HPP_NAMESPACE::RayTracingInvocationReorderModeNV;
 
+  //=== VK_KHR_cooperative_matrix ===
+  using VULKAN_HPP_NAMESPACE::ComponentTypeKHR;
+  using VULKAN_HPP_NAMESPACE::ScopeKHR;
+
   //=========================
   //=== Index Type Traits ===
   //=========================
@@ -2537,6 +2541,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_dynamic_rendering_unused_attachments ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
+
+  //=== VK_KHR_cooperative_matrix ===
+  using VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrixPropertiesKHR;
 
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;

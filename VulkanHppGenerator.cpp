@@ -4729,8 +4729,8 @@ std::string VulkanHppGenerator::generateConstexprString( std::string const & str
 
 std::string VulkanHppGenerator::generateConstexprDefines() const
 {
-  auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName}( ${arguments} )
+  auto const constexprFunctionTemplate = std::string{ R"(  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  ${deprecated}VULKAN_HPP_CONSTEXPR uint32_t ${constName}( ${arguments} )
   {
     return ${implementation};
   }
@@ -4801,7 +4801,8 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     // make `macro` PascalCase and strip the `Vk` prefix
     auto const constName       = stripPrefix( toCamelCase( macro ), "Vk" );
     auto       argumentsString = std::string{};
-    // for every argument, append a comma if needed if needed (i.e. has more than one parameter, and not for the last one)
+
+    // for every argument, append a comma if needed (i.e. has more than one parameter, and not for the last one)
     for ( auto const & argString : data.params )
     {
       argumentsString += argString + ", ";

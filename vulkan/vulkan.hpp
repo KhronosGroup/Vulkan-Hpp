@@ -6946,60 +6946,60 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR uint64_t WholeSize                        = VK_WHOLE_SIZE;
   VULKAN_HPP_CONSTEXPR uint32_t HeaderVersion                    = VK_HEADER_VERSION;
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  VULKAN_HPP_CONSTEXPR auto apiVersionMajor( T const version )
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 22U ) & 0x7FU );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  VULKAN_HPP_CONSTEXPR auto apiVersionMinor( T const version )
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  VULKAN_HPP_CONSTEXPR auto apiVersionPatch( T const version )
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionPatch( T const version )
   {
     return ( (uint32_t)(version)&0xFFFU );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  VULKAN_HPP_CONSTEXPR auto apiVersionVariant( T const version )
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionVariant( T const version )
   {
     return ( (uint32_t)( version ) >> 29U );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
-  VULKAN_HPP_CONSTEXPR auto makeApiVersion( T const variant, T const major, T const minor, T const patch )
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t makeApiVersion( T const variant, T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( variant ) ) << 29U ) | ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_MAKE_API_VERSION should be used instead." )
-  VULKAN_HPP_CONSTEXPR auto makeVersion( T const major, T const minor, T const patch )
+  VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
   {
     return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MAJOR should be used instead." )
-  VULKAN_HPP_CONSTEXPR auto versionMajor( T const version )
+  VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
   {
     return ( (uint32_t)( version ) >> 22U );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MINOR should be used instead." )
-  VULKAN_HPP_CONSTEXPR auto versionMinor( T const version )
+  VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
   {
     return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
   }
 
-  template <typename T, typename = std::enable_if_t<std::is_integral_v<T>>>
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_PATCH should be used instead." )
-  VULKAN_HPP_CONSTEXPR auto versionPatch( T const version )
+  VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
   {
     return ( (uint32_t)(version)&0xFFFU );
   }

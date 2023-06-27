@@ -18,7 +18,6 @@
 #include <array>
 #include <cassert>
 #include <fstream>
-#include <ranges>
 #include <regex>
 #include <sstream>
 
@@ -4834,34 +4833,34 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
 
   // constants
-  for ( auto const & macro : m_constants | std::views::keys )
+  for ( auto const & macro : m_constants )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = pascalCasePrefixStrip( macro );
+    auto const constName = pascalCasePrefixStrip( macro.first );
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // values
-  for ( auto const & macro : m_definesPartition.values | std::views::keys )
+  for ( auto const & macro : m_definesPartition.values )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = pascalCasePrefixStrip( macro );
+    auto const constName = pascalCasePrefixStrip( macro.first );
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // callees
-  for ( auto const & macro : m_definesPartition.callees | std::views::keys )
+  for ( auto const & macro : m_definesPartition.callees )
   {
     // make `macro` camelCase and strip the `Vk` prefix
-    auto const constName = camelCasePrefixStrip( macro );
+    auto const constName = camelCasePrefixStrip( macro.first );
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
   // callers
-  for ( auto const & macro : m_definesPartition.callers | std::views::keys )
+  for ( auto const & macro : m_definesPartition.callers )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = pascalCasePrefixStrip( macro );
+    auto const constName = pascalCasePrefixStrip( macro.first );
     constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
   }
 
@@ -5021,10 +5020,9 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
   //===========================
 )" };
 
-  for ( auto const & func :
-        m_handles.at( "" ).commands | std::views::transform( []( auto const & func ) { return startLowerCase( stripPrefix( func, "vk" ) ); } ) )
+  for ( auto const & func : m_handles.at( "" ).commands )
   {
-    funcUsings += replaceWithMap( usingTemplate, { { "funcName", func } } );
+    funcUsings += replaceWithMap( usingTemplate, { { "funcName", startLowerCase( stripPrefix( func, "vk" ) ) } } );
   }
 
   auto const [enter, leave] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
@@ -5065,8 +5063,10 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
             localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( aliasIt->first, "Vk" ) } } );
           }
 
-          if ( auto const bitmaskIt = std::ranges::find_if(
-                 m_bitmasks, [&enumIt]( std::pair<std::string, BitmaskData> const & bitmask ) { return bitmask.second.require == enumIt->first; } );
+          if ( auto const bitmaskIt =
+                 std::find_if( m_bitmasks.begin(),
+                               m_bitmasks.end(),
+                               [&enumIt]( std::pair<std::string, BitmaskData> const & bitmask ) { return bitmask.second.require == enumIt->first; } );
                bitmaskIt != m_bitmasks.end() )
           {
             localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( bitmaskIt->first, "Vk" ) } } );
@@ -6649,7 +6649,8 @@ std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & t
     if ( extension.type == type )
     {
       auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      typeTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( first ? "" : " || ") + "( extension == \"" + extension.name + "\" )";
+      typeTest +=
+        ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( first ? "" : " || " ) + "( extension == \"" + extension.name + "\" )";
       previousEnter = enter;
       previousLeave = leave;
       first         = false;
@@ -14325,7 +14326,7 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
 
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
     assert( m_defines.find( name ) == m_defines.end() );
-    m_defines[name]    = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
+    m_defines[name] = { deprecated, require, line, deprecatedReason, possibleCallee, params, possibleDefinition };
   }
 }
 

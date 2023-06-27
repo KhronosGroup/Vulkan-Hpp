@@ -7,13 +7,13 @@ on:
 
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-latest
     
     strategy:
       matrix:
         build_type: [Debug, Release]
         compiler:
-          - {cxx: "g++-11", c: "clang"}
+          - {cxx: "g++-12", c: "clang"}
           - {cxx: "clang++", c: "clang"}
         cxx_standard: [11, 14, 17, 20]
 

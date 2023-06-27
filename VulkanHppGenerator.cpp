@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <cassert>
 #include <fstream>
+#include <ranges>
 #include <regex>
 #include <sstream>
 

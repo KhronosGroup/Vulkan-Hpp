@@ -13,9 +13,9 @@ jobs:
       matrix:
         build_type: [Debug, Release]
         compiler:
-          - {cxx: "g++-9", c: "gcc-9"}
           - {cxx: "g++-10", c: "gcc-10"}
           - {cxx: "g++-11", c: "gcc-11"}
+          - {cxx: "g++-12", c: "gcc-9"}
           - {cxx: "clang++-12", c: "clang-12"}
           - {cxx: "clang++-13", c: "clang-13"}
           - {cxx: "clang++-14", c: "clang-14"}

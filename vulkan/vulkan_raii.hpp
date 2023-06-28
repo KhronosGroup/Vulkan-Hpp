@@ -2645,7 +2645,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                 reinterpret_cast<VkInstance *>( &m_instance ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateInstance" );
+          detail::throwResultException( result, "vkCreateInstance" );
         }
         m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher( context.getDispatcher()->vkGetInstanceProcAddr,
                                                                                                      static_cast<VkInstance>( m_instance ) ) );
@@ -3336,7 +3336,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkEnumeratePhysicalDevices" );
+          detail::throwResultException( result, "vkEnumeratePhysicalDevices" );
         }
       }
 
@@ -3371,7 +3371,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                           reinterpret_cast<VkDevice *>( &m_device ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDevice" );
+          detail::throwResultException( result, "vkCreateDevice" );
         }
         m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher( physicalDevice.getDispatcher()->vkGetDeviceProcAddr,
                                                                                                    static_cast<VkDevice>( m_device ) ) );
@@ -4287,7 +4287,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkAccelerationStructureKHR *>( &m_accelerationStructure ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateAccelerationStructureKHR" );
+          detail::throwResultException( result, "vkCreateAccelerationStructureKHR" );
         }
       }
 
@@ -4411,7 +4411,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                    reinterpret_cast<VkAccelerationStructureNV *>( &m_accelerationStructure ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateAccelerationStructureNV" );
+          detail::throwResultException( result, "vkCreateAccelerationStructureNV" );
         }
       }
 
@@ -4543,7 +4543,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                              reinterpret_cast<VkBuffer *>( &m_buffer ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateBuffer" );
+          detail::throwResultException( result, "vkCreateBuffer" );
         }
       }
 
@@ -4673,7 +4673,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                    reinterpret_cast<VkBufferCollectionFUCHSIA *>( &m_collection ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateBufferCollectionFUCHSIA" );
+          detail::throwResultException( result, "vkCreateBufferCollectionFUCHSIA" );
         }
       }
 
@@ -4806,7 +4806,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                       reinterpret_cast<VkBufferView *>( &m_bufferView ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateBufferView" );
+          detail::throwResultException( result, "vkCreateBufferView" );
         }
       }
 
@@ -4929,7 +4929,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<VkCommandPool *>( &m_commandPool ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateCommandPool" );
+          detail::throwResultException( result, "vkCreateCommandPool" );
         }
       }
 
@@ -6041,7 +6041,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkAllocateCommandBuffers" );
+          detail::throwResultException( result, "vkAllocateCommandBuffers" );
         }
       }
 
@@ -6078,7 +6078,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                          reinterpret_cast<VkCuFunctionNVX *>( &m_function ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateCuFunctionNVX" );
+          detail::throwResultException( result, "vkCreateCuFunctionNVX" );
         }
       }
 
@@ -6201,7 +6201,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<VkCuModuleNVX *>( &m_module ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateCuModuleNVX" );
+          detail::throwResultException( result, "vkCreateCuModuleNVX" );
         }
       }
 
@@ -6324,7 +6324,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkDebugReportCallbackEXT *>( &m_callback ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDebugReportCallbackEXT" );
+          detail::throwResultException( result, "vkCreateDebugReportCallbackEXT" );
         }
       }
 
@@ -6448,7 +6448,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkDebugUtilsMessengerEXT *>( &m_messenger ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDebugUtilsMessengerEXT" );
+          detail::throwResultException( result, "vkCreateDebugUtilsMessengerEXT" );
         }
       }
 
@@ -6570,7 +6570,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkDeferredOperationKHR *>( &m_operation ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDeferredOperationKHR" );
+          detail::throwResultException( result, "vkCreateDeferredOperationKHR" );
         }
       }
 
@@ -6702,7 +6702,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                           reinterpret_cast<VkDescriptorPool *>( &m_descriptorPool ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDescriptorPool" );
+          detail::throwResultException( result, "vkCreateDescriptorPool" );
         }
       }
 
@@ -6942,7 +6942,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkAllocateDescriptorSets" );
+          detail::throwResultException( result, "vkAllocateDescriptorSets" );
         }
       }
 
@@ -6979,7 +6979,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkDescriptorSetLayout *>( &m_descriptorSetLayout ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDescriptorSetLayout" );
+          detail::throwResultException( result, "vkCreateDescriptorSetLayout" );
         }
       }
 
@@ -7109,7 +7109,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkDescriptorUpdateTemplate *>( &m_descriptorUpdateTemplate ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDescriptorUpdateTemplate" );
+          detail::throwResultException( result, "vkCreateDescriptorUpdateTemplate" );
         }
       }
 
@@ -7233,7 +7233,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                reinterpret_cast<VkDeviceMemory *>( &m_memory ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkAllocateMemory" );
+          detail::throwResultException( result, "vkAllocateMemory" );
         }
       }
 
@@ -7369,7 +7369,7 @@ namespace VULKAN_HPP_NAMESPACE
           static_cast<VkPhysicalDevice>( *physicalDevice ), drmFd, connectorId, reinterpret_cast<VkDisplayKHR *>( &m_display ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkGetDrmDisplayEXT" );
+          detail::throwResultException( result, "vkGetDrmDisplayEXT" );
         }
       }
 
@@ -7381,7 +7381,7 @@ namespace VULKAN_HPP_NAMESPACE
           static_cast<VkPhysicalDevice>( *physicalDevice ), &dpy, rrOutput, reinterpret_cast<VkDisplayKHR *>( &m_display ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkGetRandROutputDisplayEXT" );
+          detail::throwResultException( result, "vkGetRandROutputDisplayEXT" );
         }
       }
 #  endif /*VK_USE_PLATFORM_XLIB_XRANDR_EXT*/
@@ -7394,7 +7394,7 @@ namespace VULKAN_HPP_NAMESPACE
           static_cast<VkPhysicalDevice>( *physicalDevice ), deviceRelativeId, reinterpret_cast<VkDisplayKHR *>( &m_display ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkGetWinrtDisplayNV" );
+          detail::throwResultException( result, "vkGetWinrtDisplayNV" );
         }
       }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -7531,7 +7531,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkGetDisplayPlaneSupportedDisplaysKHR" );
+          detail::throwResultException( result, "vkGetDisplayPlaneSupportedDisplaysKHR" );
         }
       }
 
@@ -7567,7 +7567,7 @@ namespace VULKAN_HPP_NAMESPACE
           reinterpret_cast<VkDisplayModeKHR *>( &m_displayModeKHR ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDisplayModeKHR" );
+          detail::throwResultException( result, "vkCreateDisplayModeKHR" );
         }
       }
 
@@ -7678,7 +7678,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                             reinterpret_cast<VkEvent *>( &m_event ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateEvent" );
+          detail::throwResultException( result, "vkCreateEvent" );
         }
       }
 
@@ -7809,7 +7809,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                             reinterpret_cast<VkFence *>( &m_fence ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateFence" );
+          detail::throwResultException( result, "vkCreateFence" );
         }
       }
 
@@ -7827,7 +7827,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             reinterpret_cast<VkFence *>( &m_fence ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkRegisterDeviceEventEXT" );
+          detail::throwResultException( result, "vkRegisterDeviceEventEXT" );
         }
       }
 
@@ -7847,7 +7847,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              reinterpret_cast<VkFence *>( &m_fence ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkRegisterDisplayEventEXT" );
+          detail::throwResultException( result, "vkRegisterDisplayEventEXT" );
         }
       }
 
@@ -7974,7 +7974,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<VkFramebuffer *>( &m_framebuffer ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateFramebuffer" );
+          detail::throwResultException( result, "vkCreateFramebuffer" );
         }
       }
 
@@ -8101,7 +8101,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                             reinterpret_cast<VkImage *>( &m_image ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateImage" );
+          detail::throwResultException( result, "vkCreateImage" );
         }
       }
 
@@ -8248,7 +8248,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                 reinterpret_cast<VkImageView *>( &m_imageView ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateImageView" );
+          detail::throwResultException( result, "vkCreateImageView" );
         }
       }
 
@@ -8375,7 +8375,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkIndirectCommandsLayoutNV *>( &m_indirectCommandsLayout ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateIndirectCommandsLayoutNV" );
+          detail::throwResultException( result, "vkCreateIndirectCommandsLayoutNV" );
         }
       }
 
@@ -8499,7 +8499,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<VkMicromapEXT *>( &m_micromap ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateMicromapEXT" );
+          detail::throwResultException( result, "vkCreateMicromapEXT" );
         }
       }
 
@@ -8622,7 +8622,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkOpticalFlowSessionNV *>( &m_session ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateOpticalFlowSessionNV" );
+          detail::throwResultException( result, "vkCreateOpticalFlowSessionNV" );
         }
       }
 
@@ -8748,7 +8748,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                           reinterpret_cast<VkPerformanceConfigurationINTEL *>( &m_configuration ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkAcquirePerformanceConfigurationINTEL" );
+          detail::throwResultException( result, "vkAcquirePerformanceConfigurationINTEL" );
         }
       }
 
@@ -8860,7 +8860,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                          reinterpret_cast<VkPipelineCache *>( &m_pipelineCache ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreatePipelineCache" );
+          detail::throwResultException( result, "vkCreatePipelineCache" );
         }
       }
 
@@ -8994,7 +8994,7 @@ namespace VULKAN_HPP_NAMESPACE
         if ( ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
              ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
         {
-          throwResultException( m_constructorSuccessCode, "vkCreateComputePipelines" );
+          detail::throwResultException( m_constructorSuccessCode, "vkCreateComputePipelines" );
         }
       }
 
@@ -9016,7 +9016,7 @@ namespace VULKAN_HPP_NAMESPACE
         if ( ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
              ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
         {
-          throwResultException( m_constructorSuccessCode, "vkCreateGraphicsPipelines" );
+          detail::throwResultException( m_constructorSuccessCode, "vkCreateGraphicsPipelines" );
         }
       }
 
@@ -9042,7 +9042,7 @@ namespace VULKAN_HPP_NAMESPACE
              ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::eOperationNotDeferredKHR ) &&
              ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
         {
-          throwResultException( m_constructorSuccessCode, "vkCreateRayTracingPipelinesKHR" );
+          detail::throwResultException( m_constructorSuccessCode, "vkCreateRayTracingPipelinesKHR" );
         }
       }
 
@@ -9064,7 +9064,7 @@ namespace VULKAN_HPP_NAMESPACE
         if ( ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::eSuccess ) &&
              ( m_constructorSuccessCode != VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT ) )
         {
-          throwResultException( m_constructorSuccessCode, "vkCreateRayTracingPipelinesNV" );
+          detail::throwResultException( m_constructorSuccessCode, "vkCreateRayTracingPipelinesNV" );
         }
       }
 
@@ -9236,7 +9236,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateComputePipelines" );
+          detail::throwResultException( result, "vkCreateComputePipelines" );
         }
       }
 
@@ -9264,7 +9264,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateGraphicsPipelines" );
+          detail::throwResultException( result, "vkCreateGraphicsPipelines" );
         }
       }
 
@@ -9295,7 +9295,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateRayTracingPipelinesKHR" );
+          detail::throwResultException( result, "vkCreateRayTracingPipelinesKHR" );
         }
       }
 
@@ -9323,7 +9323,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateRayTracingPipelinesNV" );
+          detail::throwResultException( result, "vkCreateRayTracingPipelinesNV" );
         }
       }
 
@@ -9360,7 +9360,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                           reinterpret_cast<VkPipelineLayout *>( &m_pipelineLayout ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreatePipelineLayout" );
+          detail::throwResultException( result, "vkCreatePipelineLayout" );
         }
       }
 
@@ -9484,7 +9484,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkPrivateDataSlot *>( &m_privateDataSlot ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreatePrivateDataSlot" );
+          detail::throwResultException( result, "vkCreatePrivateDataSlot" );
         }
       }
 
@@ -9608,7 +9608,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                 reinterpret_cast<VkQueryPool *>( &m_queryPool ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateQueryPool" );
+          detail::throwResultException( result, "vkCreateQueryPool" );
         }
       }
 
@@ -9893,7 +9893,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                       reinterpret_cast<VkRenderPass *>( &m_renderPass ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateRenderPass" );
+          detail::throwResultException( result, "vkCreateRenderPass" );
         }
       }
 
@@ -9911,7 +9911,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                        reinterpret_cast<VkRenderPass *>( &m_renderPass ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateRenderPass2" );
+          detail::throwResultException( result, "vkCreateRenderPass2" );
         }
       }
 
@@ -10042,7 +10042,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                               reinterpret_cast<VkSampler *>( &m_sampler ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateSampler" );
+          detail::throwResultException( result, "vkCreateSampler" );
         }
       }
 
@@ -10165,7 +10165,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                   reinterpret_cast<VkSamplerYcbcrConversion *>( &m_ycbcrConversion ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateSamplerYcbcrConversion" );
+          detail::throwResultException( result, "vkCreateSamplerYcbcrConversion" );
         }
       }
 
@@ -10289,7 +10289,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                 reinterpret_cast<VkSemaphore *>( &m_semaphore ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateSemaphore" );
+          detail::throwResultException( result, "vkCreateSemaphore" );
         }
       }
 
@@ -10421,7 +10421,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                           reinterpret_cast<VkShaderEXT *>( &m_shader ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateShadersEXT" );
+          detail::throwResultException( result, "vkCreateShadersEXT" );
         }
       }
 
@@ -10549,7 +10549,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateShadersEXT" );
+          detail::throwResultException( result, "vkCreateShadersEXT" );
         }
       }
 
@@ -10586,7 +10586,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                         reinterpret_cast<VkShaderModule *>( &m_shaderModule ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateShaderModule" );
+          detail::throwResultException( result, "vkCreateShaderModule" );
         }
       }
 
@@ -10714,7 +10714,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateAndroidSurfaceKHR" );
+          detail::throwResultException( result, "vkCreateAndroidSurfaceKHR" );
         }
       }
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
@@ -10734,7 +10734,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDirectFBSurfaceEXT" );
+          detail::throwResultException( result, "vkCreateDirectFBSurfaceEXT" );
         }
       }
 #  endif /*VK_USE_PLATFORM_DIRECTFB_EXT*/
@@ -10753,7 +10753,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateDisplayPlaneSurfaceKHR" );
+          detail::throwResultException( result, "vkCreateDisplayPlaneSurfaceKHR" );
         }
       }
 
@@ -10771,7 +10771,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateHeadlessSurfaceEXT" );
+          detail::throwResultException( result, "vkCreateHeadlessSurfaceEXT" );
         }
       }
 
@@ -10790,7 +10790,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateIOSSurfaceMVK" );
+          detail::throwResultException( result, "vkCreateIOSSurfaceMVK" );
         }
       }
 #  endif /*VK_USE_PLATFORM_IOS_MVK*/
@@ -10810,7 +10810,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateImagePipeSurfaceFUCHSIA" );
+          detail::throwResultException( result, "vkCreateImagePipeSurfaceFUCHSIA" );
         }
       }
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -10830,7 +10830,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateMacOSSurfaceMVK" );
+          detail::throwResultException( result, "vkCreateMacOSSurfaceMVK" );
         }
       }
 #  endif /*VK_USE_PLATFORM_MACOS_MVK*/
@@ -10850,7 +10850,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateMetalSurfaceEXT" );
+          detail::throwResultException( result, "vkCreateMetalSurfaceEXT" );
         }
       }
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
@@ -10870,7 +10870,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                               reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateScreenSurfaceQNX" );
+          detail::throwResultException( result, "vkCreateScreenSurfaceQNX" );
         }
       }
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
@@ -10890,7 +10890,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                         reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateStreamDescriptorSurfaceGGP" );
+          detail::throwResultException( result, "vkCreateStreamDescriptorSurfaceGGP" );
         }
       }
 #  endif /*VK_USE_PLATFORM_GGP*/
@@ -10910,7 +10910,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                          reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateViSurfaceNN" );
+          detail::throwResultException( result, "vkCreateViSurfaceNN" );
         }
       }
 #  endif /*VK_USE_PLATFORM_VI_NN*/
@@ -10930,7 +10930,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateWaylandSurfaceKHR" );
+          detail::throwResultException( result, "vkCreateWaylandSurfaceKHR" );
         }
       }
 #  endif /*VK_USE_PLATFORM_WAYLAND_KHR*/
@@ -10950,7 +10950,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateWin32SurfaceKHR" );
+          detail::throwResultException( result, "vkCreateWin32SurfaceKHR" );
         }
       }
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
@@ -10970,7 +10970,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateXcbSurfaceKHR" );
+          detail::throwResultException( result, "vkCreateXcbSurfaceKHR" );
         }
       }
 #  endif /*VK_USE_PLATFORM_XCB_KHR*/
@@ -10990,7 +10990,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                             reinterpret_cast<VkSurfaceKHR *>( &m_surface ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateXlibSurfaceKHR" );
+          detail::throwResultException( result, "vkCreateXlibSurfaceKHR" );
         }
       }
 #  endif /*VK_USE_PLATFORM_XLIB_KHR*/
@@ -11114,7 +11114,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                         reinterpret_cast<VkSwapchainKHR *>( &m_swapchain ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateSwapchainKHR" );
+          detail::throwResultException( result, "vkCreateSwapchainKHR" );
         }
       }
 
@@ -11277,7 +11277,7 @@ namespace VULKAN_HPP_NAMESPACE
         }
         else
         {
-          throwResultException( result, "vkCreateSharedSwapchainsKHR" );
+          detail::throwResultException( result, "vkCreateSharedSwapchainsKHR" );
         }
       }
 
@@ -11314,7 +11314,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                               reinterpret_cast<VkValidationCacheEXT *>( &m_validationCache ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateValidationCacheEXT" );
+          detail::throwResultException( result, "vkCreateValidationCacheEXT" );
         }
       }
 
@@ -11444,7 +11444,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                            reinterpret_cast<VkVideoSessionKHR *>( &m_videoSession ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateVideoSessionKHR" );
+          detail::throwResultException( result, "vkCreateVideoSessionKHR" );
         }
       }
 
@@ -11574,7 +11574,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      reinterpret_cast<VkVideoSessionParametersKHR *>( &m_videoSessionParameters ) ) );
         if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
         {
-          throwResultException( result, "vkCreateVideoSessionParametersKHR" );
+          detail::throwResultException( result, "vkCreateVideoSessionParametersKHR" );
         }
       }
 

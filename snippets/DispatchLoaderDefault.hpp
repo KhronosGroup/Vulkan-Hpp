@@ -40,7 +40,7 @@
       }
   extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 #  else
-  static inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
   {
     static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
     return dls;

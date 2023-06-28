@@ -5954,7 +5954,8 @@ std::string VulkanHppGenerator::generateExtensionTypeTest( std::string const & t
     if ( extension.type == type )
     {
       auto [enter, leave] = generateProtection( getProtectFromTitle( extension.name ) );
-      typeTest += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( first ? "" : " || ") + "( extension == \"" + extension.name + "\" )";
+      typeTest +=
+        ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + ( first ? "" : " || " ) + "( extension == \"" + extension.name + "\" )";
       previousEnter = enter;
       previousLeave = leave;
       first         = false;
@@ -8556,8 +8557,6 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   if ( handle.second.destructorIt != m_commands.end() )
   {
-    moveAssignmentInstructions = "          clear();";
-
     clearMembers = "        if ( m_" + handleName + " )\n";
     clearMembers += "        {\n";
     clearMembers += "          getDispatcher()->" + handle.second.destructorIt->first + "( " +
@@ -8593,8 +8592,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
       {
         clearMembers += "\n      m_" + memberName + " = nullptr;";
         moveConstructorInitializerList += "m_" + memberName + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + memberName + ", {} ) ), ";
-        moveAssignmentInstructions +=
-          "\n          m_" + memberName + " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + memberName + ", {} );";
+        moveAssignmentInstructions += "\n          std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
         memberVariables += "\n    " + memberType + " m_" + memberName + " = {};";
         swapMembers += "\n      std::swap( m_" + memberName + ", rhs.m_" + memberName + " );";
         if ( destructorParam.type.type != handle.first )
@@ -8621,16 +8619,14 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
       clearMembers += "\n        m_" + frontName + " = nullptr;";
       moveConstructorInitializerList = "m_" + frontName + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + frontName + ", {} ) ), ";
-      moveAssignmentInstructions =
-        "\n          m_" + frontName + " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + frontName + ", {} );";
-      memberVariables = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
-      swapMembers     = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
+      moveAssignmentInstructions     = "\n          std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
+      memberVariables                = "\n    VULKAN_HPP_NAMESPACE::" + stripPrefix( frontType, "Vk" ) + " m_" + frontName + " = {};";
+      swapMembers                    = "\n      std::swap( m_" + frontName + ", rhs.m_" + frontName + " );";
       releaseMembers += "\n        m_" + frontName + " = nullptr;";
     }
     clearMembers += "\n        m_" + handleName + " = nullptr;";
     moveConstructorInitializerList += "m_" + handleName + "( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName + ", {} ) ), ";
-    moveAssignmentInstructions +=
-      "\n          m_" + handleName + " = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_" + handleName + ", {} );";
+    moveAssignmentInstructions += "\n          std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
     memberVariables += "\n    " + generateNamespacedType( handle.first ) + " m_" + handleName + " = {};";
     swapMembers += "\n      std::swap( m_" + handleName + ", rhs.m_" + handleName + " );";
   }
@@ -8642,8 +8638,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     moveConstructorInitializerList +=
       "m_constructorSuccessCode( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} ) ), ";
-    moveAssignmentInstructions +=
-      "\n          m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} );";
+    moveAssignmentInstructions += "\n          std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     releaseMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
   }
 
@@ -8671,13 +8666,12 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
   if ( ( handle.first == "VkInstance" ) || ( handle.first == "VkDevice" ) )
   {
     moveConstructorInitializerList += "m_dispatcher( rhs.m_dispatcher.release() )";
-    moveAssignmentInstructions += "\n        m_dispatcher.reset( rhs.m_dispatcher.release() );";
   }
   else
   {
     moveConstructorInitializerList += "m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )";
-    moveAssignmentInstructions += "\n        m_dispatcher = VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr );";
   }
+  moveAssignmentInstructions += "\n        std::swap( m_dispatcher, rhs.m_dispatcher );";
 
   return std::make_tuple(
     clearMembers, getConstructorSuccessCode, memberVariables, moveConstructorInitializerList, moveAssignmentInstructions, swapMembers, releaseMembers );

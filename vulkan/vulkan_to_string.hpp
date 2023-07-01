@@ -1590,8 +1590,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "TaskShaderEXT | ";
     if ( value & PipelineStageFlagBits2::eMeshShaderEXT )
       result += "MeshShaderEXT | ";
-    if ( value & PipelineStageFlagBits2::eSubpassShadingHUAWEI )
-      result += "SubpassShadingHUAWEI | ";
+    if ( value & PipelineStageFlagBits2::eSubpassShaderHUAWEI )
+      result += "SubpassShaderHUAWEI | ";
     if ( value & PipelineStageFlagBits2::eInvocationMaskHUAWEI )
       result += "InvocationMaskHUAWEI | ";
     if ( value & PipelineStageFlagBits2::eAccelerationStructureCopyKHR )
@@ -6278,7 +6278,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineStageFlagBits2::eFragmentDensityProcessEXT: return "FragmentDensityProcessEXT";
       case PipelineStageFlagBits2::eTaskShaderEXT: return "TaskShaderEXT";
       case PipelineStageFlagBits2::eMeshShaderEXT: return "MeshShaderEXT";
-      case PipelineStageFlagBits2::eSubpassShadingHUAWEI: return "SubpassShadingHUAWEI";
+      case PipelineStageFlagBits2::eSubpassShaderHUAWEI: return "SubpassShaderHUAWEI";
       case PipelineStageFlagBits2::eInvocationMaskHUAWEI: return "InvocationMaskHUAWEI";
       case PipelineStageFlagBits2::eAccelerationStructureCopyKHR: return "AccelerationStructureCopyKHR";
       case PipelineStageFlagBits2::eMicromapBuildEXT: return "MicromapBuildEXT";

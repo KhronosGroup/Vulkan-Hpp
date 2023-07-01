@@ -3538,7 +3538,7 @@ namespace VULKAN_HPP_NAMESPACE
       }
   extern VULKAN_HPP_STORAGE_API DispatchLoaderDynamic defaultDispatchLoaderDynamic;
 #  else
-  static inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
   {
     static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
     return dls;
@@ -4092,9 +4092,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
   };
 
-  namespace
+  namespace detail
   {
-    [[noreturn]] void throwResultException( Result result, char const * message )
+    [[noreturn]] VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
     {
       switch ( result )
       {
@@ -4126,7 +4126,7 @@ namespace VULKAN_HPP_NAMESPACE
         default: throw SystemError( make_error_code( result ), message );
       }
     }
-  }  // namespace
+  }  // namespace detail
 #endif
 
   template <typename T>
@@ -4178,7 +4178,15 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple()
+    VULKAN_HPP_DEPRECATED(
+      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
+
+    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple() &
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
+    std::tuple<Result, UniqueHandle<Type, Dispatch>> asTuple() &&
     {
       return std::make_tuple( result, std::move( value ) );
     }
@@ -4200,7 +4208,15 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple()
+    VULKAN_HPP_DEPRECATED(
+      "asTuple() on an l-value is deprecated, as it implicitly moves the UniqueHandle out of the ResultValue. Use asTuple() on an r-value instead, requiring to explicitly move the UniqueHandle." )
+
+    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple() &
+    {
+      return std::make_tuple( result, std::move( value ) );
+    }
+
+    std::tuple<Result, std::vector<UniqueHandle<Type, Dispatch>>> asTuple() &&
     {
       return std::make_tuple( result, std::move( value ) );
     }
@@ -4270,7 +4286,7 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     if ( result != Result::eSuccess )
     {
-      throwResultException( result, message );
+      detail::throwResultException( result, message );
     }
 #endif
   }
@@ -4285,10 +4301,106 @@ namespace VULKAN_HPP_NAMESPACE
 #else
     if ( std::find( successCodes.begin(), successCodes.end(), result ) == successCodes.end() )
     {
-      throwResultException( result, message );
+      detail::throwResultException( result, message );
     }
 #endif
   }
+
+  //=========================================
+  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+  //=========================================
+  VULKAN_HPP_CONSTEXPR uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
+  VULKAN_HPP_CONSTEXPR uint32_t False                            = VK_FALSE;
+  VULKAN_HPP_CONSTEXPR float    LodClampNone                     = VK_LOD_CLAMP_NONE;
+  VULKAN_HPP_CONSTEXPR uint32_t LuidSize                         = VK_LUID_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxDeviceGroupSize               = VK_MAX_DEVICE_GROUP_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxDriverInfoSize                = VK_MAX_DRIVER_INFO_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxDriverNameSize                = VK_MAX_DRIVER_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxExtensionNameSize             = VK_MAX_EXTENSION_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxGlobalPrioritySizeKhr         = VK_MAX_GLOBAL_PRIORITY_SIZE_KHR;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxMemoryHeaps                   = VK_MAX_MEMORY_HEAPS;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxMemoryTypes                   = VK_MAX_MEMORY_TYPES;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxPhysicalDeviceNameSize        = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t MaxShaderModuleIdentifierSizeExt = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
+  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyExternal              = VK_QUEUE_FAMILY_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyForeignExt            = VK_QUEUE_FAMILY_FOREIGN_EXT;
+  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyIgnored               = VK_QUEUE_FAMILY_IGNORED;
+  VULKAN_HPP_CONSTEXPR uint32_t Remaining3DSlicesExt             = VK_REMAINING_3D_SLICES_EXT;
+  VULKAN_HPP_CONSTEXPR uint32_t RemainingArrayLayers             = VK_REMAINING_ARRAY_LAYERS;
+  VULKAN_HPP_CONSTEXPR uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
+  VULKAN_HPP_CONSTEXPR uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
+  VULKAN_HPP_CONSTEXPR uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR uint32_t True                             = VK_TRUE;
+  VULKAN_HPP_CONSTEXPR uint32_t UuidSize                         = VK_UUID_SIZE;
+  VULKAN_HPP_CONSTEXPR uint64_t WholeSize                        = VK_WHOLE_SIZE;
+  VULKAN_HPP_CONSTEXPR uint32_t HeaderVersion                    = VK_HEADER_VERSION;
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
+  {
+    return ( ( (uint32_t)( version ) >> 22U ) & 0x7FU );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionMinor( T const version )
+  {
+    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionPatch( T const version )
+  {
+    return ( (uint32_t)(version)&0xFFFU );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t apiVersionVariant( T const version )
+  {
+    return ( (uint32_t)( version ) >> 29U );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_CONSTEXPR uint32_t makeApiVersion( T const variant, T const major, T const minor, T const patch )
+  {
+    return ( ( ( (uint32_t)( variant ) ) << 29U ) | ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_MAKE_API_VERSION should be used instead." )
+  VULKAN_HPP_CONSTEXPR uint32_t makeVersion( T const major, T const minor, T const patch )
+  {
+    return ( ( ( (uint32_t)( major ) ) << 22U ) | ( ( (uint32_t)( minor ) ) << 12U ) | ( (uint32_t)( patch ) ) );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MAJOR should be used instead." )
+  VULKAN_HPP_CONSTEXPR uint32_t versionMajor( T const version )
+  {
+    return ( (uint32_t)( version ) >> 22U );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_MINOR should be used instead." )
+  VULKAN_HPP_CONSTEXPR uint32_t versionMinor( T const version )
+  {
+    return ( ( (uint32_t)( version ) >> 12U ) & 0x3FFU );
+  }
+
+  template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  VULKAN_HPP_DEPRECATED( "This define is deprecated. VK_API_VERSION_PATCH should be used instead." )
+  VULKAN_HPP_CONSTEXPR uint32_t versionPatch( T const version )
+  {
+    return ( (uint32_t)(version)&0xFFFU );
+  }
+
+  VULKAN_HPP_CONSTEXPR auto ApiVersion            = makeApiVersion( 0, 1, 0, 0 );
+  VULKAN_HPP_CONSTEXPR auto ApiVersion10          = makeApiVersion( 0, 1, 0, 0 );
+  VULKAN_HPP_CONSTEXPR auto ApiVersion11          = makeApiVersion( 0, 1, 1, 0 );
+  VULKAN_HPP_CONSTEXPR auto ApiVersion12          = makeApiVersion( 0, 1, 2, 0 );
+  VULKAN_HPP_CONSTEXPR auto ApiVersion13          = makeApiVersion( 0, 1, 3, 0 );
+  VULKAN_HPP_CONSTEXPR auto HeaderVersionComplete = makeApiVersion( VKSC_API_VARIANT, 1, 0, VK_HEADER_VERSION );
+
 }  // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off

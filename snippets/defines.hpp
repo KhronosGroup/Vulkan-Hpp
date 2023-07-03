@@ -14,6 +14,17 @@
 #  undef MemoryBarrier
 #endif
 
+// XLib.h defines True/False, which collides with our vk::True/vk::False
+// ->  undef them and provide some namepace-secure constexpr
+#if defined( True )
+#  undef True
+constexpr int True = 1;
+#endif
+#if defined( False )
+#  undef False
+constexpr int False = 0;
+#endif
+
 #if defined(__GNUC__)
 # define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
 #endif

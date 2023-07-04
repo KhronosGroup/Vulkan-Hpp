@@ -1145,6 +1145,13 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     checkEnumCorrectness( ext.requireData );
   }
 
+  // enum alias checks
+  for ( auto const & alias : m_enumAliases )
+  {
+    checkForError(
+      m_enums.find( alias.second.name ) != m_enums.end(), alias.second.xmlLine, "enum <" + alias.first + "> uses unknown alias <" + alias.second.name + ">" );
+  }
+
   // special check for VkFormat
   if ( !m_formats.empty() )
   {
@@ -14351,9 +14358,7 @@ void VulkanHppGenerator::readTypeEnum( tinyxml2::XMLElement const * element, std
   }
   else
   {
-    checkForError( m_enums.find( alias ) != m_enums.end(), line, "enum <" + name + "> uses unknown alias <" + alias + ">" );
-    assert( m_enumAliases.find( name ) == m_enumAliases.end() );
-    m_enumAliases[name] = { alias, line };
+    checkForError( m_enumAliases.insert( { name, { alias, line } } ).second, line, "enum <" + name + "> already specified as some alias" );
   }
 }
 

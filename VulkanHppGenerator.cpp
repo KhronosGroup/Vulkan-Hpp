@@ -718,7 +718,7 @@ export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
 
-  export namespace VULKAN_HPP_RAII_NAMESPACE {
+  namespace VULKAN_HPP_RAII_NAMESPACE {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 } // namespace VULKAN_HPP_NAMESPACE
@@ -5313,7 +5313,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
-  auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_DYNAMIC_LOADER_TOOL" );
+  auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL" );
   usings += "\n" + enterDynamicLoader + replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) + leaveDynamicLoader + "\n";
 
   usings += replaceWithMap( usingTemplate, { { "className", "DispatchLoaderDynamic" } } ) + "\n";

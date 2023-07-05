@@ -333,6 +333,20 @@ set( TINYXML2_SOURCES ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.cpp )
 set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
 source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 
+# Build Vulkan-Hpp as a module
+if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
+	# create a target to provide VulkanHpp as C++20 module
+	add_library( VulkanHppModule )
+	set_target_properties( VulkanHppModule PROPERTIES
+		CXX_STANDARD_REQUIRED ON
+		CXX_EXTENSIONS OFF )
+	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+	target_sources( VulkanHppModule
+		PUBLIC
+		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
+	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
+	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
+endif()
 
 # The generator project !
 project( VulkanHppGenerator LANGUAGES CXX )
@@ -404,19 +418,4 @@ if( ${VULKAN_HPP_INSTALL} )
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
 
-endif()
-
-# Build Vulkan-Hpp as a module
-if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
-	# create a target to provide VulkanHpp as C++20 module
-	add_library( VulkanHppModule )
-	set_target_properties( VulkanHppModule PROPERTIES
-		CXX_STANDARD_REQUIRED ON
-		CXX_EXTENSIONS OFF )
-	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
-	target_sources( VulkanHppModule
-		PUBLIC
-		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
-	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
-	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()

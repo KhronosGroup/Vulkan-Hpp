@@ -4742,9 +4742,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     return ${implementation};
   }
 )" };
-  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName} = ${callee}( ${arguments} );
+  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${constName} = ${callee}( ${arguments} );
 )" };
-  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR ${type} ${constName} = ${value};
+  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE ${type} ${constName} = ${value};
 )" };
   auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 

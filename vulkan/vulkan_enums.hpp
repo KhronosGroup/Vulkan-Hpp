@@ -5628,31 +5628,6 @@ namespace VULKAN_HPP_NAMESPACE
     eShaderValidationCache = VK_VALIDATION_FEATURE_DISABLE_SHADER_VALIDATION_CACHE_EXT
   };
 
-  //=== VK_NV_cooperative_matrix ===
-
-  enum class ScopeNV
-  {
-    eDevice      = VK_SCOPE_DEVICE_NV,
-    eWorkgroup   = VK_SCOPE_WORKGROUP_NV,
-    eSubgroup    = VK_SCOPE_SUBGROUP_NV,
-    eQueueFamily = VK_SCOPE_QUEUE_FAMILY_NV
-  };
-
-  enum class ComponentTypeNV
-  {
-    eFloat16 = VK_COMPONENT_TYPE_FLOAT16_NV,
-    eFloat32 = VK_COMPONENT_TYPE_FLOAT32_NV,
-    eFloat64 = VK_COMPONENT_TYPE_FLOAT64_NV,
-    eSint8   = VK_COMPONENT_TYPE_SINT8_NV,
-    eSint16  = VK_COMPONENT_TYPE_SINT16_NV,
-    eSint32  = VK_COMPONENT_TYPE_SINT32_NV,
-    eSint64  = VK_COMPONENT_TYPE_SINT64_NV,
-    eUint8   = VK_COMPONENT_TYPE_UINT8_NV,
-    eUint16  = VK_COMPONENT_TYPE_UINT16_NV,
-    eUint32  = VK_COMPONENT_TYPE_UINT32_NV,
-    eUint64  = VK_COMPONENT_TYPE_UINT64_NV
-  };
-
   //=== VK_NV_coverage_reduction_mode ===
 
   enum class CoverageReductionModeNV
@@ -6646,6 +6621,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSubgroup    = VK_SCOPE_SUBGROUP_KHR,
     eQueueFamily = VK_SCOPE_QUEUE_FAMILY_KHR
   };
+  using ScopeNV = ScopeKHR;
 
   enum class ComponentTypeKHR
   {
@@ -6661,6 +6637,7 @@ namespace VULKAN_HPP_NAMESPACE
     eUint32  = VK_COMPONENT_TYPE_UINT32_KHR,
     eUint64  = VK_COMPONENT_TYPE_UINT64_KHR
   };
+  using ComponentTypeNV = ComponentTypeKHR;
 
   //=========================
   //=== Index Type Traits ===

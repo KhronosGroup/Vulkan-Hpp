@@ -617,10 +617,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ValidationFeatureDisableEXT;
   using VULKAN_HPP_NAMESPACE::ValidationFeatureEnableEXT;
 
-  //=== VK_NV_cooperative_matrix ===
-  using VULKAN_HPP_NAMESPACE::ComponentTypeNV;
-  using VULKAN_HPP_NAMESPACE::ScopeNV;
-
   //=== VK_NV_coverage_reduction_mode ===
   using VULKAN_HPP_NAMESPACE::CoverageReductionModeNV;
   using VULKAN_HPP_NAMESPACE::PipelineCoverageReductionStateCreateFlagBitsNV;
@@ -810,7 +806,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_cooperative_matrix ===
   using VULKAN_HPP_NAMESPACE::ComponentTypeKHR;
+  using VULKAN_HPP_NAMESPACE::ComponentTypeNV;
   using VULKAN_HPP_NAMESPACE::ScopeKHR;
+  using VULKAN_HPP_NAMESPACE::ScopeNV;
 
   //=========================
   //=== Index Type Traits ===

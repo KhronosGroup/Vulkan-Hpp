@@ -718,7 +718,7 @@ export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
 
-  export namespace VULKAN_HPP_RAII_NAMESPACE {
+  namespace VULKAN_HPP_RAII_NAMESPACE {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 } // namespace VULKAN_HPP_NAMESPACE
@@ -4742,9 +4742,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     return ${implementation};
   }
 )" };
-  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR auto ${constName} = ${callee}( ${arguments} );
+  auto const constexprCallTemplate     = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${constName} = ${callee}( ${arguments} );
 )" };
-  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR ${type} ${constName} = ${value};
+  auto const constexprValueTemplate    = std::string{ R"(  ${deprecated}VULKAN_HPP_CONSTEXPR_INLINE ${type} ${constName} = ${value};
 )" };
   auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 
@@ -5313,7 +5313,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
-  auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_DYNAMIC_LOADER_TOOL" );
+  auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL" );
   usings += "\n" + enterDynamicLoader + replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) + leaveDynamicLoader + "\n";
 
   usings += replaceWithMap( usingTemplate, { { "className", "DispatchLoaderDynamic" } } ) + "\n";

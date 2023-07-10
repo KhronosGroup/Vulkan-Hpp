@@ -86,6 +86,14 @@ constexpr int False = 0;
 #  define VULKAN_HPP_CONST_OR_CONSTEXPR const
 #endif
 
+#if !defined( VULKAN_HPP_CONSTEXPR_INLINE )
+#  if 201606L <= __cpp_inline_variables
+#    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR inline
+#  else
+#    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR
+#  endif
+#endif
+
 #if !defined( VULKAN_HPP_NOEXCEPT )
 #  if defined( _MSC_VER ) && ( _MSC_VER <= 1800 )
 #    define VULKAN_HPP_NOEXCEPT

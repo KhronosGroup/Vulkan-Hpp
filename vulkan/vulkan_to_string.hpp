@@ -7701,39 +7701,6 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  //=== VK_NV_cooperative_matrix ===
-
-  VULKAN_HPP_INLINE std::string to_string( ScopeNV value )
-  {
-    switch ( value )
-    {
-      case ScopeNV::eDevice: return "Device";
-      case ScopeNV::eWorkgroup: return "Workgroup";
-      case ScopeNV::eSubgroup: return "Subgroup";
-      case ScopeNV::eQueueFamily: return "QueueFamily";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( ComponentTypeNV value )
-  {
-    switch ( value )
-    {
-      case ComponentTypeNV::eFloat16: return "Float16";
-      case ComponentTypeNV::eFloat32: return "Float32";
-      case ComponentTypeNV::eFloat64: return "Float64";
-      case ComponentTypeNV::eSint8: return "Sint8";
-      case ComponentTypeNV::eSint16: return "Sint16";
-      case ComponentTypeNV::eSint32: return "Sint32";
-      case ComponentTypeNV::eSint64: return "Sint64";
-      case ComponentTypeNV::eUint8: return "Uint8";
-      case ComponentTypeNV::eUint16: return "Uint16";
-      case ComponentTypeNV::eUint32: return "Uint32";
-      case ComponentTypeNV::eUint64: return "Uint64";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
   //=== VK_NV_coverage_reduction_mode ===
 
   VULKAN_HPP_INLINE std::string to_string( CoverageReductionModeNV value )

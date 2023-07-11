@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "XMLHelper.hpp"
+
 #include <iostream>
 #include <map>
 #include <set>
@@ -94,45 +96,6 @@ public:
   void prepareVulkanFuncs();
 
 private:
-  struct TypeInfo
-  {
-    std::string compose( std::string const & nameSpace ) const;
-
-    bool operator==( TypeInfo const & rhs ) const
-    {
-      return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
-    }
-
-    bool operator!=( TypeInfo const & rhs ) const
-    {
-      return !operator==( rhs );
-    }
-
-    bool operator<( TypeInfo const & rhs ) const
-    {
-      return ( prefix < rhs.prefix ) || ( ( prefix == rhs.prefix ) && ( ( type < rhs.type ) || ( ( type == rhs.type ) && ( postfix < rhs.postfix ) ) ) );
-    }
-
-    bool isConstPointer() const
-    {
-      return ( prefix.find( "const" ) != std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
-    }
-
-    bool isNonConstPointer() const
-    {
-      return ( prefix.find( "const" ) == std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
-    }
-
-    bool isValue() const
-    {
-      return ( ( prefix.find( '*' ) == std::string::npos ) && ( postfix.find( '*' ) == std::string::npos ) );
-    }
-
-    std::string prefix  = {};
-    std::string type    = {};
-    std::string postfix = {};
-  };
-
   struct AliasData
   {
     std::string name    = {};
@@ -150,6 +113,29 @@ private:
     std::string require = {};
     std::string type    = {};
     int         xmlLine = {};
+  };
+
+  struct EnumValueData
+  {
+    std::string alias   = {};
+    std::string bitpos  = {};
+    std::string name    = {};
+    std::string protect = {};
+    std::string value   = {};
+    int         xmlLine = {};
+  };
+
+  struct EnumData
+  {
+    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
+    void addEnumValue(
+      int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
+
+    std::string                bitwidth          = {};
+    bool                       isBitmask         = false;
+    std::vector<EnumValueData> unsupportedValues = {};
+    std::vector<EnumValueData> values            = {};
+    int                        xmlLine           = {};
   };
 
   struct NameData
@@ -206,29 +192,6 @@ private:
     std::map<std::string, DefineData> values  = {};
   };
 
-  struct EnumValueData
-  {
-    std::string alias   = {};
-    std::string bitpos  = {};
-    std::string name    = {};
-    std::string protect = {};
-    std::string value   = {};
-    int         xmlLine = {};
-  };
-
-  struct EnumData
-  {
-    void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
-    void addEnumValue(
-      int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
-
-    std::string                bitwidth          = {};
-    bool                       isBitmask         = false;
-    std::vector<EnumValueData> unsupportedValues = {};
-    std::vector<EnumValueData> values            = {};
-    int                        xmlLine           = {};
-  };
-
   struct RemoveData
   {
     std::vector<std::string> commands = {};
@@ -245,15 +208,6 @@ private:
     int                      xmlLine  = {};
   };
 
-  struct FeatureData
-  {
-    std::string              name        = {};
-    std::string              number      = {};
-    std::vector<RemoveData>  removeData  = {};
-    std::vector<RequireData> requireData = {};
-    int                      xmlLine     = {};
-  };
-
   struct ExtensionData
   {
     std::string                                                  deprecatedBy = {};
@@ -267,6 +221,15 @@ private:
     std::vector<RequireData>                                     requireData  = {};
     std::string                                                  type         = {};
     int                                                          xmlLine      = 0;
+  };
+
+  struct FeatureData
+  {
+    std::string              name        = {};
+    std::string              number      = {};
+    std::vector<RemoveData>  removeData  = {};
+    std::vector<RequireData> requireData = {};
+    int                      xmlLine     = {};
   };
 
   struct ExternalTypeData
@@ -339,9 +302,10 @@ private:
     std::vector<std::map<std::string, CommandData>::const_iterator> constructorIts = {};
   };
 
-  struct IncludeData
+  struct PlatformData
   {
-    int xmlLine = {};
+    std::string protect = {};
+    int         xmlLine = {};
   };
 
   struct MemberData
@@ -357,14 +321,7 @@ private:
     std::vector<std::string>                    selection      = {};
     std::string                                 selector       = {};
     std::string                                 value          = {};
-    std::string                                 usedConstant   = {};
     int                                         xmlLine        = {};
-  };
-
-  struct PlatformData
-  {
-    std::string protect = {};
-    int         xmlLine = {};
   };
 
   struct StructureData
@@ -382,29 +339,6 @@ private:
   struct TagData
   {
     int xmlLine = {};
-  };
-
-  enum class TypeCategory
-  {
-    Bitmask,
-    BaseType,
-    Constant,
-    Define,
-    Enum,
-    ExternalType,
-    FuncPointer,
-    Handle,
-    Include,
-    Struct,
-    Union,
-    Unknown
-  };
-
-  struct TypeData
-  {
-    TypeCategory          category   = TypeCategory::Unknown;
-    std::set<std::string> requiredBy = {};
-    int                   xmlLine    = {};
   };
 
   struct VectorParamData
@@ -986,7 +920,6 @@ private:
   std::pair<bool, ParamData>                             readCommandParam( tinyxml2::XMLElement const * element, std::vector<ParamData> const & params );
   std::pair<std::string, std::string>                    readCommandProto( tinyxml2::XMLElement const * element );
   void                                                   readCommands( tinyxml2::XMLElement const * element );
-  std::string                                            readComment( tinyxml2::XMLElement const * element );
   void                                                   readEnums( tinyxml2::XMLElement const * element );
   void                                                   readEnumsConstants( tinyxml2::XMLElement const * element );
   void                          readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt );
@@ -1052,7 +985,6 @@ private:
   std::vector<std::string> selectCommandsByHandle( std::vector<RequireData> const & requireData,
                                                    std::set<std::string> const &    handleCommands,
                                                    std::set<std::string> &          listedCommands ) const;
-  void                     setVulkanLicenseHeader( int line, std::string const & comment );
   bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
   std::string              stripPluralS( std::string const & name ) const;
   std::string              toString( TypeCategory category );

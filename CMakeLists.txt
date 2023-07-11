@@ -38,6 +38,8 @@ else()
 	cmake_minimum_required( VERSION 3.12 )
 endif()
 
+project( VulkanHppGenerator LANGUAGES CXX )
+
 function( vulkan_hpp__setup_platform )
 	set( options )
 	set( oneValueArgs NAME )
@@ -348,20 +350,24 @@ if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()
 
-# The generator project !
-project( VulkanHppGenerator LANGUAGES CXX )
+# The generator executable
+add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
+target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
+target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
-add_executable( ${PROJECT_NAME} VulkanHppGenerator.cpp VulkanHppGenerator.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+# The video generator executable
+add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
+vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
+file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
+string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
+target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
+target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
+set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
-vulkan_hpp__setup_warning_level( NAME ${PROJECT_NAME} )
 
-target_compile_definitions( ${PROJECT_NAME} PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
-
-target_include_directories( ${PROJECT_NAME} PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
-
-set_target_properties( ${PROJECT_NAME} PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
-
-# if the generator is to be run, add a custom command and target
+# if the generators are to be run, add a custom commands and targets
 if( VULKAN_HPP_RUN_GENERATOR )
 	if( NOT DEFINED VulkanHeaders_INCLUDE_DIR )
 		if( DEFINED VULKAN_HPP_PATH )
@@ -374,14 +380,21 @@ if( VULKAN_HPP_RUN_GENERATOR )
 	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
 
 	add_custom_command(
-		COMMAND ${PROJECT_NAME}
-		COMMAND ${PROJECT_NAME} -api vulkansc
+		COMMAND VulkanHppGenerator
+		COMMAND VulkanHppGenerator -api vulkansc
 		OUTPUT "${vulkan_hpp}"
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		COMMENT "run ${PROJECT_NAME}"
-		DEPENDS ${PROJECT_NAME} "${vk_spec}" )
-
+		COMMENT "run VulkanHppGenerator"
+		DEPENDS VulkanHppGenerator "${vk_spec}" )
 	add_custom_target( build_vulkan_hpp ALL DEPENDS "${vulkan_hpp}" "${vk_spec}" )
+
+	add_custom_command(
+		COMMAND VideoHppGenerator
+		OUTPUT "${vulkan_video_hpp}"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+		COMMENT "run VulkanVideoGenerator"
+		DEPENDS VulkanVideoGenerator "${video_spec}" )
+	add_custom_target( build_vulkan_video ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
 endif()
 
 if( VULKAN_HPP_SAMPLES_BUILD )

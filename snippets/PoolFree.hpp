@@ -1,30 +1,72 @@
-  template <typename OwnerType, typename PoolType, typename Dispatch>
-  class PoolFree
+template <typename OwnerType, typename PoolType, typename Dispatch>
+class PoolFree
+{
+public:
+  PoolFree() = default;
+
+  PoolFree( OwnerType owner, PoolType pool, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+    : m_owner( owner )
+    , m_pool( pool )
+    , m_dispatch( &dispatch )
   {
-    public:
-      PoolFree() = default;
+  }
 
-    PoolFree( OwnerType                 owner,
-              PoolType                  pool,
-              Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-        : m_owner( owner )
-        , m_pool( pool )
-        , m_dispatch( &dispatch )
-      {}
+  OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+  {
+    return m_owner;
+  }
 
-      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT { return m_owner; }
-      PoolType getPool() const VULKAN_HPP_NOEXCEPT { return m_pool; }
-      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
+  PoolType getPool() const VULKAN_HPP_NOEXCEPT
+  {
+    return m_pool;
+  }
 
-    protected:
-      template <typename T>
-      void destroy(T t) VULKAN_HPP_NOEXCEPT
-      {
-        ( m_owner.free )( m_pool, t, *m_dispatch );
-      }
+  Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+  {
+    return *m_dispatch;
+  }
 
-    private:
-      OwnerType        m_owner    = OwnerType();
-      PoolType         m_pool     = PoolType();
-      Dispatch const * m_dispatch = nullptr;
-  };
+protected:
+  template <typename T>
+  void destroy( T t ) VULKAN_HPP_NOEXCEPT
+  {
+    ( m_owner.free )( m_pool, t, *m_dispatch );
+  }
+
+private:
+  OwnerType        m_owner    = OwnerType();
+  PoolType         m_pool     = PoolType();
+  Dispatch const * m_dispatch = nullptr;
+};
+
+template <typename HandleType, typename PoolType>
+class PoolFreeShared
+{
+public:
+  using handle_type = HandleType;
+  using pool_type   = PoolType;
+  using parent      = parent_of_t<handle_type>;
+
+  template <class Dispatcher>
+  using destroy_pfn_t = void ( parent::* )( pool_type pool, handle_type kty, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT > ;
+
+  PoolFreeShared() = default;
+
+  template <class Dispatcher>
+  PoolFreeShared( PoolType pool, const Dispatcher & disp VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+    : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &parent::free ) ) ), m_pool( pool ), m_loader( &disp )
+  {
+  }
+
+protected:
+  void Destroy( parent parent, handle_type handle ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( m_destroy && m_loader );
+    ( parent.*m_destroy )( m_pool, handle, *m_loader );
+  }
+
+private:
+  destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
+  pool_type                         m_pool    = pool_type();
+  const DispatchLoaderBase *        m_loader  = nullptr;
+};

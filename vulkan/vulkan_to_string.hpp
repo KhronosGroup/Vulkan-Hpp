@@ -11,7 +11,7 @@
 #include <vulkan/vulkan_enums.hpp>
 
 #if __cpp_lib_format
-#  include <format>  // std::format
+#  include <format>   // std::format
 #else
 #  include <sstream>  // std::stringstream
 #endif

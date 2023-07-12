@@ -354,6 +354,7 @@ namespace VULKAN_HPP_NAMESPACE
 ${structForwardDeclarations}
 ${handleForwardDeclarations}
 ${uniqueHandles}
+${sharedHandles}
 ${handles}
 }   // namespace VULKAN_HPP_NAMESPACE
 
@@ -385,11 +386,14 @@ typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool
 )";
 
   std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    { { "handles", generateHandles() },
+                                    {
+                                      { "handles", generateHandles() },
                                       { "handleForwardDeclarations", generateHandleForwardDeclarations() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "sharedHandles", generateSharedHandles() },
                                       { "structForwardDeclarations", generateStructForwardDeclarations() },
-                                      { "uniqueHandles", generateUniqueHandles() } } );
+                                      { "uniqueHandles", generateUniqueHandles() },
+                                    } );
 
   writeToFile( str, vulkan_handles_hpp );
 }
@@ -467,12 +471,14 @@ ${StridedArrayProxy}
 ${Optional}
 ${StructureChain}
 ${UniqueHandle}
+${SharedHandle}
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
 ${DispatchLoaderBase}
 ${DispatchLoaderStatic}
 ${DispatchLoaderDefault}
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+${SharedDefinitions}
 ${ObjectDestroy}
 ${ObjectFree}
 ${ObjectRelease}
@@ -556,6 +562,8 @@ ${DispatchLoaderDynamic}
                       { "resultExceptions", generateResultExceptions() },
                       { "structExtendsStructs", generateStructExtendsStructs() },
                       { "ResultValue", readSnippet( "ResultValue.hpp" ) },
+                      { "SharedDefinitions", readSnippet( "SharedDefinitions.hpp" ) },
+                      { "SharedHandle", readSnippet( "SharedHandle.hpp" ) },
                       { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
                       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
                       { "throwResultException", generateThrowResultException() },
@@ -11616,6 +11624,83 @@ ${uniqueHandles}
   assert( uniqueHandles.back() == '\n' );
   uniqueHandles.pop_back();
   return replaceWithMap( uniqueHandlesTemplate, { { "uniqueHandles", uniqueHandles } } );
+}
+
+std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const
+{
+  if ( !handleData.second.deleteCommand.empty() )
+  {
+    std::string type = stripPrefix( handleData.first, "Vk" );
+    std::string aliasHandle;
+    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
+    if ( aliasIt != m_handleAliases.end() )
+    {
+      static const std::string aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
+
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
+    }
+
+    static const std::string uniqueHandleTemplate = R"(  template <>
+  class SharedHandleTraits<${type}>
+  {
+  public:
+    using deleter = ${deleterType}${deleterAction}Shared<${deleterParent}${deleterPool}>;
+  };
+  using Shared${type} = SharedHandle<${type}>;
+${aliasHandle})";
+
+    return replaceWithMap( uniqueHandleTemplate,
+                           { { "aliasHandle", aliasHandle },
+                             { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
+                             { "deleterParent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
+                             { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
+                             { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
+                             { "type", type } } );
+  }
+  return "";
+}
+
+std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type );
+      if ( handleIt != m_handles.end() )
+      {
+        str += generateSharedHandle( *handleIt );
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateSharedHandles() const
+{
+  std::string uniqueHandlesTemplate = R"(
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  //======================
+  //=== SHARED HANDLEs ===
+  //======================
+
+${sharedHandles}
+#endif  /*VULKAN_HPP_NO_SMART_HANDLE*/
+)";
+
+  std::string uniqueHandles;
+  for ( auto const & feature : m_features )
+  {
+    uniqueHandles += generateSharedHandle( feature.requireData, feature.name );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    uniqueHandles += generateSharedHandle( extension.requireData, extension.name );
+  }
+  assert( uniqueHandles.back() == '\n' );
+  uniqueHandles.pop_back();
+  return replaceWithMap( uniqueHandlesTemplate, { { "sharedHandles", uniqueHandles } } );
 }
 
 std::string VulkanHppGenerator::generateVectorSizeCheck( std::string const &                           name,

@@ -314,14 +314,14 @@ protected:
   template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
   void internal_destroy() VULKAN_HPP_NOEXCEPT
   {
-    m_control->deleter.destroy( m_handle );
+    m_control->deleter.Destroy( m_handle );
     m_handle = nullptr;
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
   void internal_destroy() VULKAN_HPP_NOEXCEPT
   {
-    m_control->deleter.destroy( m_control.getParent(), m_handle );
+    m_control->deleter.Destroy( m_control.getParent(), m_handle );
     m_handle = nullptr;
   }
 };
@@ -388,7 +388,7 @@ protected:
   {
     if ( !control.swapchainOwned() )
     {
-      m_control->deleter.destroy( m_control.getParent(), m_handle );
+      m_control->deleter.Destroy( m_control.getParent(), m_handle );
     }
     m_handle = nullptr;
   }

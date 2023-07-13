@@ -95,54 +95,62 @@ class NoParent;
 template <typename HandleType>
 class SharedHandle;
 
-template <typename ParentType>
+template <typename ParentType, typename Deleter>
 struct SharedHeader
 {
+  using deleter_type = Deleter;
   SharedHandle<ParentType> parent{};
   std::atomic_size_t       ref_cnt{ 1 };
+  deleter_type             deleter{};
 };
 
-template <>
-struct SharedHeader<NoParent>
+template <typename Deleter>
+struct SharedHeader<NoParent, Deleter>
 {
+  using deleter_type = Deleter;
   std::atomic_size_t ref_cnt{ 1 };
+  deleter_type       deleter{};
 };
 
 //=====================================================================================================================
 
 template <typename HandleType>
-class BasicControlBlock : public ControlBlockBase<SharedHeader<parent_of_t<HandleType>>>
+class BasicControlBlock : public ControlBlockBase<SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
 {
-  using parent = parent_of_t<HandleType>;
-  using base   = ControlBlockBase<SharedHeader<parent>>;
-  using base::m_control;
+public:
+  using parent_type = parent_of_t<HandleType>;
+  using base_type   = ControlBlockBase<SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>;
+  using base_type::m_control;
+  using deleter_type = typename base_type::deleter_type;
 
 public:
   BasicControlBlock() = default;
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  BasicControlBlock( SharedHandle<parent> xparent )
+  BasicControlBlock( SharedHandle<parent_type> xparent, deleter_type deleter )
   {
     base::allocate();
-    m_control->parent = std::move( xparent );
+    m_control->parent  = std::move( xparent );
+    m_control->deleter = std::move( deleter );
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
-  BasicControlBlock( bool )
+  BasicControlBlock( deleter_type deleter )
   {
     base::allocate();
+    m_control->deleter = std::move( deleter );
   }
 
 public:
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  parent getParent() const VULKAN_HPP_NOEXCEPT
+  parent_type getParent() const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_control && m_control->parent );
     return m_control->parent.get();
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  auto getParentHandle() const VULKAN_HPP_NOEXCEPT
+  SharedHandle<parent_type> getParentHandle() const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_control && m_control->parent );
     return m_control->parent;
@@ -154,7 +162,7 @@ class SharedHandleBase
 {
 public:
   using control_block = ControlBlock;
-  using parent        = parent_of_t<HandleType>;
+  using parent_type   = parent_of_t<HandleType>;
   using handle_type   = HandleType;
 
 public:
@@ -241,28 +249,30 @@ public:
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  parent getParent() const VULKAN_HPP_NOEXCEPT
+  parent_type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return m_control.getParent();
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  auto getParentHandle() const VULKAN_HPP_NOEXCEPT
+  SharedHandle<parent_type> getParentHandle() const VULKAN_HPP_NOEXCEPT
   {
     return m_control.getParentHandle();
   }
 
 protected:
   control_block m_control{};
-  handle_type   m_handle = nullptr;
+  handle_type   m_handle{};
 };
 
 template <typename HandleType>
 class SharedHandle : public SharedHandleBase<HandleType>
 {
 private:
-  using base = SharedHandleBase<HandleType>;
+  using base    = SharedHandleBase<HandleType>;
   using deleter = typename SharedHandleTraits<HandleType>::deleter;
+  using base::m_control;
+  using base::m_handle;
   friend base;
 
 public:
@@ -275,7 +285,7 @@ public:
                          SharedHandle<typename base::parent>                     xparent,
                          Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                          const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : base( handle, std::move( xparent ) ), m_deleter( allocationCallbacks, disp )
+    : base( handle, { std::move( xparent ), { allocationCallbacks, disp } } )
   {
   }
 
@@ -288,7 +298,7 @@ public:
                          SharedHandle<typename base::parent> xparent,
                          PoolType                            pool,
                          const Dispatcher & disp             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : base( handle, std::move( xparent ) ), m_deleter( pool, disp )
+    : base( handle, { std::move( xparent ), { pool, disp } } )
   {
   }
 
@@ -296,7 +306,7 @@ public:
   explicit shared_handle( HandleType                                              handle,
                           Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                           const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : base( handle, { true } ), m_deleter( allocationCallbacks, disp )
+    : base( handle, { { allocationCallbacks, disp } } )
   {
   }
 
@@ -304,22 +314,19 @@ protected:
   template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
   void internal_destroy() VULKAN_HPP_NOEXCEPT
   {
-    m_deleter.destroy( m_handle );
+    m_control->deleter.destroy( m_handle );
     m_handle = nullptr;
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
   void internal_destroy() VULKAN_HPP_NOEXCEPT
   {
-    m_deleter.destroy( m_control.getParent(), m_handle );
+    m_control->deleter.destroy( m_control.getParent(), m_handle );
     m_handle = nullptr;
   }
-
-protected:
-  deleter m_deleter;
 };
 
-struct ImageHeader : SharedHeader<parent_of_t<Image>>
+struct ImageHeader : SharedHeader<parent_of_t<Image>, typename SharedHandleTraits<Image>::deleter>
 {
   bool swapchain_owned = false;
 };
@@ -333,7 +340,8 @@ struct ImageControlBlock : ControlBlockBase<ImageHeader>
 public:
   ImageControlBlock() = default;
 
-  ImageControlBlock( SharedHandle<parent> xparent, bool swapchain_owned = false )
+  template <typename Deleter>
+  ImageControlBlock( SharedHandle<parent> xparent, Deleter deleter, bool swapchain_owned = false )
   {
     allocate();
     m_control->parent          = std::move( xparent );
@@ -345,7 +353,7 @@ public:
     return m_control->parent.get();
   }
 
-  auto getParentHandle() const VULKAN_HPP_NOEXCEPT
+  SharedHandle<parent> getParentHandle() const VULKAN_HPP_NOEXCEPT
   {
     return m_control->parent;
   }
@@ -371,7 +379,7 @@ public:
                          bool                                                    swapchain_owned = false,
                          Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                          const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : base( handle, { std::move( xparent ), swapchain_owned } ), m_deleter( allocationCallbacks, disp )
+    : base( handle, { std::move( xparent ), { allocationCallbacks, disp }, swapchain_owned } )
   {
   }
 
@@ -380,13 +388,10 @@ protected:
   {
     if ( !control.swapchainOwned() )
     {
-      m_deleter.destroy( m_control.getParent(), m_handle );
+      m_control->deleter.destroy( m_control.getParent(), m_handle );
     }
     m_handle = nullptr;
   }
-
-protected:
-  SharedHandleTraits<HandleType>::deleter m_deleter;
 };
 
 template <typename SharedType>

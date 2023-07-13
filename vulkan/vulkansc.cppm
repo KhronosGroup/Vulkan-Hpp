@@ -1345,9 +1345,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::StructExtends;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
-#if defined( VULKAN_HPP_DYNAMIC_LOADER_TOOL )
+#if defined( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )
   using VULKAN_HPP_NAMESPACE::DynamicLoader;
-#endif /*VULKAN_HPP_DYNAMIC_LOADER_TOOL*/
+#endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
 
   using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
 
@@ -1390,7 +1390,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::isObsoletedExtension;
   using VULKAN_HPP_NAMESPACE::isPromotedExtension;
 
-  export namespace VULKAN_HPP_RAII_NAMESPACE
+  namespace VULKAN_HPP_RAII_NAMESPACE
   {
     //======================
     //=== RAII HARDCODED ===

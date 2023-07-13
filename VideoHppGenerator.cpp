@@ -103,7 +103,7 @@ std::vector<std::string>::iterator VideoHppGenerator::addImplicitlyRequiredTypes
           ( *typeIt->second.requiredBy.begin() == extensionData.depends ) );
   if ( typeIt->second.requiredBy.empty() && ( std::find( extensionData.requireData.types.begin(), reqIt, typeIt->first ) == reqIt ) )
   {
-    assert( std::find( reqIt, extensionData.requireData.types.end(), typeIt->first ) == extensionData.requireData.types.end() );
+    assert( std::none_of( reqIt, extensionData.requireData.types.end(), [&typeIt]( std::string const & type ) { return type == typeIt->first; } ) );
     typeIt->second.requiredBy.insert( extensionData.name );
     reqIt = std::next( extensionData.requireData.types.insert( reqIt, typeIt->first ) );
   }
@@ -368,7 +368,7 @@ std::string VideoHppGenerator::generateStructs() const
 ${structs}
 )";
 
-  std::string           structs;
+  std::string structs;
   for ( auto const & extension : m_extensions )
   {
     structs += generateStructs( extension.requireData, extension.name );
@@ -396,7 +396,7 @@ std::string VideoHppGenerator::generateStructs( RequireData const & requireData,
 
 bool VideoHppGenerator::isExtension( std::string const & name ) const
 {
-  return std::find_if( m_extensions.begin(), m_extensions.end(), [&name]( ExtensionData const & ed ) { return ed.name == name; } ) != m_extensions.end();
+  return std::any_of( m_extensions.begin(), m_extensions.end(), [&name]( ExtensionData const & ed ) { return ed.name == name; } );
 }
 
 void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
@@ -459,9 +459,7 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
   std::string prefix = toUpperCase( enumIt->first ) + "_";
   checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
-  checkForError( std::find_if( enumIt->second.values.begin(),
-                               enumIt->second.values.end(),
-                               [&name]( EnumValueData const & evd ) { return evd.name == name; } ) == enumIt->second.values.end(),
+  checkForError( std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
                  line,
                  "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
   enumIt->second.values.push_back( { name, value, line } );
@@ -670,7 +668,7 @@ void VideoHppGenerator::readStructMember( tinyxml2::XMLElement const * element, 
   }
   assert( !name.empty() );
 
-  checkForError( std::find_if( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ) == members.end(),
+  checkForError( std::none_of( members.begin(), members.end(), [&name]( MemberData const & md ) { return md.name == name; } ),
                  line,
                  "struct member name <" + name + "> already used" );
   memberData.name = name;
@@ -896,12 +894,13 @@ void VideoHppGenerator::sortStructs()
               ext.requireData.types.erase( it );
               reqIt = std::next( ext.requireData.types.insert( reqIt, member.type.type ) );
             }
-#if !defined(NDEBUG)
+#if !defined( NDEBUG )
             else
             {
               auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&ext]( ExtensionData const & ed ) { return ed.name == ext.depends; } );
-              assert( ( depIt != m_extensions.end() ) &&
-                      ( std::find( depIt->requireData.types.begin(), depIt->requireData.types.end(), member.type.type ) != depIt->requireData.types.end() ) );
+              assert( ( depIt != m_extensions.end() ) && std::any_of( depIt->requireData.types.begin(),
+                                                                      depIt->requireData.types.end(),
+                                                                      [&member]( std::string const & type ) { return type == member.type.type; } ) );
             }
 #endif
           }
@@ -960,9 +959,9 @@ int main( int argc, char ** argv )
 
     generator.generateHppFile();
 
-#  if !defined( CLANG_FORMAT_EXECUTABLE )
+#if !defined( CLANG_FORMAT_EXECUTABLE )
     std::cout << "VideoHppGenerator: could not find clang-format. The generated files will not be formatted accordingly.\n";
-#  endif
+#endif
   }
   catch ( std::exception const & e )
   {

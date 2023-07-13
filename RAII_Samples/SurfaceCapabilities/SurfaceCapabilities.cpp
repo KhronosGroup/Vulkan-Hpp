@@ -50,12 +50,12 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     vk::raii::Context context;
 
-    std::vector<vk::ExtensionProperties> instanceExtensionProperties     = context.enumerateInstanceExtensionProperties();
-    bool                                 supportsGetSurfaceCapabilities2 = ( std::find_if( instanceExtensionProperties.begin(),
-                                                           instanceExtensionProperties.end(),
-                                                           []( vk::ExtensionProperties const & ep ) {
-                                                             return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0;
-                                                           } ) != instanceExtensionProperties.end() );
+    std::vector<vk::ExtensionProperties> instanceExtensionProperties = context.enumerateInstanceExtensionProperties();
+
+    bool supportsGetSurfaceCapabilities2 =
+      std::any_of( instanceExtensionProperties.begin(),
+                   instanceExtensionProperties.end(),
+                   []( vk::ExtensionProperties const & ep ) { return strcmp( ep.extensionName, VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME ) == 0; } );
 
     std::vector<std::string> extensions = vk::su::getInstanceExtensions();
     if ( supportsGetSurfaceCapabilities2 )

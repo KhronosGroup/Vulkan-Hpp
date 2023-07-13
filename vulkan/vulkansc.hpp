@@ -212,6 +212,14 @@ constexpr int False = 0;
 #  define VULKAN_HPP_CONST_OR_CONSTEXPR const
 #endif
 
+#if !defined( VULKAN_HPP_CONSTEXPR_INLINE )
+#  if 201606L <= __cpp_inline_variables
+#    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR inline
+#  else
+#    define VULKAN_HPP_CONSTEXPR_INLINE VULKAN_HPP_CONSTEXPR
+#  endif
+#endif
+
 #if !defined( VULKAN_HPP_NOEXCEPT )
 #  if defined( _MSC_VER ) && ( _MSC_VER <= 1800 )
 #    define VULKAN_HPP_NOEXCEPT
@@ -4320,32 +4328,32 @@ namespace VULKAN_HPP_NAMESPACE
   //=========================================
   //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
   //=========================================
-  VULKAN_HPP_CONSTEXPR uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
-  VULKAN_HPP_CONSTEXPR uint32_t False                            = VK_FALSE;
-  VULKAN_HPP_CONSTEXPR float    LodClampNone                     = VK_LOD_CLAMP_NONE;
-  VULKAN_HPP_CONSTEXPR uint32_t LuidSize                         = VK_LUID_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxDeviceGroupSize               = VK_MAX_DEVICE_GROUP_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxDriverInfoSize                = VK_MAX_DRIVER_INFO_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxDriverNameSize                = VK_MAX_DRIVER_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxExtensionNameSize             = VK_MAX_EXTENSION_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxGlobalPrioritySizeKhr         = VK_MAX_GLOBAL_PRIORITY_SIZE_KHR;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxMemoryHeaps                   = VK_MAX_MEMORY_HEAPS;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxMemoryTypes                   = VK_MAX_MEMORY_TYPES;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxPhysicalDeviceNameSize        = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t MaxShaderModuleIdentifierSizeExt = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
-  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyExternal              = VK_QUEUE_FAMILY_EXTERNAL;
-  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyForeignExt            = VK_QUEUE_FAMILY_FOREIGN_EXT;
-  VULKAN_HPP_CONSTEXPR uint32_t QueueFamilyIgnored               = VK_QUEUE_FAMILY_IGNORED;
-  VULKAN_HPP_CONSTEXPR uint32_t Remaining3DSlicesExt             = VK_REMAINING_3D_SLICES_EXT;
-  VULKAN_HPP_CONSTEXPR uint32_t RemainingArrayLayers             = VK_REMAINING_ARRAY_LAYERS;
-  VULKAN_HPP_CONSTEXPR uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
-  VULKAN_HPP_CONSTEXPR uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
-  VULKAN_HPP_CONSTEXPR uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
-  VULKAN_HPP_CONSTEXPR uint32_t True                             = VK_TRUE;
-  VULKAN_HPP_CONSTEXPR uint32_t UuidSize                         = VK_UUID_SIZE;
-  VULKAN_HPP_CONSTEXPR uint64_t WholeSize                        = VK_WHOLE_SIZE;
-  VULKAN_HPP_CONSTEXPR uint32_t HeaderVersion                    = VK_HEADER_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t False                            = VK_FALSE;
+  VULKAN_HPP_CONSTEXPR_INLINE float    LodClampNone                     = VK_LOD_CLAMP_NONE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t LuidSize                         = VK_LUID_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDeviceGroupSize               = VK_MAX_DEVICE_GROUP_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverInfoSize                = VK_MAX_DRIVER_INFO_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverNameSize                = VK_MAX_DRIVER_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxExtensionNameSize             = VK_MAX_EXTENSION_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxGlobalPrioritySizeKhr         = VK_MAX_GLOBAL_PRIORITY_SIZE_KHR;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryHeaps                   = VK_MAX_MEMORY_HEAPS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryTypes                   = VK_MAX_MEMORY_TYPES;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxPhysicalDeviceNameSize        = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxShaderModuleIdentifierSizeExt = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyExternal              = VK_QUEUE_FAMILY_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyForeignExt            = VK_QUEUE_FAMILY_FOREIGN_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyIgnored               = VK_QUEUE_FAMILY_IGNORED;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t Remaining3DSlicesExt             = VK_REMAINING_3D_SLICES_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingArrayLayers             = VK_REMAINING_ARRAY_LAYERS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t True                             = VK_TRUE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t UuidSize                         = VK_UUID_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint64_t WholeSize                        = VK_WHOLE_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t HeaderVersion                    = VK_HEADER_VERSION;
 
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
@@ -4405,12 +4413,12 @@ namespace VULKAN_HPP_NAMESPACE
     return ( (uint32_t)(version)&0xFFFU );
   }
 
-  VULKAN_HPP_CONSTEXPR auto ApiVersion            = makeApiVersion( 0, 1, 0, 0 );
-  VULKAN_HPP_CONSTEXPR auto ApiVersion10          = makeApiVersion( 0, 1, 0, 0 );
-  VULKAN_HPP_CONSTEXPR auto ApiVersion11          = makeApiVersion( 0, 1, 1, 0 );
-  VULKAN_HPP_CONSTEXPR auto ApiVersion12          = makeApiVersion( 0, 1, 2, 0 );
-  VULKAN_HPP_CONSTEXPR auto ApiVersion13          = makeApiVersion( 0, 1, 3, 0 );
-  VULKAN_HPP_CONSTEXPR auto HeaderVersionComplete = makeApiVersion( VKSC_API_VARIANT, 1, 0, VK_HEADER_VERSION );
+  VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion            = makeApiVersion( 0, 1, 0, 0 );
+  VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion10          = makeApiVersion( 0, 1, 0, 0 );
+  VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion11          = makeApiVersion( 0, 1, 1, 0 );
+  VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion12          = makeApiVersion( 0, 1, 2, 0 );
+  VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion13          = makeApiVersion( 0, 1, 3, 0 );
+  VULKAN_HPP_CONSTEXPR_INLINE auto HeaderVersionComplete = makeApiVersion( VKSC_API_VARIANT, 1, 0, VK_HEADER_VERSION );
 
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -7020,7 +7028,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

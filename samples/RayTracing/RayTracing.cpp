@@ -70,6 +70,7 @@ struct GeometryInstanceData
   uint32_t flags          : 8;           // Instance flags, such as culling
   uint64_t accelerationStructureHandle;  // Opaque handle of the bottom-level acceleration structure
 };
+
 static_assert( sizeof( GeometryInstanceData ) == 64, "GeometryInstanceData structure compiles to incorrect size" );
 
 struct AccelerationStructureData
@@ -213,6 +214,7 @@ struct Material
   glm::vec3 diffuse   = glm::vec3( 0.7f, 0.7f, 0.7f );
   int       textureID = -1;
 };
+
 const size_t MaterialStride = ( ( sizeof( Material ) + 15 ) / 16 ) * 16;
 
 struct Vertex
@@ -224,6 +226,7 @@ struct Vertex
   glm::vec2 texCoord;
   int       matID;
 };
+
 const size_t VertexStride = ( ( sizeof( Vertex ) + 15 ) / 16 ) * 16;
 
 static const std::vector<Vertex> cubeData = {
@@ -705,10 +708,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( auto pd : physicalDevices )
     {
       std::vector<vk::ExtensionProperties> ep = pd.enumerateDeviceExtensionProperties();
-      if ( std::find_if( ep.cbegin(),
-                         ep.cend(),
-                         []( vk::ExtensionProperties const & prop )
-                         { return strcmp( prop.extensionName, VK_NV_RAY_TRACING_EXTENSION_NAME ) == 0; } ) != ep.cend() )
+      if ( std::any_of( ep.cbegin(),
+                        ep.cend(),
+                        []( vk::ExtensionProperties const & prop ) { return strcmp( prop.extensionName, VK_NV_RAY_TRACING_EXTENSION_NAME ) == 0; } ) )
       {
         physicalDevice = pd;
         break;
@@ -731,11 +733,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     auto       supportedFeatures = physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>();
     vk::Device device            = vk::su::createDevice( physicalDevice,
                                               graphicsAndPresentQueueFamilyIndex.first,
-                                              { VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-                                                VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
-                                                VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
-                                                VK_KHR_SWAPCHAIN_EXTENSION_NAME,
-                                                VK_NV_RAY_TRACING_EXTENSION_NAME },
+                                                         { VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+                                                           VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
+                                                           VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
+                                                           VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+                                                           VK_NV_RAY_TRACING_EXTENSION_NAME },
                                               &supportedFeatures.get<vk::PhysicalDeviceFeatures2>().features,
                                               &supportedFeatures.get<vk::PhysicalDeviceDescriptorIndexingFeaturesEXT>() );
 

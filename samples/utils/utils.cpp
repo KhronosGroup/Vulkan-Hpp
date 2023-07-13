@@ -238,17 +238,16 @@ namespace vk
       enabledExtensions.reserve( extensions.size() );
       for ( auto const & ext : extensions )
       {
-        assert( std::find_if( extensionProperties.begin(),
-                              extensionProperties.end(),
-                              [ext]( vk::ExtensionProperties const & ep ) { return ext == ep.extensionName; } ) != extensionProperties.end() );
+        assert( std::any_of(
+          extensionProperties.begin(), extensionProperties.end(), [ext]( vk::ExtensionProperties const & ep ) { return ext == ep.extensionName; } ) );
         enabledExtensions.push_back( ext.data() );
       }
 #if !defined( NDEBUG )
-      if ( std::find( extensions.begin(), extensions.end(), VK_EXT_DEBUG_UTILS_EXTENSION_NAME ) == extensions.end() &&
-           std::find_if( extensionProperties.begin(),
-                         extensionProperties.end(),
-                         []( vk::ExtensionProperties const & ep )
-                         { return ( strcmp( VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName ) == 0 ); } ) != extensionProperties.end() )
+      if ( std::none_of(
+             extensions.begin(), extensions.end(), []( std::string const & extension ) { return extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME; } ) &&
+           std::any_of( extensionProperties.begin(),
+                        extensionProperties.end(),
+                        []( vk::ExtensionProperties const & ep ) { return ( strcmp( VK_EXT_DEBUG_UTILS_EXTENSION_NAME, ep.extensionName ) == 0 ); } ) )
       {
         enabledExtensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME );
       }
@@ -267,17 +266,15 @@ namespace vk
       enabledLayers.reserve( layers.size() );
       for ( auto const & layer : layers )
       {
-        assert( std::find_if( layerProperties.begin(), layerProperties.end(), [layer]( vk::LayerProperties const & lp ) { return layer == lp.layerName; } ) !=
-                layerProperties.end() );
+        assert( std::any_of( layerProperties.begin(), layerProperties.end(), [layer]( vk::LayerProperties const & lp ) { return layer == lp.layerName; } ) );
         enabledLayers.push_back( layer.data() );
       }
 #if !defined( NDEBUG )
       // Enable standard validation layer to find as much errors as possible!
-      if ( std::find( layers.begin(), layers.end(), "VK_LAYER_KHRONOS_validation" ) == layers.end() &&
-           std::find_if( layerProperties.begin(),
-                         layerProperties.end(),
-                         []( vk::LayerProperties const & lp )
-                         { return ( strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 ); } ) != layerProperties.end() )
+      if ( std::none_of( layers.begin(), layers.end(), []( std::string const & layer ) { return layer == "VK_LAYER_KHRONOS_validation"; } ) &&
+           std::any_of( layerProperties.begin(),
+                        layerProperties.end(),
+                        []( vk::LayerProperties const & lp ) { return ( strcmp( "VK_LAYER_KHRONOS_validation", lp.layerName ) == 0 ); } ) )
       {
         enabledLayers.push_back( "VK_LAYER_KHRONOS_validation" );
       }
@@ -352,9 +349,9 @@ namespace vk
       vk::AttachmentReference depthAttachment( 1, vk::ImageLayout::eDepthStencilAttachmentOptimal );
       vk::SubpassDescription  subpassDescription( vk::SubpassDescriptionFlags(),
                                                  vk::PipelineBindPoint::eGraphics,
-                                                 {},
+                                                  {},
                                                  colorAttachment,
-                                                 {},
+                                                  {},
                                                  ( depthFormat != vk::Format::eUndefined ) ? &depthAttachment : nullptr );
       return device.createRenderPass( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
     }

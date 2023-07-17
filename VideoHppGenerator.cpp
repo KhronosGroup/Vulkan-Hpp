@@ -78,7 +78,7 @@ void VideoHppGenerator::addImplicitlyRequiredTypes()
       auto        typeIt = m_types.find( *reqIt );
       if ( ( typeIt != m_types.end() ) && ( typeIt->second.category == TypeCategory::Struct ) )
       {
-        assert( typeIt->second.requiredBy.find( ext.name ) != typeIt->second.requiredBy.end() );
+        assert( typeIt->second.requiredBy.contains( ext.name ) );
         reqIt = addImplicitlyRequiredTypes( typeIt, ext, reqIt );
       }
     }
@@ -130,7 +130,7 @@ void VideoHppGenerator::checkCorrectness() const
     for ( auto const & member : structure.second.members )
     {
       // check that each member type is known
-      checkForError( m_types.find( member.type.type ) != m_types.end(), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">" );
+      checkForError( m_types.contains( member.type.type ), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">" );
 
       // check that all member types are required in some extension (it's just a warning!!)
       if ( member.type.type.starts_with( "StdVideo" ) )
@@ -147,14 +147,14 @@ void VideoHppGenerator::checkCorrectness() const
       {
         if ( arraySize.find_first_not_of( "0123456789" ) != std::string::npos )
         {
-          bool found = ( extIt->requireData.constants.find( arraySize ) != extIt->requireData.constants.end() );
+          bool found = extIt->requireData.constants.contains( arraySize );
           if ( !found )
           {
             checkForError(
               !extIt->depends.empty(), extIt->xmlLine, "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
             auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&extIt]( ExtensionData const & ed ) { return ed.name == extIt->depends; } );
             assert( depIt != m_extensions.end() );
-            checkForError( depIt->requireData.constants.find( arraySize ) != depIt->requireData.constants.end(),
+            checkForError( depIt->requireData.constants.contains( arraySize ),
                            member.xmlLine,
                            "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
           }
@@ -275,8 +275,7 @@ std::string VideoHppGenerator::generateStructCompareOperators( std::pair<std::st
     MemberData const & member = structData.second.members[i];
     auto               typeIt = m_types.find( member.type.type );
     assert( typeIt != m_types.end() );
-    if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() &&
-         ( simpleTypes.find( member.type.type ) == simpleTypes.end() ) )
+    if ( ( typeIt->second.category == TypeCategory::ExternalType ) && member.type.postfix.empty() && !simpleTypes.contains( member.type.type ) )
     {
       // this type might support operator==() or operator<=>()... that is, use memcmp
       compareMembers += intro + "( memcmp( &" + member.name + ", &rhs." + member.name + ", sizeof( " + member.type.type + " ) ) == 0 )";
@@ -704,11 +703,11 @@ void VideoHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, st
       type = child->GetText();
     }
   }
-  checkForError( require.empty() || ( m_defines.find( require ) != m_defines.end() ), line, "define <" + name + "> requires unknown type <" + require + ">" );
-  checkForError( type.empty() || ( m_defines.find( type ) != m_defines.end() ), line, "define <" + name + "> of unknown type <" + type + ">" );
+  checkForError( require.empty() || m_defines.contains( require ), line, "define <" + name + "> requires unknown type <" + require + ">" );
+  checkForError( type.empty() || m_defines.contains( type ), line, "define <" + name + "> of unknown type <" + type + ">" );
 
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::Define, {}, line } } ).second, line, "define <" + name + "> already specified" );
-  assert( m_defines.find( name ) == m_defines.end() );
+  assert( !m_defines.contains( name ) );
   m_defines[name] = { require, line };
 }
 
@@ -728,7 +727,7 @@ void VideoHppGenerator::readTypeEnum( tinyxml2::XMLElement const * element, std:
   }
 
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::Enum, {}, line } } ).second, line, "enum <" + name + "> already specified" );
-  assert( m_enums.find( name ) == m_enums.end() );
+  assert( !m_enums.contains( name ) );
   m_enums[name] = EnumData{ .xmlLine = line };
 }
 
@@ -740,7 +739,7 @@ void VideoHppGenerator::readTypeInclude( tinyxml2::XMLElement const * element, s
 
   std::string name = attributes.find( "name" )->second;
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::Include, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( m_includes.find( name ) == m_includes.end() );
+  assert( !m_includes.contains( name ) );
   m_includes[name] = { line };
 }
 
@@ -764,9 +763,9 @@ void VideoHppGenerator::readTypeRequires( tinyxml2::XMLElement const * element, 
     }
   }
 
-  checkForError( m_includes.find( require ) != m_includes.end(), line, "type <" + name + "> requires unknown <" + require + ">" );
+  checkForError( m_includes.contains( require ), line, "type <" + name + "> requires unknown <" + require + ">" );
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::ExternalType, {}, line } } ).second, line, "type <" + name + "> already specified" );
-  assert( m_externalTypes.find( name ) == m_externalTypes.end() );
+  assert( !m_externalTypes.contains( name ) );
   m_externalTypes[name] = { require, line };
 }
 
@@ -809,11 +808,9 @@ void VideoHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, st
     }
   }
   assert( !name.empty() );
-  checkForError( require.empty() || ( m_types.find( require ) != m_types.end() ), line, "struct <" + name + "> requires unknown type <" + require + ">" );
-
+  checkForError( require.empty() || m_types.contains( require ), line, "struct <" + name + "> requires unknown type <" + require + ">" );
   checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
-  assert( m_structs.find( name ) == m_structs.end() );
-
+  assert( !m_structs.contains( name ) );
   std::map<std::string, StructureData>::iterator it = m_structs.insert( std::make_pair( name, structureData ) ).first;
 
   for ( auto child : children )

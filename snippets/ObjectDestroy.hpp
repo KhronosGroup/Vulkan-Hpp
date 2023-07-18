@@ -88,45 +88,43 @@ template <typename HandleType>
 class ObjectDestroyShared
 {
 public:
-  using handle_type = HandleType;
-  using parent      = parent_of_t<handle_type>;
+  using ParentType = parent_of_t<HandleType>;
 
   template <class Dispatcher>
-  using destroy_pfn_t =
-    typename std::conditional<has_parent<handle_type>,
+  using destroy_pfn_t = typename std::conditional<has_parent<HandleType>,
 
-                              void ( parent::* )( handle_type kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT,
+                                                  void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const,
 
-                              void ( handle_type::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT>::type;
+                                                  void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const>::type;
 
   ObjectDestroyShared() = default;
 
-  template <typename Dispatcher, typename = typename std::enable_if<has_parent<handle_type>>::type>
+  template <typename Dispatcher, typename std::enable_if<has_parent<HandleType>>::type * = nullptr>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                        const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &parent::destroy ) ) )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::destroy ) ) )
     , m_loader( &disp )
     , m_allocationCallbacks( allocationCallbacks )
   {
   }
 
-  template <typename Dispatcher, typename = typename std::enable_if<!has_parent<handle_type>>::type>
+  template <typename Dispatcher, typename std::enable_if<!has_parent<HandleType>>::type * = nullptr>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                        const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &handle_type::destroy ) ) )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &HandleType::destroy ) ) )
     , m_loader( &disp )
     , m_allocationCallbacks( allocationCallbacks )
   {
   }
 
-protected:
-  std::enable_if<has_parent<handle_type>, void>::type Destroy( parent parent, handle_type handle ) const VULKAN_HPP_NOEXCEPT
+public:
+  typename std::enable_if<has_parent<HandleType>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_loader );
     ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
   }
 
-  std::enable_if<!has_parent<handle_type>, void>::type Destroy( handle_type handle ) const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<!has_parent<HandleType>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_loader );
     ( handle.*m_destroy )( m_allocationCallbacks, *m_loader );

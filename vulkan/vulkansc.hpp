@@ -1345,6 +1345,416 @@ namespace VULKAN_HPP_NAMESPACE
     lhs.swap( rhs );
   }
 #  endif
+
+#  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+
+  template <typename HandleType>
+  class SharedHandleTraits;
+
+  template <typename HandleType, typename PoolType>
+  class PoolFreeShared;
+
+  class NoParent;
+
+  template <class HandleType>
+  using parent_of_t = typename SharedHandleTraits<HandleType>::parent;
+
+  template <class HandleType>
+  VULKAN_HPP_CONSTEXPR_INLINE bool has_parent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
+
+  template <typename HandleType, typename...>
+  struct is_pool_free : std::false_type
+  {
+  };
+
+  template <typename HandleType, typename PoolType>
+  struct is_pool_free<PoolFreeShared<HandleType, PoolType>> : std::true_type
+  {
+  };
+
+  template <typename HandleType, typename PoolType>
+  VULKAN_HPP_CONSTEXPR_INLINE bool is_pool_free_v = is_pool_free<HandleType, PoolType>::value;
+
+  //=====================================================================================================================
+
+  template <typename Header>
+  class ControlBlockBase
+  {
+  public:
+    ControlBlockBase() = default;
+
+    ControlBlockBase( const ControlBlockBase & o ) : m_control( o.m_control )
+    {
+      add_ref();
+    }
+
+    ControlBlockBase( ControlBlockBase && o ) VULKAN_HPP_NOEXCEPT : m_control( o.m_control )
+    {
+      o.m_control = nullptr;
+    }
+
+    ControlBlockBase & operator=( ControlBlockBase && o ) VULKAN_HPP_NOEXCEPT
+    {
+      m_control   = o.m_control;
+      o.m_control = nullptr;
+      return *this;
+    }
+
+    ControlBlockBase & operator=( const ControlBlockBase & o ) VULKAN_HPP_NOEXCEPT
+    {
+      m_control = o.m_control;
+      add_ref();
+      return *this;
+    }
+
+  public:
+    size_t ref_count() const VULKAN_HPP_NOEXCEPT
+    {
+      if ( !m_control )
+        return 0;
+      return m_control->ref_cnt;
+    }
+
+    size_t add_ref() VULKAN_HPP_NOEXCEPT
+    {
+      if ( !m_control )
+        return 0;
+      return ++m_control->ref_cnt;
+    }
+
+    size_t release() VULKAN_HPP_NOEXCEPT
+    {
+      if ( !m_control )
+        return 0;
+      auto r = --m_control->ref_cnt;
+      if ( !r )
+      {
+        delete m_control;
+        m_control = nullptr;
+      }
+      return r;
+    }
+
+    void allocate()
+    {
+      m_control = new Header;
+    }
+
+  protected:
+    Header * m_control = nullptr;
+  };
+
+  //=====================================================================================================================
+
+  class NoParent;
+
+  template <typename HandleType>
+  class SharedHandle;
+
+  template <typename ParentType, typename Deleter>
+  struct SharedHeader
+  {
+    SharedHandle<ParentType> parent{};
+    std::atomic_size_t       ref_cnt{ 1 };
+    Deleter                  deleter{};
+  };
+
+  template <typename Deleter>
+  struct SharedHeader<NoParent, Deleter>
+  {
+    std::atomic_size_t ref_cnt{ 1 };
+    Deleter            deleter{};
+  };
+
+  //=====================================================================================================================
+
+  template <typename HandleType>
+  class BasicControlBlock : public ControlBlockBase<SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
+  {
+  public:
+    using ParentType  = parent_of_t<HandleType>;
+    using DeleterType = typename SharedHandleTraits<HandleType>::deleter;
+    using ControlBlockBase<SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>::m_control;
+
+  public:
+    BasicControlBlock() = default;
+
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    BasicControlBlock( SharedHandle<ParentType> parent, DeleterType deleter )
+    {
+      allocate();
+      m_control->parent  = std::move( parent );
+      m_control->deleter = std::move( deleter );
+    }
+
+    template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
+    BasicControlBlock( DeleterType deleter )
+    {
+      allocate();
+      m_control->deleter = std::move( deleter );
+    }
+
+  public:
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    ParentType getParent() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_control && m_control->parent );
+      return m_control->parent.get();
+    }
+
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    SharedHandle<ParentType> getParentHandle() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_control && m_control->parent );
+      return m_control->parent;
+    }
+  };
+
+  template <class HandleType, class ControlBlock = BasicControlBlock<HandleType>>
+  class SharedHandleBase
+  {
+  public:
+    using ParentType = parent_of_t<HandleType>;
+
+  public:
+    SharedHandleBase() = default;
+
+    explicit SharedHandleBase( HandleType handle, ControlBlock control ) VULKAN_HPP_NOEXCEPT
+      : m_handle( handle )
+      , m_control( std::move( control ) )
+    {
+    }
+
+    SharedHandleBase( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
+      : m_handle( o.m_handle )
+      , m_control( o.m_control )
+    {
+    }
+
+    SharedHandleBase( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
+      : m_handle( o.m_handle )
+      , m_control( std::move( o.m_control ) )
+    {
+      o.m_handle = nullptr;
+    }
+
+    SharedHandleBase & operator=( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
+    {
+      release();
+      m_handle   = o.m_handle;
+      m_control  = std::move( o.m_control );
+      o.m_handle = nullptr;
+      return *this;
+    }
+
+    SharedHandleBase & operator=( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
+    {
+      release();
+      m_handle  = o.m_handle;
+      m_control = o.m_control;
+      return *this;
+    }
+
+    ~SharedHandleBase()
+    {
+      release();
+    }
+
+  public:
+    HandleType get() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_handle;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return bool( m_handle );
+    }
+
+    const HandleType * operator->() const VULKAN_HPP_NOEXCEPT
+    {
+      return &m_handle;
+    }
+
+    HandleType * operator->() VULKAN_HPP_NOEXCEPT
+    {
+      return &m_handle;
+    }
+
+    size_t add_ref() VULKAN_HPP_NOEXCEPT
+    {
+      if ( !m_handle )
+        return 0;
+      return m_control.add_ref();
+    }
+
+    size_t release() VULKAN_HPP_NOEXCEPT
+    {
+      if ( !m_handle )
+        return 0;
+
+      auto r = m_control.ref_count();
+      if ( r == 1 )
+        static_cast<SharedHandle<HandleType> *>( this )->internal_destroy();
+      return m_control.release();
+    }
+
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    ParentType getParent() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control.getParent();
+    }
+
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    SharedHandle<ParentType> getParentHandle() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control.getParentHandle();
+    }
+
+  protected:
+    ControlBlock m_control{};
+    HandleType   m_handle{};
+  };
+
+  template <typename HandleType>
+  class SharedHandle : public SharedHandleBase<HandleType>
+  {
+  private:
+    using BaseType    = SharedHandleBase<HandleType>;
+    using DeleterType = typename SharedHandleTraits<HandleType>::deleter;
+    using BaseType::m_control;
+    using BaseType::m_handle;
+    friend BaseType;
+
+  public:
+    using element_type = HandleType;
+
+    SharedHandle() = default;
+
+    template <typename Dispatcher, typename T = HandleType, typename = typename std::enable_if<has_parent<T> && !is_pool_free_v<DeleterType>>::type>
+    explicit SharedHandle( HandleType                                              handle,
+                           SharedHandle<typename BaseType::ParentType>             parent,
+                           Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                           const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : BaseType( handle, { std::move( parent ), { allocationCallbacks, disp } } )
+    {
+    }
+
+    // pool
+    template <typename Dispatcher,
+              typename PoolType,
+              typename T = HandleType,
+              typename   = typename std::enable_if<has_parent<T> && is_pool_free_v<DeleterType>>::type>
+    explicit SharedHandle( HandleType                                  handle,
+                           SharedHandle<typename BaseType::ParentType> parent,
+                           PoolType                                    pool,
+                           const Dispatcher & disp                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : BaseType( handle, { std::move( parent ), { pool, disp } } )
+    {
+    }
+
+    template <typename Dispatcher, typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
+    explicit shared_handle( HandleType                                              handle,
+                            Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                            const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : BaseType( handle, { { allocationCallbacks, disp } } )
+    {
+    }
+
+  protected:
+    template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
+    void internal_destroy() VULKAN_HPP_NOEXCEPT
+    {
+      m_control->deleter.destroy( m_handle );
+      m_handle = nullptr;
+    }
+
+    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+    void internal_destroy() VULKAN_HPP_NOEXCEPT
+    {
+      m_control->deleter.destroy( m_control.getParent(), m_handle );
+      m_handle = nullptr;
+    }
+  };
+
+  struct ImageHeader : SharedHeader<parent_of_t<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>
+  {
+    bool swapchainOwned = false;
+  };
+
+  struct ImageControlBlock : ControlBlockBase<ImageHeader>
+  {
+    using ParentType = parent_of_t<VULKAN_HPP_NAMESPACE::Image>;
+    using ControlBlockBase<ImageHeader>::m_control;
+
+  public:
+    ImageControlBlock() = default;
+
+    template <typename Deleter>
+    ImageControlBlock( SharedHandle<ParentType> parent, Deleter deleter, bool swapchain_owned = false )
+    {
+      allocate();
+      m_control->parent         = std::move( parent );
+      m_control->swapchainOwned = swapchain_owned;
+    }
+
+    ParentType getParent() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control->parent.get();
+    }
+
+    SharedHandle<ParentType> getParentHandle() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control->parent;
+    }
+
+    bool swapchainOwned() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control->swapchainOwned;
+    }
+  };
+
+  template <>
+  class SharedHandle<VULKAN_HPP_NAMESPACE::Image> : public SharedHandleBase<VULKAN_HPP_NAMESPACE::Image, ImageControlBlock>
+  {
+    using BaseType = SharedHandleBase<VULKAN_HPP_NAMESPACE::Image, ImageControlBlock>;
+    friend BaseType;
+
+  public:
+    using element_type = VULKAN_HPP_NAMESPACE::Image;
+
+  public:
+    SharedHandle() = default;
+
+    template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                             handle,
+                           SharedHandle<Device>                                    parent,
+                           bool                                                    swapchain_owned = false,
+                           Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                           const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : BaseType( handle, { std::move( parent ), { allocationCallbacks, disp }, swapchain_owned } )
+    {
+    }
+
+  protected:
+    void internal_destroy() VULKAN_HPP_NOEXCEPT
+    {
+      if ( !control.swapchainOwned() )
+      {
+        m_control->deleter.destroy( m_control.getParent(), m_handle );
+      }
+      m_handle = nullptr;
+    }
+  };
+
+  template <typename SharedType>
+  VULKAN_HPP_INLINE std::vector<typename SharedType::element_type> sharedToRaw( std::vector<SharedType> const & handles )
+  {
+    std::vector<typename SharedType::element_type> newBuffer( handles.size() );
+    std::transform( handles.begin(), handles.end(), newBuffer.begin(), []( SharedType const & handle ) { return handle.get(); } );
+    return newBuffer;
+  }
+#  endif
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
   class DispatchLoaderBase
@@ -3671,6 +4081,62 @@ namespace VULKAN_HPP_NAMESPACE
     Dispatch const *                    m_dispatch            = nullptr;
   };
 
+  //================================================================================================
+
+  template <typename HandleType>
+  class ObjectDestroyShared
+  {
+  public:
+    using ParentType = parent_of_t<HandleType>;
+
+    template <class Dispatcher>
+    using destroy_pfn_t =
+      typename std::conditional<has_parent<HandleType>,
+
+                                void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d )
+                                  const VULKAN_HPP_NOEXCEPT,
+
+                                void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT>::type;
+
+    ObjectDestroyShared() = default;
+
+    template <typename Dispatcher, typename = typename std::enable_if<has_parent<HandleType>>::type>
+    ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                         const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::destroy ) ) )
+      , m_loader( &disp )
+      , m_allocationCallbacks( allocationCallbacks )
+    {
+    }
+
+    template <typename Dispatcher, typename = typename std::enable_if<!has_parent<HandleType>>::type>
+    ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                         const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &HandleType::destroy ) ) )
+      , m_loader( &disp )
+      , m_allocationCallbacks( allocationCallbacks )
+    {
+    }
+
+  protected:
+    std::enable_if<has_parent<HandleType>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_destroy && m_loader );
+      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
+    }
+
+    std::enable_if<!has_parent<HandleType>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_destroy && m_loader );
+      ( handle.*m_destroy )( m_allocationCallbacks, *m_loader );
+    }
+
+  private:
+    destroy_pfn_t<DispatchLoaderBase>   m_destroy             = nullptr;
+    const DispatchLoaderBase *          m_loader              = nullptr;
+    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+  };
+
   template <typename OwnerType, typename Dispatch>
   class ObjectFree
   {
@@ -3715,6 +4181,41 @@ namespace VULKAN_HPP_NAMESPACE
     Dispatch const *                    m_dispatch            = nullptr;
   };
 
+  //================================================================================================
+
+  template <typename HandleType>
+  class ObjectFreeShared
+  {
+  public:
+    using ParentType = parent_of_t<HandleType>;
+
+    template <class Dispatcher>
+    using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT;
+
+    ObjectFreeShared() = default;
+
+    template <class Dispatcher>
+    ObjectFreeShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                      const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
+      , m_loader( &disp )
+      , m_allocationCallbacks( allocationCallbacks )
+    {
+    }
+
+  protected:
+    void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_destroy && m_loader );
+      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
+    }
+
+  private:
+    destroy_pfn_t<DispatchLoaderBase>   m_destroy             = nullptr;
+    const DispatchLoaderBase *          m_loader              = nullptr;
+    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+  };
+
   template <typename OwnerType, typename Dispatch>
   class ObjectRelease
   {
@@ -3748,6 +4249,38 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     OwnerType        m_owner    = {};
     Dispatch const * m_dispatch = nullptr;
+  };
+
+  //================================================================================================
+
+  template <typename HandleType>
+  class ObjectReleaseShared
+  {
+  public:
+    using ParentType = parent_of_t<HandleType>;
+
+    template <class Dispatcher>
+    using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT > ;
+
+    ObjectReleaseShared() = default;
+
+    template <class Dispatcher>
+    ObjectReleaseShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                         const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
+    {
+    }
+
+  protected:
+    void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_destroy && m_loader );
+      ( parent.*m_destroy )( handle, *m_loader );
+    }
+
+  private:
+    destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
+    const DispatchLoaderBase *        m_loader  = nullptr;
   };
 
   template <typename OwnerType, typename PoolType, typename Dispatch>
@@ -3791,6 +4324,35 @@ namespace VULKAN_HPP_NAMESPACE
     Dispatch const * m_dispatch = nullptr;
   };
 
+  template <typename HandleType, typename PoolType>
+  class PoolFreeShared
+  {
+  public:
+    using ParentType = parent_of_t<HandleType>;
+
+    template <class Dispatcher>
+    using destroy_pfn_t = void ( ParentType::* )( pool_type pool, HandleType kty, const Dispatcher & d ) const VULKAN_HPP_NOEXCEPT > ;
+
+    PoolFreeShared() = default;
+
+    template <class Dispatcher>
+    PoolFreeShared( PoolType pool, const Dispatcher & disp VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) ), m_pool( pool ), m_loader( &disp )
+    {
+    }
+
+  protected:
+    void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( m_destroy && m_loader );
+      ( parent.*m_destroy )( m_pool, handle, *m_loader );
+    }
+
+  private:
+    destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
+    pool_type                         m_pool    = pool_type();
+    const DispatchLoaderBase *        m_loader  = nullptr;
+  };
 #endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
   //==================
@@ -4325,44 +4887,36 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
   }
 
-  //===========================
-  //=== CONSTEXPR CONSTANTs ===
-  //===========================
+  //=========================================
+  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
+  //=========================================
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t AttachmentUnused                 = VK_ATTACHMENT_UNUSED;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t False                            = VK_FALSE;
+  VULKAN_HPP_CONSTEXPR_INLINE float    LodClampNone                     = VK_LOD_CLAMP_NONE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t LuidSize                         = VK_LUID_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDescriptionSize               = VK_MAX_DESCRIPTION_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDeviceGroupSize               = VK_MAX_DEVICE_GROUP_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverInfoSize                = VK_MAX_DRIVER_INFO_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverNameSize                = VK_MAX_DRIVER_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxExtensionNameSize             = VK_MAX_EXTENSION_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxGlobalPrioritySizeKhr         = VK_MAX_GLOBAL_PRIORITY_SIZE_KHR;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryHeaps                   = VK_MAX_MEMORY_HEAPS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryTypes                   = VK_MAX_MEMORY_TYPES;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxPhysicalDeviceNameSize        = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxShaderModuleIdentifierSizeExt = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyExternal              = VK_QUEUE_FAMILY_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyForeignExt            = VK_QUEUE_FAMILY_FOREIGN_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyIgnored               = VK_QUEUE_FAMILY_IGNORED;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t Remaining3DSlicesExt             = VK_REMAINING_3D_SLICES_EXT;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingArrayLayers             = VK_REMAINING_ARRAY_LAYERS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingMipLevels               = VK_REMAINING_MIP_LEVELS;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t ShaderUnusedKhr                  = VK_SHADER_UNUSED_KHR;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t SubpassExternal                  = VK_SUBPASS_EXTERNAL;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t True                             = VK_TRUE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t UuidSize                         = VK_UUID_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint64_t WholeSize                        = VK_WHOLE_SIZE;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t HeaderVersion                    = VK_HEADER_VERSION;
 
-  //=== VK_VERSION_1_0 ===
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t AttachmentUnused          = VK_ATTACHMENT_UNUSED;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t False                     = VK_FALSE;
-  VULKAN_HPP_CONSTEXPR_INLINE float    LodClampNone              = VK_LOD_CLAMP_NONE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyIgnored        = VK_QUEUE_FAMILY_IGNORED;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingArrayLayers      = VK_REMAINING_ARRAY_LAYERS;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t RemainingMipLevels        = VK_REMAINING_MIP_LEVELS;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t SubpassExternal           = VK_SUBPASS_EXTERNAL;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t True                      = VK_TRUE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint64_t WholeSize                 = VK_WHOLE_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryTypes            = VK_MAX_MEMORY_TYPES;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxPhysicalDeviceNameSize = VK_MAX_PHYSICAL_DEVICE_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t UuidSize                  = VK_UUID_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxExtensionNameSize      = VK_MAX_EXTENSION_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDescriptionSize        = VK_MAX_DESCRIPTION_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxMemoryHeaps            = VK_MAX_MEMORY_HEAPS;
-
-  //=== VK_VERSION_1_1 ===
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDeviceGroupSize  = VK_MAX_DEVICE_GROUP_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t LuidSize            = VK_LUID_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t QueueFamilyExternal = VK_QUEUE_FAMILY_EXTERNAL;
-
-  //=== VK_VERSION_1_2 ===
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverNameSize = VK_MAX_DRIVER_NAME_SIZE;
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxDriverInfoSize = VK_MAX_DRIVER_INFO_SIZE;
-
-  //========================
-  //=== CONSTEXPR VALUEs ===
-  //========================
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t HeaderVersion = VK_HEADER_VERSION;
-
-  //=========================
-  //=== CONSTEXPR CALLEEs ===
-  //=========================
   template <typename T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
   VULKAN_HPP_CONSTEXPR uint32_t apiVersionMajor( T const version )
   {
@@ -4421,9 +4975,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ( (uint32_t)(version)&0xFFFU );
   }
 
-  //=========================
-  //=== CONSTEXPR CALLERs ===
-  //=========================
   VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion            = makeApiVersion( 0, 1, 0, 0 );
   VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion10          = makeApiVersion( 0, 1, 0, 0 );
   VULKAN_HPP_CONSTEXPR_INLINE auto ApiVersion11          = makeApiVersion( 0, 1, 1, 0 );
@@ -5443,15 +5994,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, RayTracingPipelineCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PipelineCreationFeedbackCreateInfo, ExecutionGraphPipelineCreateInfoAMDX>
   {
     enum
     {
@@ -7048,7 +7590,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

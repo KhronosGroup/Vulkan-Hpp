@@ -2163,7 +2163,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Instance>
   {
   public:
-    using deleter = ObjectDestroyShared<NoParent>;
+    using parent  = NoParent;
+    using deleter = ObjectDestroyShared<Instance>;
   };
 
   using SharedInstance = SharedHandle<Instance>;
@@ -2172,7 +2173,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Device>
   {
   public:
-    using deleter = ObjectDestroyShared<NoParent>;
+    using parent  = NoParent;
+    using deleter = ObjectDestroyShared<Device>;
   };
 
   using SharedDevice = SharedHandle<Device>;
@@ -2181,7 +2183,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DeviceMemory>
   {
   public:
-    using deleter = ObjectFreeShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectFreeShared<DeviceMemory>;
   };
 
   using SharedDeviceMemory = SharedHandle<DeviceMemory>;
@@ -2190,7 +2193,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Fence>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Fence>;
   };
 
   using SharedFence = SharedHandle<Fence>;
@@ -2199,7 +2203,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Semaphore>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Semaphore>;
   };
 
   using SharedSemaphore = SharedHandle<Semaphore>;
@@ -2208,7 +2213,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Event>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Event>;
   };
 
   using SharedEvent = SharedHandle<Event>;
@@ -2217,7 +2223,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<QueryPool>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<QueryPool>;
   };
 
   using SharedQueryPool = SharedHandle<QueryPool>;
@@ -2226,7 +2233,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Buffer>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Buffer>;
   };
 
   using SharedBuffer = SharedHandle<Buffer>;
@@ -2235,7 +2243,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<BufferView>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<BufferView>;
   };
 
   using SharedBufferView = SharedHandle<BufferView>;
@@ -2244,7 +2253,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Image>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Image>;
   };
 
   using SharedImage = SharedHandle<Image>;
@@ -2253,7 +2263,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<ImageView>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<ImageView>;
   };
 
   using SharedImageView = SharedHandle<ImageView>;
@@ -2262,7 +2273,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<ShaderModule>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<ShaderModule>;
   };
 
   using SharedShaderModule = SharedHandle<ShaderModule>;
@@ -2271,7 +2283,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<PipelineCache>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PipelineCache>;
   };
 
   using SharedPipelineCache = SharedHandle<PipelineCache>;
@@ -2280,7 +2293,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Pipeline>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Pipeline>;
   };
 
   using SharedPipeline = SharedHandle<Pipeline>;
@@ -2289,7 +2303,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<PipelineLayout>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PipelineLayout>;
   };
 
   using SharedPipelineLayout = SharedHandle<PipelineLayout>;
@@ -2298,7 +2313,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Sampler>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Sampler>;
   };
 
   using SharedSampler = SharedHandle<Sampler>;
@@ -2307,7 +2323,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DescriptorPool>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<DescriptorPool>;
   };
 
   using SharedDescriptorPool = SharedHandle<DescriptorPool>;
@@ -2316,7 +2333,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DescriptorSet>
   {
   public:
-    using deleter = PoolFreeShared<Device, DescriptorPool>;
+    using parent  = Device;
+    using deleter = PoolFreeShared<DescriptorSet, DescriptorPool>;
   };
 
   using SharedDescriptorSet = SharedHandle<DescriptorSet>;
@@ -2325,7 +2343,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DescriptorSetLayout>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<DescriptorSetLayout>;
   };
 
   using SharedDescriptorSetLayout = SharedHandle<DescriptorSetLayout>;
@@ -2334,7 +2353,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<Framebuffer>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Framebuffer>;
   };
 
   using SharedFramebuffer = SharedHandle<Framebuffer>;
@@ -2343,7 +2363,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<RenderPass>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<RenderPass>;
   };
 
   using SharedRenderPass = SharedHandle<RenderPass>;
@@ -2352,7 +2373,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<CommandPool>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<CommandPool>;
   };
 
   using SharedCommandPool = SharedHandle<CommandPool>;
@@ -2361,7 +2383,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<CommandBuffer>
   {
   public:
-    using deleter = PoolFreeShared<Device, CommandPool>;
+    using parent  = Device;
+    using deleter = PoolFreeShared<CommandBuffer, CommandPool>;
   };
 
   using SharedCommandBuffer = SharedHandle<CommandBuffer>;
@@ -2371,7 +2394,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<SamplerYcbcrConversion>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<SamplerYcbcrConversion>;
   };
 
   using SharedSamplerYcbcrConversion    = SharedHandle<SamplerYcbcrConversion>;
@@ -2381,7 +2405,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DescriptorUpdateTemplate>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<DescriptorUpdateTemplate>;
   };
 
   using SharedDescriptorUpdateTemplate    = SharedHandle<DescriptorUpdateTemplate>;
@@ -2392,7 +2417,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<PrivateDataSlot>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PrivateDataSlot>;
   };
 
   using SharedPrivateDataSlot    = SharedHandle<PrivateDataSlot>;
@@ -2403,7 +2429,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<SurfaceKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Instance>;
+    using parent  = Instance;
+    using deleter = ObjectDestroyShared<SurfaceKHR>;
   };
 
   using SharedSurfaceKHR = SharedHandle<SurfaceKHR>;
@@ -2413,7 +2440,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<SwapchainKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<SwapchainKHR>;
   };
 
   using SharedSwapchainKHR = SharedHandle<SwapchainKHR>;
@@ -2423,7 +2451,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DebugReportCallbackEXT>
   {
   public:
-    using deleter = ObjectDestroyShared<Instance>;
+    using parent  = Instance;
+    using deleter = ObjectDestroyShared<DebugReportCallbackEXT>;
   };
 
   using SharedDebugReportCallbackEXT = SharedHandle<DebugReportCallbackEXT>;
@@ -2433,7 +2462,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<VideoSessionKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<VideoSessionKHR>;
   };
 
   using SharedVideoSessionKHR = SharedHandle<VideoSessionKHR>;
@@ -2442,7 +2472,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<VideoSessionParametersKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<VideoSessionParametersKHR>;
   };
 
   using SharedVideoSessionParametersKHR = SharedHandle<VideoSessionParametersKHR>;
@@ -2452,7 +2483,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<CuModuleNVX>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<CuModuleNVX>;
   };
 
   using SharedCuModuleNVX = SharedHandle<CuModuleNVX>;
@@ -2461,7 +2493,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<CuFunctionNVX>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<CuFunctionNVX>;
   };
 
   using SharedCuFunctionNVX = SharedHandle<CuFunctionNVX>;
@@ -2471,7 +2504,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DebugUtilsMessengerEXT>
   {
   public:
-    using deleter = ObjectDestroyShared<Instance>;
+    using parent  = Instance;
+    using deleter = ObjectDestroyShared<DebugUtilsMessengerEXT>;
   };
 
   using SharedDebugUtilsMessengerEXT = SharedHandle<DebugUtilsMessengerEXT>;
@@ -2481,7 +2515,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<AccelerationStructureKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<AccelerationStructureKHR>;
   };
 
   using SharedAccelerationStructureKHR = SharedHandle<AccelerationStructureKHR>;
@@ -2491,7 +2526,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<ValidationCacheEXT>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<ValidationCacheEXT>;
   };
 
   using SharedValidationCacheEXT = SharedHandle<ValidationCacheEXT>;
@@ -2501,7 +2537,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<AccelerationStructureNV>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<AccelerationStructureNV>;
   };
 
   using SharedAccelerationStructureNV = SharedHandle<AccelerationStructureNV>;
@@ -2511,7 +2548,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<DeferredOperationKHR>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<DeferredOperationKHR>;
   };
 
   using SharedDeferredOperationKHR = SharedHandle<DeferredOperationKHR>;
@@ -2521,7 +2559,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<IndirectCommandsLayoutNV>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<IndirectCommandsLayoutNV>;
   };
 
   using SharedIndirectCommandsLayoutNV = SharedHandle<IndirectCommandsLayoutNV>;
@@ -2532,7 +2571,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<BufferCollectionFUCHSIA>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<BufferCollectionFUCHSIA>;
   };
 
   using SharedBufferCollectionFUCHSIA = SharedHandle<BufferCollectionFUCHSIA>;
@@ -2543,7 +2583,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<MicromapEXT>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<MicromapEXT>;
   };
 
   using SharedMicromapEXT = SharedHandle<MicromapEXT>;
@@ -2553,7 +2594,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<OpticalFlowSessionNV>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<OpticalFlowSessionNV>;
   };
 
   using SharedOpticalFlowSessionNV = SharedHandle<OpticalFlowSessionNV>;
@@ -2563,7 +2605,8 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleTraits<ShaderEXT>
   {
   public:
-    using deleter = ObjectDestroyShared<Device>;
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<ShaderEXT>;
   };
 
   using SharedShaderEXT = SharedHandle<ShaderEXT>;

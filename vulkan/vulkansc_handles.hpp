@@ -1002,6 +1002,239 @@ namespace VULKAN_HPP_NAMESPACE
   using UniqueDebugUtilsMessengerEXT = UniqueHandle<DebugUtilsMessengerEXT, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
+#ifndef VULKAN_HPP_NO_SMART_HANDLE
+  //======================
+  //=== SHARED HANDLEs ===
+  //======================
+
+  //=== VK_VERSION_1_0 ===
+  template <>
+  class SharedHandleTraits<Instance>
+  {
+  public:
+    using parent  = NoParent;
+    using deleter = ObjectDestroyShared<Instance>;
+  };
+
+  using SharedInstance = SharedHandle<Instance>;
+
+  template <>
+  class SharedHandleTraits<Device>
+  {
+  public:
+    using parent  = NoParent;
+    using deleter = ObjectDestroyShared<Device>;
+  };
+
+  using SharedDevice = SharedHandle<Device>;
+
+  template <>
+  class SharedHandleTraits<Fence>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Fence>;
+  };
+
+  using SharedFence = SharedHandle<Fence>;
+
+  template <>
+  class SharedHandleTraits<Semaphore>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Semaphore>;
+  };
+
+  using SharedSemaphore = SharedHandle<Semaphore>;
+
+  template <>
+  class SharedHandleTraits<Event>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Event>;
+  };
+
+  using SharedEvent = SharedHandle<Event>;
+
+  template <>
+  class SharedHandleTraits<Buffer>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Buffer>;
+  };
+
+  using SharedBuffer = SharedHandle<Buffer>;
+
+  template <>
+  class SharedHandleTraits<BufferView>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<BufferView>;
+  };
+
+  using SharedBufferView = SharedHandle<BufferView>;
+
+  template <>
+  class SharedHandleTraits<Image>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Image>;
+  };
+
+  using SharedImage = SharedHandle<Image>;
+
+  template <>
+  class SharedHandleTraits<ImageView>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<ImageView>;
+  };
+
+  using SharedImageView = SharedHandle<ImageView>;
+
+  template <>
+  class SharedHandleTraits<PipelineCache>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PipelineCache>;
+  };
+
+  using SharedPipelineCache = SharedHandle<PipelineCache>;
+
+  template <>
+  class SharedHandleTraits<Pipeline>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Pipeline>;
+  };
+
+  using SharedPipeline = SharedHandle<Pipeline>;
+
+  template <>
+  class SharedHandleTraits<PipelineLayout>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PipelineLayout>;
+  };
+
+  using SharedPipelineLayout = SharedHandle<PipelineLayout>;
+
+  template <>
+  class SharedHandleTraits<Sampler>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Sampler>;
+  };
+
+  using SharedSampler = SharedHandle<Sampler>;
+
+  template <>
+  class SharedHandleTraits<DescriptorSet>
+  {
+  public:
+    using parent  = Device;
+    using deleter = PoolFreeShared<DescriptorSet, DescriptorPool>;
+  };
+
+  using SharedDescriptorSet = SharedHandle<DescriptorSet>;
+
+  template <>
+  class SharedHandleTraits<DescriptorSetLayout>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<DescriptorSetLayout>;
+  };
+
+  using SharedDescriptorSetLayout = SharedHandle<DescriptorSetLayout>;
+
+  template <>
+  class SharedHandleTraits<Framebuffer>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<Framebuffer>;
+  };
+
+  using SharedFramebuffer = SharedHandle<Framebuffer>;
+
+  template <>
+  class SharedHandleTraits<RenderPass>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<RenderPass>;
+  };
+
+  using SharedRenderPass = SharedHandle<RenderPass>;
+
+  template <>
+  class SharedHandleTraits<CommandBuffer>
+  {
+  public:
+    using parent  = Device;
+    using deleter = PoolFreeShared<CommandBuffer, CommandPool>;
+  };
+
+  using SharedCommandBuffer = SharedHandle<CommandBuffer>;
+
+  //=== VK_VERSION_1_1 ===
+  template <>
+  class SharedHandleTraits<SamplerYcbcrConversion>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<SamplerYcbcrConversion>;
+  };
+
+  using SharedSamplerYcbcrConversion    = SharedHandle<SamplerYcbcrConversion>;
+  using SharedSamplerYcbcrConversionKHR = SharedHandle<SamplerYcbcrConversion>;
+
+  //=== VK_VERSION_1_3 ===
+  template <>
+  class SharedHandleTraits<PrivateDataSlot>
+  {
+  public:
+    using parent  = Device;
+    using deleter = ObjectDestroyShared<PrivateDataSlot>;
+  };
+
+  using SharedPrivateDataSlot    = SharedHandle<PrivateDataSlot>;
+  using SharedPrivateDataSlotEXT = SharedHandle<PrivateDataSlot>;
+
+  //=== VK_KHR_surface ===
+  template <>
+  class SharedHandleTraits<SurfaceKHR>
+  {
+  public:
+    using parent  = Instance;
+    using deleter = ObjectDestroyShared<SurfaceKHR>;
+  };
+
+  using SharedSurfaceKHR = SharedHandle<SurfaceKHR>;
+
+  //=== VK_EXT_debug_utils ===
+  template <>
+  class SharedHandleTraits<DebugUtilsMessengerEXT>
+  {
+  public:
+    using parent  = Instance;
+    using deleter = ObjectDestroyShared<DebugUtilsMessengerEXT>;
+  };
+
+  using SharedDebugUtilsMessengerEXT = SharedHandle<DebugUtilsMessengerEXT>;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
   //===============
   //=== HANDLEs ===
   //===============

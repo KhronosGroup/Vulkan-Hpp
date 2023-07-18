@@ -365,12 +365,12 @@ namespace vk
       if ( pCallbackData->messageIdNumber == 648835635 )
       {
         // UNASSIGNED-khronos-Validation-debug-build-warning-message
-        return VK_FALSE;
+        return vk::False;
       }
       if ( pCallbackData->messageIdNumber == 767975156 )
       {
         // UNASSIGNED-BestPractices-vkCreateInstance-specialuse-extension
-        return VK_FALSE;
+        return vk::False;
       }
 #endif
 
@@ -410,7 +410,7 @@ namespace vk
           }
         }
       }
-      return VK_TRUE;
+      return vk::False;
     }
 
     uint32_t findGraphicsQueueFamilyIndex( std::vector<vk::QueueFamilyProperties> const & queueFamilyProperties )

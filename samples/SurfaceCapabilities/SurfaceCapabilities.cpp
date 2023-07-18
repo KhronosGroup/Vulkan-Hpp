@@ -50,7 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // need to initialize the dynamic dispatcher before the very first vulkan call
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    static vk::DynamicLoader  dl;
+    vk::DynamicLoader         dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
     VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
 #endif
@@ -93,7 +93,6 @@ int main( int /*argc*/, char ** /*argv*/ )
                                       .getSurfaceCapabilities2KHR<vk::SurfaceCapabilities2KHR,
                                                                   vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
                                                                   vk::SharedPresentSurfaceCapabilitiesKHR,
-                                                                  vk::SurfaceCapabilitiesFullScreenExclusiveEXT,
                                                                   vk::SurfaceProtectedCapabilitiesKHR>( surfaceData.surface );
 
         vk::SurfaceCapabilitiesKHR const & surfaceCapabilities = surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
@@ -114,16 +113,6 @@ int main( int /*argc*/, char ** /*argv*/ )
           std::cout << std::string( "\t" ) << "SharedPresentSurfaceCapabilitiesKHR:\n";
           std::cout << std::string( "\t\t" )
                     << "sharedPresentSupportedUsageFlags  = " << vk::to_string( sharedPresentSurfaceCapabilities.sharedPresentSupportedUsageFlags ) << "\n";
-          std::cout << "\n";
-        }
-
-        if ( vk::su::contains( extensionProperties, "VK_EXT_full_screen_exclusive" ) )
-        {
-          vk::SurfaceCapabilitiesFullScreenExclusiveEXT surfaceCapabilitiesFullScreenExclusive =
-            surfaceCapabilities2.get<vk::SurfaceCapabilitiesFullScreenExclusiveEXT>();
-          std::cout << std::string( "\t" ) << "SurfaceCapabilitiesFullScreenExclusiveEXT:\n";
-          std::cout << std::string( "\t\t" ) << "fullScreenExclusiveSupported  = " << !!surfaceCapabilitiesFullScreenExclusive.fullScreenExclusiveSupported
-                    << "\n";
           std::cout << "\n";
         }
 

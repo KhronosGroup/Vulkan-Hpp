@@ -488,6 +488,7 @@ Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step pro
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 ```
+- Note that you need to keep that vk::DynamicLoader alive until after the last call to a vulkan function in your program. For example by making it static, or storing it somewhere globally.
 2. initialize it with a vk::Instance to get all the other function pointers:
 ```c++
     vk::Instance instance = vk::createInstance({}, nullptr);

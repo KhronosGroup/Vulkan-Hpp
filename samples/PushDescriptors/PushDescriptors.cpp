@@ -33,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize the DipatchLoaderDynamic to use
-    static vk::DynamicLoader  dl;
+    vk::DynamicLoader         dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
     VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
 #endif
@@ -135,7 +135,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                     std::make_pair( vertexShaderModule, nullptr ),
                                                                     std::make_pair( fragmentShaderModule, nullptr ),
                                                                     sizeof( texturedCubeData[0] ),
-                                                                    { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
+                                                                         { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
                                                                     vk::FrontFace::eClockwise,
                                                                     true,
                                                                     pipelineLayout,
@@ -158,7 +158,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::DescriptorBufferInfo bufferInfo( uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
     vk::DescriptorImageInfo  imageInfo( textureData.sampler, textureData.imageData->imageView, vk::ImageLayout::eShaderReadOnlyOptimal );
     vk::WriteDescriptorSet   writeDescriptorSets[2] = { vk::WriteDescriptorSet( {}, 0, 0, vk::DescriptorType::eUniformBuffer, {}, bufferInfo ),
-                                                      vk::WriteDescriptorSet( {}, 1, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo ) };
+                                                        vk::WriteDescriptorSet( {}, 1, 0, vk::DescriptorType::eCombinedImageSampler, imageInfo ) };
 
     // this call is from an extension and needs the dynamic dispatcher !!
     commandBuffer.pushDescriptorSetKHR( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { 2, writeDescriptorSets } );

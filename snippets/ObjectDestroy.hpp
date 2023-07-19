@@ -96,14 +96,12 @@ public:
                                                   void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const,
 
                                                   void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const>::type;
+  using selector_t = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
 
-  ObjectDestroyShared() = default;
-
-  template <typename Dispatcher>
+  template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                        const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>(
-        static_cast<destroy_pfn_t<Dispatcher>>( &( typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type )::destroy ) ) )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &selector_t::destroy ) ) )
     , m_loader( &disp )
     , m_allocationCallbacks( allocationCallbacks )
   {

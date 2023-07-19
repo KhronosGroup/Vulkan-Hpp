@@ -6484,14 +6484,12 @@ namespace VULKAN_HPP_NAMESPACE
                                 void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const,
 
                                 void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const>::type;
+    using selector_t = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
 
-    ObjectDestroyShared() = default;
-
-    template <typename Dispatcher>
+    template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                          const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( m_destroy )>(
-          static_cast<destroy_pfn_t<Dispatcher>>( &( typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type )::destroy ) ) )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &selector_t::destroy ) ) )
       , m_loader( &disp )
       , m_allocationCallbacks( allocationCallbacks )
     {
@@ -6573,12 +6571,10 @@ namespace VULKAN_HPP_NAMESPACE
     template <class Dispatcher>
     using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const;
 
-    ObjectFreeShared() = default;
-
-    template <class Dispatcher>
+    template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectFreeShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                       const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
       , m_loader( &disp )
       , m_allocationCallbacks( allocationCallbacks )
     {
@@ -6643,12 +6639,10 @@ namespace VULKAN_HPP_NAMESPACE
     template <class Dispatcher>
     using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const Dispatcher & d ) const;
 
-    ObjectReleaseShared() = default;
-
-    template <class Dispatcher>
+    template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectReleaseShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                          const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
     {
     }
 
@@ -6712,13 +6706,16 @@ namespace VULKAN_HPP_NAMESPACE
     using ParentType = parent_of_t<HandleType>;
 
     template <class Dispatcher>
-    using destroy_pfn_t = void ( ParentType::* )( PoolType pool, HandleType kty, const Dispatcher & d ) const;
+    using ret_t = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
+
+    template <class Dispatcher>
+    using destroy_pfn_t = typename ret_t<Dispatcher> ( ParentType::* )( PoolType pool, uint32_t, const HandleType * kty, const Dispatcher & d ) const;
 
     PoolFreeShared() = default;
 
-    template <class Dispatcher>
+    template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     PoolFreeShared( PoolType pool, const Dispatcher & disp VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) ), m_pool( pool ), m_loader( &disp )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) ), m_pool( pool ), m_loader( &disp )
     {
     }
 
@@ -6726,7 +6723,7 @@ namespace VULKAN_HPP_NAMESPACE
     void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( parent.*m_destroy )( m_pool, handle, *m_loader );
+      ( parent.*m_destroy )( m_pool, 1, &handle, *m_loader );
     }
 
   private:

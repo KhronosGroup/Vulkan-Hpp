@@ -44,12 +44,10 @@ public:
   template <class Dispatcher>
   using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const Dispatcher & d ) const;
 
-  ObjectReleaseShared() = default;
-
-  template <class Dispatcher>
+  template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   ObjectReleaseShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                        const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
   {
   }
 

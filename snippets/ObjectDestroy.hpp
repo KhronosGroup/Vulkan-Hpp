@@ -99,32 +99,26 @@ public:
 
   ObjectDestroyShared() = default;
 
-  template <typename Dispatcher, typename std::enable_if<has_parent<HandleType>>::type * = nullptr>
+  template <typename Dispatcher>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                        const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::destroy ) ) )
-    , m_loader( &disp )
-    , m_allocationCallbacks( allocationCallbacks )
-  {
-  }
-
-  template <typename Dispatcher, typename std::enable_if<!has_parent<HandleType>>::type * = nullptr>
-  ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                       const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &HandleType::destroy ) ) )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>(
+        static_cast<destroy_pfn_t<Dispatcher>>( &( typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type )::destroy ) ) )
     , m_loader( &disp )
     , m_allocationCallbacks( allocationCallbacks )
   {
   }
 
 public:
-  typename std::enable_if<has_parent<HandleType>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+  template <typename T = HandleType>
+  typename std::enable_if<has_parent<T>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_loader );
     ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
   }
 
-  typename std::enable_if<!has_parent<HandleType>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
+  template <typename T = HandleType>
+  typename std::enable_if<!has_parent<T>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_loader );
     ( handle.*m_destroy )( m_allocationCallbacks, *m_loader );

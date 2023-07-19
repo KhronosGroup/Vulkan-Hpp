@@ -519,8 +519,11 @@ ${constexprDefines}
 #include <vulkan/vulkan_funcs.hpp>
 // clang-format on
 
+
 namespace VULKAN_HPP_NAMESPACE
 {
+${SharedImage}
+
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${structExtendsStructs}
 #endif // VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -562,6 +565,7 @@ ${DispatchLoaderDynamic}
                       { "structExtendsStructs", generateStructExtendsStructs() },
                       { "ResultValue", readSnippet( "ResultValue.hpp" ) },
                       { "SharedHandle", readSnippet( "SharedHandle.hpp" ) },
+                      { "SharedImage", readSnippet( "SharedImage.hpp" ) },
                       { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
                       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
                       { "throwResultException", generateThrowResultException() },

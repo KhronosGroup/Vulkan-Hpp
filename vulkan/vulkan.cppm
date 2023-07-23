@@ -640,6 +640,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_pipeline_executable_properties ===
   using VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticFormatKHR;
 
+  //=== VK_EXT_host_image_copy ===
+  using VULKAN_HPP_NAMESPACE::HostImageCopyFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::HostImageCopyFlagsEXT;
+
   //=== VK_KHR_map_memory2 ===
   using VULKAN_HPP_NAMESPACE::MemoryUnmapFlagBitsKHR;
   using VULKAN_HPP_NAMESPACE::MemoryUnmapFlagsKHR;
@@ -2060,6 +2064,20 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PipelineInfoEXT;
   using VULKAN_HPP_NAMESPACE::PipelineInfoKHR;
 
+  //=== VK_EXT_host_image_copy ===
+  using VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT;
+  using VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT;
+  using VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT;
+  using VULKAN_HPP_NAMESPACE::HostImageCopyDevicePerformanceQueryEXT;
+  using VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT;
+  using VULKAN_HPP_NAMESPACE::ImageSubresource2EXT;
+  using VULKAN_HPP_NAMESPACE::ImageToMemoryCopyEXT;
+  using VULKAN_HPP_NAMESPACE::MemoryToImageCopyEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::SubresourceHostMemcpySizeEXT;
+  using VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT;
+
   //=== VK_KHR_map_memory2 ===
   using VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR;
   using VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR;
@@ -2247,9 +2265,7 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_image_compression_control ===
   using VULKAN_HPP_NAMESPACE::ImageCompressionControlEXT;
   using VULKAN_HPP_NAMESPACE::ImageCompressionPropertiesEXT;
-  using VULKAN_HPP_NAMESPACE::ImageSubresource2EXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageCompressionControlFeaturesEXT;
-  using VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT;
 
   //=== VK_EXT_attachment_feedback_loop_layout ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT;
@@ -2441,6 +2457,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DecompressMemoryRegionNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryDecompressionFeaturesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryDecompressionPropertiesNV;
+
+  //=== VK_NV_device_generated_commands_compute ===
+  using VULKAN_HPP_NAMESPACE::BindPipelineIndirectCommandNV;
+  using VULKAN_HPP_NAMESPACE::ComputePipelineIndirectBufferInfoNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV;
+  using VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV;
 
   //=== VK_NV_linear_color_attachment ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceLinearColorAttachmentFeaturesNV;

@@ -4560,6 +4560,80 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Pipeline
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>::value,
                           "PipelineExecutableInternalRepresentationKHR is not nothrow_move_constructible!" );
 
+//=== VK_EXT_host_image_copy ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyFeaturesEXT ) == sizeof( VkPhysicalDeviceHostImageCopyFeaturesEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyFeaturesEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyFeaturesEXT>::value,
+                          "PhysicalDeviceHostImageCopyFeaturesEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyPropertiesEXT ) == sizeof( VkPhysicalDeviceHostImageCopyPropertiesEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyPropertiesEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyPropertiesEXT>::value,
+                          "PhysicalDeviceHostImageCopyPropertiesEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::MemoryToImageCopyEXT ) == sizeof( VkMemoryToImageCopyEXT ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::MemoryToImageCopyEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::MemoryToImageCopyEXT>::value,
+                          "MemoryToImageCopyEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageToMemoryCopyEXT ) == sizeof( VkImageToMemoryCopyEXT ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageToMemoryCopyEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageToMemoryCopyEXT>::value,
+                          "ImageToMemoryCopyEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT ) == sizeof( VkCopyMemoryToImageInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT>::value,
+                          "CopyMemoryToImageInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT ) == sizeof( VkCopyImageToMemoryInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT>::value,
+                          "CopyImageToMemoryInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT ) == sizeof( VkCopyImageToImageInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT>::value,
+                          "CopyImageToImageInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT ) == sizeof( VkHostImageLayoutTransitionInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT>::value,
+                          "HostImageLayoutTransitionInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SubresourceHostMemcpySizeEXT ) == sizeof( VkSubresourceHostMemcpySizeEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SubresourceHostMemcpySizeEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SubresourceHostMemcpySizeEXT>::value,
+                          "SubresourceHostMemcpySizeEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::HostImageCopyDevicePerformanceQueryEXT ) == sizeof( VkHostImageCopyDevicePerformanceQueryEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::HostImageCopyDevicePerformanceQueryEXT>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::HostImageCopyDevicePerformanceQueryEXT>::value,
+                          "HostImageCopyDevicePerformanceQueryEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT ) == sizeof( VkSubresourceLayout2EXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>::value,
+                          "SubresourceLayout2EXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageSubresource2EXT ) == sizeof( VkImageSubresource2EXT ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageSubresource2EXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageSubresource2EXT>::value,
+                          "ImageSubresource2EXT is not nothrow_move_constructible!" );
+
 //=== VK_KHR_map_memory2 ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR ) == sizeof( VkMemoryMapInfoKHR ), "struct and wrapper have different size!" );
@@ -5427,17 +5501,6 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCom
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageCompressionControlEXT>::value,
                           "ImageCompressionControlEXT is not nothrow_move_constructible!" );
 
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT ) == sizeof( VkSubresourceLayout2EXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>::value,
-                          "SubresourceLayout2EXT is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageSubresource2EXT ) == sizeof( VkImageSubresource2EXT ), "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageSubresource2EXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ImageSubresource2EXT>::value,
-                          "ImageSubresource2EXT is not nothrow_move_constructible!" );
-
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ImageCompressionPropertiesEXT ) == sizeof( VkImageCompressionPropertiesEXT ),
                           "struct and wrapper have different size!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ImageCompressionPropertiesEXT>::value, "struct wrapper is not a standard layout!" );
@@ -6221,6 +6284,36 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
                           "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceMemoryDecompressionPropertiesNV>::value,
                           "PhysicalDeviceMemoryDecompressionPropertiesNV is not nothrow_move_constructible!" );
+
+//=== VK_NV_device_generated_commands_compute ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV ) ==
+                            sizeof( VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV>::value,
+                          "PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::ComputePipelineIndirectBufferInfoNV ) == sizeof( VkComputePipelineIndirectBufferInfoNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::ComputePipelineIndirectBufferInfoNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::ComputePipelineIndirectBufferInfoNV>::value,
+                          "ComputePipelineIndirectBufferInfoNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV ) == sizeof( VkPipelineIndirectDeviceAddressInfoNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV>::value,
+                          "PipelineIndirectDeviceAddressInfoNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::BindPipelineIndirectCommandNV ) == sizeof( VkBindPipelineIndirectCommandNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::BindPipelineIndirectCommandNV>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::BindPipelineIndirectCommandNV>::value,
+                          "BindPipelineIndirectCommandNV is not nothrow_move_constructible!" );
 
 //=== VK_NV_linear_color_attachment ===
 

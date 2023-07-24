@@ -1331,6 +1331,13 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPipelineExecutableInternalRepresentationsKHR =
           PFN_vkGetPipelineExecutableInternalRepresentationsKHR( vkGetDeviceProcAddr( device, "vkGetPipelineExecutableInternalRepresentationsKHR" ) );
 
+        //=== VK_EXT_host_image_copy ===
+        vkCopyMemoryToImageEXT          = PFN_vkCopyMemoryToImageEXT( vkGetDeviceProcAddr( device, "vkCopyMemoryToImageEXT" ) );
+        vkCopyImageToMemoryEXT          = PFN_vkCopyImageToMemoryEXT( vkGetDeviceProcAddr( device, "vkCopyImageToMemoryEXT" ) );
+        vkCopyImageToImageEXT           = PFN_vkCopyImageToImageEXT( vkGetDeviceProcAddr( device, "vkCopyImageToImageEXT" ) );
+        vkTransitionImageLayoutEXT      = PFN_vkTransitionImageLayoutEXT( vkGetDeviceProcAddr( device, "vkTransitionImageLayoutEXT" ) );
+        vkGetImageSubresourceLayout2EXT = PFN_vkGetImageSubresourceLayout2EXT( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2EXT" ) );
+
         //=== VK_KHR_map_memory2 ===
         vkMapMemory2KHR   = PFN_vkMapMemory2KHR( vkGetDeviceProcAddr( device, "vkMapMemory2KHR" ) );
         vkUnmapMemory2KHR = PFN_vkUnmapMemory2KHR( vkGetDeviceProcAddr( device, "vkUnmapMemory2KHR" ) );
@@ -1445,9 +1452,6 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdResolveImage2KHR = PFN_vkCmdResolveImage2KHR( vkGetDeviceProcAddr( device, "vkCmdResolveImage2KHR" ) );
         if ( !vkCmdResolveImage2 )
           vkCmdResolveImage2 = vkCmdResolveImage2KHR;
-
-        //=== VK_EXT_image_compression_control ===
-        vkGetImageSubresourceLayout2EXT = PFN_vkGetImageSubresourceLayout2EXT( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2EXT" ) );
 
         //=== VK_EXT_device_fault ===
         vkGetDeviceFaultInfoEXT = PFN_vkGetDeviceFaultInfoEXT( vkGetDeviceProcAddr( device, "vkGetDeviceFaultInfoEXT" ) );
@@ -1568,6 +1572,13 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdDecompressMemoryNV = PFN_vkCmdDecompressMemoryNV( vkGetDeviceProcAddr( device, "vkCmdDecompressMemoryNV" ) );
         vkCmdDecompressMemoryIndirectCountNV =
           PFN_vkCmdDecompressMemoryIndirectCountNV( vkGetDeviceProcAddr( device, "vkCmdDecompressMemoryIndirectCountNV" ) );
+
+        //=== VK_NV_device_generated_commands_compute ===
+        vkGetPipelineIndirectMemoryRequirementsNV =
+          PFN_vkGetPipelineIndirectMemoryRequirementsNV( vkGetDeviceProcAddr( device, "vkGetPipelineIndirectMemoryRequirementsNV" ) );
+        vkCmdUpdatePipelineIndirectBufferNV = PFN_vkCmdUpdatePipelineIndirectBufferNV( vkGetDeviceProcAddr( device, "vkCmdUpdatePipelineIndirectBufferNV" ) );
+        vkGetPipelineIndirectDeviceAddressNV =
+          PFN_vkGetPipelineIndirectDeviceAddressNV( vkGetDeviceProcAddr( device, "vkGetPipelineIndirectDeviceAddressNV" ) );
 
         //=== VK_EXT_extended_dynamic_state3 ===
         vkCmdSetTessellationDomainOriginEXT = PFN_vkCmdSetTessellationDomainOriginEXT( vkGetDeviceProcAddr( device, "vkCmdSetTessellationDomainOriginEXT" ) );
@@ -2195,6 +2206,13 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetPipelineExecutableStatisticsKHR              vkGetPipelineExecutableStatisticsKHR              = 0;
       PFN_vkGetPipelineExecutableInternalRepresentationsKHR vkGetPipelineExecutableInternalRepresentationsKHR = 0;
 
+      //=== VK_EXT_host_image_copy ===
+      PFN_vkCopyMemoryToImageEXT          vkCopyMemoryToImageEXT          = 0;
+      PFN_vkCopyImageToMemoryEXT          vkCopyImageToMemoryEXT          = 0;
+      PFN_vkCopyImageToImageEXT           vkCopyImageToImageEXT           = 0;
+      PFN_vkTransitionImageLayoutEXT      vkTransitionImageLayoutEXT      = 0;
+      PFN_vkGetImageSubresourceLayout2EXT vkGetImageSubresourceLayout2EXT = 0;
+
       //=== VK_KHR_map_memory2 ===
       PFN_vkMapMemory2KHR   vkMapMemory2KHR   = 0;
       PFN_vkUnmapMemory2KHR vkUnmapMemory2KHR = 0;
@@ -2273,9 +2291,6 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkCmdCopyImageToBuffer2KHR vkCmdCopyImageToBuffer2KHR = 0;
       PFN_vkCmdBlitImage2KHR         vkCmdBlitImage2KHR         = 0;
       PFN_vkCmdResolveImage2KHR      vkCmdResolveImage2KHR      = 0;
-
-      //=== VK_EXT_image_compression_control ===
-      PFN_vkGetImageSubresourceLayout2EXT vkGetImageSubresourceLayout2EXT = 0;
 
       //=== VK_EXT_device_fault ===
       PFN_vkGetDeviceFaultInfoEXT vkGetDeviceFaultInfoEXT = 0;
@@ -2385,6 +2400,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_NV_memory_decompression ===
       PFN_vkCmdDecompressMemoryNV              vkCmdDecompressMemoryNV              = 0;
       PFN_vkCmdDecompressMemoryIndirectCountNV vkCmdDecompressMemoryIndirectCountNV = 0;
+
+      //=== VK_NV_device_generated_commands_compute ===
+      PFN_vkGetPipelineIndirectMemoryRequirementsNV vkGetPipelineIndirectMemoryRequirementsNV = 0;
+      PFN_vkCmdUpdatePipelineIndirectBufferNV       vkCmdUpdatePipelineIndirectBufferNV       = 0;
+      PFN_vkGetPipelineIndirectDeviceAddressNV      vkGetPipelineIndirectDeviceAddressNV      = 0;
 
       //=== VK_EXT_extended_dynamic_state3 ===
       PFN_vkCmdSetTessellationDomainOriginEXT         vkCmdSetTessellationDomainOriginEXT         = 0;
@@ -4033,6 +4053,16 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>
                            getPipelineExecutableInternalRepresentationsKHR( const VULKAN_HPP_NAMESPACE::PipelineExecutableInfoKHR & executableInfo ) const;
 
+      //=== VK_EXT_host_image_copy ===
+
+      void copyMemoryToImageEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT & copyMemoryToImageInfo ) const;
+
+      void copyImageToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT & copyImageToMemoryInfo ) const;
+
+      void copyImageToImageEXT( const VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT & copyImageToImageInfo ) const;
+
+      void transitionImageLayoutEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT> const & transitions ) const;
+
       //=== VK_KHR_map_memory2 ===
 
       VULKAN_HPP_NODISCARD void * mapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR & memoryMapInfo ) const;
@@ -4219,6 +4249,18 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DescriptorSetLayoutHostMappingInfoVALVE getDescriptorSetLayoutHostMappingInfoVALVE(
         const VULKAN_HPP_NAMESPACE::DescriptorSetBindingReferenceVALVE & bindingReference ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_device_generated_commands_compute ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+        getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      template <typename X, typename Y, typename... Z>
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+        getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::DeviceAddress
+                           getPipelineIndirectAddressNV( const VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV & info ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_shader_module_identifier ===
 
@@ -5914,6 +5956,11 @@ namespace VULKAN_HPP_NAMESPACE
       void decompressMemoryIndirectCountNV( VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsAddress,
                                             VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsCountAddress,
                                             uint32_t                            stride ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_NV_device_generated_commands_compute ===
+
+      void updatePipelineIndirectBufferNV( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint,
+                                           VULKAN_HPP_NAMESPACE::Pipeline          pipeline ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_extended_dynamic_state3 ===
 
@@ -8184,7 +8231,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::ImageDrmFormatModifierPropertiesEXT getDrmFormatModifierPropertiesEXT() const;
 
-      //=== VK_EXT_image_compression_control ===
+      //=== VK_EXT_host_image_copy ===
 
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
                            getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT;
@@ -18298,6 +18345,77 @@ namespace VULKAN_HPP_NAMESPACE
       return internalRepresentations;
     }
 
+    //=== VK_EXT_host_image_copy ===
+
+    VULKAN_HPP_INLINE void Device::copyMemoryToImageEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT & copyMemoryToImageInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyMemoryToImageEXT && "Function <vkCopyMemoryToImageEXT> requires <VK_EXT_host_image_copy>" );
+
+      VkResult result = getDispatcher()->vkCopyMemoryToImageEXT( static_cast<VkDevice>( m_device ),
+                                                                 reinterpret_cast<const VkCopyMemoryToImageInfoEXT *>( &copyMemoryToImageInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::copyMemoryToImageEXT" );
+    }
+
+    VULKAN_HPP_INLINE void Device::copyImageToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT & copyImageToMemoryInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyImageToMemoryEXT && "Function <vkCopyImageToMemoryEXT> requires <VK_EXT_host_image_copy>" );
+
+      VkResult result = getDispatcher()->vkCopyImageToMemoryEXT( static_cast<VkDevice>( m_device ),
+                                                                 reinterpret_cast<const VkCopyImageToMemoryInfoEXT *>( &copyImageToMemoryInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::copyImageToMemoryEXT" );
+    }
+
+    VULKAN_HPP_INLINE void Device::copyImageToImageEXT( const VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT & copyImageToImageInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCopyImageToImageEXT && "Function <vkCopyImageToImageEXT> requires <VK_EXT_host_image_copy>" );
+
+      VkResult result = getDispatcher()->vkCopyImageToImageEXT( static_cast<VkDevice>( m_device ),
+                                                                reinterpret_cast<const VkCopyImageToImageInfoEXT *>( &copyImageToImageInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::copyImageToImageEXT" );
+    }
+
+    VULKAN_HPP_INLINE void Device::transitionImageLayoutEXT(
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT> const & transitions ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkTransitionImageLayoutEXT && "Function <vkTransitionImageLayoutEXT> requires <VK_EXT_host_image_copy>" );
+
+      VkResult result = getDispatcher()->vkTransitionImageLayoutEXT(
+        static_cast<VkDevice>( m_device ), transitions.size(), reinterpret_cast<const VkHostImageLayoutTransitionInfoEXT *>( transitions.data() ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::transitionImageLayoutEXT" );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
+      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
+                         "Function <vkGetImageSubresourceLayout2EXT> requires <VK_EXT_host_image_copy> or <VK_EXT_image_compression_control>" );
+
+      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT layout;
+      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
+                                                        static_cast<VkImage>( m_image ),
+                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
+                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
+
+      return layout;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
+                         "Function <vkGetImageSubresourceLayout2EXT> requires <VK_EXT_host_image_copy> or <VK_EXT_image_compression_control>" );
+
+      VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
+      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT &    layout = structureChain.template get<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>();
+      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
+                                                        static_cast<VkImage>( m_image ),
+                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
+                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
+
+      return structureChain;
+    }
+
     //=== VK_KHR_map_memory2 ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE void * Device::mapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR & memoryMapInfo ) const
@@ -18983,40 +19101,6 @@ namespace VULKAN_HPP_NAMESPACE
 
       getDispatcher()->vkCmdResolveImage2KHR( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                               reinterpret_cast<const VkResolveImageInfo2 *>( &resolveImageInfo ) );
-    }
-
-    //=== VK_EXT_image_compression_control ===
-
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
-      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
-                         "Function <vkGetImageSubresourceLayout2EXT> requires <VK_EXT_image_compression_control>" );
-
-      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT layout;
-      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
-                                                        static_cast<VkImage>( m_image ),
-                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
-                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
-
-      return layout;
-    }
-
-    template <typename X, typename Y, typename... Z>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
-      Image::getSubresourceLayout2EXT( const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource ) const VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetImageSubresourceLayout2EXT &&
-                         "Function <vkGetImageSubresourceLayout2EXT> requires <VK_EXT_image_compression_control>" );
-
-      VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
-      VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT &    layout = structureChain.template get<VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT>();
-      getDispatcher()->vkGetImageSubresourceLayout2EXT( static_cast<VkDevice>( m_device ),
-                                                        static_cast<VkImage>( m_image ),
-                                                        reinterpret_cast<const VkImageSubresource2EXT *>( &subresource ),
-                                                        reinterpret_cast<VkSubresourceLayout2EXT *>( &layout ) );
-
-      return structureChain;
     }
 
     //=== VK_EXT_device_fault ===
@@ -19796,6 +19880,60 @@ namespace VULKAN_HPP_NAMESPACE
                                                              static_cast<VkDeviceAddress>( indirectCommandsAddress ),
                                                              static_cast<VkDeviceAddress>( indirectCommandsCountAddress ),
                                                              stride );
+    }
+
+    //=== VK_NV_device_generated_commands_compute ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+      Device::getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelineIndirectMemoryRequirementsNV &&
+                         "Function <vkGetPipelineIndirectMemoryRequirementsNV> requires <VK_NV_device_generated_commands_compute>" );
+
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+      getDispatcher()->vkGetPipelineIndirectMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
+                                                                  reinterpret_cast<const VkComputePipelineCreateInfo *>( &createInfo ),
+                                                                  reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return memoryRequirements;
+    }
+
+    template <typename X, typename Y, typename... Z>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+      Device::getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelineIndirectMemoryRequirementsNV &&
+                         "Function <vkGetPipelineIndirectMemoryRequirementsNV> requires <VK_NV_device_generated_commands_compute>" );
+
+      VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
+      VULKAN_HPP_NAMESPACE::MemoryRequirements2 &      memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+      getDispatcher()->vkGetPipelineIndirectMemoryRequirementsNV( static_cast<VkDevice>( m_device ),
+                                                                  reinterpret_cast<const VkComputePipelineCreateInfo *>( &createInfo ),
+                                                                  reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+      return structureChain;
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::updatePipelineIndirectBufferNV( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint,
+                                                                          VULKAN_HPP_NAMESPACE::Pipeline          pipeline ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdUpdatePipelineIndirectBufferNV &&
+                         "Function <vkCmdUpdatePipelineIndirectBufferNV> requires <VK_NV_device_generated_commands_compute>" );
+
+      getDispatcher()->vkCmdUpdatePipelineIndirectBufferNV(
+        static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkPipelineBindPoint>( pipelineBindPoint ), static_cast<VkPipeline>( pipeline ) );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DeviceAddress
+      Device::getPipelineIndirectAddressNV( const VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV & info ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPipelineIndirectDeviceAddressNV &&
+                         "Function <vkGetPipelineIndirectDeviceAddressNV> requires <VK_NV_device_generated_commands_compute>" );
+
+      VkDeviceAddress result = getDispatcher()->vkGetPipelineIndirectDeviceAddressNV(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkPipelineIndirectDeviceAddressInfoNV *>( &info ) );
+
+      return static_cast<VULKAN_HPP_NAMESPACE::DeviceAddress>( result );
     }
 
     //=== VK_EXT_extended_dynamic_state3 ===

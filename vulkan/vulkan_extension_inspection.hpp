@@ -270,6 +270,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_extended_dynamic_state",
       "VK_KHR_deferred_host_operations",
       "VK_KHR_pipeline_executable_properties",
+      "VK_EXT_host_image_copy",
       "VK_KHR_map_memory2",
       "VK_EXT_shader_atomic_float2",
       "VK_EXT_swapchain_maintenance1",
@@ -367,6 +368,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_QCOM_fragment_density_map_offset",
       "VK_NV_copy_memory_indirect",
       "VK_NV_memory_decompression",
+      "VK_NV_device_generated_commands_compute",
       "VK_NV_linear_color_attachment",
       "VK_EXT_image_compression_control_swapchain",
       "VK_QCOM_image_processing",
@@ -1326,6 +1328,13 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
+      { "VK_EXT_host_image_copy",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_copy_commands2",
+              "VK_KHR_format_feature_flags2",
+            } } } } },
       { "VK_EXT_shader_atomic_float2",
         { { "VK_VERSION_1_0",
             { {
@@ -1776,6 +1785,11 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
               "VK_KHR_buffer_device_address",
+            } } } } },
+      { "VK_NV_device_generated_commands_compute",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_NV_device_generated_commands",
             } } } } },
       { "VK_NV_linear_color_attachment",
         { { "VK_VERSION_1_0",
@@ -2575,14 +2589,14 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_KHR_buffer_device_address" ) || ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_shader_atomic_float" ) ||
            ( extension == "VK_EXT_host_query_reset" ) || ( extension == "VK_EXT_index_type_uint8" ) || ( extension == "VK_EXT_extended_dynamic_state" ) ||
            ( extension == "VK_KHR_deferred_host_operations" ) || ( extension == "VK_KHR_pipeline_executable_properties" ) ||
-           ( extension == "VK_KHR_map_memory2" ) || ( extension == "VK_EXT_shader_atomic_float2" ) || ( extension == "VK_EXT_swapchain_maintenance1" ) ||
-           ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) || ( extension == "VK_NV_device_generated_commands" ) ||
-           ( extension == "VK_NV_inherited_viewport_scissor" ) || ( extension == "VK_KHR_shader_integer_dot_product" ) ||
-           ( extension == "VK_EXT_texel_buffer_alignment" ) || ( extension == "VK_QCOM_render_pass_transform" ) ||
-           ( extension == "VK_EXT_depth_bias_control" ) || ( extension == "VK_EXT_device_memory_report" ) || ( extension == "VK_EXT_robustness2" ) ||
-           ( extension == "VK_EXT_custom_border_color" ) || ( extension == "VK_GOOGLE_user_type" ) || ( extension == "VK_KHR_pipeline_library" ) ||
-           ( extension == "VK_NV_present_barrier" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_KHR_present_id" ) ||
-           ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" )
+           ( extension == "VK_EXT_host_image_copy" ) || ( extension == "VK_KHR_map_memory2" ) || ( extension == "VK_EXT_shader_atomic_float2" ) ||
+           ( extension == "VK_EXT_swapchain_maintenance1" ) || ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) ||
+           ( extension == "VK_NV_device_generated_commands" ) || ( extension == "VK_NV_inherited_viewport_scissor" ) ||
+           ( extension == "VK_KHR_shader_integer_dot_product" ) || ( extension == "VK_EXT_texel_buffer_alignment" ) ||
+           ( extension == "VK_QCOM_render_pass_transform" ) || ( extension == "VK_EXT_depth_bias_control" ) || ( extension == "VK_EXT_device_memory_report" ) ||
+           ( extension == "VK_EXT_robustness2" ) || ( extension == "VK_EXT_custom_border_color" ) || ( extension == "VK_GOOGLE_user_type" ) ||
+           ( extension == "VK_KHR_pipeline_library" ) || ( extension == "VK_NV_present_barrier" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) ||
+           ( extension == "VK_KHR_present_id" ) || ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_KHR_video_encode_queue" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -2624,7 +2638,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_ARM_shader_core_properties" ) || ( extension == "VK_EXT_image_sliced_view_of_3d" ) ||
            ( extension == "VK_VALVE_descriptor_set_host_mapping" ) || ( extension == "VK_EXT_depth_clamp_zero_one" ) ||
            ( extension == "VK_EXT_non_seamless_cube_map" ) || ( extension == "VK_QCOM_fragment_density_map_offset" ) ||
-           ( extension == "VK_NV_copy_memory_indirect" ) || ( extension == "VK_NV_memory_decompression" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
+           ( extension == "VK_NV_copy_memory_indirect" ) || ( extension == "VK_NV_memory_decompression" ) ||
+           ( extension == "VK_NV_device_generated_commands_compute" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
            ( extension == "VK_EXT_image_compression_control_swapchain" ) || ( extension == "VK_QCOM_image_processing" ) ||
            ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
            ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||

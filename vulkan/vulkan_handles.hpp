@@ -1142,6 +1142,20 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineExecutableStatisticKHR;
   struct PipelineExecutableInternalRepresentationKHR;
 
+  //=== VK_EXT_host_image_copy ===
+  struct PhysicalDeviceHostImageCopyFeaturesEXT;
+  struct PhysicalDeviceHostImageCopyPropertiesEXT;
+  struct MemoryToImageCopyEXT;
+  struct ImageToMemoryCopyEXT;
+  struct CopyMemoryToImageInfoEXT;
+  struct CopyImageToMemoryInfoEXT;
+  struct CopyImageToImageInfoEXT;
+  struct HostImageLayoutTransitionInfoEXT;
+  struct SubresourceHostMemcpySizeEXT;
+  struct HostImageCopyDevicePerformanceQueryEXT;
+  struct SubresourceLayout2EXT;
+  struct ImageSubresource2EXT;
+
   //=== VK_KHR_map_memory2 ===
   struct MemoryMapInfoKHR;
   struct MemoryUnmapInfoKHR;
@@ -1329,8 +1343,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_image_compression_control ===
   struct PhysicalDeviceImageCompressionControlFeaturesEXT;
   struct ImageCompressionControlEXT;
-  struct SubresourceLayout2EXT;
-  struct ImageSubresource2EXT;
   struct ImageCompressionPropertiesEXT;
 
   //=== VK_EXT_attachment_feedback_loop_layout ===
@@ -1523,6 +1535,12 @@ namespace VULKAN_HPP_NAMESPACE
   struct DecompressMemoryRegionNV;
   struct PhysicalDeviceMemoryDecompressionFeaturesNV;
   struct PhysicalDeviceMemoryDecompressionPropertiesNV;
+
+  //=== VK_NV_device_generated_commands_compute ===
+  struct PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV;
+  struct ComputePipelineIndirectBufferInfoNV;
+  struct PipelineIndirectDeviceAddressInfoNV;
+  struct BindPipelineIndirectCommandNV;
 
   //=== VK_NV_linear_color_attachment ===
   struct PhysicalDeviceLinearColorAttachmentFeaturesNV;
@@ -6062,6 +6080,13 @@ namespace VULKAN_HPP_NAMESPACE
                                           VULKAN_HPP_NAMESPACE::DeviceAddress indirectCommandsCountAddress,
                                           uint32_t                            stride,
                                           Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
+    //=== VK_NV_device_generated_commands_compute ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void updatePipelineIndirectBufferNV( VULKAN_HPP_NAMESPACE::PipelineBindPoint pipelineBindPoint,
+                                         VULKAN_HPP_NAMESPACE::Pipeline          pipeline,
+                                         Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_EXT_extended_dynamic_state3 ===
 
@@ -12038,6 +12063,67 @@ namespace VULKAN_HPP_NAMESPACE
         Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    //=== VK_EXT_host_image_copy ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result copyMemoryToImageEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT * pCopyMemoryToImageInfo,
+                                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      copyMemoryToImageEXT( const VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT & copyMemoryToImageInfo,
+                            Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result copyImageToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT * pCopyImageToMemoryInfo,
+                                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      copyImageToMemoryEXT( const VULKAN_HPP_NAMESPACE::CopyImageToMemoryInfoEXT & copyImageToMemoryInfo,
+                            Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result copyImageToImageEXT( const VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT * pCopyImageToImageInfo,
+                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      copyImageToImageEXT( const VULKAN_HPP_NAMESPACE::CopyImageToImageInfoEXT & copyImageToImageInfo,
+                           Dispatch const & d                                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result transitionImageLayoutEXT( uint32_t                                                       transitionCount,
+                                                          const VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT * pTransitions,
+                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      transitionImageLayoutEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT> const & transitions,
+                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT * pSubresource,
+                                        VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT *      pLayout,
+                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
+                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
+                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
+                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
+                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     //=== VK_KHR_map_memory2 ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -12349,26 +12435,6 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<DataType>::type
       getAccelerationStructureOpaqueCaptureDescriptorDataEXT( const VULKAN_HPP_NAMESPACE::AccelerationStructureCaptureDescriptorDataInfoEXT & info,
                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-    //=== VK_EXT_image_compression_control ===
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
-                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT * pSubresource,
-                                        VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT *      pLayout,
-                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT
-                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
-                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
-                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
-                         getImageSubresourceLayout2EXT( VULKAN_HPP_NAMESPACE::Image                        image,
-                                                        const VULKAN_HPP_NAMESPACE::ImageSubresource2EXT & subresource,
-                                                        Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_device_fault ===
@@ -12778,6 +12844,32 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     VULKAN_HPP_NODISCARD void * getDescriptorSetHostMappingVALVE( VULKAN_HPP_NAMESPACE::DescriptorSet descriptorSet,
                                                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_NV_device_generated_commands_compute ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo * pCreateInfo,
+                                                  VULKAN_HPP_NAMESPACE::MemoryRequirements2 *             pMemoryRequirements,
+                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryRequirements2
+                         getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo,
+                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename X, typename Y, typename... Z, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+                         getPipelineIndirectMemoryRequirementsNV( const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo & createInfo,
+                                                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    DeviceAddress getPipelineIndirectAddressNV( const VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV * pInfo,
+                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NAMESPACE::DeviceAddress getPipelineIndirectAddressNV( const VULKAN_HPP_NAMESPACE::PipelineIndirectDeviceAddressInfoNV & info,
+                                                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_shader_module_identifier ===

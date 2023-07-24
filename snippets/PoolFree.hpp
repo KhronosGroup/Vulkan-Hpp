@@ -49,7 +49,7 @@ public:
   using ret_t = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
 
   template <class Dispatcher>
-  using destroy_pfn_t = typename ret_t<Dispatcher> ( ParentType::* )( PoolType pool, uint32_t, const HandleType * kty, const Dispatcher & d ) const;
+  using destroy_pfn_t = ret_t<Dispatcher> ( ParentType::* )( PoolType pool, uint32_t, const HandleType * kty, const Dispatcher & d ) const;
 
   PoolFreeShared() = default;
 

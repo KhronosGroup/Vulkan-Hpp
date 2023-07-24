@@ -1,4 +1,4 @@
-// Copyright(c) 2019, NVIDIA CORPORATION. All rights reserved.
+// Copyright(c) 2023, Ilya Doroshenko. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,39 +24,10 @@
 #include <iostream>
 #include <thread>
 
+
 static char const * AppName    = "DrawTexturedCube";
 static char const * EngineName = "Vulkan.hpp";
 
-struct Demo
-{
-  Demo()
-  {
-    instance = vk::SharedInstance{ vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() ) };
-#if !defined( NDEBUG )
-    debugUtilsMessenger =
-      vk::SharedDebugUtilsMessengerEXT{ instance->createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() ), instance };
-#endif
-
-    physicalDevice = instance->enumeratePhysicalDevices().front();
-
-    vk::su::SurfaceData surfaceData( instance.get(), AppName, vk::Extent2D( 500, 500 ) );
-    extent  = surfaceData.extent;
-    surface = vk::SharedSurfaceKHR{ surfaceData.surface, instance };
-    windowData = std::make_unique<vk::su::WindowData>( std::move( surfaceData.window ) );
-
-    graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
-    device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };
-  }
-
-  std::pair<uint32_t, uint32_t>       graphicsAndPresentQueueFamilyIndex; // the objects are out of order to verify correct handling of shared handles
-  vk::SharedDebugUtilsMessengerEXT    debugUtilsMessenger;
-  vk::SharedDevice                    device;
-  vk::PhysicalDevice                  physicalDevice;  // physical device does not have a shared handle since it is not destroyed
-  vk::SharedInstance                  instance;
-  std::unique_ptr<vk::su::WindowData> windowData;
-  vk::SharedSurfaceKHR                surface;
-  vk::Extent2D                        extent;
-};
 
 std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( vk::SharedDevice                   device,
                                                            vk::RenderPass                     renderPass,
@@ -75,122 +46,164 @@ std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( vk::SharedDevice     
   return framebuffers;
 }
 
-int main( int /*argc*/, char ** /*argv*/ )
+class Window
 {
-  try
+public:
+  Window( const char * windowName, vk::Extent2D extent ) : window( vk::su::createWindow( windowName, extent ) ) {}
+
+public:
+  vk::su::WindowData window;
+};
+
+class Engine
+{
+public:
+  Engine()
   {
-    std::unique_ptr<Demo> demo{ new Demo };
+    instance = vk::SharedInstance{ vk::su::createInstance( AppName, EngineName, {}, vk::su::getInstanceExtensions() ) };
+#if !defined( NDEBUG )
+    debugUtilsMessenger =
+      vk::SharedDebugUtilsMessengerEXT{ instance->createDebugUtilsMessengerEXT( vk::su::makeDebugUtilsMessengerCreateInfoEXT() ), instance };
+#endif
+    physicalDevice = instance->enumeratePhysicalDevices().front();
+  }
 
-    auto       device_handle = demo->device;
-    vk::Device device        = device_handle.get();
+  void CreateDeviceAndSwapChain( const vk::su::WindowData & window )
+  {
+    VkSurfaceKHR surface;
+    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
+    if ( err != VK_SUCCESS )
+      throw std::runtime_error( "Failed to create window!" );
+    vk::SharedSurfaceKHR asurfaceKHR{ surface, instance };
 
-    vk::SharedCommandPool   commandPool{ vk::su::createCommandPool( demo->device.get(), demo->graphicsAndPresentQueueFamilyIndex.first ), demo->device };
-    vk::SharedCommandBuffer commandBuffer{
-      demo->device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool.get(), vk::CommandBufferLevel::ePrimary, 1 ) ).front(),
-      demo->device,
+    auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surface );
+    device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };
+
+    vk::su::SwapChainData swapChainData( physicalDevice,
+                                         device.get(),
+                                         surface,
+                                         window.extent,
+                                         vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
+                                         {},
+                                         graphicsAndPresentQueueFamilyIndex.first,
+                                         graphicsAndPresentQueueFamilyIndex.second );
+    swapChain = vk::SharedSwapchainKHR{ swapChainData.swapChain, device, asurfaceKHR };
+
+    imageViews.reserve( swapChainData.images.size() );
+    images.reserve( swapChainData.images.size() );
+
+    // we don't want to destroy the images, since they are owned by the swapchain,
+    // but for the consistent representation we might want shared textures
+    std::transform( swapChainData.images.begin(),
+                    swapChainData.images.end(),
+                    std::back_inserter( images ),
+                    [this]( vk::Image image ) {
+                      return vk::SharedImage{ image, device, true };
+                    } );
+
+    std::transform( swapChainData.imageViews.begin(),
+                    swapChainData.imageViews.end(),
+                    std::back_inserter( imageViews ),
+                    [this]( vk::ImageView imageView ) {
+                      return vk::SharedImageView{ imageView, device };
+                    } );
+    commandPool   = vk::SharedCommandPool{ vk::su::createCommandPool( device.get(), graphicsAndPresentQueueFamilyIndex.first ), device };
+    graphicsQueue = device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
+    presentQueue  = device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
+
+    depthFormat = vk::Format::eD16Unorm;
+    vk::su::DepthBufferData depthBufferData( physicalDevice, device.get(), vk::Format::eD16Unorm, window.extent );
+    depthImage     = vk::SharedImage{ depthBufferData.image, device };
+    depthImageView = vk::SharedImageView{ depthBufferData.imageView, device };
+    depthMemory = vk::SharedDeviceMemory{ depthBufferData.deviceMemory, device };
+
+    renderPass = vk::SharedRenderPass{
+      vk::su::createRenderPass( device.get(), vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( swapChain.getSurface() ) ).format, depthFormat ),
+      device
+    };
+
+    framebuffers           = makeSharedFramebuffers( device, renderPass.get(), swapChainData.imageViews, depthImageView.get(), window.extent );
+    imageAcquiredSemaphore = vk::SharedSemaphore{ device->createSemaphore( vk::SemaphoreCreateInfo() ), device };
+    drawFence              = vk::SharedFence{ device->createFence( vk::FenceCreateInfo() ), device };
+
+    // we don't need surface anymore, it is owned by the swapchain now
+  }
+
+  void Initialize()
+  {
+    commandBuffer = vk::SharedCommandBuffer{
+      device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool.get(), vk::CommandBufferLevel::ePrimary, 1 ) ).front(),
+      device,
       commandPool.get()
     };
 
-    vk::Queue graphicsQueue = device.getQueue( demo->graphicsAndPresentQueueFamilyIndex.first, 0 );
-    vk::Queue presentQueue  = device.getQueue( demo->graphicsAndPresentQueueFamilyIndex.second, 0 );
-
-    vk::su::SwapChainData swapChainData( demo->physicalDevice,
-                                         device,
-                                         demo->surface.get(),
-                                         demo->extent,
-                                         vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
-                                         {},
-                                         demo->graphicsAndPresentQueueFamilyIndex.first,
-                                         demo->graphicsAndPresentQueueFamilyIndex.second );
-
-    vk::su::DepthBufferData depthBufferData( demo->physicalDevice, device, vk::Format::eD16Unorm, demo->extent );
-
-    vk::su::TextureData textureData( demo->physicalDevice, device );
-
-    commandBuffer->begin( vk::CommandBufferBeginInfo() );
-    textureData.setImage( device, commandBuffer.get(), vk::su::CheckerboardImageGenerator() );
-
-    vk::su::BufferData uniformBufferData( demo->physicalDevice, device, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
-    glm::mat4x4        mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( demo->extent );
-    vk::su::copyToDevice( device, uniformBufferData.deviceMemory, mvpcMatrix );
-
-    vk::SharedDescriptorSetLayout descriptorSetLayout{ vk::su::createDescriptorSetLayout(
-                                                         device,
-                                                         { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
-                                                           { vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment } } ),
-                                                       device_handle };
+    auto device_handle = device.get();
+    descriptorSetLayout = vk::SharedDescriptorSetLayout{ vk::su::createDescriptorSetLayout(
+                                                           device_handle,
+                                                           { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex },
+                                                             { vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment } } ),
+                                                         device };
 
     auto dsl = descriptorSetLayout.get();
 
-    vk::SharedPipelineLayout pipelineLayout{ device.createPipelineLayout( vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), dsl ) ),
-                                             device_handle };
-
-    vk::SharedRenderPass renderPass{
-      vk::su::createRenderPass(
-        device, vk::su::pickSurfaceFormat( demo->physicalDevice.getSurfaceFormatsKHR( demo->surface.get() ) ).format, depthBufferData.format ),
-      device_handle
-    };
+    pipelineLayout = vk::SharedPipelineLayout{ device->createPipelineLayout( vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), dsl ) ), device };
 
     glslang::InitializeProcess();
-    vk::SharedShaderModule vertexShaderModule{ vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T ), device_handle };
-    vk::SharedShaderModule fragmentShaderModule{ vk::su::createShaderModule( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_T_C ),
-                                                 device_handle };
+    vertexShaderModule = vk::SharedShaderModule{ vk::su::createShaderModule( device_handle, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PT_T ), device };
+    fragmentShaderModule =
+      vk::SharedShaderModule{ vk::su::createShaderModule( device_handle, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_T_C ), device };
     glslang::FinalizeProcess();
 
-    auto framebuffers = makeSharedFramebuffers( device_handle, renderPass.get(), swapChainData.imageViews, depthBufferData.imageView, demo->extent );
-
-    vk::su::BufferData vertexBufferData( demo->physicalDevice, device, sizeof( texturedCubeData ), vk::BufferUsageFlagBits::eVertexBuffer );
-    vk::su::copyToDevice( device, vertexBufferData.deviceMemory, texturedCubeData, sizeof( texturedCubeData ) / sizeof( texturedCubeData[0] ) );
-
-    vk::SharedDescriptorPool descriptorPool{
-      vk::su::createDescriptorPool( device, { { vk::DescriptorType::eUniformBuffer, 1 }, { vk::DescriptorType::eCombinedImageSampler, 1 } } ), device_handle
+    descriptorPool = vk::SharedDescriptorPool{
+      vk::su::createDescriptorPool( device_handle, { { vk::DescriptorType::eUniformBuffer, 1 }, { vk::DescriptorType::eCombinedImageSampler, 1 } } ), device
     };
 
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool.get(), dsl );
-    vk::SharedDescriptorSet       descriptorSet{ device.allocateDescriptorSets( descriptorSetAllocateInfo ).front(), device_handle, descriptorPool.get() };
+    descriptorSetAllocateInfo = vk::DescriptorSetAllocateInfo( descriptorPool.get(), dsl );
+    descriptorSet             = vk::SharedDescriptorSet{ device->allocateDescriptorSets( descriptorSetAllocateInfo ).front(), device, descriptorPool.get() };
 
-    vk::su::updateDescriptorSets(
-      device, descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
-
-    vk::SharedPipelineCache pipelineCache{ device.createPipelineCache( vk::PipelineCacheCreateInfo() ), device_handle };
-    vk::SharedPipeline      graphicsPipeline{ vk::su::createGraphicsPipeline( device,
-                                                                         pipelineCache.get(),
-                                                                         std::make_pair( vertexShaderModule.get(), nullptr ),
-                                                                         std::make_pair( fragmentShaderModule.get(), nullptr ),
-                                                                         sizeof( texturedCubeData[0] ),
-                                                                              { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
-                                                                         vk::FrontFace::eClockwise,
-                                                                         true,
-                                                                         pipelineLayout.get(),
-                                                                         renderPass.get() ),
-                                         device_handle };
+    pipelineCache    = vk::SharedPipelineCache{ device->createPipelineCache( vk::PipelineCacheCreateInfo() ), device };
+    graphicsPipeline = vk::SharedPipeline{ vk::su::createGraphicsPipeline( device_handle,
+                                                                           pipelineCache.get(),
+                                                                           std::make_pair( vertexShaderModule.get(), nullptr ),
+                                                                           std::make_pair( fragmentShaderModule.get(), nullptr ),
+                                                                           sizeof( texturedCubeData[0] ),
+                                                                           { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
+                                                                           vk::FrontFace::eClockwise,
+                                                                           true,
+                                                                           pipelineLayout.get(),
+                                                                           renderPass.get() ),
+                                           device };
 
     // Get the index of the next available swapchain image:
-    vk::SharedSemaphore       imageAcquiredSemaphore{ device.createSemaphore( vk::SemaphoreCreateInfo() ), device_handle };
-    vk::ResultValue<uint32_t> currentBuffer =
-      device.acquireNextImageKHR( swapChainData.swapChain, vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
-    assert( currentBuffer.result == vk::Result::eSuccess );
-    assert( currentBuffer.value < framebuffers.size() );
+    vk::ResultValue<uint32_t> currentBufferR = device->acquireNextImageKHR( swapChain.get(), vk::su::FenceTimeout, imageAcquiredSemaphore.get(), nullptr );
+    assert( currentBufferR.result == vk::Result::eSuccess );
+    assert( currentBufferR.value < framebuffers.size() );
+    currentBuffer = currentBufferR.value;
+  }
 
+  void BeginFrame( vk::Extent2D extent )
+  {
     std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( 0.2f, 0.2f, 0.2f, 0.2f );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
     vk::RenderPassBeginInfo renderPassBeginInfo(
-      renderPass.get(), framebuffers[currentBuffer.value].get(), vk::Rect2D( vk::Offset2D( 0, 0 ), demo->extent ), clearValues );
+      renderPass.get(), framebuffers[currentBuffer].get(), vk::Rect2D( vk::Offset2D( 0, 0 ), extent ), clearValues );
+
+    commandBuffer->begin( vk::CommandBufferBeginInfo() );
     commandBuffer->beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
     commandBuffer->bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline.get() );
     commandBuffer->bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout.get(), 0, descriptorSet.get(), nullptr );
 
-    commandBuffer->bindVertexBuffers( 0, vertexBufferData.buffer, { 0 } );
     commandBuffer->setViewport( 0,
-                                vk::Viewport( 0.0f, 0.0f, static_cast<float>( demo->extent.width ), static_cast<float>( demo->extent.height ), 0.0f, 1.0f ) );
-    commandBuffer->setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), demo->extent ) );
+                                vk::Viewport( 0.0f, 0.0f, static_cast<float>( extent.width ), static_cast<float>( extent.height ), 0.0f, 1.0f ) );
+    commandBuffer->setScissor( 0, vk::Rect2D( vk::Offset2D( 0, 0 ), extent ) );
+  }
 
-    commandBuffer->draw( 12 * 3, 1, 0, 0 );
+  void EndFrame()
+  {
     commandBuffer->endRenderPass();
     commandBuffer->end();
 
-    vk::SharedFence drawFence{ device.createFence( vk::FenceCreateInfo() ), device_handle };
 
     vk::PipelineStageFlags waitDestinationStageMask( vk::PipelineStageFlagBits::eColorAttachmentOutput );
 
@@ -200,10 +213,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SubmitInfo submitInfo( ias, waitDestinationStageMask, comBuf );
     graphicsQueue.submit( submitInfo, drawFence.get() );
 
-    while ( vk::Result::eTimeout == device.waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
-    vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swapChainData.swapChain, currentBuffer.value ) );
+    auto swap = swapChain.get();
+    vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swap, currentBuffer ) );
     switch ( result )
     {
       case vk::Result::eSuccess: break;
@@ -213,13 +227,143 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 
     /* VULKAN_KEY_END */
-    device.waitIdle();
+    device->waitIdle();
+  }
 
-    vertexBufferData.clear( device );
-    uniformBufferData.clear( device );
-    textureData.clear( device );
-    depthBufferData.clear( device );
-    swapChainData.clear( device );
+public:
+  vk::SharedSwapchainKHR           swapChain; // swapchain owns surface, that owns Instance, which should be destroyed last
+  vk::PhysicalDevice               physicalDevice;  // physical device does not have a shared handle since it is not destroyed
+  vk::SharedDevice                 device;
+  vk::SharedInstance               instance; // we don't need to keep the instance, this is just for convenience
+  vk::SharedDebugUtilsMessengerEXT debugUtilsMessenger;
+
+  std::vector<vk::SharedImageView> imageViews;
+  std::vector<vk::SharedImage>     images;
+
+  uint32_t            currentBuffer = 0;
+  vk::SharedSemaphore imageAcquiredSemaphore;
+
+  // memory still needs to be before the resources that use it
+  vk::SharedDeviceMemory depthMemory;
+  vk::SharedImage     depthImage;
+  vk::SharedImageView depthImageView;
+  vk::Format          depthFormat;
+
+  vk::SharedCommandPool   commandPool;
+  vk::SharedCommandBuffer commandBuffer;
+
+  vk::Queue graphicsQueue;  // queue is not destroyed, so we don't need shared handle
+  vk::Queue presentQueue;
+
+  vk::SharedPipelineCache       pipelineCache;
+  vk::SharedPipelineLayout      pipelineLayout;
+  vk::SharedRenderPass          renderPass;
+  vk::SharedPipeline            graphicsPipeline;
+  vk::SharedDescriptorPool      descriptorPool;
+  vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo;
+  vk::SharedDescriptorSet       descriptorSet;
+  vk::SharedDescriptorSetLayout descriptorSetLayout;
+
+  vk::SharedShaderModule vertexShaderModule;
+  vk::SharedShaderModule fragmentShaderModule;
+
+  std::vector<vk::SharedFramebuffer> framebuffers;
+
+  vk::SharedFence drawFence;
+};
+
+class Asset
+{
+public:
+  Asset( const Engine & engine, vk::Extent2D extent )
+  {
+    auto               device_handle = engine.device.get();
+    vk::su::BufferData vertexBufferData( engine.physicalDevice, device_handle, sizeof( texturedCubeData ), vk::BufferUsageFlagBits::eVertexBuffer );
+    vk::su::copyToDevice( device_handle, vertexBufferData.deviceMemory, texturedCubeData, sizeof( texturedCubeData ) / sizeof( texturedCubeData[0] ) );
+
+    vertexBuffer       = vk::SharedBuffer{ vertexBufferData.buffer, engine.device };
+    vertexBufferMemory = vk::SharedDeviceMemory{ vertexBufferData.deviceMemory, engine.device };
+
+    engine.commandBuffer->begin( vk::CommandBufferBeginInfo() );
+
+    vk::su::BufferData uniformBufferData( engine.physicalDevice, device_handle, sizeof( glm::mat4x4 ), vk::BufferUsageFlagBits::eUniformBuffer );
+    glm::mat4x4        mvpcMatrix = vk::su::createModelViewProjectionClipMatrix( extent );
+    vk::su::copyToDevice( device_handle, uniformBufferData.deviceMemory, mvpcMatrix );
+
+    uniformBufferMemory = vk::SharedDeviceMemory{ uniformBufferData.deviceMemory, engine.device };
+    uniformBuffer       = vk::SharedBuffer{ uniformBufferData.buffer, engine.device };
+
+
+    vk::su::TextureData textureData( engine.physicalDevice, device_handle );
+    textureData.setImage( device_handle, engine.commandBuffer.get(), vk::su::CheckerboardImageGenerator() );
+
+    textureImage       = vk::SharedImage{ textureData.imageData->image, engine.device };
+    textureImageMemory = vk::SharedDeviceMemory{ textureData.imageData->deviceMemory, engine.device };
+    textureImageView   = vk::SharedImageView{ textureData.imageData->imageView, engine.device };
+    textureSampler     = vk::SharedSampler{ textureData.sampler, engine.device };
+
+    vk::su::updateDescriptorSets(
+      device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
+    engine.commandBuffer->end();
+
+    vk::su::submitAndWait( device_handle, engine.graphicsQueue, engine.commandBuffer.get() );
+  }
+
+
+  void Draw( vk::CommandBuffer commandBuffer ) 
+  {
+    commandBuffer.bindVertexBuffers( 0, vertexBuffer.get(), { 0 } );
+    commandBuffer.draw( 12 * 3, 1, 0, 0 );
+  }
+
+  vk::SharedDeviceMemory vertexBufferMemory;
+  vk::SharedBuffer       vertexBuffer;
+
+  vk::SharedDeviceMemory uniformBufferMemory;
+  vk::SharedBuffer       uniformBuffer;
+
+  vk::SharedImage	 textureImage;
+  vk::SharedDeviceMemory textureImageMemory;
+  vk::SharedImageView	 textureImageView;
+  vk::SharedSampler		 textureSampler;
+};
+
+class Application
+{
+public:
+  Application() : window( AppName, vk::Extent2D( 500, 500 ) )
+  {
+    // the idea is, that the swapchain could be asynchronously created with audio and other stuff
+    engine.CreateDeviceAndSwapChain( window.window );
+    engine.Initialize();
+
+    asset = std::make_unique<Asset>( engine, vk::Extent2D( 500, 500 ) );
+  }
+
+  void Record()
+  {
+    engine.BeginFrame( vk::Extent2D( 500, 500 ) );
+    asset->Draw( engine.commandBuffer.get() );
+    engine.EndFrame();
+  }
+
+  int start()
+  {
+    Record();
+    return 0;
+  }
+
+private:
+  Window window;
+  Engine engine;
+  std::unique_ptr<Asset> asset;
+};
+
+int main( int /*argc*/, char ** /*argv*/ )
+{
+  try
+  {
+    return Application{}.start();
   }
   catch ( vk::SystemError & err )
   {
@@ -236,5 +380,4 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::cout << "unknown error\n";
     exit( -1 );
   }
-  return 0;
 }

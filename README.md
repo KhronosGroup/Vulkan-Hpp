@@ -436,6 +436,40 @@ For each function which constructs a Vulkan handle of type `vk::Type` Vulkan-Hpp
 
 Note that using `vk::UniqueHandle` comes at a cost since most deleters have to store the `vk::AllocationCallbacks` and parent handle used for construction because they are required for automatic destruction.
 
+### SharedHandle 
+
+Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface. For each Vulkan handle type `vk::Type` there is a shared handle `vk::SharedType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::SharedBuffer ` is the shared handle for `vk::Buffer`.
+
+Unlike UniqueHandle, SharedHandle takes shared ownership of the resource as well as its parent. This means that the resource will not be deleted until all SharedHandles to it are destroyed. This is useful for resources that are shared between multiple threads or objects.
+
+This mechanism ensures correct destruction order even if the parent SharedHandle is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any object, that has it as parent should be last to delete (first created, first in class declaration)
+
+There are no functions which return a `vk::SharedHandle` directly yet. Instead, you can construct a `vk::SharedHandle` from a `vk::Handle`:
+
+```c++
+
+vk::Buffer buffer = device.createBuffer(...);
+vk::SharedBuffer sharedBuffer(buffer, device); // sharedBuffer now owns the buffer
+```
+
+There are several specializations of `vk::SharedHandle` for different handle types. For example, `vk::SharedImage` may take an additional argument to specify if the image is owned by swapchain:
+
+```c++
+vk::Image image = swapchain.getImages(...)[0]; // get the first image from the swapchain
+vk::SharedImage sharedImage(image, device, true); // sharedImage now owns the image, but won't destroy it
+```
+
+There is also a specialization for `vk::SwapchainKHR` which takes an additional argument to specify a surface:
+
+```c++
+vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
+vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
+```
+
+The API will be extended to provide more functions, like `put()` and creation functions in the future.
+
+
+
 ### Custom allocators
 
 Sometimes it is required to use `std::vector` with custom allocators. Vulkan-Hpp supports vectors with custom allocators as input for `vk::ArrayProxy` and for functions which do return a vector. For the latter case, add your favorite custom allocator as template argument to the function call like this:

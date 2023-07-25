@@ -442,7 +442,7 @@ Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface. For each Vulkan handle
 
 Unlike UniqueHandle, SharedHandle takes shared ownership of the resource as well as its parent. This means that parent handle will not be destroyed until all child resources are deleted. This is useful for resources that are shared between multiple threads or objects.
 
-This mechanism ensures correct destruction order even if the parent SharedHandle is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any object, that has it as parent should be last to delete (first created, first in class declaration)
+This mechanism ensures correct destruction order even if the parent SharedHandle is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any of its child object should be last to delete (first created, first in class declaration)
 
 There are no functions which return a `vk::SharedHandle` directly yet. Instead, you can construct a `vk::SharedHandle` from a `vk::Handle`:
 
@@ -466,7 +466,14 @@ vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
 vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
 ```
 
-The API will be extended to provide more functions, like `put()` and creation functions in the future.
+If you have a native call and wish to have a `vk::SharedHandle` returned, you can use `put()` and `put_native()`. Arguments are the same as the constructor, but instead you get a handle reference, which you can use to get the output:
+
+```c++
+vk::SharedSurfaceKHR surface;
+VkResult             err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface.put_native( instance ) );
+```
+
+The API will be extended to provide creation functions in the future.
 
 
 

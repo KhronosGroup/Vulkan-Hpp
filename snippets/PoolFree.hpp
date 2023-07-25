@@ -49,25 +49,27 @@ public:
   using ret_t = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
 
   template <class Dispatcher>
-  using destroy_pfn_t = ret_t<Dispatcher> ( ParentType::* )( PoolType pool, uint32_t, const HandleType * kty, const Dispatcher & d ) const;
+  using destroy_pfn_t = ret_t<Dispatcher> ( ParentType::* )( PoolType, uint32_t, const HandleType *, const Dispatcher & ) const;
 
   PoolFreeShared() = default;
 
   template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-  PoolFreeShared( PoolType pool, const Dispatcher & disp VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) ), m_pool( pool ), m_loader( &disp )
+  PoolFreeShared( SharedHandle<PoolType> pool, const Dispatcher & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+    : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
+    , m_pool( std::move( pool ) )
+    , m_dispatch( &dispatch )
   {
   }
 
 public:
   void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( m_destroy && m_loader );
-    ( parent.*m_destroy )( m_pool, 1u, &handle, *m_loader );
+    VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+    ( parent.*m_destroy )( m_pool.get(), 1u, &handle, *m_dispatch );
   }
 
 private:
-  destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
-  PoolType                          m_pool    = PoolType();
-  const DispatchLoaderBase *        m_loader  = nullptr;
+  destroy_pfn_t<DispatchLoaderBase> m_destroy  = nullptr;
+  const DispatchLoaderBase *        m_dispatch = nullptr;
+  SharedHandle<PoolType>            m_pool{};
 };

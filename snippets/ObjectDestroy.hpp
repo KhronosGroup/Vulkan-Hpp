@@ -93,16 +93,16 @@ public:
   template <class Dispatcher>
   using destroy_pfn_t = typename std::conditional<has_parent<HandleType>,
 
-                                                  void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const,
+                                                  void ( ParentType::* )( HandleType, const AllocationCallbacks *, const Dispatcher & ) const,
 
-                                                  void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const>::type;
-  using selector_t = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
+                                                  void ( HandleType::* )( const AllocationCallbacks *, const Dispatcher & ) const>::type;
+  using selector_t    = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
 
   template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                       const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+                       const Dispatcher & dispatch                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
     : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &selector_t::destroy ) ) )
-    , m_loader( &disp )
+    , m_dispatch( &dispatch )
     , m_allocationCallbacks( allocationCallbacks )
   {
   }
@@ -111,19 +111,19 @@ public:
   template <typename T = HandleType>
   typename std::enable_if<has_parent<T>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( m_destroy && m_loader );
-    ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
+    VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+    ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
   }
 
   template <typename T = HandleType>
   typename std::enable_if<!has_parent<T>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( m_destroy && m_loader );
-    ( handle.*m_destroy )( m_allocationCallbacks, *m_loader );
+    VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+    ( handle.*m_destroy )( m_allocationCallbacks, *m_dispatch );
   }
 
 private:
   destroy_pfn_t<DispatchLoaderBase>   m_destroy             = nullptr;
-  const DispatchLoaderBase *          m_loader              = nullptr;
+  const DispatchLoaderBase *          m_dispatch            = nullptr;
   Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
 };

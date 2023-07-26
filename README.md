@@ -466,12 +466,6 @@ vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
 vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
 ```
 
-If you have a native call and wish to have a `vk::SharedHandle` returned, you can use `put()` and `put_native()`. Arguments are the same as the constructor, but instead you get a handle reference, which you can use to get the output:
-
-```c++
-vk::SharedSurfaceKHR surface;
-VkResult             err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface.put_native( instance ) );
-```
 
 The API will be extended to provide creation functions in the future.
 

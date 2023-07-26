@@ -24,7 +24,7 @@
 #include <iostream>
 #include <thread>
 
-static char const * AppName    = "DrawTexturedCube";
+static char const * AppName    = "SharedHandles";
 static char const * EngineName = "Vulkan.hpp";
 
 std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( const vk::SharedDevice &           device,
@@ -33,7 +33,7 @@ std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( const vk::SharedDevic
                                                            const vk::SharedImageView &        depthImageView,
                                                            vk::Extent2D                       extent )
 {
-  auto                               renderPassHandle = renderPass.get();
+  auto                               renderPassHandle = renderPass.get();  // lvalue reference is required for the capture below
   std::vector<vk::SharedFramebuffer> sharedFramebuffers;
   std::vector<vk::Framebuffer>       framebuffers = vk::su::createFramebuffers( device.get(), renderPassHandle, imageViews, depthImageView.get(), extent );
   sharedFramebuffers.reserve( framebuffers.size() );
@@ -72,24 +72,25 @@ public:
 
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
-    vk::SharedSurfaceKHR surface;
+    VkSurfaceKHR surface;
     // for native handles as return types there is put_native() method
-    VkResult             err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface.put_native( instance ) );
+    VkResult err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
+    vk::SharedSurfaceKHR sharedSurface{ surface , instance };
 
-    auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surface.get() );
+    auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, sharedSurface.get() );
     device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };
 
     vk::su::SwapChainData swapChainData( physicalDevice,
                                          device.get(),
-                                         surface.get(),
+                                         sharedSurface.get(),
                                          window.extent,
                                          vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferSrc,
                                          {},
                                          graphicsAndPresentQueueFamilyIndex.first,
                                          graphicsAndPresentQueueFamilyIndex.second );
-    swapChain = vk::SharedSwapchainKHR{ swapChainData.swapChain, device, surface };
+    swapChain = vk::SharedSwapchainKHR{ swapChainData.swapChain, device, sharedSurface };
 
     imageViews.reserve( swapChainData.images.size() );
     images.reserve( swapChainData.images.size() );
@@ -120,7 +121,7 @@ public:
     depthMemory    = vk::SharedDeviceMemory{ depthBufferData.deviceMemory, device };
 
     renderPass = vk::SharedRenderPass{
-      vk::su::createRenderPass( device.get(), vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( swapChain.getSurface() ) ).format, depthFormat ),
+      vk::su::createRenderPass( device.get(), vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( swapChain.getSurface().get() ) ).format, depthFormat ),
       device
     };
 
@@ -342,6 +343,7 @@ public:
   }
 
 private:
+  // order of window, engine and asset variables is important !
   Window window;
   Engine engine;
   Asset  asset;

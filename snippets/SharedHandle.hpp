@@ -20,7 +20,11 @@ class SharedHandle;
 template <typename ParentType, typename Deleter>
 struct SharedHeader
 {
-  SharedHeader( SharedHandle<ParentType> parent, Deleter deleter = Deleter() ) : parent( std::move( parent ) ), deleter( std::move( deleter ) ) {}
+  SharedHeader( SharedHandle<ParentType> parent, Deleter deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
+    : parent( std::move( parent ) )
+    , deleter( std::move( deleter ) )
+  {
+  }
 
   SharedHandle<ParentType> parent{};
   Deleter                  deleter;
@@ -29,7 +33,7 @@ struct SharedHeader
 template <typename Deleter>
 struct SharedHeader<NoParent, Deleter>
 {
-  SharedHeader( Deleter deleter = Deleter() ) : deleter( std::move( deleter ) ) {}
+  SharedHeader( Deleter deleter = Deleter() ) VULKAN_HPP_NOEXCEPT : deleter( std::move( deleter ) ) {}
 
   Deleter deleter;
 };
@@ -93,20 +97,6 @@ public:
     return m_handle;
   }
 
-  template <typename... Args>
-  HandleType & put( Args &&... control_args ) VULKAN_HPP_NOEXCEPT
-  {
-    reset();
-    m_control = std::make_shared<HeaderType>( std::forward<Args>( control_args )... );
-    return m_handle;
-  }
-
-  template <typename... Args>
-  typename HandleType::NativeType & put_native( Args &&... control_args ) VULKAN_HPP_NOEXCEPT
-  {
-    return reinterpret_cast<typename HandleType::NativeType &>( put( std::forward<Args>( control_args )... ) );
-  }
-
   explicit operator bool() const VULKAN_HPP_NOEXCEPT
   {
     return bool( m_handle );
@@ -127,36 +117,31 @@ public:
     if ( !m_handle )
       return;
 
-    auto refs = m_control.use_count();
-    if ( refs == 1 )
-      static_cast<SharedHandle<HandleType> *>( this )->internalDestroy();
-    m_control.reset();
-    m_handle = nullptr;
+    auto control = std::exchange( m_control, nullptr );
+    auto handle  = std::exchange( m_handle, nullptr );
+
+    // only this function owns the last reference to the control block
+    if ( control.use_count() == 1 )
+      SharedHandle<HandleType>::internalDestroy( *control, handle );
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<has_parent<T>, ParentType>::type getParent() const VULKAN_HPP_NOEXCEPT
-  {
-    return m_control->parent.get();
-  }
-
-  template <typename T = HandleType>
-  typename std::enable_if<has_parent<T>, SharedHandle<ParentType>>::type getParentHandle() const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<has_parent<T>, const SharedHandle<ParentType> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return m_control->parent;
   }
 
 protected:
   template <typename T = HandleType>
-  typename std::enable_if<!has_parent<T>, void>::type internalDestroy() VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<!has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
-    m_control->deleter.destroy( m_handle );
+    control.deleter.destroy( handle );
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<has_parent<T>, void>::type internalDestroy() VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
-    m_control->deleter.destroy( getParent(), m_handle );
+    control.deleter.destroy( control.parent.get(), handle );
   }
 
 protected:
@@ -178,26 +163,14 @@ public:
   SharedHandle() = default;
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  explicit SharedHandle( HandleType handle, SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() )
+  explicit SharedHandle( HandleType handle, SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
   {
   }
 
   template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
-  explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) : BaseType( handle, std::move( deleter ) )
+  explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT : BaseType( handle, std::move( deleter ) )
   {
-  }
-
-  template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  HandleType & put( SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
-  {
-    return BaseType::put( std::move( parent ), std::move( deleter ) );
-  }
-
-  template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
-  HandleType & put( DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
-  {
-    return BaseType::put( std::move( deleter ) );
   }
 
 protected:

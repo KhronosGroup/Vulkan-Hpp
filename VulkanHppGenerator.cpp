@@ -4719,25 +4719,62 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 )" };
   auto const deprecatedAttribute       = std::string{ R"(VULKAN_HPP_DEPRECATED("${reason}") )" };
 
-  auto constexprDefines = std::string{ R"(
-  //=========================================
-  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
-  //=========================================
-)" };
-
   // handle the value and callee macros first so they are visible for use in functions below.
 
-  // hardcoded constants.
-  for ( auto const & [macro, data] : m_constants )
-  {
-    // make `macro` PascalCase, and strip the `Vk` prefix
-    auto const constName = stripPrefix( toCamelCase( macro ), "Vk" );
+  auto constexprDefines = std::string{ R"(
+  //===========================
+  //=== CONSTEXPR CONSTANTs ===
+  //===========================
+)" };
 
-    constexprDefines +=
-      replaceWithMap( constexprValueTemplate, { { "type", data.type }, { "constName", constName }, { "deprecated", "" }, { "value", macro } } );
+  {
+    auto const generateConstantsAndProtection =
+      [&constexprValueTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
+    {
+      auto constants = std::string{};
+      for ( auto const & require : requireData )
+      {
+        for ( auto const & constant : require.constants )
+        {
+          if ( !listedConstants.contains( constant ) )
+          {
+            auto constIt = m_constants.find( constant );
+            if ( constIt == m_constants.end() )
+            {
+              auto aliasIt = m_constantAliases.find( constant );
+              assert( aliasIt != m_constantAliases.end() );
+              constIt = m_constants.find( aliasIt->second.name );
+              assert( constIt != m_constants.end() );
+            }
+            constants += replaceWithMap( constexprValueTemplate,
+                                         { { "type", constIt->second.type },
+                                           { "constName", stripPrefix( toCamelCase( constant ), "Vk" ) },
+                                           { "deprecated", "" },
+                                           { "value", constant } } );
+            listedConstants.insert( constant );
+          }
+        }
+      }
+      return addTitleAndProtection( title, constants );
+    };
+
+    std::set<std::string> listedConstants;
+    for ( auto const & feature : m_features )
+    {
+      constexprDefines += generateConstantsAndProtection( feature.requireData, feature.name, listedConstants );
+    }
+    for ( auto const & extension : m_extensions )
+    {
+      constexprDefines += generateConstantsAndProtection( extension.requireData, extension.name, listedConstants );
+    }
   }
 
   // values
+  constexprDefines += R"(
+  //========================
+  //=== CONSTEXPR VALUEs ===
+  //========================
+)";
   for ( auto const & [macro, data] : m_definesPartition.values )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
@@ -4751,6 +4788,11 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   }
 
   // functions
+  constexprDefines += R"(
+  //=========================
+  //=== CONSTEXPR CALLEEs ===
+  //=========================
+)";
   for ( auto const & [macro, data] : m_definesPartition.callees )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
@@ -4773,6 +4815,11 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   }
 
   // callers
+  constexprDefines += R"(
+  //=========================
+  //=== CONSTEXPR CALLERs ===
+  //=========================
+)";
   for ( auto const & [macro, data] : m_definesPartition.callers )
   {
     auto const deprecated = data.deprecated ? replaceWithMap( deprecatedAttribute, { { "reason", data.deprecationReason } } ) : "";
@@ -4800,9 +4847,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 std::string VulkanHppGenerator::generateConstexprUsings() const
 {
   auto constexprUsings = std::string{ R"(
-  //=========================================
-  //=== CONSTEXPR CONSTANTs AND FUNCTIONs ===
-  //=========================================
+  //===========================
+  //=== CONSTEXPR CONSTANTs ===
+  //===========================
 )" };
 
   auto const constexprUsingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${constName};
@@ -4812,14 +4859,50 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
 
   // constants
-  for ( auto const & macro : m_constants )
   {
-    // make `macro` PascalCase and strip the `Vk` prefix
-    auto const constName = pascalCasePrefixStrip( macro.first );
-    constexprUsings += replaceWithMap( constexprUsingTemplate, { { "constName", constName } } );
+    auto const generateConstantsAndProtection =
+      [&constexprUsingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
+    {
+      auto constants = std::string{};
+      for ( auto const & require : requireData )
+      {
+        for ( auto const & constant : require.constants )
+        {
+          if ( !listedConstants.contains( constant ) )
+          {
+            auto constIt = m_constants.find( constant );
+            if ( constIt == m_constants.end() )
+            {
+              auto aliasIt = m_constantAliases.find( constant );
+              assert( aliasIt != m_constantAliases.end() );
+              constIt = m_constants.find( aliasIt->second.name );
+              assert( constIt != m_constants.end() );
+            }
+            constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( constant ), "Vk" ) } } );
+            listedConstants.insert( constant );
+          }
+        }
+      }
+      return addTitleAndProtection( title, constants );
+    };
+
+    std::set<std::string> listedConstants;
+    for ( auto const & feature : m_features )
+    {
+      constexprUsings += generateConstantsAndProtection( feature.requireData, feature.name, listedConstants );
+    }
+    for ( auto const & extension : m_extensions )
+    {
+      constexprUsings += generateConstantsAndProtection( extension.requireData, extension.name, listedConstants );
+    }
   }
 
   // values
+  constexprUsings += R"(
+  //========================
+  //=== CONSTEXPR VALUEs ===
+  //========================
+)";
   for ( auto const & macro : m_definesPartition.values )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
@@ -4828,6 +4911,11 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   }
 
   // callees
+  constexprUsings += R"(
+  //=========================
+  //=== CONSTEXPR CALLEEs ===
+  //=========================
+)";
   for ( auto const & macro : m_definesPartition.callees )
   {
     // make `macro` camelCase and strip the `Vk` prefix
@@ -4836,6 +4924,11 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   }
 
   // callers
+  constexprUsings += R"(
+  //==========================
+  //=== CONSTEXPR CALLERSs ===
+  //==========================
+)";
   for ( auto const & macro : m_definesPartition.callers )
   {
     // make `macro` PascalCase and strip the `Vk` prefix
@@ -7460,7 +7553,7 @@ ${indexTypeTraits}
       indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
 
       // from enum value to type
-    const std::string enumToTypeTemplate = R"(
+      const std::string enumToTypeTemplate = R"(
   template <>
   struct CppType<IndexType, IndexType::${valueName}>
   {
@@ -12604,7 +12697,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, extensionData.name, extensionData.platform, extensionSupported && requireSupported );
+      readRequireEnum( child, extensionData.name, extensionData.platform, extensionSupported && requireSupported, requireData );
     }
     else if ( value == "type" )
     {
@@ -12895,7 +12988,7 @@ VulkanHppGenerator::RequireData
     }
     else if ( value == "enum" )
     {
-      readRequireEnum( child, featureName, "", featureSupported );
+      readRequireEnum( child, featureName, "", featureSupported, requireData );
     }
     else if ( value == "type" )
     {
@@ -13308,7 +13401,8 @@ std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const *
   return name;
 }
 
-void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported )
+void VulkanHppGenerator::readRequireEnum(
+  tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -13408,10 +13502,6 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
         value = attribute.second;
       }
     }
-    if ( protect.empty() )
-    {
-      protect = getProtectFromPlatform( platform );
-    }
 
     if ( extends.empty() )
     {
@@ -13420,6 +13510,7 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
         auto typeIt = m_types.find( name );
         checkForError( typeIt != m_types.end(), line, "unknown required enum <" + name + ">" );
         typeIt->second.requiredBy.insert( requiredBy );
+        requireData.constants.push_back( name );
       }
       else
       {
@@ -13443,7 +13534,8 @@ void VulkanHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, 
       auto enumIt = m_enums.find( extends );
       assert( enumIt != m_enums.end() );
 
-      enumIt->second.addEnumValue( line, name, protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
+      enumIt->second.addEnumValue(
+        line, name, protect.empty() ? getProtectFromPlatform( platform ) : protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
     }
   }
 }

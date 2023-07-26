@@ -129,6 +129,8 @@ public:
     imageAcquiredSemaphore = vk::SharedSemaphore{ device->createSemaphore( vk::SemaphoreCreateInfo() ), device };
     drawFence              = vk::SharedFence{ device->createFence( vk::FenceCreateInfo() ), device };
 
+    std::shared_ptr<int> a = std::make_shared<int>(0);
+
     // we don't need surface anymore, it is owned by the swapchain now
   }
 

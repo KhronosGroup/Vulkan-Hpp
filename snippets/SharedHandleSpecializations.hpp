@@ -90,7 +90,7 @@ public:
 public:
   const SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>& getSurface() const VULKAN_HPP_NOEXCEPT
   {
-    return m_control->surface;
+    return getHeader().surface;
   }
 
 protected:

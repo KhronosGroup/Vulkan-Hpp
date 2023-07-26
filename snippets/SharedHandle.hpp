@@ -40,6 +40,33 @@ struct SharedHeader<NoParent, Deleter>
 
 //=====================================================================================================================
 
+template <typename HeaderType>
+class ReferenceCounter
+{
+public:
+  template <typename... Args>
+  ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){};
+  ReferenceCounter( const ReferenceCounter & )             = delete;
+  ReferenceCounter & operator=( const ReferenceCounter & ) = delete;
+
+public:
+  size_t addRef() VULKAN_HPP_NOEXCEPT
+  {
+    return m_ref_cnt.fetch_add( 1, std::memory_order_relaxed );
+  }
+
+  size_t release() VULKAN_HPP_NOEXCEPT
+  {
+    return m_ref_cnt.fetch_sub( 1, std::memory_order_acq_rel );
+  }
+
+public:
+  std::atomic_size_t m_ref_cnt{ 1 };
+  HeaderType         m_header{};
+};
+
+//=====================================================================================================================
+
 template <typename HandleType, typename HeaderType>
 class SharedHandleBase
 {
@@ -50,45 +77,47 @@ public:
   SharedHandleBase() = default;
 
   template <typename... Args>
-  SharedHandleBase( HandleType handle, Args &&... control_args ) VULKAN_HPP_NOEXCEPT
-    : m_handle( handle )
-    , m_control( std::make_shared<HeaderType>( std::forward<Args>( control_args )... ) )
+  SharedHandleBase( HandleType handle, Args &&... control_args )
+    : m_control( new ReferenceCounter<HeaderType>( std::forward<Args>( control_args )... ) ), m_handle( handle )
   {
   }
 
   SharedHandleBase( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
-    : m_handle( o.m_handle )
-    , m_control( o.m_control )
   {
+    o.addRef();
+    m_handle  = o.m_handle;
+    m_control = o.m_control;
   }
 
   SharedHandleBase( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
     : m_handle( o.m_handle )
-    , m_control( std::move( o.m_control ) )
+    , m_control( o.m_control )
   {
-    o.m_handle = nullptr;
-  }
-
-  SharedHandleBase & operator=( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
-  {
-    reset();
-    m_handle   = o.m_handle;
-    m_control  = std::move( o.m_control );
-    o.m_handle = nullptr;
-    return *this;
+    o.m_handle  = nullptr;
+    o.m_control = nullptr;
   }
 
   SharedHandleBase & operator=( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
   {
-    reset();
-    m_handle  = o.m_handle;
-    m_control = o.m_control;
+    SharedHandleBase( o ).swap( *this );
+    return *this;
+  }
+
+  SharedHandleBase & operator=( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
+  {
+    SharedHandleBase( std::move( o ) ).swap( *this );
     return *this;
   }
 
   ~SharedHandleBase()
   {
-    reset();
+    // only this function owns the last reference to the control block
+    // the same principle is used in the default deleter of std::shared_ptr
+    if ( m_control && ( m_control->release() == 0 ) )
+    {
+      SharedHandle<HandleType>::internalDestroy( getHeader(), m_handle );
+      delete m_control;
+    }
   }
 
 public:
@@ -114,21 +143,19 @@ public:
 
   void reset() VULKAN_HPP_NOEXCEPT
   {
-    if ( !m_handle )
-      return;
+    SharedHandleBase().swap( *this );
+  }
 
-    auto control = std::exchange( m_control, nullptr );
-    auto handle  = std::exchange( m_handle, nullptr );
-
-    // only this function owns the last reference to the control block
-    if ( control.use_count() == 1 )
-      SharedHandle<HandleType>::internalDestroy( *control, handle );
+  void swap( SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
+  {
+    std::swap( m_handle, o.m_handle );
+    std::swap( m_control, o.m_control );
   }
 
   template <typename T = HandleType>
   typename std::enable_if<has_parent<T>, const SharedHandle<ParentType> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
-    return m_control->parent;
+    return getHeader()->parent;
   }
 
 protected:
@@ -144,9 +171,21 @@ protected:
     control.deleter.destroy( control.parent.get(), handle );
   }
 
+  const HeaderType & getHeader() const VULKAN_HPP_NOEXCEPT
+  {
+    return m_control->m_header;
+  }
+
+private:
+  void addRef() const VULKAN_HPP_NOEXCEPT
+  {
+    if ( m_control )
+      m_control->addRef();
+  }
+
 protected:
-  std::shared_ptr<HeaderType> m_control;
-  HandleType                  m_handle{};
+  ReferenceCounter<HeaderType> * m_control = nullptr;
+  HandleType                     m_handle{};
 };
 
 template <typename HandleType>

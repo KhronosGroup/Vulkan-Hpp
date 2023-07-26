@@ -7436,41 +7436,31 @@ ${indexTypeTraits}
   auto indexType = m_enums.find( "VkIndexType" );
   assert( indexType != m_enums.end() );
 
-  std::string           indexTypeTraits;
-  std::set<std::string> listedCppTypes;
+  std::string indexTypeTraits;
   for ( auto const & value : indexType->second.values )
   {
-    std::string valueName = generateEnumValueName( indexType->first, value.name, false );
-    std::string cppType;
-    if ( !valueName.starts_with( "eNone" ) )
+    assert( value.name.starts_with( "VK_INDEX_TYPE_UINT" ) || value.name.starts_with( "VK_INDEX_TYPE_NONE" ) );
+    if ( value.alias.empty() && value.name.starts_with( "VK_INDEX_TYPE_UINT" ) )
     {
-      // get the bit count out of the value Name (8, 16, 32, ... ) and generate the cppType (uint8_t,...)
+      std::string valueName = generateEnumValueName( indexType->first, value.name, false );
       assert( valueName.starts_with( "eUint" ) );
       auto beginDigit = valueName.begin() + strlen( "eUint" );
       assert( isdigit( *beginDigit ) );
-      auto endDigit = std::find_if( beginDigit, valueName.end(), []( std::string::value_type c ) { return !isdigit( c ); } );
-      cppType       = "uint" + valueName.substr( strlen( "eUint" ), endDigit - beginDigit ) + "_t";
-    }
+      auto        endDigit = std::find_if( beginDigit, valueName.end(), []( std::string::value_type c ) { return !isdigit( c ); } );
+      std::string cppType  = "uint" + valueName.substr( strlen( "eUint" ), endDigit - beginDigit ) + "_t";
 
-    if ( !cppType.empty() )
-    {
-      if ( listedCppTypes.insert( cppType ).second )
-      {
-        // IndexType traits aren't necessarily invertible.
-        // The Type -> Enum translation will only occur for the first prefixed enum value.
-        // A hypothetical extension to this enum with a conflicting prefix will use the core spec value.
-        const std::string typeToEnumTemplate = R"(
+      // from type to enum value
+      const std::string typeToEnumTemplate = R"(
   template <>
   struct IndexTypeValue<${cppType}>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::${valueName};
   };
 )";
-        indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
-      }
+      indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
 
-      // Enum -> Type translations are always able to occur.
-      const std::string enumToTypeTemplate = R"(
+      // from enum value to type
+    const std::string enumToTypeTemplate = R"(
   template <>
   struct CppType<IndexType, IndexType::${valueName}>
   {

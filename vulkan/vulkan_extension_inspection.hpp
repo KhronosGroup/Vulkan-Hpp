@@ -166,6 +166,9 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_sampler_filter_minmax",
       "VK_KHR_storage_buffer_storage_class",
       "VK_AMD_gpu_shader_int16",
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      "VK_AMDX_shader_enqueue",
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       "VK_AMD_mixed_attachment_samples",
       "VK_AMD_shader_fragment_mask",
       "VK_EXT_inline_uniform_block",
@@ -380,6 +383,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_optical_flow",
       "VK_EXT_legacy_dithering",
       "VK_EXT_pipeline_protected_access",
+      "VK_KHR_maintenance5",
       "VK_KHR_ray_tracing_position_fetch",
       "VK_EXT_shader_object",
       "VK_QCOM_tile_properties",
@@ -895,6 +899,16 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      { "VK_AMDX_shader_enqueue",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_synchronization2",
+              "VK_KHR_pipeline_library",
+              "VK_KHR_spirv_1_4",
+            } } } } },
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       { "VK_EXT_inline_uniform_block",
         { { "VK_VERSION_1_0",
             { {
@@ -1854,6 +1868,11 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
+      { "VK_KHR_maintenance5",
+        { { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_dynamic_rendering",
+            } } } } },
       { "VK_KHR_ray_tracing_position_fetch",
         { { "VK_VERSION_1_0",
             { {
@@ -2539,7 +2558,11 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_ANDROID_external_memory_android_hardware_buffer" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
         || ( extension == "VK_EXT_sampler_filter_minmax" ) || ( extension == "VK_KHR_storage_buffer_storage_class" ) ||
-           ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_AMD_mixed_attachment_samples" ) || ( extension == "VK_AMD_shader_fragment_mask" ) ||
+           ( extension == "VK_AMD_gpu_shader_int16" )
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        || ( extension == "VK_AMDX_shader_enqueue" )
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+        || ( extension == "VK_AMD_mixed_attachment_samples" ) || ( extension == "VK_AMD_shader_fragment_mask" ) ||
            ( extension == "VK_EXT_inline_uniform_block" ) || ( extension == "VK_EXT_shader_stencil_export" ) || ( extension == "VK_EXT_sample_locations" ) ||
            ( extension == "VK_KHR_relaxed_block_layout" ) || ( extension == "VK_KHR_get_memory_requirements2" ) ||
            ( extension == "VK_KHR_image_format_list" ) || ( extension == "VK_EXT_blend_operation_advanced" ) ||
@@ -2644,7 +2667,7 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
            ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||
            ( extension == "VK_EXT_rasterization_order_attachment_access" ) || ( extension == "VK_NV_optical_flow" ) ||
-           ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" ) ||
+           ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" ) || ( extension == "VK_KHR_maintenance5" ) ||
            ( extension == "VK_KHR_ray_tracing_position_fetch" ) || ( extension == "VK_EXT_shader_object" ) || ( extension == "VK_QCOM_tile_properties" ) ||
            ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
            ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||

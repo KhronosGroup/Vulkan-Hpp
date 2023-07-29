@@ -177,7 +177,7 @@ public:
   template <typename T = HandleType>
   typename std::enable_if<has_parent<T>, const SharedHandle<ParentType> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
-    return getHeader()->parent;
+    return getHeader().parent;
   }
 
 protected:

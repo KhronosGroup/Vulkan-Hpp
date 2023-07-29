@@ -6,8 +6,30 @@ class SharedHandleTraits;
 
 class NoParent;
 
+template <typename HandleType, typename = void>
+struct HasParentType : std::false_type
+{
+};
+
+template <typename HandleType>
+struct HasParentType<HandleType, decltype( (void)typename HandleType::ParentType() )> : std::true_type
+{
+};
+
+template <typename HandleType, typename Enable = void>
+struct GetParentType
+{
+  using type = NoParent;
+};
+
+template <typename HandleType>
+struct GetParentType<HandleType, typename std::enable_if<HasParentType<HandleType>::value>::type>
+{
+  using type = typename HandleType::ParentType;
+};
+
 template <class HandleType>
-using parent_of_t = typename HandleType::ParentType;
+using parent_of_t = typename GetParentType<HandleType>::type;
 
 template <class HandleType>
 VULKAN_HPP_CONSTEXPR_INLINE bool has_parent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
@@ -67,7 +89,7 @@ public:
 
 //=====================================================================================================================
 
-template <typename HandleType, typename HeaderType>
+template <typename HandleType, typename HeaderType, typename ForwardType = SharedHandle<HandleType>>
 class SharedHandleBase
 {
 public:
@@ -115,7 +137,7 @@ public:
     // the same principle is used in the default deleter of std::shared_ptr
     if ( m_control && ( m_control->release() == 0 ) )
     {
-      SharedHandle<HandleType>::internalDestroy( getHeader(), m_handle );
+      ForwardType::internalDestroy( getHeader(), m_handle );
       delete m_control;
     }
   }

@@ -800,6 +800,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::OpticalFlowUsageFlagBitsNV;
   using VULKAN_HPP_NAMESPACE::OpticalFlowUsageFlagsNV;
 
+  //=== VK_KHR_maintenance5 ===
+  using VULKAN_HPP_NAMESPACE::BufferUsageFlagBits2KHR;
+  using VULKAN_HPP_NAMESPACE::BufferUsageFlags2KHR;
+  using VULKAN_HPP_NAMESPACE::PipelineCreateFlagBits2KHR;
+  using VULKAN_HPP_NAMESPACE::PipelineCreateFlags2KHR;
+
   //=== VK_EXT_shader_object ===
   using VULKAN_HPP_NAMESPACE::ShaderCodeTypeEXT;
   using VULKAN_HPP_NAMESPACE::ShaderCreateFlagBitsEXT;
@@ -926,6 +932,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_external_memory ===
   using VULKAN_HPP_NAMESPACE::QueueFamilyExternalKhr;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_shader_enqueue ===
+  using VULKAN_HPP_NAMESPACE::ShaderIndexUnusedAmdx;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_ray_tracing_pipeline ===
   using VULKAN_HPP_NAMESPACE::ShaderUnusedKhr;
@@ -1796,6 +1807,18 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MemoryGetAndroidHardwareBufferInfoANDROID;
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_shader_enqueue ===
+  using VULKAN_HPP_NAMESPACE::DeviceOrHostAddressConstAMDX;
+  using VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX;
+  using VULKAN_HPP_NAMESPACE::DispatchGraphInfoAMDX;
+  using VULKAN_HPP_NAMESPACE::ExecutionGraphPipelineCreateInfoAMDX;
+  using VULKAN_HPP_NAMESPACE::ExecutionGraphPipelineScratchSizeAMDX;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderEnqueueFeaturesAMDX;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderEnqueuePropertiesAMDX;
+  using VULKAN_HPP_NAMESPACE::PipelineShaderStageNodeCreateInfoAMDX;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_sample_locations ===
   using VULKAN_HPP_NAMESPACE::AttachmentSampleLocationsEXT;
   using VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT;
@@ -2114,13 +2137,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::CopyMemoryToImageInfoEXT;
   using VULKAN_HPP_NAMESPACE::HostImageCopyDevicePerformanceQueryEXT;
   using VULKAN_HPP_NAMESPACE::HostImageLayoutTransitionInfoEXT;
-  using VULKAN_HPP_NAMESPACE::ImageSubresource2EXT;
   using VULKAN_HPP_NAMESPACE::ImageToMemoryCopyEXT;
   using VULKAN_HPP_NAMESPACE::MemoryToImageCopyEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceHostImageCopyPropertiesEXT;
   using VULKAN_HPP_NAMESPACE::SubresourceHostMemcpySizeEXT;
-  using VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT;
 
   //=== VK_KHR_map_memory2 ===
   using VULKAN_HPP_NAMESPACE::MemoryMapInfoKHR;
@@ -2564,6 +2585,18 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_pipeline_protected_access ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineProtectedAccessFeaturesEXT;
+
+  //=== VK_KHR_maintenance5 ===
+  using VULKAN_HPP_NAMESPACE::BufferUsageFlags2CreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::DeviceImageSubresourceInfoKHR;
+  using VULKAN_HPP_NAMESPACE::ImageSubresource2EXT;
+  using VULKAN_HPP_NAMESPACE::ImageSubresource2KHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance5FeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceMaintenance5PropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::PipelineCreateFlags2CreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::RenderingAreaInfoKHR;
+  using VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT;
+  using VULKAN_HPP_NAMESPACE::SubresourceLayout2KHR;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR;

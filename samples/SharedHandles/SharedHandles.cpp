@@ -111,7 +111,7 @@ public:
                       return vk::SharedImageView{ imageView, device };
                     } );
     commandPool   = vk::SharedCommandPool{ vk::su::createCommandPool( device.get(), graphicsAndPresentQueueFamilyIndex.first ), device };
-    graphicsQueue = device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 );
+    graphicsQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 ), device };
     presentQueue  = device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
 
     depthFormat = vk::Format::eD16Unorm;
@@ -208,13 +208,13 @@ public:
     auto comBuf = commandBuffer.get();
 
     vk::SubmitInfo submitInfo( ias, waitDestinationStageMask, comBuf );
-    graphicsQueue.submit( submitInfo, drawFence.get() );
+    graphicsQueue->submit( submitInfo, drawFence.get() );
 
     while ( vk::Result::eTimeout == device->waitForFences( drawFence.get(), VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
     auto       swap   = swapChain.get();
-    vk::Result result = presentQueue.presentKHR( vk::PresentInfoKHR( {}, swap, currentBuffer ) );
+    vk::Result result = presentQueue->presentKHR( vk::PresentInfoKHR( {}, swap, currentBuffer ) );
     switch ( result )
     {
       case vk::Result::eSuccess: break;
@@ -249,8 +249,8 @@ public:
   vk::SharedCommandPool   commandPool;
   vk::SharedCommandBuffer commandBuffer;
 
-  vk::Queue graphicsQueue;  // queue is not destroyed, so we don't need shared handle
-  vk::Queue presentQueue;
+  vk::SharedQueue graphicsQueue;  // queue is not destroyed, shared handle is purely for consistency
+  vk::SharedQueue presentQueue;
 
   vk::SharedPipelineCache       pipelineCache;
   vk::SharedPipelineLayout      pipelineLayout;
@@ -302,7 +302,7 @@ public:
       device_handle, engine.descriptorSet.get(), { { vk::DescriptorType::eUniformBuffer, uniformBufferData.buffer, VK_WHOLE_SIZE, {} } }, textureData );
     engine.commandBuffer->end();
 
-    vk::su::submitAndWait( device_handle, engine.graphicsQueue, engine.commandBuffer.get() );
+    vk::su::submitAndWait( device_handle, engine.graphicsQueue.get(), engine.commandBuffer.get() );
   }
 
   void draw( vk::CommandBuffer commandBuffer )

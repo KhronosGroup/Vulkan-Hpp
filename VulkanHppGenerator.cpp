@@ -522,7 +522,10 @@ ${constexprDefines}
 
 namespace VULKAN_HPP_NAMESPACE
 {
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 ${SharedHandleSpecializations}
+${SharedHandlesNoDestroy}
+#endif // !VULKAN_HPP_NO_SMART_HANDLE
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${structExtendsStructs}
@@ -565,6 +568,7 @@ ${DispatchLoaderDynamic}
                       { "structExtendsStructs", generateStructExtendsStructs() },
                       { "ResultValue", readSnippet( "ResultValue.hpp" ) },
                       { "SharedHandle", readSnippet( "SharedHandle.hpp" ) },
+                      { "SharedHandlesNoDestroy", generateSharedHandlesNoDestroy() },
                       { "SharedHandleSpecializations", readSnippet( "SharedHandleSpecializations.hpp" ) },
                       { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
                       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
@@ -11663,6 +11667,39 @@ ${aliasHandle})";
   return "";
 }
 
+std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const
+{
+  if ( handleData.second.deleteCommand.empty() )
+  {
+    std::string type = stripPrefix( handleData.first, "Vk" );
+    std::string aliasHandle;
+    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
+    if ( aliasIt != m_handleAliases.end() )
+    {
+      static const std::string aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
+
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
+    }
+
+    static const std::string sharedHandleTemplate = R"(  
+template <>
+class SharedHandle<${type}> : public SharedHandleBaseNoDestroy<${type}, ${parent}>
+{
+  friend SharedHandleBase<${type}, ${parent}>;
+
+public:
+  using element_type = ${type};
+  using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+};
+using Shared${type} = SharedHandle<${type}>;
+${aliasHandle})";
+
+    return replaceWithMap( sharedHandleTemplate,
+                           { { "aliasHandle", aliasHandle }, { "parent", "Shared" + stripPrefix( handleData.second.parent, "Vk" ) }, { "type", type } } );
+  }
+  return "";
+}
+
 std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const
 {
   std::string str;
@@ -11678,6 +11715,39 @@ std::string VulkanHppGenerator::generateSharedHandle( std::vector<RequireData> c
     }
   }
   return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const
+{
+  std::string str;
+  for ( auto const & require : requireData )
+  {
+    for ( auto const & type : require.types )
+    {
+      auto handleIt = m_handles.find( type );
+      if ( handleIt != m_handles.end() )
+      {
+        str += generateSharedHandleNoDestroy( *handleIt );
+      }
+    }
+  }
+  return addTitleAndProtection( title, str );
+}
+
+std::string VulkanHppGenerator::generateSharedHandlesNoDestroy() const
+{
+  std::string sharedHandles;
+  for ( auto const & feature : m_features )
+  {
+    sharedHandles += generateSharedHandleNoDestroy( feature.requireData, feature.name );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    sharedHandles += generateSharedHandleNoDestroy( extension.requireData, extension.name );
+  }
+  assert( sharedHandles.back() == '\n' );
+  sharedHandles.pop_back();
+  return sharedHandles;
 }
 
 std::string VulkanHppGenerator::generateSharedHandles() const

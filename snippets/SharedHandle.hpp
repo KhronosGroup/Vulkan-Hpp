@@ -93,9 +93,6 @@ template <typename HandleType, typename HeaderType, typename ForwardType = Share
 class SharedHandleBase
 {
 public:
-  using ParentType = parent_of_t<HandleType>;
-
-public:
   SharedHandleBase() = default;
 
   template <typename... Args>
@@ -175,7 +172,7 @@ public:
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<has_parent<T>, const SharedHandle<ParentType> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<has_parent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return getHeader().parent;
   }
@@ -224,7 +221,7 @@ public:
   SharedHandle() = default;
 
   template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-  explicit SharedHandle( HandleType handle, SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+  explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
   {
   }

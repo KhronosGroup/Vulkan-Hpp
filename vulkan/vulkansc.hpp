@@ -28,7 +28,7 @@
 
 #include <algorithm>
 #include <array>   // ArrayWrapperND
-#include <memory>  // std::shared_ptr
+#include <atomic>  // std::atomic_size_t
 #include <string>  // std::string
 #include <vulkan/vulkan_sc_core.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
@@ -1354,8 +1354,30 @@ namespace VULKAN_HPP_NAMESPACE
 
   class NoParent;
 
+  template <typename HandleType, typename = void>
+  struct HasParentType : std::false_type
+  {
+  };
+
+  template <typename HandleType>
+  struct HasParentType<HandleType, decltype( (void)typename HandleType::ParentType() )> : std::true_type
+  {
+  };
+
+  template <typename HandleType, typename Enable = void>
+  struct GetParentType
+  {
+    using type = NoParent;
+  };
+
+  template <typename HandleType>
+  struct GetParentType<HandleType, typename std::enable_if<HasParentType<HandleType>::value>::type>
+  {
+    using type = typename HandleType::ParentType;
+  };
+
   template <class HandleType>
-  using parent_of_t = typename HandleType::parent;
+  using parent_of_t = typename GetParentType<HandleType>::type;
 
   template <class HandleType>
   VULKAN_HPP_CONSTEXPR_INLINE bool has_parent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
@@ -1368,84 +1390,106 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename ParentType, typename Deleter>
   struct SharedHeader
   {
-    SharedHeader( SharedHandle<ParentType> parent, Deleter deleter ) : parent( std::move( parent ) ), deleter( std::move( deleter ) ) {}
+    SharedHeader( SharedHandle<ParentType> parent, Deleter deleter = Deleter() ) VULKAN_HPP_NOEXCEPT
+      : parent( std::move( parent ) )
+      , deleter( std::move( deleter ) )
+    {
+    }
 
     SharedHandle<ParentType> parent{};
-    Deleter                  deleter{};
+    Deleter                  deleter;
   };
 
   template <typename Deleter>
   struct SharedHeader<NoParent, Deleter>
   {
-    SharedHeader( Deleter deleter ) : deleter( std::move( deleter ) ) {}
+    SharedHeader( Deleter deleter = Deleter() ) VULKAN_HPP_NOEXCEPT : deleter( std::move( deleter ) ) {}
 
-    Deleter deleter{};
+    Deleter deleter;
   };
 
   //=====================================================================================================================
 
-  template <typename HandleType, typename HeaderType>
-  class SharedHandleBase
+  template <typename HeaderType>
+  class ReferenceCounter
   {
   public:
-    using ParentType = parent_of_t<HandleType>;
+    template <typename... Args>
+    ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){};
+    ReferenceCounter( const ReferenceCounter & )             = delete;
+    ReferenceCounter & operator=( const ReferenceCounter & ) = delete;
 
+  public:
+    size_t addRef() VULKAN_HPP_NOEXCEPT
+    {
+      return m_ref_cnt.fetch_add( 1, std::memory_order_relaxed );
+    }
+
+    size_t release() VULKAN_HPP_NOEXCEPT
+    {
+      return m_ref_cnt.fetch_sub( 1, std::memory_order_acq_rel );
+    }
+
+  public:
+    std::atomic_size_t m_ref_cnt{ 1 };
+    HeaderType         m_header{};
+  };
+
+  //=====================================================================================================================
+
+  template <typename HandleType, typename HeaderType, typename ForwardType = SharedHandle<HandleType>>
+  class SharedHandleBase
+  {
   public:
     SharedHandleBase() = default;
 
     template <typename... Args>
-    SharedHandleBase( HandleType handle, Args &&... control_args ) VULKAN_HPP_NOEXCEPT
-      : m_handle( handle )
-      , m_control( std::make_shared<HeaderType>( std::forward<Args>( control_args )... ) )
+    SharedHandleBase( HandleType handle, Args &&... control_args )
+      : m_control( new ReferenceCounter<HeaderType>( std::forward<Args>( control_args )... ) ), m_handle( handle )
     {
     }
 
     SharedHandleBase( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
-      : m_handle( o.m_handle )
-      , m_control( o.m_control )
     {
+      o.addRef();
+      m_handle  = o.m_handle;
+      m_control = o.m_control;
     }
 
     SharedHandleBase( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
       : m_handle( o.m_handle )
-      , m_control( std::move( o.m_control ) )
+      , m_control( o.m_control )
     {
-      o.m_handle = nullptr;
-    }
-
-    SharedHandleBase & operator=( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
-    {
-      reset();
-      m_handle   = o.m_handle;
-      m_control  = std::move( o.m_control );
-      o.m_handle = nullptr;
-      return *this;
+      o.m_handle  = nullptr;
+      o.m_control = nullptr;
     }
 
     SharedHandleBase & operator=( const SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
     {
-      reset();
-      m_handle  = o.m_handle;
-      m_control = o.m_control;
+      SharedHandleBase( o ).swap( *this );
+      return *this;
+    }
+
+    SharedHandleBase & operator=( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
+    {
+      SharedHandleBase( std::move( o ) ).swap( *this );
       return *this;
     }
 
     ~SharedHandleBase()
     {
-      reset();
+      // only this function owns the last reference to the control block
+      // the same principle is used in the default deleter of std::shared_ptr
+      if ( m_control && ( m_control->release() == 0 ) )
+      {
+        ForwardType::internalDestroy( getHeader(), m_handle );
+        delete m_control;
+      }
     }
 
   public:
     HandleType get() const VULKAN_HPP_NOEXCEPT
     {
-      return m_handle;
-    }
-
-    template <typename... Args>
-    HandleType & put( Args &&... control_args ) VULKAN_HPP_NOEXCEPT
-    {
-      reset();
-      m_control = std::make_shared<HeaderType>( std::forward<Args>( control_args )... );
       return m_handle;
     }
 
@@ -1466,44 +1510,49 @@ namespace VULKAN_HPP_NAMESPACE
 
     void reset() VULKAN_HPP_NOEXCEPT
     {
-      if ( !m_handle )
-        return;
+      SharedHandleBase().swap( *this );
+    }
 
-      auto refs = m_control.use_count();
-      if ( refs == 1 )
-        static_cast<SharedHandle<HandleType> *>( this )->internalDestroy();
-      m_control.reset();
-      m_handle = nullptr;
+    void swap( SharedHandleBase & o ) VULKAN_HPP_NOEXCEPT
+    {
+      std::swap( m_handle, o.m_handle );
+      std::swap( m_control, o.m_control );
     }
 
     template <typename T = HandleType>
-    typename std::enable_if<has_parent<T>, ParentType>::type getParent() const VULKAN_HPP_NOEXCEPT
+    typename std::enable_if<has_parent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
     {
-      return m_control->parent.get();
-    }
-
-    template <typename T = HandleType>
-    typename std::enable_if<has_parent<T>, SharedHandle<ParentType>>::type getParentHandle() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_control->parent;
+      return getHeader().parent;
     }
 
   protected:
     template <typename T = HandleType>
-    typename std::enable_if<!has_parent<T>, void>::type internalDestroy() VULKAN_HPP_NOEXCEPT
+    static typename std::enable_if<!has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
     {
-      m_control->deleter.destroy( m_handle );
+      control.deleter.destroy( handle );
     }
 
     template <typename T = HandleType>
-    typename std::enable_if<has_parent<T>, void>::type internalDestroy() VULKAN_HPP_NOEXCEPT
+    static typename std::enable_if<has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
     {
-      m_control->deleter.destroy( getParent(), m_handle );
+      control.deleter.destroy( control.parent.get(), handle );
+    }
+
+    const HeaderType & getHeader() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_control->m_header;
+    }
+
+  private:
+    void addRef() const VULKAN_HPP_NOEXCEPT
+    {
+      if ( m_control )
+        m_control->addRef();
     }
 
   protected:
-    std::shared_ptr<HeaderType> m_control;
-    HandleType                  m_handle{};
+    ReferenceCounter<HeaderType> * m_control = nullptr;
+    HandleType                     m_handle{};
   };
 
   template <typename HandleType>
@@ -1520,26 +1569,14 @@ namespace VULKAN_HPP_NAMESPACE
     SharedHandle() = default;
 
     template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-    explicit SharedHandle( HandleType handle, SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() )
+    explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ) )
     {
     }
 
     template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
-    explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) : BaseType( handle, std::move( deleter ) )
+    explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT : BaseType( handle, std::move( deleter ) )
     {
-    }
-
-    template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-    HandleType & put( SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
-    {
-      return BaseType::put( std::move( parent ), std::move( deleter ) );
-    }
-
-    template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
-    HandleType & put( DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
-    {
-      return BaseType::put( std::move( deleter ) );
     }
 
   protected:
@@ -3889,19 +3926,18 @@ namespace VULKAN_HPP_NAMESPACE
     using ParentType = parent_of_t<HandleType>;
 
     template <class Dispatcher>
-    using destroy_pfn_t =
-      typename std::conditional<has_parent<HandleType>,
+    using destroy_pfn_t = typename std::conditional<has_parent<HandleType>,
 
-                                void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const,
+                                                    void ( ParentType::* )( HandleType, const AllocationCallbacks *, const Dispatcher & ) const,
 
-                                void ( HandleType::* )( const AllocationCallbacks * pAllocator, const Dispatcher & d ) const>::type;
-    using selector_t = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
+                                                    void ( HandleType::* )( const AllocationCallbacks *, const Dispatcher & ) const>::type;
+    using selector_t    = typename std::conditional<has_parent<HandleType>, ParentType, HandleType>::type;
 
     template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                         const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+                         const Dispatcher & dispatch                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
       : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &selector_t::destroy ) ) )
-      , m_loader( &disp )
+      , m_dispatch( &dispatch )
       , m_allocationCallbacks( allocationCallbacks )
     {
     }
@@ -3910,20 +3946,20 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename T = HandleType>
     typename std::enable_if<has_parent<T>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
+      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
     }
 
     template <typename T = HandleType>
     typename std::enable_if<!has_parent<T>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( handle.*m_destroy )( m_allocationCallbacks, *m_loader );
+      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+      ( handle.*m_destroy )( m_allocationCallbacks, *m_dispatch );
     }
 
   private:
     destroy_pfn_t<DispatchLoaderBase>   m_destroy             = nullptr;
-    const DispatchLoaderBase *          m_loader              = nullptr;
+    const DispatchLoaderBase *          m_dispatch            = nullptr;
     Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
   };
 
@@ -3980,13 +4016,13 @@ namespace VULKAN_HPP_NAMESPACE
     using ParentType = parent_of_t<HandleType>;
 
     template <class Dispatcher>
-    using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const AllocationCallbacks * pAllocator, const Dispatcher & d ) const;
+    using destroy_pfn_t = void ( ParentType::* )( HandleType, const AllocationCallbacks *, const Dispatcher & ) const;
 
     template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectFreeShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                      const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+                      const Dispatcher & dispatch                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
       : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
-      , m_loader( &disp )
+      , m_dispatch( &dispatch )
       , m_allocationCallbacks( allocationCallbacks )
     {
     }
@@ -3994,13 +4030,13 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_loader );
+      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
     }
 
   private:
     destroy_pfn_t<DispatchLoaderBase>   m_destroy             = nullptr;
-    const DispatchLoaderBase *          m_loader              = nullptr;
+    const DispatchLoaderBase *          m_dispatch            = nullptr;
     Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
   };
 
@@ -4048,25 +4084,25 @@ namespace VULKAN_HPP_NAMESPACE
     using ParentType = parent_of_t<HandleType>;
 
     template <class Dispatcher>
-    using destroy_pfn_t = void ( ParentType::* )( HandleType kty, const Dispatcher & d ) const;
+    using destroy_pfn_t = void ( ParentType::* )( HandleType, const Dispatcher & ) const;
 
     template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     ObjectReleaseShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                         const Dispatcher & disp                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_loader( &disp )
+                         const Dispatcher & dispatch                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::release ) ) ), m_dispatch( &dispatch )
     {
     }
 
   public:
     void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( parent.*m_destroy )( handle, *m_loader );
+      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+      ( parent.*m_destroy )( handle, *m_dispatch );
     }
 
   private:
-    destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
-    const DispatchLoaderBase *        m_loader  = nullptr;
+    destroy_pfn_t<DispatchLoaderBase> m_destroy  = nullptr;
+    const DispatchLoaderBase *        m_dispatch = nullptr;
   };
 
   template <typename OwnerType, typename PoolType, typename Dispatch>
@@ -4120,27 +4156,29 @@ namespace VULKAN_HPP_NAMESPACE
     using ret_t = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
 
     template <class Dispatcher>
-    using destroy_pfn_t = ret_t<Dispatcher> ( ParentType::* )( PoolType pool, uint32_t, const HandleType * kty, const Dispatcher & d ) const;
+    using destroy_pfn_t = ret_t<Dispatcher> ( ParentType::* )( PoolType, uint32_t, const HandleType *, const Dispatcher & ) const;
 
     PoolFreeShared() = default;
 
     template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    PoolFreeShared( PoolType pool, const Dispatcher & disp VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
-      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) ), m_pool( pool ), m_loader( &disp )
+    PoolFreeShared( SharedHandle<PoolType> pool, const Dispatcher & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+      : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<destroy_pfn_t<Dispatcher>>( &ParentType::free ) ) )
+      , m_pool( std::move( pool ) )
+      , m_dispatch( &dispatch )
     {
     }
 
   public:
     void destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_loader );
-      ( parent.*m_destroy )( m_pool, 1u, &handle, *m_loader );
+      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+      ( parent.*m_destroy )( m_pool.get(), 1u, &handle, *m_dispatch );
     }
 
   private:
-    destroy_pfn_t<DispatchLoaderBase> m_destroy = nullptr;
-    PoolType                          m_pool    = PoolType();
-    const DispatchLoaderBase *        m_loader  = nullptr;
+    destroy_pfn_t<DispatchLoaderBase> m_destroy  = nullptr;
+    const DispatchLoaderBase *        m_dispatch = nullptr;
+    SharedHandle<PoolType>            m_pool{};
   };
 #endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
@@ -4782,8 +4820,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 namespace VULKAN_HPP_NAMESPACE
 {
-
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+
   enum class SwapchainOwns
   {
     no,
@@ -4792,9 +4830,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   struct ImageHeader : SharedHeader<parent_of_t<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>
   {
-    ImageHeader( SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>>            parent,
-                 typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter deleter,
-                 SwapchainOwns                                                     swapchainOwned )
+    ImageHeader(
+      SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>>            parent,
+      typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter deleter        = typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter(),
+      SwapchainOwns                                                     swapchainOwned = SwapchainOwns::no ) VULKAN_HPP_NOEXCEPT
       : SharedHeader<parent_of_t<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>( std::move( parent ),
                                                                                                                                    std::move( deleter ) )
       , swapchainOwned( swapchainOwned )
@@ -4817,27 +4856,20 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                 handle,
-                           SharedHandle<typename BaseType::ParentType> parent,
-                           SwapchainOwns                               swapchain_owned = SwapchainOwns::no,
-                           DeleterType                                 deleter         = DeleterType() )
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                            handle,
+                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>> parent,
+                           SwapchainOwns                                          swapchain_owned = SwapchainOwns::no,
+                           DeleterType                                            deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ), swapchain_owned )
     {
     }
 
-    VULKAN_HPP_NAMESPACE::Image & put( SharedHandle<typename BaseType::ParentType> parent,
-                                       SwapchainOwns                               swapchain_owned = SwapchainOwns::no,
-                                       DeleterType                                 deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
-    {
-      return BaseType::put( std::move( parent ), std::move( deleter ), swapchain_owned );
-    }
-
   protected:
-    void internalDestroy() VULKAN_HPP_NOEXCEPT
+    static void internalDestroy( const ImageHeader & control, VULKAN_HPP_NAMESPACE::Image handle ) VULKAN_HPP_NOEXCEPT
     {
-      if ( m_control->swapchainOwned == SwapchainOwns::no )
+      if ( control.swapchainOwned == SwapchainOwns::no )
       {
-        m_control->deleter.destroy( getParent(), m_handle );
+        control.deleter.destroy( control.parent.get(), handle );
       }
     }
   };
@@ -4846,8 +4878,11 @@ namespace VULKAN_HPP_NAMESPACE
   {
     SwapchainHeader( SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                           surface,
                      SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>>            parent,
-                     typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter deleter )
-      : surface( std::move( surface ) ), parent( std::move( parent ) ), deleter( std::move( deleter ) )
+                     typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter deleter =
+                       typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter() ) VULKAN_HPP_NOEXCEPT
+      : surface( std::move( surface ) )
+      , parent( std::move( parent ) )
+      , deleter( std::move( deleter ) )
     {
     }
 
@@ -4869,36 +4904,183 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR             handle,
-                           SharedHandle<typename BaseType::ParentType>    parent,
-                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> surface,
-                           DeleterType                                    deleter = DeleterType() )
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR                            handle,
+                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>> parent,
+                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                surface,
+                           DeleterType                                                   deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( surface ), std::move( parent ), std::move( deleter ) )
     {
     }
 
   public:
-    VULKAN_HPP_NAMESPACE::SurfaceKHR getSurface() const VULKAN_HPP_NOEXCEPT
+    const SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> & getSurface() const VULKAN_HPP_NOEXCEPT
     {
-      return m_control->surface.get();
-    }
-
-    SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> getSurfaceHandle() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_control->surface;
-    }
-
-    VULKAN_HPP_NAMESPACE::SwapchainKHR & put( SharedHandle<typename BaseType::ParentType>    parent,
-                                              SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> surface,
-                                              DeleterType                                    deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
-    {
-      return BaseType::put( std::move( surface ), std::move( parent ), std::move( deleter ) );
+      return getHeader().surface;
     }
 
   protected:
     using BaseType::internalDestroy;
   };
-#endif
+
+  template <typename HandleType, typename ParentType>
+  class SharedHandleBaseNoDestroy : public SharedHandleBase<HandleType, ParentType>
+  {
+    using BaseType = SharedHandleBase<HandleType, ParentType>;
+
+  public:
+    using SharedHandleBase::SharedHandleBase;
+
+    const ParentType & getParent() const VULKAN_HPP_NOEXCEPT
+    {
+      return BaseType::getHeader();
+    }
+
+  protected:
+    static void internalDestroy( const ParentType &, HandleType ) VULKAN_HPP_NOEXCEPT {}
+  };
+
+  //=== VK_VERSION_1_0 ===
+
+  template <>
+  class SharedHandle<PhysicalDevice> : public SharedHandleBaseNoDestroy<PhysicalDevice, SharedInstance>
+  {
+    friend SharedHandleBase<PhysicalDevice, SharedInstance>;
+
+  public:
+    using element_type = PhysicalDevice;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedPhysicalDevice = SharedHandle<PhysicalDevice>;
+
+  template <>
+  class SharedHandle<Queue> : public SharedHandleBaseNoDestroy<Queue, SharedDevice>
+  {
+    friend SharedHandleBase<Queue, SharedDevice>;
+
+  public:
+    using element_type = Queue;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedQueue = SharedHandle<Queue>;
+
+  template <>
+  class SharedHandle<DeviceMemory> : public SharedHandleBaseNoDestroy<DeviceMemory, SharedDevice>
+  {
+    friend SharedHandleBase<DeviceMemory, SharedDevice>;
+
+  public:
+    using element_type = DeviceMemory;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedDeviceMemory = SharedHandle<DeviceMemory>;
+
+  template <>
+  class SharedHandle<QueryPool> : public SharedHandleBaseNoDestroy<QueryPool, SharedDevice>
+  {
+    friend SharedHandleBase<QueryPool, SharedDevice>;
+
+  public:
+    using element_type = QueryPool;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedQueryPool = SharedHandle<QueryPool>;
+
+  template <>
+  class SharedHandle<ShaderModule> : public SharedHandleBaseNoDestroy<ShaderModule, SharedDevice>
+  {
+    friend SharedHandleBase<ShaderModule, SharedDevice>;
+
+  public:
+    using element_type = ShaderModule;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedShaderModule = SharedHandle<ShaderModule>;
+
+  template <>
+  class SharedHandle<DescriptorPool> : public SharedHandleBaseNoDestroy<DescriptorPool, SharedDevice>
+  {
+    friend SharedHandleBase<DescriptorPool, SharedDevice>;
+
+  public:
+    using element_type = DescriptorPool;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedDescriptorPool = SharedHandle<DescriptorPool>;
+
+  template <>
+  class SharedHandle<CommandPool> : public SharedHandleBaseNoDestroy<CommandPool, SharedDevice>
+  {
+    friend SharedHandleBase<CommandPool, SharedDevice>;
+
+  public:
+    using element_type = CommandPool;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedCommandPool = SharedHandle<CommandPool>;
+
+  //=== VK_KHR_swapchain ===
+
+  template <>
+  class SharedHandle<SwapchainKHR> : public SharedHandleBaseNoDestroy<SwapchainKHR, SharedDevice>
+  {
+    friend SharedHandleBase<SwapchainKHR, SharedDevice>;
+
+  public:
+    using element_type = SwapchainKHR;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedSwapchainKHR = SharedHandle<SwapchainKHR>;
+
+  //=== VK_KHR_display ===
+
+  template <>
+  class SharedHandle<DisplayKHR> : public SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>
+  {
+    friend SharedHandleBase<DisplayKHR, SharedPhysicalDevice>;
+
+  public:
+    using element_type = DisplayKHR;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedDisplayKHR = SharedHandle<DisplayKHR>;
+
+  template <>
+  class SharedHandle<DisplayModeKHR> : public SharedHandleBaseNoDestroy<DisplayModeKHR, SharedDisplayKHR>
+  {
+    friend SharedHandleBase<DisplayModeKHR, SharedDisplayKHR>;
+
+  public:
+    using element_type = DisplayModeKHR;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedDisplayModeKHR = SharedHandle<DisplayModeKHR>;
+
+#  if defined( VK_USE_PLATFORM_SCI )
+  //=== VK_NV_external_sci_sync2 ===
+
+  template <>
+  class SharedHandle<SemaphoreSciSyncPoolNV> : public SharedHandleBaseNoDestroy<SemaphoreSciSyncPoolNV, SharedDevice>
+  {
+    friend SharedHandleBase<SemaphoreSciSyncPoolNV, SharedDevice>;
+
+  public:
+    using element_type = SemaphoreSciSyncPoolNV;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedSemaphoreSciSyncPoolNV = SharedHandle<SemaphoreSciSyncPoolNV>;
+#  endif /*VK_USE_PLATFORM_SCI*/
+#endif   // !VULKAN_HPP_NO_SMART_HANDLE
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 

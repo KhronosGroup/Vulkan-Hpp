@@ -875,7 +875,10 @@ private:
   std::string                         generateUniqueHandles() const;
   std::string                         generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
   std::string                         generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string                         generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string                         generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string                         generateSharedHandles() const;
+  std::string                         generateSharedHandlesNoDestroy() const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,
                                                                CommandData const &                           commandData,
                                                                size_t                                        initialSkipCount,

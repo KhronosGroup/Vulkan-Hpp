@@ -1,5 +1,4 @@
 
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 enum class SwapchainOwns
 {
   no,
@@ -33,10 +32,10 @@ public:
 public:
   SharedHandle() = default;
 
-  explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                 handle,
-                         SharedHandle<typename BaseType::ParentType> parent,
-                         SwapchainOwns                               swapchain_owned = SwapchainOwns::no,
-                         DeleterType                                 deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
+  explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                            handle,
+                         SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>> parent,
+                         SwapchainOwns                                          swapchain_owned = SwapchainOwns::no,
+                         DeleterType                                            deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ), swapchain_owned )
   {
   }
@@ -81,10 +80,10 @@ public:
 public:
   SharedHandle() = default;
 
-  explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR             handle,
-                         SharedHandle<typename BaseType::ParentType>    parent,
-                         SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> surface,
-                         DeleterType                                    deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+  explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR                            handle,
+                         SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>> parent,
+                         SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                surface,
+                         DeleterType                                                   deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( surface ), std::move( parent ), std::move( deleter ) )
   {
   }
@@ -100,47 +99,18 @@ protected:
 };
 
 template <typename HandleType, typename ParentType>
-class SharedHandleBaseNoDelete : public SharedHandleBase<HandleType, ParentType>
+class SharedHandleBaseNoDestroy : public SharedHandleBase<HandleType, ParentType>
 {
+  using BaseType = SharedHandleBase<HandleType, ParentType>;
+
 public:
-  using SharedHandleBase::SharedHandleBase;
+  using BaseType::SharedHandleBase;
+
+  const ParentType & getParent() const VULKAN_HPP_NOEXCEPT
+  {
+    return BaseType::getHeader();
+  }
 
 protected:
-  void internalDestroy( const ParentType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT {}
+  static void internalDestroy( const ParentType &, HandleType ) VULKAN_HPP_NOEXCEPT {}
 };
-
-template <>
-class SharedHandle<VULKAN_HPP_NAMESPACE::PhysicalDevice>
-  : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::PhysicalDevice, VULKAN_HPP_NAMESPACE::SharedInstance>
-{
-  friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::PhysicalDevice, VULKAN_HPP_NAMESPACE::SharedInstance>;
-
-public:
-  using element_type = VULKAN_HPP_NAMESPACE::PhysicalDevice;
-};
-
-using SharedPhysicalDevice = SharedHandle<VULKAN_HPP_NAMESPACE::PhysicalDevice>;
-
-template <>
-class SharedHandle<VULKAN_HPP_NAMESPACE::Queue> : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::Queue, VULKAN_HPP_NAMESPACE::SharedDevice>
-{
-  friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::Queue, VULKAN_HPP_NAMESPACE::SharedDevice>;
-
-public:
-  using element_type = VULKAN_HPP_NAMESPACE::Queue;
-};
-
-using SharedQueue = SharedHandle<VULKAN_HPP_NAMESPACE::Queue>;
-
-template <>
-class SharedHandle<VULKAN_HPP_NAMESPACE::DisplayKHR>
-  : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::DisplayKHR, VULKAN_HPP_NAMESPACE::SharedPhysicalDevice>
-{
-  friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::DisplayKHR, VULKAN_HPP_NAMESPACE::SharedPhysicalDevice>;
-
-public:
-  using element_type = VULKAN_HPP_NAMESPACE::DisplayKHR;
-};
-
-using SharedDisplayKHR = SharedHandle<VULKAN_HPP_NAMESPACE::DisplayKHR>;
-#endif

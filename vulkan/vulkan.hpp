@@ -1441,9 +1441,6 @@ namespace VULKAN_HPP_NAMESPACE
   class SharedHandleBase
   {
   public:
-    using ParentType = parent_of_t<HandleType>;
-
-  public:
     SharedHandleBase() = default;
 
     template <typename... Args>
@@ -1523,7 +1520,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T = HandleType>
-    typename std::enable_if<has_parent<T>, const SharedHandle<ParentType> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+    typename std::enable_if<has_parent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
     {
       return getHeader().parent;
     }
@@ -1572,7 +1569,7 @@ namespace VULKAN_HPP_NAMESPACE
     SharedHandle() = default;
 
     template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
-    explicit SharedHandle( HandleType handle, SharedHandle<typename BaseType::ParentType> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ) )
     {
     }
@@ -7433,8 +7430,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 namespace VULKAN_HPP_NAMESPACE
 {
-
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+
   enum class SwapchainOwns
   {
     no,
@@ -7469,10 +7466,10 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                 handle,
-                           SharedHandle<typename BaseType::ParentType> parent,
-                           SwapchainOwns                               swapchain_owned = SwapchainOwns::no,
-                           DeleterType                                 deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                            handle,
+                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>> parent,
+                           SwapchainOwns                                          swapchain_owned = SwapchainOwns::no,
+                           DeleterType                                            deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ), swapchain_owned )
     {
     }
@@ -7517,10 +7514,10 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR             handle,
-                           SharedHandle<typename BaseType::ParentType>    parent,
-                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR> surface,
-                           DeleterType                                    deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR                            handle,
+                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>> parent,
+                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                surface,
+                           DeleterType                                                   deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( surface ), std::move( parent ), std::move( deleter ) )
     {
     }
@@ -7536,50 +7533,88 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <typename HandleType, typename ParentType>
-  class SharedHandleBaseNoDelete : public SharedHandleBase<HandleType, ParentType>
+  class SharedHandleBaseNoDestroy : public SharedHandleBase<HandleType, ParentType>
   {
+    using BaseType = SharedHandleBase<HandleType, ParentType>;
+
   public:
-    using SharedHandleBase::SharedHandleBase;
+    using BaseType::SharedHandleBase;
+
+    const ParentType & getParent() const VULKAN_HPP_NOEXCEPT
+    {
+      return BaseType::getHeader();
+    }
 
   protected:
-    void internalDestroy( const ParentType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT {}
+    static void internalDestroy( const ParentType &, HandleType ) VULKAN_HPP_NOEXCEPT {}
   };
+
+  //=== VK_VERSION_1_0 ===
 
   template <>
-  class SharedHandle<VULKAN_HPP_NAMESPACE::PhysicalDevice>
-    : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::PhysicalDevice, VULKAN_HPP_NAMESPACE::SharedInstance>
+  class SharedHandle<PhysicalDevice> : public SharedHandleBaseNoDestroy<PhysicalDevice, SharedInstance>
   {
-    friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::PhysicalDevice, VULKAN_HPP_NAMESPACE::SharedInstance>;
+    friend SharedHandleBase<PhysicalDevice, SharedInstance>;
 
   public:
-    using element_type = VULKAN_HPP_NAMESPACE::PhysicalDevice;
+    using element_type = PhysicalDevice;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
   };
 
-  using SharedPhysicalDevice = SharedHandle<VULKAN_HPP_NAMESPACE::PhysicalDevice>;
+  using SharedPhysicalDevice = SharedHandle<PhysicalDevice>;
 
   template <>
-  class SharedHandle<VULKAN_HPP_NAMESPACE::Queue> : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::Queue, VULKAN_HPP_NAMESPACE::SharedDevice>
+  class SharedHandle<Queue> : public SharedHandleBaseNoDestroy<Queue, SharedDevice>
   {
-    friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::Queue, VULKAN_HPP_NAMESPACE::SharedDevice>;
+    friend SharedHandleBase<Queue, SharedDevice>;
 
   public:
-    using element_type = VULKAN_HPP_NAMESPACE::Queue;
+    using element_type = Queue;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
   };
 
-  using SharedQueue = SharedHandle<VULKAN_HPP_NAMESPACE::Queue>;
+  using SharedQueue = SharedHandle<Queue>;
+
+  //=== VK_KHR_display ===
 
   template <>
-  class SharedHandle<VULKAN_HPP_NAMESPACE::DisplayKHR>
-    : public SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::DisplayKHR, VULKAN_HPP_NAMESPACE::SharedPhysicalDevice>
+  class SharedHandle<DisplayKHR> : public SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>
   {
-    friend SharedHandleBaseNoDelete<VULKAN_HPP_NAMESPACE::DisplayKHR, VULKAN_HPP_NAMESPACE::SharedPhysicalDevice>;
+    friend SharedHandleBase<DisplayKHR, SharedPhysicalDevice>;
 
   public:
-    using element_type = VULKAN_HPP_NAMESPACE::DisplayKHR;
+    using element_type = DisplayKHR;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
   };
 
-  using SharedDisplayKHR = SharedHandle<VULKAN_HPP_NAMESPACE::DisplayKHR>;
-#endif
+  using SharedDisplayKHR = SharedHandle<DisplayKHR>;
+
+  template <>
+  class SharedHandle<DisplayModeKHR> : public SharedHandleBaseNoDestroy<DisplayModeKHR, SharedDisplayKHR>
+  {
+    friend SharedHandleBase<DisplayModeKHR, SharedDisplayKHR>;
+
+  public:
+    using element_type = DisplayModeKHR;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedDisplayModeKHR = SharedHandle<DisplayModeKHR>;
+
+  //=== VK_INTEL_performance_query ===
+
+  template <>
+  class SharedHandle<PerformanceConfigurationINTEL> : public SharedHandleBaseNoDestroy<PerformanceConfigurationINTEL, SharedDevice>
+  {
+    friend SharedHandleBase<PerformanceConfigurationINTEL, SharedDevice>;
+
+  public:
+    using element_type = PerformanceConfigurationINTEL;
+    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  };
+
+  using SharedPerformanceConfigurationINTEL = SharedHandle<PerformanceConfigurationINTEL>;
+#endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 

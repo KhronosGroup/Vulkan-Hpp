@@ -4928,7 +4928,7 @@ namespace VULKAN_HPP_NAMESPACE
     using BaseType = SharedHandleBase<HandleType, ParentType>;
 
   public:
-    using SharedHandleBase::SharedHandleBase;
+    using BaseType::SharedHandleBase;
 
     const ParentType & getParent() const VULKAN_HPP_NOEXCEPT
     {
@@ -4948,7 +4948,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = PhysicalDevice;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<PhysicalDevice, SharedInstance>::SharedHandleBaseNoDestroy;
   };
 
   using SharedPhysicalDevice = SharedHandle<PhysicalDevice>;
@@ -4960,7 +4960,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = Queue;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<Queue, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedQueue = SharedHandle<Queue>;
@@ -4972,7 +4972,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DeviceMemory;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DeviceMemory, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDeviceMemory = SharedHandle<DeviceMemory>;
@@ -4984,7 +4984,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = QueryPool;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<QueryPool, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedQueryPool = SharedHandle<QueryPool>;
@@ -4996,7 +4996,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = ShaderModule;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<ShaderModule, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedShaderModule = SharedHandle<ShaderModule>;
@@ -5008,7 +5008,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DescriptorPool;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DescriptorPool, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDescriptorPool = SharedHandle<DescriptorPool>;
@@ -5020,7 +5020,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = CommandPool;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<CommandPool, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedCommandPool = SharedHandle<CommandPool>;
@@ -5034,7 +5034,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = SwapchainKHR;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<SwapchainKHR, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedSwapchainKHR = SharedHandle<SwapchainKHR>;
@@ -5048,7 +5048,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DisplayKHR;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDisplayKHR = SharedHandle<DisplayKHR>;
@@ -5060,7 +5060,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DisplayModeKHR;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DisplayModeKHR, SharedDisplayKHR>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDisplayModeKHR = SharedHandle<DisplayModeKHR>;
@@ -5075,7 +5075,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = SemaphoreSciSyncPoolNV;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<SemaphoreSciSyncPoolNV, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedSemaphoreSciSyncPoolNV = SharedHandle<SemaphoreSciSyncPoolNV>;

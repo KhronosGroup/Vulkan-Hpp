@@ -7558,7 +7558,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = PhysicalDevice;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<PhysicalDevice, SharedInstance>::SharedHandleBaseNoDestroy;
   };
 
   using SharedPhysicalDevice = SharedHandle<PhysicalDevice>;
@@ -7570,7 +7570,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = Queue;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<Queue, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedQueue = SharedHandle<Queue>;
@@ -7584,7 +7584,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DisplayKHR;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDisplayKHR = SharedHandle<DisplayKHR>;
@@ -7596,7 +7596,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = DisplayModeKHR;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<DisplayModeKHR, SharedDisplayKHR>::SharedHandleBaseNoDestroy;
   };
 
   using SharedDisplayModeKHR = SharedHandle<DisplayModeKHR>;
@@ -7610,7 +7610,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   public:
     using element_type = PerformanceConfigurationINTEL;
-    using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+    using SharedHandleBaseNoDestroy<PerformanceConfigurationINTEL, SharedDevice>::SharedHandleBaseNoDestroy;
   };
 
   using SharedPerformanceConfigurationINTEL = SharedHandle<PerformanceConfigurationINTEL>;

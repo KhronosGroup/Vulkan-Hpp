@@ -11689,7 +11689,7 @@ class SharedHandle<${type}> : public SharedHandleBaseNoDestroy<${type}, ${parent
 
 public:
   using element_type = ${type};
-  using SharedHandleBaseNoDestroy::SharedHandleBaseNoDestroy;
+  using SharedHandleBaseNoDestroy<${type}, ${parent}>::SharedHandleBaseNoDestroy;
 };
 using Shared${type} = SharedHandle<${type}>;
 ${aliasHandle})";

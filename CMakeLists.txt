@@ -26,8 +26,15 @@
 
 if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	cmake_minimum_required( VERSION 3.25 )
-	if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
-		# CMake 3.26; need to handle future versions here
+	if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.28 )
+		message(FATAL_ERROR "VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES is currently not supported for CMake version ${CMAKE_VERSION}!"
+		" To add support inform yourself about the state of the feature at https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst"
+		" and add the corresponding value of CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API to Vulkan-Hpp's CMakeLists.txt")
+	elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.27 )
+		# CMake 3.27/3.27.1
+		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7 )
+	elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
+		# CMake 3.26
 		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
 	else()
 		# CMake 3.25

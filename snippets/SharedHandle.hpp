@@ -132,7 +132,7 @@ public:
   {
     // only this function owns the last reference to the control block
     // the same principle is used in the default deleter of std::shared_ptr
-    if ( m_control && ( m_control->release() == 0 ) )
+    if ( m_control && ( m_control->release() == 1 ) )
     {
       ForwardType::internalDestroy( getHeader(), m_handle );
       delete m_control;

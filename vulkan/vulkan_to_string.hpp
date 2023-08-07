@@ -3322,16 +3322,12 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AllowDerivatives | ";
     if ( value & PipelineCreateFlagBits2KHR::eDerivative )
       result += "Derivative | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-    if ( value & PipelineCreateFlagBits2KHR::eReserved28NV )
-      result += "Reserved28NV | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex )
       result += "ViewIndexFromDeviceIndex | ";
     if ( value & PipelineCreateFlagBits2KHR::eDispatchBase )
       result += "DispatchBase | ";
-    if ( value & PipelineCreateFlagBits2KHR::eDeferCompile )
-      result += "DeferCompile | ";
+    if ( value & PipelineCreateFlagBits2KHR::eDeferCompileNV )
+      result += "DeferCompileNV | ";
     if ( value & PipelineCreateFlagBits2KHR::eCaptureStatistics )
       result += "CaptureStatistics | ";
     if ( value & PipelineCreateFlagBits2KHR::eCaptureInternalRepresentations )
@@ -3340,10 +3336,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FailOnPipelineCompileRequired | ";
     if ( value & PipelineCreateFlagBits2KHR::eEarlyReturnOnFailure )
       result += "EarlyReturnOnFailure | ";
-    if ( value & PipelineCreateFlagBits2KHR::eLinkTimeOptimization )
-      result += "LinkTimeOptimization | ";
-    if ( value & PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfo )
-      result += "RetainLinkTimeOptimizationInfo | ";
+    if ( value & PipelineCreateFlagBits2KHR::eLinkTimeOptimizationEXT )
+      result += "LinkTimeOptimizationEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfoEXT )
+      result += "RetainLinkTimeOptimizationInfoEXT | ";
     if ( value & PipelineCreateFlagBits2KHR::eLibrary )
       result += "Library | ";
     if ( value & PipelineCreateFlagBits2KHR::eRayTracingSkipTriangles )
@@ -3360,26 +3356,28 @@ namespace VULKAN_HPP_NAMESPACE
       result += "RayTracingNoNullIntersectionShaders | ";
     if ( value & PipelineCreateFlagBits2KHR::eRayTracingShaderGroupHandleCaptureReplay )
       result += "RayTracingShaderGroupHandleCaptureReplay | ";
-    if ( value & PipelineCreateFlagBits2KHR::eIndirectBindable )
-      result += "IndirectBindable | ";
-    if ( value & PipelineCreateFlagBits2KHR::eRayTracingAllowMotion )
-      result += "RayTracingAllowMotion | ";
+    if ( value & PipelineCreateFlagBits2KHR::eIndirectBindableNV )
+      result += "IndirectBindableNV | ";
+    if ( value & PipelineCreateFlagBits2KHR::eRayTracingAllowMotionNV )
+      result += "RayTracingAllowMotionNV | ";
     if ( value & PipelineCreateFlagBits2KHR::eRenderingFragmentShadingRateAttachment )
       result += "RenderingFragmentShadingRateAttachment | ";
-    if ( value & PipelineCreateFlagBits2KHR::eRenderingFragmentDensityMapAttachment )
-      result += "RenderingFragmentDensityMapAttachment | ";
-    if ( value & PipelineCreateFlagBits2KHR::eRayTracingOpacityMicromap )
-      result += "RayTracingOpacityMicromap | ";
-    if ( value & PipelineCreateFlagBits2KHR::eColorAttachmentFeedbackLoop )
-      result += "ColorAttachmentFeedbackLoop | ";
-    if ( value & PipelineCreateFlagBits2KHR::eDepthStencilAttachmentFeedbackLoop )
-      result += "DepthStencilAttachmentFeedbackLoop | ";
-    if ( value & PipelineCreateFlagBits2KHR::eNoProtectedAccess )
-      result += "NoProtectedAccess | ";
-    if ( value & PipelineCreateFlagBits2KHR::eProtectedAccessOnly )
-      result += "ProtectedAccessOnly | ";
-    if ( value & PipelineCreateFlagBits2KHR::eDescriptorBuffer )
-      result += "DescriptorBuffer | ";
+    if ( value & PipelineCreateFlagBits2KHR::eRenderingFragmentDensityMapAttachmentEXT )
+      result += "RenderingFragmentDensityMapAttachmentEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eRayTracingOpacityMicromapEXT )
+      result += "RayTracingOpacityMicromapEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eColorAttachmentFeedbackLoopEXT )
+      result += "ColorAttachmentFeedbackLoopEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eDepthStencilAttachmentFeedbackLoopEXT )
+      result += "DepthStencilAttachmentFeedbackLoopEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eNoProtectedAccessEXT )
+      result += "NoProtectedAccessEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eProtectedAccessOnlyEXT )
+      result += "ProtectedAccessOnlyEXT | ";
+    if ( value & PipelineCreateFlagBits2KHR::eRayTracingDisplacementMicromapNV )
+      result += "RayTracingDisplacementMicromapNV | ";
+    if ( value & PipelineCreateFlagBits2KHR::eDescriptorBufferEXT )
+      result += "DescriptorBufferEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -3412,14 +3410,14 @@ namespace VULKAN_HPP_NAMESPACE
     if ( value & BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX )
       result += "ExecutionGraphScratchAMDX | ";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    if ( value & BufferUsageFlagBits2KHR::eConditionalRendering )
-      result += "ConditionalRendering | ";
+    if ( value & BufferUsageFlagBits2KHR::eConditionalRenderingEXT )
+      result += "ConditionalRenderingEXT | ";
     if ( value & BufferUsageFlagBits2KHR::eShaderBindingTable )
       result += "ShaderBindingTable | ";
-    if ( value & BufferUsageFlagBits2KHR::eTransformFeedbackBuffer )
-      result += "TransformFeedbackBuffer | ";
-    if ( value & BufferUsageFlagBits2KHR::eTransformFeedbackCounterBuffer )
-      result += "TransformFeedbackCounterBuffer | ";
+    if ( value & BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT )
+      result += "TransformFeedbackBufferEXT | ";
+    if ( value & BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT )
+      result += "TransformFeedbackCounterBufferEXT | ";
     if ( value & BufferUsageFlagBits2KHR::eVideoDecodeSrc )
       result += "VideoDecodeSrc | ";
     if ( value & BufferUsageFlagBits2KHR::eVideoDecodeDst )
@@ -3436,16 +3434,16 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AccelerationStructureBuildInputReadOnly | ";
     if ( value & BufferUsageFlagBits2KHR::eAccelerationStructureStorage )
       result += "AccelerationStructureStorage | ";
-    if ( value & BufferUsageFlagBits2KHR::eSamplerDescriptorBuffer )
-      result += "SamplerDescriptorBuffer | ";
-    if ( value & BufferUsageFlagBits2KHR::eResourceDescriptorBuffer )
-      result += "ResourceDescriptorBuffer | ";
-    if ( value & BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBuffer )
-      result += "PushDescriptorsDescriptorBuffer | ";
-    if ( value & BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnly )
-      result += "MicromapBuildInputReadOnly | ";
-    if ( value & BufferUsageFlagBits2KHR::eMicromapStorage )
-      result += "MicromapStorage | ";
+    if ( value & BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT )
+      result += "SamplerDescriptorBufferEXT | ";
+    if ( value & BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT )
+      result += "ResourceDescriptorBufferEXT | ";
+    if ( value & BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT )
+      result += "PushDescriptorsDescriptorBufferEXT | ";
+    if ( value & BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT )
+      result += "MicromapBuildInputReadOnlyEXT | ";
+    if ( value & BufferUsageFlagBits2KHR::eMicromapStorageEXT )
+      result += "MicromapStorageEXT | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -8693,18 +8691,15 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits2KHR::eDisableOptimization: return "DisableOptimization";
       case PipelineCreateFlagBits2KHR::eAllowDerivatives: return "AllowDerivatives";
       case PipelineCreateFlagBits2KHR::eDerivative: return "Derivative";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      case PipelineCreateFlagBits2KHR::eReserved28NV: return "Reserved28NV";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex: return "ViewIndexFromDeviceIndex";
       case PipelineCreateFlagBits2KHR::eDispatchBase: return "DispatchBase";
-      case PipelineCreateFlagBits2KHR::eDeferCompile: return "DeferCompile";
+      case PipelineCreateFlagBits2KHR::eDeferCompileNV: return "DeferCompileNV";
       case PipelineCreateFlagBits2KHR::eCaptureStatistics: return "CaptureStatistics";
       case PipelineCreateFlagBits2KHR::eCaptureInternalRepresentations: return "CaptureInternalRepresentations";
       case PipelineCreateFlagBits2KHR::eFailOnPipelineCompileRequired: return "FailOnPipelineCompileRequired";
       case PipelineCreateFlagBits2KHR::eEarlyReturnOnFailure: return "EarlyReturnOnFailure";
-      case PipelineCreateFlagBits2KHR::eLinkTimeOptimization: return "LinkTimeOptimization";
-      case PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfo: return "RetainLinkTimeOptimizationInfo";
+      case PipelineCreateFlagBits2KHR::eLinkTimeOptimizationEXT: return "LinkTimeOptimizationEXT";
+      case PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfoEXT: return "RetainLinkTimeOptimizationInfoEXT";
       case PipelineCreateFlagBits2KHR::eLibrary: return "Library";
       case PipelineCreateFlagBits2KHR::eRayTracingSkipTriangles: return "RayTracingSkipTriangles";
       case PipelineCreateFlagBits2KHR::eRayTracingSkipAabbs: return "RayTracingSkipAabbs";
@@ -8713,16 +8708,17 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits2KHR::eRayTracingNoNullMissShaders: return "RayTracingNoNullMissShaders";
       case PipelineCreateFlagBits2KHR::eRayTracingNoNullIntersectionShaders: return "RayTracingNoNullIntersectionShaders";
       case PipelineCreateFlagBits2KHR::eRayTracingShaderGroupHandleCaptureReplay: return "RayTracingShaderGroupHandleCaptureReplay";
-      case PipelineCreateFlagBits2KHR::eIndirectBindable: return "IndirectBindable";
-      case PipelineCreateFlagBits2KHR::eRayTracingAllowMotion: return "RayTracingAllowMotion";
+      case PipelineCreateFlagBits2KHR::eIndirectBindableNV: return "IndirectBindableNV";
+      case PipelineCreateFlagBits2KHR::eRayTracingAllowMotionNV: return "RayTracingAllowMotionNV";
       case PipelineCreateFlagBits2KHR::eRenderingFragmentShadingRateAttachment: return "RenderingFragmentShadingRateAttachment";
-      case PipelineCreateFlagBits2KHR::eRenderingFragmentDensityMapAttachment: return "RenderingFragmentDensityMapAttachment";
-      case PipelineCreateFlagBits2KHR::eRayTracingOpacityMicromap: return "RayTracingOpacityMicromap";
-      case PipelineCreateFlagBits2KHR::eColorAttachmentFeedbackLoop: return "ColorAttachmentFeedbackLoop";
-      case PipelineCreateFlagBits2KHR::eDepthStencilAttachmentFeedbackLoop: return "DepthStencilAttachmentFeedbackLoop";
-      case PipelineCreateFlagBits2KHR::eNoProtectedAccess: return "NoProtectedAccess";
-      case PipelineCreateFlagBits2KHR::eProtectedAccessOnly: return "ProtectedAccessOnly";
-      case PipelineCreateFlagBits2KHR::eDescriptorBuffer: return "DescriptorBuffer";
+      case PipelineCreateFlagBits2KHR::eRenderingFragmentDensityMapAttachmentEXT: return "RenderingFragmentDensityMapAttachmentEXT";
+      case PipelineCreateFlagBits2KHR::eRayTracingOpacityMicromapEXT: return "RayTracingOpacityMicromapEXT";
+      case PipelineCreateFlagBits2KHR::eColorAttachmentFeedbackLoopEXT: return "ColorAttachmentFeedbackLoopEXT";
+      case PipelineCreateFlagBits2KHR::eDepthStencilAttachmentFeedbackLoopEXT: return "DepthStencilAttachmentFeedbackLoopEXT";
+      case PipelineCreateFlagBits2KHR::eNoProtectedAccessEXT: return "NoProtectedAccessEXT";
+      case PipelineCreateFlagBits2KHR::eProtectedAccessOnlyEXT: return "ProtectedAccessOnlyEXT";
+      case PipelineCreateFlagBits2KHR::eRayTracingDisplacementMicromapNV: return "RayTracingDisplacementMicromapNV";
+      case PipelineCreateFlagBits2KHR::eDescriptorBufferEXT: return "DescriptorBufferEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8743,10 +8739,10 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX: return "ExecutionGraphScratchAMDX";
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case BufferUsageFlagBits2KHR::eConditionalRendering: return "ConditionalRendering";
+      case BufferUsageFlagBits2KHR::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
       case BufferUsageFlagBits2KHR::eShaderBindingTable: return "ShaderBindingTable";
-      case BufferUsageFlagBits2KHR::eTransformFeedbackBuffer: return "TransformFeedbackBuffer";
-      case BufferUsageFlagBits2KHR::eTransformFeedbackCounterBuffer: return "TransformFeedbackCounterBuffer";
+      case BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT: return "TransformFeedbackBufferEXT";
+      case BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
       case BufferUsageFlagBits2KHR::eVideoDecodeSrc: return "VideoDecodeSrc";
       case BufferUsageFlagBits2KHR::eVideoDecodeDst: return "VideoDecodeDst";
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -8756,11 +8752,11 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits2KHR::eShaderDeviceAddress: return "ShaderDeviceAddress";
       case BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly: return "AccelerationStructureBuildInputReadOnly";
       case BufferUsageFlagBits2KHR::eAccelerationStructureStorage: return "AccelerationStructureStorage";
-      case BufferUsageFlagBits2KHR::eSamplerDescriptorBuffer: return "SamplerDescriptorBuffer";
-      case BufferUsageFlagBits2KHR::eResourceDescriptorBuffer: return "ResourceDescriptorBuffer";
-      case BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBuffer: return "PushDescriptorsDescriptorBuffer";
-      case BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnly: return "MicromapBuildInputReadOnly";
-      case BufferUsageFlagBits2KHR::eMicromapStorage: return "MicromapStorage";
+      case BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT: return "SamplerDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT: return "ResourceDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT: return "PushDescriptorsDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT: return "MicromapBuildInputReadOnlyEXT";
+      case BufferUsageFlagBits2KHR::eMicromapStorageEXT: return "MicromapStorageEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

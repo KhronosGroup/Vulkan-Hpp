@@ -123,7 +123,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::SwapchainCreateInfoKHR swapChainCreateInfo( vk::SwapchainCreateFlagsKHR(),
                                                     surface,
-                                                    surfaceCapabilities.minImageCount,
+                                                    vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                     format,
                                                     vk::ColorSpaceKHR::eSrgbNonlinear,
                                                     swapchainExtent,
@@ -161,7 +161,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       imageViews.push_back( device.createImageView( imageViewCreateInfo ) );
     }
 
-    // destroy the imageViews, the swapChain,and the surface
+    // destroy the imageViews, the swapChain, and the surface
     for ( auto & imageView : imageViews )
     {
       device.destroyImageView( imageView );

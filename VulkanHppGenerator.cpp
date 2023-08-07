@@ -12755,8 +12755,10 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     {
       // currently, we map the few complex depends attributes to a canonical format!
       const std::map<std::string, std::string> complexToCanonicalDepends = {
+        { "(VK_EXT_filter_cubic)+(VK_VERSION_1_2,VK_EXT_sampler_filter_minmax)",
+          "VK_EXT_filter_cubic+VK_EXT_sampler_filter_minmax,VK_VERSION_1_2+VK_EXT_filter_cubic" },
         { "VK_KHR_swapchain+VK_KHR_get_surface_capabilities2+(VK_KHR_get_physical_device_properties2,VK_VERSION_1_1)",
-          "VK_KHR_swapchain+VK_KHR_get_surface_capabilities2+VK_KHR_get_physical_device_properties2, VK_VERSION_1_1+VK_KHR_swapchain+VK_KHR_get_surface_capabilities2" },
+          "VK_KHR_swapchain+VK_KHR_get_surface_capabilities2+VK_KHR_get_physical_device_properties2,VK_VERSION_1_1+VK_KHR_swapchain+VK_KHR_get_surface_capabilities2" },
         { "((VK_KHR_bind_memory2+VK_KHR_get_physical_device_properties2+VK_KHR_sampler_ycbcr_conversion),VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",
           "VK_KHR_bind_memory2+VK_KHR_get_physical_device_properties2+VK_KHR_sampler_ycbcr_conversion+VK_KHR_image_format_list,VK_VERSION_1_1+VK_KHR_image_format_list,VK_VERSION_1_2" },
         { "VK_KHR_swapchain+(VK_KHR_maintenance2,VK_VERSION_1_1)+(VK_KHR_image_format_list,VK_VERSION_1_2)",

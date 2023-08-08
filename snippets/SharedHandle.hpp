@@ -1,6 +1,4 @@
 
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-
 template <typename HandleType>
 class SharedHandleTraits;
 
@@ -242,4 +240,3 @@ VULKAN_HPP_INLINE std::vector<typename SharedType::element_type> sharedToRaw( st
   std::transform( handles.begin(), handles.end(), newBuffer.begin(), []( SharedType const & handle ) { return handle.get(); } );
   return newBuffer;
 }
-#endif

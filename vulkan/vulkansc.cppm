@@ -42,6 +42,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ArrayProxy;
   using VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries;
   using VULKAN_HPP_NAMESPACE::Optional;
+  using VULKAN_HPP_NAMESPACE::SharedHandle;
   using VULKAN_HPP_NAMESPACE::StridedArrayProxy;
   using VULKAN_HPP_NAMESPACE::StructureChain;
   using VULKAN_HPP_NAMESPACE::UniqueHandle;
@@ -49,9 +50,13 @@ export namespace VULKAN_HPP_NAMESPACE
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   using VULKAN_HPP_NAMESPACE::ObjectDestroy;
+  using VULKAN_HPP_NAMESPACE::ObjectDestroyShared;
   using VULKAN_HPP_NAMESPACE::ObjectFree;
+  using VULKAN_HPP_NAMESPACE::ObjectFreeShared;
   using VULKAN_HPP_NAMESPACE::ObjectRelease;
+  using VULKAN_HPP_NAMESPACE::ObjectReleaseShared;
   using VULKAN_HPP_NAMESPACE::PoolFree;
+  using VULKAN_HPP_NAMESPACE::PoolFreeShared;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //==================
@@ -1340,6 +1345,65 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_debug_utils ===
   using VULKAN_HPP_NAMESPACE::UniqueDebugUtilsMessengerEXT;
   using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
+#endif /*VULKAN_HPP_NO_SMART_HANDLE*/
+
+  //======================
+  //=== SHARED HANDLEs ===
+  //======================
+
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+
+  //=== VK_VERSION_1_0 ===
+  using VULKAN_HPP_NAMESPACE::SharedBuffer;
+  using VULKAN_HPP_NAMESPACE::SharedBufferView;
+  using VULKAN_HPP_NAMESPACE::SharedCommandBuffer;
+  using VULKAN_HPP_NAMESPACE::SharedCommandPool;
+  using VULKAN_HPP_NAMESPACE::SharedDescriptorPool;
+  using VULKAN_HPP_NAMESPACE::SharedDescriptorSet;
+  using VULKAN_HPP_NAMESPACE::SharedDescriptorSetLayout;
+  using VULKAN_HPP_NAMESPACE::SharedDevice;
+  using VULKAN_HPP_NAMESPACE::SharedDeviceMemory;
+  using VULKAN_HPP_NAMESPACE::SharedEvent;
+  using VULKAN_HPP_NAMESPACE::SharedFence;
+  using VULKAN_HPP_NAMESPACE::SharedFramebuffer;
+  using VULKAN_HPP_NAMESPACE::SharedImage;
+  using VULKAN_HPP_NAMESPACE::SharedImageView;
+  using VULKAN_HPP_NAMESPACE::SharedInstance;
+  using VULKAN_HPP_NAMESPACE::SharedPhysicalDevice;
+  using VULKAN_HPP_NAMESPACE::SharedPipeline;
+  using VULKAN_HPP_NAMESPACE::SharedPipelineCache;
+  using VULKAN_HPP_NAMESPACE::SharedPipelineLayout;
+  using VULKAN_HPP_NAMESPACE::SharedQueryPool;
+  using VULKAN_HPP_NAMESPACE::SharedQueue;
+  using VULKAN_HPP_NAMESPACE::SharedRenderPass;
+  using VULKAN_HPP_NAMESPACE::SharedSampler;
+  using VULKAN_HPP_NAMESPACE::SharedSemaphore;
+  using VULKAN_HPP_NAMESPACE::SharedShaderModule;
+
+  //=== VK_VERSION_1_1 ===
+  using VULKAN_HPP_NAMESPACE::SharedSamplerYcbcrConversion;
+
+  //=== VK_VERSION_1_3 ===
+  using VULKAN_HPP_NAMESPACE::SharedPrivateDataSlot;
+
+  //=== VK_KHR_surface ===
+  using VULKAN_HPP_NAMESPACE::SharedSurfaceKHR;
+
+  //=== VK_KHR_swapchain ===
+  using VULKAN_HPP_NAMESPACE::SharedSwapchainKHR;
+
+  //=== VK_KHR_display ===
+  using VULKAN_HPP_NAMESPACE::SharedDisplayKHR;
+  using VULKAN_HPP_NAMESPACE::SharedDisplayModeKHR;
+
+  //=== VK_EXT_debug_utils ===
+  using VULKAN_HPP_NAMESPACE::SharedDebugUtilsMessengerEXT;
+
+#  if defined( VK_USE_PLATFORM_SCI )
+  //=== VK_NV_external_sci_sync2 ===
+  using VULKAN_HPP_NAMESPACE::SharedSemaphoreSciSyncPoolNV;
+#  endif /*VK_USE_PLATFORM_SCI*/
+  using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //===========================

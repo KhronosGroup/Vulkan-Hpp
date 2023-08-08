@@ -88,6 +88,7 @@ public:
   void generateHashHppFile() const;
   void generateHppFile() const;
   void generateRAIIHppFile() const;
+  void generateSharedHppFile() const;
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
@@ -609,6 +610,7 @@ private:
   std::string generateCppModuleExtensionInspectionUsings() const;
   std::string generateCppModuleUsings() const;
   std::string generateCppModuleRaiiUsings() const;
+  std::string generateCppModuleSharedHandleUsings() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,

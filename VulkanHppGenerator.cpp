@@ -354,7 +354,6 @@ namespace VULKAN_HPP_NAMESPACE
 ${structForwardDeclarations}
 ${handleForwardDeclarations}
 ${uniqueHandles}
-${sharedHandles}
 ${handles}
 }   // namespace VULKAN_HPP_NAMESPACE
 
@@ -390,7 +389,6 @@ typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool
                                       { "handles", generateHandles() },
                                       { "handleForwardDeclarations", generateHandleForwardDeclarations() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
-                                      { "sharedHandles", generateSharedHandles() },
                                       { "structForwardDeclarations", generateStructForwardDeclarations() },
                                       { "uniqueHandles", generateUniqueHandles() },
                                     } );
@@ -471,7 +469,6 @@ ${StridedArrayProxy}
 ${Optional}
 ${StructureChain}
 ${UniqueHandle}
-${SharedHandle}
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
 ${DispatchLoaderBase}
@@ -517,16 +514,12 @@ ${constexprDefines}
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_funcs.hpp>
+#include <vulkan/vulkan_shared.hpp>
 // clang-format on
 
 
 namespace VULKAN_HPP_NAMESPACE
 {
-#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-${SharedHandleSpecializations}
-${SharedHandlesNoDestroy}
-#endif // !VULKAN_HPP_NO_SMART_HANDLE
-
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${structExtendsStructs}
 #endif // VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -567,9 +560,6 @@ ${DispatchLoaderDynamic}
                       { "resultExceptions", generateResultExceptions() },
                       { "structExtendsStructs", generateStructExtendsStructs() },
                       { "ResultValue", readSnippet( "ResultValue.hpp" ) },
-                      { "SharedHandle", readSnippet( "SharedHandle.hpp" ) },
-                      { "SharedHandlesNoDestroy", generateSharedHandlesNoDestroy() },
-                      { "SharedHandleSpecializations", readSnippet( "SharedHandleSpecializations.hpp" ) },
                       { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
                       { "StructureChain", readSnippet( "StructureChain.hpp" ) },
                       { "throwResultException", generateThrowResultException() },
@@ -629,6 +619,41 @@ ${RAIICommandDefinitions}
                                       { "RAIIHandles", generateRAIIHandles() } } );
 
   writeToFile( str, vulkan_raii_hpp );
+}
+
+void VulkanHppGenerator::generateSharedHppFile() const
+{
+  std::string const vulkan_shared_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_shared.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << vulkan_shared_hpp << " ..." << std::endl;
+
+  std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
+#ifndef VULKAN_SHARED_HPP
+#  define VULKAN_SHARED_HPP
+
+namespace VULKAN_HPP_NAMESPACE
+{
+#if !defined( VULKAN_HPP_NO_SMART_HANDLE )
+${sharedHandle}
+${sharedDestroy}
+${sharedHandles}
+${sharedHandleSpecializations}
+${sharedHandlesNoDestroy}
+#endif // !VULKAN_HPP_NO_SMART_HANDLE
+} // namespace VULKAN_HPP_NAMESPACE
+#endif // VULKAN_SHARED_HPP
+)";
+
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    {
+                                      { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "sharedDestroy", readSnippet( "SharedDestroy.hpp" ) },
+                                      { "sharedHandle", readSnippet( "SharedHandle.hpp" ) },
+                                      { "sharedHandles", generateSharedHandles() },
+                                      { "sharedHandlesNoDestroy", generateSharedHandlesNoDestroy() },
+                                      { "sharedHandleSpecializations", readSnippet( "SharedHandleSpecializations.hpp" ) },
+                                    } );
+
+  writeToFile( str, vulkan_shared_hpp );
 }
 
 void VulkanHppGenerator::generateStaticAssertionsHppFile() const
@@ -5053,6 +5078,53 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
   return structUsings;
 }
 
+std::string VulkanHppGenerator::generateCppModuleSharedHandleUsings() const
+{
+  auto const usingTemplate                        = std::string{ R"(  using VULKAN_HPP_NAMESPACE::Shared${handleName};
+)" };
+  auto       sharedHandleUsings                   = std::string{ R"(
+  //======================
+  //=== SHARED HANDLEs ===
+  //======================
+)" };
+  auto const [smartHandleEnter, smartHandleLeave] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
+
+  sharedHandleUsings += "\n" + smartHandleEnter;
+
+  auto const generateUsingsAndProtection = [&usingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title )
+  {
+    auto usings = std::string{};
+    for ( auto const & require : requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto const & handleIt = m_handles.find( type ); handleIt != m_handles.end() )
+        {
+          usings += replaceWithMap( usingTemplate, { { "handleName", stripPrefix( handleIt->first, "Vk" ) } } );
+        }
+      }
+    }
+    return addTitleAndProtection( title, usings );
+  };
+
+  for ( auto const & feature : m_features )
+  {
+    sharedHandleUsings += generateUsingsAndProtection( feature.requireData, feature.name );
+  }
+
+  for ( auto const & extension : m_extensions )
+  {
+    sharedHandleUsings += generateUsingsAndProtection( extension.requireData, extension.name );
+  }
+
+  sharedHandleUsings += R"(  using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
+)";
+
+  sharedHandleUsings += smartHandleLeave + "\n";
+
+  return sharedHandleUsings;
+}
+
 std::string VulkanHppGenerator::generateCppModuleUniqueHandleUsings() const
 {
   auto const usingTemplate                        = std::string{ R"(  using VULKAN_HPP_NAMESPACE::Unique${handleName};
@@ -5257,8 +5329,9 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase" };
   auto const hardCodedEnhancedModeTypes =
-    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle" };
-  auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy", "ObjectFree", "ObjectRelease", "PoolFree" };
+    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle", "SharedHandle" };
+  auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy",       "ObjectFree",       "ObjectRelease",       "PoolFree",
+                                                     "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared" };
 
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===
@@ -5391,6 +5464,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += generateCppModuleStructUsings();
   usings += generateCppModuleHandleUsings();
   usings += generateCppModuleUniqueHandleUsings();
+  usings += generateCppModuleSharedHandleUsings();
   usings += generateCppModuleFuncsUsings();
 
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
@@ -11753,13 +11827,11 @@ std::string VulkanHppGenerator::generateSharedHandlesNoDestroy() const
 std::string VulkanHppGenerator::generateSharedHandles() const
 {
   std::string sharedHandlesTemplate = R"(
-#ifndef VULKAN_HPP_NO_SMART_HANDLE
   //======================
   //=== SHARED HANDLEs ===
   //======================
 
 ${sharedHandles}
-#endif  /*VULKAN_HPP_NO_SMART_HANDLE*/
 )";
 
   std::string sharedHandles;
@@ -15367,6 +15439,7 @@ int main( int argc, char ** argv )
     generator.generateHashHppFile();
     generator.prepareRAIIHandles();
     generator.generateRAIIHppFile();
+    generator.generateSharedHppFile();
     generator.generateStaticAssertionsHppFile();
     generator.generateStructsHppFile();
     generator.generateToStringHppFile();

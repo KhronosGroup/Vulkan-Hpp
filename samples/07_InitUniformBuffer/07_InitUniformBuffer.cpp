@@ -78,8 +78,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.bindBufferMemory( uniformDataBuffer, uniformDataMemory, 0 );
 
     // free device memory and destroy buffer
+    device.destroyBuffer( uniformDataBuffer );  // the Buffer should be destroyed before the bound DeviceMemory is freed
     device.freeMemory( uniformDataMemory );
-    device.destroyBuffer( uniformDataBuffer );
 
     /* VULKAN_HPP_KEY_END */
 

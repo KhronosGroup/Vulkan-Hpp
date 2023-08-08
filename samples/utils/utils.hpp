@@ -107,8 +107,8 @@ namespace vk
 
       void clear( vk::Device const & device )
       {
+        device.destroyBuffer( buffer );  // to prevent some validation layer warning, the Buffer needs to be destroyed before the bound DeviceMemory
         device.freeMemory( deviceMemory );
-        device.destroyBuffer( buffer );
       }
 
       template <typename DataType>
@@ -187,8 +187,8 @@ namespace vk
       void clear( vk::Device const & device )
       {
         device.destroyImageView( imageView );
+        device.destroyImage( image );  // the Image should to be destroyed before the bound DeviceMemory is freed
         device.freeMemory( deviceMemory );
-        device.destroyImage( image );
       }
 
       vk::Format       format;

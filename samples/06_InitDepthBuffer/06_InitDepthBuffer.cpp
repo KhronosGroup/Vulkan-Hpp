@@ -89,10 +89,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ImageView depthView = device.createImageView( vk::ImageViewCreateInfo(
       vk::ImageViewCreateFlags(), depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } ) );
 
-    // destroy depthView, depthMemory, and depthImage
+    // destroy depthView, depthImage, and depthMemory
     device.destroyImageView( depthView );
+    device.destroyImage( depthImage );  // the Image should to be destroyed before the bound DeviceMemory is freed
     device.freeMemory( depthMemory );
-    device.destroyImage( depthImage );
 
     /* VULKAN_HPP_KEY_END */
 

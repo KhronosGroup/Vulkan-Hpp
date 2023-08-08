@@ -92,6 +92,10 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ImageViewCreateInfo imageViewCreateInfo( {}, *depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
     vk::raii::ImageView     depthView( device, imageViewCreateInfo );
 
+    // while all vk::raii objects are automatically destroyed on scope leave, the Image should to be destroyed before the bound DeviceMemory
+    // but the standard destruction order would destroy the DeviceMemory before the Image, so destroy the Image here
+    depthImage.clear();
+
     /* VULKAN_HPP_KEY_END */
   }
   catch ( vk::SystemError & err )

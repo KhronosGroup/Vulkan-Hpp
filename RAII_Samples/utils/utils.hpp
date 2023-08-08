@@ -185,13 +185,13 @@ namespace vk
                     vk::BufferUsageFlags             usage,
                     vk::MemoryPropertyFlags          propertyFlags = vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent )
           : buffer( device, vk::BufferCreateInfo( {}, size, usage ) )
-          , deviceMemory( vk::raii::su::allocateDeviceMemory( device, physicalDevice.getMemoryProperties(), buffer.getMemoryRequirements(), propertyFlags ) )
 #if !defined( NDEBUG )
           , m_size( size )
           , m_usage( usage )
           , m_propertyFlags( propertyFlags )
 #endif
         {
+          deviceMemory = vk::raii::su::allocateDeviceMemory( device, physicalDevice.getMemoryProperties(), buffer.getMemoryRequirements(), propertyFlags );
           buffer.bindMemory( *deviceMemory, 0 );
         }
 
@@ -246,9 +246,10 @@ namespace vk
                                        { commandBuffer.copyBuffer( *stagingBuffer.buffer, *this->buffer, vk::BufferCopy( 0, 0, dataSize ) ); } );
         }
 
-        // the order of buffer and deviceMemory here is important to get the constructor running !
-        vk::raii::Buffer       buffer       = nullptr;
+        // the DeviceMemory should be destroyed before the Buffer it is bound to; to get that order with the standard destructor
+        // of the BufferData, the order of DeviceMemory and Buffer here matters
         vk::raii::DeviceMemory deviceMemory = nullptr;
+        vk::raii::Buffer       buffer       = nullptr;
 #if !defined( NDEBUG )
       private:
         vk::DeviceSize          m_size;
@@ -282,17 +283,19 @@ namespace vk
                      vk::SharingMode::eExclusive,
                      {},
                      initialLayout } )
-          , deviceMemory( vk::raii::su::allocateDeviceMemory( device, physicalDevice.getMemoryProperties(), image.getMemoryRequirements(), memoryProperties ) )
         {
+          deviceMemory = vk::raii::su::allocateDeviceMemory( device, physicalDevice.getMemoryProperties(), image.getMemoryRequirements(), memoryProperties );
           image.bindMemory( *deviceMemory, 0 );
           imageView = vk::raii::ImageView( device, vk::ImageViewCreateInfo( {}, *image, vk::ImageViewType::e2D, format, {}, { aspectMask, 0, 1, 0, 1 } ) );
         }
 
         ImageData( std::nullptr_t ) {}
 
+        // the DeviceMemory should be destroyed before the Image it is bound to; to get that order with the standard destructor
+        // of the ImageData, the order of DeviceMemory and Image here matters
         vk::Format             format;
-        vk::raii::Image        image        = nullptr;
         vk::raii::DeviceMemory deviceMemory = nullptr;
+        vk::raii::Image        image        = nullptr;
         vk::raii::ImageView    imageView    = nullptr;
       };
 
@@ -360,10 +363,10 @@ namespace vk
                                                          ? vk::SurfaceTransformFlagBitsKHR::eIdentity
                                                          : surfaceCapabilities.currentTransform;
           vk::CompositeAlphaFlagBitsKHR   compositeAlpha =
-            ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
+            ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied ) ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
               : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied ) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
-              : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit )        ? vk::CompositeAlphaFlagBitsKHR::eInherit
-                                                                                                                 : vk::CompositeAlphaFlagBitsKHR::eOpaque;
+              : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit ) ? vk::CompositeAlphaFlagBitsKHR::eInherit
+                                                                                                          : vk::CompositeAlphaFlagBitsKHR::eOpaque;
           vk::PresentModeKHR         presentMode = vk::su::pickPresentMode( physicalDevice.getSurfacePresentModesKHR( *surface ) );
           vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
                                                           *surface,
@@ -784,9 +787,9 @@ namespace vk
         vk::AttachmentReference  depthAttachment( 1, vk::ImageLayout::eDepthStencilAttachmentOptimal );
         vk::SubpassDescription   subpassDescription( vk::SubpassDescriptionFlags(),
                                                    vk::PipelineBindPoint::eGraphics,
-                                                   {},
+                                                     {},
                                                    colorAttachment,
-                                                   {},
+                                                     {},
                                                    ( depthFormat != vk::Format::eUndefined ) ? &depthAttachment : nullptr );
         vk::RenderPassCreateInfo renderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription );
         return vk::raii::RenderPass( device, renderPassCreateInfo );

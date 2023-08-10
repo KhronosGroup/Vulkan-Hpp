@@ -202,7 +202,7 @@ private:
 
   struct RequireData
   {
-    std::vector<std::string> depends   = {};
+    std::string              depends   = {};
     std::vector<std::string> commands  = {};
     std::vector<std::string> constants = {};
     std::vector<std::string> types     = {};

@@ -1300,10 +1300,11 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     {
       if ( !require.depends.empty() )
       {
-        for ( auto const & depends : require.depends )
+        std::vector<std::string> depends = tokenizeAny( require.depends, ",+()" );
+        for ( auto const & depend : depends )
         {
           checkForError(
-            isFeature( depends ) || isExtension( depends ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + depends + ">" );
+            isFeature( depend ) || isExtension( depend ), require.xmlLine, "extension <" + extension.name + "> lists an unknown depends <" + depend + ">" );
         }
       }
     }
@@ -12672,18 +12673,12 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     else if ( attribute.first == "depends" )
     {
       assert( requireData.depends.empty() );
-      requireData.depends = tokenizeAny( attribute.second, ",+" );
-      for ( auto const & d : requireData.depends )
-      {
-        checkForError( std::none_of( extensionData.requireData.begin(),
-                                     extensionData.requireData.end(),
-                                     [&d]( RequireData const & rd ) {
-                                       return std::any_of(
-                                         rd.depends.begin(), rd.depends.end(), [&d]( std::string const & requireDepends ) { return requireDepends == d; } );
-                                     } ),
-                       line,
-                       "required extension <" + d + "> already listed" );
-      }
+      requireData.depends = attribute.second;
+      checkForError( std::none_of( extensionData.requireData.begin(),
+                                   extensionData.requireData.end(),
+                                   [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
+                     line,
+                     "required extension <" + requireData.depends + "> already listed" );
     }
   }
 

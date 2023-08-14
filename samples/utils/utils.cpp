@@ -59,12 +59,6 @@ namespace vk
       return ( propertyIterator != extensionProperties.end() );
     }
 
-    vk::CommandPool createCommandPool( vk::Device const & device, uint32_t queueFamilyIndex )
-    {
-      vk::CommandPoolCreateInfo commandPoolCreateInfo( vk::CommandPoolCreateFlagBits::eResetCommandBuffer, queueFamilyIndex );
-      return device.createCommandPool( commandPoolCreateInfo );
-    }
-
     vk::DescriptorPool createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes )
     {
       assert( !poolSizes.empty() );

@@ -169,7 +169,7 @@ AccelerationStructureData createAccelerationStructureData( vk::raii::PhysicalDev
 struct PerFrameData
 {
   PerFrameData( vk::raii::Device const & device, uint32_t queueFamilyIndex )
-    : commandPool( device, { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, queueFamilyIndex } )
+    : commandPool( device, { {}, queueFamilyIndex } )
     , commandBuffer( vk::raii::su::makeCommandBuffer( device, commandPool ) )
     , fence( device, vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) )
     , presentCompleteSemaphore( device, vk::SemaphoreCreateInfo() )
@@ -1109,8 +1109,6 @@ int main( int /*argc*/, char ** /*argv*/ )
       double startTime = glfwGetTime();
       glfwPollEvents();
 
-      vk::raii::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
-
       int w, h;
       glfwGetWindowSize( window, &w, &h );
       if ( ( w != static_cast<int>( windowExtent.width ) ) || ( h != static_cast<int>( windowExtent.height ) ) )
@@ -1129,7 +1127,8 @@ int main( int /*argc*/, char ** /*argv*/ )
         depthBufferData = vk::raii::su::DepthBufferData( physicalDevice, device, vk::raii::su::pickDepthFormat( physicalDevice ), windowExtent );
 
         vk::raii::su::oneTimeSubmit(
-          commandBuffer,
+          device,
+          perFrameData[frameIndex].commandPool,
           graphicsQueue,
           [&]( vk::raii::CommandBuffer const & commandBuffer )
           {
@@ -1159,6 +1158,11 @@ int main( int /*argc*/, char ** /*argv*/ )
       while ( vk::Result::eTimeout == device.waitForFences( { *perFrameData[frameIndex].fence }, VK_TRUE, vk::su::FenceTimeout ) )
         ;
       device.resetFences( { *perFrameData[frameIndex].fence } );
+
+      // reset the command buffer by resetting the complete command pool of this frame
+      perFrameData[frameIndex].commandPool.reset();
+
+      vk::raii::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
 
       commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
 

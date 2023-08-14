@@ -31,21 +31,15 @@ namespace vk
     const uint64_t FenceTimeout = 100000000;
 
     template <typename Func>
-    void oneTimeSubmit( vk::CommandBuffer const & commandBuffer, vk::Queue const & queue, Func const & func )
+    void oneTimeSubmit( vk::Device const & device, vk::CommandPool const & commandPool, vk::Queue const & queue, Func const & func )
     {
+      vk::CommandBuffer commandBuffer =
+        device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
       commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
       func( commandBuffer );
       commandBuffer.end();
       queue.submit( vk::SubmitInfo( 0, nullptr, nullptr, 1, &commandBuffer ), nullptr );
       queue.waitIdle();
-    }
-
-    template <typename Func>
-    void oneTimeSubmit( vk::Device const & device, vk::CommandPool const & commandPool, vk::Queue const & queue, Func const & func )
-    {
-      vk::CommandBuffer commandBuffer =
-        device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
-      oneTimeSubmit( commandBuffer, queue, func );
     }
 
     template <class T>
@@ -360,7 +354,6 @@ namespace vk
                                                          vk::MemoryRequirements const &             memoryRequirements,
                                                          vk::MemoryPropertyFlags                    memoryPropertyFlags );
     bool                           contains( std::vector<vk::ExtensionProperties> const & extensionProperties, std::string const & extensionName );
-    vk::CommandPool                createCommandPool( vk::Device const & device, uint32_t queueFamilyIndex );
     vk::DescriptorPool             createDescriptorPool( vk::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes );
     vk::DescriptorSetLayout        createDescriptorSetLayout( vk::Device const &                                                                  device,
                                                               std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,

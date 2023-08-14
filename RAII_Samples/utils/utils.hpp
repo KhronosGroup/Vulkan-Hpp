@@ -83,21 +83,15 @@ namespace vk
       }
 
       template <typename Func>
-      void oneTimeSubmit( vk::raii::CommandBuffer const & commandBuffer, vk::raii::Queue const & queue, Func const & func )
+      void oneTimeSubmit( vk::raii::Device const & device, vk::raii::CommandPool const & commandPool, vk::raii::Queue const & queue, Func const & func )
       {
+        vk::raii::CommandBuffer commandBuffer = std::move( vk::raii::CommandBuffers( device, { *commandPool, vk::CommandBufferLevel::ePrimary, 1 } ).front() );
         commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
         func( commandBuffer );
         commandBuffer.end();
         vk::SubmitInfo submitInfo( nullptr, nullptr, *commandBuffer );
         queue.submit( submitInfo, nullptr );
         queue.waitIdle();
-      }
-
-      template <typename Func>
-      void oneTimeSubmit( vk::raii::Device const & device, vk::raii::CommandPool const & commandPool, vk::raii::Queue const & queue, Func const & func )
-      {
-        vk::raii::CommandBuffers commandBuffers( device, { *commandPool, vk::CommandBufferLevel::ePrimary, 1 } );
-        oneTimeSubmit( commandBuffers.front(), queue, func );
       }
 
       void setImageLayout(

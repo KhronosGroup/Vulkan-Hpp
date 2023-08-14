@@ -36,7 +36,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t   graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( physicalDevice.getQueueFamilyProperties() );
     vk::Device device                   = vk::su::createDevice( physicalDevice, graphicsQueueFamilyIndex );
 
-    vk::CommandPool   commandPool = vk::su::createCommandPool( device, graphicsQueueFamilyIndex );
+    vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsQueueFamilyIndex } );
     vk::CommandBuffer commandBuffer =
       device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
 
@@ -72,7 +72,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     // Now create an event and wait for it on the GPU
     vk::Event event = device.createEvent( vk::EventCreateInfo( vk::EventCreateFlags() ) );
 
-    commandBuffer.reset( vk::CommandBufferResetFlags() );
+    // reset the command buffer by resetting the complete command pool
+    device.resetCommandPool( commandPool );
+
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
     commandBuffer.waitEvents( event, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eBottomOfPipe, nullptr, nullptr, nullptr );
     commandBuffer.end();
@@ -99,9 +101,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     } while ( result == vk::Result::eTimeout );
     assert( result == vk::Result::eSuccess );
 
-    commandBuffer.reset( {} );
     device.resetFences( fence );
     device.resetEvent( event );
+
+    // reset the command buffer by resetting the complete command pool
+    device.resetCommandPool( commandPool );
 
     // Now set the event from the GPU and wait on the CPU
     commandBuffer.begin( vk::CommandBufferBeginInfo() );

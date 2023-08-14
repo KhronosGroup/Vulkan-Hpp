@@ -45,7 +45,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::pair<uint32_t, uint32_t> graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::Device                    device = vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::CommandPool   commandPool = vk::su::createCommandPool( device, graphicsAndPresentQueueFamilyIndex.first );
+    vk::CommandPool   commandPool = device.createCommandPool( { {}, graphicsAndPresentQueueFamilyIndex.first } );
     vk::CommandBuffer commandBuffer =
       device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
 
@@ -131,7 +131,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.flushMappedMemoryRanges( vk::MappedMemoryRange( deviceMemory, 0, memoryRequirements.size ) );
     device.unmapMemory( deviceMemory );
 
-    commandBuffer.reset( {} );
+    // reset the command buffer by resetting the complete command pool
+    device.resetCommandPool( commandPool );
+
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
 
     // Intend to blit from this image, set the layout accordingly

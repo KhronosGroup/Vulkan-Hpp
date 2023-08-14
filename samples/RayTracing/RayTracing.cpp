@@ -745,8 +745,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::array<PerFrameData, IMGUI_VK_QUEUED_FRAMES> perFrameData;
     for ( int i = 0; i < IMGUI_VK_QUEUED_FRAMES; i++ )
     {
-      perFrameData[i].commandPool =
-        device.createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first ) );
+      perFrameData[i].commandPool = device.createCommandPool( vk::CommandPoolCreateInfo( {}, graphicsAndPresentQueueFamilyIndex.first ) );
       perFrameData[i].commandBuffer =
         device.allocateCommandBuffers( vk::CommandBufferAllocateInfo( perFrameData[i].commandPool, vk::CommandBufferLevel::ePrimary, 1 ) ).front();
       perFrameData[i].fence                    = device.createFence( vk::FenceCreateInfo( vk::FenceCreateFlagBits::eSignaled ) );
@@ -1102,8 +1101,6 @@ int main( int /*argc*/, char ** /*argv*/ )
       double startTime = glfwGetTime();
       glfwPollEvents();
 
-      vk::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
-
       int w, h;
       glfwGetWindowSize( window, &w, &h );
       if ( ( w != static_cast<int>( windowExtent.width ) ) || ( h != static_cast<int>( windowExtent.height ) ) )
@@ -1122,7 +1119,8 @@ int main( int /*argc*/, char ** /*argv*/ )
         depthBufferData = vk::su::DepthBufferData( physicalDevice, device, vk::su::pickDepthFormat( physicalDevice ), windowExtent );
 
         vk::su::oneTimeSubmit(
-          commandBuffer,
+          device,
+          perFrameData[frameIndex].commandPool,
           graphicsQueue,
           [&]( vk::CommandBuffer const & commandBuffer )
           {
@@ -1151,6 +1149,11 @@ int main( int /*argc*/, char ** /*argv*/ )
       while ( vk::Result::eTimeout == device.waitForFences( perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout ) )
         ;
       device.resetFences( perFrameData[frameIndex].fence );
+
+      // reset the command buffer by resetting the complete command pool of this frame
+      device.resetCommandPool( perFrameData[frameIndex].commandPool );
+
+      vk::CommandBuffer const & commandBuffer = perFrameData[frameIndex].commandBuffer;
 
       commandBuffer.begin( vk::CommandBufferBeginInfo( vk::CommandBufferUsageFlagBits::eOneTimeSubmit ) );
 

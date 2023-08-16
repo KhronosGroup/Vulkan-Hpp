@@ -117,12 +117,16 @@ namespace VULKAN_HPP_NAMESPACE
   {};
 ${enums}
 ${indexTypeTraits}
+${objectTypeToDebugReportObjectType}
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
 
-  std::string str = replaceWithMap(
-    vulkanEnumsHppTemplate, { { "enums", generateEnums() }, { "indexTypeTraits", generateIndexTypeTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+  std::string str = replaceWithMap( vulkanEnumsHppTemplate,
+                                    { { "enums", generateEnums() },
+                                      { "indexTypeTraits", generateIndexTypeTraits() },
+                                      { "licenseHeader", m_vulkanLicenseHeader },
+                                      { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
 
   writeToFile( str, vulkan_enums_hpp );
 }
@@ -5909,6 +5913,18 @@ std::string VulkanHppGenerator::generateDataSizeChecks( CommandData const &     
   return dataSizeChecks;
 }
 
+std::string VulkanHppGenerator::generateDebugReportObjectType( std::string const & objectType ) const
+{
+  std::string debugReportObjectType = objectType;
+  debugReportObjectType             = debugReportObjectType.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
+  auto enumIt                       = m_enums.find( "VkDebugReportObjectTypeEXT" );
+  assert( enumIt != m_enums.end() );
+  auto valueIt = std::find_if( enumIt->second.values.begin(),
+                               enumIt->second.values.end(),
+                               [&debugReportObjectType]( EnumValueData const & evd ) { return debugReportObjectType == evd.name; } );
+  return ( valueIt == enumIt->second.values.end() ) ? "eUnknown" : generateEnumValueName( enumIt->first, valueIt->name, false );
+}
+
 std::string VulkanHppGenerator::generateDispatchLoaderDynamic() const
 {
   const std::string dispatchLoaderDynamicTemplate = R"(
@@ -7156,21 +7172,12 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     // list all the commands that are mapped to members of this class
     std::string commands = generateHandleCommandDeclarations( handleData.second.commands );
 
-    // create CPPType template specialization and the debugReportObjectType
-    std::string valueName = handleData.second.objTypeEnum;
-    valueName             = valueName.replace( 3, 0, "DEBUG_REPORT_" ) + "_EXT";
-    auto enumIt           = m_enums.find( "VkDebugReportObjectTypeEXT" );
-    assert( enumIt != m_enums.end() );
-    auto valueIt =
-      std::find_if( enumIt->second.values.begin(), enumIt->second.values.end(), [&valueName]( EnumValueData const & evd ) { return valueName == evd.name; } );
+    std::string debugReportObjectType = generateDebugReportObjectType( handleData.second.objTypeEnum );
 
+    // create CPPType template specialization
     std::string className = stripPrefix( handleData.first, "Vk" );
-    std::string cppType, debugReportObjectType;
-    if ( valueIt == enumIt->second.values.end() )
-    {
-      debugReportObjectType = "eUnknown";
-    }
-    else
+    std::string cppType;
+    if ( debugReportObjectType != "eUnknown" )
     {
       static const std::string cppTypeFromDebugReportObjectTypeEXTTemplate = R"(
   template <>
@@ -7179,18 +7186,17 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     using Type = VULKAN_HPP_NAMESPACE::${className};
   };
 )";
-      cppType               = replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } );
-      debugReportObjectType = generateEnumValueName( enumIt->first, valueIt->name, false );
+      cppType = replaceWithMap( cppTypeFromDebugReportObjectTypeEXTTemplate, { { "className", className } } );
     }
 
     auto [enter, leave] = generateProtection( getProtectFromType( handleData.first ) );
 
     assert( !handleData.second.objTypeEnum.empty() );
-    enumIt = m_enums.find( "VkObjectType" );
+    auto enumIt = m_enums.find( "VkObjectType" );
     assert( enumIt != m_enums.end() );
-    valueIt = std::find_if( enumIt->second.values.begin(),
-                            enumIt->second.values.end(),
-                            [&handleData]( EnumValueData const & evd ) { return evd.name == handleData.second.objTypeEnum; } );
+    auto valueIt = std::find_if( enumIt->second.values.begin(),
+                                 enumIt->second.values.end(),
+                                 [&handleData]( EnumValueData const & evd ) { return evd.name == handleData.second.objTypeEnum; } );
     assert( valueIt != enumIt->second.values.end() );
 
     std::string usingAlias;
@@ -7678,6 +7684,60 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
   std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "NoParent" : className;
   return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "NoParent" ) ? "" : "*this, " ) + allocator + "d )";
+}
+
+std::string VulkanHppGenerator::generateObjectTypeToDebugReportObjectType() const
+{
+  auto objectTypeToDebugReportObjectTypeTemplate = std::string{ R"(
+  //===========================================================
+  //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===
+  //===========================================================
+
+  VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType( VULKAN_HPP_NAMESPACE::ObjectType objectType )
+  {
+    switch( objectType )
+    {
+${objectTypeCases}
+      default:
+        VULKAN_HPP_ASSERT( false && "unknown ObjectType" );
+        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+    }
+  }
+)" };
+
+  auto const generateObjectTypeCases = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  {
+    static const std::string objectTypeCaseTemplate =
+      "      case VULKAN_HPP_NAMESPACE::ObjectType::${objectType} : return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};\n";
+
+    std::string objectTypeCases;
+    for ( auto const & require : requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        auto handleIt = m_handles.find( type );
+        if ( handleIt != m_handles.end() )
+        {
+          objectTypeCases += replaceWithMap( objectTypeCaseTemplate,
+                                             { { "debugReportObjectType", generateDebugReportObjectType( handleIt->second.objTypeEnum ) },
+                                               { "objectType", generateEnumValueName( "VkObjectType", handleIt->second.objTypeEnum, false ) } } );
+        }
+      }
+    }
+    return addTitleAndProtection( title, objectTypeCases );
+  };
+
+  std::string objectTypeCases;
+  for ( auto const & feature : m_features )
+  {
+    objectTypeCases += generateObjectTypeCases( feature.requireData, feature.name );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    objectTypeCases += generateObjectTypeCases( extension.requireData, extension.name );
+  }
+
+  return replaceWithMap( objectTypeToDebugReportObjectTypeTemplate, { { "objectTypeCases", objectTypeCases } } );
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateProtection( std::string const & protect, bool defined ) const

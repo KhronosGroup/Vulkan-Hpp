@@ -655,6 +655,7 @@ private:
                                       std::map<size_t, VectorParamData> const & vectorParams,
                                       std::set<size_t> const &                  templatedParams,
                                       bool                                      singular ) const;
+  std::string generateDebugReportObjectType( std::string const & objectType ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
@@ -707,6 +708,7 @@ private:
                                 bool                                      vectorSizeCheck,
                                 bool                                      raii ) const;
   std::string generateObjectDeleter( std::string const & commandName, CommandData const & commandData, size_t initialSkipCount, size_t returnParam ) const;
+  std::string generateObjectTypeToDebugReportObjectType() const;
   std::pair<std::string, std::string> generateProtection( std::string const & protect, bool defined = true ) const;
   std::string                         generateRAIICommandDefinitions() const;
   std::string

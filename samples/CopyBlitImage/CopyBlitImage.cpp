@@ -144,15 +144,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     // Do a 32x32 blit to all of the dst image - should get big squares
     vk::ImageSubresourceLayers imageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 );
     vk::ImageBlit              imageBlit( imageSubresourceLayers,
-                             { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( 32, 32, 1 ) } },
+                                          { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( 32, 32, 1 ) } },
                              imageSubresourceLayers,
-                             { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( surfaceData.extent.width, surfaceData.extent.height, 1 ) } } );
+                                          { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( surfaceData.extent.width, surfaceData.extent.height, 1 ) } } );
     commandBuffer.blitImage(
       blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear );
 
     // Use a barrier to make sure the blit is finished before the copy starts
+    // Note: for a layout of vk::ImageLayout::eTransferDstOptimal, the access mask is supposed to be vk::AccessFlagBits::eTransferWrite
     vk::ImageMemoryBarrier memoryBarrier( vk::AccessFlagBits::eTransferWrite,
-                                          vk::AccessFlagBits::eMemoryRead,
+                                          vk::AccessFlagBits::eTransferWrite,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           VK_QUEUE_FAMILY_IGNORED,
@@ -166,8 +167,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ImageCopy imageCopy( imageSubresourceLayers, vk::Offset3D(), imageSubresourceLayers, vk::Offset3D( 256, 256, 0 ), vk::Extent3D( 128, 128, 1 ) );
     commandBuffer.copyImage( blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy );
 
+    // Note: for a layout of vk::ImageLayout::ePresentSrcKHR, the access mask is supposed to be empty
     vk::ImageMemoryBarrier prePresentBarrier( vk::AccessFlagBits::eTransferWrite,
-                                              vk::AccessFlagBits::eMemoryRead,
+                                              {},
                                               vk::ImageLayout::eTransferDstOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
                                               VK_QUEUE_FAMILY_IGNORED,
@@ -200,8 +202,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     device.destroyFence( drawFence );
     device.destroyFence( commandFence );
+    device.destroyImage( blitSourceImage );  // destroy the image before the bound device memory to prevent some validation layer warning
     device.freeMemory( deviceMemory );
-    device.destroyImage( blitSourceImage );
     device.destroySemaphore( imageAcquiredSemaphore );
     swapChainData.clear( device );
     device.freeCommandBuffers( commandPool, commandBuffer );

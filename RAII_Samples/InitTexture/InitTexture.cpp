@@ -53,7 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::raii::CommandPool commandPool = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
+    vk::raii::CommandPool   commandPool   = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
     vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
     vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
@@ -182,6 +182,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::ImageViewCreateInfo imageViewCreateInfo( {}, *image, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     vk::raii::ImageView     imageView( device, imageViewCreateInfo );
+
+    // in order to prevent some validation layer warning, you need to explicitly free the image before the device memory
+    image.clear();
 
     /* VULKAN_KEY_END */
   }

@@ -159,8 +159,9 @@ int main( int /*argc*/, char ** /*argv*/ )
       *blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear );
 
     // Use a barrier to make sure the blit is finished before the copy starts
+    // Note: for a layout of vk::ImageLayout::eTransferDstOptimal, the access mask is supposed to be vk::AccessFlagBits::eTransferWrite
     vk::ImageMemoryBarrier memoryBarrier( vk::AccessFlagBits::eTransferWrite,
-                                          vk::AccessFlagBits::eMemoryRead,
+                                          vk::AccessFlagBits::eTransferWrite,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           vk::ImageLayout::eTransferDstOptimal,
                                           VK_QUEUE_FAMILY_IGNORED,
@@ -173,8 +174,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::ImageCopy imageCopy( imageSubresourceLayers, vk::Offset3D(), imageSubresourceLayers, vk::Offset3D( 256, 256, 0 ), vk::Extent3D( 128, 128, 1 ) );
     commandBuffer.copyImage( *blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy );
 
+    // Note: for a layout of vk::ImageLayout::ePresentSrcKHR, the access mask is supposed to be empty
     vk::ImageMemoryBarrier prePresentBarrier( vk::AccessFlagBits::eTransferWrite,
-                                              vk::AccessFlagBits::eMemoryRead,
+                                              {},
                                               vk::ImageLayout::eTransferDstOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
                                               VK_QUEUE_FAMILY_IGNORED,
@@ -203,6 +205,9 @@ int main( int /*argc*/, char ** /*argv*/ )
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+
+    // in order to prevent some validation layer warning, you need to explicitly free the image before the device memory
+    blitSourceImage.clear();
 
     /* VULKAN_KEY_END */
   }

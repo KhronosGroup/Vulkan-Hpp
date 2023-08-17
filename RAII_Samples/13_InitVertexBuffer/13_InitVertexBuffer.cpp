@@ -116,6 +116,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.end();
     vk::raii::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
+    // in order to prevent some validation layer warning, you need to explicitly free the buffer before the device memory
+    vertexBuffer.clear();
+
     /* VULKAN_KEY_END */
   }
   catch ( vk::SystemError & err )

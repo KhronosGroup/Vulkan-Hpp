@@ -549,6 +549,13 @@ namespace vk
         return std::move( vk::raii::CommandBuffers( device, commandBufferAllocateInfo ).front() );
       }
 
+      void fullPipelineBarrier( vk::raii::CommandBuffer const & commandBuffer )
+      {
+        vk::MemoryBarrier memoryBarrier( vk::AccessFlagBits::eMemoryRead | vk::AccessFlagBits::eMemoryWrite,
+                                         vk::AccessFlagBits::eMemoryRead | vk::AccessFlagBits::eMemoryWrite );
+        commandBuffer.pipelineBarrier( vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, memoryBarrier, nullptr, nullptr );
+      }
+
       vk::raii::DescriptorPool makeDescriptorPool( vk::raii::Device const & device, std::vector<vk::DescriptorPoolSize> const & poolSizes )
       {
         assert( !poolSizes.empty() );

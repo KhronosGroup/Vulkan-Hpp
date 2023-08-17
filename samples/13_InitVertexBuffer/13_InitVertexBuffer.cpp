@@ -104,8 +104,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::su::submitAndWait( device, graphicsQueue, commandBuffer );
 
     device.destroySemaphore( imageAcquiredSemaphore );
+    device.destroyBuffer( vertexBuffer );  // destroy the buffer before the bound device memory to prevent some validation layer warning
     device.freeMemory( deviceMemory );
-    device.destroyBuffer( vertexBuffer );
 
     /* VULKAN_KEY_END */
 

@@ -186,8 +186,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     device.destroySampler( sampler );
     device.freeMemory( textureBufferMemory );
     device.destroyBuffer( textureBuffer );
+    device.destroyImage( image );  // destroy the image before the bound device memory to prevent some validation layer warning
     device.freeMemory( imageMemory );
-    device.destroyImage( image );
     device.freeCommandBuffers( commandPool, commandBuffer );
     device.destroyCommandPool( commandPool );
     device.destroy();

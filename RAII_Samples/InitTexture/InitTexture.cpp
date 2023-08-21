@@ -67,6 +67,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     // See if we can use a linear tiled image for a texture, if not, we will need a staging buffer for the texture data
     bool needsStaging = !( formatProperties.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage );
 
+    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the image first
+    vk::raii::DeviceMemory imageMemory( nullptr );
+
     vk::ImageCreateInfo imageCreateInfo( {},
                                          vk::ImageType::e2D,
                                          format,
@@ -89,7 +92,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // allocate memory
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    vk::raii::DeviceMemory imageMemory( device, memoryAllocateInfo );
+    imageMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
 
     // bind memory
     image.bindMemory( *imageMemory, 0 );
@@ -182,9 +185,6 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::ImageViewCreateInfo imageViewCreateInfo( {}, *image, vk::ImageViewType::e2D, format, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
     vk::raii::ImageView     imageView( device, imageViewCreateInfo );
-
-    // in order to prevent some validation layer warning, you need to explicitly free the image before the device memory
-    image.clear();
 
     /* VULKAN_KEY_END */
   }

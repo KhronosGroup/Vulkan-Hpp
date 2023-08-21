@@ -84,6 +84,9 @@ int main( int /*argc*/, char ** /*argv*/ )
                                   vk::ImageLayout::eUndefined,
                                   vk::ImageLayout::eTransferDstOptimal );
 
+    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the image first
+    vk::raii::DeviceMemory deviceMemory( nullptr );
+
     // Create an image, map it, and write some values to the image
     vk::ImageCreateInfo imageCreateInfo( {},
                                          vk::ImageType::e2D,
@@ -101,7 +104,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     uint32_t memoryTypeIndex = vk::su::findMemoryType( memoryProperties, memoryRequirements.memoryTypeBits, vk::MemoryPropertyFlagBits::eHostVisible );
 
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    vk::raii::DeviceMemory deviceMemory( device, memoryAllocateInfo );
+    deviceMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
     blitSourceImage.bindMemory( *deviceMemory, 0 );
 
     vk::raii::su::setImageLayout( commandBuffer, *blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral );
@@ -205,9 +208,6 @@ int main( int /*argc*/, char ** /*argv*/ )
       default: assert( false );  // an unexpected result is returned !
     }
     std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-
-    // in order to prevent some validation layer warning, you need to explicitly free the image before the device memory
-    blitSourceImage.clear();
 
     /* VULKAN_KEY_END */
   }

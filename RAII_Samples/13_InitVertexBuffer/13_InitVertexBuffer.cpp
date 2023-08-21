@@ -73,6 +73,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* VULKAN_KEY_START */
 
+    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the vertex buffer first
+    vk::raii::DeviceMemory deviceMemory( nullptr );
+
     // create a vertex buffer for some vertex and color data
     vk::BufferCreateInfo bufferCreateInfo( {}, sizeof( coloredCubeData ), vk::BufferUsageFlagBits::eVertexBuffer );
     vk::raii::Buffer     vertexBuffer( device, bufferCreateInfo );
@@ -83,7 +86,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    vk::raii::DeviceMemory deviceMemory( device, memoryAllocateInfo );
+    deviceMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
 
     // copy the vertex and color data into that device memory
     uint8_t * pData = static_cast<uint8_t *>( deviceMemory.mapMemory( 0, memoryRequirements.size ) );
@@ -115,9 +118,6 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.endRenderPass();
     commandBuffer.end();
     vk::raii::su::submitAndWait( device, graphicsQueue, commandBuffer );
-
-    // in order to prevent some validation layer warning, you need to explicitly free the buffer before the device memory
-    vertexBuffer.clear();
 
     /* VULKAN_KEY_END */
   }

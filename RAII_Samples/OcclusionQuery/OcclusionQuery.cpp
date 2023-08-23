@@ -121,6 +121,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
+    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the result buffer first
+    vk::raii::DeviceMemory queryResultMemory( nullptr );
+
     /* Allocate a uniform buffer that will take query results. */
     vk::BufferCreateInfo bufferCreateInfo( {}, 4 * sizeof( uint64_t ), vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst );
     vk::raii::Buffer     queryResultBuffer( device, bufferCreateInfo );
@@ -130,7 +133,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                        memoryRequirements.memoryTypeBits,
                                                        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    vk::raii::DeviceMemory queryResultMemory( device, memoryAllocateInfo );
+    queryResultMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
 
     queryResultBuffer.bindMemory( *queryResultMemory, 0 );
 

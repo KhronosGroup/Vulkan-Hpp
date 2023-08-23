@@ -263,8 +263,8 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     device.destroyPipelineLayout( pipelineLayout );
     device.destroyDescriptorSetLayout( descriptorSetLayout );
     device.destroyImageView( inputAttachmentView );
+    device.destroyImage( inputImage );    // destroy the inputImage before freeing the bound inputMemory !
     device.freeMemory( inputMemory );
-    device.destroyImage( inputImage );
     swapChainData.clear( device );
     device.freeCommandBuffers( commandPool, commandBuffer );
     device.destroyCommandPool( commandPool );

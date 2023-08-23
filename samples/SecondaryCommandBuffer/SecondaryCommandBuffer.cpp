@@ -188,7 +188,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.endRenderPass();
 
     vk::ImageMemoryBarrier prePresentBarrier( vk::AccessFlagBits::eColorAttachmentWrite,
-                                              vk::AccessFlagBits::eMemoryRead,
+                                              {},
                                               vk::ImageLayout::eColorAttachmentOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
                                               VK_QUEUE_FAMILY_IGNORED,

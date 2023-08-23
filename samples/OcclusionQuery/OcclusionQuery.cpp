@@ -95,7 +95,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                     std::make_pair( vertexShaderModule, nullptr ),
                                                                     std::make_pair( fragmentShaderModule, nullptr ),
                                                                     sizeof( coloredCubeData[0] ),
-                                                                    { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
+                                                                         { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
                                                                     vk::FrontFace::eClockwise,
                                                                     true,
                                                                     pipelineLayout,
@@ -199,8 +199,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     device.destroyFence( drawFence );
     device.destroyQueryPool( queryPool );
+    device.destroyBuffer( queryResultBuffer );  // destroy the queryResultBuffer before freeing the bound queryResultMemory !
     device.freeMemory( queryResultMemory );
-    device.destroyBuffer( queryResultBuffer );
     device.destroySemaphore( imageAcquiredSemaphore );
 
     /* VULKAN_KEY_END */

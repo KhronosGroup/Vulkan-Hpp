@@ -54,7 +54,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::raii::CommandPool commandPool = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
+    vk::raii::CommandPool   commandPool   = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
     vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
     vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
@@ -104,7 +104,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                               fragmentShaderModule,
                                                                               nullptr,
                                                                               sizeof( texturedCubeData[0] ),
-                                                                              { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
+                                                                                   { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
                                                                               vk::FrontFace::eClockwise,
                                                                               true,
                                                                               pipelineLayout,
@@ -192,7 +192,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::ImageSubresourceRange imageSubresourceRange( vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 );
     vk::ImageMemoryBarrier    prePresentBarrier( vk::AccessFlagBits::eColorAttachmentWrite,
-                                              vk::AccessFlagBits::eMemoryRead,
+                                                 {},
                                               vk::ImageLayout::eColorAttachmentOptimal,
                                               vk::ImageLayout::ePresentSrcKHR,
                                               VK_QUEUE_FAMILY_IGNORED,

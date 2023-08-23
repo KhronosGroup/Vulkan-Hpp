@@ -7037,7 +7037,6 @@ namespace VULKAN_HPP_NAMESPACE
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_funcs.hpp>
-#include <vulkan/vulkan_shared.hpp>
 
 // clang-format on
 

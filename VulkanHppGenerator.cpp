@@ -514,7 +514,6 @@ ${constexprDefines}
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
 #include <vulkan/vulkan_funcs.hpp>
-#include <vulkan/vulkan_shared.hpp>
 // clang-format on
 
 
@@ -628,7 +627,9 @@ void VulkanHppGenerator::generateSharedHppFile() const
 
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_SHARED_HPP
-#  define VULKAN_SHARED_HPP
+#define VULKAN_SHARED_HPP
+
+#include <vulkan/vulkan.hpp>
 
 namespace VULKAN_HPP_NAMESPACE
 {

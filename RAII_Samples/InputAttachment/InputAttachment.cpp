@@ -65,7 +65,8 @@ void main()
   outColor = subpassLoad(inputAttachment);
 }
 )";
-int                 main( int /*argc*/, char ** /*argv*/ )
+
+int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
@@ -89,7 +90,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::raii::CommandPool commandPool = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
+    vk::raii::CommandPool   commandPool   = vk::raii::CommandPool( device, { {}, graphicsAndPresentQueueFamilyIndex.first } );
     vk::raii::CommandBuffer commandBuffer = vk::raii::su::makeCommandBuffer( device, commandPool );
 
     vk::raii::Queue graphicsQueue( device, graphicsAndPresentQueueFamilyIndex.first, 0 );
@@ -141,9 +142,8 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                    { std::array<float, 4>( { { 1.0f, 1.0f, 0.0f, 0.0f } } ) },
                                    { { vk::ImageAspectFlagBits::eColor, 0, VK_REMAINING_MIP_LEVELS, 0, VK_REMAINING_ARRAY_LAYERS } } );
 
-    // Set the image layout to SHADER_READONLY_OPTIMAL for use by the shaders
-    vk::raii::su::setImageLayout(
-      commandBuffer, *inputImage, swapChainData.colorFormat, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal );
+    // Transitioning the layout of the inputImage from TransferDstOptimal to ShaderReadOnlyOptimal is implicitly done by a subpassDependency in the
+    // RenderPassCreateInfo below
 
     vk::ImageViewCreateInfo imageViewCreateInfo(
       {}, *inputImage, vk::ImageViewType::e2D, swapChainData.colorFormat, {}, { vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 } );
@@ -178,13 +178,22 @@ int                 main( int /*argc*/, char ** /*argv*/ )
                                  vk::AttachmentStoreOp::eDontCare,
                                  vk::AttachmentLoadOp::eDontCare,
                                  vk::AttachmentStoreOp::eDontCare,
-                                 vk::ImageLayout::eShaderReadOnlyOptimal,
+                                 vk::ImageLayout::eTransferDstOptimal,  // transition layout from TransferDstOptimal to ShaderReadOnlyOptimal
                                  vk::ImageLayout::eShaderReadOnlyOptimal )
     };
     vk::AttachmentReference  colorReference( 0, vk::ImageLayout::eColorAttachmentOptimal );
     vk::AttachmentReference  inputReference( 1, vk::ImageLayout::eShaderReadOnlyOptimal );
-    vk::SubpassDescription   subPass( {}, vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
-    vk::RenderPassCreateInfo renderPassCreateInfo( {}, attachments, subPass );
+    vk::SubpassDescription   subpassDescription( {}, vk::PipelineBindPoint::eGraphics, inputReference, colorReference );
+    vk::SubpassDependency    subpassDependency( VK_SUBPASS_EXTERNAL,
+                                             0,
+                                             vk::PipelineStageFlagBits::eTransfer,
+                                             vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eFragmentShader,
+                                             vk::AccessFlagBits::eTransferWrite,
+                                             vk::AccessFlagBits::eColorAttachmentWrite  // needed for first attachment
+                                               | vk::AccessFlagBits::eInputAttachmentRead | vk::AccessFlagBits::eShaderRead |
+                                               vk::AccessFlagBits::eColorAttachmentRead  // needed for second attachment
+    );
+    vk::RenderPassCreateInfo renderPassCreateInfo( {}, attachments, subpassDescription, subpassDependency );
     vk::raii::RenderPass     renderPass( device, renderPassCreateInfo );
 
     glslang::InitializeProcess();

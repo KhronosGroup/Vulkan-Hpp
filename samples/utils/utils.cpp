@@ -356,14 +356,15 @@ namespace vk
                                                                 void * /*pUserData*/ )
     {
 #if !defined( NDEBUG )
-      if ( pCallbackData->messageIdNumber == 648835635 )
+      if ( static_cast<uint32_t>(pCallbackData->messageIdNumber) == 0x822806fa )
       {
-        // UNASSIGNED-khronos-Validation-debug-build-warning-message
+        // Validation Warning: vkCreateInstance(): to enable extension VK_EXT_debug_utils, but this extension is intended to support use by applications when
+        // debugging and it is strongly recommended that it be otherwise avoided.
         return vk::False;
       }
-      if ( pCallbackData->messageIdNumber == 767975156 )
+      else if ( static_cast<uint32_t>(pCallbackData->messageIdNumber) == 0xe8d1a9fe )
       {
-        // UNASSIGNED-BestPractices-vkCreateInstance-specialuse-extension
+        // Validation Performance Warning: Using debug builds of the validation layers *will* adversely affect performance.
         return vk::False;
       }
 #endif

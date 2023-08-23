@@ -110,6 +110,9 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     // attachment which will be cleared to yellow, and then used by the shaders to color the drawn triangle. Final
     // result should be a yellow triangle
 
+    // in order to get a clean desctruction sequence, instantiate the DeviceMemory for the vertex buffer first
+    vk::raii::DeviceMemory inputMemory( nullptr );
+
     // Create the image that will be used as the input attachment
     // The image for the color attachment is the presentable image already created as part of the SwapChainData
     vk::ImageCreateInfo imageCreateInfo( {},
@@ -126,7 +129,7 @@ int                 main( int /*argc*/, char ** /*argv*/ )
     vk::MemoryRequirements memoryRequirements = inputImage.getMemoryRequirements();
     uint32_t               memoryTypeIndex    = vk::su::findMemoryType( physicalDevice.getMemoryProperties(), memoryRequirements.memoryTypeBits, {} );
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
-    vk::raii::DeviceMemory inputMemory( device, memoryAllocateInfo );
+    inputMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
     inputImage.bindMemory( *inputMemory, 0 );
 
     // Set the image layout to TRANSFER_DST_OPTIMAL to be ready for clear

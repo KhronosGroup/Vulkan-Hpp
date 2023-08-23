@@ -942,11 +942,11 @@ int main( int /*argc*/, char ** /*argv*/ )
         vk::BufferMemoryBarrier bufferMemoryBarrier(
           {}, vk::AccessFlagBits::eShaderRead, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, vertexBufferData.buffer, 0, VK_WHOLE_SIZE );
         commandBuffer.pipelineBarrier(
-          vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, nullptr, bufferMemoryBarrier, nullptr );
+          vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eRayTracingShaderKHR, {}, nullptr, bufferMemoryBarrier, nullptr );
 
         bufferMemoryBarrier.buffer = indexBufferData.buffer;
         commandBuffer.pipelineBarrier(
-          vk::PipelineStageFlagBits::eAllCommands, vk::PipelineStageFlagBits::eAllCommands, {}, nullptr, bufferMemoryBarrier, nullptr );
+          vk::PipelineStageFlagBits::eTopOfPipe, vk::PipelineStageFlagBits::eRayTracingShaderKHR, {}, nullptr, bufferMemoryBarrier, nullptr );
       } );
 
     std::vector<vk::DescriptorSetLayoutBinding> bindings;

@@ -111,7 +111,9 @@ public:
                     [this]( vk::ImageView imageView ) {
                       return vk::SharedImageView{ imageView, device };
                     } );
-    commandPool   = vk::SharedCommandPool{ vk::su::createCommandPool( device.get(), graphicsAndPresentQueueFamilyIndex.first ), device };
+    commandPool =
+      vk::SharedCommandPool{ device->createCommandPool( { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } ),
+                             device };
     graphicsQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 ), device };
     presentQueue  = device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
 

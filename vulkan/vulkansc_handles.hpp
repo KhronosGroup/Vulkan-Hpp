@@ -1015,9 +1015,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DebugUtilsMessengerEXT
   {
   public:
-    using CType      = VkDebugUtilsMessengerEXT;
-    using NativeType = VkDebugUtilsMessengerEXT;
-    using ParentType = Instance;
+    using CType            = VkDebugUtilsMessengerEXT;
+    using NativeType       = VkDebugUtilsMessengerEXT;
+    using DeleteParentType = Instance;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDebugUtilsMessengerEXT;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1100,9 +1100,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SurfaceKHR
   {
   public:
-    using CType      = VkSurfaceKHR;
-    using NativeType = VkSurfaceKHR;
-    using ParentType = Instance;
+    using CType            = VkSurfaceKHR;
+    using NativeType       = VkSurfaceKHR;
+    using DeleteParentType = Instance;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSurfaceKHR;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1188,9 +1188,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SwapchainKHR
   {
   public:
-    using CType      = VkSwapchainKHR;
-    using NativeType = VkSwapchainKHR;
-    using ParentType = NoParent;
+    using CType            = VkSwapchainKHR;
+    using NativeType       = VkSwapchainKHR;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSwapchainKHR;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1276,9 +1276,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Semaphore
   {
   public:
-    using CType      = VkSemaphore;
-    using NativeType = VkSemaphore;
-    using ParentType = Device;
+    using CType            = VkSemaphore;
+    using NativeType       = VkSemaphore;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSemaphore;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1364,9 +1364,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Fence
   {
   public:
-    using CType      = VkFence;
-    using NativeType = VkFence;
-    using ParentType = Device;
+    using CType            = VkFence;
+    using NativeType       = VkFence;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eFence;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1452,9 +1452,9 @@ namespace VULKAN_HPP_NAMESPACE
   class QueryPool
   {
   public:
-    using CType      = VkQueryPool;
-    using NativeType = VkQueryPool;
-    using ParentType = NoParent;
+    using CType            = VkQueryPool;
+    using NativeType       = VkQueryPool;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eQueryPool;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1540,9 +1540,9 @@ namespace VULKAN_HPP_NAMESPACE
   class PipelineLayout
   {
   public:
-    using CType      = VkPipelineLayout;
-    using NativeType = VkPipelineLayout;
-    using ParentType = Device;
+    using CType            = VkPipelineLayout;
+    using NativeType       = VkPipelineLayout;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::ePipelineLayout;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1628,9 +1628,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DescriptorSet
   {
   public:
-    using CType      = VkDescriptorSet;
-    using NativeType = VkDescriptorSet;
-    using ParentType = Device;
+    using CType            = VkDescriptorSet;
+    using NativeType       = VkDescriptorSet;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSet;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1716,9 +1716,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Buffer
   {
   public:
-    using CType      = VkBuffer;
-    using NativeType = VkBuffer;
-    using ParentType = Device;
+    using CType            = VkBuffer;
+    using NativeType       = VkBuffer;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eBuffer;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1804,9 +1804,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Pipeline
   {
   public:
-    using CType      = VkPipeline;
-    using NativeType = VkPipeline;
-    using ParentType = Device;
+    using CType            = VkPipeline;
+    using NativeType       = VkPipeline;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::ePipeline;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1892,9 +1892,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Image
   {
   public:
-    using CType      = VkImage;
-    using NativeType = VkImage;
-    using ParentType = Device;
+    using CType            = VkImage;
+    using NativeType       = VkImage;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eImage;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -1980,9 +1980,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Event
   {
   public:
-    using CType      = VkEvent;
-    using NativeType = VkEvent;
-    using ParentType = Device;
+    using CType            = VkEvent;
+    using NativeType       = VkEvent;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eEvent;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -2068,9 +2068,9 @@ namespace VULKAN_HPP_NAMESPACE
   class CommandBuffer
   {
   public:
-    using CType      = VkCommandBuffer;
-    using NativeType = VkCommandBuffer;
-    using ParentType = Device;
+    using CType            = VkCommandBuffer;
+    using NativeType       = VkCommandBuffer;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCommandBuffer;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3207,9 +3207,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DeviceMemory
   {
   public:
-    using CType      = VkDeviceMemory;
-    using NativeType = VkDeviceMemory;
-    using ParentType = NoParent;
+    using CType            = VkDeviceMemory;
+    using NativeType       = VkDeviceMemory;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDeviceMemory;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3295,9 +3295,9 @@ namespace VULKAN_HPP_NAMESPACE
   class BufferView
   {
   public:
-    using CType      = VkBufferView;
-    using NativeType = VkBufferView;
-    using ParentType = Device;
+    using CType            = VkBufferView;
+    using NativeType       = VkBufferView;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eBufferView;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3383,9 +3383,9 @@ namespace VULKAN_HPP_NAMESPACE
   class CommandPool
   {
   public:
-    using CType      = VkCommandPool;
-    using NativeType = VkCommandPool;
-    using ParentType = NoParent;
+    using CType            = VkCommandPool;
+    using NativeType       = VkCommandPool;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCommandPool;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3471,9 +3471,9 @@ namespace VULKAN_HPP_NAMESPACE
   class PipelineCache
   {
   public:
-    using CType      = VkPipelineCache;
-    using NativeType = VkPipelineCache;
-    using ParentType = Device;
+    using CType            = VkPipelineCache;
+    using NativeType       = VkPipelineCache;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::ePipelineCache;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3559,9 +3559,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DescriptorPool
   {
   public:
-    using CType      = VkDescriptorPool;
-    using NativeType = VkDescriptorPool;
-    using ParentType = NoParent;
+    using CType            = VkDescriptorPool;
+    using NativeType       = VkDescriptorPool;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorPool;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3647,9 +3647,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DescriptorSetLayout
   {
   public:
-    using CType      = VkDescriptorSetLayout;
-    using NativeType = VkDescriptorSetLayout;
-    using ParentType = Device;
+    using CType            = VkDescriptorSetLayout;
+    using NativeType       = VkDescriptorSetLayout;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDescriptorSetLayout;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3738,9 +3738,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Framebuffer
   {
   public:
-    using CType      = VkFramebuffer;
-    using NativeType = VkFramebuffer;
-    using ParentType = Device;
+    using CType            = VkFramebuffer;
+    using NativeType       = VkFramebuffer;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eFramebuffer;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3826,9 +3826,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ImageView
   {
   public:
-    using CType      = VkImageView;
-    using NativeType = VkImageView;
-    using ParentType = Device;
+    using CType            = VkImageView;
+    using NativeType       = VkImageView;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eImageView;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3914,9 +3914,9 @@ namespace VULKAN_HPP_NAMESPACE
   class PrivateDataSlot
   {
   public:
-    using CType      = VkPrivateDataSlot;
-    using NativeType = VkPrivateDataSlot;
-    using ParentType = Device;
+    using CType            = VkPrivateDataSlot;
+    using NativeType       = VkPrivateDataSlot;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::ePrivateDataSlot;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -3998,9 +3998,9 @@ namespace VULKAN_HPP_NAMESPACE
   class RenderPass
   {
   public:
-    using CType      = VkRenderPass;
-    using NativeType = VkRenderPass;
-    using ParentType = Device;
+    using CType            = VkRenderPass;
+    using NativeType       = VkRenderPass;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eRenderPass;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4086,9 +4086,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Sampler
   {
   public:
-    using CType      = VkSampler;
-    using NativeType = VkSampler;
-    using ParentType = Device;
+    using CType            = VkSampler;
+    using NativeType       = VkSampler;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSampler;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4174,9 +4174,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SamplerYcbcrConversion
   {
   public:
-    using CType      = VkSamplerYcbcrConversion;
-    using NativeType = VkSamplerYcbcrConversion;
-    using ParentType = Device;
+    using CType            = VkSamplerYcbcrConversion;
+    using NativeType       = VkSamplerYcbcrConversion;
+    using DeleteParentType = Device;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4262,9 +4262,9 @@ namespace VULKAN_HPP_NAMESPACE
   class SemaphoreSciSyncPoolNV
   {
   public:
-    using CType      = VkSemaphoreSciSyncPoolNV;
-    using NativeType = VkSemaphoreSciSyncPoolNV;
-    using ParentType = NoParent;
+    using CType            = VkSemaphoreSciSyncPoolNV;
+    using NativeType       = VkSemaphoreSciSyncPoolNV;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSemaphoreSciSyncPoolNV;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4348,9 +4348,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DisplayKHR
   {
   public:
-    using CType      = VkDisplayKHR;
-    using NativeType = VkDisplayKHR;
-    using ParentType = NoParent;
+    using CType            = VkDisplayKHR;
+    using NativeType       = VkDisplayKHR;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4436,9 +4436,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Queue
   {
   public:
-    using CType      = VkQueue;
-    using NativeType = VkQueue;
-    using ParentType = NoParent;
+    using CType            = VkQueue;
+    using NativeType       = VkQueue;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eQueue;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -4626,9 +4626,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Device
   {
   public:
-    using CType      = VkDevice;
-    using NativeType = VkDevice;
-    using ParentType = NoParent;
+    using CType            = VkDevice;
+    using NativeType       = VkDevice;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDevice;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -6773,9 +6773,9 @@ namespace VULKAN_HPP_NAMESPACE
   class DisplayModeKHR
   {
   public:
-    using CType      = VkDisplayModeKHR;
-    using NativeType = VkDisplayModeKHR;
-    using ParentType = NoParent;
+    using CType            = VkDisplayModeKHR;
+    using NativeType       = VkDisplayModeKHR;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDisplayModeKHR;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -6861,9 +6861,9 @@ namespace VULKAN_HPP_NAMESPACE
   class PhysicalDevice
   {
   public:
-    using CType      = VkPhysicalDevice;
-    using NativeType = VkPhysicalDevice;
-    using ParentType = NoParent;
+    using CType            = VkPhysicalDevice;
+    using NativeType       = VkPhysicalDevice;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::ePhysicalDevice;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -7723,9 +7723,9 @@ namespace VULKAN_HPP_NAMESPACE
   class Instance
   {
   public:
-    using CType      = VkInstance;
-    using NativeType = VkInstance;
-    using ParentType = NoParent;
+    using CType            = VkInstance;
+    using NativeType       = VkInstance;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eInstance;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
@@ -8059,9 +8059,9 @@ namespace VULKAN_HPP_NAMESPACE
   class ShaderModule
   {
   public:
-    using CType      = VkShaderModule;
-    using NativeType = VkShaderModule;
-    using ParentType = NoParent;
+    using CType            = VkShaderModule;
+    using NativeType       = VkShaderModule;
+    using DeleteParentType = NoParent;
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eShaderModule;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =

@@ -10,7 +10,7 @@ struct HasParentType : std::false_type
 };
 
 template <typename HandleType>
-struct HasParentType<HandleType, decltype( (void)typename HandleType::ParentType() )> : std::true_type
+struct HasParentType<HandleType, decltype( (void)typename HandleType::DeleteParentType() )> : std::true_type
 {
 };
 
@@ -23,14 +23,14 @@ struct GetParentType
 template <typename HandleType>
 struct GetParentType<HandleType, typename std::enable_if<HasParentType<HandleType>::value>::type>
 {
-  using type = typename HandleType::ParentType;
+  using type = typename HandleType::DeleteParentType;
 };
 
 template <class HandleType>
 using parent_of_t = typename GetParentType<HandleType>::type;
 
 template <class HandleType>
-VULKAN_HPP_CONSTEXPR_INLINE bool has_parent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
+VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
 
 //=====================================================================================================================
 
@@ -72,11 +72,13 @@ public:
 public:
   size_t addRef() VULKAN_HPP_NOEXCEPT
   {
+    // Relaxed memory order is sufficient since this does not impose any ordering on other operations
     return m_ref_cnt.fetch_add( 1, std::memory_order_relaxed );
   }
 
   size_t release() VULKAN_HPP_NOEXCEPT
   {
+    // An acquire-release memory order is making sure all subs are sequentially consistent with this atomic variable
     return m_ref_cnt.fetch_sub( 1, std::memory_order_acq_rel );
   }
 
@@ -142,6 +144,11 @@ public:
   {
     return m_handle;
   }
+  
+  HandleType operator*() const VULKAN_HPP_NOEXCEPT
+  {
+    return m_handle;
+  }
 
   explicit operator bool() const VULKAN_HPP_NOEXCEPT
   {
@@ -170,20 +177,20 @@ public:
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<has_parent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<HasParent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return getHeader().parent;
   }
 
 protected:
   template <typename T = HandleType>
-  static typename std::enable_if<!has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<!HasParent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
     control.deleter.destroy( handle );
   }
 
   template <typename T = HandleType>
-  static typename std::enable_if<has_parent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<HasParent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
     control.deleter.destroy( control.parent.get(), handle );
   }
@@ -218,13 +225,13 @@ public:
 
   SharedHandle() = default;
 
-  template <typename T = HandleType, typename = typename std::enable_if<has_parent<T>>::type>
+  template <typename T = HandleType, typename = typename std::enable_if<HasParent<T>>::type>
   explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
   {
   }
 
-  template <typename T = HandleType, typename = typename std::enable_if<!has_parent<T>>::type>
+  template <typename T = HandleType, typename = typename std::enable_if<!HasParent<T>>::type>
   explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT : BaseType( handle, std::move( deleter ) )
   {
   }

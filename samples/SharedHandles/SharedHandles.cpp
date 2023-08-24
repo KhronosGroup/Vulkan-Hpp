@@ -20,19 +20,19 @@
 #include "../utils/shaders.hpp"
 #include "../utils/utils.hpp"
 #include "SPIRV/GlslangToSpv.h"
-#include <vulkan/vulkan_shared.hpp>
 
 #include <iostream>
 #include <thread>
+#include <vulkan/vulkan_shared.hpp>
 
 static char const * AppName    = "SharedHandles";
 static char const * EngineName = "Vulkan.hpp";
 
 std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( const vk::SharedDevice &           device,
                                                            const vk::SharedRenderPass &       renderPass,
-                                                           std::vector<vk::ImageView> const & imageViews,
+                                                           const std::vector<vk::ImageView> & imageViews,
                                                            const vk::SharedImageView &        depthImageView,
-                                                           vk::Extent2D                       extent )
+                                                           const vk::Extent2D &               extent )
 {
   auto                               renderPassHandle = renderPass.get();  // lvalue reference is required for the capture below
   std::vector<vk::SharedFramebuffer> sharedFramebuffers;
@@ -74,11 +74,10 @@ public:
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
     VkSurfaceKHR surface;
-    // for native handles as return types there is put_native() method
     VkResult err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
-    vk::SharedSurfaceKHR sharedSurface{ surface , instance };
+    vk::SharedSurfaceKHR sharedSurface{ surface, instance };
 
     auto graphicsAndPresentQueueFamilyIndex = vk::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, sharedSurface.get() );
     device = vk::SharedDevice{ vk::su::createDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() ) };
@@ -115,23 +114,26 @@ public:
       vk::SharedCommandPool{ device->createCommandPool( { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } ),
                              device };
     graphicsQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 ), device };
-    presentQueue  = device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 );
+
+
+    presentQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 ), device };
 
     depthFormat = vk::Format::eD16Unorm;
-    vk::su::DepthBufferData depthBufferData( physicalDevice, device.get(), vk::Format::eD16Unorm, window.extent );
+    vk::su::DepthBufferData depthBufferData( physicalDevice, device.get(), depthFormat, window.extent );
     depthImage     = vk::SharedImage{ depthBufferData.image, device };
     depthImageView = vk::SharedImageView{ depthBufferData.imageView, device };
     depthMemory    = vk::SharedDeviceMemory{ depthBufferData.deviceMemory, device };
 
-    renderPass = vk::SharedRenderPass{
-      vk::su::createRenderPass( device.get(), vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( swapChain.getSurface().get() ) ).format, depthFormat ),
-      device
-    };
+    renderPass =
+      vk::SharedRenderPass{ vk::su::createRenderPass( device.get(),
+                                                      vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( swapChain.getSurface().get() ) ).format,
+                                                      depthFormat ),
+                            device };
 
     framebuffers           = makeSharedFramebuffers( device, renderPass, swapChainData.imageViews, depthImageView, window.extent );
     imageAcquiredSemaphore = vk::SharedSemaphore{ device->createSemaphore( vk::SemaphoreCreateInfo() ), device };
     drawFence              = vk::SharedFence{ device->createFence( vk::FenceCreateInfo() ), device };
-    // we don't need surface anymore, it is owned by the swapchain now
+    // We don't need to explicitly keep sharedSurface anymore, it is owned by swapChain now.
   }
 
   void initialize()
@@ -243,7 +245,7 @@ public:
   uint32_t            currentBuffer = 0;
   vk::SharedSemaphore imageAcquiredSemaphore;
 
-  // memory still needs to be before the resources that use it
+  // memory still needs to be before the resources that use it in order to get a proper destruction sequence.
   vk::SharedDeviceMemory depthMemory;
   vk::SharedImage        depthImage;
   vk::SharedImageView    depthImageView;

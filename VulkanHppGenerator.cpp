@@ -629,7 +629,7 @@ void VulkanHppGenerator::generateSharedHppFile() const
 #ifndef VULKAN_SHARED_HPP
 #define VULKAN_SHARED_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/${api}.hpp>
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -646,6 +646,7 @@ ${sharedHandlesNoDestroy}
 
   std::string str = replaceWithMap( vulkanHandlesHppTemplate,
                                     {
+                                      { "api", m_api },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "sharedDestroy", readSnippet( "SharedDestroy.hpp" ) },
                                       { "sharedHandle", readSnippet( "SharedHandle.hpp" ) },
@@ -7305,7 +7306,7 @@ ${enter}  class ${className}
   public:
     using CType = Vk${className};
     using NativeType = Vk${className};
-    using ParentType = ${parent};
+    using DeleteParentType = ${parent};
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
@@ -11764,7 +11765,10 @@ class SharedHandle<${type}> : public SharedHandleBaseNoDestroy<${type}, ${parent
 
 public:
   using element_type = ${type};
-  using SharedHandleBaseNoDestroy<${type}, ${parent}>::SharedHandleBaseNoDestroy;
+  SharedHandle() = default;
+  explicit SharedHandle(${type} handle, ${parent} parent) noexcept
+    : SharedHandleBaseNoDestroy<${type}, ${parent}>(handle, std::move(parent))
+  {}
 };
 using Shared${type} = SharedHandle<${type}>;
 ${aliasHandle})";

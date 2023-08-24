@@ -7,11 +7,11 @@
 
 module;
 
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_extension_inspection.hpp>
-#include <vulkan/vulkan_format_traits.hpp>
-#include <vulkan/vulkan_hash.hpp>
-#include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkansc.hpp>
+#include <vulkan/vulkansc_extension_inspection.hpp>
+#include <vulkan/vulkansc_format_traits.hpp>
+#include <vulkan/vulkansc_hash.hpp>
+#include <vulkan/vulkansc_raii.hpp>
 
 export module vulkansc;
 

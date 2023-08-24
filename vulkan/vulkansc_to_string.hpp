@@ -8,7 +8,7 @@
 #ifndef VULKAN_TO_STRING_HPP
 #define VULKAN_TO_STRING_HPP
 
-#include <vulkan/vulkan_enums.hpp>
+#include <vulkan/vulkansc_enums.hpp>
 
 #if __cpp_lib_format
 #  include <format>  // std::format

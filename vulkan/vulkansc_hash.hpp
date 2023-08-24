@@ -8,7 +8,7 @@
 #ifndef VULKAN_HASH_HPP
 #define VULKAN_HASH_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkansc.hpp>
 
 namespace std
 {

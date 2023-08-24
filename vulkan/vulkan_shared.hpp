@@ -42,10 +42,10 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <class HandleType>
-  using parent_of_t = typename GetParentType<HandleType>::type;
+  using DeleteParentOf = typename GetParentType<HandleType>::type;
 
   template <class HandleType>
-  VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
+  VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<DeleteParentOf<HandleType>, NoParent>::value;
 
   //=====================================================================================================================
 
@@ -192,7 +192,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     template <typename T = HandleType>
-    typename std::enable_if<HasParent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+    typename std::enable_if<HasParent<T>, const SharedHandle<DeleteParentOf<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
     {
       return getHeader().parent;
     }
@@ -228,10 +228,10 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <typename HandleType>
-  class SharedHandle : public SharedHandleBase<HandleType, SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
+  class SharedHandle : public SharedHandleBase<HandleType, SharedHeader<DeleteParentOf<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
   {
   private:
-    using BaseType    = SharedHandleBase<HandleType, SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>;
+    using BaseType    = SharedHandleBase<HandleType, SharedHeader<DeleteParentOf<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>;
     using DeleterType = typename SharedHandleTraits<HandleType>::deleter;
     friend BaseType;
 
@@ -241,7 +241,7 @@ namespace VULKAN_HPP_NAMESPACE
     SharedHandle() = default;
 
     template <typename T = HandleType, typename = typename std::enable_if<HasParent<T>>::type>
-    explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( HandleType handle, SharedHandle<DeleteParentOf<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ) )
     {
     }
@@ -821,14 +821,14 @@ namespace VULKAN_HPP_NAMESPACE
     yes,
   };
 
-  struct ImageHeader : SharedHeader<parent_of_t<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>
+  struct ImageHeader : SharedHeader<DeleteParentOf<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>
   {
     ImageHeader(
-      SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>>            parent,
+      SharedHandle<DeleteParentOf<VULKAN_HPP_NAMESPACE::Image>>         parent,
       typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter deleter        = typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter(),
       SwapchainOwns                                                     swapchainOwned = SwapchainOwns::no ) VULKAN_HPP_NOEXCEPT
-      : SharedHeader<parent_of_t<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>( std::move( parent ),
-                                                                                                                                   std::move( deleter ) )
+      : SharedHeader<DeleteParentOf<VULKAN_HPP_NAMESPACE::Image>, typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::Image>::deleter>( std::move( parent ),
+                                                                                                                                      std::move( deleter ) )
       , swapchainOwned( swapchainOwned )
     {
     }
@@ -849,10 +849,10 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                            handle,
-                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::Image>> parent,
-                           SwapchainOwns                                          swapchain_owned = SwapchainOwns::no,
-                           DeleterType                                            deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::Image                               handle,
+                           SharedHandle<DeleteParentOf<VULKAN_HPP_NAMESPACE::Image>> parent,
+                           SwapchainOwns                                             swapchain_owned = SwapchainOwns::no,
+                           DeleterType                                               deleter         = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( parent ), std::move( deleter ), swapchain_owned )
     {
     }
@@ -870,7 +870,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct SwapchainHeader
   {
     SwapchainHeader( SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                           surface,
-                     SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>>            parent,
+                     SharedHandle<DeleteParentOf<VULKAN_HPP_NAMESPACE::SwapchainKHR>>         parent,
                      typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter deleter =
                        typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter() ) VULKAN_HPP_NOEXCEPT
       : surface( std::move( surface ) )
@@ -880,7 +880,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
     SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                           surface{};
-    SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>>            parent{};
+    SharedHandle<DeleteParentOf<VULKAN_HPP_NAMESPACE::SwapchainKHR>>         parent{};
     typename SharedHandleTraits<VULKAN_HPP_NAMESPACE::SwapchainKHR>::deleter deleter{};
   };
 
@@ -897,10 +897,10 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     SharedHandle() = default;
 
-    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR                            handle,
-                           SharedHandle<parent_of_t<VULKAN_HPP_NAMESPACE::SwapchainKHR>> parent,
-                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                surface,
-                           DeleterType                                                   deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+    explicit SharedHandle( VULKAN_HPP_NAMESPACE::SwapchainKHR                               handle,
+                           SharedHandle<DeleteParentOf<VULKAN_HPP_NAMESPACE::SwapchainKHR>> parent,
+                           SharedHandle<VULKAN_HPP_NAMESPACE::SurfaceKHR>                   surface,
+                           DeleterType                                                      deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
       : BaseType( handle, std::move( surface ), std::move( parent ), std::move( deleter ) )
     {
     }

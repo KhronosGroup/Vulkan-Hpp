@@ -466,6 +466,35 @@ vk::SwapchainKHR swapchain = device.createSwapchainKHR(...);
 vk::SharedSwapchainKHR sharedSwapchain(swapchain, device, surface); // sharedSwapchain now owns the swapchain and surface
 ```
 
+You can create a `vk::SharedHandle` overload for your own handle type or own shared handles by providing several template arguments to SharedHandleBase:
+ - A handle type
+ - A parent handle type or a header structure, that contains parent
+ - A class itself for CRTP
+
+With this, provide a custom static destruction function `internalDestroy`, that takes in a parent handle and a handle to destroy. Don't forget to add a friend declaration for the base class.
+
+```c++
+// Example of a custom shared device, that takes in an instance as a parent
+class shared_handle<VkDevice> : public vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>
+{
+    using base = vk::SharedHandleBase<VkDevice, vk::SharedInstance, shared_handle<VkDevice>>;
+    friend base;
+
+public:
+    shared_handle() = default;
+    explicit shared_handle(VkDevice handle, vk::SharedInstance parent) noexcept
+        : base(handle, std::move(parent)) {}
+
+    const auto& getParent() const noexcept {
+        return getHeader();
+    }
+
+protected:
+    static void internalDestroy(const vk::SharedInstance& /*control*/, VkDevice handle) noexcept {
+        vkDestroyDevice(handle);
+    }
+};
+```
 
 The API will be extended to provide creation functions in the future.
 

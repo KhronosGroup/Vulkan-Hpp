@@ -27,10 +27,10 @@ struct GetParentType<HandleType, typename std::enable_if<HasParentType<HandleTyp
 };
 
 template <class HandleType>
-using parent_of_t = typename GetParentType<HandleType>::type;
+using DeleteParentOf = typename GetParentType<HandleType>::type;
 
 template <class HandleType>
-VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<parent_of_t<HandleType>, NoParent>::value;
+VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<DeleteParentOf<HandleType>, NoParent>::value;
 
 //=====================================================================================================================
 
@@ -177,7 +177,7 @@ public:
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<HasParent<T>, const SharedHandle<parent_of_t<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<HasParent<T>, const SharedHandle<DeleteParentOf<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return getHeader().parent;
   }
@@ -213,10 +213,10 @@ protected:
 };
 
 template <typename HandleType>
-class SharedHandle : public SharedHandleBase<HandleType, SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
+class SharedHandle : public SharedHandleBase<HandleType, SharedHeader<DeleteParentOf<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>
 {
 private:
-  using BaseType    = SharedHandleBase<HandleType, SharedHeader<parent_of_t<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>;
+  using BaseType    = SharedHandleBase<HandleType, SharedHeader<DeleteParentOf<HandleType>, typename SharedHandleTraits<HandleType>::deleter>>;
   using DeleterType = typename SharedHandleTraits<HandleType>::deleter;
   friend BaseType;
 
@@ -226,7 +226,7 @@ public:
   SharedHandle() = default;
 
   template <typename T = HandleType, typename = typename std::enable_if<HasParent<T>>::type>
-  explicit SharedHandle( HandleType handle, SharedHandle<parent_of_t<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
+  explicit SharedHandle( HandleType handle, SharedHandle<DeleteParentOf<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
   {
   }

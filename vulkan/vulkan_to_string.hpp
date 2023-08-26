@@ -4419,6 +4419,15 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCooperativeMatrixPropertiesKHR: return "PhysicalDeviceCooperativeMatrixPropertiesKHR";
       case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
       case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
+      case StructureType::ePhysicalDeviceImageProcessing2FeaturesQCOM: return "PhysicalDeviceImageProcessing2FeaturesQCOM";
+      case StructureType::ePhysicalDeviceImageProcessing2PropertiesQCOM: return "PhysicalDeviceImageProcessing2PropertiesQCOM";
+      case StructureType::eSamplerBlockMatchWindowCreateInfoQCOM: return "SamplerBlockMatchWindowCreateInfoQCOM";
+      case StructureType::eSamplerCubicWeightsCreateInfoQCOM: return "SamplerCubicWeightsCreateInfoQCOM";
+      case StructureType::ePhysicalDeviceCubicWeightsFeaturesQCOM: return "PhysicalDeviceCubicWeightsFeaturesQCOM";
+      case StructureType::eBlitImageCubicWeightsInfoQCOM: return "BlitImageCubicWeightsInfoQCOM";
+      case StructureType::ePhysicalDeviceYcbcrDegammaFeaturesQCOM: return "PhysicalDeviceYcbcrDegammaFeaturesQCOM";
+      case StructureType::eSamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM: return "SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM";
+      case StructureType::ePhysicalDeviceCubicClampFeaturesQCOM: return "PhysicalDeviceCubicClampFeaturesQCOM";
       case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case StructureType::eScreenBufferPropertiesQNX: return "ScreenBufferPropertiesQNX";
@@ -6380,6 +6389,7 @@ namespace VULKAN_HPP_NAMESPACE
       case SamplerReductionMode::eWeightedAverage: return "WeightedAverage";
       case SamplerReductionMode::eMin: return "Min";
       case SamplerReductionMode::eMax: return "Max";
+      case SamplerReductionMode::eWeightedAverageRangeclampQCOM: return "WeightedAverageRangeclampQCOM";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8829,6 +8839,32 @@ namespace VULKAN_HPP_NAMESPACE
       case ComponentTypeKHR::eUint16: return "Uint16";
       case ComponentTypeKHR::eUint32: return "Uint32";
       case ComponentTypeKHR::eUint64: return "Uint64";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_QCOM_image_processing2 ===
+
+  VULKAN_HPP_INLINE std::string to_string( BlockMatchWindowCompareModeQCOM value )
+  {
+    switch ( value )
+    {
+      case BlockMatchWindowCompareModeQCOM::eMin: return "Min";
+      case BlockMatchWindowCompareModeQCOM::eMax: return "Max";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_QCOM_filter_cubic_weights ===
+
+  VULKAN_HPP_INLINE std::string to_string( CubicFilterWeightsQCOM value )
+  {
+    switch ( value )
+    {
+      case CubicFilterWeightsQCOM::eCatmullRom: return "CatmullRom";
+      case CubicFilterWeightsQCOM::eZeroTangentCardinal: return "ZeroTangentCardinal";
+      case CubicFilterWeightsQCOM::eBSpline: return "BSpline";
+      case CubicFilterWeightsQCOM::eMitchellNetravali: return "MitchellNetravali";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

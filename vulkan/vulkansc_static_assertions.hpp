@@ -8,7 +8,7 @@
 #ifndef VULKAN_STATIC_ASSERTIONS_HPP
 #define VULKAN_STATIC_ASSERTIONS_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkansc.hpp>
 
 //=========================
 //=== static_assertions ===

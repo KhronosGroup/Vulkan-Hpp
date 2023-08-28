@@ -8,7 +8,7 @@
 #ifndef VULKAN_FORMAT_TRAITS_HPP
 #define VULKAN_FORMAT_TRAITS_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkansc.hpp>
 
 namespace VULKAN_HPP_NAMESPACE
 {

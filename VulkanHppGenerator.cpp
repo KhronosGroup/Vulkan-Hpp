@@ -304,7 +304,7 @@ void VulkanHppGenerator::generateFormatTraitsHppFile() const
 #ifndef VULKAN_FORMAT_TRAITS_HPP
 #  define VULKAN_FORMAT_TRAITS_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/${api}.hpp>
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -313,7 +313,8 @@ ${formatTraits}
 #endif
 )";
 
-  std::string str = replaceWithMap( vulkanFormatTraitsHppTemplate, { { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+  std::string str = replaceWithMap( vulkanFormatTraitsHppTemplate,
+                                    { { "api", m_api }, { "formatTraits", generateFormatTraits() }, { "licenseHeader", m_vulkanLicenseHeader } } );
 
   writeToFile( str, vulkan_format_traits_hpp );
 }
@@ -403,7 +404,7 @@ void VulkanHppGenerator::generateHashHppFile() const
 #ifndef VULKAN_HASH_HPP
 #  define VULKAN_HASH_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/${api}.hpp>
 
 namespace std
 {
@@ -428,7 +429,8 @@ ${structHashStructures}
 )";
 
   std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    { { "handleHashStructures", generateHandleHashStructures() },
+                                    { { "api", m_api },
+                                      { "handleHashStructures", generateHandleHashStructures() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "structHashStructures", generateStructHashStructures() } } );
 
@@ -481,9 +483,9 @@ ${PoolFree}
 ${baseTypes}
 } // namespace VULKAN_HPP_NAMESPACE
 
-#include <vulkan/vulkan_enums.hpp>
+#include <vulkan/${api}_enums.hpp>
 #if !defined( VULKAN_HPP_NO_TO_STRING )
-#include <vulkan/vulkan_to_string.hpp>
+#include <vulkan/${api}_to_string.hpp>
 #endif
 
 #ifndef VULKAN_HPP_NO_EXCEPTIONS
@@ -509,9 +511,9 @@ ${constexprDefines}
 } // namespace VULKAN_HPP_NAMESPACE
 
 // clang-format off
-#include <vulkan/vulkan_handles.hpp>
-#include <vulkan/vulkan_structs.hpp>
-#include <vulkan/vulkan_funcs.hpp>
+#include <vulkan/${api}_handles.hpp>
+#include <vulkan/${api}_structs.hpp>
+#include <vulkan/${api}_funcs.hpp>
 // clang-format on
 
 namespace VULKAN_HPP_NAMESPACE
@@ -528,7 +530,8 @@ ${DispatchLoaderDynamic}
 
   std::string str =
     replaceWithMap( vulkanHppTemplate,
-                    { { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
+                    { { "api", m_api },
+                      { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
                       { "ArrayProxyNoTemporaries", readSnippet( "ArrayProxyNoTemporaries.hpp" ) },
                       { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
                       { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
@@ -576,7 +579,7 @@ void VulkanHppGenerator::generateRAIIHppFile() const
 
 #include <memory>
 #include <utility>  // std::exchange, std::forward
-#include <vulkan/vulkan.hpp>
+#include <vulkan/${api}.hpp>
 
 #if !defined( VULKAN_HPP_RAII_NAMESPACE )
 #  define VULKAN_HPP_RAII_NAMESPACE raii
@@ -609,7 +612,8 @@ ${RAIICommandDefinitions}
 )";
 
   std::string str = replaceWithMap( vulkanHandlesHppTemplate,
-                                    { { "licenseHeader", m_vulkanLicenseHeader },
+                                    { { "api", m_api },
+                                      { "licenseHeader", m_vulkanLicenseHeader },
                                       { "RAIICommandDefinitions", generateRAIICommandDefinitions() },
                                       { "RAIIDispatchers", generateRAIIDispatchers() },
                                       { "RAIIHandles", generateRAIIHandles() } } );
@@ -626,7 +630,7 @@ void VulkanHppGenerator::generateStaticAssertionsHppFile() const
 #ifndef VULKAN_STATIC_ASSERTIONS_HPP
 #  define VULKAN_STATIC_ASSERTIONS_HPP
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/${api}.hpp>
 
 //=========================
 //=== static_assertions ===
@@ -636,8 +640,8 @@ ${staticAssertions}
 #endif
 )";
 
-  std::string str =
-    replaceWithMap( vulkanHandlesHppTemplate, { { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    { { "api", m_api }, { "licenseHeader", m_vulkanLicenseHeader }, { "staticAssertions", generateStaticAssertions() } } );
 
   writeToFile( str, static_assertions_hpp );
 }
@@ -674,7 +678,7 @@ void VulkanHppGenerator::generateToStringHppFile() const
 #ifndef VULKAN_TO_STRING_HPP
 #  define VULKAN_TO_STRING_HPP
 
-#include <vulkan/vulkan_enums.hpp>
+#include <vulkan/${api}_enums.hpp>
 
 #if __cpp_lib_format
 #  include <format>   // std::format
@@ -690,9 +694,11 @@ ${enumsToString}
 #endif
 )";
 
-  std::string str = replaceWithMap(
-    vulkanHandlesHppTemplate,
-    { { "bitmasksToString", generateBitmasksToString() }, { "enumsToString", generateEnumsToString() }, { "licenseHeader", m_vulkanLicenseHeader } } );
+  std::string str = replaceWithMap( vulkanHandlesHppTemplate,
+                                    { { "api", m_api },
+                                      { "bitmasksToString", generateBitmasksToString() },
+                                      { "enumsToString", generateEnumsToString() },
+                                      { "licenseHeader", m_vulkanLicenseHeader } } );
 
   writeToFile( str, vulkan_to_string_hpp );
 }
@@ -705,11 +711,11 @@ void VulkanHppGenerator::generateCppModuleFile() const
   std::string const vulkanCppmTemplate = R"(${licenseHeader}
 module;
 
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_extension_inspection.hpp>
-#include <vulkan/vulkan_format_traits.hpp>
-#include <vulkan/vulkan_hash.hpp>
-#include <vulkan/vulkan_raii.hpp>
+#include <vulkan/${api}.hpp>
+#include <vulkan/${api}_extension_inspection.hpp>
+#include <vulkan/${api}_format_traits.hpp>
+#include <vulkan/${api}_hash.hpp>
+#include <vulkan/${api}_raii.hpp>
 
 export module ${api};
 
@@ -726,10 +732,10 @@ export namespace VULKAN_HPP_NAMESPACE
 )";
 
   auto const str = replaceWithMap( vulkanCppmTemplate,
-                                   { { "licenseHeader", m_vulkanLicenseHeader },
-                                     { "api", m_api },
-                                     { "usings", generateCppModuleUsings() },
-                                     { "raiiUsings", generateCppModuleRaiiUsings() } } );
+                                   { { "api", m_api },
+                                     { "licenseHeader", m_vulkanLicenseHeader },
+                                     { "raiiUsings", generateCppModuleRaiiUsings() },
+                                     { "usings", generateCppModuleUsings() } } );
 
   writeToFile( str, vulkan_cppm );
 }

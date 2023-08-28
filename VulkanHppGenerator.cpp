@@ -725,9 +725,11 @@ export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
 
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
   namespace VULKAN_HPP_RAII_NAMESPACE {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
+#endif
 } // namespace VULKAN_HPP_NAMESPACE
 )";
 

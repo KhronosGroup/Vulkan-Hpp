@@ -1403,6 +1403,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::isObsoletedExtension;
   using VULKAN_HPP_NAMESPACE::isPromotedExtension;
 
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
     //======================
@@ -1471,10 +1472,11 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_EXT_debug_utils ===
     using VULKAN_HPP_RAII_NAMESPACE::DebugUtilsMessengerEXT;
 
-#if defined( VK_USE_PLATFORM_SCI )
+#  if defined( VK_USE_PLATFORM_SCI )
     //=== VK_NV_external_sci_sync2 ===
     using VULKAN_HPP_RAII_NAMESPACE::SemaphoreSciSyncPoolNV;
-#endif /*VK_USE_PLATFORM_SCI*/
+#  endif /*VK_USE_PLATFORM_SCI*/
 
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
+#endif
 }  // namespace VULKAN_HPP_NAMESPACE

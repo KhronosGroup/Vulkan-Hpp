@@ -820,6 +820,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ScopeKHR;
   using VULKAN_HPP_NAMESPACE::ScopeNV;
 
+  //=== VK_QCOM_image_processing2 ===
+  using VULKAN_HPP_NAMESPACE::BlockMatchWindowCompareModeQCOM;
+
+  //=== VK_QCOM_filter_cubic_weights ===
+  using VULKAN_HPP_NAMESPACE::CubicFilterWeightsQCOM;
+
   //=========================
   //=== Index Type Traits ===
   //=========================
@@ -2647,6 +2653,23 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
+
+  //=== VK_QCOM_image_processing2 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessing2FeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessing2PropertiesQCOM;
+  using VULKAN_HPP_NAMESPACE::SamplerBlockMatchWindowCreateInfoQCOM;
+
+  //=== VK_QCOM_filter_cubic_weights ===
+  using VULKAN_HPP_NAMESPACE::BlitImageCubicWeightsInfoQCOM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCubicWeightsFeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::SamplerCubicWeightsCreateInfoQCOM;
+
+  //=== VK_QCOM_ycbcr_degamma ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceYcbcrDegammaFeaturesQCOM;
+  using VULKAN_HPP_NAMESPACE::SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM;
+
+  //=== VK_QCOM_filter_cubic_clamp ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCubicClampFeaturesQCOM;
 
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;

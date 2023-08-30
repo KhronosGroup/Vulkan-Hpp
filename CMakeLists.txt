@@ -243,7 +243,7 @@ function( vulkan_hpp__setup_sample_raii )
 endfunction()
 
 function( vulkan_hpp__setup_test )
-	set( options )
+	set( options NO_UTILS )
 	set( oneValueArgs CXX_STANDARD NAME )
 	set( multiValueArgs LIBRARIES )
 	cmake_parse_arguments( TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
@@ -270,7 +270,10 @@ function( vulkan_hpp__setup_test )
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
 	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/glm" )
-	target_link_libraries( ${TARGET_NAME} PRIVATE utils ${TARGET_LIBRARIES} )
+	if ( NOT ${TARGET_NO_UTILS} )
+		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
+	endif()
+	target_link_libraries( ${TARGET_NAME} PRIVATE ${TARGET_LIBRARIES} )
 endfunction()
 
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
@@ -322,6 +325,7 @@ option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in c
 option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES "Build Vulkan-Hpp as C++20 module" OFF )
+option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
 
 # look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
 if( NOT DEFINED VulkanRegistry_DIR )
@@ -349,6 +353,11 @@ if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	set_target_properties( VulkanHppModule PROPERTIES
 		CXX_STANDARD_REQUIRED ON
 		CXX_EXTENSIONS OFF )
+	if ( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER )
+		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1 )
+	else()
+		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
+	endif()
 	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
 	target_sources( VulkanHppModule
 		PUBLIC

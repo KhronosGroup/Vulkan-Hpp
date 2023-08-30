@@ -49,9 +49,7 @@ vk::UniqueInstance createInstanceUnique( std::string const &              appNam
                                          uint32_t                         apiVersion = VK_API_VERSION_1_0 )
 {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-  static vk::DynamicLoader  dl;
-  PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-  VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+  VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
   vk::ApplicationInfo       applicationInfo( appName.c_str(), 1, engineName.c_str(), 1, apiVersion );

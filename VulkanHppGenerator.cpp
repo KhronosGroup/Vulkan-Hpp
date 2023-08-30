@@ -448,14 +448,6 @@ ${includes}
 
 static_assert( VK_HEADER_VERSION == ${headerVersion}, "Wrong VK_HEADER_VERSION!" );
 
-// 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
-// To enable this feature on 32-bit platforms please define VULKAN_HPP_TYPESAFE_CONVERSION
-${typesafeCheck}
-#  if !defined( VULKAN_HPP_TYPESAFE_CONVERSION )
-#    define VULKAN_HPP_TYPESAFE_CONVERSION
-#  endif
-#endif
-
 ${defines}
 
 namespace VULKAN_HPP_NAMESPACE
@@ -474,7 +466,6 @@ ${UniqueHandle}
 
 ${DispatchLoaderBase}
 ${DispatchLoaderStatic}
-${DispatchLoaderDefault}
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 ${ObjectDestroy}
 ${ObjectFree}
@@ -529,44 +520,61 @@ ${DispatchLoaderDynamic}
 #endif
 )";
 
-  std::string str =
-    replaceWithMap( vulkanHppTemplate,
-                    { { "api", m_api },
-                      { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
-                      { "ArrayProxyNoTemporaries", readSnippet( "ArrayProxyNoTemporaries.hpp" ) },
-                      { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
-                      { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
-                      { "baseTypes", generateBaseTypes() },
-                      { "constexprDefines", generateConstexprDefines() },
-                      { "defines", readSnippet( "defines.hpp" ) },
-                      { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
-                      { "DispatchLoaderDefault", readSnippet( "DispatchLoaderDefault.hpp" ) },
-                      { "DispatchLoaderDynamic", generateDispatchLoaderDynamic() },
-                      { "DispatchLoaderStatic", generateDispatchLoaderStatic() },
-                      { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
-                      { "Exceptions", readSnippet( "Exceptions.hpp" ) },
-                      { "Flags", readSnippet( "Flags.hpp" ) },
-                      { "headerVersion", m_version },
-                      { "includes",
-                        replaceWithMap( readSnippet( "includes.hpp" ),
-                                        { { "vulkan_h", ( m_api == "vulkan" ) ? "vulkan.h" : "vulkan_sc_core.h" }, { "vulkan_hpp", m_api + ".hpp" } } ) },
-                      { "licenseHeader", m_vulkanLicenseHeader },
-                      { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
-                      { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },
-                      { "ObjectRelease", readSnippet( "ObjectRelease.hpp" ) },
-                      { "Optional", readSnippet( "Optional.hpp" ) },
-                      { "PoolFree", readSnippet( "PoolFree.hpp" ) },
-                      { "resultChecks", readSnippet( "resultChecks.hpp" ) },
-                      { "resultExceptions", generateResultExceptions() },
-                      { "structExtendsStructs", generateStructExtendsStructs() },
-                      { "ResultValue", readSnippet( "ResultValue.hpp" ) },
-                      { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
-                      { "StructureChain", readSnippet( "StructureChain.hpp" ) },
-                      { "throwResultException", generateThrowResultException() },
-                      { "typesafeCheck", m_typesafeCheck },
-                      { "UniqueHandle", readSnippet( "UniqueHandle.hpp" ) } } );
+  std::string str = replaceWithMap(
+    vulkanHppTemplate,
+    { { "api", m_api },
+      { "ArrayProxy", readSnippet( "ArrayProxy.hpp" ) },
+      { "ArrayProxyNoTemporaries", readSnippet( "ArrayProxyNoTemporaries.hpp" ) },
+      { "ArrayWrapper1D", readSnippet( "ArrayWrapper1D.hpp" ) },
+      { "ArrayWrapper2D", readSnippet( "ArrayWrapper2D.hpp" ) },
+      { "baseTypes", generateBaseTypes() },
+      { "constexprDefines", generateConstexprDefines() },
+      { "defines", readSnippet( "defines.hpp" ) },
+      { "DispatchLoaderBase", readSnippet( "DispatchLoaderBase.hpp" ) },
+      { "DispatchLoaderDynamic", generateDispatchLoaderDynamic() },
+      { "DispatchLoaderStatic", generateDispatchLoaderStatic() },
+      { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
+      { "Exceptions", readSnippet( "Exceptions.hpp" ) },
+      { "Flags", readSnippet( "Flags.hpp" ) },
+      { "headerVersion", m_version },
+      { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkan" ) ? "vulkan.h" : "vulkan_sc_core.h" } } ) },
+      { "licenseHeader", m_vulkanLicenseHeader },
+      { "ObjectDestroy", readSnippet( "ObjectDestroy.hpp" ) },
+      { "ObjectFree", readSnippet( "ObjectFree.hpp" ) },
+      { "ObjectRelease", readSnippet( "ObjectRelease.hpp" ) },
+      { "Optional", readSnippet( "Optional.hpp" ) },
+      { "PoolFree", readSnippet( "PoolFree.hpp" ) },
+      { "resultChecks", readSnippet( "resultChecks.hpp" ) },
+      { "resultExceptions", generateResultExceptions() },
+      { "structExtendsStructs", generateStructExtendsStructs() },
+      { "ResultValue", readSnippet( "ResultValue.hpp" ) },
+      { "StridedArrayProxy", readSnippet( "StridedArrayProxy.hpp" ) },
+      { "StructureChain", readSnippet( "StructureChain.hpp" ) },
+      { "throwResultException", generateThrowResultException() },
+      { "UniqueHandle", readSnippet( "UniqueHandle.hpp" ) } } );
 
   writeToFile( str, vulkan_hpp );
+}
+
+void VulkanHppGenerator::generateMacrosFile() const
+{
+  std::string const macros_hpp = std::string( BASE_PATH ) + "/vulkan/" + m_api + "_hpp_macros.hpp";
+  std::cout << "VulkanHppGenerator: Generating " << macros_hpp << " ..." << std::endl;
+  std::string const macrosTemplate = R"(${licenseHeader}
+
+#ifndef VULKAN_HPP_MACROS_HPP
+#define VULKAN_HPP_MACROS_HPP
+
+${macros}
+
+#endif)";
+
+  std::string str = replaceWithMap(
+    macrosTemplate,
+    { { "licenseHeader", m_vulkanLicenseHeader },
+      { "macros", replaceWithMap( readSnippet( "macros.hpp" ), { { "vulkan_hpp", m_api + ".hpp" } } ) } } );
+
+  writeToFile( str, macros_hpp );
 }
 
 void VulkanHppGenerator::generateRAIIHppFile() const
@@ -720,14 +728,13 @@ module;
 
 export module ${api};
 
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
-
 export namespace VULKAN_HPP_NAMESPACE
 {
   ${usings}
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
-  namespace VULKAN_HPP_RAII_NAMESPACE {
+  namespace VULKAN_HPP_RAII_NAMESPACE
+  {
     ${raiiUsings}
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif
@@ -5253,7 +5260,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase" };
+  auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderDynamic" };
   auto const hardCodedEnhancedModeTypes =
     std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle" };
   auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy", "ObjectFree", "ObjectRelease", "PoolFree" };
@@ -5269,7 +5276,6 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   }
 
   auto const & [noPrototypesEnter, noPrototypesLeave] = generateProtection( "VK_NO_PROTOTYPES", false );
-
   usings += "\n" + noPrototypesEnter + replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } ) + noPrototypesLeave + "\n";
 
   // insert the Flags bitwise operators
@@ -5396,8 +5402,6 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL" );
   usings += "\n" + enterDynamicLoader + replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) + leaveDynamicLoader + "\n";
-
-  usings += replaceWithMap( usingTemplate, { { "className", "DispatchLoaderDynamic" } } ) + "\n";
 
   usings += generateCppModuleFormatTraitsUsings();
   usings += generateCppModuleExtensionInspectionUsings();
@@ -5956,15 +5960,6 @@ ${commandMembers}
       init(getInstanceProcAddr);
     }
 
-    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT(getInstanceProcAddr);
-
-      vkGetInstanceProcAddr = getInstanceProcAddr;
-
-${initialCommandAssignments}
-    }
-
     // This interface does not require a linked vulkan library.
     DispatchLoaderDynamic( VkInstance                instance,
                            PFN_vkGetInstanceProcAddr getInstanceProcAddr,
@@ -5972,6 +5967,33 @@ ${initialCommandAssignments}
                            PFN_vkGetDeviceProcAddr   getDeviceProcAddr = nullptr ) VULKAN_HPP_NOEXCEPT
     {
       init( instance, getInstanceProcAddr, device, getDeviceProcAddr );
+    }
+
+    template <typename DynamicLoader
+#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+      = VULKAN_HPP_NAMESPACE::DynamicLoader
+#endif
+    >
+    void init()
+    {
+      static DynamicLoader dl;
+      init( dl );
+    }
+
+    template <typename DynamicLoader>
+    void init( DynamicLoader const & dl ) VULKAN_HPP_NOEXCEPT
+    {
+      PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.template getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+      init( getInstanceProcAddr );
+    }
+
+    void init( PFN_vkGetInstanceProcAddr getInstanceProcAddr ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT(getInstanceProcAddr);
+
+      vkGetInstanceProcAddr = getInstanceProcAddr;
+
+${initialCommandAssignments}
     }
 
     // This interface does not require a linked vulkan library.
@@ -5983,7 +6005,8 @@ ${initialCommandAssignments}
       VULKAN_HPP_ASSERT(instance && getInstanceProcAddr);
       vkGetInstanceProcAddr = getInstanceProcAddr;
       init( VULKAN_HPP_NAMESPACE::Instance(instance) );
-      if (device) {
+      if (device)
+      {
         init( VULKAN_HPP_NAMESPACE::Device(device) );
       }
     }
@@ -6051,6 +6074,12 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
   public:
 ${commands}
   };
+
+  inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  {
+    static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
+    return dls;
+  }
 #endif
 )";
 
@@ -14364,22 +14393,6 @@ void VulkanHppGenerator::readTypeDefine( tinyxml2::XMLElement const * element, s
     checkForError( element->LastChild() && element->LastChild()->ToText() && element->LastChild()->ToText()->Value(),
                    line,
                    "unknown formatting of type category=define named <" + name + ">" );
-
-    // filter out the check for the different types of VK_DEFINE_NON_DISPATCHABLE_HANDLE
-    if ( name == "VK_USE_64_BIT_PTR_DEFINES" )
-    {
-      m_typesafeCheck = "#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )";
-    }
-    else if ( ( name == "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ) && ( m_typesafeCheck.empty() ) )
-    {
-      assert( false );
-      std::string text  = element->LastChild()->ToText()->Value();
-      size_t      start = text.find( "#if defined(__LP64__)" );
-      checkForError( start != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
-      size_t end = text.find_first_of( "\r\n", start + 1 );
-      checkForError( end != std::string::npos, line, "unexpected text in type category=define named <" + name + ">" );
-      m_typesafeCheck = text.substr( start, end - start );
-    }
   }
   else if ( element->GetText() )
   {
@@ -15051,7 +15064,7 @@ std::string generateStandardArray( std::string const & type, std::vector<std::st
   return arrayString;
 }
 
-bool isAllUpper(std::string const& name)
+bool isAllUpper( std::string const & name )
 {
   return std::none_of( name.begin(), name.end(), []( auto const & c ) { return c != toupper( c ); } );
 }
@@ -15225,6 +15238,7 @@ int main( int argc, char ** argv )
     generator.generateHandlesHppFile();
     generator.generateHashHppFile();
     generator.prepareRAIIHandles();
+    generator.generateMacrosFile();
     generator.generateRAIIHppFile();
     generator.generateStaticAssertionsHppFile();
     generator.generateStructsHppFile();

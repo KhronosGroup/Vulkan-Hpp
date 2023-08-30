@@ -10,7 +10,7 @@
     {
       if ( !vulkanLibraryName.empty() )
       {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
         m_library = dlopen( vulkanLibraryName.c_str(), RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
         m_library = ::LoadLibraryA( vulkanLibraryName.c_str() );
@@ -20,7 +20,7 @@
       }
       else
       {
-#  if defined( __unix__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
         m_library = dlopen( "libvulkan.so", RTLD_NOW | RTLD_LOCAL );
         if ( m_library == nullptr )
         {
@@ -63,7 +63,7 @@
     {
       if ( m_library )
       {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
         dlclose( m_library );
 #  elif defined( _WIN32 )
         ::FreeLibrary( m_library );
@@ -76,7 +76,7 @@
     template <typename T>
     T getProcAddress( const char* function ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
       return (T)dlsym( m_library, function );
 #  elif defined( _WIN32 )
       return (T)::GetProcAddress( m_library, function );
@@ -88,7 +88,7 @@
     bool success() const VULKAN_HPP_NOEXCEPT { return m_library != nullptr; }
 
   private:
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNXNTO__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
     void * m_library;
 #  elif defined( _WIN32 )
     ::HINSTANCE m_library;

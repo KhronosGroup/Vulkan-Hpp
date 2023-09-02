@@ -81,6 +81,7 @@ public:
   size_t release() VULKAN_HPP_NOEXCEPT
   {
     // An acquire-release memory order is making sure all subs are sequentially consistent with this atomic variable
+    // e. g. we don't want last release to be reordered with incoming addRef from another thread
     return m_ref_cnt.fetch_sub( 1, std::memory_order_acq_rel );
   }
 
@@ -111,8 +112,8 @@ public:
   }
 
   SharedHandleBase( SharedHandleBase && o ) VULKAN_HPP_NOEXCEPT
-    : m_handle( o.m_handle )
-    , m_control( o.m_control )
+    : m_control( o.m_control )
+    , m_handle( o.m_handle )
   {
     o.m_handle  = nullptr;
     o.m_control = nullptr;
@@ -146,7 +147,7 @@ public:
   {
     return m_handle;
   }
-  
+
   HandleType operator*() const VULKAN_HPP_NOEXCEPT
   {
     return m_handle;

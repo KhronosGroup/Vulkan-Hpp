@@ -80,9 +80,8 @@ public:
 
   size_t release() VULKAN_HPP_NOEXCEPT
   {
-    // An acquire-release memory order is making sure all subs are sequentially consistent with this atomic variable
-    // e. g. we don't want last release to be reordered with incoming addRef from another thread
-    return m_ref_cnt.fetch_sub( 1, std::memory_order_acq_rel );
+    // A release memory order to ensure that all releases are ordered
+    return m_ref_cnt.fetch_sub( 1, std::memory_order_release );
   }
 
 public:
@@ -137,6 +136,10 @@ public:
     // the same principle is used in the default deleter of std::shared_ptr
     if ( m_control && ( m_control->release() == 1 ) )
     {
+      // noop in x86, but does thread synchronization in ARM
+      // it is required to ensure that last thread is getting to destroy the control block
+      // by ordering all atomic operations before this fence
+      std::atomic_thread_fence( std::memory_order_acquire );
       ForwardType::internalDestroy( getHeader(), m_handle );
       delete m_control;
     }

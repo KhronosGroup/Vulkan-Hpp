@@ -7306,7 +7306,6 @@ ${enter}  class ${className}
   public:
     using CType = Vk${className};
     using NativeType = Vk${className};
-    using DeleteParentType = ${parent};
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
@@ -7391,7 +7390,6 @@ ${usingAlias}${leave})";
                              { "debugReportObjectType", debugReportObjectType },
                              { "enter", enter },
                              { "leave", leave },
-                             { "parent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
                              { "memberName", startLowerCase( stripPrefix( handleData.first, "Vk" ) ) },
                              { "objTypeEnum", generateEnumValueName( enumIt->first, valueIt->name, false ) },
                              { "usingAlias", usingAlias },
@@ -11728,6 +11726,7 @@ std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, Han
   class SharedHandleTraits<${type}>
   {
   public:
+    using DestructorType = ${destructor};
     using deleter = ${deleterType}${deleterAction}Shared<${type}${deleterPool}>;
   };
   using Shared${type} = SharedHandle<${type}>;
@@ -11738,6 +11737,7 @@ ${aliasHandle})";
                              { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
                              { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
                              { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
+                             { "destructor", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
                              { "type", type } } );
   }
   return "";

@@ -1,16 +1,19 @@
 
 template <typename HandleType>
+class SharedHandleTraits;
+
+template <typename HandleType>
 class ObjectDestroyShared
 {
 public:
-  using ParentType = typename HandleType::DeleteParentType;
+  using ParentType = typename SharedHandleTraits<HandleType>::DestructorType;
 
   template <class Dispatcher>
-  using DestroyFunctionPointerType = typename std::conditional<HasParent<HandleType>,
+  using DestroyFunctionPointerType = typename std::conditional<HasParent<HandleType>::value,
                                                                void ( ParentType::* )( HandleType, const AllocationCallbacks *, const Dispatcher & ) const,
                                                                void ( HandleType::* )( const AllocationCallbacks *, const Dispatcher & ) const>::type;
 
-  using SelectorType = typename std::conditional<HasParent<HandleType>, ParentType, HandleType>::type;
+  using SelectorType = typename std::conditional<HasParent<HandleType>::value, ParentType, HandleType>::type;
 
   template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   ObjectDestroyShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -23,14 +26,14 @@ public:
 
 public:
   template <typename T = HandleType>
-  typename std::enable_if<HasParent<T>, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<HasParent<T>::value, void>::type destroy( ParentType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
     ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<!HasParent<T>, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<!HasParent<T>::value, void>::type destroy( HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
     ( handle.*m_destroy )( m_allocationCallbacks, *m_dispatch );
@@ -46,7 +49,7 @@ template <typename HandleType>
 class ObjectFreeShared
 {
 public:
-  using ParentType = typename HandleType::DeleteParentType;
+  using ParentType = typename SharedHandleTraits<HandleType>::DestructorType;
 
   template <class Dispatcher>
   using DestroyFunctionPointerType = void ( ParentType::* )( HandleType, const AllocationCallbacks *, const Dispatcher & ) const;
@@ -77,14 +80,13 @@ template <typename HandleType>
 class ObjectReleaseShared
 {
 public:
-  using ParentType = typename HandleType::DeleteParentType;
+  using ParentType = typename SharedHandleTraits<HandleType>::DestructorType;
 
   template <class Dispatcher>
   using DestroyFunctionPointerType = void ( ParentType::* )( HandleType, const Dispatcher & ) const;
 
   template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-  ObjectReleaseShared( Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                       const Dispatcher & dispatch                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
+  ObjectReleaseShared( const Dispatcher & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
     : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<DestroyFunctionPointerType<Dispatcher>>( &ParentType::release ) ) )
     , m_dispatch( &dispatch )
   {
@@ -106,21 +108,21 @@ template <typename HandleType, typename PoolType>
 class PoolFreeShared
 {
 public:
-  using ParentType = typename HandleType::DeleteParentType;
+  using ParentType = typename SharedHandleTraits<HandleType>::DestructorType;
 
   template <class Dispatcher>
-  using ret_t = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
+  using ReturnType = decltype( std::declval<ParentType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
 
   template <class Dispatcher>
-  using DestroyFunctionPointerType = ret_t<Dispatcher> ( ParentType::* )( PoolType, uint32_t, const HandleType *, const Dispatcher & ) const;
+  using DestroyFunctionPointerType = ReturnType<Dispatcher> ( ParentType::* )( PoolType, uint32_t, const HandleType *, const Dispatcher & ) const;
 
   PoolFreeShared() = default;
 
   template <class Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
   PoolFreeShared( SharedHandle<PoolType> pool, const Dispatcher & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT )
     : m_destroy( reinterpret_cast<decltype( m_destroy )>( static_cast<DestroyFunctionPointerType<Dispatcher>>( &ParentType::free ) ) )
-    , m_pool( std::move( pool ) )
     , m_dispatch( &dispatch )
+    , m_pool( std::move( pool ) )
   {
   }
 

@@ -10,7 +10,7 @@ struct HasParentType : std::false_type
 };
 
 template <typename HandleType>
-struct HasParentType<HandleType, decltype( (void)typename HandleType::DeleteParentType() )> : std::true_type
+struct HasParentType<HandleType, decltype( (void)typename SharedHandleTraits<HandleType>::DestructorType() )> : std::true_type
 {
 };
 
@@ -23,14 +23,16 @@ struct GetParentType
 template <typename HandleType>
 struct GetParentType<HandleType, typename std::enable_if<HasParentType<HandleType>::value>::type>
 {
-  using type = typename HandleType::DeleteParentType;
+  using type = typename SharedHandleTraits<HandleType>::DestructorType;
 };
 
 template <class HandleType>
 using DeleteParentOf = typename GetParentType<HandleType>::type;
 
 template <class HandleType>
-VULKAN_HPP_CONSTEXPR_INLINE bool HasParent = !std::is_same<DeleteParentOf<HandleType>, NoParent>::value;
+struct HasParent : std::integral_constant<bool, !std::is_same<DeleteParentOf<HandleType>, NoParent>::value>
+{
+};
 
 //=====================================================================================================================
 
@@ -177,20 +179,20 @@ public:
   }
 
   template <typename T = HandleType>
-  typename std::enable_if<HasParent<T>, const SharedHandle<DeleteParentOf<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
+  typename std::enable_if<HasParent<T>::value, const SharedHandle<DeleteParentOf<HandleType>> &>::type getParent() const VULKAN_HPP_NOEXCEPT
   {
     return getHeader().parent;
   }
 
 protected:
   template <typename T = HandleType>
-  static typename std::enable_if<!HasParent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<!HasParent<T>::value, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
     control.deleter.destroy( handle );
   }
 
   template <typename T = HandleType>
-  static typename std::enable_if<HasParent<T>, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
+  static typename std::enable_if<HasParent<T>::value, void>::type internalDestroy( const HeaderType & control, HandleType handle ) VULKAN_HPP_NOEXCEPT
   {
     control.deleter.destroy( control.parent.get(), handle );
   }
@@ -225,13 +227,13 @@ public:
 
   SharedHandle() = default;
 
-  template <typename T = HandleType, typename = typename std::enable_if<HasParent<T>>::type>
+  template <typename T = HandleType, typename = typename std::enable_if<HasParent<T>::value>::type>
   explicit SharedHandle( HandleType handle, SharedHandle<DeleteParentOf<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
   {
   }
 
-  template <typename T = HandleType, typename = typename std::enable_if<!HasParent<T>>::type>
+  template <typename T = HandleType, typename = typename std::enable_if<!HasParent<T>::value>::type>
   explicit SharedHandle( HandleType handle, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT : BaseType( handle, std::move( deleter ) )
   {
   }

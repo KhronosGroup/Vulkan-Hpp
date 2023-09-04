@@ -46,6 +46,7 @@ std::string                                 generateStandardArrayWrapper( std::s
 std::map<std::string, std::string>          getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
+bool                                             isAllUpper( std::string const & name );
 bool                                             isNumber( std::string const & name );
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node );
 std::string                                      readSnippet( std::string const & snippetFile );
@@ -1485,12 +1486,16 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
     // check that each member type is known
     checkForError( m_types.contains( member.type.type ), member.xmlLine, "struct member uses unknown type <" + member.type.type + ">" );
 
-    // check that any used constant is a known constant
+    // check that any used constant is a known constant or some potentially externally defined constant
     for ( auto const & arraySize : member.arraySizes )
     {
-      checkForError( ( arraySize.find_first_not_of( "0123456789" ) == std::string::npos ) || m_constants.contains( arraySize ),
-                     member.xmlLine,
-                     "struct member array size uses unknown constant <" + arraySize + ">" );
+      if ( !isNumber( arraySize ) && !m_constants.contains( arraySize ) )
+      {
+        auto typeIt = m_types.find( arraySize );
+        checkForError( ( typeIt != m_types.end() ) && isAllUpper( arraySize ) && ( typeIt->second.category == TypeCategory::ExternalType ),
+                       member.xmlLine,
+                       "struct member array size uses unknown constant <" + arraySize + ">" );
+      }
     }
 
     // checks if a value is specified
@@ -1516,8 +1521,7 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
       }
       else if ( member.type.type == "uint32_t" )
       {
-        // check that a value for a uint32_t is all digits
-        checkForError( member.value.find_first_not_of( "0123456789" ) == std::string::npos,
+        checkForError( isNumber( member.value ),
                        member.xmlLine,
                        "value <" + member.value + "> for member <" + member.name + "> in structure <" + structureName + "> of type <" + member.type.type +
                          "> is not a number" );
@@ -15045,6 +15049,11 @@ std::string generateStandardArray( std::string const & type, std::vector<std::st
     arrayString = "std::array<" + arrayString + "," + sizes[i] + ">";
   }
   return arrayString;
+}
+
+bool isAllUpper(std::string const& name)
+{
+  return std::none_of( name.begin(), name.end(), []( auto const & c ) { return c != toupper( c ); } );
 }
 
 bool isNumber( std::string const & name )

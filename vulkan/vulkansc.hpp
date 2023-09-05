@@ -28,7 +28,6 @@
 
 #include <algorithm>
 #include <array>   // ArrayWrapperND
-#include <atomic>  // std::atomic_size_t
 #include <string>  // std::string
 #include <vulkan/vulkan_sc_core.h>
 #if 17 <= VULKAN_HPP_CPP_VERSION
@@ -5444,6 +5443,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PipelineCreationFeedbackCreateInfo, RayTracingPipelineCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineCreationFeedbackCreateInfo, ExecutionGraphPipelineCreateInfoAMDX>
   {
     enum
     {

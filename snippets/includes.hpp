@@ -22,7 +22,6 @@
 #include <algorithm>
 #include <array>   // ArrayWrapperND
 #include <string>  // std::string
-#include <atomic>  // std::atomic_size_t
 #include <vulkan/${vulkan_h}>
 #if 17 <= VULKAN_HPP_CPP_VERSION
 #  include <string_view>    // std::string_view

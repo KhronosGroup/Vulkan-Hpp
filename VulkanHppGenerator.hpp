@@ -291,8 +291,8 @@ private:
     std::set<std::string> childrenHandles     = {};
     std::set<std::string> commands            = {};
     std::string           deleteCommand       = {};
-    std::string           deleteParent        = {};
     std::string           deletePool          = {};
+    std::string           destructorType      = {};
     std::string           objTypeEnum         = {};
     std::string           parent              = {};
     std::set<std::string> secondLevelCommands = {};

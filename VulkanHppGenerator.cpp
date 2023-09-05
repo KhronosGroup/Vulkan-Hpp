@@ -630,6 +630,8 @@ void VulkanHppGenerator::generateSharedHppFile() const
 #define VULKAN_SHARED_HPP
 
 #include <vulkan/${api}.hpp>
+#include <atomic>  // std::atomic_size_t
+
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -11657,7 +11659,7 @@ ${aliasHandle})";
     return replaceWithMap( uniqueHandleTemplate,
                            { { "aliasHandle", aliasHandle },
                              { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-                             { "deleterParent", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
+                             { "deleterParent", handleData.second.destructorType.empty() ? "NoParent" : stripPrefix( handleData.second.destructorType, "Vk" ) },
                              { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
                              { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
                              { "type", type } } );
@@ -11737,7 +11739,7 @@ ${aliasHandle})";
                              { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
                              { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
                              { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
-                             { "destructor", handleData.second.deleteParent.empty() ? "NoParent" : stripPrefix( handleData.second.deleteParent, "Vk" ) },
+                             { "destructor", handleData.second.destructorType.empty() ? "NoDestructor" : stripPrefix( handleData.second.destructorType, "Vk" ) },
                              { "type", type } } );
   }
   return "";
@@ -11764,7 +11766,6 @@ class SharedHandle<${type}> : public SharedHandleBaseNoDestroy<${type}, ${parent
   friend SharedHandleBase<${type}, ${parent}>;
 
 public:
-  using element_type = ${type};
   SharedHandle() = default;
   explicit SharedHandle(${type} handle, ${parent} parent) noexcept
     : SharedHandleBaseNoDestroy<${type}, ${parent}>(handle, std::move(parent))
@@ -15078,7 +15079,7 @@ void VulkanHppGenerator::registerDeleter( std::string const & commandName, Comma
     auto handleIt = m_handles.find( commandData.params[valueIndex].type.type );
     assert( handleIt != m_handles.end() );
     handleIt->second.deleteCommand = commandName;
-    handleIt->second.deleteParent  = key;
+    handleIt->second.destructorType = key;
   }
 }
 

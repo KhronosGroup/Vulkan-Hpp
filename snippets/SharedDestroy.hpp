@@ -2,6 +2,12 @@
 template <typename HandleType>
 class SharedHandleTraits;
 
+// Silence the function cast warnings.
+#ifdef __GNUC__
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wcast-function-type"
+#endif
+
 template <typename HandleType>
 class ObjectDestroyShared
 {
@@ -138,3 +144,7 @@ private:
   const DispatchLoaderBase *                     m_dispatch = nullptr;
   SharedHandle<PoolType>                         m_pool{};
 };
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic pop
+#endif

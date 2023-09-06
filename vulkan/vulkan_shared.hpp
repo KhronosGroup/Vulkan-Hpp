@@ -85,7 +85,10 @@ namespace VULKAN_HPP_NAMESPACE
   {
   public:
     template <typename... Args>
-    ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){};
+    ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... )
+    {
+    }
+
     ReferenceCounter( const ReferenceCounter & )             = delete;
     ReferenceCounter & operator=( const ReferenceCounter & ) = delete;
 
@@ -265,6 +268,12 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename HandleType>
   class SharedHandleTraits;
 
+// Silence the function cast warnings.
+#  ifdef __GNUC__
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wcast-function-type"
+#  endif
+
   template <typename HandleType>
   class ObjectDestroyShared
   {
@@ -402,6 +411,10 @@ namespace VULKAN_HPP_NAMESPACE
     const DispatchLoaderBase *                     m_dispatch = nullptr;
     SharedHandle<PoolType>                         m_pool{};
   };
+
+#  ifdef __GNUC__
+#    pragma GCC diagnostic pop
+#  endif
 
   //======================
   //=== SHARED HANDLEs ===

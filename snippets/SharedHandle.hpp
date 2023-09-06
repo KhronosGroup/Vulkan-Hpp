@@ -69,7 +69,7 @@ class ReferenceCounter
 {
 public:
   template <typename... Args>
-  ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){};
+  ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){}
   ReferenceCounter( const ReferenceCounter & )             = delete;
   ReferenceCounter & operator=( const ReferenceCounter & ) = delete;
 

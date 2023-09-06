@@ -438,6 +438,7 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_funcs.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hpp_macros.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp

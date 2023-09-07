@@ -33,9 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     // initialize the DipatchLoaderDynamic to use
-    vk::DynamicLoader         dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
     /* VULKAN_KEY_START */

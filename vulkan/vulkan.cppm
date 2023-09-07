@@ -5,6 +5,9 @@
 
 // This header is generated from the Khronos Vulkan XML API Registry.
 
+// Note: This module is still in an experimental state.
+// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
+
 module;
 
 #include <vulkan/vulkan.hpp>
@@ -13,9 +16,7 @@ module;
 #include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
-export module vulkan;
-
-VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+export module vulkan_hpp;
 
 export namespace VULKAN_HPP_NAMESPACE
 {
@@ -25,6 +26,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ArrayWrapper1D;
   using VULKAN_HPP_NAMESPACE::ArrayWrapper2D;
   using VULKAN_HPP_NAMESPACE::DispatchLoaderBase;
+  using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
   using VULKAN_HPP_NAMESPACE::Flags;
   using VULKAN_HPP_NAMESPACE::FlagTraits;
 
@@ -2887,8 +2889,6 @@ export namespace VULKAN_HPP_NAMESPACE
 #if defined( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )
   using VULKAN_HPP_NAMESPACE::DynamicLoader;
 #endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
-
-  using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
 
   //=====================
   //=== Format Traits ===

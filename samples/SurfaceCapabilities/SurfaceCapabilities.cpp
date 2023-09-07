@@ -50,9 +50,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   {
     // need to initialize the dynamic dispatcher before the very first vulkan call
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    vk::DynamicLoader         dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
     std::vector<vk::ExtensionProperties> instanceExtensionProperties = vk::enumerateInstanceExtensionProperties();

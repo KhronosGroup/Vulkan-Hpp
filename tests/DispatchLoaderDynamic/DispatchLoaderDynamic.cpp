@@ -27,9 +27,18 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::DynamicLoader         dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+    // three equivalent minimal initializations of the default dispatcher... you just need to use one of them
+
+    // initialize minimal set of function pointers
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+
+    // the same initialization, now with explicitly providing a DynamicLoader
+    vk::DynamicLoader dl;
+    VULKAN_HPP_DEFAULT_DISPATCHER.init( dl );
+
+    // the same initialization, now with explicitly providing the initial function pointer
+    PFN_vkGetInstanceProcAddr getInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init( getInstanceProcAddr );
 
     vk::Instance instance = vk::createInstance( {}, nullptr );
 
@@ -42,7 +51,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::Device device = physicalDevices[0].createDevice( {}, nullptr );
 
-    // function pointer specialization for device
+    // optional function pointer specialization for device
     VULKAN_HPP_DEFAULT_DISPATCHER.init( device );
   }
   catch ( vk::SystemError const & err )

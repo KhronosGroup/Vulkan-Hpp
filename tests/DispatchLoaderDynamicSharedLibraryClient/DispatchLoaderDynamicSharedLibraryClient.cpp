@@ -23,9 +23,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   try
   {
-    vk::DynamicLoader         dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" );
-    VULKAN_HPP_DEFAULT_DISPATCHER.init( vkGetInstanceProcAddr );
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
     vk::Instance instance = vk::createInstance( {}, nullptr );
 

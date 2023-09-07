@@ -87,6 +87,7 @@ public:
   void generateHandlesHppFile() const;
   void generateHashHppFile() const;
   void generateHppFile() const;
+  void generateMacrosFile() const;
   void generateRAIIHppFile() const;
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
@@ -1021,7 +1022,6 @@ private:
   std::map<std::string, StructureData>    m_structs;
   std::map<std::string, TagData>          m_tags;
   std::map<std::string, TypeData>         m_types;
-  std::string                             m_typesafeCheck;
   std::set<std::string>                   m_unsupportedExtensions;
   std::set<std::string>                   m_unsupportedFeatures;
   std::string                             m_version;

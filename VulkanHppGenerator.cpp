@@ -113,6 +113,8 @@ void VulkanHppGenerator::generateEnumsHppFile() const
 
 namespace VULKAN_HPP_NAMESPACE
 {
+${Flags}
+
   template <typename EnumType, EnumType value>
   struct CppType
   {};
@@ -125,6 +127,7 @@ ${objectTypeToDebugReportObjectType}
 
   std::string str = replaceWithMap( vulkanEnumsHppTemplate,
                                     { { "enums", generateEnums() },
+                                      { "Flags", readSnippet( "Flags.hpp" ) },
                                       { "indexTypeTraits", generateIndexTypeTraits() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
@@ -454,7 +457,6 @@ namespace VULKAN_HPP_NAMESPACE
 {
 ${ArrayWrapper1D}
 ${ArrayWrapper2D}
-${Flags}
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${ArrayProxy}
 ${ArrayProxyNoTemporaries}
@@ -535,7 +537,6 @@ ${DispatchLoaderDynamic}
       { "DispatchLoaderStatic", generateDispatchLoaderStatic() },
       { "DynamicLoader", readSnippet( "DynamicLoader.hpp" ) },
       { "Exceptions", readSnippet( "Exceptions.hpp" ) },
-      { "Flags", readSnippet( "Flags.hpp" ) },
       { "headerVersion", m_version },
       { "includes", replaceWithMap( readSnippet( "includes.hpp" ), { { "vulkan_h", ( m_api == "vulkan" ) ? "vulkan.h" : "vulkan_sc_core.h" } } ) },
       { "licenseHeader", m_vulkanLicenseHeader },

@@ -1,4 +1,4 @@
-import vulkan;
+import vulkan_hpp;
 
 #include <iostream>
 #include <vulkan/vulkan_hpp_macros.hpp>

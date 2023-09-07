@@ -13,7 +13,7 @@ module;
 #include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
 
-export module vulkan;
+export module vulkan_hpp;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

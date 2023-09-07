@@ -726,7 +726,7 @@ module;
 #include <vulkan/${api}_hash.hpp>
 #include <vulkan/${api}_raii.hpp>
 
-export module ${api};
+export module ${api}_hpp;
 
 export namespace VULKAN_HPP_NAMESPACE
 {

@@ -5,6 +5,9 @@
 
 // This header is generated from the Khronos Vulkan XML API Registry.
 
+// Note: This module is still in an experimental state.
+// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
+
 module;
 
 #include <vulkan/vulkan.hpp>

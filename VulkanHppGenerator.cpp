@@ -718,6 +718,10 @@ void VulkanHppGenerator::generateCppModuleFile() const
   std::cout << "VulkanHppGenerator: Generating " << vulkan_cppm << "..." << std::endl;
 
   std::string const vulkanCppmTemplate = R"(${licenseHeader}
+
+// Note: This module is still in an experimental state. 
+// Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
+
 module;
 
 #include <vulkan/${api}.hpp>

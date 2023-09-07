@@ -653,7 +653,7 @@ if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.28 )
 	" To add support inform yourself about the state of the feature at https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst"
 	" and add the corresponding value of CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API to Vulkan-Hpp's CMakeLists.txt")
 elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.27 )
-	# CMake 3.27/3.27.1
+	# CMake 3.27
 	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7 )
 elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
 	# CMake 3.26
@@ -685,7 +685,7 @@ It is important here, that you need to have `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC`
 If you're using the dynamic dispatcher, you need to have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, you need to include `<vulkan/vulkan_hpp_macros.hpp>`, a lightweight header providing all the Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
 
 ```cpp
-import vulkan;
+import vulkan_hpp;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
@@ -705,7 +705,7 @@ auto main(int argc, char* const argv[]) -> int
 }
 ```
 
-An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). Note that the module is imported as `vulkan`, not `vulkan.hpp`.
+An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp).
 
 Finally, you can configure and build your project as usual. 
 Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.

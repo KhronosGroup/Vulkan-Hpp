@@ -479,16 +479,24 @@ vk::DispatchLoaderDynamic dldid( instance, getInstanceProcAddr, device );
 device.getQueue(graphics_queue_family_index, 0, &graphics_queue, dldid);
 ```
 
-To use the ```DispatchLoaderDynamic``` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  ```#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1```, and have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro ```VULKAN_HPP_DEFAULT_DISPATCHER```, as is shown in the code snippets below.
-To ease creating such a ```DispatchLoaderDynamic```, there is a little helper class ```DynamicLoader```.
-Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step process:
-1. initialize it with a function pointer of type PFN_vkGetInstanceProcAddr, to get the instance independent function pointers:
+To use the `vk::DispatchLoaderDynamic` as the default dispatcher (means: you don't need to explicitly add it to every function call),  you need to  ```#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1```, and have the macro ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE``` exactly once in your source code to provide storage for that default dispatcher. Then you can use it by the macro `VULKAN_HPP_DEFAULT_DISPATCHER`, as is shown in the code snippets below.
+Creating a full featured `vk::DispatchLoaderDynamic` is a two- to three-step process, where you have three choices for the first step:
+1. Before any call into a vk-function you need to initialize the dynamic dispatcher by one of three methods
+- Let Vulkan-Hpp do all the work by internally using a little helper class `vk::DynamicLoader`:
 ```c++
-    vk::DynamicLoader dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+```
+- Use your own dynamic loader, which just needs to provide a templated function `getProcAddress` (compare with `vk::DynamicLoader` in vulkan.hpp):
+```c++
+    YourDynamicLoader ydl;
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(ydl);
+```
+	Note that you need to keep that dynamic loader object alive until after the last call to a vulkan function in your program. For example by making it static, or storing it somewhere globally.
+- Use your own initial function pointer of type PFN_vkGetInstanceProcAddr:
+```c++
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr = your_own_function_pointer_getter();
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 ```
-- Note that you need to keep that vk::DynamicLoader alive until after the last call to a vulkan function in your program. For example by making it static, or storing it somewhere globally.
 2. initialize it with a vk::Instance to get all the other function pointers:
 ```c++
     vk::Instance instance = vk::createInstance({}, nullptr);
@@ -501,7 +509,7 @@ Creating a full featured ```DispatchLoaderDynamic``` is a two- to three-step pro
     vk::Device device = physicalDevices[0].createDevice({}, nullptr);
     VULKAN_HPP_DEFAULT_DISPATCHER.init(device);
 ```
-After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code.
+After the second step above, the dispatcher is fully functional. Adding the third step can potentially result in more efficient code. But if you intend to use multiple devices, you could just omit that third step and let the driver do the device-dispatching.
 
 In some cases the storage for the DispatchLoaderDynamic should be embedded in a DLL. For those cases you need to define ```VULKAN_HPP_STORAGE_SHARED``` to tell Vulkan-Hpp that the storage resides in a DLL. When compiling the DLL with the storage it is also required to define ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` to export the required symbols.
 
@@ -640,13 +648,19 @@ To use CMake with C++ modules, you must first enable its experimental support, s
 ```cmake
 # enable C++ module support
 cmake_minimum_required( VERSION 3.25 )
-# test if CMake version is ≥ 3.26
-if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
-  # CMake 3.26; need to handle future versions here
-  set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
+if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.28 )
+	message(FATAL_ERROR "VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES is currently not supported for CMake version ${CMAKE_VERSION}!"
+	" To add support inform yourself about the state of the feature at https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst"
+	" and add the corresponding value of CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API to Vulkan-Hpp's CMakeLists.txt")
+elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.27 )
+	# CMake 3.27/3.27.1
+	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7 )
+elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
+	# CMake 3.26
+	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
 else()
-  # CMake 3.25
-  set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
+	# CMake 3.25
+	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
 endif()
 set( CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1 )
 
@@ -667,22 +681,34 @@ add_executable(YourProject main.cpp)
 target_link_libraries(YourProject VulkanCppModule)
 ```
 
-Once this is done, in `main.cpp`, simply import the Vulkan module. An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). Note that the module is imported as `vulkan`, not `vulkan.hpp`.
+It is important here, that you need to have `VULKAN_HPP_DISPATCH_LOADER_DYNAMIC` defined equally for both, the module and your importing project. If you want to use the dynamic dispatcher, set it to `1`, otherwise to `0`.
+If you're using the dynamic dispatcher, you need to have the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, you need to include `<vulkan/vulkan_hpp_macros.hpp>`, a lightweight header providing all the Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
 
 ```cpp
 import vulkan;
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+#if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
+#endif
+
 auto main(int argc, char* const argv[]) -> int
 {
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    // initialize minimal set of function pointers
+    VULKAN_HPP_DEFAULT_DISPATCHER.init();
+#endif
+
   auto appInfo = vk::ApplicationInfo( "My App", 1, "My Engine", 1, vk::makeApiVersion( 1, 0, 0, 0 ) );
   // ...
 }
 ```
 
+An example is provided in [`tests/Cpp20Modules/Cpp20Modules.cpp`](tests/Cpp20Modules/Cpp20Modules.cpp). Note that the module is imported as `vulkan`, not `vulkan.hpp`.
+
 Finally, you can configure and build your project as usual. 
 Note that CMake currently only supports the Ninja and Visual Studio generators for C++ modules.
-Furthermore, the C++ module also pre-defines `VULKAN_HPP_DEFAULT_DISPATCHER_DYNAMIC_STORAGE` by default.
-Therefore, if you wish to use dynamic dispatch with the Vulkan-Hpp C++ module, all that is necessary is to define the macro `	VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1` in your project.
 
 
 ##### Command-line usage

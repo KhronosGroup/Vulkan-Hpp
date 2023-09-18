@@ -933,40 +933,40 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MaxDriverNameSize;
 
   //=== VK_KHR_device_group_creation ===
-  using VULKAN_HPP_NAMESPACE::MaxDeviceGroupSizeKhr;
+  using VULKAN_HPP_NAMESPACE::MaxDeviceGroupSizeKHR;
 
   //=== VK_KHR_external_memory_capabilities ===
-  using VULKAN_HPP_NAMESPACE::LuidSizeKhr;
+  using VULKAN_HPP_NAMESPACE::LuidSizeKHR;
 
   //=== VK_KHR_external_memory ===
-  using VULKAN_HPP_NAMESPACE::QueueFamilyExternalKhr;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyExternalKHR;
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===
-  using VULKAN_HPP_NAMESPACE::ShaderIndexUnusedAmdx;
+  using VULKAN_HPP_NAMESPACE::ShaderIndexUnusedAMDX;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
   //=== VK_KHR_ray_tracing_pipeline ===
-  using VULKAN_HPP_NAMESPACE::ShaderUnusedKhr;
+  using VULKAN_HPP_NAMESPACE::ShaderUnusedKHR;
 
   //=== VK_NV_ray_tracing ===
-  using VULKAN_HPP_NAMESPACE::ShaderUnusedNv;
+  using VULKAN_HPP_NAMESPACE::ShaderUnusedNV;
 
   //=== VK_KHR_global_priority ===
-  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKhr;
+  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKHR;
 
   //=== VK_KHR_driver_properties ===
-  using VULKAN_HPP_NAMESPACE::MaxDriverInfoSizeKhr;
-  using VULKAN_HPP_NAMESPACE::MaxDriverNameSizeKhr;
+  using VULKAN_HPP_NAMESPACE::MaxDriverInfoSizeKHR;
+  using VULKAN_HPP_NAMESPACE::MaxDriverNameSizeKHR;
 
   //=== VK_EXT_global_priority_query ===
-  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeExt;
+  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeEXT;
 
   //=== VK_EXT_image_sliced_view_of_3d ===
-  using VULKAN_HPP_NAMESPACE::Remaining3DSlicesExt;
+  using VULKAN_HPP_NAMESPACE::Remaining3DSlicesEXT;
 
   //=== VK_EXT_shader_module_identifier ===
-  using VULKAN_HPP_NAMESPACE::MaxShaderModuleIdentifierSizeExt;
+  using VULKAN_HPP_NAMESPACE::MaxShaderModuleIdentifierSizeEXT;
 
   //========================
   //=== CONSTEXPR VALUEs ===

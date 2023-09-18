@@ -572,8 +572,7 @@ ${macros}
 
   std::string str = replaceWithMap(
     macrosTemplate,
-    { { "licenseHeader", m_vulkanLicenseHeader },
-      { "macros", replaceWithMap( readSnippet( "macros.hpp" ), { { "vulkan_hpp", m_api + ".hpp" } } ) } } );
+    { { "licenseHeader", m_vulkanLicenseHeader }, { "macros", replaceWithMap( readSnippet( "macros.hpp" ), { { "vulkan_hpp", m_api + ".hpp" } } ) } } );
 
   writeToFile( str, macros_hpp );
 }
@@ -4775,9 +4774,10 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
               constIt = m_constants.find( aliasIt->second.name );
               assert( constIt != m_constants.end() );
             }
+            std::string tag = findTag( constant );
             constants += replaceWithMap( constexprValueTemplate,
                                          { { "type", constIt->second.type },
-                                           { "constName", stripPrefix( toCamelCase( constant ), "Vk" ) },
+                                           { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag },
                                            { "deprecated", "" },
                                            { "value", constant } } );
             listedConstants.insert( constant );
@@ -4907,7 +4907,8 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
               constIt = m_constants.find( aliasIt->second.name );
               assert( constIt != m_constants.end() );
             }
-            constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( constant ), "Vk" ) } } );
+            std::string tag = findTag( constant );
+            constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag } } );
             listedConstants.insert( constant );
           }
         }

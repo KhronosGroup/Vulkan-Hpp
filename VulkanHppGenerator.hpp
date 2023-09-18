@@ -312,6 +312,7 @@ private:
 
   struct MemberData
   {
+    std::string                                 defaultValue   = {};
     TypeInfo                                    type           = {};
     std::string                                 name           = {};
     std::vector<std::string>                    arraySizes     = {};

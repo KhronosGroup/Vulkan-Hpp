@@ -10657,11 +10657,16 @@ std::string VulkanHppGenerator::generateStructConstructorArgument( bool listedAr
       {
         str += generateEnumInitializer( memberData.type, memberData.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
       }
+      else if ( memberData.defaultValue.empty() )
+      {
+        // if there's no default value, it can be initialized with just {}
+        str += "{}";
+      }
       else
       {
-        assert( memberData.value.empty() );
-        // all the rest can be initialized with just {}
-        str += "{}";
+        assert( memberData.defaultValue.starts_with( "VK_" ) );
+        std::string tag = findTag( memberData.defaultValue );
+        str += "VULKAN_HPP_NAMESPACE::" + toCamelCase( stripPostfix( stripPrefix( memberData.defaultValue, "VK_" ), tag ) ) + tag;
       }
     }
   }
@@ -11129,8 +11134,7 @@ std::tuple<std::string, std::string, std::string, std::string>
     }
     else
     {
-      // as we don't have any meaningful default initialization values, everything can be initialized by just '{}'
-      // !
+      // when we don't have any default initialization value, everything can be initialized by just '{}'
       assert( member.arraySizes.empty() || member.bitCount.empty() );
       if ( !member.bitCount.empty() )
       {
@@ -11145,9 +11149,15 @@ std::tuple<std::string, std::string, std::string, std::string>
         {
           members += generateEnumInitializer( member.type, member.arraySizes, enumIt->second.values, enumIt->second.isBitmask );
         }
-        else
+        else if ( member.defaultValue.empty() )
         {
           members += "{}";
+        }
+        else
+        {
+          assert( member.defaultValue.starts_with( "VK_" ) );
+          std::string tag = findTag( member.defaultValue );
+          members += "VULKAN_HPP_NAMESPACE::" + toCamelCase( stripPostfix( stripPrefix( member.defaultValue, "VK_" ), tag ) ) + tag;
         }
       }
     }
@@ -14702,6 +14712,20 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
       }
     }
     it->second.subStruct = determineSubStruct( *it );
+
+    // add some default values for some structures here!
+    if ( ( it->first == "VkRayTracingShaderGroupCreateInfoNV" ) || ( it->first == "VkRayTracingShaderGroupCreateInfoKHR" ) )
+    {
+      assert( ( ( it->first != "VkRayTracingShaderGroupCreateInfoNV" ) || ( it->second.members.size() == 7 ) ) &&
+              ( ( it->first != "VkRayTracingShaderGroupCreateInfoKHR" ) || ( it->second.members.size() == 8 ) ) );
+      assert( ( it->second.members[3].name == "generalShader" ) && ( it->second.members[4].name == "closestHitShader" ) &&
+              ( it->second.members[5].name == "anyHitShader" ) && ( it->second.members[6].name == "intersectionShader" ) );
+      bool isKHR = ( it->first == "VkRayTracingShaderGroupCreateInfoKHR" );
+      for ( size_t i : { 3, 4, 5, 6 } )
+      {
+        it->second.members[i].defaultValue = isKHR ? "VK_SHADER_UNUSED_KHR" : "VK_SHADER_UNUSED_NV";
+      }
+    }
 
     // check if multiple structure members use the very same (not empty) len attribute
     // Note: even though the arrays are not marked as optional, they still might be mutually exclusive (like in

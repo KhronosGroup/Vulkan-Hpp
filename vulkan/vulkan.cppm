@@ -15,6 +15,7 @@ module;
 #include <vulkan/vulkan_format_traits.hpp>
 #include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
+#include <vulkan/vulkan_shared.hpp>
 
 export module vulkan_hpp;
 

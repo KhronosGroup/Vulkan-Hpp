@@ -89,6 +89,7 @@ public:
   void generateHppFile() const;
   void generateMacrosFile() const;
   void generateRAIIHppFile() const;
+  void generateSharedHppFile() const;
   void generateStaticAssertionsHppFile() const;
   void generateStructsHppFile() const;
   void generateToStringHppFile() const;
@@ -291,8 +292,8 @@ private:
     std::set<std::string> childrenHandles     = {};
     std::set<std::string> commands            = {};
     std::string           deleteCommand       = {};
-    std::string           deleteParent        = {};
     std::string           deletePool          = {};
+    std::string           destructorType      = {};
     std::string           objTypeEnum         = {};
     std::string           parent              = {};
     std::set<std::string> secondLevelCommands = {};
@@ -611,6 +612,7 @@ private:
   std::string generateCppModuleExtensionInspectionUsings() const;
   std::string generateCppModuleUsings() const;
   std::string generateCppModuleRaiiUsings() const;
+  std::string generateCppModuleSharedHandleUsings() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,
@@ -875,6 +877,12 @@ private:
   std::string                         generateUniqueHandle( std::pair<std::string, HandleData> const & handleData ) const;
   std::string                         generateUniqueHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string                         generateUniqueHandles() const;
+  std::string                         generateSharedHandle( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string                         generateSharedHandle( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string                         generateSharedHandleNoDestroy( std::pair<std::string, HandleData> const & handleData ) const;
+  std::string                         generateSharedHandleNoDestroy( std::vector<RequireData> const & requireData, std::string const & title ) const;
+  std::string                         generateSharedHandles() const;
+  std::string                         generateSharedHandlesNoDestroy() const;
   std::string                         generateVectorSizeCheck( std::string const &                           name,
                                                                CommandData const &                           commandData,
                                                                size_t                                        initialSkipCount,

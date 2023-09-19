@@ -772,6 +772,7 @@ module;
 #include <vulkan/${api}_format_traits.hpp>
 #include <vulkan/${api}_hash.hpp>
 #include <vulkan/${api}_raii.hpp>
+#include <vulkan/${api}_shared.hpp>
 
 export module ${api}_hpp;
 

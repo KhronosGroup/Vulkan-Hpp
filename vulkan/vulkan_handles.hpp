@@ -1439,10 +1439,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelinePropertiesIdentifierEXT;
   struct PhysicalDevicePipelinePropertiesFeaturesEXT;
 
-  //=== VK_EXT_frame_boundary ===
-  struct PhysicalDeviceFrameBoundaryFeaturesEXT;
-  struct FrameBoundaryEXT;
-
   //=== VK_EXT_multisampled_render_to_single_sampled ===
   struct PhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT;
   struct SubpassResolvePerformanceQueryEXT;
@@ -1703,12 +1699,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct ExternalFormatQNX;
   struct PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
-
-  //=== VK_MSFT_layered_driver ===
-  struct PhysicalDeviceLayeredDriverPropertiesMSFT;
-
-  //=== VK_NV_descriptor_pool_overallocation ===
-  struct PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;
 
   //===================================
   //=== HANDLE forward declarations ===

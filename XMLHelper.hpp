@@ -41,8 +41,6 @@ std::string                        generateStandardArrayWrapper( std::string con
 std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element );
 template <typename ElementContainer>
 std::vector<tinyxml2::XMLElement const *>        getChildElements( ElementContainer const * element );
-bool                                             isHexNumber( std::string const & name );
-bool                                             isNumber( std::string const & name );
 std::string                                      readComment( tinyxml2::XMLElement const * element );
 std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2::XMLNode const * node );
 TypeInfo                                         readTypeInfo( tinyxml2::XMLElement const * element );
@@ -274,16 +272,6 @@ inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContai
     childElements.push_back( childElement );
   }
   return childElements;
-}
-
-bool isHexNumber( std::string const & name )
-{
-  return name.starts_with( "0x" ) && ( name.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
-}
-
-bool isNumber( std::string const & name )
-{
-  return name.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
 inline std::string readComment( tinyxml2::XMLElement const * element )

@@ -1912,7 +1912,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDisplayModeCreateInfoKHR: return "DisplayModeCreateInfoKHR";
       case StructureType::eDisplaySurfaceCreateInfoKHR: return "DisplaySurfaceCreateInfoKHR";
       case StructureType::eDisplayPresentInfoKHR: return "DisplayPresentInfoKHR";
-      case StructureType::ePrivateVendorInfoReservedOffset0NV: return "PrivateVendorInfoReservedOffset0NV";
+      case StructureType::ePrivateVendorInfoPlaceholderOffset0NV: return "PrivateVendorInfoPlaceholderOffset0NV";
       case StructureType::eImageViewAstcDecodeModeEXT: return "ImageViewAstcDecodeModeEXT";
       case StructureType::ePhysicalDeviceAstcDecodeFeaturesEXT: return "PhysicalDeviceAstcDecodeFeaturesEXT";
       case StructureType::eImportMemoryFdInfoKHR: return "ImportMemoryFdInfoKHR";

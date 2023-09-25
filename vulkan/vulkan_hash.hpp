@@ -4901,27 +4901,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::FrameBoundaryEXT>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::FrameBoundaryEXT const & frameBoundaryEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.flags );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.frameID );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.imageCount );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.pImages );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.bufferCount );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.pBuffers );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.tagName );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.tagSize );
-      VULKAN_HPP_HASH_COMBINE( seed, frameBoundaryEXT.pTag );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::FramebufferAttachmentImageInfo>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::FramebufferAttachmentImageInfo const & framebufferAttachmentImageInfo ) const VULKAN_HPP_NOEXCEPT
@@ -7793,20 +7772,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV const &
-                              physicalDeviceDescriptorPoolOverallocationFeaturesNV ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDescriptorPoolOverallocationFeaturesNV.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDescriptorPoolOverallocationFeaturesNV.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceDescriptorPoolOverallocationFeaturesNV.descriptorPoolOverallocation );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE>
   {
     std::size_t
@@ -8503,20 +8468,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceFrameBoundaryFeaturesEXT>
-  {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceFrameBoundaryFeaturesEXT const & physicalDeviceFrameBoundaryFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceFrameBoundaryFeaturesEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceFrameBoundaryFeaturesEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceFrameBoundaryFeaturesEXT.frameBoundary );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceGlobalPriorityQueryFeaturesKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceGlobalPriorityQueryFeaturesKHR const & physicalDeviceGlobalPriorityQueryFeaturesKHR ) const
@@ -8932,20 +8883,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInvocationMaskFeaturesHUAWEI.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInvocationMaskFeaturesHUAWEI.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceInvocationMaskFeaturesHUAWEI.invocationMask );
-      return seed;
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceLayeredDriverPropertiesMSFT>
-  {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceLayeredDriverPropertiesMSFT const & physicalDeviceLayeredDriverPropertiesMSFT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLayeredDriverPropertiesMSFT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLayeredDriverPropertiesMSFT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLayeredDriverPropertiesMSFT.underlyingAPI );
       return seed;
     }
   };

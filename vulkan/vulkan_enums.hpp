@@ -1213,8 +1213,6 @@ namespace VULKAN_HPP_NAMESPACE
     ePipelinePropertiesIdentifierEXT                            = VK_STRUCTURE_TYPE_PIPELINE_PROPERTIES_IDENTIFIER_EXT,
     ePhysicalDevicePipelinePropertiesFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PIPELINE_PROPERTIES_FEATURES_EXT,
     ePipelineInfoEXT                                            = VK_STRUCTURE_TYPE_PIPELINE_INFO_EXT,
-    ePhysicalDeviceFrameBoundaryFeaturesEXT                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAME_BOUNDARY_FEATURES_EXT,
-    eFrameBoundaryEXT                                           = VK_STRUCTURE_TYPE_FRAME_BOUNDARY_EXT,
     ePhysicalDeviceMultisampledRenderToSingleSampledFeaturesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_FEATURES_EXT,
     eSubpassResolvePerformanceQueryEXT                          = VK_STRUCTURE_TYPE_SUBPASS_RESOLVE_PERFORMANCE_QUERY_EXT,
     eMultisampledRenderToSingleSampledInfoEXT                   = VK_STRUCTURE_TYPE_MULTISAMPLED_RENDER_TO_SINGLE_SAMPLED_INFO_EXT,
@@ -1351,10 +1349,8 @@ namespace VULKAN_HPP_NAMESPACE
     eScreenBufferFormatPropertiesQNX                     = VK_STRUCTURE_TYPE_SCREEN_BUFFER_FORMAT_PROPERTIES_QNX,
     eImportScreenBufferInfoQNX                           = VK_STRUCTURE_TYPE_IMPORT_SCREEN_BUFFER_INFO_QNX,
     eExternalFormatQNX                                   = VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_QNX,
-    ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_SCREEN_BUFFER_FEATURES_QNX,
+    ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_SCREEN_BUFFER_FEATURES_QNX
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
-    ePhysicalDeviceLayeredDriverPropertiesMSFT            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LAYERED_DRIVER_PROPERTIES_MSFT,
-    ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV
   };
 
   enum class PipelineCacheHeaderVersion
@@ -3088,13 +3084,11 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class DescriptorPoolCreateFlagBits : VkDescriptorPoolCreateFlags
   {
-    eFreeDescriptorSet          = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
-    eUpdateAfterBind            = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT,
-    eUpdateAfterBindEXT         = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT,
-    eHostOnlyVALVE              = VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE,
-    eHostOnlyEXT                = VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT,
-    eAllowOverallocationSetsNV  = VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_SETS_BIT_NV,
-    eAllowOverallocationPoolsNV = VK_DESCRIPTOR_POOL_CREATE_ALLOW_OVERALLOCATION_POOLS_BIT_NV
+    eFreeDescriptorSet  = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT,
+    eUpdateAfterBind    = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT,
+    eUpdateAfterBindEXT = VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT_EXT,
+    eHostOnlyVALVE      = VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_VALVE,
+    eHostOnlyEXT        = VK_DESCRIPTOR_POOL_CREATE_HOST_ONLY_BIT_EXT
   };
 
   using DescriptorPoolCreateFlags = Flags<DescriptorPoolCreateFlagBits>;
@@ -3104,8 +3098,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                      isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR DescriptorPoolCreateFlags allFlags =
-      DescriptorPoolCreateFlagBits::eFreeDescriptorSet | DescriptorPoolCreateFlagBits::eUpdateAfterBind | DescriptorPoolCreateFlagBits::eHostOnlyEXT |
-      DescriptorPoolCreateFlagBits::eAllowOverallocationSetsNV | DescriptorPoolCreateFlagBits::eAllowOverallocationPoolsNV;
+      DescriptorPoolCreateFlagBits::eFreeDescriptorSet | DescriptorPoolCreateFlagBits::eUpdateAfterBind | DescriptorPoolCreateFlagBits::eHostOnlyEXT;
   };
 
   enum class DescriptorSetLayoutCreateFlagBits : VkDescriptorSetLayoutCreateFlags
@@ -4710,10 +4703,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eError    = VK_QUERY_RESULT_STATUS_ERROR_KHR,
     eNotReady = VK_QUERY_RESULT_STATUS_NOT_READY_KHR,
-    eComplete = VK_QUERY_RESULT_STATUS_COMPLETE_KHR,
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eInsufficientBitstreamBufferRange = VK_QUERY_RESULT_STATUS_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_KHR
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    eComplete = VK_QUERY_RESULT_STATUS_COMPLETE_KHR
   };
 
   enum class VideoSessionParametersCreateFlagBitsKHR : VkVideoSessionParametersCreateFlagsKHR
@@ -4868,9 +4858,7 @@ namespace VULKAN_HPP_NAMESPACE
     eConstrainedIntraPredFlagSet        = VK_VIDEO_ENCODE_H264_STD_CONSTRAINED_INTRA_PRED_FLAG_SET_BIT_EXT,
     eDeblockingFilterDisabled           = VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_DISABLED_BIT_EXT,
     eDeblockingFilterEnabled            = VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_ENABLED_BIT_EXT,
-    eDeblockingFilterPartial            = VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_EXT,
-    eSliceQpDelta                       = VK_VIDEO_ENCODE_H264_STD_SLICE_QP_DELTA_BIT_EXT,
-    eDifferentSliceQpDelta              = VK_VIDEO_ENCODE_H264_STD_DIFFERENT_SLICE_QP_DELTA_BIT_EXT
+    eDeblockingFilterPartial            = VK_VIDEO_ENCODE_H264_STD_DEBLOCKING_FILTER_PARTIAL_BIT_EXT
   };
 
   using VideoEncodeH264StdFlagsEXT = Flags<VideoEncodeH264StdFlagBitsEXT>;
@@ -4888,8 +4876,7 @@ namespace VULKAN_HPP_NAMESPACE
       VideoEncodeH264StdFlagBitsEXT::eDirectSpatialMvPredFlagUnset | VideoEncodeH264StdFlagBitsEXT::eEntropyCodingModeFlagUnset |
       VideoEncodeH264StdFlagBitsEXT::eEntropyCodingModeFlagSet | VideoEncodeH264StdFlagBitsEXT::eDirect8X8InferenceFlagUnset |
       VideoEncodeH264StdFlagBitsEXT::eConstrainedIntraPredFlagSet | VideoEncodeH264StdFlagBitsEXT::eDeblockingFilterDisabled |
-      VideoEncodeH264StdFlagBitsEXT::eDeblockingFilterEnabled | VideoEncodeH264StdFlagBitsEXT::eDeblockingFilterPartial |
-      VideoEncodeH264StdFlagBitsEXT::eSliceQpDelta | VideoEncodeH264StdFlagBitsEXT::eDifferentSliceQpDelta;
+      VideoEncodeH264StdFlagBitsEXT::eDeblockingFilterEnabled | VideoEncodeH264StdFlagBitsEXT::eDeblockingFilterPartial;
   };
 
   enum class VideoEncodeH264RateControlFlagBitsEXT : VkVideoEncodeH264RateControlFlagsEXT
@@ -4965,9 +4952,7 @@ namespace VULKAN_HPP_NAMESPACE
     eEntropyCodingSyncEnabledFlagSet        = VK_VIDEO_ENCODE_H265_STD_ENTROPY_CODING_SYNC_ENABLED_FLAG_SET_BIT_EXT,
     eDeblockingFilterOverrideEnabledFlagSet = VK_VIDEO_ENCODE_H265_STD_DEBLOCKING_FILTER_OVERRIDE_ENABLED_FLAG_SET_BIT_EXT,
     eDependentSliceSegmentsEnabledFlagSet   = VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENTS_ENABLED_FLAG_SET_BIT_EXT,
-    eDependentSliceSegmentFlagSet           = VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_EXT,
-    eSliceQpDelta                           = VK_VIDEO_ENCODE_H265_STD_SLICE_QP_DELTA_BIT_EXT,
-    eDifferentSliceQpDelta                  = VK_VIDEO_ENCODE_H265_STD_DIFFERENT_SLICE_QP_DELTA_BIT_EXT
+    eDependentSliceSegmentFlagSet           = VK_VIDEO_ENCODE_H265_STD_DEPENDENT_SLICE_SEGMENT_FLAG_SET_BIT_EXT
   };
 
   using VideoEncodeH265StdFlagsEXT = Flags<VideoEncodeH265StdFlagBitsEXT>;
@@ -4986,8 +4971,7 @@ namespace VULKAN_HPP_NAMESPACE
       VideoEncodeH265StdFlagBitsEXT::ePpsSliceChromaQpOffsetsPresentFlagSet | VideoEncodeH265StdFlagBitsEXT::eTransquantBypassEnabledFlagSet |
       VideoEncodeH265StdFlagBitsEXT::eConstrainedIntraPredFlagSet | VideoEncodeH265StdFlagBitsEXT::eEntropyCodingSyncEnabledFlagSet |
       VideoEncodeH265StdFlagBitsEXT::eDeblockingFilterOverrideEnabledFlagSet | VideoEncodeH265StdFlagBitsEXT::eDependentSliceSegmentsEnabledFlagSet |
-      VideoEncodeH265StdFlagBitsEXT::eDependentSliceSegmentFlagSet | VideoEncodeH265StdFlagBitsEXT::eSliceQpDelta |
-      VideoEncodeH265StdFlagBitsEXT::eDifferentSliceQpDelta;
+      VideoEncodeH265StdFlagBitsEXT::eDependentSliceSegmentFlagSet;
   };
 
   enum class VideoEncodeH265CtbSizeFlagBitsEXT : VkVideoEncodeH265CtbSizeFlagsEXT
@@ -6150,8 +6134,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class VideoEncodeCapabilityFlagBitsKHR : VkVideoEncodeCapabilityFlagsKHR
   {
-    ePrecedingExternallyEncodedBytes           = VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR,
-    eInsufficientstreamBufferRangeDetectionBit = VK_VIDEO_ENCODE_CAPABILITY_INSUFFICIENT_BITSTREAM_BUFFER_RANGE_DETECTION_BIT_KHR
+    ePrecedingExternallyEncodedBytes = VK_VIDEO_ENCODE_CAPABILITY_PRECEDING_EXTERNALLY_ENCODED_BYTES_BIT_KHR
   };
 
   using VideoEncodeCapabilityFlagsKHR = Flags<VideoEncodeCapabilityFlagBitsKHR>;
@@ -6160,8 +6143,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<VideoEncodeCapabilityFlagBitsKHR>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                          isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VideoEncodeCapabilityFlagsKHR allFlags =
-      VideoEncodeCapabilityFlagBitsKHR::ePrecedingExternallyEncodedBytes | VideoEncodeCapabilityFlagBitsKHR::eInsufficientstreamBufferRangeDetectionBit;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VideoEncodeCapabilityFlagsKHR allFlags  = VideoEncodeCapabilityFlagBitsKHR::ePrecedingExternallyEncodedBytes;
   };
 
   enum class VideoEncodeFeedbackFlagBitsKHR : VkVideoEncodeFeedbackFlagsKHR
@@ -6578,22 +6560,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR ImageFormatConstraintsFlagsFUCHSIA allFlags  = {};
   };
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
-
-  //=== VK_EXT_frame_boundary ===
-
-  enum class FrameBoundaryFlagBitsEXT : VkFrameBoundaryFlagsEXT
-  {
-    eFrameEnd = VK_FRAME_BOUNDARY_FRAME_END_BIT_EXT
-  };
-
-  using FrameBoundaryFlagsEXT = Flags<FrameBoundaryFlagBitsEXT>;
-
-  template <>
-  struct FlagTraits<FrameBoundaryFlagBitsEXT>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                  isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR FrameBoundaryFlagsEXT allFlags  = FrameBoundaryFlagBitsEXT::eFrameEnd;
-  };
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_screen_surface ===
@@ -7086,14 +7052,6 @@ namespace VULKAN_HPP_NAMESPACE
     eZeroTangentCardinal = VK_CUBIC_FILTER_WEIGHTS_ZERO_TANGENT_CARDINAL_QCOM,
     eBSpline             = VK_CUBIC_FILTER_WEIGHTS_B_SPLINE_QCOM,
     eMitchellNetravali   = VK_CUBIC_FILTER_WEIGHTS_MITCHELL_NETRAVALI_QCOM
-  };
-
-  //=== VK_MSFT_layered_driver ===
-
-  enum class LayeredDriverUnderlyingApiMSFT
-  {
-    eNone  = VK_LAYERED_DRIVER_UNDERLYING_API_NONE_MSFT,
-    eD3D12 = VK_LAYERED_DRIVER_UNDERLYING_API_D3D12_MSFT
   };
 
   //=========================

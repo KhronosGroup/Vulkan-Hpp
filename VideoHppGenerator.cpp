@@ -145,15 +145,19 @@ void VideoHppGenerator::checkCorrectness() const
       // check that all array sizes are a known constant
       for ( auto const & arraySize : member.arraySizes )
       {
-        if ( !isNumber( arraySize ) && !extIt->requireData.constants.contains( arraySize ) )
+        if ( arraySize.find_first_not_of( "0123456789" ) != std::string::npos )
         {
-          checkForError(
-            !extIt->depends.empty(), extIt->xmlLine, "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
-          auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&extIt]( ExtensionData const & ed ) { return ed.name == extIt->depends; } );
-          assert( depIt != m_extensions.end() );
-          checkForError( depIt->requireData.constants.contains( arraySize ),
-                         member.xmlLine,
-                         "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
+          bool found = extIt->requireData.constants.contains( arraySize );
+          if ( !found )
+          {
+            checkForError(
+              !extIt->depends.empty(), extIt->xmlLine, "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
+            auto depIt = std::find_if( m_extensions.begin(), m_extensions.end(), [&extIt]( ExtensionData const & ed ) { return ed.name == extIt->depends; } );
+            assert( depIt != m_extensions.end() );
+            checkForError( depIt->requireData.constants.contains( arraySize ),
+                           member.xmlLine,
+                           "struct member <" + member.name + "> uses unknown constant <" + arraySize + "> as array size" );
+          }
         }
       }
     }
@@ -592,7 +596,7 @@ void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, s
 
   if ( !name.ends_with( "_SPEC_VERSION" ) && !name.ends_with( "_EXTENSION_NAME" ) )
   {
-    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
+    checkForError( value.find_first_not_of( "0123456789" ) == std::string::npos, line, "enum value uses unknown constant <" + value + ">" );
     checkForError( constants.insert( { name, { value, line } } ).second, line, "required enum <" + name + "> already specified" );
   }
 }

@@ -495,7 +495,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDisplayModeCreateInfoKHR                                = VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR,
     eDisplaySurfaceCreateInfoKHR                             = VK_STRUCTURE_TYPE_DISPLAY_SURFACE_CREATE_INFO_KHR,
     eDisplayPresentInfoKHR                                   = VK_STRUCTURE_TYPE_DISPLAY_PRESENT_INFO_KHR,
-    ePrivateVendorInfoPlaceholderOffset0NV                   = VK_STRUCTURE_TYPE_PRIVATE_VENDOR_INFO_PLACEHOLDER_OFFSET_0_NV,
+    ePrivateVendorInfoReservedOffset0NV                      = VK_STRUCTURE_TYPE_PRIVATE_VENDOR_INFO_RESERVED_OFFSET_0_NV,
     ePhysicalDeviceTextureCompressionAstcHdrFeaturesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXTURE_COMPRESSION_ASTC_HDR_FEATURES_EXT,
     eImageViewAstcDecodeModeEXT                              = VK_STRUCTURE_TYPE_IMAGE_VIEW_ASTC_DECODE_MODE_EXT,
     ePhysicalDeviceAstcDecodeFeaturesEXT                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ASTC_DECODE_FEATURES_EXT,

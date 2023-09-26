@@ -4723,12 +4723,32 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
                                                             std::vector<size_t> const & returnParams,
                                                             bool                        raii ) const
 {
-  if ( commandData.params[returnParams[0]].type.type == "uint32_t" )
+  std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
+  switch ( vectorParams.size() )
   {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.size() == 1 )
-    {
-      if ( returnParams[0] == vectorParams.begin()->second.lenParam )
+    case 0:
+      if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
+           !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+      {
+        if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
+             !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        {
+          return generateCommandSetInclusive( name,
+                                              commandData,
+                                              initialSkipCount,
+                                              definition,
+                                              returnParams,
+                                              vectorParams,
+                                              false,
+                                              { CommandFlavourFlagBits::enhanced },
+                                              raii,
+                                              false,
+                                              { CommandFlavourFlagBits::enhanced } );
+        }
+      }
+      break;
+    case 1:
+      if ( ( returnParams[0] == vectorParams.begin()->second.lenParam ) && ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
       {
         if ( returnParams[1] == vectorParams.begin()->first )
         {
@@ -4765,7 +4785,8 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
           }
         }
       }
-    }
+      break;
+    default: break;
   }
   return "";
 }

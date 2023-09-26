@@ -1482,9 +1482,9 @@ void VulkanHppGenerator::checkStructCorrectness() const
     else
     {
       // check for non-alias structureTypes only
-      checkForError( !enumValue.alias.empty() || ( sTypeValues.erase( enumValue.name ) == 1 ),
-                     enumValue.xmlLine,
-                     "VkStructureType enum value <" + enumValue.name + "> never used" );
+      checkForWarning( !enumValue.alias.empty() || ( sTypeValues.erase( enumValue.name ) == 1 ),
+                       enumValue.xmlLine,
+                       "VkStructureType enum value <" + enumValue.name + "> never used" );
     }
   }
   assert( sTypeValues.empty() );
@@ -11813,13 +11813,14 @@ std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, Han
   using Shared${type} = SharedHandle<${type}>;
 ${aliasHandle})";
 
-    return replaceWithMap( sharedHandleTemplate,
-                           { { "aliasHandle", aliasHandle },
-                             { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-                             { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
-                             { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
-                             { "destructor", handleData.second.destructorType.empty() ? "NoDestructor" : stripPrefix( handleData.second.destructorType, "Vk" ) },
-                             { "type", type } } );
+    return replaceWithMap(
+      sharedHandleTemplate,
+      { { "aliasHandle", aliasHandle },
+        { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
+        { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
+        { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
+        { "destructor", handleData.second.destructorType.empty() ? "NoDestructor" : stripPrefix( handleData.second.destructorType, "Vk" ) },
+        { "type", type } } );
   }
   return "";
 }
@@ -15155,7 +15156,7 @@ void VulkanHppGenerator::registerDeleter( std::string const & commandName, Comma
 
     auto handleIt = m_handles.find( commandData.params[valueIndex].type.type );
     assert( handleIt != m_handles.end() );
-    handleIt->second.deleteCommand = commandName;
+    handleIt->second.deleteCommand  = commandName;
     handleIt->second.destructorType = key;
   }
 }

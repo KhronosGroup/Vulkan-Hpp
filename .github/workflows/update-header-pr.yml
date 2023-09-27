@@ -38,8 +38,8 @@ jobs:
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build
-            -DSAMPLES_BUILD=OFF
-            -DTESTS_BUILD=OFF
+            -DVULKAN_HPP_SAMPLES_BUILD=OFF
+            -DVULKAN_HPP_TESTS_BUILD=OFF
             -DVULKAN_HPP_RUN_GENERATOR=ON
             -DCMAKE_CXX_COMPILER=${{matrix.cxx_compiler}}
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}

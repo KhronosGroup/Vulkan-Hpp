@@ -13841,9 +13841,10 @@ void VulkanHppGenerator::readRequireEnum(
                        { "extnumber", {} },
                        { "offset", {} },
                        { "protect", { "VK_ENABLE_BETA_EXTENSIONS" } },
+                       { "type", { "uint32_t" } },
                        { "value", {} } } );
 
-    std::string api, bitpos, extends, name, offset, protect, value;
+    std::string api, bitpos, extends, name, offset, protect, type, value;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
@@ -13870,6 +13871,10 @@ void VulkanHppGenerator::readRequireEnum(
       {
         protect = attribute.second;
       }
+      else if (attribute.first == "type")
+      {
+        type = attribute.second;
+      }
       else if ( attribute.first == "value" )
       {
         value = attribute.second;
@@ -13892,6 +13897,11 @@ void VulkanHppGenerator::readRequireEnum(
           checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second,
                          line,
                          "required enum <" + name + "> specified by value <" + value + "> is already specified" );
+          if (type == "uint32_t")
+          {
+            assert( !m_constants.contains( name ) );
+            m_constants[name] = { type, value, line };
+          }
         }
       }
     }

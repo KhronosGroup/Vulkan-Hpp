@@ -1461,6 +1461,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Min | ";
     if ( value & ResolveModeFlagBits::eMax )
       result += "Max | ";
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+    if ( value & ResolveModeFlagBits::eExternalFormatDownsampleANDROID )
+      result += "ExternalFormatDownsampleANDROID | ";
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -4419,6 +4423,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eOpticalFlowSessionCreatePrivateDataInfoNV: return "OpticalFlowSessionCreatePrivateDataInfoNV";
       case StructureType::ePhysicalDeviceLegacyDitheringFeaturesEXT: return "PhysicalDeviceLegacyDitheringFeaturesEXT";
       case StructureType::ePhysicalDevicePipelineProtectedAccessFeaturesEXT: return "PhysicalDevicePipelineProtectedAccessFeaturesEXT";
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+      case StructureType::ePhysicalDeviceExternalFormatResolveFeaturesANDROID: return "PhysicalDeviceExternalFormatResolveFeaturesANDROID";
+      case StructureType::ePhysicalDeviceExternalFormatResolvePropertiesANDROID: return "PhysicalDeviceExternalFormatResolvePropertiesANDROID";
+      case StructureType::eAndroidHardwareBufferFormatResolvePropertiesANDROID: return "AndroidHardwareBufferFormatResolvePropertiesANDROID";
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       case StructureType::ePhysicalDeviceMaintenance5FeaturesKHR: return "PhysicalDeviceMaintenance5FeaturesKHR";
       case StructureType::ePhysicalDeviceMaintenance5PropertiesKHR: return "PhysicalDeviceMaintenance5PropertiesKHR";
       case StructureType::eRenderingAreaInfoKHR: return "RenderingAreaInfoKHR";
@@ -4444,6 +4453,15 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceShaderCoreBuiltinsPropertiesARM: return "PhysicalDeviceShaderCoreBuiltinsPropertiesARM";
       case StructureType::ePhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT: return "PhysicalDevicePipelineLibraryGroupHandlesFeaturesEXT";
       case StructureType::ePhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT: return "PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT";
+      case StructureType::eLatencySleepModeInfoNV: return "LatencySleepModeInfoNV";
+      case StructureType::eLatencySleepInfoNV: return "LatencySleepInfoNV";
+      case StructureType::eSetLatencyMarkerInfoNV: return "SetLatencyMarkerInfoNV";
+      case StructureType::eGetLatencyMarkerInfoNV: return "GetLatencyMarkerInfoNV";
+      case StructureType::eLatencyTimingsFrameReportNV: return "LatencyTimingsFrameReportNV";
+      case StructureType::eLatencySubmissionPresentIdNV: return "LatencySubmissionPresentIdNV";
+      case StructureType::eOutOfBandQueueTypeInfoNV: return "OutOfBandQueueTypeInfoNV";
+      case StructureType::eSwapchainLatencyCreateInfoNV: return "SwapchainLatencyCreateInfoNV";
+      case StructureType::eLatencySurfaceCapabilitiesNV: return "LatencySurfaceCapabilitiesNV";
       case StructureType::ePhysicalDeviceCooperativeMatrixFeaturesKHR: return "PhysicalDeviceCooperativeMatrixFeaturesKHR";
       case StructureType::eCooperativeMatrixPropertiesKHR: return "CooperativeMatrixPropertiesKHR";
       case StructureType::ePhysicalDeviceCooperativeMatrixPropertiesKHR: return "PhysicalDeviceCooperativeMatrixPropertiesKHR";
@@ -6376,6 +6394,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverId::eMesaDozen: return "MesaDozen";
       case DriverId::eMesaNvk: return "MesaNvk";
       case DriverId::eImaginationOpenSourceMESA: return "ImaginationOpenSourceMESA";
+      case DriverId::eMesaAgxv: return "MesaAgxv";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6412,6 +6431,9 @@ namespace VULKAN_HPP_NAMESPACE
       case ResolveModeFlagBits::eAverage: return "Average";
       case ResolveModeFlagBits::eMin: return "Min";
       case ResolveModeFlagBits::eMax: return "Max";
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+      case ResolveModeFlagBits::eExternalFormatDownsampleANDROID: return "ExternalFormatDownsampleANDROID";
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8859,6 +8881,38 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case RayTracingInvocationReorderModeNV::eNone: return "None";
       case RayTracingInvocationReorderModeNV::eReorder: return "Reorder";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_NV_low_latency2 ===
+
+  VULKAN_HPP_INLINE std::string to_string( LatencyMarkerNV value )
+  {
+    switch ( value )
+    {
+      case LatencyMarkerNV::eSimulationStart: return "SimulationStart";
+      case LatencyMarkerNV::eSimulationEnd: return "SimulationEnd";
+      case LatencyMarkerNV::eRendersubmitStart: return "RendersubmitStart";
+      case LatencyMarkerNV::eRendersubmitEnd: return "RendersubmitEnd";
+      case LatencyMarkerNV::ePresentStart: return "PresentStart";
+      case LatencyMarkerNV::ePresentEnd: return "PresentEnd";
+      case LatencyMarkerNV::eInputSample: return "InputSample";
+      case LatencyMarkerNV::eTriggerFlash: return "TriggerFlash";
+      case LatencyMarkerNV::eOutOfBandRendersubmitStart: return "OutOfBandRendersubmitStart";
+      case LatencyMarkerNV::eOutOfBandRendersubmitEnd: return "OutOfBandRendersubmitEnd";
+      case LatencyMarkerNV::eOutOfBandPresentStart: return "OutOfBandPresentStart";
+      case LatencyMarkerNV::eOutOfBandPresentEnd: return "OutOfBandPresentEnd";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( OutOfBandQueueTypeNV value )
+  {
+    switch ( value )
+    {
+      case OutOfBandQueueTypeNV::eRender: return "Render";
+      case OutOfBandQueueTypeNV::ePresent: return "Present";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

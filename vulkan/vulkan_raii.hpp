@@ -1663,6 +1663,13 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetDynamicRenderingTilePropertiesQCOM =
           PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
 
+        //=== VK_NV_low_latency2 ===
+        vkSetLatencySleepModeNV  = PFN_vkSetLatencySleepModeNV( vkGetDeviceProcAddr( device, "vkSetLatencySleepModeNV" ) );
+        vkLatencySleepNV         = PFN_vkLatencySleepNV( vkGetDeviceProcAddr( device, "vkLatencySleepNV" ) );
+        vkSetLatencyMarkerNV     = PFN_vkSetLatencyMarkerNV( vkGetDeviceProcAddr( device, "vkSetLatencyMarkerNV" ) );
+        vkGetLatencyTimingsNV    = PFN_vkGetLatencyTimingsNV( vkGetDeviceProcAddr( device, "vkGetLatencyTimingsNV" ) );
+        vkQueueNotifyOutOfBandNV = PFN_vkQueueNotifyOutOfBandNV( vkGetDeviceProcAddr( device, "vkQueueNotifyOutOfBandNV" ) );
+
         //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
         vkCmdSetAttachmentFeedbackLoopEnableEXT =
           PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT( vkGetDeviceProcAddr( device, "vkCmdSetAttachmentFeedbackLoopEnableEXT" ) );
@@ -2506,6 +2513,13 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_QCOM_tile_properties ===
       PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
       PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
+
+      //=== VK_NV_low_latency2 ===
+      PFN_vkSetLatencySleepModeNV  vkSetLatencySleepModeNV  = 0;
+      PFN_vkLatencySleepNV         vkLatencySleepNV         = 0;
+      PFN_vkSetLatencyMarkerNV     vkSetLatencyMarkerNV     = 0;
+      PFN_vkGetLatencyTimingsNV    vkGetLatencyTimingsNV    = 0;
+      PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV = 0;
 
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
       PFN_vkCmdSetAttachmentFeedbackLoopEnableEXT vkCmdSetAttachmentFeedbackLoopEnableEXT = 0;
@@ -10044,6 +10058,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV> getCheckpointData2NV() const;
 
+      //=== VK_NV_low_latency2 ===
+
+      void notifyOutOfBandNV( VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT;
+
     private:
       VULKAN_HPP_NAMESPACE::Queue                                               m_queue      = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
@@ -11416,6 +11434,16 @@ namespace VULKAN_HPP_NAMESPACE
 
       void releaseFullScreenExclusiveModeEXT() const;
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
+      //=== VK_NV_low_latency2 ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV setLatencySleepModeNV() const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::LatencySleepInfoNV latencySleepNV() const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV setLatencyMarkerNV() const VULKAN_HPP_NOEXCEPT;
+
+      VULKAN_HPP_NODISCARD std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV> getLatencyTimingsNV() const VULKAN_HPP_NOEXCEPT;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
@@ -20785,6 +20813,66 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 reinterpret_cast<VkTilePropertiesQCOM *>( &properties ) );
 
       return properties;
+    }
+
+    //=== VK_NV_low_latency2 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV SwapchainKHR::setLatencySleepModeNV() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkSetLatencySleepModeNV && "Function <vkSetLatencySleepModeNV> requires <VK_NV_low_latency2>" );
+
+      VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV sleepModeInfo;
+      VkResult                                     result = getDispatcher()->vkSetLatencySleepModeNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), reinterpret_cast<VkLatencySleepModeInfoNV *>( &sleepModeInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::setLatencySleepModeNV" );
+
+      return sleepModeInfo;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::LatencySleepInfoNV SwapchainKHR::latencySleepNV() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkLatencySleepNV && "Function <vkLatencySleepNV> requires <VK_NV_low_latency2>" );
+
+      VULKAN_HPP_NAMESPACE::LatencySleepInfoNV sleepInfo;
+      VkResult                                 result = getDispatcher()->vkLatencySleepNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), reinterpret_cast<VkLatencySleepInfoNV *>( &sleepInfo ) );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::latencySleepNV" );
+
+      return sleepInfo;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV SwapchainKHR::setLatencyMarkerNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkSetLatencyMarkerNV && "Function <vkSetLatencyMarkerNV> requires <VK_NV_low_latency2>" );
+
+      VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV latencyMarkerInfo;
+      getDispatcher()->vkSetLatencyMarkerNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), reinterpret_cast<VkSetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+
+      return latencyMarkerInfo;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV>
+                                           SwapchainKHR::getLatencyTimingsNV() const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetLatencyTimingsNV && "Function <vkGetLatencyTimingsNV> requires <VK_NV_low_latency2>" );
+
+      std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV> data_;
+      uint32_t &                                                        timingCount       = data_.first;
+      VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV &                    latencyMarkerInfo = data_.second;
+      getDispatcher()->vkGetLatencyTimingsNV( static_cast<VkDevice>( m_device ),
+                                              static_cast<VkSwapchainKHR>( m_swapchain ),
+                                              &timingCount,
+                                              reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+
+      return data_;
+    }
+
+    VULKAN_HPP_INLINE void Queue::notifyOutOfBandNV( VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkQueueNotifyOutOfBandNV && "Function <vkQueueNotifyOutOfBandNV> requires <VK_NV_low_latency2>" );
+
+      getDispatcher()->vkQueueNotifyOutOfBandNV( static_cast<VkQueue>( m_queue ), static_cast<VkOutOfBandQueueTypeInfoNV>( pQueueTypeInfo ) );
     }
 
     //=== VK_KHR_cooperative_matrix ===

@@ -826,6 +826,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_invocation_reorder ===
   using VULKAN_HPP_NAMESPACE::RayTracingInvocationReorderModeNV;
 
+  //=== VK_NV_low_latency2 ===
+  using VULKAN_HPP_NAMESPACE::LatencyMarkerNV;
+  using VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeNV;
+
   //=== VK_KHR_cooperative_matrix ===
   using VULKAN_HPP_NAMESPACE::ComponentTypeKHR;
   using VULKAN_HPP_NAMESPACE::ComponentTypeNV;
@@ -2611,6 +2615,13 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_pipeline_protected_access ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePipelineProtectedAccessFeaturesEXT;
 
+#if defined( VK_USE_PLATFORM_ANDROID_KHR )
+  //=== VK_ANDROID_external_format_resolve ===
+  using VULKAN_HPP_NAMESPACE::AndroidHardwareBufferFormatResolvePropertiesANDROID;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalFormatResolveFeaturesANDROID;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalFormatResolvePropertiesANDROID;
+#endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
   //=== VK_KHR_maintenance5 ===
   using VULKAN_HPP_NAMESPACE::BufferUsageFlags2CreateInfoKHR;
   using VULKAN_HPP_NAMESPACE::DeviceImageSubresourceInfoKHR;
@@ -2663,6 +2674,17 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_dynamic_rendering_unused_attachments ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT;
+
+  //=== VK_NV_low_latency2 ===
+  using VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV;
+  using VULKAN_HPP_NAMESPACE::LatencySleepInfoNV;
+  using VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV;
+  using VULKAN_HPP_NAMESPACE::LatencySubmissionPresentIdNV;
+  using VULKAN_HPP_NAMESPACE::LatencySurfaceCapabilitiesNV;
+  using VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV;
+  using VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV;
+  using VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV;
+  using VULKAN_HPP_NAMESPACE::SwapchainLatencyCreateInfoNV;
 
   //=== VK_KHR_cooperative_matrix ===
   using VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR;

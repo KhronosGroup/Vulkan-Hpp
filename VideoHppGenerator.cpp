@@ -145,7 +145,7 @@ void VideoHppGenerator::checkCorrectness() const
       // check that all array sizes are a known constant
       for ( auto const & arraySize : member.arraySizes )
       {
-        if ( arraySize.find_first_not_of( "0123456789" ) != std::string::npos )
+        if ( !isNumber( arraySize ) )
         {
           bool found = extIt->requireData.constants.contains( arraySize );
           if ( !found )
@@ -457,6 +457,7 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
 
   std::string prefix = toUpperCase( enumIt->first ) + "_";
   checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
+  checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
 
   checkForError( std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
                  line,
@@ -596,7 +597,7 @@ void VideoHppGenerator::readRequireEnum( tinyxml2::XMLElement const * element, s
 
   if ( !name.ends_with( "_SPEC_VERSION" ) && !name.ends_with( "_EXTENSION_NAME" ) )
   {
-    checkForError( value.find_first_not_of( "0123456789" ) == std::string::npos, line, "enum value uses unknown constant <" + value + ">" );
+    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
     checkForError( constants.insert( { name, { value, line } } ).second, line, "required enum <" + name + "> already specified" );
   }
 }

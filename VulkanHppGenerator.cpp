@@ -13871,7 +13871,7 @@ void VulkanHppGenerator::readRequireEnum(
       {
         protect = attribute.second;
       }
-      else if (attribute.first == "type")
+      else if ( attribute.first == "type" )
       {
         type = attribute.second;
       }
@@ -13897,7 +13897,7 @@ void VulkanHppGenerator::readRequireEnum(
           checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second,
                          line,
                          "required enum <" + name + "> specified by value <" + value + "> is already specified" );
-          if (type == "uint32_t")
+          if ( type == "uint32_t" )
           {
             assert( !m_constants.contains( name ) );
             m_constants[name] = { type, value, line };
@@ -15366,11 +15366,6 @@ std::string generateStandardArray( std::string const & type, std::vector<std::st
 bool isAllUpper( std::string const & name )
 {
   return std::none_of( name.begin(), name.end(), []( auto const & c ) { return c != toupper( c ); } );
-}
-
-bool isNumber( std::string const & name )
-{
-  return name.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
 std::string readSnippet( std::string const & snippetFile )

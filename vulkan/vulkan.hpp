@@ -55,7 +55,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 265, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 266, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5717,6 +5717,36 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetDynamicRenderingTilePropertiesQCOM( device, pRenderingInfo, pProperties );
     }
 
+    //=== VK_NV_low_latency2 ===
+
+    VkResult vkSetLatencySleepModeNV( VkDevice device, VkSwapchainKHR swapchain, VkLatencySleepModeInfoNV * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSetLatencySleepModeNV( device, swapchain, pSleepModeInfo );
+    }
+
+    VkResult vkLatencySleepNV( VkDevice device, VkSwapchainKHR swapchain, VkLatencySleepInfoNV * pSleepInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkLatencySleepNV( device, swapchain, pSleepInfo );
+    }
+
+    void vkSetLatencyMarkerNV( VkDevice device, VkSwapchainKHR swapchain, VkSetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkSetLatencyMarkerNV( device, swapchain, pLatencyMarkerInfo );
+    }
+
+    void vkGetLatencyTimingsNV( VkDevice                   device,
+                                VkSwapchainKHR             swapchain,
+                                uint32_t *                 pTimingCount,
+                                VkGetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetLatencyTimingsNV( device, swapchain, pTimingCount, pLatencyMarkerInfo );
+    }
+
+    void vkQueueNotifyOutOfBandNV( VkQueue queue, VkOutOfBandQueueTypeInfoNV pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkQueueNotifyOutOfBandNV( queue, pQueueTypeInfo );
+    }
+
     //=== VK_KHR_cooperative_matrix ===
 
     VkResult vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR( VkPhysicalDevice                   physicalDevice,
@@ -9354,6 +9384,33 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<ExternalFormatANDROID, SamplerYcbcrConversionCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatANDROID, AttachmentDescription2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatANDROID, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ExternalFormatANDROID, CommandBufferInheritanceInfo>
   {
     enum
     {
@@ -13311,6 +13368,45 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+#  if defined( VK_USE_PLATFORM_ANDROID_KHR )
+  //=== VK_ANDROID_external_format_resolve ===
+  template <>
+  struct StructExtends<PhysicalDeviceExternalFormatResolveFeaturesANDROID, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalFormatResolveFeaturesANDROID, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExternalFormatResolvePropertiesANDROID, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<AndroidHardwareBufferFormatResolvePropertiesANDROID, AndroidHardwareBufferPropertiesANDROID>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
+
   //=== VK_KHR_maintenance5 ===
   template <>
   struct StructExtends<PhysicalDeviceMaintenance5FeaturesKHR, PhysicalDeviceFeatures2>
@@ -13655,6 +13751,43 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_NV_low_latency2 ===
+  template <>
+  struct StructExtends<LatencySubmissionPresentIdNV, SubmitInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<LatencySubmissionPresentIdNV, SubmitInfo2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<SwapchainLatencyCreateInfoNV, SwapchainCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<LatencySurfaceCapabilitiesNV, SurfaceCapabilities2KHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_cooperative_matrix ===
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrixFeaturesKHR, PhysicalDeviceFeatures2>
@@ -13979,7 +14112,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif
@@ -15131,6 +15264,13 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_QCOM_tile_properties ===
     PFN_vkGetFramebufferTilePropertiesQCOM      vkGetFramebufferTilePropertiesQCOM      = 0;
     PFN_vkGetDynamicRenderingTilePropertiesQCOM vkGetDynamicRenderingTilePropertiesQCOM = 0;
+
+    //=== VK_NV_low_latency2 ===
+    PFN_vkSetLatencySleepModeNV  vkSetLatencySleepModeNV  = 0;
+    PFN_vkLatencySleepNV         vkLatencySleepNV         = 0;
+    PFN_vkSetLatencyMarkerNV     vkSetLatencyMarkerNV     = 0;
+    PFN_vkGetLatencyTimingsNV    vkGetLatencyTimingsNV    = 0;
+    PFN_vkQueueNotifyOutOfBandNV vkQueueNotifyOutOfBandNV = 0;
 
     //=== VK_KHR_cooperative_matrix ===
     PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR = 0;
@@ -16493,6 +16633,13 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetDynamicRenderingTilePropertiesQCOM =
         PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetInstanceProcAddr( instance, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
 
+      //=== VK_NV_low_latency2 ===
+      vkSetLatencySleepModeNV  = PFN_vkSetLatencySleepModeNV( vkGetInstanceProcAddr( instance, "vkSetLatencySleepModeNV" ) );
+      vkLatencySleepNV         = PFN_vkLatencySleepNV( vkGetInstanceProcAddr( instance, "vkLatencySleepNV" ) );
+      vkSetLatencyMarkerNV     = PFN_vkSetLatencyMarkerNV( vkGetInstanceProcAddr( instance, "vkSetLatencyMarkerNV" ) );
+      vkGetLatencyTimingsNV    = PFN_vkGetLatencyTimingsNV( vkGetInstanceProcAddr( instance, "vkGetLatencyTimingsNV" ) );
+      vkQueueNotifyOutOfBandNV = PFN_vkQueueNotifyOutOfBandNV( vkGetInstanceProcAddr( instance, "vkQueueNotifyOutOfBandNV" ) );
+
       //=== VK_KHR_cooperative_matrix ===
       vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR =
         PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixPropertiesKHR" ) );
@@ -17499,6 +17646,13 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetFramebufferTilePropertiesQCOM = PFN_vkGetFramebufferTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetFramebufferTilePropertiesQCOM" ) );
       vkGetDynamicRenderingTilePropertiesQCOM =
         PFN_vkGetDynamicRenderingTilePropertiesQCOM( vkGetDeviceProcAddr( device, "vkGetDynamicRenderingTilePropertiesQCOM" ) );
+
+      //=== VK_NV_low_latency2 ===
+      vkSetLatencySleepModeNV  = PFN_vkSetLatencySleepModeNV( vkGetDeviceProcAddr( device, "vkSetLatencySleepModeNV" ) );
+      vkLatencySleepNV         = PFN_vkLatencySleepNV( vkGetDeviceProcAddr( device, "vkLatencySleepNV" ) );
+      vkSetLatencyMarkerNV     = PFN_vkSetLatencyMarkerNV( vkGetDeviceProcAddr( device, "vkSetLatencyMarkerNV" ) );
+      vkGetLatencyTimingsNV    = PFN_vkGetLatencyTimingsNV( vkGetDeviceProcAddr( device, "vkGetLatencyTimingsNV" ) );
+      vkQueueNotifyOutOfBandNV = PFN_vkQueueNotifyOutOfBandNV( vkGetDeviceProcAddr( device, "vkQueueNotifyOutOfBandNV" ) );
 
       //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
       vkCmdSetAttachmentFeedbackLoopEnableEXT =

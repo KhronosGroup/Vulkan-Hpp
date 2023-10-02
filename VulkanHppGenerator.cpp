@@ -2350,10 +2350,18 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       }
       else if ( params[i].type.isNonConstPointer() )
       {
-        assert( withDispatcher || !isHandleType( params[i].type.type ) );
-        assert( params[i].lenExpression.empty() && !params[i].optional );
-        assert( composedType.ends_with( " *" ) );
-        argumentList += stripPostfix( composedType, " *" ) + " & " + params[i].name;
+        if ( ( params[i].type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) )
+        {
+          argumentList += composedType + " ";
+        }
+        else
+        {
+          assert( withDispatcher || !isHandleType( params[i].type.type ) );
+          assert( params[i].lenExpression.empty() && !params[i].optional );
+          assert( composedType.ends_with( " *" ) );
+          argumentList += stripPostfix( composedType, " *" ) + " & ";
+        }
+        argumentList += params[i].name;
       }
       else
       {
@@ -2671,7 +2679,8 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
                                                                bool                     nonConstPointerAsNullptr,
                                                                std::set<size_t> const & singularParams,
                                                                std::set<size_t> const & templatedParams,
-                                                               bool                     raiiHandleMemberFunction ) const
+                                                               bool                     raiiHandleMemberFunction,
+                                                               CommandFlavourFlags      flavourFlags ) const
 {
   assert( initialSkipCount <= commandData.params.size() );
   std::string arguments;
@@ -2724,7 +2733,7 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
     {
       arguments += ", ";
     }
-    arguments += generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams );
+    arguments += generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams, flavourFlags );
     encounteredArgument = true;
   }
   return arguments;
@@ -2809,7 +2818,8 @@ std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamD
                                                               size_t                         paramIndex,
                                                               bool                           nonConstPointerAsNullptr,
                                                               std::set<size_t> const &       singularParams,
-                                                              std::set<size_t> const &       templatedParams ) const
+                                                              std::set<size_t> const &       templatedParams,
+                                                              CommandFlavourFlags            flavourFlags ) const
 {
   std::string       argument;
   ParamData const & param = params[paramIndex];
@@ -2818,14 +2828,15 @@ std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamD
     // parameter is a const-pointer or one of the special pointer types that are considered to be const-pointers
     argument = generateCallArgumentEnhancedConstPointer( param, paramIndex, singularParams, templatedParams );
   }
-  else if ( param.type.isNonConstPointer() && !specialPointerTypes.contains( param.type.type ) )
+  else if ( param.type.isNonConstPointer() && !specialPointerTypes.contains( param.type.type ) &&
+            !( ( param.type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
   {
-    // parameter is a non-const pointer and none of the special pointer types, that are considered const-pointers
+    // parameter is a non-const pointer, none of the special pointer types, that are considered const-pointers, and no void-ptr to keep
     argument = generateCallArgumentEnhancedNonConstPointer( param, paramIndex, nonConstPointerAsNullptr, singularParams );
   }
   else
   {
-    argument = generateCallArgumentEnhancedValue( params, paramIndex, singularParams );
+    argument = generateCallArgumentEnhancedValue( params, paramIndex, singularParams, flavourFlags );
   }
   assert( !argument.empty() );
   return argument;
@@ -2951,11 +2962,12 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
 
 std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<ParamData> const & params,
                                                                    size_t                         paramIndex,
-                                                                   std::set<size_t> const &       singularParams ) const
+                                                                   std::set<size_t> const &       singularParams,
+                                                                   CommandFlavourFlags            flavourFlags ) const
 {
   std::string       argument;
   ParamData const & param = params[paramIndex];
-  assert( param.lenExpression.empty() );
+  assert( ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) || param.lenExpression.empty() );  // !keepVoidPtr -> no lenExpression
   if ( param.type.type.starts_with( "Vk" ) )
   {
     if ( param.arraySizes.empty() )
@@ -2989,7 +3001,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue( std::vector<P
   else
   {
     auto pointerIt = std::find_if( params.begin(), params.end(), [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } );
-    if ( pointerIt != params.end() )
+    if ( ( pointerIt != params.end() ) && !( ( pointerIt->type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ) )
     {
       // this parameter is the len of some other -> replace it with that parameter's size
       assert( param.arraySizes.empty() );
@@ -3059,8 +3071,8 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
     assert( std::any_of( returnParams.begin(), returnParams.end(), [&vectorParamIt]( size_t rp ) { return rp == vectorParamIt->first; } ) );
     assert( std::any_of( returnParams.begin(), returnParams.end(), [&vectorParamIt]( size_t rp ) { return rp == vectorParamIt->second.lenParam; } ) );
 
-    std::string firstCallArguments  = generateCallArgumentsEnhanced( commandData, initialSkipCount, true, {}, templatedParams, raii );
-    std::string secondCallArguments = generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, raii );
+    std::string firstCallArguments  = generateCallArgumentsEnhanced( commandData, initialSkipCount, true, {}, templatedParams, raii, flavourFlags );
+    std::string secondCallArguments = generateCallArgumentsEnhanced( commandData, initialSkipCount, false, {}, templatedParams, raii, flavourFlags );
     std::string vectorName          = startLowerCase( stripPrefix( commandData.params[vectorParamIt->first].name, "p" ) );
     std::string vectorSize          = startLowerCase( stripPrefix( commandData.params[vectorParamIt->second.lenParam].name, "p" ) );
 
@@ -3196,7 +3208,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
   {
     std::string const callSequenceTemplate = R"(${resultAssignment}${dispatcher}${vkCommand}( ${callArguments} );)";
 
-    std::string callArguments    = generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, raii );
+    std::string callArguments    = generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, raii, flavourFlags );
     std::string resultAssignment = generateResultAssignment( commandData );
 
     return replaceWithMap(
@@ -3354,8 +3366,8 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   assert( !singular || !returnParams.empty() );  // if singular is true, then there is at least one returnParam !
 
   std::set<size_t> skippedParams = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, returnParams, singular );
-  // special handling for vkGetMemoryHostPointerPropertiesEXT: here, we really need to stick with the const void * parameter !
-  std::set<size_t> templatedParams = ( name == "vkGetMemoryHostPointerPropertiesEXT" ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
+  std::set<size_t> templatedParams =
+    ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
   std::vector<size_t> chainedReturnParams;
   if ( chained )
   {
@@ -4149,17 +4161,16 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
   switch ( vectorParams.size() )
   {
     case 0:
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced },
-                                          raii,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced } );
+      {
+        CommandFlavourFlags flavourFlags = CommandFlavourFlagBits::enhanced;
+        if ( name == "vkGetMemoryHostPointerPropertiesEXT" )
+        {
+          // special handling for this function: need to keep the void* argument as a void*!
+          flavourFlags |= CommandFlavourFlagBits::keepVoidPtr;
+        }
+        return generateCommandSetInclusive(
+          name, commandData, initialSkipCount, definition, { returnParam }, vectorParams, false, { flavourFlags }, raii, false, { flavourFlags } );
+      }
     case 2:
       if ( returnParam == std::next( vectorParams.begin() )->first )
       {
@@ -4419,13 +4430,20 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
                                                              bool                                     raiiFactory,
                                                              std::vector<CommandFlavourFlags> const & raiiFlags ) const
 {
+  static const std::vector<size_t>               emptyReturnParams;
+  static const std::map<size_t, VectorParamData> emptyVectorParams;
   if ( raii )
   {
     std::string raiiCommands;
     for ( auto flag : raiiFlags )
     {
-      raiiCommands += raiiFactory ? generateRAIIHandleCommandFactory( name, commandData, initialSkipCount, returnParams, vectorParams, definition, flag )
-                                  : generateRAIIHandleCommandEnhanced( name, commandData, initialSkipCount, returnParams, vectorParams, definition, flag );
+      bool noReturn = flag & CommandFlavourFlagBits::noReturn;
+      assert( !noReturn || !raiiFactory );  // noReturn => !raiiFactory
+      raiiCommands +=
+        raiiFactory
+          ? generateRAIIHandleCommandFactory( name, commandData, initialSkipCount, returnParams, vectorParams, definition, flag )
+          : generateRAIIHandleCommandEnhanced(
+              name, commandData, initialSkipCount, noReturn ? emptyReturnParams : returnParams, noReturn ? emptyVectorParams : vectorParams, definition, flag );
     }
     return raiiCommands;
   }
@@ -4434,7 +4452,10 @@ std::string VulkanHppGenerator::generateCommandSetInclusive( std::string const &
     std::vector<std::string> enhancedCommands, uniqueCommands;
     for ( auto flag : flags )
     {
-      enhancedCommands.push_back( generateCommandEnhanced( name, commandData, initialSkipCount, definition, vectorParams, returnParams, flag ) );
+      bool noReturn = flag & CommandFlavourFlagBits::noReturn;
+      assert( !noReturn || !unique );  // noReturn => !unique
+      enhancedCommands.push_back( generateCommandEnhanced(
+        name, commandData, initialSkipCount, definition, noReturn ? emptyVectorParams : vectorParams, noReturn ? emptyReturnParams : returnParams, flag ) );
       if ( unique )
       {
         uniqueCommands.push_back(
@@ -4607,17 +4628,15 @@ std::string VulkanHppGenerator::generateCommandVoid1Return(
         {
           if ( name == stripPluralS( name ) )
           {
-            return generateCommandSetInclusive( name,
-                                                commandData,
-                                                initialSkipCount,
-                                                definition,
-                                                { returnParam },
-                                                vectorParams,
-                                                false,
-                                                { CommandFlavourFlagBits::singular },
-                                                raii,
-                                                false,
-                                                { CommandFlavourFlagBits::singular } );
+            std::vector<CommandFlavourFlags> flavourFlags;
+            if ( name == "vkGetDescriptorEXT" )
+            {
+              // special handling for this function: do not return the void*, but keep its argument as it is
+              flavourFlags.push_back( CommandFlavourFlagBits::noReturn | CommandFlavourFlagBits::keepVoidPtr );
+            }
+            flavourFlags.push_back( CommandFlavourFlagBits::singular );
+            return generateCommandSetInclusive(
+              name, commandData, initialSkipCount, definition, { returnParam }, vectorParams, false, flavourFlags, raii, false, flavourFlags );
           }
         }
         break;
@@ -8340,8 +8359,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
 
   std::set<size_t> skippedParams  = determineSkippedParams( commandData.params, initialSkipCount, vectorParams, returnParams, singular );
   std::set<size_t> singularParams = singular ? determineSingularParams( returnParams[0], vectorParams ) : std::set<size_t>();
-  // special handling for vkGetMemoryHostPointerPropertiesEXT: here, we really need to stick with the const void * parameter !
-  std::set<size_t> templatedParams = ( name == "vkGetMemoryHostPointerPropertiesEXT" ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
+  std::set<size_t> templatedParams =
+    ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) ? std::set<size_t>() : determineVoidPointerParams( commandData.params );
   std::vector<size_t> chainedReturnParams =
     ( flavourFlags & CommandFlavourFlagBits::chained ) ? determineChainedReturnParams( commandData.params, returnParams ) : std::vector<size_t>();
   assert( chainedReturnParams.size() <= 1 );
@@ -8788,7 +8807,7 @@ std::string
     else
     {
       assert( !param.optional );
-      arguments += generateCallArgumentEnhanced( constructorIt->second.params, i, nonConstPointerAsNullptr, singularParams, {} );
+      arguments += generateCallArgumentEnhanced( constructorIt->second.params, i, nonConstPointerAsNullptr, singularParams, {}, {} );
     }
     encounteredArgument = true;
   }

@@ -4203,6 +4203,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_descriptor_buffer ===
 
+      void getDescriptorEXT( const VULKAN_HPP_NAMESPACE::DescriptorGetInfoEXT & descriptorInfo, size_t dataSize, void * pDescriptor ) const VULKAN_HPP_NOEXCEPT;
+
       template <typename DescriptorType>
       VULKAN_HPP_NODISCARD DescriptorType getDescriptorEXT( const VULKAN_HPP_NAMESPACE::DescriptorGetInfoEXT & descriptorInfo ) const VULKAN_HPP_NOEXCEPT;
 
@@ -19149,6 +19151,16 @@ namespace VULKAN_HPP_NAMESPACE
         static_cast<VkDevice>( m_device ), static_cast<VkDescriptorSetLayout>( m_descriptorSetLayout ), binding, reinterpret_cast<VkDeviceSize *>( &offset ) );
 
       return offset;
+    }
+
+    VULKAN_HPP_INLINE void Device::getDescriptorEXT( const VULKAN_HPP_NAMESPACE::DescriptorGetInfoEXT & descriptorInfo,
+                                                     size_t                                             dataSize,
+                                                     void *                                             pDescriptor ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetDescriptorEXT && "Function <vkGetDescriptorEXT> requires <VK_EXT_descriptor_buffer>" );
+
+      getDispatcher()->vkGetDescriptorEXT(
+        static_cast<VkDevice>( m_device ), reinterpret_cast<const VkDescriptorGetInfoEXT *>( &descriptorInfo ), dataSize, pDescriptor );
     }
 
     template <typename DescriptorType>

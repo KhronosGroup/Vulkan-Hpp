@@ -36,6 +36,12 @@ public:
 
   constexpr explicit Flags( MaskType flags ) noexcept : m_mask( flags ) {}
 
+  constexpr Flags<BitType> & operator|=( Flags<BitType> const & rhs ) noexcept
+  {
+    m_mask |= rhs.m_mask;
+    return *this;
+  }
+
   constexpr bool operator!() const noexcept
   {
     return !m_mask;
@@ -66,7 +72,9 @@ enum class CommandFlavourFlagBits : uint8_t
   chained       = 1 << 1,
   singular      = 1 << 2,
   unique        = 1 << 3,
-  withAllocator = 1 << 4
+  withAllocator = 1 << 4,
+  noReturn      = 1 << 5,
+  keepVoidPtr   = 1 << 6
 };
 using CommandFlavourFlags = Flags<CommandFlavourFlagBits>;
 
@@ -479,7 +487,8 @@ private:
                                              bool                     nonConstPointerAsNullptr,
                                              std::set<size_t> const & singularParams,
                                              std::set<size_t> const & templatedParams,
-                                             bool                     raiiHandleMemberFunction ) const;
+                                             bool                     raiiHandleMemberFunction,
+                                             CommandFlavourFlags      flavourFlags ) const;
   std::string generateCallArgumentsRAIIFactory( std::vector<ParamData> const & params,
                                                 size_t                         initialSkipCount,
                                                 std::set<size_t> const &       skippedParams,
@@ -489,7 +498,8 @@ private:
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
                                             std::set<size_t> const &       singularParams,
-                                            std::set<size_t> const &       templatedParams ) const;
+                                            std::set<size_t> const &       templatedParams,
+                                            CommandFlavourFlags            flavourFlags ) const;
   std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
                                                         size_t                   paramIndex,
                                                         std::set<size_t> const & singularParams,
@@ -498,7 +508,10 @@ private:
                                                            size_t                   paramIndex,
                                                            bool                     nonConstPointerAsNullptr,
                                                            std::set<size_t> const & singularParams ) const;
-  std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params, size_t paramIndex, std::set<size_t> const & singularParams ) const;
+  std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params,
+                                                 size_t                         paramIndex,
+                                                 std::set<size_t> const &       singularParams,
+                                                 CommandFlavourFlags            flavourFlags ) const;
   std::string generateCallSequence( std::string const &                       name,
                                     CommandData const &                       commandData,
                                     std::vector<size_t> const &               returnParams,

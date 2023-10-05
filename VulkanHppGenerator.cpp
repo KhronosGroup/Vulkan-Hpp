@@ -617,6 +617,33 @@ namespace VULKAN_HPP_NAMESPACE
 ${RAIIDispatchers}
 ${RAIIHandles}
 ${RAIICommandDefinitions}
+
+    //====================
+    //=== RAII Helpers ===
+    //====================
+
+    template <typename RAIIType>
+    std::vector<typename RAIIType::CppType> filterCppTypes( std::vector<RAIIType> const & raiiTypes )
+    {
+      std::vector<typename RAIIType::CppType> cppTypes( raiiTypes.size() );
+      std::transform( raiiTypes.begin(), raiiTypes.end(), cppTypes.begin(), []( RAIIType const & d ) { return *d; } );
+      return cppTypes;
+    }
+
+    template <typename RAIIType, class UnaryPredicate>
+    std::vector<typename RAIIType::CppType> filterCppTypes( std::vector<RAIIType> const & raiiTypes, UnaryPredicate p)
+    {
+      std::vector<typename RAIIType::CppType> cppTypes;
+      for (auto const& t : raiiTypes)
+      {
+        if (p(t))
+        {
+          cppTypes.push_back( *t );
+        }
+      }
+      return cppTypes;
+    }
+
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
@@ -8133,6 +8160,7 @@ ${enter}  class ${handleType}
   {
   public:
     using CType = Vk${handleType};
+    using CppType = vk::${handleType};
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};

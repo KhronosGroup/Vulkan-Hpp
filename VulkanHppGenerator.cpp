@@ -5426,9 +5426,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderDynamic" };
   auto const hardCodedEnhancedModeTypes =
-    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain", "UniqueHandle", "SharedHandle" };
+    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
   auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy",       "ObjectFree",       "ObjectRelease",       "PoolFree",
-                                                     "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared" };
+                                                     "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared",
+                                                     "SharedHandle",        "UniqueHandle"};
 
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===

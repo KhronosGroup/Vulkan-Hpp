@@ -45,10 +45,8 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ArrayProxy;
   using VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries;
   using VULKAN_HPP_NAMESPACE::Optional;
-  using VULKAN_HPP_NAMESPACE::SharedHandle;
   using VULKAN_HPP_NAMESPACE::StridedArrayProxy;
   using VULKAN_HPP_NAMESPACE::StructureChain;
-  using VULKAN_HPP_NAMESPACE::UniqueHandle;
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
@@ -60,6 +58,8 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ObjectReleaseShared;
   using VULKAN_HPP_NAMESPACE::PoolFree;
   using VULKAN_HPP_NAMESPACE::PoolFreeShared;
+  using VULKAN_HPP_NAMESPACE::SharedHandle;
+  using VULKAN_HPP_NAMESPACE::UniqueHandle;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //==================

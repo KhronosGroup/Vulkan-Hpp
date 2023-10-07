@@ -8243,6 +8243,37 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV const & physicalDeviceExtendedSparseAddressSpaceFeaturesNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpaceFeaturesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpaceFeaturesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpaceFeaturesNV.extendedSparseAddressSpace );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpacePropertiesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpacePropertiesNV const &
+                              physicalDeviceExtendedSparseAddressSpacePropertiesNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpacePropertiesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpacePropertiesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpacePropertiesNV.extendedSparseAddressSpaceSize );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpacePropertiesNV.extendedSparseImageUsageFlags );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceExtendedSparseAddressSpacePropertiesNV.extendedSparseBufferUsageFlags );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalBufferInfo>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceExternalBufferInfo const & physicalDeviceExternalBufferInfo ) const VULKAN_HPP_NOEXCEPT
@@ -9712,6 +9743,36 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceMutableDescriptorTypeFeaturesEXT.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceMutableDescriptorTypeFeaturesEXT.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceMutableDescriptorTypeFeaturesEXT.mutableDescriptorType );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferFeaturesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferFeaturesEXT const & physicalDeviceNestedCommandBufferFeaturesEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferFeaturesEXT.nestedCommandBuffer );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferFeaturesEXT.nestedCommandBufferRendering );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferFeaturesEXT.nestedCommandBufferSimultaneousUse );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferPropertiesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferPropertiesEXT const & physicalDeviceNestedCommandBufferPropertiesEXT ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferPropertiesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferPropertiesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceNestedCommandBufferPropertiesEXT.maxCommandBufferNestingLevel );
       return seed;
     }
   };

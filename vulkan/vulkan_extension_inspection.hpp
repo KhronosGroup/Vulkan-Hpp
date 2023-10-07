@@ -376,6 +376,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_linear_color_attachment",
       "VK_EXT_image_compression_control_swapchain",
       "VK_QCOM_image_processing",
+      "VK_EXT_nested_command_buffer",
       "VK_EXT_external_memory_acquire_unmodified",
       "VK_EXT_extended_dynamic_state3",
       "VK_EXT_subpass_merge_feedback",
@@ -394,6 +395,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_SEC_amigo_profiling",
       "VK_QCOM_multiview_per_view_viewports",
       "VK_NV_ray_tracing_invocation_reorder",
+      "VK_NV_extended_sparse_address_space",
       "VK_EXT_mutable_descriptor_type",
       "VK_ARM_shader_core_builtins",
       "VK_EXT_pipeline_library_group_handles",
@@ -1836,6 +1838,11 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_format_feature_flags2",
             } } } } },
+      { "VK_EXT_nested_command_buffer",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } },
       { "VK_EXT_external_memory_acquire_unmodified",
         { { "VK_VERSION_1_0",
             { {
@@ -2709,21 +2716,22 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NV_copy_memory_indirect" ) || ( extension == "VK_NV_memory_decompression" ) ||
            ( extension == "VK_NV_device_generated_commands_compute" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
            ( extension == "VK_EXT_image_compression_control_swapchain" ) || ( extension == "VK_QCOM_image_processing" ) ||
-           ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
-           ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||
-           ( extension == "VK_EXT_rasterization_order_attachment_access" ) || ( extension == "VK_NV_optical_flow" ) ||
-           ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
+           ( extension == "VK_EXT_nested_command_buffer" ) || ( extension == "VK_EXT_external_memory_acquire_unmodified" ) ||
+           ( extension == "VK_EXT_extended_dynamic_state3" ) || ( extension == "VK_EXT_subpass_merge_feedback" ) ||
+           ( extension == "VK_EXT_shader_module_identifier" ) || ( extension == "VK_EXT_rasterization_order_attachment_access" ) ||
+           ( extension == "VK_NV_optical_flow" ) || ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
         || ( extension == "VK_ANDROID_external_format_resolve" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/
         || ( extension == "VK_KHR_maintenance5" ) || ( extension == "VK_KHR_ray_tracing_position_fetch" ) || ( extension == "VK_EXT_shader_object" ) ||
            ( extension == "VK_QCOM_tile_properties" ) || ( extension == "VK_SEC_amigo_profiling" ) || ( extension == "VK_QCOM_multiview_per_view_viewports" ) ||
-           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_EXT_mutable_descriptor_type" ) ||
-           ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
-           ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_NV_low_latency2" ) ||
-           ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
-           ( extension == "VK_QCOM_image_processing2" ) || ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) ||
-           ( extension == "VK_QCOM_filter_cubic_clamp" ) || ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" )
+           ( extension == "VK_NV_ray_tracing_invocation_reorder" ) || ( extension == "VK_NV_extended_sparse_address_space" ) ||
+           ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_ARM_shader_core_builtins" ) ||
+           ( extension == "VK_EXT_pipeline_library_group_handles" ) || ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) ||
+           ( extension == "VK_NV_low_latency2" ) || ( extension == "VK_KHR_cooperative_matrix" ) ||
+           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_QCOM_image_processing2" ) ||
+           ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) || ( extension == "VK_QCOM_filter_cubic_clamp" ) ||
+           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" )
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
         || ( extension == "VK_QNX_external_memory_screen_buffer" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/

@@ -2569,6 +2569,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessingFeaturesQCOM;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageProcessingPropertiesQCOM;
 
+  //=== VK_EXT_nested_command_buffer ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceNestedCommandBufferPropertiesEXT;
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   using VULKAN_HPP_NAMESPACE::ExternalMemoryAcquireUnmodifiedEXT;
 
@@ -2656,6 +2660,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_invocation_reorder ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderFeaturesNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingInvocationReorderPropertiesNV;
+
+  //=== VK_NV_extended_sparse_address_space ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedSparseAddressSpacePropertiesNV;
 
   //=== VK_EXT_mutable_descriptor_type ===
   using VULKAN_HPP_NAMESPACE::MutableDescriptorTypeCreateInfoEXT;

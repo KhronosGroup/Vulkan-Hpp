@@ -71,8 +71,8 @@ function( vulkan_hpp__setup_vulkan_include )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 	
 	if( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}" )
-		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
+		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}" )
+		target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Vulkan-Headers/include" )
 		if( VULKAN_HPP_RUN_GENERATOR )
 			add_dependencies( ${TARGET_NAME} build_vulkan_hpp )
 		endif()
@@ -269,7 +269,7 @@ function( vulkan_hpp__setup_test )
 
 	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD ${TARGET_CXX_STANDARD} CXX_STANDARD_REQUIRED ON FOLDER "Tests" )
 	target_include_directories( ${TARGET_NAME} PUBLIC ${VulkanHeaders_INCLUDE_DIR} )
-	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/glm" )
+	target_include_directories( ${TARGET_NAME} PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/glm" )
 	if ( NOT ${TARGET_NO_UTILS} )
 		target_link_libraries( ${TARGET_NAME} PRIVATE utils )
 	endif()
@@ -361,15 +361,15 @@ if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
 	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
 	target_sources( VulkanHppModule
 		PUBLIC
-		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
-	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_SOURCE_DIR} )
-	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_SOURCE_DIR}/Vulkan-Headers/include" )
+		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )
+	target_include_directories( VulkanHppModule PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
+	target_include_directories( VulkanHppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Vulkan-Headers/include" )
 endif()
 
 # The generator executable
 add_executable( VulkanHppGenerator VulkanHppGenerator.cpp VulkanHppGenerator.hpp XMLHelper.hpp ${TINYXML2_SOURCES} ${TINYXML2_HEADERS} )
 vulkan_hpp__setup_warning_level( NAME VulkanHppGenerator )
-target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
+target_compile_definitions( VulkanHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VK_SPEC="${vk_spec}" )
 target_include_directories( VulkanHppGenerator PRIVATE ${VULKAN_HPP_TINYXML2_SRC_DIR} )
 set_target_properties( VulkanHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 
@@ -378,7 +378,7 @@ add_executable( VideoHppGenerator VideoHppGenerator.cpp VideoHppGenerator.hpp XM
 vulkan_hpp__setup_warning_level( NAME VideoHppGenerator )
 file( TO_NATIVE_PATH ${VulkanRegistry_DIR}/video.xml video_spec )
 string( REPLACE "\\" "\\\\" video_spec ${video_spec} )
-target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
+target_compile_definitions( VideoHppGenerator PUBLIC BASE_PATH="${CMAKE_CURRENT_SOURCE_DIR}" VIDEO_SPEC="${video_spec}" )
 target_include_directories( VideoHppGenerator PRIVATE  ${VULKAN_HPP_TINYXML2_SRC_DIR} )
 set_target_properties( VideoHppGenerator PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON )
 

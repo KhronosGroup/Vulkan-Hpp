@@ -677,7 +677,7 @@ Some functions might provide information that depends on the vulkan version. As 
 
 #### Note on MS Visual Studio 2022
 
-The current version of MS Visual Studio 2022 is not able to handle the vulkan.cppm module. A bug is filed (https://developercommunity.visualstudio.com/t/On-building-a-C20-module:-fatal--error/10469799#T-ND10485943).
+The current version of MS Visual Studio 2022 is not able to handle the vulkan.cppm module. A bug is filed (https://developercommunity.visualstudio.com/t/On-building-a-C20-module:-fatal--error/10469799#T-ND10485943). You can at least use this feature if you don't need or want to use `vk::UniqueHandle` or `vk::SharedHandle` by defining `VULKAN_HPP_NO_SMART_HANDLE`.
 
 #### Overview
 

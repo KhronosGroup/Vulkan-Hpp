@@ -1282,6 +1282,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceImageProcessingFeaturesQCOM                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_FEATURES_QCOM,
     ePhysicalDeviceImageProcessingPropertiesQCOM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_PROCESSING_PROPERTIES_QCOM,
     eImageViewSampleWeightCreateInfoQCOM                         = VK_STRUCTURE_TYPE_IMAGE_VIEW_SAMPLE_WEIGHT_CREATE_INFO_QCOM,
+    ePhysicalDeviceNestedCommandBufferFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_FEATURES_EXT,
+    ePhysicalDeviceNestedCommandBufferPropertiesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_NESTED_COMMAND_BUFFER_PROPERTIES_EXT,
     eExternalMemoryAcquireUnmodifiedEXT                          = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_ACQUIRE_UNMODIFIED_EXT,
     ePhysicalDeviceExtendedDynamicState3FeaturesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
     ePhysicalDeviceExtendedDynamicState3PropertiesEXT            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_PROPERTIES_EXT,
@@ -1330,6 +1332,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_VIEWPORTS_FEATURES_QCOM,
     ePhysicalDeviceRayTracingInvocationReorderFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_FEATURES_NV,
     ePhysicalDeviceRayTracingInvocationReorderPropertiesNV       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV,
+    ePhysicalDeviceExtendedSparseAddressSpaceFeaturesNV          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_FEATURES_NV,
+    ePhysicalDeviceExtendedSparseAddressSpacePropertiesNV        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_SPARSE_ADDRESS_SPACE_PROPERTIES_NV,
     ePhysicalDeviceMutableDescriptorTypeFeaturesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MUTABLE_DESCRIPTOR_TYPE_FEATURES_EXT,
     eMutableDescriptorTypeCreateInfoEXT                          = VK_STRUCTURE_TYPE_MUTABLE_DESCRIPTOR_TYPE_CREATE_INFO_EXT,
     ePhysicalDeviceShaderCoreBuiltinsFeaturesARM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_BUILTINS_FEATURES_ARM,
@@ -3468,8 +3472,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class SubpassContents
   {
-    eInline                  = VK_SUBPASS_CONTENTS_INLINE,
-    eSecondaryCommandBuffers = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS
+    eInline                              = VK_SUBPASS_CONTENTS_INLINE,
+    eSecondaryCommandBuffers             = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS,
+    eInlineAndSecondaryCommandBuffersEXT = VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT
   };
 
   //=== VK_VERSION_1_1 ===
@@ -4178,6 +4183,7 @@ namespace VULKAN_HPP_NAMESPACE
     eContentsSecondaryCommandBuffers = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT,
     eSuspending                      = VK_RENDERING_SUSPENDING_BIT,
     eResuming                        = VK_RENDERING_RESUMING_BIT,
+    eContentsInlineEXT               = VK_RENDERING_CONTENTS_INLINE_BIT_EXT,
     eEnableLegacyDitheringEXT        = VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT
   };
   using RenderingFlagBitsKHR = RenderingFlagBits;
@@ -4190,7 +4196,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool           isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR RenderingFlags allFlags  = RenderingFlagBits::eContentsSecondaryCommandBuffers | RenderingFlagBits::eSuspending |
-                                                                   RenderingFlagBits::eResuming | RenderingFlagBits::eEnableLegacyDitheringEXT;
+                                                                   RenderingFlagBits::eResuming | RenderingFlagBits::eContentsInlineEXT |
+                                                                   RenderingFlagBits::eEnableLegacyDitheringEXT;
   };
 
   enum class FormatFeatureFlagBits2 : VkFormatFeatureFlags2

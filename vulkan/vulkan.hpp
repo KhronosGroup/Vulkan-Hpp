@@ -55,7 +55,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 266, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 267, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5719,17 +5719,17 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NV_low_latency2 ===
 
-    VkResult vkSetLatencySleepModeNV( VkDevice device, VkSwapchainKHR swapchain, VkLatencySleepModeInfoNV * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
+    VkResult vkSetLatencySleepModeNV( VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepModeInfoNV * pSleepModeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkSetLatencySleepModeNV( device, swapchain, pSleepModeInfo );
     }
 
-    VkResult vkLatencySleepNV( VkDevice device, VkSwapchainKHR swapchain, VkLatencySleepInfoNV * pSleepInfo ) const VULKAN_HPP_NOEXCEPT
+    VkResult vkLatencySleepNV( VkDevice device, VkSwapchainKHR swapchain, const VkLatencySleepInfoNV * pSleepInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkLatencySleepNV( device, swapchain, pSleepInfo );
     }
 
-    void vkSetLatencyMarkerNV( VkDevice device, VkSwapchainKHR swapchain, VkSetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+    void vkSetLatencyMarkerNV( VkDevice device, VkSwapchainKHR swapchain, const VkSetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkSetLatencyMarkerNV( device, swapchain, pLatencyMarkerInfo );
     }
@@ -5742,7 +5742,7 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetLatencyTimingsNV( device, swapchain, pTimingCount, pLatencyMarkerInfo );
     }
 
-    void vkQueueNotifyOutOfBandNV( VkQueue queue, VkOutOfBandQueueTypeInfoNV pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
+    void vkQueueNotifyOutOfBandNV( VkQueue queue, const VkOutOfBandQueueTypeInfoNV * pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkQueueNotifyOutOfBandNV( queue, pQueueTypeInfo );
     }
@@ -13089,6 +13089,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_nested_command_buffer ===
+  template <>
+  struct StructExtends<PhysicalDeviceNestedCommandBufferFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceNestedCommandBufferFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceNestedCommandBufferPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_external_memory_acquire_unmodified ===
   template <>
   struct StructExtends<ExternalMemoryAcquireUnmodifiedEXT, BufferMemoryBarrier>
@@ -13641,6 +13669,34 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceRayTracingInvocationReorderFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_extended_sparse_address_space ===
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedSparseAddressSpaceFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceExtendedSparseAddressSpacePropertiesNV, PhysicalDeviceProperties2>
   {
     enum
     {

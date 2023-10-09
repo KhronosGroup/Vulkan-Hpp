@@ -22801,76 +22801,73 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_low_latency2 ===
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setLatencySleepModeNV( VULKAN_HPP_NAMESPACE::SwapchainKHR             swapchain,
-                                                                               VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV * pSleepModeInfo,
-                                                                               Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::setLatencySleepModeNV( VULKAN_HPP_NAMESPACE::SwapchainKHR                   swapchain,
+                                                                               const VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV * pSleepModeInfo,
+                                                                               Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkSetLatencySleepModeNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkLatencySleepModeInfoNV *>( pSleepModeInfo ) ) );
+      d.vkSetLatencySleepModeNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepModeInfoNV *>( pSleepModeInfo ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV>::type
-                       Device::setLatencySleepModeNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::setLatencySleepModeNV( VULKAN_HPP_NAMESPACE::SwapchainKHR                   swapchain,
+                                                                                        const VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV & sleepModeInfo,
+                                                                                        Dispatch const &                                     d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV sleepModeInfo;
-    VkResult                                     result =
-      d.vkSetLatencySleepModeNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkLatencySleepModeInfoNV *>( &sleepModeInfo ) );
+    VkResult result =
+      d.vkSetLatencySleepModeNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepModeInfoNV *>( &sleepModeInfo ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::setLatencySleepModeNV" );
 
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), sleepModeInfo );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR         swapchain,
-                                                                        VULKAN_HPP_NAMESPACE::LatencySleepInfoNV * pSleepInfo,
-                                                                        Dispatch const &                           d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR               swapchain,
+                                                                        const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV * pSleepInfo,
+                                                                        Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkLatencySleepInfoNV *>( pSleepInfo ) ) );
+      d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( pSleepInfo ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::LatencySleepInfoNV>::type
-                       Device::latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type
+    Device::latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    VULKAN_HPP_NAMESPACE::LatencySleepInfoNV sleepInfo;
-    VkResult result = d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkLatencySleepInfoNV *>( &sleepInfo ) );
+    VkResult result = d.vkLatencySleepNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::latencySleepNV" );
 
-    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), sleepInfo );
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::setLatencyMarkerNV( VULKAN_HPP_NAMESPACE::SwapchainKHR             swapchain,
-                                                     VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV * pLatencyMarkerInfo,
-                                                     Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void Device::setLatencyMarkerNV( VULKAN_HPP_NAMESPACE::SwapchainKHR                   swapchain,
+                                                     const VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV * pLatencyMarkerInfo,
+                                                     Dispatch const &                                     d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkSetLatencyMarkerNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkSetLatencyMarkerInfoNV *>( pLatencyMarkerInfo ) );
+    d.vkSetLatencyMarkerNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkSetLatencyMarkerInfoNV *>( pLatencyMarkerInfo ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV Device::setLatencyMarkerNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
-                                                                                                                  Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void Device::setLatencyMarkerNV( VULKAN_HPP_NAMESPACE::SwapchainKHR                   swapchain,
+                                                     const VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV & latencyMarkerInfo,
+                                                     Dispatch const &                                     d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV latencyMarkerInfo;
-    d.vkSetLatencyMarkerNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkSetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
-
-    return latencyMarkerInfo;
+    d.vkSetLatencyMarkerNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<const VkSetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -22903,11 +22900,23 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Queue::notifyOutOfBandNV( VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV pQueueTypeInfo, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void Queue::notifyOutOfBandNV( const VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV * pQueueTypeInfo,
+                                                   Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkQueueNotifyOutOfBandNV( m_queue, static_cast<VkOutOfBandQueueTypeInfoNV>( pQueueTypeInfo ) );
+    d.vkQueueNotifyOutOfBandNV( m_queue, reinterpret_cast<const VkOutOfBandQueueTypeInfoNV *>( pQueueTypeInfo ) );
   }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Queue::notifyOutOfBandNV( const VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeInfoNV & queueTypeInfo,
+                                                   Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkQueueNotifyOutOfBandNV( m_queue, reinterpret_cast<const VkOutOfBandQueueTypeInfoNV *>( &queueTypeInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   //=== VK_KHR_cooperative_matrix ===
 

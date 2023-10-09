@@ -675,6 +675,10 @@ Some functions might provide information that depends on the vulkan version. As 
 
 ### C++20 standard module
 
+#### Note on MS Visual Studio 2022
+
+The current version of MS Visual Studio 2022 is not able to handle the vulkan.cppm module. A bug is filed (https://developercommunity.visualstudio.com/t/On-building-a-C20-module:-fatal--error/10469799#T-ND10485943).
+
 #### Overview
 
 <!-- todo: add a link to the file -->

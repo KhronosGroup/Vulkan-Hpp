@@ -905,35 +905,43 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
     for ( auto const & type : require.types )
     {
       auto bitmaskIt = m_bitmasks.find( type );
-      if ( ( bitmaskIt != m_bitmasks.end() ) && bitmaskIt->second.require.empty() )
+      if ( bitmaskIt != m_bitmasks.end() )
       {
-        // generate the flagBits enum name out of the bitmask name: VkFooFlagsXXX -> VkFooFlagBitsXXX
-        size_t pos = bitmaskIt->first.find( "Flags" );
-        assert( pos != std::string::npos );
-        std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
-
-        // as the bitmask's requirement is still empty, this flagBits should not be listed in the require list!
-        assert( std::none_of( require.types.begin(), require.types.end(), [&flagBits]( std::string const & type ) { return ( type == flagBits ); } ) );
-
-        bitmaskIt->second.require = flagBits;
-
-        // some flagsBits are specified but never listed as required for any flags!
-        // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
-        auto enumIt = m_enums.find( flagBits );
-        if ( enumIt == m_enums.end() )
+        if ( bitmaskIt->second.require.empty() )
         {
-          m_enums.insert( std::make_pair( flagBits, EnumData{ .isBitmask = true, .xmlLine = 0 } ) );
+          // generate the flagBits enum name out of the bitmask name: VkFooFlagsXXX -> VkFooFlagBitsXXX
+          size_t pos = bitmaskIt->first.find( "Flags" );
+          assert( pos != std::string::npos );
+          std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
 
-          assert( !m_types.contains( flagBits ) );
-          m_types.insert( std::make_pair( flagBits, TypeData{ TypeCategory::Bitmask, { requiredBy }, 0 } ) );
+          // as the bitmask's requirement is still empty, this flagBits should not be listed in the require list!
+          assert( std::none_of( require.types.begin(), require.types.end(), [&flagBits]( std::string const & type ) { return ( type == flagBits ); } ) );
+
+          bitmaskIt->second.require = flagBits;
+
+          // some flagsBits are specified but never listed as required for any flags!
+          // so, even if this bitmask has no enum listed as required, it might still already exist in the enums list
+          auto enumIt = m_enums.find( flagBits );
+          if ( enumIt == m_enums.end() )
+          {
+            m_enums.insert( std::make_pair( flagBits, EnumData{ .isBitmask = true, .xmlLine = 0 } ) );
+
+            assert( !m_types.contains( flagBits ) );
+            m_types.insert( std::make_pair( flagBits, TypeData{ TypeCategory::Bitmask, { requiredBy }, 0 } ) );
+          }
+          else
+          {
+            assert( m_types.contains( flagBits ) );
+            enumIt->second.isBitmask = true;
+          }
+
+          newTypes.push_back( flagBits );
         }
-        else
+        else if ( std::find( require.types.begin(), require.types.end(), bitmaskIt->second.require ) == require.types.end() )
         {
-          assert( m_types.contains( flagBits ) );
-          enumIt->second.isBitmask = true;
+          // this bitmask requires a flags type that is not listed in here, so add it
+          newTypes.push_back( bitmaskIt->second.require );
         }
-
-        newTypes.push_back( flagBits );
       }
     }
     // add all the newly created flagBits types to the require list as if they had been part of the vk.xml!
@@ -5425,11 +5433,9 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 )" };
 
   auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderDynamic" };
-  auto const hardCodedEnhancedModeTypes =
-    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
-  auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy",       "ObjectFree",       "ObjectRelease",       "PoolFree",
-                                                     "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared",
-                                                     "SharedHandle",        "UniqueHandle"};
+  auto const hardCodedEnhancedModeTypes = std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
+  auto const hardCodedSmartHandleTypes  = std::array{ "ObjectDestroy",    "ObjectFree",          "ObjectRelease",  "PoolFree",     "ObjectDestroyShared",
+                                                     "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared", "SharedHandle", "UniqueHandle" };
 
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===
@@ -13903,7 +13909,7 @@ void VulkanHppGenerator::readRequireEnum(
       {
         bitpos = attribute.second;
       }
-      if ( attribute.first == "extends" )
+      else if ( attribute.first == "extends" )
       {
         extends = attribute.second;
       }

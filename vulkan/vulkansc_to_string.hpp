@@ -2556,6 +2556,15 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+  VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case DeviceQueueCreateFlagBits::eProtected: return "Protected";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits value )
   {
     switch ( value )
@@ -2784,6 +2793,17 @@ namespace VULKAN_HPP_NAMESPACE
       case ImageViewType::e1DArray: return "1DArray";
       case ImageViewType::e2DArray: return "2DArray";
       case ImageViewType::eCubeArray: return "CubeArray";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineCacheCreateFlagBits::eExternallySynchronized: return "ExternallySynchronized";
+      case PipelineCacheCreateFlagBits::eReadOnly: return "ReadOnly";
+      case PipelineCacheCreateFlagBits::eUseApplicationStorage: return "UseApplicationStorage";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3101,6 +3121,11 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
   VULKAN_HPP_INLINE std::string to_string( PipelineInputAssemblyStateCreateFlagBits )
+  {
+    return "(void)";
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( PipelineLayoutCreateFlagBits )
   {
     return "(void)";
   }
@@ -3472,15 +3497,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case TessellationDomainOrigin::eUpperLeft: return "UpperLeft";
       case TessellationDomainOrigin::eLowerLeft: return "LowerLeft";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( DeviceQueueCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case DeviceQueueCreateFlagBits::eProtected: return "Protected";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3938,17 +3954,6 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case PipelineMatchControl::eApplicationUuidExactMatch: return "ApplicationUuidExactMatch";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case PipelineCacheCreateFlagBits::eExternallySynchronized: return "ExternallySynchronized";
-      case PipelineCacheCreateFlagBits::eReadOnly: return "ReadOnly";
-      case PipelineCacheCreateFlagBits::eUseApplicationStorage: return "UseApplicationStorage";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

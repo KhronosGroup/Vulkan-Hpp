@@ -1225,6 +1225,20 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR DeviceCreateFlags allFlags  = {};
   };
 
+  enum class DeviceQueueCreateFlagBits : VkDeviceQueueCreateFlags
+  {
+    eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
+  };
+
+  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
+
+  template <>
+  struct FlagTraits<DeviceQueueCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                   isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR DeviceQueueCreateFlags allFlags  = DeviceQueueCreateFlagBits::eProtected;
+  };
+
   enum class PipelineStageFlagBits : VkPipelineStageFlags
   {
     eTopOfPipe                        = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1541,6 +1555,23 @@ namespace VULKAN_HPP_NAMESPACE
     e1DArray   = VK_IMAGE_VIEW_TYPE_1D_ARRAY,
     e2DArray   = VK_IMAGE_VIEW_TYPE_2D_ARRAY,
     eCubeArray = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY
+  };
+
+  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
+  {
+    eExternallySynchronized = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
+    eReadOnly               = VK_PIPELINE_CACHE_CREATE_READ_ONLY_BIT,
+    eUseApplicationStorage  = VK_PIPELINE_CACHE_CREATE_USE_APPLICATION_STORAGE_BIT
+  };
+
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
+
+  template <>
+  struct FlagTraits<PipelineCacheCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
+      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eReadOnly | PipelineCacheCreateFlagBits::eUseApplicationStorage;
   };
 
   enum class BlendFactor
@@ -1899,6 +1930,19 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                  isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineInputAssemblyStateCreateFlags allFlags  = {};
+  };
+
+  enum class PipelineLayoutCreateFlagBits : VkPipelineLayoutCreateFlags
+  {
+  };
+
+  using PipelineLayoutCreateFlags = Flags<PipelineLayoutCreateFlagBits>;
+
+  template <>
+  struct FlagTraits<PipelineLayoutCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                      isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineLayoutCreateFlags allFlags  = {};
   };
 
   enum class PipelineMultisampleStateCreateFlagBits : VkPipelineMultisampleStateCreateFlags
@@ -2391,20 +2435,6 @@ namespace VULKAN_HPP_NAMESPACE
     eLowerLeft = VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT
   };
   using TessellationDomainOriginKHR = TessellationDomainOrigin;
-
-  enum class DeviceQueueCreateFlagBits : VkDeviceQueueCreateFlags
-  {
-    eProtected = VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT
-  };
-
-  using DeviceQueueCreateFlags = Flags<DeviceQueueCreateFlagBits>;
-
-  template <>
-  struct FlagTraits<DeviceQueueCreateFlagBits>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                   isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR DeviceQueueCreateFlags allFlags  = DeviceQueueCreateFlagBits::eProtected;
-  };
 
   enum class SamplerYcbcrModelConversion
   {
@@ -3037,23 +3067,6 @@ namespace VULKAN_HPP_NAMESPACE
   enum class PipelineMatchControl
   {
     eApplicationUuidExactMatch = VK_PIPELINE_MATCH_CONTROL_APPLICATION_UUID_EXACT_MATCH
-  };
-
-  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
-  {
-    eExternallySynchronized = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
-    eReadOnly               = VK_PIPELINE_CACHE_CREATE_READ_ONLY_BIT,
-    eUseApplicationStorage  = VK_PIPELINE_CACHE_CREATE_USE_APPLICATION_STORAGE_BIT
-  };
-
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
-
-  template <>
-  struct FlagTraits<PipelineCacheCreateFlagBits>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
-      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eReadOnly | PipelineCacheCreateFlagBits::eUseApplicationStorage;
   };
 
   enum class PipelineCacheValidationVersion

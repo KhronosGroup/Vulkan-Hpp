@@ -31,7 +31,7 @@ Other than the `vk::Device`, you can assign the `vk::raii::Device` to a smart po
     std::unique_ptr<vk::raii::Device> pDevice;
     pDevice = std::make_unique<vk::raii::Device>( *pPhysicalDevice, deviceCreateInfo );
 
-Note that, as the vk::raii objects own the actual Vulkan resource, all vk::raii objects are moveable, but not copyable.
+Note that the vk::raii objects own the actual Vulkan resource. Therefore, all vk::raii objects that own destructable resources are just movable, but not copyable. Therefore, a few vk::raii objects, like vk::raii::PhysicalDevice are copyable as well.
 
 For simplicity, in the rest of this document a vk::raii object is always directly instantiated on the stack. Obviously, that's not essential. You could assign them as well to a std::unique_ptr, a std::shared_ptr, or any other smart pointer or object managing data structure. And you can even assign them to a dumb pointer by using the new operator.
 

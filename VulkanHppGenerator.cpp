@@ -5425,11 +5425,9 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 )" };
 
   auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderDynamic" };
-  auto const hardCodedEnhancedModeTypes =
-    std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
-  auto const hardCodedSmartHandleTypes = std::array{ "ObjectDestroy",       "ObjectFree",       "ObjectRelease",       "PoolFree",
-                                                     "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared",
-                                                     "SharedHandle",        "UniqueHandle"};
+  auto const hardCodedEnhancedModeTypes = std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
+  auto const hardCodedSmartHandleTypes  = std::array{ "ObjectDestroy",    "ObjectFree",          "ObjectRelease",  "PoolFree",     "ObjectDestroyShared",
+                                                     "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared", "SharedHandle", "UniqueHandle" };
 
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===
@@ -13098,11 +13096,11 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     {
       assert( requireData.depends.empty() );
       requireData.depends = attribute.second;
-      checkForError( std::none_of( extensionData.requireData.begin(),
-                                   extensionData.requireData.end(),
-                                   [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
-                     line,
-                     "required extension <" + requireData.depends + "> already listed" );
+      checkForWarning( std::none_of( extensionData.requireData.begin(),
+                                     extensionData.requireData.end(),
+                                     [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
+                       line,
+                       "required extension <" + requireData.depends + "> already listed" );
     }
   }
 
@@ -13903,7 +13901,7 @@ void VulkanHppGenerator::readRequireEnum(
       {
         bitpos = attribute.second;
       }
-      if ( attribute.first == "extends" )
+      else if ( attribute.first == "extends" )
       {
         extends = attribute.second;
       }
@@ -13967,6 +13965,10 @@ void VulkanHppGenerator::readRequireEnum(
 
       enumIt->second.addEnumValue(
         line, name, protect.empty() ? getProtectFromPlatform( platform ) : protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
+      if ( std::find( requireData.types.begin(), requireData.types.end(), extends ) == requireData.types.end() )
+      {
+        requireData.types.push_back( extends );
+      }
     }
   }
 }

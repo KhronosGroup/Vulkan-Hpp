@@ -6509,6 +6509,15 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
+  {
+    switch ( value )
+    {
+      case PipelineCacheCreateFlagBits::eExternallySynchronized: return "ExternallySynchronized";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   VULKAN_HPP_INLINE std::string to_string( PipelineStageFlagBits2 value )
   {
     switch ( value )
@@ -7561,6 +7570,48 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_shader_enqueue ===
+
+  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits2KHR value )
+  {
+    switch ( value )
+    {
+      case BufferUsageFlagBits2KHR::eTransferSrc: return "TransferSrc";
+      case BufferUsageFlagBits2KHR::eTransferDst: return "TransferDst";
+      case BufferUsageFlagBits2KHR::eUniformTexelBuffer: return "UniformTexelBuffer";
+      case BufferUsageFlagBits2KHR::eStorageTexelBuffer: return "StorageTexelBuffer";
+      case BufferUsageFlagBits2KHR::eUniformBuffer: return "UniformBuffer";
+      case BufferUsageFlagBits2KHR::eStorageBuffer: return "StorageBuffer";
+      case BufferUsageFlagBits2KHR::eIndexBuffer: return "IndexBuffer";
+      case BufferUsageFlagBits2KHR::eVertexBuffer: return "VertexBuffer";
+      case BufferUsageFlagBits2KHR::eIndirectBuffer: return "IndirectBuffer";
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX: return "ExecutionGraphScratchAMDX";
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case BufferUsageFlagBits2KHR::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
+      case BufferUsageFlagBits2KHR::eShaderBindingTable: return "ShaderBindingTable";
+      case BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT: return "TransformFeedbackBufferEXT";
+      case BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
+      case BufferUsageFlagBits2KHR::eVideoDecodeSrc: return "VideoDecodeSrc";
+      case BufferUsageFlagBits2KHR::eVideoDecodeDst: return "VideoDecodeDst";
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case BufferUsageFlagBits2KHR::eVideoEncodeDst: return "VideoEncodeDst";
+      case BufferUsageFlagBits2KHR::eVideoEncodeSrc: return "VideoEncodeSrc";
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      case BufferUsageFlagBits2KHR::eShaderDeviceAddress: return "ShaderDeviceAddress";
+      case BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly: return "AccelerationStructureBuildInputReadOnly";
+      case BufferUsageFlagBits2KHR::eAccelerationStructureStorage: return "AccelerationStructureStorage";
+      case BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT: return "SamplerDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT: return "ResourceDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT: return "PushDescriptorsDescriptorBufferEXT";
+      case BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT: return "MicromapBuildInputReadOnlyEXT";
+      case BufferUsageFlagBits2KHR::eMicromapStorageEXT: return "MicromapStorageEXT";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_blend_operation_advanced ===
 
   VULKAN_HPP_INLINE std::string to_string( BlendOverlapEXT value )
@@ -8177,17 +8228,6 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::string to_string( DeviceMemoryReportFlagBitsEXT )
   {
     return "(void)";
-  }
-
-  //=== VK_EXT_pipeline_creation_cache_control ===
-
-  VULKAN_HPP_INLINE std::string to_string( PipelineCacheCreateFlagBits value )
-  {
-    switch ( value )
-    {
-      case PipelineCacheCreateFlagBits::eExternallySynchronized: return "ExternallySynchronized";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
   }
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -8812,44 +8852,6 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits2KHR::eProtectedAccessOnlyEXT: return "ProtectedAccessOnlyEXT";
       case PipelineCreateFlagBits2KHR::eRayTracingDisplacementMicromapNV: return "RayTracingDisplacementMicromapNV";
       case PipelineCreateFlagBits2KHR::eDescriptorBufferEXT: return "DescriptorBufferEXT";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  VULKAN_HPP_INLINE std::string to_string( BufferUsageFlagBits2KHR value )
-  {
-    switch ( value )
-    {
-      case BufferUsageFlagBits2KHR::eTransferSrc: return "TransferSrc";
-      case BufferUsageFlagBits2KHR::eTransferDst: return "TransferDst";
-      case BufferUsageFlagBits2KHR::eUniformTexelBuffer: return "UniformTexelBuffer";
-      case BufferUsageFlagBits2KHR::eStorageTexelBuffer: return "StorageTexelBuffer";
-      case BufferUsageFlagBits2KHR::eUniformBuffer: return "UniformBuffer";
-      case BufferUsageFlagBits2KHR::eStorageBuffer: return "StorageBuffer";
-      case BufferUsageFlagBits2KHR::eIndexBuffer: return "IndexBuffer";
-      case BufferUsageFlagBits2KHR::eVertexBuffer: return "VertexBuffer";
-      case BufferUsageFlagBits2KHR::eIndirectBuffer: return "IndirectBuffer";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      case BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX: return "ExecutionGraphScratchAMDX";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case BufferUsageFlagBits2KHR::eConditionalRenderingEXT: return "ConditionalRenderingEXT";
-      case BufferUsageFlagBits2KHR::eShaderBindingTable: return "ShaderBindingTable";
-      case BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT: return "TransformFeedbackBufferEXT";
-      case BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
-      case BufferUsageFlagBits2KHR::eVideoDecodeSrc: return "VideoDecodeSrc";
-      case BufferUsageFlagBits2KHR::eVideoDecodeDst: return "VideoDecodeDst";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      case BufferUsageFlagBits2KHR::eVideoEncodeDst: return "VideoEncodeDst";
-      case BufferUsageFlagBits2KHR::eVideoEncodeSrc: return "VideoEncodeSrc";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      case BufferUsageFlagBits2KHR::eShaderDeviceAddress: return "ShaderDeviceAddress";
-      case BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly: return "AccelerationStructureBuildInputReadOnly";
-      case BufferUsageFlagBits2KHR::eAccelerationStructureStorage: return "AccelerationStructureStorage";
-      case BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT: return "SamplerDescriptorBufferEXT";
-      case BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT: return "ResourceDescriptorBufferEXT";
-      case BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT: return "PushDescriptorsDescriptorBufferEXT";
-      case BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT: return "MicromapBuildInputReadOnlyEXT";
-      case BufferUsageFlagBits2KHR::eMicromapStorageEXT: return "MicromapStorageEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

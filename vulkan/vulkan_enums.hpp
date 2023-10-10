@@ -4001,6 +4001,21 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR PrivateDataSlotCreateFlags allFlags  = {};
   };
 
+  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
+  {
+    eExternallySynchronized    = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
+    eExternallySynchronizedEXT = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT
+  };
+
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
+
+  template <>
+  struct FlagTraits<PipelineCacheCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags  = PipelineCacheCreateFlagBits::eExternallySynchronized;
+  };
+
   enum class PipelineStageFlagBits2 : VkPipelineStageFlags2
   {
     eNone                         = VK_PIPELINE_STAGE_2_NONE,
@@ -5506,6 +5521,61 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR DebugUtilsMessengerCreateFlagsEXT allFlags  = {};
   };
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_shader_enqueue ===
+
+  enum class BufferUsageFlagBits2KHR : VkBufferUsageFlags2KHR
+  {
+    eTransferSrc                             = VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT_KHR,
+    eTransferDst                             = VK_BUFFER_USAGE_2_TRANSFER_DST_BIT_KHR,
+    eUniformTexelBuffer                      = VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT_KHR,
+    eStorageTexelBuffer                      = VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT_KHR,
+    eUniformBuffer                           = VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT_KHR,
+    eStorageBuffer                           = VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT_KHR,
+    eIndexBuffer                             = VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT_KHR,
+    eVertexBuffer                            = VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT_KHR,
+    eIndirectBuffer                          = VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT_KHR,
+    eExecutionGraphScratchAMDX               = VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX,
+    eConditionalRenderingEXT                 = VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT,
+    eShaderBindingTable                      = VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR,
+    eRayTracingNV                            = VK_BUFFER_USAGE_2_RAY_TRACING_BIT_NV,
+    eTransformFeedbackBufferEXT              = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
+    eTransformFeedbackCounterBufferEXT       = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
+    eVideoDecodeSrc                          = VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR,
+    eVideoDecodeDst                          = VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR,
+    eVideoEncodeDst                          = VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR,
+    eVideoEncodeSrc                          = VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR,
+    eShaderDeviceAddress                     = VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT_KHR,
+    eAccelerationStructureBuildInputReadOnly = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR,
+    eAccelerationStructureStorage            = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR,
+    eSamplerDescriptorBufferEXT              = VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT,
+    eResourceDescriptorBufferEXT             = VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT,
+    ePushDescriptorsDescriptorBufferEXT      = VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
+    eMicromapBuildInputReadOnlyEXT           = VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
+    eMicromapStorageEXT                      = VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT
+  };
+
+  using BufferUsageFlags2KHR = Flags<BufferUsageFlagBits2KHR>;
+
+  template <>
+  struct FlagTraits<BufferUsageFlagBits2KHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR BufferUsageFlags2KHR allFlags =
+      BufferUsageFlagBits2KHR::eTransferSrc | BufferUsageFlagBits2KHR::eTransferDst | BufferUsageFlagBits2KHR::eUniformTexelBuffer |
+      BufferUsageFlagBits2KHR::eStorageTexelBuffer | BufferUsageFlagBits2KHR::eUniformBuffer | BufferUsageFlagBits2KHR::eStorageBuffer |
+      BufferUsageFlagBits2KHR::eIndexBuffer | BufferUsageFlagBits2KHR::eVertexBuffer | BufferUsageFlagBits2KHR::eIndirectBuffer |
+      BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX | BufferUsageFlagBits2KHR::eConditionalRenderingEXT | BufferUsageFlagBits2KHR::eShaderBindingTable |
+      BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT | BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT |
+      BufferUsageFlagBits2KHR::eVideoDecodeSrc | BufferUsageFlagBits2KHR::eVideoDecodeDst | BufferUsageFlagBits2KHR::eVideoEncodeDst |
+      BufferUsageFlagBits2KHR::eVideoEncodeSrc | BufferUsageFlagBits2KHR::eShaderDeviceAddress |
+      BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly | BufferUsageFlagBits2KHR::eAccelerationStructureStorage |
+      BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT | BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT |
+      BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT | BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT |
+      BufferUsageFlagBits2KHR::eMicromapStorageEXT;
+  };
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_blend_operation_advanced ===
 
   enum class BlendOverlapEXT
@@ -6155,23 +6225,6 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                       isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR DeviceMemoryReportFlagsEXT allFlags  = {};
-  };
-
-  //=== VK_EXT_pipeline_creation_cache_control ===
-
-  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
-  {
-    eExternallySynchronized    = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
-    eExternallySynchronizedEXT = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT
-  };
-
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
-
-  template <>
-  struct FlagTraits<PipelineCacheCreateFlagBits>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags  = PipelineCacheCreateFlagBits::eExternallySynchronized;
   };
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6971,66 +7024,6 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineCreateFlagBits2KHR::eColorAttachmentFeedbackLoopEXT | PipelineCreateFlagBits2KHR::eDepthStencilAttachmentFeedbackLoopEXT |
       PipelineCreateFlagBits2KHR::eNoProtectedAccessEXT | PipelineCreateFlagBits2KHR::eProtectedAccessOnlyEXT |
       PipelineCreateFlagBits2KHR::eRayTracingDisplacementMicromapNV | PipelineCreateFlagBits2KHR::eDescriptorBufferEXT;
-  };
-
-  enum class BufferUsageFlagBits2KHR : VkBufferUsageFlags2KHR
-  {
-    eTransferSrc        = VK_BUFFER_USAGE_2_TRANSFER_SRC_BIT_KHR,
-    eTransferDst        = VK_BUFFER_USAGE_2_TRANSFER_DST_BIT_KHR,
-    eUniformTexelBuffer = VK_BUFFER_USAGE_2_UNIFORM_TEXEL_BUFFER_BIT_KHR,
-    eStorageTexelBuffer = VK_BUFFER_USAGE_2_STORAGE_TEXEL_BUFFER_BIT_KHR,
-    eUniformBuffer      = VK_BUFFER_USAGE_2_UNIFORM_BUFFER_BIT_KHR,
-    eStorageBuffer      = VK_BUFFER_USAGE_2_STORAGE_BUFFER_BIT_KHR,
-    eIndexBuffer        = VK_BUFFER_USAGE_2_INDEX_BUFFER_BIT_KHR,
-    eVertexBuffer       = VK_BUFFER_USAGE_2_VERTEX_BUFFER_BIT_KHR,
-    eIndirectBuffer     = VK_BUFFER_USAGE_2_INDIRECT_BUFFER_BIT_KHR,
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eExecutionGraphScratchAMDX = VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX,
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eConditionalRenderingEXT           = VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT,
-    eShaderBindingTable                = VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR,
-    eRayTracingNV                      = VK_BUFFER_USAGE_2_RAY_TRACING_BIT_NV,
-    eTransformFeedbackBufferEXT        = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
-    eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
-    eVideoDecodeSrc                    = VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR,
-    eVideoDecodeDst                    = VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR,
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eVideoEncodeDst = VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR,
-    eVideoEncodeSrc = VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR,
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eShaderDeviceAddress                     = VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT_KHR,
-    eAccelerationStructureBuildInputReadOnly = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR,
-    eAccelerationStructureStorage            = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR,
-    eSamplerDescriptorBufferEXT              = VK_BUFFER_USAGE_2_SAMPLER_DESCRIPTOR_BUFFER_BIT_EXT,
-    eResourceDescriptorBufferEXT             = VK_BUFFER_USAGE_2_RESOURCE_DESCRIPTOR_BUFFER_BIT_EXT,
-    ePushDescriptorsDescriptorBufferEXT      = VK_BUFFER_USAGE_2_PUSH_DESCRIPTORS_DESCRIPTOR_BUFFER_BIT_EXT,
-    eMicromapBuildInputReadOnlyEXT           = VK_BUFFER_USAGE_2_MICROMAP_BUILD_INPUT_READ_ONLY_BIT_EXT,
-    eMicromapStorageEXT                      = VK_BUFFER_USAGE_2_MICROMAP_STORAGE_BIT_EXT
-  };
-
-  using BufferUsageFlags2KHR = Flags<BufferUsageFlagBits2KHR>;
-
-  template <>
-  struct FlagTraits<BufferUsageFlagBits2KHR>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                 isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR BufferUsageFlags2KHR allFlags =
-      BufferUsageFlagBits2KHR::eTransferSrc | BufferUsageFlagBits2KHR::eTransferDst | BufferUsageFlagBits2KHR::eUniformTexelBuffer |
-      BufferUsageFlagBits2KHR::eStorageTexelBuffer | BufferUsageFlagBits2KHR::eUniformBuffer | BufferUsageFlagBits2KHR::eStorageBuffer |
-      BufferUsageFlagBits2KHR::eIndexBuffer | BufferUsageFlagBits2KHR::eVertexBuffer | BufferUsageFlagBits2KHR::eIndirectBuffer
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      | BufferUsageFlagBits2KHR::eExecutionGraphScratchAMDX
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      | BufferUsageFlagBits2KHR::eConditionalRenderingEXT | BufferUsageFlagBits2KHR::eShaderBindingTable |
-      BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT | BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT |
-      BufferUsageFlagBits2KHR::eVideoDecodeSrc | BufferUsageFlagBits2KHR::eVideoDecodeDst
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      | BufferUsageFlagBits2KHR::eVideoEncodeDst | BufferUsageFlagBits2KHR::eVideoEncodeSrc
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      | BufferUsageFlagBits2KHR::eShaderDeviceAddress | BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly |
-      BufferUsageFlagBits2KHR::eAccelerationStructureStorage | BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT |
-      BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT | BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT |
-      BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits2KHR::eMicromapStorageEXT;
   };
 
   //=== VK_EXT_shader_object ===

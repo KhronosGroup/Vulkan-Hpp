@@ -2791,6 +2791,23 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR PrivateDataSlotCreateFlags allFlags  = {};
   };
 
+  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
+  {
+    eExternallySynchronized = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
+    eReadOnly               = VK_PIPELINE_CACHE_CREATE_READ_ONLY_BIT,
+    eUseApplicationStorage  = VK_PIPELINE_CACHE_CREATE_USE_APPLICATION_STORAGE_BIT
+  };
+
+  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
+
+  template <>
+  struct FlagTraits<PipelineCacheCreateFlagBits>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
+      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eReadOnly | PipelineCacheCreateFlagBits::eUseApplicationStorage;
+  };
+
   enum class PipelineStageFlagBits2 : VkPipelineStageFlags2
   {
     eNone                             = VK_PIPELINE_STAGE_2_NONE,
@@ -3037,23 +3054,6 @@ namespace VULKAN_HPP_NAMESPACE
   enum class PipelineMatchControl
   {
     eApplicationUuidExactMatch = VK_PIPELINE_MATCH_CONTROL_APPLICATION_UUID_EXACT_MATCH
-  };
-
-  enum class PipelineCacheCreateFlagBits : VkPipelineCacheCreateFlags
-  {
-    eExternallySynchronized = VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT,
-    eReadOnly               = VK_PIPELINE_CACHE_CREATE_READ_ONLY_BIT,
-    eUseApplicationStorage  = VK_PIPELINE_CACHE_CREATE_USE_APPLICATION_STORAGE_BIT
-  };
-
-  using PipelineCacheCreateFlags = Flags<PipelineCacheCreateFlagBits>;
-
-  template <>
-  struct FlagTraits<PipelineCacheCreateFlagBits>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                     isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCacheCreateFlags allFlags =
-      PipelineCacheCreateFlagBits::eExternallySynchronized | PipelineCacheCreateFlagBits::eReadOnly | PipelineCacheCreateFlagBits::eUseApplicationStorage;
   };
 
   enum class PipelineCacheValidationVersion

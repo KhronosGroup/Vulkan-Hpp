@@ -299,6 +299,8 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::FormatFeatureFlagBits2;
   using VULKAN_HPP_NAMESPACE::FormatFeatureFlagBits2KHR;
   using VULKAN_HPP_NAMESPACE::FormatFeatureFlags2;
+  using VULKAN_HPP_NAMESPACE::PipelineCacheCreateFlagBits;
+  using VULKAN_HPP_NAMESPACE::PipelineCacheCreateFlags;
   using VULKAN_HPP_NAMESPACE::PipelineCreationFeedbackFlagBits;
   using VULKAN_HPP_NAMESPACE::PipelineCreationFeedbackFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::PipelineCreationFeedbackFlags;
@@ -530,6 +532,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCreateFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::DebugUtilsMessengerCreateFlagsEXT;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_AMDX_shader_enqueue ===
+  using VULKAN_HPP_NAMESPACE::BufferUsageFlagBits2KHR;
+  using VULKAN_HPP_NAMESPACE::BufferUsageFlags2KHR;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_EXT_blend_operation_advanced ===
   using VULKAN_HPP_NAMESPACE::BlendOverlapEXT;
 
@@ -677,10 +685,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DeviceMemoryReportFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::DeviceMemoryReportFlagsEXT;
 
-  //=== VK_EXT_pipeline_creation_cache_control ===
-  using VULKAN_HPP_NAMESPACE::PipelineCacheCreateFlagBits;
-  using VULKAN_HPP_NAMESPACE::PipelineCacheCreateFlags;
-
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
   using VULKAN_HPP_NAMESPACE::VideoEncodeCapabilityFlagBitsKHR;
@@ -813,8 +817,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::OpticalFlowUsageFlagsNV;
 
   //=== VK_KHR_maintenance5 ===
-  using VULKAN_HPP_NAMESPACE::BufferUsageFlagBits2KHR;
-  using VULKAN_HPP_NAMESPACE::BufferUsageFlags2KHR;
   using VULKAN_HPP_NAMESPACE::PipelineCreateFlagBits2KHR;
   using VULKAN_HPP_NAMESPACE::PipelineCreateFlags2KHR;
 

@@ -636,6 +636,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedSurfaceKHR = SharedHandle<SurfaceKHR>;
 
+  //=== VK_KHR_display ===
+  template <>
+  class SharedHandleTraits<DisplayKHR>
+  {
+  public:
+    using DestructorType = PhysicalDevice;
+    using deleter        = ObjectDestroyShared<DisplayKHR>;
+  };
+
+  using SharedDisplayKHR = SharedHandle<DisplayKHR>;
+
   //=== VK_EXT_debug_utils ===
   template <>
   class SharedHandleTraits<DebugUtilsMessengerEXT>
@@ -885,22 +896,6 @@ namespace VULKAN_HPP_NAMESPACE
   using SharedSwapchainKHR = SharedHandle<SwapchainKHR>;
 
   //=== VK_KHR_display ===
-
-  template <>
-  class SharedHandle<DisplayKHR> : public SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>
-  {
-    friend SharedHandleBase<DisplayKHR, SharedPhysicalDevice>;
-
-  public:
-    SharedHandle() = default;
-
-    explicit SharedHandle( DisplayKHR handle, SharedPhysicalDevice parent ) noexcept
-      : SharedHandleBaseNoDestroy<DisplayKHR, SharedPhysicalDevice>( handle, std::move( parent ) )
-    {
-    }
-  };
-
-  using SharedDisplayKHR = SharedHandle<DisplayKHR>;
 
   template <>
   class SharedHandle<DisplayModeKHR> : public SharedHandleBaseNoDestroy<DisplayModeKHR, SharedDisplayKHR>

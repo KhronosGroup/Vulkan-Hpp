@@ -2874,6 +2874,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_swapchain ===
   using VULKAN_HPP_NAMESPACE::UniqueSwapchainKHR;
 
+  //=== VK_KHR_display ===
+  using VULKAN_HPP_NAMESPACE::UniqueDisplayKHR;
+
   //=== VK_EXT_debug_report ===
   using VULKAN_HPP_NAMESPACE::UniqueDebugReportCallbackEXT;
 
@@ -2896,6 +2899,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing ===
   using VULKAN_HPP_NAMESPACE::UniqueAccelerationStructureNV;
+
+  //=== VK_INTEL_performance_query ===
+  using VULKAN_HPP_NAMESPACE::UniquePerformanceConfigurationINTEL;
 
   //=== VK_KHR_deferred_host_operations ===
   using VULKAN_HPP_NAMESPACE::UniqueDeferredOperationKHR;

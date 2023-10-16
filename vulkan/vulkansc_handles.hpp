@@ -991,6 +991,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   using UniqueSurfaceKHR = UniqueHandle<SurfaceKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
+  //=== VK_KHR_display ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<DisplayKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<PhysicalDevice, Dispatch>;
+  };
+
+  using UniqueDisplayKHR = UniqueHandle<DisplayKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   //=== VK_EXT_debug_utils ===
   template <typename Dispatch>
   class UniqueHandleTraits<DebugUtilsMessengerEXT, Dispatch>

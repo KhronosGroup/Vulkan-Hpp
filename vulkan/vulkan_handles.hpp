@@ -2095,6 +2095,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   using UniqueSwapchainKHR = UniqueHandle<SwapchainKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
+  //=== VK_KHR_display ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<DisplayKHR, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<PhysicalDevice, Dispatch>;
+  };
+
+  using UniqueDisplayKHR = UniqueHandle<DisplayKHR, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
   //=== VK_EXT_debug_report ===
   template <typename Dispatch>
   class UniqueHandleTraits<DebugReportCallbackEXT, Dispatch>
@@ -2182,6 +2192,16 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using UniqueAccelerationStructureNV = UniqueHandle<AccelerationStructureNV, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
+
+  //=== VK_INTEL_performance_query ===
+  template <typename Dispatch>
+  class UniqueHandleTraits<PerformanceConfigurationINTEL, Dispatch>
+  {
+  public:
+    using deleter = ObjectDestroy<Device, Dispatch>;
+  };
+
+  using UniquePerformanceConfigurationINTEL = UniqueHandle<PerformanceConfigurationINTEL, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 
   //=== VK_KHR_deferred_host_operations ===
   template <typename Dispatch>

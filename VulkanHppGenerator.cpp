@@ -15194,17 +15194,32 @@ TypeInfo VulkanHppGenerator::readTypeInfo( tinyxml2::XMLElement const * element 
 
 void VulkanHppGenerator::registerDeleter( std::string const & commandName, CommandData const & commandData )
 {
-  if ( ( commandName.substr( 2, 7 ) == "Destroy" ) || ( commandName.substr( 2, 4 ) == "Free" ) )
+  // some special handling for release functions that don't release an object
+  const std::set<std::string> noDeleterFunctions = { "vkReleaseFullScreenExclusiveModeEXT", "vkReleaseProfilingLockKHR", "vkReleaseSwapchainImagesEXT" };
+
+  if ( ( commandName.substr( 2, 7 ) == "Destroy" ) || ( commandName.substr( 2, 4 ) == "Free" ) ||
+       ( ( commandName.substr( 2, 7 ) == "Release" ) && !noDeleterFunctions.contains( commandName ) ) )
   {
     std::string key;
     size_t      valueIndex;
     switch ( commandData.params.size() )
     {
       case 2:
+        if ( commandData.params.back().type.type == "VkAllocationCallbacks" )
+        {
+          key        = "";
+          valueIndex = 0;
+        }
+        else
+        {
+          key        = commandData.params[0].type.type;
+          valueIndex = 1;
+        }
+        break;
       case 3:
         assert( commandData.params.back().type.type == "VkAllocationCallbacks" );
-        key        = ( commandData.params.size() == 2 ) ? "" : commandData.params[0].type.type;
-        valueIndex = commandData.params.size() - 2;
+        key        = commandData.params[0].type.type;
+        valueIndex = 1;
         break;
       case 4:
         key        = commandData.params[0].type.type;

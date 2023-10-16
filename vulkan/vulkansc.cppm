@@ -1347,6 +1347,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_surface ===
   using VULKAN_HPP_NAMESPACE::UniqueSurfaceKHR;
 
+  //=== VK_KHR_display ===
+  using VULKAN_HPP_NAMESPACE::UniqueDisplayKHR;
+
   //=== VK_EXT_debug_utils ===
   using VULKAN_HPP_NAMESPACE::UniqueDebugUtilsMessengerEXT;
   using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;

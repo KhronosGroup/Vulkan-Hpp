@@ -14,6 +14,7 @@
 
 add_subdirectory( ArrayProxy )
 add_subdirectory( ArrayProxyNoTemporaries )
+add_subdirectory( ArrayWrapper )
 add_subdirectory( DesignatedInitializers )
 add_subdirectory( DeviceFunctions )
 add_subdirectory( DispatchLoaderDynamic )

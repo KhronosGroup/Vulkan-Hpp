@@ -16,7 +16,7 @@
 #include "shaders.hpp"
 
 #include "SPIRV/GlslangToSpv.h"
-#include "StandAlone/ResourceLimits.h"
+#include "glslang/Public/ResourceLimits.h"
 
 #include <vulkan/vulkan.hpp>
 
@@ -59,7 +59,7 @@ namespace vk
       // Enable SPIR-V and Vulkan rules when parsing GLSL
       EShMessages messages = (EShMessages)( EShMsgSpvRules | EShMsgVulkanRules );
 
-      if ( !shader.parse( &glslang::DefaultTBuiltInResource, 100, false, messages ) )
+      if ( !shader.parse( GetDefaultResources(), 100, false, messages ) )
       {
         puts( shader.getInfoLog() );
         puts( shader.getInfoDebugLog() );

@@ -190,7 +190,7 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   private:
-    VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
       size_t n = std::min( N, len );
       for ( size_t i = 0; i < n; ++i )

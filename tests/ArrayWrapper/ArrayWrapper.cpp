@@ -24,8 +24,6 @@ void f( std::string const & s )
   std::cout << "<" << s << ">" << std::endl;
 }
 
-using namespace std::string_literals;
-
 int main( int /*argc*/, char ** /*argv*/ )
 {
   vk::ArrayWrapper1D<char, 10> aw1( { 'f', 'o', 'o', 'b', 'a', 'h' } );
@@ -35,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
   // s1 = aw1;  // 'operator =' is ambiguous
 
-  vk::ArrayWrapper1D<char, 20> aw2( "foobah"s );
+  vk::ArrayWrapper1D<char, 20> aw2( "foobah" );
   f( aw2 );
 
   vk::ArrayWrapper1D<char, 5> aw3( { 'f', 'o', 'o', 'b', 'a', 'h' } );
@@ -43,7 +41,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   assert( s3.length() == 5 );
   std::cout << "<" << s3 << ">" << std::endl;
 
-  vk::ArrayWrapper1D<char, 5> aw4( "foobah"s );
+  vk::ArrayWrapper1D<char, 5> aw4( "foobah" );
   std::string                 s4 = aw4;
   assert( s4.length() == 5 );
 

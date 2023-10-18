@@ -69,15 +69,15 @@ std::vector<int> const getConstVector()
   return { 1, 2 };
 }
 
-std::initializer_list<int> getInitializerList()
-{
-  return { 1, 2 };
-}
+//std::initializer_list<int> getInitializerList()
+//{
+//  return { 1, 2 };
+//}
 
-std::initializer_list<int> const getConstInitializerList()
-{
-  return { 1, 2 };
-}
+//std::initializer_list<int> const getConstInitializerList()
+//{
+//  return { 1, 2 };
+//}
 
 int main( int /*argc*/, char ** /*argv*/ )
 {

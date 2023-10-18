@@ -24,23 +24,19 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
-	cmake_minimum_required( VERSION 3.25 )
-	if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.28 )
-		message(FATAL_ERROR "VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES is currently not supported for CMake version ${CMAKE_VERSION}!"
-		" To add support inform yourself about the state of the feature at https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst"
-		" and add the corresponding value of CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API to Vulkan-Hpp's CMakeLists.txt")
-	elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.27 )
-		# CMake 3.27
-		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7 )
-	elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
-		# CMake 3.26
-		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
-	else()
-		# CMake 3.25
-		set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
-	endif()
-	set( CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1 )
+# all the options for this project
+option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
+option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
+option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
+option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
+option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
+option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
+option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
+option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
+option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
+
+if ( VULKAN_HPP_ENABLE_CPP20_MODULES )
+	cmake_minimum_required( VERSION 3.28 )
 else()
 	cmake_minimum_required( VERSION 3.12 )
 endif()
@@ -316,17 +312,6 @@ else()
 	message( WARNING " Could not find clang-format. Generated vulkan.hpp and vulkan_raii.hpp will not be nicely formatted." )
 endif()
 
-# all the options for this project
-option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
-option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
-option( VULKAN_HPP_SAMPLES_BUILD "Build samples" OFF )
-option( VULKAN_HPP_TESTS_BUILD "Build tests" OFF )
-option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in case the Vulkan SDK is not available" OFF )
-option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
-option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
-option( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES "Build Vulkan-Hpp as C++20 module" OFF )
-option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
-
 # look for the file vk.xml, the ultimate source of truth for vulkan, to generate the headers from
 if( NOT DEFINED VulkanRegistry_DIR )
 	if( DEFINED VULKAN_HPP_VULKAN_HEADERS_SRC_DIR )
@@ -347,7 +332,7 @@ set( TINYXML2_HEADERS ${VULKAN_HPP_TINYXML2_SRC_DIR}/tinyxml2.h )
 source_group( TinyXML2 FILES ${TINYXML2_HEADERS} ${TINYXML2_SOURCES} )
 
 # Build Vulkan-Hpp as a module
-if( VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES )
+if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	# create a target to provide VulkanHpp as C++20 module
 	add_library( VulkanHppModule )
 	set_target_properties( VulkanHppModule PROPERTIES

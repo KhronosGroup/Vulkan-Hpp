@@ -682,9 +682,9 @@ The current version of MS Visual Studio 2022 is not able to handle the vulkan.cp
 #### Overview
 
 <!-- todo: add a link to the file -->
-Vulkan-Hpp now provides a [C++ standard module](https://en.cppreference.com/w/cpp/language/modules) in [`vulkan.cppm`](vulkan/vulkan.cppm).
+Vulkan-Hpp provides a [C++ standard module](https://en.cppreference.com/w/cpp/language/modules) in [`vulkan.cppm`](vulkan/vulkan.cppm).
 C++ modules are intended to supersede headers so that declarations and definitions may be easily shared across translation units without repeatedly parsing headers; therefore, they can potentially drastically improve compile times for large projects.
-In particular, Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and it is hoped that the C++ module will shorten compile times for projects currently using it.
+In particular, Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and the C++ module will shorten compile times for projects currently using it.
 
 #### Compiler support
 
@@ -693,11 +693,11 @@ This feature requires a recent compiler with complete C++20 support:
 * Visual Studio 2019 16.10 or later (providing `cl.exe` 19.28 or later)
 * Clang 15.0.0 or later
 
-If you intend to use CMake's [experimental C++ module support](https://www.kitware.com/import-cmake-c20-modules/) (and possibly Ninja), then more recent tools are required:
+If you intend to use CMake's C++ module support (and possibly Ninja), then more recent tools are required:
 
 * Visual Studio 17.4 or later (providing `cl.exe` 19.34 or later)
 * Clang 16.0.0 or later
-* CMake 3.25 or later
+* CMake 3.28 or later
 * Ninja 1.10.2 or later
 
 Either way, GCC does not completely support C++ modules, is therefore not recommended for use.
@@ -705,35 +705,14 @@ Either way, GCC does not completely support C++ modules, is therefore not recomm
 ##### Usage with CMake
 
 CMake is recommended for use with the Vulkan C++ module, as it provides a convenient platform-agnostic way to configure your project.
-As mentioned above, note that CMake's module support is experimental, and usage may change in the future.
-Consult the blog post at the link above for more information.
+CMake version 3.28 or later is required to support C++ modules.
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
 **Note that this module does not yet provide an IMPORTED target for the Vulkan C++ module, so you must set it up manually.**
 
-To use CMake with C++ modules, you must first enable its experimental support, set up `vulkan.cppm` as the source for a library target with `FILE_SET` configured  `TYPE = CXX_MODULES`, and then link it into your project.
+To use CMake with C++ modules, you must first set up `vulkan.cppm` as the source for a library target with `FILE_SET` configured  `TYPE = CXX_MODULES`, and then link it into your project.
 
 ```cmake
-# enable C++ module support
-cmake_minimum_required( VERSION 3.25 )
-if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.28 )
-	message(FATAL_ERROR "VULKAN_HPP_ENABLE_EXPERIMENTAL_CPP20_MODULES is currently not supported for CMake version ${CMAKE_VERSION}!"
-	" To add support inform yourself about the state of the feature at https://github.com/Kitware/CMake/blob/master/Help/dev/experimental.rst"
-	" and add the corresponding value of CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API to Vulkan-Hpp's CMakeLists.txt")
-elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.27 )
-	# CMake 3.27
-	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API aa1f7df0-828a-4fcd-9afc-2dc80491aca7 )
-elseif ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.26 )
-	# CMake 3.26
-	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 2182bf5c-ef0d-489a-91da-49dbc3090d2a )
-else()
-	# CMake 3.25
-	set( CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API 3c375311-a3c9-4396-a187-3227ef642046 )
-endif()
-set( CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP 1 )
-
-...
-
 # find Vulkan SDK
 find_package( Vulkan REQUIRED )
 

@@ -784,6 +784,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DisplacementMicromapFormatNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  //=== VK_ARM_scheduling_controls ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsFlagBitsARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsFlagsARM;
+
   //=== VK_NV_memory_decompression ===
   using VULKAN_HPP_NAMESPACE::MemoryDecompressionMethodFlagBitsNV;
   using VULKAN_HPP_NAMESPACE::MemoryDecompressionMethodFlagsNV;
@@ -2260,6 +2264,15 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DeviceDiagnosticsConfigCreateInfoNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDiagnosticsConfigFeaturesNV;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  using VULKAN_HPP_NAMESPACE::CudaFunctionCreateInfoNV;
+  using VULKAN_HPP_NAMESPACE::CudaLaunchInfoNV;
+  using VULKAN_HPP_NAMESPACE::CudaModuleCreateInfoNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCudaKernelLaunchFeaturesNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCudaKernelLaunchPropertiesNV;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_NV_low_latency ===
   using VULKAN_HPP_NAMESPACE::QueryLowLatencySupportNV;
 
@@ -2516,6 +2529,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_ARM_shader_core_properties ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderCorePropertiesARM;
+
+  //=== VK_ARM_scheduling_controls ===
+  using VULKAN_HPP_NAMESPACE::DeviceQueueShaderCoreControlCreateInfoARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsFeaturesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceSchedulingControlsPropertiesARM;
 
   //=== VK_EXT_image_sliced_view_of_3d ===
   using VULKAN_HPP_NAMESPACE::ImageViewSlicedCreateInfoEXT;
@@ -2816,6 +2834,12 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_device_generated_commands ===
   using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV;
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  using VULKAN_HPP_NAMESPACE::CudaFunctionNV;
+  using VULKAN_HPP_NAMESPACE::CudaModuleNV;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
   using VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA;
@@ -2908,6 +2932,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_device_generated_commands ===
   using VULKAN_HPP_NAMESPACE::UniqueIndirectCommandsLayoutNV;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  using VULKAN_HPP_NAMESPACE::UniqueCudaFunctionNV;
+  using VULKAN_HPP_NAMESPACE::UniqueCudaModuleNV;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
@@ -3006,6 +3036,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_device_generated_commands ===
   using VULKAN_HPP_NAMESPACE::SharedIndirectCommandsLayoutNV;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  using VULKAN_HPP_NAMESPACE::SharedCudaFunctionNV;
+  using VULKAN_HPP_NAMESPACE::SharedCudaModuleNV;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
@@ -3180,6 +3216,12 @@ export namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NV_device_generated_commands ===
     using VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutNV;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_NV_cuda_kernel_launch ===
+    using VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV;
+    using VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_buffer_collection ===

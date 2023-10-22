@@ -958,6 +958,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_external_memory ===
   using VULKAN_HPP_NAMESPACE::QueueFamilyExternalKHR;
 
+  //=== VK_EXT_queue_family_foreign ===
+  using VULKAN_HPP_NAMESPACE::QueueFamilyForeignEXT;
+
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_AMDX_shader_enqueue ===
   using VULKAN_HPP_NAMESPACE::ShaderIndexUnusedAMDX;

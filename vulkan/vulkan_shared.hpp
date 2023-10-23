@@ -849,6 +849,29 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedIndirectCommandsLayoutNV = SharedHandle<IndirectCommandsLayoutNV>;
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  template <>
+  class SharedHandleTraits<CudaModuleNV>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = ObjectDestroyShared<CudaModuleNV>;
+  };
+
+  using SharedCudaModuleNV = SharedHandle<CudaModuleNV>;
+
+  template <>
+  class SharedHandleTraits<CudaFunctionNV>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = ObjectDestroyShared<CudaFunctionNV>;
+  };
+
+  using SharedCudaFunctionNV = SharedHandle<CudaFunctionNV>;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_buffer_collection ===
   template <>

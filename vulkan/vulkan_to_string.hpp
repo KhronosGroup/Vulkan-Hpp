@@ -3249,6 +3249,20 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
+  //=== VK_ARM_scheduling_controls ===
+
+  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceSchedulingControlsFlagsARM value )
+  {
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & PhysicalDeviceSchedulingControlsFlagBitsARM::eShaderCoreCount )
+      result += "ShaderCoreCount | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
+  }
+
   //=== VK_NV_memory_decompression ===
 
   VULKAN_HPP_INLINE std::string to_string( MemoryDecompressionMethodFlagsNV value )
@@ -4243,6 +4257,13 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::ePhysicalDeviceDiagnosticsConfigFeaturesNV: return "PhysicalDeviceDiagnosticsConfigFeaturesNV";
       case StructureType::eDeviceDiagnosticsConfigCreateInfoNV: return "DeviceDiagnosticsConfigCreateInfoNV";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case StructureType::eCudaModuleCreateInfoNV: return "CudaModuleCreateInfoNV";
+      case StructureType::eCudaFunctionCreateInfoNV: return "CudaFunctionCreateInfoNV";
+      case StructureType::eCudaLaunchInfoNV: return "CudaLaunchInfoNV";
+      case StructureType::ePhysicalDeviceCudaKernelLaunchFeaturesNV: return "PhysicalDeviceCudaKernelLaunchFeaturesNV";
+      case StructureType::ePhysicalDeviceCudaKernelLaunchPropertiesNV: return "PhysicalDeviceCudaKernelLaunchPropertiesNV";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case StructureType::eQueryLowLatencySupportNV: return "QueryLowLatencySupportNV";
 #if defined( VK_USE_PLATFORM_METAL_EXT )
       case StructureType::eExportMetalObjectCreateInfoEXT: return "ExportMetalObjectCreateInfoEXT";
@@ -4380,6 +4401,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSamplerBorderColorComponentMappingCreateInfoEXT: return "SamplerBorderColorComponentMappingCreateInfoEXT";
       case StructureType::ePhysicalDevicePageableDeviceLocalMemoryFeaturesEXT: return "PhysicalDevicePageableDeviceLocalMemoryFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderCorePropertiesARM: return "PhysicalDeviceShaderCorePropertiesARM";
+      case StructureType::eDeviceQueueShaderCoreControlCreateInfoARM: return "DeviceQueueShaderCoreControlCreateInfoARM";
+      case StructureType::ePhysicalDeviceSchedulingControlsFeaturesARM: return "PhysicalDeviceSchedulingControlsFeaturesARM";
+      case StructureType::ePhysicalDeviceSchedulingControlsPropertiesARM: return "PhysicalDeviceSchedulingControlsPropertiesARM";
       case StructureType::ePhysicalDeviceImageSlicedViewOf3DFeaturesEXT: return "PhysicalDeviceImageSlicedViewOf3DFeaturesEXT";
       case StructureType::eImageViewSlicedCreateInfoEXT: return "ImageViewSlicedCreateInfoEXT";
       case StructureType::ePhysicalDeviceDescriptorSetHostMappingFeaturesVALVE: return "PhysicalDeviceDescriptorSetHostMappingFeaturesVALVE";
@@ -4554,6 +4578,10 @@ namespace VULKAN_HPP_NAMESPACE
       case ObjectType::ePerformanceConfigurationINTEL: return "PerformanceConfigurationINTEL";
       case ObjectType::eDeferredOperationKHR: return "DeferredOperationKHR";
       case ObjectType::eIndirectCommandsLayoutNV: return "IndirectCommandsLayoutNV";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case ObjectType::eCudaModuleNV: return "CudaModuleNV";
+      case ObjectType::eCudaFunctionNV: return "CudaFunctionNV";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       case ObjectType::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -6948,6 +6976,10 @@ namespace VULKAN_HPP_NAMESPACE
       case DebugReportObjectTypeEXT::eCuFunctionNVX: return "CuFunctionNVX";
       case DebugReportObjectTypeEXT::eAccelerationStructureKHR: return "AccelerationStructureKHR";
       case DebugReportObjectTypeEXT::eAccelerationStructureNV: return "AccelerationStructureNV";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case DebugReportObjectTypeEXT::eCudaModuleNV: return "CudaModuleNV";
+      case DebugReportObjectTypeEXT::eCudaFunctionNV: return "CudaFunctionNV";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       case DebugReportObjectTypeEXT::eBufferCollectionFUCHSIA: return "BufferCollectionFUCHSIA";
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -8638,6 +8670,17 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_ARM_scheduling_controls ===
+
+  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceSchedulingControlsFlagBitsARM value )
+  {
+    switch ( value )
+    {
+      case PhysicalDeviceSchedulingControlsFlagBitsARM::eShaderCoreCount: return "ShaderCoreCount";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
 
   //=== VK_NV_memory_decompression ===
 

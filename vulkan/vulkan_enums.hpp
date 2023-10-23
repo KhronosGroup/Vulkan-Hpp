@@ -1089,7 +1089,14 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
     ePhysicalDeviceDiagnosticsConfigFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DIAGNOSTICS_CONFIG_FEATURES_NV,
     eDeviceDiagnosticsConfigCreateInfoNV       = VK_STRUCTURE_TYPE_DEVICE_DIAGNOSTICS_CONFIG_CREATE_INFO_NV,
-    eQueryLowLatencySupportNV                  = VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eCudaModuleCreateInfoNV                     = VK_STRUCTURE_TYPE_CUDA_MODULE_CREATE_INFO_NV,
+    eCudaFunctionCreateInfoNV                   = VK_STRUCTURE_TYPE_CUDA_FUNCTION_CREATE_INFO_NV,
+    eCudaLaunchInfoNV                           = VK_STRUCTURE_TYPE_CUDA_LAUNCH_INFO_NV,
+    ePhysicalDeviceCudaKernelLaunchFeaturesNV   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_FEATURES_NV,
+    ePhysicalDeviceCudaKernelLaunchPropertiesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUDA_KERNEL_LAUNCH_PROPERTIES_NV,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    eQueryLowLatencySupportNV = VK_STRUCTURE_TYPE_QUERY_LOW_LATENCY_SUPPORT_NV,
 #if defined( VK_USE_PLATFORM_METAL_EXT )
     eExportMetalObjectCreateInfoEXT = VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECT_CREATE_INFO_EXT,
     eExportMetalObjectsInfoEXT      = VK_STRUCTURE_TYPE_EXPORT_METAL_OBJECTS_INFO_EXT,
@@ -1260,6 +1267,9 @@ namespace VULKAN_HPP_NAMESPACE
     eDeviceBufferMemoryRequirementsKHR                           = VK_STRUCTURE_TYPE_DEVICE_BUFFER_MEMORY_REQUIREMENTS_KHR,
     eDeviceImageMemoryRequirementsKHR                            = VK_STRUCTURE_TYPE_DEVICE_IMAGE_MEMORY_REQUIREMENTS_KHR,
     ePhysicalDeviceShaderCorePropertiesARM                       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_ARM,
+    eDeviceQueueShaderCoreControlCreateInfoARM                   = VK_STRUCTURE_TYPE_DEVICE_QUEUE_SHADER_CORE_CONTROL_CREATE_INFO_ARM,
+    ePhysicalDeviceSchedulingControlsFeaturesARM                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_FEATURES_ARM,
+    ePhysicalDeviceSchedulingControlsPropertiesARM               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_PROPERTIES_ARM,
     ePhysicalDeviceImageSlicedViewOf3DFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_SLICED_VIEW_OF_3D_FEATURES_EXT,
     eImageViewSlicedCreateInfoEXT                                = VK_STRUCTURE_TYPE_IMAGE_VIEW_SLICED_CREATE_INFO_EXT,
     ePhysicalDeviceDescriptorSetHostMappingFeaturesVALVE         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_SET_HOST_MAPPING_FEATURES_VALVE,
@@ -1430,6 +1440,10 @@ namespace VULKAN_HPP_NAMESPACE
     eDeferredOperationKHR          = VK_OBJECT_TYPE_DEFERRED_OPERATION_KHR,
     eIndirectCommandsLayoutNV      = VK_OBJECT_TYPE_INDIRECT_COMMANDS_LAYOUT_NV,
     ePrivateDataSlotEXT            = VK_OBJECT_TYPE_PRIVATE_DATA_SLOT_EXT,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eCudaModuleNV   = VK_OBJECT_TYPE_CUDA_MODULE_NV,
+    eCudaFunctionNV = VK_OBJECT_TYPE_CUDA_FUNCTION_NV,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     eBufferCollectionFUCHSIA = VK_OBJECT_TYPE_BUFFER_COLLECTION_FUCHSIA,
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -4660,6 +4674,10 @@ namespace VULKAN_HPP_NAMESPACE
     eAccelerationStructureKHR    = VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR_EXT,
     eSamplerYcbcrConversionKHR   = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_KHR_EXT,
     eAccelerationStructureNV     = VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV_EXT,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eCudaModuleNV   = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_MODULE_NV,
+    eCudaFunctionNV = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_FUNCTION_NV,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     eBufferCollectionFUCHSIA = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_COLLECTION_FUCHSIA_EXT
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -6753,6 +6771,22 @@ namespace VULKAN_HPP_NAMESPACE
   };
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+  //=== VK_ARM_scheduling_controls ===
+
+  enum class PhysicalDeviceSchedulingControlsFlagBitsARM : VkPhysicalDeviceSchedulingControlsFlagsARM
+  {
+    eShaderCoreCount = VK_PHYSICAL_DEVICE_SCHEDULING_CONTROLS_SHADER_CORE_COUNT_ARM
+  };
+
+  using PhysicalDeviceSchedulingControlsFlagsARM = Flags<PhysicalDeviceSchedulingControlsFlagBitsARM>;
+
+  template <>
+  struct FlagTraits<PhysicalDeviceSchedulingControlsFlagBitsARM>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool                                     isBitmask = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR PhysicalDeviceSchedulingControlsFlagsARM allFlags  = PhysicalDeviceSchedulingControlsFlagBitsARM::eShaderCoreCount;
+  };
+
   //=== VK_NV_memory_decompression ===
 
   enum class MemoryDecompressionMethodFlagBitsNV : VkMemoryDecompressionMethodFlagsNV
@@ -7288,6 +7322,12 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_NV_device_generated_commands ===
       case VULKAN_HPP_NAMESPACE::ObjectType::eIndirectCommandsLayoutNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        //=== VK_NV_cuda_kernel_launch ===
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )
         //=== VK_FUCHSIA_buffer_collection ===

@@ -5017,17 +5017,24 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     // seems to be guaranteed at 0...
     auto const & enumConstants = requireDatas.front().enumConstants;
 
-    // the macro always has the suffix "_EXTENSION_NAME", so find a key that contains that, and strip it
+    auto const VENDORPascalCaseStripPrefix = []( std::string const & macro )
+    {
+      auto       prefixStripped = stripPrefix( macro, "VK_" );
+      auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
+      return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
+    };
+
     auto const & extensionMacro = std::find_if( enumConstants.begin(),
                                                 enumConstants.end(),
                                                 []( auto const & keyval ) { return keyval.first.find( "_EXTENSION_NAME" ) != std::string::npos; } )
                                     ->first;
+    auto const & specVersionMacro = std::find_if( enumConstants.begin(),
+                                                  enumConstants.end(),
+                                                  []( auto const & keyval ) { return keyval.first.find( "_SPEC_VERSION" ) != std::string::npos; } )
+                                      ->first;
 
-    // now, the macro is of the form VK_<vendor>_name_EXTENSION_NAME, so strip the VK_<vendor>_ prefix and the _EXTENSION_NAME suffix
-    // Also, extract the vendor name after that
-    auto extensionVar = stripPrefix( stripPostfix( extensionMacro, "_EXTENSION_NAME" ), "VK_" );
-    auto vendor       = extensionVar.substr( 0, extensionVar.find( '_' ) );
-    extensionVar      = toCamelCase( stripPrefix( extensionVar, vendor + "_" ) ) + vendor + "ExtName";
+    auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacro );
+    auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacro );
 
     if ( isDeprecated )
     {
@@ -5057,7 +5064,8 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     }
 
     auto thisExtensionConstexpr =
-      replaceWithMap( ExtensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } );
+      replaceWithMap( ExtensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
+      replaceWithMap( ExtensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
 
     extensionConstexprs += thisExtensionConstexpr;
   }
@@ -5086,11 +5094,17 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
 
   auto const pascalCasePrefixStrip = []( std::string const & macro ) { return stripPrefix( toCamelCase( macro ), "Vk" ); };
   auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
+  auto const VENDORCasePrefixStrip = []( std::string const & macro )
+  {
+    auto       prefixStripped = stripPrefix( macro, "VK_" );
+    auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
+    return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
+  };
 
   // constants
   {
     auto const generateConstantsAndProtection =
-      [&constexprUsingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
+      [&]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
       auto constants = std::string{};
       for ( auto const & require : requireData )
@@ -5111,6 +5125,15 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
             constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag } } );
             listedConstants.insert( constant );
           }
+        }
+
+        for ( auto const & [key, _] : require.enumConstants )
+        {
+          // keys are the constants themselves. Values are their definitions, and don't need them...
+          // Again, recall these constants are all in the form VK_<vendor>_<name>_EXTENSION_NAME and VK_<vendor>_<name>_SPEC_VERSION
+          // strip the Vk, get the vendor, and PascalCase the rest
+          constants += replaceWithMap( constexprUsingTemplate, { { "constName", VENDORCasePrefixStrip( key ) } } );
+          listedConstants.insert( key );
         }
       }
       return addTitleAndProtection( title, constants );
@@ -14043,9 +14066,9 @@ void VulkanHppGenerator::readRequireEnum(
         // if we have a name and value, insert to enumConstants map
         if ( attributes.contains( "name" ) && attributes.contains( "value" ) )
         {
-          /** If I do this, it would require that I move "type" from the `required` map to the `optional` map at
-           * the call to `checkAttributes()` in line ~12995. Plus, this would append a ton of values to m_constantAliases, which I'm not sure is the right
-           * thing to do.
+          /** If I do readEnumsConstants(), it would require that I move "type" from the `required` map to the `optional` map at
+           * the call to `checkAttributes()` in line ~12995. Plus, this would append a ton of values to m_constantAliases,
+           * which I'm not sure is the right thing to do.
            */
           // readEnumsConstants( element );
 

@@ -299,6 +299,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       "VK_NV_device_diagnostics_config",
       "VK_QCOM_render_pass_store_ops",
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      "VK_NV_cuda_kernel_launch",
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       "VK_NV_low_latency",
 #if defined( VK_USE_PLATFORM_METAL_EXT )
       "VK_EXT_metal_objects",
@@ -365,6 +368,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_pageable_device_local_memory",
       "VK_KHR_maintenance4",
       "VK_ARM_shader_core_properties",
+      "VK_ARM_scheduling_controls",
       "VK_EXT_image_sliced_view_of_3d",
       "VK_VALVE_descriptor_set_host_mapping",
       "VK_EXT_depth_clamp_zero_one",
@@ -1774,6 +1778,11 @@ namespace VULKAN_HPP_NAMESPACE
             } } } } },
       { "VK_KHR_maintenance4", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_ARM_shader_core_properties", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_ARM_scheduling_controls",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_ARM_shader_core_builtins",
+            } } } } },
       { "VK_EXT_image_sliced_view_of_3d",
         { { "VK_VERSION_1_0",
             { {
@@ -2674,7 +2683,11 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_KHR_video_encode_queue" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-        || ( extension == "VK_NV_device_diagnostics_config" ) || ( extension == "VK_QCOM_render_pass_store_ops" ) || ( extension == "VK_NV_low_latency" )
+        || ( extension == "VK_NV_device_diagnostics_config" ) || ( extension == "VK_QCOM_render_pass_store_ops" )
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+        || ( extension == "VK_NV_cuda_kernel_launch" )
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+        || ( extension == "VK_NV_low_latency" )
 #if defined( VK_USE_PLATFORM_METAL_EXT )
         || ( extension == "VK_EXT_metal_objects" )
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
@@ -2710,16 +2723,17 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
         || ( extension == "VK_EXT_load_store_op_none" ) || ( extension == "VK_HUAWEI_cluster_culling_shader" ) ||
            ( extension == "VK_EXT_border_color_swizzle" ) || ( extension == "VK_EXT_pageable_device_local_memory" ) || ( extension == "VK_KHR_maintenance4" ) ||
-           ( extension == "VK_ARM_shader_core_properties" ) || ( extension == "VK_EXT_image_sliced_view_of_3d" ) ||
-           ( extension == "VK_VALVE_descriptor_set_host_mapping" ) || ( extension == "VK_EXT_depth_clamp_zero_one" ) ||
-           ( extension == "VK_EXT_non_seamless_cube_map" ) || ( extension == "VK_QCOM_fragment_density_map_offset" ) ||
-           ( extension == "VK_NV_copy_memory_indirect" ) || ( extension == "VK_NV_memory_decompression" ) ||
-           ( extension == "VK_NV_device_generated_commands_compute" ) || ( extension == "VK_NV_linear_color_attachment" ) ||
-           ( extension == "VK_EXT_image_compression_control_swapchain" ) || ( extension == "VK_QCOM_image_processing" ) ||
-           ( extension == "VK_EXT_nested_command_buffer" ) || ( extension == "VK_EXT_external_memory_acquire_unmodified" ) ||
-           ( extension == "VK_EXT_extended_dynamic_state3" ) || ( extension == "VK_EXT_subpass_merge_feedback" ) ||
-           ( extension == "VK_EXT_shader_module_identifier" ) || ( extension == "VK_EXT_rasterization_order_attachment_access" ) ||
-           ( extension == "VK_NV_optical_flow" ) || ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
+           ( extension == "VK_ARM_shader_core_properties" ) || ( extension == "VK_ARM_scheduling_controls" ) ||
+           ( extension == "VK_EXT_image_sliced_view_of_3d" ) || ( extension == "VK_VALVE_descriptor_set_host_mapping" ) ||
+           ( extension == "VK_EXT_depth_clamp_zero_one" ) || ( extension == "VK_EXT_non_seamless_cube_map" ) ||
+           ( extension == "VK_QCOM_fragment_density_map_offset" ) || ( extension == "VK_NV_copy_memory_indirect" ) ||
+           ( extension == "VK_NV_memory_decompression" ) || ( extension == "VK_NV_device_generated_commands_compute" ) ||
+           ( extension == "VK_NV_linear_color_attachment" ) || ( extension == "VK_EXT_image_compression_control_swapchain" ) ||
+           ( extension == "VK_QCOM_image_processing" ) || ( extension == "VK_EXT_nested_command_buffer" ) ||
+           ( extension == "VK_EXT_external_memory_acquire_unmodified" ) || ( extension == "VK_EXT_extended_dynamic_state3" ) ||
+           ( extension == "VK_EXT_subpass_merge_feedback" ) || ( extension == "VK_EXT_shader_module_identifier" ) ||
+           ( extension == "VK_EXT_rasterization_order_attachment_access" ) || ( extension == "VK_NV_optical_flow" ) ||
+           ( extension == "VK_EXT_legacy_dithering" ) || ( extension == "VK_EXT_pipeline_protected_access" )
 #if defined( VK_USE_PLATFORM_ANDROID_KHR )
         || ( extension == "VK_ANDROID_external_format_resolve" )
 #endif /*VK_USE_PLATFORM_ANDROID_KHR*/

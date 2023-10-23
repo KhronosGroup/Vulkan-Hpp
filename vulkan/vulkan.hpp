@@ -55,7 +55,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 268, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 269, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -4780,6 +4780,46 @@ namespace VULKAN_HPP_NAMESPACE
     void vkCmdEncodeVideoKHR( VkCommandBuffer commandBuffer, const VkVideoEncodeInfoKHR * pEncodeInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkCmdEncodeVideoKHR( commandBuffer, pEncodeInfo );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_NV_cuda_kernel_launch ===
+
+    VkResult vkCreateCudaModuleNV( VkDevice                         device,
+                                   const VkCudaModuleCreateInfoNV * pCreateInfo,
+                                   const VkAllocationCallbacks *    pAllocator,
+                                   VkCudaModuleNV *                 pModule ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateCudaModuleNV( device, pCreateInfo, pAllocator, pModule );
+    }
+
+    VkResult vkGetCudaModuleCacheNV( VkDevice device, VkCudaModuleNV module, size_t * pCacheSize, void * pCacheData ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetCudaModuleCacheNV( device, module, pCacheSize, pCacheData );
+    }
+
+    VkResult vkCreateCudaFunctionNV( VkDevice                           device,
+                                     const VkCudaFunctionCreateInfoNV * pCreateInfo,
+                                     const VkAllocationCallbacks *      pAllocator,
+                                     VkCudaFunctionNV *                 pFunction ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateCudaFunctionNV( device, pCreateInfo, pAllocator, pFunction );
+    }
+
+    void vkDestroyCudaModuleNV( VkDevice device, VkCudaModuleNV module, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyCudaModuleNV( device, module, pAllocator );
+    }
+
+    void vkDestroyCudaFunctionNV( VkDevice device, VkCudaFunctionNV function, const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyCudaFunctionNV( device, function, pAllocator );
+    }
+
+    void vkCmdCudaLaunchKernelNV( VkCommandBuffer commandBuffer, const VkCudaLaunchInfoNV * pLaunchInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdCudaLaunchKernelNV( commandBuffer, pLaunchInfo );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -11431,6 +11471,36 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+  //=== VK_NV_cuda_kernel_launch ===
+  template <>
+  struct StructExtends<PhysicalDeviceCudaKernelLaunchFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCudaKernelLaunchFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceCudaKernelLaunchPropertiesNV, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
   //=== VK_NV_low_latency ===
   template <>
   struct StructExtends<QueryLowLatencySupportNV, SemaphoreCreateInfo>
@@ -12845,6 +12915,52 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_ARM_scheduling_controls ===
+  template <>
+  struct StructExtends<DeviceQueueShaderCoreControlCreateInfoARM, DeviceQueueCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<DeviceQueueShaderCoreControlCreateInfoARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceSchedulingControlsFeaturesARM, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceSchedulingControlsFeaturesARM, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceSchedulingControlsPropertiesARM, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_image_sliced_view_of_3d ===
   template <>
   struct StructExtends<PhysicalDeviceImageSlicedViewOf3DFeaturesEXT, PhysicalDeviceFeatures2>
@@ -14196,7 +14312,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif
@@ -15100,6 +15216,23 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_dummy vkGetPhysicalDeviceVideoEncodeQualityLevelPropertiesKHR_placeholder = 0;
     PFN_dummy vkGetEncodedVideoSessionParametersKHR_placeholder                   = 0;
     PFN_dummy vkCmdEncodeVideoKHR_placeholder                                     = 0;
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_NV_cuda_kernel_launch ===
+    PFN_vkCreateCudaModuleNV    vkCreateCudaModuleNV    = 0;
+    PFN_vkGetCudaModuleCacheNV  vkGetCudaModuleCacheNV  = 0;
+    PFN_vkCreateCudaFunctionNV  vkCreateCudaFunctionNV  = 0;
+    PFN_vkDestroyCudaModuleNV   vkDestroyCudaModuleNV   = 0;
+    PFN_vkDestroyCudaFunctionNV vkDestroyCudaFunctionNV = 0;
+    PFN_vkCmdCudaLaunchKernelNV vkCmdCudaLaunchKernelNV = 0;
+#else
+    PFN_dummy vkCreateCudaModuleNV_placeholder                                    = 0;
+    PFN_dummy vkGetCudaModuleCacheNV_placeholder                                  = 0;
+    PFN_dummy vkCreateCudaFunctionNV_placeholder                                  = 0;
+    PFN_dummy vkDestroyCudaModuleNV_placeholder                                   = 0;
+    PFN_dummy vkDestroyCudaFunctionNV_placeholder                                 = 0;
+    PFN_dummy vkCmdCudaLaunchKernelNV_placeholder                                 = 0;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )
@@ -16426,6 +16559,16 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetInstanceProcAddr( instance, "vkCmdEncodeVideoKHR" ) );
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_NV_cuda_kernel_launch ===
+      vkCreateCudaModuleNV    = PFN_vkCreateCudaModuleNV( vkGetInstanceProcAddr( instance, "vkCreateCudaModuleNV" ) );
+      vkGetCudaModuleCacheNV  = PFN_vkGetCudaModuleCacheNV( vkGetInstanceProcAddr( instance, "vkGetCudaModuleCacheNV" ) );
+      vkCreateCudaFunctionNV  = PFN_vkCreateCudaFunctionNV( vkGetInstanceProcAddr( instance, "vkCreateCudaFunctionNV" ) );
+      vkDestroyCudaModuleNV   = PFN_vkDestroyCudaModuleNV( vkGetInstanceProcAddr( instance, "vkDestroyCudaModuleNV" ) );
+      vkDestroyCudaFunctionNV = PFN_vkDestroyCudaFunctionNV( vkGetInstanceProcAddr( instance, "vkDestroyCudaFunctionNV" ) );
+      vkCmdCudaLaunchKernelNV = PFN_vkCmdCudaLaunchKernelNV( vkGetInstanceProcAddr( instance, "vkCmdCudaLaunchKernelNV" ) );
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
       vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetInstanceProcAddr( instance, "vkExportMetalObjectsEXT" ) );
@@ -17465,6 +17608,16 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetEncodedVideoSessionParametersKHR =
         PFN_vkGetEncodedVideoSessionParametersKHR( vkGetDeviceProcAddr( device, "vkGetEncodedVideoSessionParametersKHR" ) );
       vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdEncodeVideoKHR" ) );
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_NV_cuda_kernel_launch ===
+      vkCreateCudaModuleNV    = PFN_vkCreateCudaModuleNV( vkGetDeviceProcAddr( device, "vkCreateCudaModuleNV" ) );
+      vkGetCudaModuleCacheNV  = PFN_vkGetCudaModuleCacheNV( vkGetDeviceProcAddr( device, "vkGetCudaModuleCacheNV" ) );
+      vkCreateCudaFunctionNV  = PFN_vkCreateCudaFunctionNV( vkGetDeviceProcAddr( device, "vkCreateCudaFunctionNV" ) );
+      vkDestroyCudaModuleNV   = PFN_vkDestroyCudaModuleNV( vkGetDeviceProcAddr( device, "vkDestroyCudaModuleNV" ) );
+      vkDestroyCudaFunctionNV = PFN_vkDestroyCudaFunctionNV( vkGetDeviceProcAddr( device, "vkDestroyCudaFunctionNV" ) );
+      vkCmdCudaLaunchKernelNV = PFN_vkCmdCudaLaunchKernelNV( vkGetDeviceProcAddr( device, "vkCmdCudaLaunchKernelNV" ) );
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_METAL_EXT )

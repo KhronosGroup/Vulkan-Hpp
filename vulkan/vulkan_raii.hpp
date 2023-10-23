@@ -1394,6 +1394,16 @@ namespace VULKAN_HPP_NAMESPACE
         vkCmdEncodeVideoKHR = PFN_vkCmdEncodeVideoKHR( vkGetDeviceProcAddr( device, "vkCmdEncodeVideoKHR" ) );
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+        //=== VK_NV_cuda_kernel_launch ===
+        vkCreateCudaModuleNV    = PFN_vkCreateCudaModuleNV( vkGetDeviceProcAddr( device, "vkCreateCudaModuleNV" ) );
+        vkGetCudaModuleCacheNV  = PFN_vkGetCudaModuleCacheNV( vkGetDeviceProcAddr( device, "vkGetCudaModuleCacheNV" ) );
+        vkCreateCudaFunctionNV  = PFN_vkCreateCudaFunctionNV( vkGetDeviceProcAddr( device, "vkCreateCudaFunctionNV" ) );
+        vkDestroyCudaModuleNV   = PFN_vkDestroyCudaModuleNV( vkGetDeviceProcAddr( device, "vkDestroyCudaModuleNV" ) );
+        vkDestroyCudaFunctionNV = PFN_vkDestroyCudaFunctionNV( vkGetDeviceProcAddr( device, "vkDestroyCudaFunctionNV" ) );
+        vkCmdCudaLaunchKernelNV = PFN_vkCmdCudaLaunchKernelNV( vkGetDeviceProcAddr( device, "vkCmdCudaLaunchKernelNV" ) );
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
         //=== VK_EXT_metal_objects ===
         vkExportMetalObjectsEXT = PFN_vkExportMetalObjectsEXT( vkGetDeviceProcAddr( device, "vkExportMetalObjectsEXT" ) );
@@ -2295,6 +2305,23 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_dummy vkCmdEncodeVideoKHR_placeholder                                     = 0;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_NV_cuda_kernel_launch ===
+      PFN_vkCreateCudaModuleNV    vkCreateCudaModuleNV    = 0;
+      PFN_vkGetCudaModuleCacheNV  vkGetCudaModuleCacheNV  = 0;
+      PFN_vkCreateCudaFunctionNV  vkCreateCudaFunctionNV  = 0;
+      PFN_vkDestroyCudaModuleNV   vkDestroyCudaModuleNV   = 0;
+      PFN_vkDestroyCudaFunctionNV vkDestroyCudaFunctionNV = 0;
+      PFN_vkCmdCudaLaunchKernelNV vkCmdCudaLaunchKernelNV = 0;
+#  else
+      PFN_dummy vkCreateCudaModuleNV_placeholder                                    = 0;
+      PFN_dummy vkGetCudaModuleCacheNV_placeholder                                  = 0;
+      PFN_dummy vkCreateCudaFunctionNV_placeholder                                  = 0;
+      PFN_dummy vkDestroyCudaModuleNV_placeholder                                   = 0;
+      PFN_dummy vkDestroyCudaFunctionNV_placeholder                                 = 0;
+      PFN_dummy vkCmdCudaLaunchKernelNV_placeholder                                 = 0;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
       //=== VK_EXT_metal_objects ===
       PFN_vkExportMetalObjectsEXT vkExportMetalObjectsEXT = 0;
@@ -2611,6 +2638,12 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_NV_device_generated_commands ===
     class IndirectCommandsLayoutNV;
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_NV_cuda_kernel_launch ===
+    class CudaModuleNV;
+    class CudaFunctionNV;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
     //=== VK_FUCHSIA_buffer_collection ===
@@ -4193,6 +4226,18 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t>>
         getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo ) const;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_NV_cuda_kernel_launch ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV
+                           createCudaModuleNV( VULKAN_HPP_NAMESPACE::CudaModuleCreateInfoNV const &                            createInfo,
+                                               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV
+                           createCudaFunctionNV( VULKAN_HPP_NAMESPACE::CudaFunctionCreateInfoNV const &                          createInfo,
+                                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr ) const;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_USE_PLATFORM_METAL_EXT )
@@ -5915,6 +5960,12 @@ namespace VULKAN_HPP_NAMESPACE
       void encodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeInfoKHR & encodeInfo ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+      //=== VK_NV_cuda_kernel_launch ===
+
+      void cudaLaunchKernelNV( const VULKAN_HPP_NAMESPACE::CudaLaunchInfoNV & launchInfo ) const VULKAN_HPP_NOEXCEPT;
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
       //=== VK_KHR_synchronization2 ===
 
       void setEvent2KHR( VULKAN_HPP_NAMESPACE::Event event, const VULKAN_HPP_NAMESPACE::DependencyInfo & dependencyInfo ) const VULKAN_HPP_NOEXCEPT;
@@ -6459,6 +6510,260 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
     };
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    class CudaFunctionNV
+    {
+    public:
+      using CType   = VkCudaFunctionNV;
+      using CppType = vk::CudaFunctionNV;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      CudaFunctionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                      VULKAN_HPP_NAMESPACE::CudaFunctionCreateInfoNV const &                          createInfo,
+                      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          device.getDispatcher()->vkCreateCudaFunctionNV( static_cast<VkDevice>( *device ),
+                                                          reinterpret_cast<const VkCudaFunctionCreateInfoNV *>( &createInfo ),
+                                                          reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ),
+                                                          reinterpret_cast<VkCudaFunctionNV *>( &m_function ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          detail::throwResultException( result, "vkCreateCudaFunctionNV" );
+        }
+      }
+
+      CudaFunctionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                      VkCudaFunctionNV                                                                function,
+                      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_function( function )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      CudaFunctionNV( std::nullptr_t ) {}
+
+      ~CudaFunctionNV()
+      {
+        clear();
+      }
+
+      CudaFunctionNV()                         = delete;
+      CudaFunctionNV( CudaFunctionNV const & ) = delete;
+
+      CudaFunctionNV( CudaFunctionNV && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_function( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_function, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      CudaFunctionNV & operator=( CudaFunctionNV const & ) = delete;
+
+      CudaFunctionNV & operator=( CudaFunctionNV && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_function, rhs.m_function );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaFunctionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_function;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_function )
+        {
+          getDispatcher()->vkDestroyCudaFunctionNV(
+            static_cast<VkDevice>( m_device ), static_cast<VkCudaFunctionNV>( m_function ), reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device     = nullptr;
+        m_function   = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaFunctionNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_function, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_function, rhs.m_function );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
+      VULKAN_HPP_NAMESPACE::CudaFunctionNV                                      m_function   = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator  = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    class CudaModuleNV
+    {
+    public:
+      using CType   = VkCudaModuleNV;
+      using CppType = vk::CudaModuleNV;
+
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV;
+      static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+
+    public:
+      CudaModuleNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                    VULKAN_HPP_NAMESPACE::CudaModuleCreateInfoNV const &                            createInfo,
+                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+        VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          device.getDispatcher()->vkCreateCudaModuleNV( static_cast<VkDevice>( *device ),
+                                                        reinterpret_cast<const VkCudaModuleCreateInfoNV *>( &createInfo ),
+                                                        reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ),
+                                                        reinterpret_cast<VkCudaModuleNV *>( &m_module ) ) );
+        if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+        {
+          detail::throwResultException( result, "vkCreateCudaModuleNV" );
+        }
+      }
+
+      CudaModuleNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
+                    VkCudaModuleNV                                                                  module,
+                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
+        : m_device( *device )
+        , m_module( module )
+        , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
+        , m_dispatcher( device.getDispatcher() )
+      {
+      }
+
+      CudaModuleNV( std::nullptr_t ) {}
+
+      ~CudaModuleNV()
+      {
+        clear();
+      }
+
+      CudaModuleNV()                       = delete;
+      CudaModuleNV( CudaModuleNV const & ) = delete;
+
+      CudaModuleNV( CudaModuleNV && rhs ) VULKAN_HPP_NOEXCEPT
+        : m_device( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_device, {} ) )
+        , m_module( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_module, {} ) )
+        , m_allocator( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_allocator, {} ) )
+        , m_dispatcher( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( rhs.m_dispatcher, nullptr ) )
+      {
+      }
+
+      CudaModuleNV & operator=( CudaModuleNV const & ) = delete;
+
+      CudaModuleNV & operator=( CudaModuleNV && rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        if ( this != &rhs )
+        {
+          std::swap( m_device, rhs.m_device );
+          std::swap( m_module, rhs.m_module );
+          std::swap( m_allocator, rhs.m_allocator );
+          std::swap( m_dispatcher, rhs.m_dispatcher );
+        }
+        return *this;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaModuleNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_module;
+      }
+
+      void clear() VULKAN_HPP_NOEXCEPT
+      {
+        if ( m_module )
+        {
+          getDispatcher()->vkDestroyCudaModuleNV(
+            static_cast<VkDevice>( m_device ), static_cast<VkCudaModuleNV>( m_module ), reinterpret_cast<const VkAllocationCallbacks *>( m_allocator ) );
+        }
+        m_device     = nullptr;
+        m_module     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+      }
+
+      VULKAN_HPP_NAMESPACE::CudaModuleNV release()
+      {
+        m_device     = nullptr;
+        m_allocator  = nullptr;
+        m_dispatcher = nullptr;
+        return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::exchange( m_module, nullptr );
+      }
+
+      VULKAN_HPP_NAMESPACE::Device getDevice() const
+      {
+        return m_device;
+      }
+
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * getDispatcher() const
+      {
+        VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
+        return m_dispatcher;
+      }
+
+      void swap( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV & rhs ) VULKAN_HPP_NOEXCEPT
+      {
+        std::swap( m_device, rhs.m_device );
+        std::swap( m_module, rhs.m_module );
+        std::swap( m_allocator, rhs.m_allocator );
+        std::swap( m_dispatcher, rhs.m_dispatcher );
+      }
+
+      //=== VK_NV_cuda_kernel_launch ===
+
+      VULKAN_HPP_NODISCARD std::vector<uint8_t> getCache() const;
+
+    private:
+      VULKAN_HPP_NAMESPACE::Device                                              m_device     = {};
+      VULKAN_HPP_NAMESPACE::CudaModuleNV                                        m_module     = {};
+      const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                         m_allocator  = {};
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     class DebugReportCallbackEXT
     {
@@ -19046,6 +19351,57 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdEncodeVideoKHR && "Function <vkCmdEncodeVideoKHR> requires <VK_KHR_video_encode_queue>" );
 
       getDispatcher()->vkCmdEncodeVideoKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkVideoEncodeInfoKHR *>( &encodeInfo ) );
+    }
+#  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+#  if defined( VK_ENABLE_BETA_EXTENSIONS )
+    //=== VK_NV_cuda_kernel_launch ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV
+                                           Device::createCudaModuleNV( VULKAN_HPP_NAMESPACE::CudaModuleCreateInfoNV const &                            createInfo,
+                                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<uint8_t> CudaModuleNV::getCache() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCudaModuleCacheNV && "Function <vkGetCudaModuleCacheNV> requires <VK_NV_cuda_kernel_launch>" );
+
+      std::vector<uint8_t> cacheData;
+      size_t               cacheSize;
+      VkResult             result;
+      do
+      {
+        result = getDispatcher()->vkGetCudaModuleCacheNV( static_cast<VkDevice>( m_device ), static_cast<VkCudaModuleNV>( m_module ), &cacheSize, nullptr );
+        if ( ( result == VK_SUCCESS ) && cacheSize )
+        {
+          cacheData.resize( cacheSize );
+          result = getDispatcher()->vkGetCudaModuleCacheNV(
+            static_cast<VkDevice>( m_device ), static_cast<VkCudaModuleNV>( m_module ), &cacheSize, reinterpret_cast<void *>( cacheData.data() ) );
+        }
+      } while ( result == VK_INCOMPLETE );
+      resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::CudaModuleNV::getCache" );
+      VULKAN_HPP_ASSERT( cacheSize <= cacheData.size() );
+      if ( cacheSize < cacheData.size() )
+      {
+        cacheData.resize( cacheSize );
+      }
+      return cacheData;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV
+                                           Device::createCudaFunctionNV( VULKAN_HPP_NAMESPACE::CudaFunctionCreateInfoNV const &                          createInfo,
+                                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator ) const
+    {
+      return VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV( *this, createInfo, allocator );
+    }
+
+    VULKAN_HPP_INLINE void CommandBuffer::cudaLaunchKernelNV( const VULKAN_HPP_NAMESPACE::CudaLaunchInfoNV & launchInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdCudaLaunchKernelNV && "Function <vkCmdCudaLaunchKernelNV> requires <VK_NV_cuda_kernel_launch>" );
+
+      getDispatcher()->vkCmdCudaLaunchKernelNV( static_cast<VkCommandBuffer>( m_commandBuffer ), reinterpret_cast<const VkCudaLaunchInfoNV *>( &launchInfo ) );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 

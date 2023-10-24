@@ -27,6 +27,19 @@ static std::string EngineName = "Vulkan.hpp";
 template <typename T>
 class MyAllocator : public std::allocator<T>
 {
+public:
+  MyAllocator() = default;
+
+  template <class U>
+  MyAllocator( const MyAllocator<U> & /*unused*/ )
+  {
+  }
+
+  template <class U>
+  struct rebind
+  {
+    using other = MyAllocator<U>;
+  };
 };
 
 vk::UniqueDescriptorSetLayout createDescriptorSetLayoutUnique( vk::Device const &                                                                  device,

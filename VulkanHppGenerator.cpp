@@ -4992,7 +4992,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 
   auto extensionConstexprs = std::string{};
 
-  static auto const ExtensionTemplate              = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
+  static auto const extensionTemplate              = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
 )" };
   static auto const deprecatedPrefixTemplate       = std::string{ R"(VULKAN_HPP_DEPRECATED( ${message} ) )" };
   static auto const deprecatedByMessageTemplate    = std::string{ R"("The ${extensionName} extension has been deprecated by ${deprecatedBy}.")" };
@@ -5007,14 +5007,16 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   for ( auto const & [deprecatedBy, isDeprecated, name, number, obsoletedBy, platform, promotedTo, depends, requireDatas, type, xmlLine] : m_extensions )
   {
     auto [enter, leave] = generateProtection( getProtectFromTitle( name ) );
-    std::string message, deprecatedPrefix{};
 
-    extensionConstexprs += enter != previousEnter ? previousLeave + "\n" + enter : "";
+    extensionConstexprs += ( enter != previousEnter ) ? previousLeave + "\n" + enter : "";
 
     previousEnter = enter;
     previousLeave = leave;
 
-    // seems to be guaranteed at 0...
+    // assert that requireDatas has at least one require...
+    // and the first require has at least two enumConstants, which we are going to use
+    assert( requireDatas.size() >= 1 );
+    assert( requireDatas.front().enumConstants.size() >= 2 );
     auto const & enumConstants = requireDatas.front().enumConstants;
 
     auto const VENDORPascalCaseStripPrefix = []( std::string const & macro )
@@ -5036,38 +5038,38 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacro );
     auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacro );
 
+    std::string deprecationMessage;
     if ( isDeprecated )
     {
-      message          = deprecatedBy.empty() ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", name } } )
-                                              : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", name }, { "deprecatedBy", deprecatedBy } } );
-      deprecatedPrefix = replaceWithMap( deprecatedPrefixTemplate, { { "message", message } } );
+      assert( obsoletedBy.empty() && promotedTo.empty() );
+      deprecationMessage = deprecatedBy.empty()
+                           ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", name } } )
+                           : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", name }, { "deprecatedBy", deprecatedBy } } );
     }
-    if ( !obsoletedBy.empty() )
+    else if ( !obsoletedBy.empty() )
     {
-      message          = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", name }, { "obsoletedBy", obsoletedBy } } );
-      deprecatedPrefix = replaceWithMap( deprecatedPrefixTemplate, { { "message", message } } );
+      assert( promotedTo.empty() );
+      deprecationMessage = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", name }, { "obsoletedBy", obsoletedBy } } );
     }
-    if ( !promotedTo.empty() )
+    else if ( !promotedTo.empty() )
     {
       if ( promotedTo.find( "VK_VERSION_" ) != std::string::npos )
       {
         auto version = stripPrefix( promotedTo, "VK_VERSION_" );
         std::replace( std::begin( version ), std::end( version ), '_', '.' );
-        message          = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", name }, { "promotedTo", version } } );
-        deprecatedPrefix = replaceWithMap( deprecatedPrefixTemplate, { { "message", message } } );
+        deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", name }, { "promotedTo", version } } );
       }
       else
       {
-        message          = replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", name }, { "promotedTo", promotedTo } } );
-        deprecatedPrefix = replaceWithMap( deprecatedPrefixTemplate, { { "message", message } } );
+        deprecationMessage = replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", name }, { "promotedTo", promotedTo } } );
       }
     }
+    auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
 
-    auto thisExtensionConstexpr =
-      replaceWithMap( ExtensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
-      replaceWithMap( ExtensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
-
-    extensionConstexprs += thisExtensionConstexpr;
+    extensionConstexprs +=
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
+    ;
   }
 
   // and the last leave
@@ -14063,20 +14065,10 @@ void VulkanHppGenerator::readRequireEnum(
           }
         }
 
-        // if we have a name and value, insert to enumConstants map
-        if ( attributes.contains( "name" ) && attributes.contains( "value" ) )
-        {
-          /** If I do readEnumsConstants(), it would require that I move "type" from the `required` map to the `optional` map at
-           * the call to `checkAttributes()` in line ~12995. Plus, this would append a ton of values to m_constantAliases,
-           * which I'm not sure is the right thing to do.
-           */
-          // readEnumsConstants( element );
+        checkForError(
+          !supported || name.ends_with( "_EXTENSION_NAME" ) || name.ends_with( "_SPEC_VERSION" ), line, "encountered unexpected enum <" + name + ">" );
 
-          /* This way, I can filter the extensions by their properties later on when generating the constexpr values, similar to how
-           * `extension_inspection.cpp` is generated.
-           */
-          requireData.enumConstants.emplace( name, value );
-        }
+        requireData.enumConstants.emplace( name, value );
       }
     }
     else

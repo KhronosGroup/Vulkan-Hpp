@@ -5001,18 +5001,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   static auto const promotedVersionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to core in version ${promotedTo}." )" };
   static auto const promotedExtensionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to ${promotedTo}.")" };
 
-  std::string previousEnter, previousLeave;
-
   // I really, really wish C++ had discards for structured bindings...
   for ( auto const & [deprecatedBy, isDeprecated, name, number, obsoletedBy, platform, promotedTo, depends, requireDatas, type, xmlLine] : m_extensions )
   {
-    auto [enter, leave] = generateProtection( getProtectFromTitle( name ) );
-
-    extensionConstexprs += ( enter != previousEnter ) ? previousLeave + "\n" + enter : "";
-
-    previousEnter = enter;
-    previousLeave = leave;
-
     // assert that requireDatas has at least one require...
     // and the first require has at least two enumConstants, which we are going to use
     assert( requireDatas.size() >= 1 );
@@ -5066,18 +5057,14 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     }
     auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
 
-    extensionConstexprs +=
+    auto const thisExtensionConstexprs =
       replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
       replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
-    ;
+
+    extensionConstexprs += addTitleAndProtection( name, thisExtensionConstexprs );
   }
 
-  // and the last leave
-  if ( !previousLeave.empty() )
-  {
-    extensionConstexprs += previousLeave + "\n";
-  }
-
+  
   constexprDefines += replaceWithMap( extensionConstexprDefinesTemplate, { { "extensionConstexprs", extensionConstexprs } } );
 
   return constexprDefines;

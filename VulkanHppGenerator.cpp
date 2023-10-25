@@ -5051,7 +5051,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       if ( extension.promotedTo.starts_with( "VK_VERSION_" ) )
       {
         auto version = stripPrefix( extension.promotedTo, "VK_VERSION_" );
-        std::ranges::replace( version, '_', '.' );
+        std::replace( version.begin(), version.end(), '_', '.' );
         deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", version } } );
       }
       else

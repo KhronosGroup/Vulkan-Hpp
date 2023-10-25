@@ -5002,8 +5002,10 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
   static auto const promotedExtensionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to ${promotedTo}.")" };
 
   // I really, really wish C++ had discards for structured bindings...
-  for ( auto const & [deprecatedBy, isDeprecated, name, number, obsoletedBy, platform, promotedTo, depends, requireDatas, type, xmlLine] : m_extensions )
+  for ( auto const & extension : m_extensions )
   {
+    auto const & requireDatas = extension.requireData;
+
     // assert that requireDatas has at least one require...
     // and the first require has at least two enumConstants, which we are going to use
     assert( requireDatas.size() >= 1 );
@@ -5017,42 +5019,45 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
     };
 
-    auto const & extensionMacro = std::find_if( enumConstants.begin(),
-                                                enumConstants.end(),
-                                                []( auto const & keyval ) { return keyval.first.find( "_EXTENSION_NAME" ) != std::string::npos; } )
-                                    ->first;
-    auto const & specVersionMacro = std::find_if( enumConstants.begin(),
-                                                  enumConstants.end(),
-                                                  []( auto const & keyval ) { return keyval.first.find( "_SPEC_VERSION" ) != std::string::npos; } )
-                                      ->first;
+    // add asserts so we don't get a nullptr exception below
+    auto const & extensionMacroPtr =
+      std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_EXTENSION_NAME" ); } );
+    auto const & specVersionMacroPtr =
+      std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_SPEC_VERSION" ); } );
+    assert( extensionMacroPtr != enumConstants.end());
+    assert( specVersionMacroPtr != enumConstants.end() );
+
+    auto const & extensionMacro   = extensionMacroPtr->first;
+    auto const & specVersionMacro = specVersionMacroPtr->first;
 
     auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacro );
     auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacro );
 
     std::string deprecationMessage;
-    if ( isDeprecated )
+    if ( extension.isDeprecated )
     {
-      assert( obsoletedBy.empty() && promotedTo.empty() );
-      deprecationMessage = deprecatedBy.empty()
-                           ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", name } } )
-                           : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", name }, { "deprecatedBy", deprecatedBy } } );
+      assert( extension.obsoletedBy.empty() && extension.promotedTo.empty() );
+      deprecationMessage = extension.deprecatedBy.empty()
+                           ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", extension.name } } )
+                           : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", extension.name }, { "deprecatedBy", extension.deprecatedBy } } );
     }
-    else if ( !obsoletedBy.empty() )
+    else if ( !extension.obsoletedBy.empty() )
     {
-      assert( promotedTo.empty() );
-      deprecationMessage = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", name }, { "obsoletedBy", obsoletedBy } } );
+      assert( extension.promotedTo.empty() );
+      deprecationMessage = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", extension.name }, { "obsoletedBy", extension.obsoletedBy } } );
     }
-    else if ( !promotedTo.empty() )
+    else if ( !extension.promotedTo.empty() )
     {
-      if ( promotedTo.find( "VK_VERSION_" ) != std::string::npos )
+      if ( extension.promotedTo.starts_with( "VK_VERSION_" ) )
       {
-        auto version = stripPrefix( promotedTo, "VK_VERSION_" );
-        std::replace( std::begin( version ), std::end( version ), '_', '.' );
-        deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", name }, { "promotedTo", version } } );
+        auto version = stripPrefix( extension.promotedTo, "VK_VERSION_" );
+        std::ranges::replace( version, '_', '.' );
+        deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", version } } );
       }
       else
       {
-        deprecationMessage = replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", name }, { "promotedTo", promotedTo } } );
+        deprecationMessage =
+          replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", extension.promotedTo } } );
       }
     }
     auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
@@ -5061,10 +5066,9 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
       replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
 
-    extensionConstexprs += addTitleAndProtection( name, thisExtensionConstexprs );
+    extensionConstexprs += addTitleAndProtection( extension.name, thisExtensionConstexprs );
   }
 
-  
   constexprDefines += replaceWithMap( extensionConstexprDefinesTemplate, { { "extensionConstexprs", extensionConstexprs } } );
 
   return constexprDefines;

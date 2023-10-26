@@ -105,6 +105,14 @@ public:
   void prepareRAIIHandles();
   void prepareVulkanFuncs();
 
+  struct MacroData
+  {
+    std::string              deprecatedComment = {};
+    std::string              calleeMacro       = {};
+    std::vector<std::string> params            = {};
+    std::string              definition        = {};
+  };
+
 private:
   struct AliasData
   {
@@ -212,11 +220,12 @@ private:
 
   struct RequireData
   {
-    std::string              depends   = {};
-    std::vector<std::string> commands  = {};
-    std::vector<std::string> constants = {};
-    std::vector<std::string> types     = {};
-    int                      xmlLine   = {};
+    std::string                        depends       = {};
+    std::vector<std::string>           commands      = {};
+    std::map<std::string, std::string> enumConstants = {};
+    std::vector<std::string>           constants     = {};
+    std::vector<std::string>           types         = {};
+    int                                xmlLine       = {};
   };
 
   struct ExtensionData

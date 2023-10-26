@@ -23,14 +23,6 @@
 #include <regex>
 #include <sstream>
 
-struct MacroData
-{
-  std::string              deprecatedComment = {};
-  std::string              calleeMacro       = {};
-  std::vector<std::string> params            = {};
-  std::string              definition        = {};
-};
-
 void                                        checkAttributes( int                                                  line,
                                                              std::map<std::string, std::string> const &           attributes,
                                                              std::map<std::string, std::set<std::string>> const & required,
@@ -62,7 +54,7 @@ std::string                                      toString( tinyxml2::XMLError er
 std::string                                      trim( std::string const & input );
 std::string                                      trimEnd( std::string const & input );
 std::string                                      trimStars( std::string const & input );
-MacroData                                        parseMacro( std::vector<std::string> const & completeMacro );
+VulkanHppGenerator::MacroData                    parseMacro( std::vector<std::string> const & completeMacro );
 void                                             writeToFile( std::string const & str, std::string const & fileName );
 
 const std::set<std::string> specialPointerTypes = { "Display", "IDirectFB", "wl_display", "xcb_connection_t", "_screen_window" };
@@ -789,7 +781,7 @@ void VulkanHppGenerator::generateCppModuleFile() const
 
   std::string const vulkanCppmTemplate = R"(${licenseHeader}
 
-// Note: This module is still in an experimental state. 
+// Note: This module is still in an experimental state.
 // Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
 
 module;
@@ -4989,6 +4981,96 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     constexprDefines += callerString;
   }
 
+  // extension constexprs
+  auto const extensionConstexprDefinesTemplate = std::string{ R"(
+  //=================================
+  //=== CONSTEXPR EXTENSION NAMEs ===
+  //=================================
+
+  ${extensionConstexprs}
+)" };
+
+  auto extensionConstexprs = std::string{};
+
+  static auto const extensionTemplate              = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
+)" };
+  static auto const deprecatedPrefixTemplate       = std::string{ R"(VULKAN_HPP_DEPRECATED( ${message} ) )" };
+  static auto const deprecatedByMessageTemplate    = std::string{ R"("The ${extensionName} extension has been deprecated by ${deprecatedBy}.")" };
+  static auto const deprecatedMessageTemplate      = std::string{ R"("The ${extensionName} extension has been deprecated.")" };
+  static auto const obsoletedMessageTemplate       = std::string{ R"("The ${extensionName} extension has been obsoleted by ${obsoletedBy}.")" };
+  static auto const promotedVersionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to core in version ${promotedTo}." )" };
+  static auto const promotedExtensionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to ${promotedTo}.")" };
+
+  // I really, really wish C++ had discards for structured bindings...
+  for ( auto const & extension : m_extensions )
+  {
+    auto const & requireDatas = extension.requireData;
+
+    // assert that requireDatas has at least one require...
+    // and the first require has at least two enumConstants, which we are going to use
+    assert( requireDatas.size() >= 1 );
+    assert( requireDatas.front().enumConstants.size() >= 2 );
+    auto const & enumConstants = requireDatas.front().enumConstants;
+
+    auto const VENDORPascalCaseStripPrefix = []( std::string const & macro )
+    {
+      auto       prefixStripped = stripPrefix( macro, "VK_" );
+      auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
+      return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
+    };
+
+    // add asserts so we don't get a nullptr exception below
+    auto const & extensionMacroPtr =
+      std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_EXTENSION_NAME" ); } );
+    auto const & specVersionMacroPtr =
+      std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_SPEC_VERSION" ); } );
+    assert( extensionMacroPtr != enumConstants.end());
+    assert( specVersionMacroPtr != enumConstants.end() );
+
+    auto const & extensionMacro   = extensionMacroPtr->first;
+    auto const & specVersionMacro = specVersionMacroPtr->first;
+
+    auto const extensionVar   = VENDORPascalCaseStripPrefix( extensionMacro );
+    auto const specVersionVar = VENDORPascalCaseStripPrefix( specVersionMacro );
+
+    std::string deprecationMessage;
+    if ( extension.isDeprecated )
+    {
+      assert( extension.obsoletedBy.empty() && extension.promotedTo.empty() );
+      deprecationMessage = extension.deprecatedBy.empty()
+                           ? replaceWithMap( deprecatedMessageTemplate, { { "extensionName", extension.name } } )
+                           : replaceWithMap( deprecatedByMessageTemplate, { { "extensionName", extension.name }, { "deprecatedBy", extension.deprecatedBy } } );
+    }
+    else if ( !extension.obsoletedBy.empty() )
+    {
+      assert( extension.promotedTo.empty() );
+      deprecationMessage = replaceWithMap( obsoletedMessageTemplate, { { "extensionName", extension.name }, { "obsoletedBy", extension.obsoletedBy } } );
+    }
+    else if ( !extension.promotedTo.empty() )
+    {
+      if ( extension.promotedTo.starts_with( "VK_VERSION_" ) )
+      {
+        auto version = stripPrefix( extension.promotedTo, "VK_VERSION_" );
+        std::replace( version.begin(), version.end(), '_', '.' );
+        deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", version } } );
+      }
+      else
+      {
+        deprecationMessage =
+          replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", extension.promotedTo } } );
+      }
+    }
+    auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
+
+    auto const thisExtensionConstexprs =
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", extensionMacro }, { "var", extensionVar } } ) +
+      replaceWithMap( extensionTemplate, { { "deprecated", deprecatedPrefix }, { "macro", specVersionMacro }, { "var", specVersionVar } } );
+
+    extensionConstexprs += addTitleAndProtection( extension.name, thisExtensionConstexprs );
+  }
+
+  constexprDefines += replaceWithMap( extensionConstexprDefinesTemplate, { { "extensionConstexprs", extensionConstexprs } } );
+
   return constexprDefines;
 }
 
@@ -5005,11 +5087,17 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
 
   auto const pascalCasePrefixStrip = []( std::string const & macro ) { return stripPrefix( toCamelCase( macro ), "Vk" ); };
   auto const camelCasePrefixStrip  = []( std::string const & macro ) { return startLowerCase( stripPrefix( toCamelCase( macro ), "Vk" ) ); };
+  auto const VENDORCasePrefixStrip = []( std::string const & macro )
+  {
+    auto       prefixStripped = stripPrefix( macro, "VK_" );
+    auto const vendor         = prefixStripped.substr( 0, prefixStripped.find( '_' ) );
+    return vendor + toCamelCase( stripPrefix( prefixStripped, vendor + "_" ) );
+  };
 
   // constants
   {
     auto const generateConstantsAndProtection =
-      [&constexprUsingTemplate, this]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
+      [&]( std::vector<RequireData> const & requireData, std::string const & title, std::set<std::string> & listedConstants )
     {
       auto constants = std::string{};
       for ( auto const & require : requireData )
@@ -5030,6 +5118,15 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
             constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag } } );
             listedConstants.insert( constant );
           }
+        }
+
+        for ( auto const & [key, _] : require.enumConstants )
+        {
+          // keys are the constants themselves. Values are their definitions, and don't need them...
+          // Again, recall these constants are all in the form VK_<vendor>_<name>_EXTENSION_NAME and VK_<vendor>_<name>_SPEC_VERSION
+          // strip the Vk, get the vendor, and PascalCase the rest
+          constants += replaceWithMap( constexprUsingTemplate, { { "constName", VENDORCasePrefixStrip( key ) } } );
+          listedConstants.insert( key );
         }
       }
       return addTitleAndProtection( title, constants );
@@ -5075,7 +5172,7 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   // callers
   constexprUsings += R"(
   //==========================
-  //=== CONSTEXPR CALLERSs ===
+  //=== CONSTEXPR CALLERs ===
   //==========================
 )";
   for ( auto const & macro : m_definesPartition.callers )
@@ -5095,7 +5192,7 @@ std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
 
   auto handleUsings = std::string{ R"(
   //===============
-  //=== HANDLEs === 
+  //=== HANDLEs ===
   //===============
 
   using VULKAN_HPP_NAMESPACE::isVulkanHandleType;
@@ -5282,7 +5379,7 @@ std::string VulkanHppGenerator::generateCppModuleFuncsUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${funcName};
 )" };
 
-  auto funcUsings = std::string{ R"(  
+  auto funcUsings = std::string{ R"(
   //===========================
   //=== COMMAND Definitions ===
   //===========================
@@ -5408,7 +5505,7 @@ std::string VulkanHppGenerator::generateCppModuleExtensionInspectionUsings() con
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${function};
 )" };
 
-  auto extensionInspectionsUsings = std::string{ R"(  
+  auto extensionInspectionsUsings = std::string{ R"(
   //======================================
   //=== Extension inspection functions ===
   //======================================
@@ -11893,7 +11990,7 @@ std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::pair<std::st
       aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
     }
 
-    static const std::string sharedHandleTemplate = R"(  
+    static const std::string sharedHandleTemplate = R"(
 template <>
 class SharedHandle<${type}> : public SharedHandleBaseNoDestroy<${type}, ${parent}>
 {
@@ -12991,6 +13088,7 @@ void VulkanHppGenerator::readEnumsConstants( tinyxml2::XMLElement const * elemen
   }
   else
   {
+    // checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "type", {} }, { "comment", {} } } );
     checkAttributes( line, attributes, { { "name", {} }, { "type", {} }, { "value", {} } }, { { "comment", {} } } );
 
     std::string alias, name, type, value;
@@ -13129,7 +13227,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
       requireData.types.push_back( readRequireType( child, extensionData.name ) );
     }
   }
-  if ( requireSupported && ( !requireData.commands.empty() || !requireData.types.empty() ) )
+  if ( requireSupported && ( !requireData.commands.empty() || !requireData.types.empty() || !requireData.enumConstants.empty() ) )
   {
     extensionData.requireData.push_back( requireData );
   }
@@ -13957,6 +14055,11 @@ void VulkanHppGenerator::readRequireEnum(
             m_constants[name] = { type, value, line };
           }
         }
+
+        checkForError(
+          !supported || name.ends_with( "_EXTENSION_NAME" ) || name.ends_with( "_SPEC_VERSION" ), line, "encountered unexpected enum <" + name + ">" );
+
+        requireData.enumConstants.emplace( name, value );
       }
     }
     else
@@ -15480,7 +15583,7 @@ std::vector<std::string> tokenizeAny( std::string const & tokenString, std::stri
 
 // function to take three or four-vector of strings containing a macro definition, and return
 // a tuple with possibly the deprecation reason, possibly the called macro, the macro parameters, and possibly the definition
-MacroData parseMacro( std::vector<std::string> const & completeMacro )
+VulkanHppGenerator::MacroData parseMacro( std::vector<std::string> const & completeMacro )
 {
   // #define macro definition
   // #define macro( params ) definition

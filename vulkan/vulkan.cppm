@@ -4568,7 +4568,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::isObsoletedExtension;
   using VULKAN_HPP_NAMESPACE::isPromotedExtension;
 
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
     //======================

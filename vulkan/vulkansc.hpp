@@ -16,7 +16,7 @@
 #include <vulkan/vulkan_sc_core.h>
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-#  include <string_view>  // std::string_view
+#  include <string_view>
 #endif
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -54,6 +54,10 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 
 #if defined( VULKAN_HPP_SUPPORT_SPAN )
 #  include <span>
+#endif
+
+#if defined( __has_include ) && __has_include( <expected>)
+#  include <expected>
 #endif
 
 static_assert( VK_HEADER_VERSION == 13, "Wrong VK_HEADER_VERSION!" );

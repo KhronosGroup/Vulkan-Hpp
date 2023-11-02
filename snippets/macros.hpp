@@ -58,7 +58,7 @@
 #endif
 
 #if !defined( VULKAN_HPP_STATIC_ASSERT )
-# define VULKAN_HPP_STATIC_ASSERT static_assert
+#  define VULKAN_HPP_STATIC_ASSERT static_assert
 #endif
 
 #if !defined( VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL )
@@ -85,8 +85,8 @@
 #  endif
 #endif
 
-#if defined(__GNUC__)
-# define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
+#if defined( __GNUC__ )
+#  define GCC_VERSION ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
 #endif
 
 #if !defined( VULKAN_HPP_HAS_UNRESTRICTED_UNIONS )
@@ -134,7 +134,7 @@
 #  else
 #    define VULKAN_HPP_CONSTEXPR_14
 #  endif
-#  if ( 201907 <= __cpp_constexpr ) && ( !defined(__GNUC__) || ( 110400 < GCC_VERSION ) )
+#  if ( 201907 <= __cpp_constexpr ) && ( !defined( __GNUC__ ) || ( 110400 < GCC_VERSION ) )
 #    define VULKAN_HPP_CONSTEXPR_20 constexpr
 #  else
 #    define VULKAN_HPP_CONSTEXPR_20
@@ -194,12 +194,12 @@
 #define VULKAN_HPP_STRINGIFY( text )  VULKAN_HPP_STRINGIFY2( text )
 #define VULKAN_HPP_NAMESPACE_STRING   VULKAN_HPP_STRINGIFY( VULKAN_HPP_NAMESPACE )
 
-#if !defined(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC)
-# if defined( VK_NO_PROTOTYPES )
-#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
-# else
-#  define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
-# endif
+#if !defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC )
+#  if defined( VK_NO_PROTOTYPES )
+#    define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#  else
+#    define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
+#  endif
 #endif
 
 #if !defined( VULKAN_HPP_STORAGE_API )
@@ -233,11 +233,12 @@ namespace VULKAN_HPP_NAMESPACE
 #if !defined( VULKAN_HPP_DEFAULT_DISPATCHER )
 #  if VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1
 #    define VULKAN_HPP_DEFAULT_DISPATCHER ::VULKAN_HPP_NAMESPACE::defaultDispatchLoaderDynamic
-#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE                     \
-      namespace VULKAN_HPP_NAMESPACE                                               \
-      {                                                                            \
+#    define VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE                                             \
+      namespace VULKAN_HPP_NAMESPACE                                                                       \
+      {                                                                                                    \
         VULKAN_HPP_STORAGE_API ::VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic defaultDispatchLoaderDynamic; \
       }
+
 namespace VULKAN_HPP_NAMESPACE
 {
   extern VULKAN_HPP_STORAGE_API VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic defaultDispatchLoaderDynamic;
@@ -264,4 +265,20 @@ namespace VULKAN_HPP_NAMESPACE
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT         = {}
 #  define VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT = nullptr
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
+#endif
+
+#if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && ( __has_include( <expected>))
+#  define VULKAN_HPP_EXPECTED   std::expected
+#  define VULKAN_HPP_UNEXPECTED std::unexpected
+#endif
+
+#if !defined( VULKAN_HPP_RAII_NAMESPACE )
+#  define VULKAN_HPP_RAII_NAMESPACE raii
+#endif
+
+#if defined( VULKAN_HPP_NO_EXCEPTIONS ) && defined( VULKAN_HPP_EXPECTED )
+#  define VULKAN_HPP_RAII_NO_EXCEPTIONS
+#  define VULKAN_HPP_RAII_CREATE_NOEXCEPT noexcept
+#else
+#  define VULKAN_HPP_RAII_CREATE_NOEXCEPT
 #endif

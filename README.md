@@ -845,6 +845,10 @@ This either selects the dynamic (when it's 1) or the static (when it's not 1) Di
 
 By default, a little helper class ```DynamicLoader``` is used to dynamically load the vulkan library. If you set it to something different than 1 before including vulkan.hpp, this helper is not available, and you need to explicitly provide your own loader type for the function ```DispatchLoaderDynamic::init()```.
 
+#### VULKAN_HPP_EXPECTED
+
+When this is not externally defined and VULKAN_HPP_CPP_VERSION is at least 23, VULKAN_HPP_EXPECTED is defined to be std::expected, and VULKAN_HPP_UNEXPECTED is defined to be std::unexpected.
+
 #### VULKAN_HPP_FLAGS_MASK_TYPE_AS_PUBLIC
 
 By default, the member ```m_mask``` of the ```Flags``` template class is private. This is to prevent accidentally setting a ```Flags``` with some inappropriate value. But it also prevents using a ```Flags```, or a structure holding a ```Flags```, to be used as a non-type template parameter. If you really need that functionality, and accept the reduced security, you can use this define to change the access specifier for m_mask from private to public, which allows using a ```Flags``` as a non-type template parameter.
@@ -889,6 +893,10 @@ By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the he
 
 With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining ```VULKAN_HPP_NO_SPACESHIP_OPERATOR``` before including vulkan.hpp you can remove that operator from those structs and classes.
 
+#### VULKAN_HPP_RAII_NO_EXCEPTIONS
+
+If both, VULKAN_HPP_NO_EXCEPTIONS and VULKAN_HPP_EXPECTED are defined, the vk::raii-classes don't throw exceptions. That is, the actual constructors are not available, but the creation-functions must be used. For more details have a look at the vk_raii_ProgrammingGuide.md.
+
 #### VULKAN_HPP_STORAGE_API
 
 With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported (see ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```). If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.
@@ -896,6 +904,10 @@ With this define you can specify whether the ```DispatchLoaderDynamic``` is impo
 #### VULKAN_HPP_TYPESAFE_CONVERSION
 
 32-bit vulkan is not typesafe for non-dispatchable handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.
+
+#### VULKAN_HPP_UNEXPECTED
+
+See ```VULKAN_HPP_EXPECTED```.
 
 #### VULKAN_HPP_USE_REFLECT
 

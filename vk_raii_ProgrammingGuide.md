@@ -25,6 +25,24 @@ you would create a `vk::raii::Device`
 
 That `vk::raii::Device` is automatically destroyed, when its scope is left.
 
+Alternatively, you can use a creation function to create a `vk::raii::Device`:
+
+    // create a vk::raii::Device, given a vk::raii::PhysicalDevice physicalDevice and a vk::DeviceCreateInfo deviceCreateInfo
+    vk::raii::Device device = physicalDevice.createDevice( deviceCreateInfo );
+
+Finally, if you have defined `VULKAN_HPP_NO_EXCPETIONS` and compile for at least C++23, the constructors as described above are not available (they would potentially throw an exception which is not allowed then) but you have to use the construction functions. Those functions then do not return the created object, but a `std::expected<vk::raii::Object, vk::Result>`:
+
+    // create a vk::raii::Device, given a vk::raii::PhysicalDevice physicalDevice and a vk::DeviceCreateInfo deviceCreateInfo
+	// when VULKAN_HPP_NO_EXCPETIONS is defined and your using at least C++23
+	auto deviceExpected = physicalDevice.createDevice( deviceCreateInfo );
+	if ( deviceExpected.has_value() )
+	{
+		device = std::move( *deviceExpected );
+	}
+
+In the code snippets in this text, I will consistently use the constructor-approach.
+
+
 Other than the `vk::Device`, you can assign the `vk::raii::Device` to a smart pointer:
 
     // create a smart-pointer to a vk::raii::Device, given a smart-pointer to a vk::raii::PhysicalDevice pPhysicalDevice and a vk::DeviceCreateInfo deviceCreateInfo
@@ -82,8 +100,6 @@ The `vk::raii::Instance` now holds all the instance-related functions. For examp
 
     // get all vk::PhysicalDeviceGroupProperties from a vk::raii::Instance instance
     std::vector<vk::PhysicalDeviceGroupProperties> physicalDeviceGroupProperties = instance.enumeratePhysicalDeviceGroups();
-
-Actually, "all the instance-related functions", as stated above, might be a bit misleading. There are just very few public functions available with the `vk::raii::Instance`, as most of the instance-related functions are creation functions that are not wrapped publicly but used internally when instantiating other vk::raii-objects.
 
 ### 02 Enumerate the vk::raii::PhysicalDevices
 

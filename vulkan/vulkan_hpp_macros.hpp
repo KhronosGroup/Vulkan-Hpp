@@ -277,4 +277,20 @@ namespace VULKAN_HPP_NAMESPACE
 #  define VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT       = VULKAN_HPP_DEFAULT_DISPATCHER
 #endif
 
+#if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && ( __has_include( <expected>))
+#  define VULKAN_HPP_EXPECTED   std::expected
+#  define VULKAN_HPP_UNEXPECTED std::unexpected
+#endif
+
+#if !defined( VULKAN_HPP_RAII_NAMESPACE )
+#  define VULKAN_HPP_RAII_NAMESPACE raii
+#endif
+
+#if defined( VULKAN_HPP_NO_EXCEPTIONS ) && defined( VULKAN_HPP_EXPECTED )
+#  define VULKAN_HPP_RAII_NO_EXCEPTIONS
+#  define VULKAN_HPP_RAII_CREATE_NOEXCEPT noexcept
+#else
+#  define VULKAN_HPP_RAII_CREATE_NOEXCEPT
+#endif
+
 #endif

@@ -18,7 +18,7 @@ jobs:
           - {cxx: "g++-11", c: "gcc-11"}
           - {cxx: "clang++-13", c: "clang-13"}
           - {cxx: "clang++-14", c: "clang-14"}
-        cxx_standard: [11, 14, 17, 20]
+        cxx_standard: [11, 14, 17, 20, 23]
 
     steps:
     - uses: actions/checkout@v4

@@ -15,7 +15,7 @@ jobs:
         compiler:
           - {cxx: "g++-11", c: "clang"}
           - {cxx: "clang++", c: "clang"}
-        cxx_standard: [11, 14, 17, 20]
+        cxx_standard: [11, 14, 17, 20, 23]
 
     steps:
     - uses: actions/checkout@v4

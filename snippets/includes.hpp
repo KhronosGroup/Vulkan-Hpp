@@ -1,20 +1,17 @@
-#ifndef VULKAN_HPP
-#define VULKAN_HPP
-
 #include <algorithm>
-#include <array>    // ArrayWrapperND
-#include <string>   // std::string
-#include <string.h> // strnlen
+#include <array>     // ArrayWrapperND
+#include <string.h>  // strnlen
+#include <string>    // std::string
 #include <vulkan/${vulkan_h}>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-#  include <string_view>    // std::string_view
+#  include <string_view>
 #endif
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-#  include <tuple>  // std::tie
-#  include <vector> // std::vector
+#  include <tuple>   // std::tie
+#  include <vector>  // std::vector
 #endif
 
 #if !defined( VULKAN_HPP_NO_EXCEPTIONS )
@@ -26,7 +23,7 @@
 #endif
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
-#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined(__Fuchsia__)
+#  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
 #    include <dlfcn.h>
 #  elif defined( _WIN32 )
 typedef struct HINSTANCE__ * HINSTANCE;

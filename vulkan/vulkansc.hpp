@@ -16,7 +16,7 @@
 #include <vulkan/vulkan_sc_core.h>
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
-#  include <string_view>  // std::string_view
+#  include <string_view>
 #endif
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -6936,7 +6936,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

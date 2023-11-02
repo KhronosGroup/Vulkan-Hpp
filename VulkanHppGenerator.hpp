@@ -498,19 +498,17 @@ private:
                                              bool                     nonConstPointerAsNullptr,
                                              std::set<size_t> const & singularParams,
                                              std::set<size_t> const & templatedParams,
-                                             bool                     raiiHandleMemberFunction,
+                                             bool                     raii,
+                                             bool                     raiiFactory,
                                              CommandFlavourFlags      flavourFlags ) const;
-  std::string generateCallArgumentsRAIIFactory( std::vector<ParamData> const & params,
-                                                size_t                         initialSkipCount,
-                                                std::set<size_t> const &       skippedParams,
-                                                std::set<size_t> const &       singularParams ) const;
   std::string generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
   std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
                                             std::set<size_t> const &       singularParams,
                                             std::set<size_t> const &       templatedParams,
-                                            CommandFlavourFlags            flavourFlags ) const;
+                                            CommandFlavourFlags            flavourFlags,
+                                            bool                           raiiFactory ) const;
   std::string generateCallArgumentEnhancedConstPointer( ParamData const &        param,
                                                         size_t                   paramIndex,
                                                         std::set<size_t> const & singularParams,
@@ -522,7 +520,8 @@ private:
   std::string generateCallArgumentEnhancedValue( std::vector<ParamData> const & params,
                                                  size_t                         paramIndex,
                                                  std::set<size_t> const &       singularParams,
-                                                 CommandFlavourFlags            flavourFlags ) const;
+                                                 CommandFlavourFlags            flavourFlags,
+                                                 bool                           raiiFactory ) const;
   std::string generateCallSequence( std::string const &                       name,
                                     CommandData const &                       commandData,
                                     std::vector<size_t> const &               returnParams,
@@ -532,7 +531,8 @@ private:
                                     std::set<size_t> const &                  templatedParams,
                                     std::vector<size_t> const &               chainedReturnParams,
                                     CommandFlavourFlags                       flavourFlags,
-                                    bool                                      raii ) const;
+                                    bool                                      raii,
+                                    bool                                      raiiFactory ) const;
   std::string generateChainTemplates( std::vector<size_t> const & returnParams, bool chained ) const;
   std::string generateCommand( std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandDefinitions() const;
@@ -662,7 +662,7 @@ private:
                                                 CommandFlavourFlags                       flavourFlags,
                                                 bool                                      raii,
                                                 std::vector<std::string> const &          dataTypes,
-                                                std::string const &                       dataType,
+                                                std::string const &                       returnType,
                                                 std::string const &                       returnVariable ) const;
   std::string generateDataDeclarations3Returns( CommandData const &                       commandData,
                                                 std::vector<size_t> const &               returnParams,
@@ -684,6 +684,12 @@ private:
                                       std::set<size_t> const &                  templatedParams,
                                       bool                                      singular ) const;
   std::string generateDebugReportObjectType( std::string const & objectType ) const;
+  std::string generateDecoratedReturnType( CommandData const &                       commandData,
+                                           std::vector<size_t> const &               returnParams,
+                                           std::map<size_t, VectorParamData> const & vectorParams,
+                                           CommandFlavourFlags                       flavourFlags,
+                                           bool                                      raii,
+                                           std::string const &                       returnType ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
@@ -711,7 +717,6 @@ private:
   std::string generateExtensionReplacedTest( Predicate p ) const;
   std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
-  std::string generateFailureCheck( std::vector<std::string> const & successCodes ) const;
   std::string generateFormatTraits() const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
@@ -742,6 +747,13 @@ private:
   std::string
     generateRAIICommandDefinitions( std::vector<RequireData> const & requireData, std::set<std::string> & listedCommands, std::string const & title ) const;
   std::string generateRAIIDispatchers() const;
+  std::string generateRAIIFactoryReturnStatements( std::vector<ParamData> const &   params,
+                                                   std::vector<std::string> const & successCodes,
+                                                   std::string const &              vkType,
+                                                   bool                             enumerating,
+                                                   std::string const &              returnType,
+                                                   std::string const &              returnVariable,
+                                                   bool                             singular ) const;
   std::string generateRAIIHandle( std::pair<std::string, HandleData> const & handle,
                                   std::set<std::string> &                    listedHandles,
                                   std::set<std::string> const &              specialFunctions ) const;
@@ -769,6 +781,12 @@ private:
                                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                      std::string const &                                enter,
                                                                      std::string const &                                leave ) const;
+  std::string                         generateRAIIHandleConstructorByCall( std::pair<std::string, HandleData> const &         handle,
+                                                                           std::map<std::string, CommandData>::const_iterator constructorIt,
+                                                                           std::string const &                                enter,
+                                                                           std::string const &                                leave,
+                                                                           bool                                               isPlural,
+                                                                           bool                                               forceSingular ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructor1Return2Vector( std::pair<std::string, HandleData> const &         handle,
                                                                                    std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                                    std::string const &                                enter,
@@ -781,17 +799,6 @@ private:
                                                       std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
                                                       bool                                                                   singular,
                                                       bool                                                                   takesOwnership ) const;
-  std::string generateRAIIHandleConstructorCallArguments( std::pair<std::string, HandleData> const &                             handle,
-                                                          std::map<std::string, VulkanHppGenerator::CommandData>::const_iterator constructorIt,
-                                                          bool                                                                   nonConstPointerAsNullptr,
-                                                          std::set<size_t> const &                                               singularParams,
-                                                          bool allocatorIsMemberVariable ) const;
-  std::string generateRAIIHandleConstructorEnumerate( std::pair<std::string, HandleData> const &         handle,
-                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                      std::vector<ParamData>::const_iterator             handleParamIt,
-                                                      std::vector<ParamData>::const_iterator             lenParamIt,
-                                                      std::string const &                                enter,
-                                                      std::string const &                                leave ) const;
   std::string generateRAIIHandleConstructorInitializationList( std::pair<std::string, HandleData> const &         handle,
                                                                std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                std::map<std::string, CommandData>::const_iterator destructorIt,
@@ -801,29 +808,11 @@ private:
                                                                            std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                            std::string const &                                enter,
                                                                            std::string const &                                leave ) const;
-  std::string generateRAIIHandleConstructorResultSingleSuccessWithErrors1Return0Vector( std::pair<std::string, HandleData> const &         handle,
-                                                                                        std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                                                        std::string const &                                enter,
-                                                                                        std::string const &                                leave ) const;
-  std::string generateRAIIHandleConstructorTakeOwnership( std::pair<std::string, HandleData> const & handle ) const;
-  std::string generateRAIIHandleConstructorVector( std::pair<std::string, HandleData> const &         handle,
-                                                   std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                   std::vector<ParamData>::const_iterator             handleParamIt,
-                                                   std::string const &                                enter,
-                                                   std::string const &                                leave ) const;
-  std::string generateRAIIHandleConstructorVectorSingular( std::pair<std::string, HandleData> const &         handle,
-                                                           std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                           std::vector<ParamData>::const_iterator             handleParamIt,
-                                                           std::string const &                                enter,
-                                                           std::string const &                                leave ) const;
+  std::string                         generateRAIIHandleConstructorTakeOwnership( std::pair<std::string, HandleData> const & handle ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructorVoid( std::pair<std::string, HandleData> const &         handle,
                                                                          std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                          std::string const &                                enter,
                                                                          std::string const &                                leave ) const;
-  std::string                         generateRAIIHandleConstructorVoid1Return0Vector( std::pair<std::string, HandleData> const &         handle,
-                                                                                       std::map<std::string, CommandData>::const_iterator constructorIt,
-                                                                                       std::string const &                                enter,
-                                                                                       std::string const &                                leave ) const;
   std::string generateRAIIHandleContext( std::pair<std::string, HandleData> const & handle, std::set<std::string> const & specialFunctions ) const;
   std::string generateRAIIHandleDestructorCallArguments( std::string const &                                handleType,
                                                          std::map<std::string, CommandData>::const_iterator destructorIt ) const;
@@ -831,31 +820,29 @@ private:
               generateRAIIHandleDetails( std::pair<std::string, HandleData> const & handle ) const;
   std::string generateRAIIHandleForwardDeclarations( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateRAIIHandles() const;
-  std::string generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const &         handle,
-                                                              std::map<std::string, CommandData>::const_iterator constructorIt ) const;
-  std::string generateRAIIHandleVectorSizeCheck( std::string const &                           name,
-                                                 CommandData const &                           commandData,
-                                                 size_t                                        initialSkipCount,
-                                                 std::map<size_t, std::vector<size_t>> const & countToVectorMap,
-                                                 std::set<size_t> const &                      skippedParams ) const;
+  std::string generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const & handle,
+                                                              std::vector<ParamData> const &             params,
+                                                              bool                                       singular ) const;
   template <class Predicate, class Extraction>
   std::string generateReplacedExtensionsList( Predicate p, Extraction e ) const;
   std::string generateResultAssignment( CommandData const & commandData ) const;
   std::string generateResultCheck(
     CommandData const & commandData, std::string const & className, std::string const & classSeparator, std::string commandName, bool enumerating ) const;
+  std::string
+    generateResultCheckExpected( std::vector<std::string> const & successCodes, std::string const & className, std::string const & commandName ) const;
   std::string generateResultExceptions() const;
   std::string generateReturnStatement( std::string const & commandName,
                                        CommandData const & commandData,
                                        std::string const & returnVariable,
                                        std::string const & returnType,
+                                       std::string const & decoratedReturnType,
                                        std::string const & dataType,
                                        size_t              initialSkipCount,
                                        size_t              returnParam,
                                        CommandFlavourFlags flavourFlags,
                                        bool                enumerating,
                                        bool                raii ) const;
-  std::string generateReturnType( CommandData const &                       commandData,
-                                  std::vector<size_t> const &               returnParams,
+  std::string generateReturnType( std::vector<size_t> const &               returnParams,
                                   std::map<size_t, VectorParamData> const & vectorParams,
                                   CommandFlavourFlags                       flavourFlags,
                                   bool                                      raii,

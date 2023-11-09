@@ -38,6 +38,10 @@ void VideoHppGenerator::generateHppFile() const
   std::cout << "VideoHppGenerator: Generating " << video_hpp << " ... " << std::endl;
 
   std::string const videoHppTemplate = R"(${copyrightMessage}
+
+#ifndef VULKAN_VIDEO_HPP
+#define VULKAN_VIDEO_HPP
+
 #include <vk_video/vulkan_video_codecs_common.h>
 #include <vk_video/vulkan_video_codec_h264std.h>
 #include <vk_video/vulkan_video_codec_h264std_decode.h>

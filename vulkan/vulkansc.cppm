@@ -502,6 +502,299 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MaxDriverInfoSize;
   using VULKAN_HPP_NAMESPACE::MaxDriverNameSize;
 
+  //=== VK_KHR_surface ===
+  using VULKAN_HPP_NAMESPACE::KHRSurfaceExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRSurfaceSpecVersion;
+
+  //=== VK_KHR_swapchain ===
+  using VULKAN_HPP_NAMESPACE::KHRSwapchainExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRSwapchainSpecVersion;
+
+  //=== VK_KHR_display ===
+  using VULKAN_HPP_NAMESPACE::KHRDisplayExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRDisplaySpecVersion;
+
+  //=== VK_KHR_display_swapchain ===
+  using VULKAN_HPP_NAMESPACE::KHRDisplaySwapchainExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRDisplaySwapchainSpecVersion;
+
+  //=== VK_EXT_depth_range_unrestricted ===
+  using VULKAN_HPP_NAMESPACE::EXTDepthRangeUnrestrictedExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDepthRangeUnrestrictedSpecVersion;
+
+  //=== VK_NV_private_vendor_info ===
+  using VULKAN_HPP_NAMESPACE::NVPrivateVendorInfoExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVPrivateVendorInfoSpecVersion;
+
+  //=== VK_EXT_texture_compression_astc_hdr ===
+  using VULKAN_HPP_NAMESPACE::EXTTextureCompressionAstcHdrExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTTextureCompressionAstcHdrSpecVersion;
+
+  //=== VK_EXT_astc_decode_mode ===
+  using VULKAN_HPP_NAMESPACE::EXTAstcDecodeModeExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTAstcDecodeModeSpecVersion;
+
+  //=== VK_KHR_external_memory_fd ===
+  using VULKAN_HPP_NAMESPACE::KHRExternalMemoryFdExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRExternalMemoryFdSpecVersion;
+
+  //=== VK_KHR_external_semaphore_fd ===
+  using VULKAN_HPP_NAMESPACE::KHRExternalSemaphoreFdExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRExternalSemaphoreFdSpecVersion;
+
+  //=== VK_KHR_incremental_present ===
+  using VULKAN_HPP_NAMESPACE::KHRIncrementalPresentExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRIncrementalPresentSpecVersion;
+
+  //=== VK_EXT_direct_mode_display ===
+  using VULKAN_HPP_NAMESPACE::EXTDirectModeDisplayExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDirectModeDisplaySpecVersion;
+
+  //=== VK_EXT_display_surface_counter ===
+  using VULKAN_HPP_NAMESPACE::EXTDisplaySurfaceCounterExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDisplaySurfaceCounterSpecVersion;
+
+  //=== VK_EXT_display_control ===
+  using VULKAN_HPP_NAMESPACE::EXTDisplayControlExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDisplayControlSpecVersion;
+
+  //=== VK_EXT_discard_rectangles ===
+  using VULKAN_HPP_NAMESPACE::EXTDiscardRectanglesExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDiscardRectanglesSpecVersion;
+
+  //=== VK_EXT_conservative_rasterization ===
+  using VULKAN_HPP_NAMESPACE::EXTConservativeRasterizationExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTConservativeRasterizationSpecVersion;
+
+  //=== VK_EXT_depth_clip_enable ===
+  using VULKAN_HPP_NAMESPACE::EXTDepthClipEnableExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDepthClipEnableSpecVersion;
+
+  //=== VK_EXT_swapchain_colorspace ===
+  using VULKAN_HPP_NAMESPACE::EXTSwapchainColorSpaceExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTSwapchainColorSpaceSpecVersion;
+
+  //=== VK_EXT_hdr_metadata ===
+  using VULKAN_HPP_NAMESPACE::EXTHdrMetadataExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTHdrMetadataSpecVersion;
+
+  //=== VK_KHR_shared_presentable_image ===
+  using VULKAN_HPP_NAMESPACE::KHRSharedPresentableImageExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRSharedPresentableImageSpecVersion;
+
+  //=== VK_KHR_external_fence_fd ===
+  using VULKAN_HPP_NAMESPACE::KHRExternalFenceFdExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRExternalFenceFdSpecVersion;
+
+  //=== VK_KHR_performance_query ===
+  using VULKAN_HPP_NAMESPACE::KHRPerformanceQueryExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRPerformanceQuerySpecVersion;
+
+  //=== VK_KHR_get_surface_capabilities2 ===
+  using VULKAN_HPP_NAMESPACE::KHRGetSurfaceCapabilities2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRGetSurfaceCapabilities2SpecVersion;
+
+  //=== VK_KHR_get_display_properties2 ===
+  using VULKAN_HPP_NAMESPACE::KHRGetDisplayProperties2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRGetDisplayProperties2SpecVersion;
+
+  //=== VK_EXT_external_memory_dma_buf ===
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryDmaBufExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryDmaBufSpecVersion;
+
+  //=== VK_EXT_queue_family_foreign ===
+  using VULKAN_HPP_NAMESPACE::EXTQueueFamilyForeignExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTQueueFamilyForeignSpecVersion;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyForeignEXT;
+
+  //=== VK_EXT_debug_utils ===
+  using VULKAN_HPP_NAMESPACE::EXTDebugUtilsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDebugUtilsSpecVersion;
+
+  //=== VK_EXT_shader_stencil_export ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderStencilExportExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderStencilExportSpecVersion;
+
+  //=== VK_EXT_sample_locations ===
+  using VULKAN_HPP_NAMESPACE::EXTSampleLocationsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTSampleLocationsSpecVersion;
+
+  //=== VK_EXT_blend_operation_advanced ===
+  using VULKAN_HPP_NAMESPACE::EXTBlendOperationAdvancedExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTBlendOperationAdvancedSpecVersion;
+
+  //=== VK_EXT_post_depth_coverage ===
+  using VULKAN_HPP_NAMESPACE::EXTPostDepthCoverageExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTPostDepthCoverageSpecVersion;
+
+  //=== VK_EXT_image_drm_format_modifier ===
+  using VULKAN_HPP_NAMESPACE::EXTImageDrmFormatModifierExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTImageDrmFormatModifierSpecVersion;
+
+  //=== VK_EXT_filter_cubic ===
+  using VULKAN_HPP_NAMESPACE::EXTFilterCubicExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTFilterCubicSpecVersion;
+
+  //=== VK_EXT_global_priority ===
+  using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTGlobalPrioritySpecVersion;
+
+  //=== VK_EXT_external_memory_host ===
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryHostExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTExternalMemoryHostSpecVersion;
+
+  //=== VK_KHR_shader_clock ===
+  using VULKAN_HPP_NAMESPACE::KHRShaderClockExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRShaderClockSpecVersion;
+
+  //=== VK_EXT_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::EXTCalibratedTimestampsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTCalibratedTimestampsSpecVersion;
+
+  //=== VK_EXT_vertex_attribute_divisor ===
+  using VULKAN_HPP_NAMESPACE::EXTVertexAttributeDivisorExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTVertexAttributeDivisorSpecVersion;
+
+  //=== VK_KHR_swapchain_mutable_format ===
+  using VULKAN_HPP_NAMESPACE::KHRSwapchainMutableFormatExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRSwapchainMutableFormatSpecVersion;
+
+  //=== VK_EXT_pci_bus_info ===
+  using VULKAN_HPP_NAMESPACE::EXTPciBusInfoExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTPciBusInfoSpecVersion;
+
+  //=== VK_KHR_shader_terminate_invocation ===
+  using VULKAN_HPP_NAMESPACE::KHRShaderTerminateInvocationExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRShaderTerminateInvocationSpecVersion;
+
+  //=== VK_EXT_subgroup_size_control ===
+  using VULKAN_HPP_NAMESPACE::EXTSubgroupSizeControlExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTSubgroupSizeControlSpecVersion;
+
+  //=== VK_KHR_fragment_shading_rate ===
+  using VULKAN_HPP_NAMESPACE::KHRFragmentShadingRateExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRFragmentShadingRateSpecVersion;
+
+  //=== VK_EXT_shader_image_atomic_int64 ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderImageAtomicInt64ExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderImageAtomicInt64SpecVersion;
+
+  //=== VK_EXT_memory_budget ===
+  using VULKAN_HPP_NAMESPACE::EXTMemoryBudgetExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTMemoryBudgetSpecVersion;
+
+  //=== VK_EXT_validation_features ===
+  using VULKAN_HPP_NAMESPACE::EXTValidationFeaturesExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTValidationFeaturesSpecVersion;
+
+  //=== VK_EXT_fragment_shader_interlock ===
+  using VULKAN_HPP_NAMESPACE::EXTFragmentShaderInterlockExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTFragmentShaderInterlockSpecVersion;
+
+  //=== VK_EXT_ycbcr_image_arrays ===
+  using VULKAN_HPP_NAMESPACE::EXTYcbcrImageArraysExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTYcbcrImageArraysSpecVersion;
+
+  //=== VK_EXT_headless_surface ===
+  using VULKAN_HPP_NAMESPACE::EXTHeadlessSurfaceExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTHeadlessSurfaceSpecVersion;
+
+  //=== VK_EXT_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::EXTLineRasterizationExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTLineRasterizationSpecVersion;
+
+  //=== VK_EXT_shader_atomic_float ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderAtomicFloatExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderAtomicFloatSpecVersion;
+
+  //=== VK_EXT_index_type_uint8 ===
+  using VULKAN_HPP_NAMESPACE::EXTIndexTypeUint8ExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTIndexTypeUint8SpecVersion;
+
+  //=== VK_EXT_extended_dynamic_state ===
+  using VULKAN_HPP_NAMESPACE::EXTExtendedDynamicStateExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTExtendedDynamicStateSpecVersion;
+
+  //=== VK_EXT_shader_demote_to_helper_invocation ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderDemoteToHelperInvocationExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderDemoteToHelperInvocationSpecVersion;
+
+  //=== VK_EXT_texel_buffer_alignment ===
+  using VULKAN_HPP_NAMESPACE::EXTTexelBufferAlignmentExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTTexelBufferAlignmentSpecVersion;
+
+  //=== VK_EXT_robustness2 ===
+  using VULKAN_HPP_NAMESPACE::EXTRobustness2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTRobustness2SpecVersion;
+
+  //=== VK_EXT_custom_border_color ===
+  using VULKAN_HPP_NAMESPACE::EXTCustomBorderColorExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTCustomBorderColorSpecVersion;
+
+  //=== VK_KHR_object_refresh ===
+  using VULKAN_HPP_NAMESPACE::KHRObjectRefreshExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRObjectRefreshSpecVersion;
+
+  //=== VK_KHR_synchronization2 ===
+  using VULKAN_HPP_NAMESPACE::KHRSynchronization2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRSynchronization2SpecVersion;
+
+  //=== VK_EXT_ycbcr_2plane_444_formats ===
+  using VULKAN_HPP_NAMESPACE::EXTYcbcr2Plane444FormatsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTYcbcr2Plane444FormatsSpecVersion;
+
+  //=== VK_EXT_image_robustness ===
+  using VULKAN_HPP_NAMESPACE::EXTImageRobustnessExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTImageRobustnessSpecVersion;
+
+  //=== VK_KHR_copy_commands2 ===
+  using VULKAN_HPP_NAMESPACE::KHRCopyCommands2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRCopyCommands2SpecVersion;
+
+  //=== VK_EXT_4444_formats ===
+  using VULKAN_HPP_NAMESPACE::EXT4444FormatsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXT4444FormatsSpecVersion;
+
+  //=== VK_EXT_vertex_input_dynamic_state ===
+  using VULKAN_HPP_NAMESPACE::EXTVertexInputDynamicStateExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTVertexInputDynamicStateSpecVersion;
+
+#if defined( VK_USE_PLATFORM_SCI )
+  //=== VK_NV_external_sci_sync ===
+  using VULKAN_HPP_NAMESPACE::NVExternalSciSyncExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVExternalSciSyncSpecVersion;
+#endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCI )
+  //=== VK_NV_external_memory_sci_buf ===
+  using VULKAN_HPP_NAMESPACE::NVExternalMemorySciBufExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVExternalMemorySciBufSpecVersion;
+#endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_extended_dynamic_state2 ===
+  using VULKAN_HPP_NAMESPACE::EXTExtendedDynamicState2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTExtendedDynamicState2SpecVersion;
+
+  //=== VK_EXT_color_write_enable ===
+  using VULKAN_HPP_NAMESPACE::EXTColorWriteEnableExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTColorWriteEnableSpecVersion;
+
+  //=== VK_EXT_application_parameters ===
+  using VULKAN_HPP_NAMESPACE::EXTApplicationParametersExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTApplicationParametersSpecVersion;
+
+#if defined( VK_USE_PLATFORM_SCI )
+  //=== VK_NV_external_sci_sync2 ===
+  using VULKAN_HPP_NAMESPACE::NVExternalSciSync2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVExternalSciSync2SpecVersion;
+#endif /*VK_USE_PLATFORM_SCI*/
+
+#if defined( VK_USE_PLATFORM_SCREEN_QNX )
+  //=== VK_QNX_external_memory_screen_buffer ===
+  using VULKAN_HPP_NAMESPACE::QNXExternalMemoryScreenBufferExtensionName;
+  using VULKAN_HPP_NAMESPACE::QNXExternalMemoryScreenBufferSpecVersion;
+#endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -521,7 +814,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::versionPatch;
 
   //==========================
-  //=== CONSTEXPR CALLERSs ===
+  //=== CONSTEXPR CALLERs ===
   //==========================
   using VULKAN_HPP_NAMESPACE::ApiVersion;
   using VULKAN_HPP_NAMESPACE::ApiVersion10;

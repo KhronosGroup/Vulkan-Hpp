@@ -1338,6 +1338,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRCreateRenderpass2ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRCreateRenderpass2SpecVersion;
 
+  //=== VK_IMG_relaxed_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::IMGRelaxedLineRasterizationExtensionName;
+  using VULKAN_HPP_NAMESPACE::IMGRelaxedLineRasterizationSpecVersion;
+
   //=== VK_KHR_shared_presentable_image ===
   using VULKAN_HPP_NAMESPACE::KHRSharedPresentableImageExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRSharedPresentableImageSpecVersion;
@@ -3210,6 +3214,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_hdr_metadata ===
   using VULKAN_HPP_NAMESPACE::HdrMetadataEXT;
   using VULKAN_HPP_NAMESPACE::XYColorEXT;
+
+  //=== VK_IMG_relaxed_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG;
 
   //=== VK_KHR_shared_presentable_image ===
   using VULKAN_HPP_NAMESPACE::SharedPresentSurfaceCapabilitiesKHR;

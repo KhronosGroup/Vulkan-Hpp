@@ -2,8 +2,9 @@
 #define VULKAN_HPP
 
 #include <algorithm>
-#include <array>   // ArrayWrapperND
-#include <string>  // std::string
+#include <array>    // ArrayWrapperND
+#include <string>   // std::string
+#include <string.h> // strnlen
 #include <vulkan/${vulkan_h}>
 #include <vulkan/vulkan_hpp_macros.hpp>
 

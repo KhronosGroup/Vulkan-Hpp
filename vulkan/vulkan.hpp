@@ -9,8 +9,9 @@
 #define VULKAN_HPP
 
 #include <algorithm>
-#include <array>   // ArrayWrapperND
-#include <string>  // std::string
+#include <array>     // ArrayWrapperND
+#include <string.h>  // strnlen
+#include <string>    // std::string
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
@@ -134,14 +135,14 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     operator std::string() const
     {
-      return std::string( this->data(), N );
+      return std::string( this->data(), strnlen( this->data(), N ) );
     }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
     template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
     operator std::string_view() const
     {
-      return std::string_view( this->data(), N );
+      return std::string_view( this->data(), strnlen( this->data(), N ) );
     }
 #endif
 
@@ -15996,7 +15997,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

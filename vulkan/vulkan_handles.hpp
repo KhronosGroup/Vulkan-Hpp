@@ -766,6 +766,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct HdrMetadataEXT;
   struct XYColorEXT;
 
+  //=== VK_IMG_relaxed_line_rasterization ===
+  struct PhysicalDeviceRelaxedLineRasterizationFeaturesIMG;
+
   //=== VK_KHR_shared_presentable_image ===
   struct SharedPresentSurfaceCapabilitiesKHR;
 

@@ -148,6 +148,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_hdr_metadata",
       "VK_KHR_imageless_framebuffer",
       "VK_KHR_create_renderpass2",
+      "VK_IMG_relaxed_line_rasterization",
       "VK_KHR_shared_presentable_image",
       "VK_KHR_external_fence",
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -814,6 +815,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_multiview",
               "VK_KHR_maintenance2",
             } } } } },
+      { "VK_IMG_relaxed_line_rasterization",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_shared_presentable_image",
         { { "VK_VERSION_1_0",
             { {
@@ -1970,6 +1977,12 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_dynamic_rendering",
             } } },
           { "VK_VERSION_1_3", { {} } } } },
+      { "VK_NV_low_latency2",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_timeline_semaphore",
+            } } },
+          { "VK_VERSION_1_2", { {} } } } },
       { "VK_KHR_cooperative_matrix",
         { { "VK_VERSION_1_0",
             { {
@@ -2607,7 +2620,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_NVX_multiview_per_view_attributes" ) || ( extension == "VK_NV_viewport_swizzle" ) ||
            ( extension == "VK_EXT_discard_rectangles" ) || ( extension == "VK_EXT_conservative_rasterization" ) ||
            ( extension == "VK_EXT_depth_clip_enable" ) || ( extension == "VK_EXT_hdr_metadata" ) || ( extension == "VK_KHR_imageless_framebuffer" ) ||
-           ( extension == "VK_KHR_create_renderpass2" ) || ( extension == "VK_KHR_shared_presentable_image" ) || ( extension == "VK_KHR_external_fence" )
+           ( extension == "VK_KHR_create_renderpass2" ) || ( extension == "VK_IMG_relaxed_line_rasterization" ) ||
+           ( extension == "VK_KHR_shared_presentable_image" ) || ( extension == "VK_KHR_external_fence" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
         || ( extension == "VK_KHR_external_fence_win32" )
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/

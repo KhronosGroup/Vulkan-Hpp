@@ -238,7 +238,9 @@ private:
     std::string                                                  platform     = {};
     std::string                                                  promotedTo   = {};
     std::map<std::string, std::vector<std::vector<std::string>>> depends      = {};
+    std::vector<std::string>                                     ratified     = {};
     std::vector<RequireData>                                     requireData  = {};
+    std::vector<std::string>                                     supported    = {};
     std::string                                                  type         = {};
     int                                                          xmlLine      = 0;
   };

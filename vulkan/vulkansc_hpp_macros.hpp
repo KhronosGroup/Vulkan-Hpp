@@ -14,7 +14,9 @@
 #  define VULKAN_HPP_CPLUSPLUS __cplusplus
 #endif
 
-#if 201703L < VULKAN_HPP_CPLUSPLUS
+#if 202002L < VULKAN_HPP_CPLUSPLUS
+#  define VULKAN_HPP_CPP_VERSION 23
+#elif 201703L < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 20
 #elif 201402L < VULKAN_HPP_CPLUSPLUS
 #  define VULKAN_HPP_CPP_VERSION 17
@@ -24,6 +26,13 @@
 #  define VULKAN_HPP_CPP_VERSION 11
 #else
 #  error "vulkansc.hpp needs at least c++ standard version 11"
+#endif
+
+// include headers holding feature-test macros
+#if 20 <= VULKAN_HPP_CPP_VERSION
+#  include <version>
+#else
+#  include <ciso646>
 #endif
 
 #if defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )

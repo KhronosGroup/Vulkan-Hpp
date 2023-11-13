@@ -28,6 +28,13 @@
 #  error "vulkan.hpp needs at least c++ standard version 11"
 #endif
 
+// include headers holding feature-test macros
+#if 20 <= VULKAN_HPP_CPP_VERSION
+#  include <version>
+#else
+#  include <ciso646>
+#endif
+
 #if defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 #  if !defined( VULKAN_HPP_NO_SMART_HANDLE )
 #    define VULKAN_HPP_NO_SMART_HANDLE

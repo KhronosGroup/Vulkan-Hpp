@@ -132,7 +132,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                               fragmentShaderModule,
                                                                               nullptr,
                                                                               sizeof( coloredCubeData[0] ),
-                                                                              { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32Sfloat, 16 } },
+                                                                              { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
                                                                               vk::FrontFace::eClockwise,
                                                                               true,
                                                                               pipelineLayout,

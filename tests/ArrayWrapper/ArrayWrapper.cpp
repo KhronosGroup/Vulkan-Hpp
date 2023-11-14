@@ -28,7 +28,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 {
   vk::ArrayWrapper1D<char, 10> aw1( { 'f', 'o', 'o', 'b', 'a', 'h' } );
   std::string                  s1 = aw1;
-  assert( s1.length() == 10 );
+  assert( s1.length() == 6 );
   std::cout << "<" << aw1 << ">" << std::endl;
 
   // s1 = aw1;  // 'operator =' is ambiguous
@@ -51,9 +51,9 @@ int main( int /*argc*/, char ** /*argv*/ )
   std::cout << std::boolalpha << std::is_convertible_v<vk::ArrayWrapper1D<char, 10>, std::string_view> << std::endl;
 
   std::string_view sv1 = aw1;
-  assert( sv1.size() == 10 );
+  assert( sv1.size() == 6 );
   sv1 = aw2;
-  assert( sv1.size() == 20 );
+  assert( sv1.size() == 6 );
   sv1 = aw3;
   assert( sv1.size() == 5 );
 

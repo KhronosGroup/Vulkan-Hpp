@@ -46,14 +46,14 @@ public:
   template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
   operator std::string() const
   {
-    return std::string( this->data(), N );
+    return std::string( this->data(), strnlen( this->data(), N ) );
   }
 
 #if 17 <= VULKAN_HPP_CPP_VERSION
   template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
   operator std::string_view() const
   {
-    return std::string_view( this->data(), N );
+    return std::string_view( this->data(), strnlen( this->data(), N ) );
   }
 #endif
 

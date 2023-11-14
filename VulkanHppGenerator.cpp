@@ -13271,7 +13271,6 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   checkElements( line, children, { { "require", false } } );
 
   ExtensionData            extensionData{ .xmlLine = line };
-  std::vector<std::string> ratified, supported;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "depends" )
@@ -13363,11 +13362,11 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "ratified" )
     {
-      ratified = tokenize( attribute.second, "," );
+      extensionData.ratified = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "supported" )
     {
-      supported = tokenize( attribute.second, "," );
+      extensionData.supported = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "type" )
     {
@@ -13375,18 +13374,16 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
     }
   }
 
-  checkForWarning( std::any_of( supported.begin(), supported.end(), []( std::string const & s ) { return s == "disabled"; } ) || extensionData.isDeprecated ||
-                     ratified.empty() || ( supported == ratified ),
-                   line,
-                   "attribute \"ratified\" differs from attribute \"supported\"" );
-  bool extensionSupported = supported.empty() || std::any_of( supported.begin(), supported.end(), [this]( std::string const & s ) { return s == m_api; } );
+  bool extensionSupported =
+    extensionData.supported.empty() ||
+    std::any_of( extensionData.supported.begin(), extensionData.supported.end(), [this]( std::string const & s ) { return s == m_api; } );
   checkForError( !extensionSupported || !extensionData.type.empty(), line, "missing attribute \"type\" for supported extension <" + extensionData.name + ">" );
   for ( auto child : children )
   {
     readExtensionRequire( child, extensionData, extensionSupported );
   }
 
-  if ( std::none_of( supported.begin(), supported.end(), []( std::string const & s ) { return s == "disabled"; } ) )
+  if ( std::none_of( extensionData.supported.begin(), extensionData.supported.end(), []( std::string const & s ) { return s == "disabled"; } ) )
   {
     // extract the tag from the name, which is supposed to look like VK_<tag>_<other>
     size_t tagStart = extensionData.name.find( '_' );

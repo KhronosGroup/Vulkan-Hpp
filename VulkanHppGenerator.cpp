@@ -138,6 +138,8 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
 
 #include <map>
 #include <set>
+#include <string>
+#include <vector>
 #include <vulkan/${api}.hpp>
 
 namespace VULKAN_HPP_NAMESPACE

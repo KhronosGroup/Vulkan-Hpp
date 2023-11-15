@@ -10,6 +10,8 @@
 
 #include <map>
 #include <set>
+#include <string>
+#include <vector>
 #include <vulkan/vulkan.hpp>
 
 namespace VULKAN_HPP_NAMESPACE

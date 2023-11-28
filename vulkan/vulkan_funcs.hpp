@@ -23171,29 +23171,24 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void Device::getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR             swapchain,
-                                                      uint32_t *                                     pTimingCount,
                                                       VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV * pLatencyMarkerInfo,
                                                       Dispatch const &                               d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkGetLatencyTimingsNV(
-      m_device, static_cast<VkSwapchainKHR>( swapchain ), pTimingCount, reinterpret_cast<VkGetLatencyMarkerInfoNV *>( pLatencyMarkerInfo ) );
+    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( pLatencyMarkerInfo ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV
     Device::getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV> data_;
-    uint32_t &                                                        timingCount       = data_.first;
-    VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV &                    latencyMarkerInfo = data_.second;
-    d.vkGetLatencyTimingsNV(
-      m_device, static_cast<VkSwapchainKHR>( swapchain ), &timingCount, reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+    VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV latencyMarkerInfo;
+    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
 
-    return data_;
+    return latencyMarkerInfo;
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

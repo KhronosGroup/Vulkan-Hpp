@@ -4676,8 +4676,8 @@ namespace VULKAN_HPP_NAMESPACE
     eSamplerYcbcrConversionKHR   = VK_DEBUG_REPORT_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION_KHR_EXT,
     eAccelerationStructureNV     = VK_DEBUG_REPORT_OBJECT_TYPE_ACCELERATION_STRUCTURE_NV_EXT,
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eCudaModuleNV   = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_MODULE_NV,
-    eCudaFunctionNV = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_FUNCTION_NV,
+    eCudaModuleNV   = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_MODULE_NV_EXT,
+    eCudaFunctionNV = VK_DEBUG_REPORT_OBJECT_TYPE_CUDA_FUNCTION_NV_EXT,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 #if defined( VK_USE_PLATFORM_FUCHSIA )
     eBufferCollectionFUCHSIA = VK_DEBUG_REPORT_OBJECT_TYPE_BUFFER_COLLECTION_FUCHSIA_EXT
@@ -7326,8 +7326,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         //=== VK_NV_cuda_kernel_launch ===
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
-      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV;
+      case VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV: return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaFunctionNV;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #if defined( VK_USE_PLATFORM_FUCHSIA )

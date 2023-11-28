@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 270, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 271, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5803,12 +5803,9 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkSetLatencyMarkerNV( device, swapchain, pLatencyMarkerInfo );
     }
 
-    void vkGetLatencyTimingsNV( VkDevice                   device,
-                                VkSwapchainKHR             swapchain,
-                                uint32_t *                 pTimingCount,
-                                VkGetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
+    void vkGetLatencyTimingsNV( VkDevice device, VkSwapchainKHR swapchain, VkGetLatencyMarkerInfoNV * pLatencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkGetLatencyTimingsNV( device, swapchain, pTimingCount, pLatencyMarkerInfo );
+      return ::vkGetLatencyTimingsNV( device, swapchain, pLatencyMarkerInfo );
     }
 
     void vkQueueNotifyOutOfBandNV( VkQueue queue, const VkOutOfBandQueueTypeInfoNV * pQueueTypeInfo ) const VULKAN_HPP_NOEXCEPT
@@ -15997,7 +15994,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

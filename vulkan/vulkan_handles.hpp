@@ -7320,7 +7320,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCudaFunctionNV;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
-      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaFunctionNV;
 
   public:
     VULKAN_HPP_CONSTEXPR CudaFunctionNV() = default;
@@ -7388,6 +7388,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaFunctionNV>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::CudaFunctionNV;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::CudaFunctionNV>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -7403,7 +7409,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
-      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV;
 
   public:
     VULKAN_HPP_CONSTEXPR CudaModuleNV() = default;
@@ -7466,6 +7472,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eCudaModuleNV>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::CudaModuleNV;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCudaModuleNV>
   {
     using Type = VULKAN_HPP_NAMESPACE::CudaModuleNV;
   };
@@ -13735,12 +13747,11 @@ namespace VULKAN_HPP_NAMESPACE
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR             swapchain,
-                              uint32_t *                                     pTimingCount,
                               VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV * pLatencyMarkerInfo,
                               Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD std::pair<uint32_t, VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV>
+    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV
                          getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
                                               Dispatch const & d                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */

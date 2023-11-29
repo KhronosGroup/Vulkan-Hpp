@@ -3687,7 +3687,8 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
         {
           if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
           {
-            if ( isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
+            if ( ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
+                   !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) ) )
             {
               return generateCommandSetInclusive( name,
                                                   commandData,
@@ -5026,7 +5027,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
       std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_EXTENSION_NAME" ); } );
     auto const & specVersionMacroPtr =
       std::find_if( enumConstants.begin(), enumConstants.end(), []( auto const & keyval ) { return keyval.first.ends_with( "_SPEC_VERSION" ); } );
-    assert( extensionMacroPtr != enumConstants.end());
+    assert( extensionMacroPtr != enumConstants.end() );
     assert( specVersionMacroPtr != enumConstants.end() );
 
     auto const & extensionMacro   = extensionMacroPtr->first;
@@ -13272,7 +13273,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "type", { "device", "instance" } } } );
   checkElements( line, children, { { "require", false } } );
 
-  ExtensionData            extensionData{ .xmlLine = line };
+  ExtensionData extensionData{ .xmlLine = line };
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "depends" )

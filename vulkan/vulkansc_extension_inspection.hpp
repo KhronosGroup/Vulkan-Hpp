@@ -43,6 +43,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
   {
     static std::map<std::string, std::string> deprecatedExtensions = {
+      { "VK_EXT_validation_features", "VK_EXT_layer_settings" },
 #if defined( VK_USE_PLATFORM_SCI )
       { "VK_NV_external_sci_sync", "VK_NV_external_sci_sync2" }
 #endif /*VK_USE_PLATFORM_SCI*/
@@ -544,6 +545,10 @@ namespace VULKAN_HPP_NAMESPACE
   {
     (void)extension;
 
+    if ( extension == "VK_EXT_validation_features" )
+    {
+      return "VK_EXT_layer_settings";
+    }
 #if defined( VK_USE_PLATFORM_SCI )
     if ( extension == "VK_NV_external_sci_sync" )
     {
@@ -621,11 +626,11 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeprecatedExtension( std::string const & extension )
   {
     (void)extension;
-    return
+    return ( extension == "VK_EXT_validation_features" ) ||
 #if defined( VK_USE_PLATFORM_SCI )
-      ( extension == "VK_NV_external_sci_sync" ) ||
+           ( extension == "VK_NV_external_sci_sync" )
 #endif /*VK_USE_PLATFORM_SCI*/
-      false;
+      ;
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension )

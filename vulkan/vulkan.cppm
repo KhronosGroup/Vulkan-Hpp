@@ -826,6 +826,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_invocation_reorder ===
   using VULKAN_HPP_NAMESPACE::RayTracingInvocationReorderModeNV;
 
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT;
+
   //=== VK_NV_low_latency2 ===
   using VULKAN_HPP_NAMESPACE::LatencyMarkerNV;
   using VULKAN_HPP_NAMESPACE::OutOfBandQueueTypeNV;
@@ -2259,6 +2262,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTNonSeamlessCubeMapExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTNonSeamlessCubeMapSpecVersion;
 
+  //=== VK_ARM_render_pass_striped ===
+  using VULKAN_HPP_NAMESPACE::ARMRenderPassStripedExtensionName;
+  using VULKAN_HPP_NAMESPACE::ARMRenderPassStripedSpecVersion;
+
   //=== VK_QCOM_fragment_density_map_offset ===
   using VULKAN_HPP_NAMESPACE::QCOMFragmentDensityMapOffsetExtensionName;
   using VULKAN_HPP_NAMESPACE::QCOMFragmentDensityMapOffsetSpecVersion;
@@ -2373,6 +2380,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_mutable_descriptor_type ===
   using VULKAN_HPP_NAMESPACE::EXTMutableDescriptorTypeExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTMutableDescriptorTypeSpecVersion;
+
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::EXTLayerSettingsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTLayerSettingsSpecVersion;
 
   //=== VK_ARM_shader_core_builtins ===
   using VULKAN_HPP_NAMESPACE::ARMShaderCoreBuiltinsExtensionName;
@@ -3969,6 +3980,7 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_HUAWEI_cluster_culling_shader ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderPropertiesHUAWEI;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI;
 
   //=== VK_EXT_border_color_swizzle ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceBorderColorSwizzleFeaturesEXT;
@@ -3999,6 +4011,13 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_non_seamless_cube_map ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
+
+  //=== VK_ARM_render_pass_striped ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRenderPassStripedFeaturesARM;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRenderPassStripedPropertiesARM;
+  using VULKAN_HPP_NAMESPACE::RenderPassStripeBeginInfoARM;
+  using VULKAN_HPP_NAMESPACE::RenderPassStripeInfoARM;
+  using VULKAN_HPP_NAMESPACE::RenderPassStripeSubmitInfoARM;
 
   //=== VK_QCOM_fragment_density_map_offset ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
@@ -4136,6 +4155,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MutableDescriptorTypeListVALVE;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE;
+
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::LayerSettingEXT;
+  using VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT;
 
   //=== VK_ARM_shader_core_builtins ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderCoreBuiltinsFeaturesARM;

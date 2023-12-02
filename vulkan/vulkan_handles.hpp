@@ -1520,6 +1520,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_HUAWEI_cluster_culling_shader ===
   struct PhysicalDeviceClusterCullingShaderFeaturesHUAWEI;
   struct PhysicalDeviceClusterCullingShaderPropertiesHUAWEI;
+  struct PhysicalDeviceClusterCullingShaderVrsFeaturesHUAWEI;
 
   //=== VK_EXT_border_color_swizzle ===
   struct PhysicalDeviceBorderColorSwizzleFeaturesEXT;
@@ -1550,6 +1551,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_EXT_non_seamless_cube_map ===
   struct PhysicalDeviceNonSeamlessCubeMapFeaturesEXT;
+
+  //=== VK_ARM_render_pass_striped ===
+  struct PhysicalDeviceRenderPassStripedFeaturesARM;
+  struct PhysicalDeviceRenderPassStripedPropertiesARM;
+  struct RenderPassStripeBeginInfoARM;
+  struct RenderPassStripeInfoARM;
+  struct RenderPassStripeSubmitInfoARM;
 
   //=== VK_QCOM_fragment_density_map_offset ===
   struct PhysicalDeviceFragmentDensityMapOffsetFeaturesQCOM;
@@ -1687,6 +1695,10 @@ namespace VULKAN_HPP_NAMESPACE
   using MutableDescriptorTypeListVALVE = MutableDescriptorTypeListEXT;
   struct MutableDescriptorTypeCreateInfoEXT;
   using MutableDescriptorTypeCreateInfoVALVE = MutableDescriptorTypeCreateInfoEXT;
+
+  //=== VK_EXT_layer_settings ===
+  struct LayerSettingsCreateInfoEXT;
+  struct LayerSettingEXT;
 
   //=== VK_ARM_shader_core_builtins ===
   struct PhysicalDeviceShaderCoreBuiltinsFeaturesARM;

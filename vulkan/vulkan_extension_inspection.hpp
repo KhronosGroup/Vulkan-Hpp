@@ -53,7 +53,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
       { "VK_NV_external_memory_win32", "VK_KHR_external_memory_win32" },
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
-      { "VK_EXT_validation_flags", "VK_EXT_validation_features" },
+      { "VK_EXT_validation_flags", "VK_EXT_layer_settings" },
       { "VK_EXT_shader_subgroup_ballot", "VK_VERSION_1_2" },
       { "VK_EXT_shader_subgroup_vote", "VK_VERSION_1_1" },
 #if defined( VK_USE_PLATFORM_IOS_MVK )
@@ -63,7 +63,8 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_MVK_macos_surface", "VK_EXT_metal_surface" },
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
       { "VK_AMD_gpu_shader_int16", "VK_KHR_shader_float16_int8" },
-      { "VK_EXT_buffer_device_address", "VK_KHR_buffer_device_address" }
+      { "VK_EXT_buffer_device_address", "VK_KHR_buffer_device_address" },
+      { "VK_EXT_validation_features", "VK_EXT_layer_settings" }
     };
     return deprecatedExtensions;
   }
@@ -376,6 +377,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_VALVE_descriptor_set_host_mapping",
       "VK_EXT_depth_clamp_zero_one",
       "VK_EXT_non_seamless_cube_map",
+      "VK_ARM_render_pass_striped",
       "VK_QCOM_fragment_density_map_offset",
       "VK_NV_copy_memory_indirect",
       "VK_NV_memory_decompression",
@@ -492,7 +494,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       "VK_KHR_portability_enumeration",
       "VK_GOOGLE_surfaceless_query",
-      "VK_LUNARG_direct_driver_loading"
+      "VK_LUNARG_direct_driver_loading",
+      "VK_EXT_layer_settings"
     };
     return instanceExtensions;
   }
@@ -1813,6 +1816,12 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
+      { "VK_ARM_render_pass_striped",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+              "VK_KHR_synchronization2",
+            } } } } },
       { "VK_QCOM_fragment_density_map_offset",
         { { "VK_VERSION_1_0",
             { {
@@ -2200,7 +2209,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_WIN32_KHR*/
     if ( extension == "VK_EXT_validation_flags" )
     {
-      return "VK_EXT_validation_features";
+      return "VK_EXT_layer_settings";
     }
     if ( extension == "VK_EXT_shader_subgroup_ballot" )
     {
@@ -2229,6 +2238,10 @@ namespace VULKAN_HPP_NAMESPACE
     if ( extension == "VK_EXT_buffer_device_address" )
     {
       return "VK_KHR_buffer_device_address";
+    }
+    if ( extension == "VK_EXT_validation_features" )
+    {
+      return "VK_EXT_layer_settings";
     }
     return "";
   }
@@ -2576,7 +2589,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_MACOS_MVK )
            ( extension == "VK_MVK_macos_surface" ) ||
 #endif /*VK_USE_PLATFORM_MACOS_MVK*/
-           ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_EXT_buffer_device_address" );
+           ( extension == "VK_AMD_gpu_shader_int16" ) || ( extension == "VK_EXT_buffer_device_address" ) || ( extension == "VK_EXT_validation_features" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isDeviceExtension( std::string const & extension )
@@ -2741,7 +2754,7 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_border_color_swizzle" ) || ( extension == "VK_EXT_pageable_device_local_memory" ) || ( extension == "VK_KHR_maintenance4" ) ||
            ( extension == "VK_ARM_shader_core_properties" ) || ( extension == "VK_ARM_scheduling_controls" ) ||
            ( extension == "VK_EXT_image_sliced_view_of_3d" ) || ( extension == "VK_VALVE_descriptor_set_host_mapping" ) ||
-           ( extension == "VK_EXT_depth_clamp_zero_one" ) || ( extension == "VK_EXT_non_seamless_cube_map" ) ||
+           ( extension == "VK_EXT_depth_clamp_zero_one" ) || ( extension == "VK_EXT_non_seamless_cube_map" ) || ( extension == "VK_ARM_render_pass_striped" ) ||
            ( extension == "VK_QCOM_fragment_density_map_offset" ) || ( extension == "VK_NV_copy_memory_indirect" ) ||
            ( extension == "VK_NV_memory_decompression" ) || ( extension == "VK_NV_device_generated_commands_compute" ) ||
            ( extension == "VK_NV_linear_color_attachment" ) || ( extension == "VK_EXT_image_compression_control_swapchain" ) ||
@@ -2825,7 +2838,7 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_QNX_screen_surface" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
         || ( extension == "VK_KHR_portability_enumeration" ) || ( extension == "VK_GOOGLE_surfaceless_query" ) ||
-           ( extension == "VK_LUNARG_direct_driver_loading" );
+           ( extension == "VK_LUNARG_direct_driver_loading" ) || ( extension == "VK_EXT_layer_settings" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension )

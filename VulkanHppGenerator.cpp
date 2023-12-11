@@ -1830,7 +1830,7 @@ size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & comman
   }
   auto handleIt = m_handles.find( commandIt->second.handle );
   assert( handleIt != m_handles.end() );
-  if ( !handleIt->second.commands.contains( commandIt->first ) )
+  if ( !handleIt->second.commands.contains( command ) )
   {
     assert( 1 < commandIt->second.params.size() );
     assert( m_handles.contains( commandIt->second.params[1].type.type ) );

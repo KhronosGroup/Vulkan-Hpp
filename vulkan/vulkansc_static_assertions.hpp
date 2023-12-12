@@ -2391,14 +2391,6 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderClockFeaturesKHR>::value,
                           "PhysicalDeviceShaderClockFeaturesKHR is not nothrow_move_constructible!" );
 
-//=== VK_EXT_calibrated_timestamps ===
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT ) == sizeof( VkCalibratedTimestampInfoEXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT>::value,
-                          "CalibratedTimestampInfoEXT is not nothrow_move_constructible!" );
-
 //=== VK_EXT_vertex_attribute_divisor ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT ) ==
@@ -2408,29 +2400,6 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
                           "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT>::value,
                           "PhysicalDeviceVertexAttributeDivisorPropertiesEXT is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT ) == sizeof( VkVertexInputBindingDivisorDescriptionEXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT>::value,
-                          "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT>::value,
-                          "VertexInputBindingDivisorDescriptionEXT is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT ) ==
-                            sizeof( VkPipelineVertexInputDivisorStateCreateInfoEXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT>::value,
-                          "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT>::value,
-                          "PipelineVertexInputDivisorStateCreateInfoEXT is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT ) ==
-                            sizeof( VkPhysicalDeviceVertexAttributeDivisorFeaturesEXT ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT>::value,
-                          "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT>::value,
-                          "PhysicalDeviceVertexAttributeDivisorFeaturesEXT is not nothrow_move_constructible!" );
 
 //=== VK_EXT_pci_bus_info ===
 

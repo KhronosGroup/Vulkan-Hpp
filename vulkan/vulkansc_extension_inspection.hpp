@@ -527,6 +527,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static std::map<std::string, std::string> promotedExtensions = { { "VK_EXT_texture_compression_astc_hdr", "VK_VERSION_1_3" },
                                                                      { "VK_EXT_global_priority", "VK_KHR_global_priority" },
+                                                                     { "VK_EXT_calibrated_timestamps", "VK_KHR_calibrated_timestamps" },
+                                                                     { "VK_EXT_vertex_attribute_divisor", "VK_KHR_vertex_attribute_divisor" },
                                                                      { "VK_KHR_shader_terminate_invocation", "VK_VERSION_1_3" },
                                                                      { "VK_EXT_subgroup_size_control", "VK_VERSION_1_3" },
                                                                      { "VK_EXT_extended_dynamic_state", "VK_VERSION_1_3" },
@@ -575,6 +577,14 @@ namespace VULKAN_HPP_NAMESPACE
     if ( extension == "VK_EXT_global_priority" )
     {
       return "VK_KHR_global_priority";
+    }
+    if ( extension == "VK_EXT_calibrated_timestamps" )
+    {
+      return "VK_KHR_calibrated_timestamps";
+    }
+    if ( extension == "VK_EXT_vertex_attribute_divisor" )
+    {
+      return "VK_KHR_vertex_attribute_divisor";
     }
     if ( extension == "VK_KHR_shader_terminate_invocation" )
     {
@@ -686,6 +696,7 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isPromotedExtension( std::string const & extension )
   {
     return ( extension == "VK_EXT_texture_compression_astc_hdr" ) || ( extension == "VK_EXT_global_priority" ) ||
+           ( extension == "VK_EXT_calibrated_timestamps" ) || ( extension == "VK_EXT_vertex_attribute_divisor" ) ||
            ( extension == "VK_KHR_shader_terminate_invocation" ) || ( extension == "VK_EXT_subgroup_size_control" ) ||
            ( extension == "VK_EXT_extended_dynamic_state" ) || ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) ||
            ( extension == "VK_EXT_texel_buffer_alignment" ) || ( extension == "VK_KHR_synchronization2" ) ||

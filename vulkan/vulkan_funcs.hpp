@@ -16297,22 +16297,22 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getCalibrateableTimeDomainsEXT( uint32_t *                            pTimeDomainCount,
-                                                                                                VULKAN_HPP_NAMESPACE::TimeDomainEXT * pTimeDomains,
+                                                                                                VULKAN_HPP_NAMESPACE::TimeDomainKHR * pTimeDomains,
                                                                                                 Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>(
-      d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, pTimeDomainCount, reinterpret_cast<VkTimeDomainEXT *>( pTimeDomains ) ) );
+      d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, pTimeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( pTimeDomains ) ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename TimeDomainEXTAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT, TimeDomainEXTAllocator>>::type
+  template <typename TimeDomainKHRAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
                        PhysicalDevice::getCalibrateableTimeDomainsEXT( Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT, TimeDomainEXTAllocator> timeDomains;
+    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator> timeDomains;
     uint32_t                                                                 timeDomainCount;
     VkResult                                                                 result;
     do
@@ -16322,7 +16322,7 @@ namespace VULKAN_HPP_NAMESPACE
       {
         timeDomains.resize( timeDomainCount );
         result =
-          d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainEXT *>( timeDomains.data() ) );
+          d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsEXT" );
@@ -16334,16 +16334,16 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), timeDomains );
   }
 
-  template <typename TimeDomainEXTAllocator,
+  template <typename TimeDomainKHRAllocator,
             typename Dispatch,
             typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, TimeDomainEXT>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT, TimeDomainEXTAllocator>>::type
-                       PhysicalDevice::getCalibrateableTimeDomainsEXT( TimeDomainEXTAllocator & timeDomainEXTAllocator, Dispatch const & d ) const
+            typename std::enable_if<std::is_same<typename B1::value_type, TimeDomainKHR>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
+                       PhysicalDevice::getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
-    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainEXT, TimeDomainEXTAllocator> timeDomains( timeDomainEXTAllocator );
+    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator> timeDomains( timeDomainKHRAllocator );
     uint32_t                                                                 timeDomainCount;
     VkResult                                                                 result;
     do
@@ -16353,7 +16353,7 @@ namespace VULKAN_HPP_NAMESPACE
       {
         timeDomains.resize( timeDomainCount );
         result =
-          d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainEXT *>( timeDomains.data() ) );
+          d.vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) );
       }
     } while ( result == VK_INCOMPLETE );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsEXT" );
@@ -16368,20 +16368,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getCalibratedTimestampsEXT( uint32_t                                                 timestampCount,
-                                                                                    const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT * pTimestampInfos,
+                                                                                    const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR * pTimestampInfos,
                                                                                     uint64_t *                                               pTimestamps,
                                                                                     uint64_t *                                               pMaxDeviation,
                                                                                     Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkGetCalibratedTimestampsEXT(
-      m_device, timestampCount, reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( pTimestampInfos ), pTimestamps, pMaxDeviation ) );
+      m_device, timestampCount, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( pTimestampInfos ), pTimestamps, pMaxDeviation ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Uint64_tAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
-    Device::getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos,
+    Device::getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
                                         Dispatch const &                                                                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
@@ -16391,7 +16391,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
     uint64_t &                                 maxDeviation = data_.second;
     VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
-      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
@@ -16402,7 +16402,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename B0,
             typename std::enable_if<std::is_same<typename B0::value_type, uint64_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
-    Device::getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT> const & timestampInfos,
+    Device::getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
                                         Uint64_tAllocator &                                                                              uint64_tAllocator,
                                         Dispatch const &                                                                                 d ) const
   {
@@ -16413,7 +16413,7 @@ namespace VULKAN_HPP_NAMESPACE
     std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
     uint64_t &                                 maxDeviation = data_.second;
     VkResult                                   result       = d.vkGetCalibratedTimestampsEXT(
-      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
@@ -16421,7 +16421,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<uint64_t, uint64_t>>::type
-                       Device::getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT & timestampInfo, Dispatch const & d ) const
+                       Device::getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 
@@ -16429,7 +16429,7 @@ namespace VULKAN_HPP_NAMESPACE
     uint64_t &                    timestamp    = data_.first;
     uint64_t &                    maxDeviation = data_.second;
     VkResult                      result =
-      d.vkGetCalibratedTimestampsEXT( m_device, 1, reinterpret_cast<const VkCalibratedTimestampInfoEXT *>( &timestampInfo ), &timestamp, &maxDeviation );
+      d.vkGetCalibratedTimestampsEXT( m_device, 1, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( &timestampInfo ), &timestamp, &maxDeviation );
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
@@ -23338,6 +23338,149 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+  //=== VK_KHR_calibrated_timestamps ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result PhysicalDevice::getCalibrateableTimeDomainsKHR( uint32_t *                            pTimeDomainCount,
+                                                                                                VULKAN_HPP_NAMESPACE::TimeDomainKHR * pTimeDomains,
+                                                                                                Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>(
+      d.vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( m_physicalDevice, pTimeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( pTimeDomains ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename TimeDomainKHRAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
+                       PhysicalDevice::getCalibrateableTimeDomainsKHR( Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator> timeDomains;
+    uint32_t                                                                 timeDomainCount;
+    VkResult                                                                 result;
+    do
+    {
+      result = d.vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( m_physicalDevice, &timeDomainCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && timeDomainCount )
+      {
+        timeDomains.resize( timeDomainCount );
+        result =
+          d.vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsKHR" );
+    VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
+    if ( timeDomainCount < timeDomains.size() )
+    {
+      timeDomains.resize( timeDomainCount );
+    }
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), timeDomains );
+  }
+
+  template <typename TimeDomainKHRAllocator,
+            typename Dispatch,
+            typename B1,
+            typename std::enable_if<std::is_same<typename B1::value_type, TimeDomainKHR>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
+                       PhysicalDevice::getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator> timeDomains( timeDomainKHRAllocator );
+    uint32_t                                                                 timeDomainCount;
+    VkResult                                                                 result;
+    do
+    {
+      result = d.vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( m_physicalDevice, &timeDomainCount, nullptr );
+      if ( ( result == VK_SUCCESS ) && timeDomainCount )
+      {
+        timeDomains.resize( timeDomainCount );
+        result =
+          d.vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( m_physicalDevice, &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) );
+      }
+    } while ( result == VK_INCOMPLETE );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsKHR" );
+    VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
+    if ( timeDomainCount < timeDomains.size() )
+    {
+      timeDomains.resize( timeDomainCount );
+    }
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), timeDomains );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::getCalibratedTimestampsKHR( uint32_t                                                 timestampCount,
+                                                                                    const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR * pTimestampInfos,
+                                                                                    uint64_t *                                               pTimestamps,
+                                                                                    uint64_t *                                               pMaxDeviation,
+                                                                                    Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetCalibratedTimestampsKHR(
+      m_device, timestampCount, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( pTimestampInfos ), pTimestamps, pMaxDeviation ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Uint64_tAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
+    Device::getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
+                                        Dispatch const &                                                                                 d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data_(
+      std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
+    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
+    uint64_t &                                 maxDeviation = data_.second;
+    VkResult                                   result       = d.vkGetCalibratedTimestampsKHR(
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+
+  template <typename Uint64_tAllocator,
+            typename Dispatch,
+            typename B0,
+            typename std::enable_if<std::is_same<typename B0::value_type, uint64_t>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
+    Device::getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
+                                        Uint64_tAllocator &                                                                              uint64_tAllocator,
+                                        Dispatch const &                                                                                 d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t> data_(
+      std::piecewise_construct, std::forward_as_tuple( timestampInfos.size(), uint64_tAllocator ), std::forward_as_tuple( 0 ) );
+    std::vector<uint64_t, Uint64_tAllocator> & timestamps   = data_.first;
+    uint64_t &                                 maxDeviation = data_.second;
+    VkResult                                   result       = d.vkGetCalibratedTimestampsKHR(
+      m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<uint64_t, uint64_t>>::type
+                       Device::getCalibratedTimestampKHR( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    std::pair<uint64_t, uint64_t> data_;
+    uint64_t &                    timestamp    = data_.first;
+    uint64_t &                    maxDeviation = data_.second;
+    VkResult                      result =
+      d.vkGetCalibratedTimestampsKHR( m_device, 1, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( &timestampInfo ), &timestamp, &maxDeviation );
+    resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampKHR" );
+
+    return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

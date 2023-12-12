@@ -979,19 +979,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT const & calibratedTimestampInfoEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, calibratedTimestampInfoEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, calibratedTimestampInfoEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, calibratedTimestampInfoEXT.timeDomain );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::CheckpointData2NV>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::CheckpointData2NV const & checkpointData2NV ) const VULKAN_HPP_NOEXCEPT
@@ -5710,21 +5697,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT>
-  {
-    std::size_t operator()(
-      VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT const & physicalDeviceVertexAttributeDivisorFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAttributeDivisorFeaturesEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAttributeDivisorFeaturesEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAttributeDivisorFeaturesEXT.vertexAttributeInstanceRateDivisor );
-      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceVertexAttributeDivisorFeaturesEXT.vertexAttributeInstanceRateZeroDivisor );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT const & physicalDeviceVertexAttributeDivisorPropertiesEXT )
@@ -6441,34 +6413,6 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, pipelineTessellationDomainOriginStateCreateInfo.sType );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineTessellationDomainOriginStateCreateInfo.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, pipelineTessellationDomainOriginStateCreateInfo.domainOrigin );
-      return seed;
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT>
-  {
-    std::size_t
-      operator()( VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT const & vertexInputBindingDivisorDescriptionEXT ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, vertexInputBindingDivisorDescriptionEXT.binding );
-      VULKAN_HPP_HASH_COMBINE( seed, vertexInputBindingDivisorDescriptionEXT.divisor );
-      return seed;
-    }
-  };
-
-  template <>
-  struct hash<VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT const & pipelineVertexInputDivisorStateCreateInfoEXT ) const
-      VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, pipelineVertexInputDivisorStateCreateInfoEXT.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, pipelineVertexInputDivisorStateCreateInfoEXT.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, pipelineVertexInputDivisorStateCreateInfoEXT.vertexBindingDivisorCount );
-      VULKAN_HPP_HASH_COMBINE( seed, pipelineVertexInputDivisorStateCreateInfoEXT.pVertexBindingDivisors );
       return seed;
     }
   };

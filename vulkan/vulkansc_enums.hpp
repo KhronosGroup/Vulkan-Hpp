@@ -3465,16 +3465,6 @@ namespace VULKAN_HPP_NAMESPACE
     eConjoint     = VK_BLEND_OVERLAP_CONJOINT_EXT
   };
 
-  //=== VK_EXT_calibrated_timestamps ===
-
-  enum class TimeDomainEXT
-  {
-    eDevice                  = VK_TIME_DOMAIN_DEVICE_EXT,
-    eClockMonotonic          = VK_TIME_DOMAIN_CLOCK_MONOTONIC_EXT,
-    eClockMonotonicRaw       = VK_TIME_DOMAIN_CLOCK_MONOTONIC_RAW_EXT,
-    eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_EXT
-  };
-
   //=== VK_KHR_fragment_shading_rate ===
 
   enum class FragmentShadingRateCombinerOpKHR

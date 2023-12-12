@@ -388,9 +388,6 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_blend_operation_advanced ===
   using VULKAN_HPP_NAMESPACE::BlendOverlapEXT;
 
-  //=== VK_EXT_calibrated_timestamps ===
-  using VULKAN_HPP_NAMESPACE::TimeDomainEXT;
-
   //=== VK_KHR_fragment_shading_rate ===
   using VULKAN_HPP_NAMESPACE::FragmentShadingRateCombinerOpKHR;
 
@@ -1417,14 +1414,8 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_clock ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderClockFeaturesKHR;
 
-  //=== VK_EXT_calibrated_timestamps ===
-  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT;
-
   //=== VK_EXT_vertex_attribute_divisor ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
-  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT;
-  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT;
 
   //=== VK_EXT_pci_bus_info ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePCIBusInfoPropertiesEXT;

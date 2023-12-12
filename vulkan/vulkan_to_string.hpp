@@ -4100,7 +4100,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
       case StructureType::ePhysicalDeviceShaderClockFeaturesKHR: return "PhysicalDeviceShaderClockFeaturesKHR";
       case StructureType::ePipelineCompilerControlCreateInfoAMD: return "PipelineCompilerControlCreateInfoAMD";
-      case StructureType::eCalibratedTimestampInfoEXT: return "CalibratedTimestampInfoEXT";
       case StructureType::ePhysicalDeviceShaderCorePropertiesAMD: return "PhysicalDeviceShaderCorePropertiesAMD";
       case StructureType::eVideoDecodeH265CapabilitiesKHR: return "VideoDecodeH265CapabilitiesKHR";
       case StructureType::eVideoDecodeH265SessionParametersCreateInfoKHR: return "VideoDecodeH265SessionParametersCreateInfoKHR";
@@ -4113,8 +4112,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eQueueFamilyGlobalPriorityPropertiesKHR: return "QueueFamilyGlobalPriorityPropertiesKHR";
       case StructureType::eDeviceMemoryOverallocationCreateInfoAMD: return "DeviceMemoryOverallocationCreateInfoAMD";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
-      case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
-      case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT: return "PhysicalDeviceVertexAttributeDivisorFeaturesEXT";
 #if defined( VK_USE_PLATFORM_GGP )
       case StructureType::ePresentFrameTokenGGP: return "PresentFrameTokenGGP";
 #endif /*VK_USE_PLATFORM_GGP*/
@@ -4515,6 +4512,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM: return "SamplerYcbcrConversionYcbcrDegammaCreateInfoQCOM";
       case StructureType::ePhysicalDeviceCubicClampFeaturesQCOM: return "PhysicalDeviceCubicClampFeaturesQCOM";
       case StructureType::ePhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT: return "PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT";
+      case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesKHR: return "PhysicalDeviceVertexAttributeDivisorPropertiesKHR";
+      case StructureType::ePipelineVertexInputDivisorStateCreateInfoKHR: return "PipelineVertexInputDivisorStateCreateInfoKHR";
+      case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesKHR: return "PhysicalDeviceVertexAttributeDivisorFeaturesKHR";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case StructureType::eScreenBufferPropertiesQNX: return "ScreenBufferPropertiesQNX";
       case StructureType::eScreenBufferFormatPropertiesQNX: return "ScreenBufferFormatPropertiesQNX";
@@ -4523,6 +4523,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX: return "PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX";
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       case StructureType::ePhysicalDeviceLayeredDriverPropertiesMSFT: return "PhysicalDeviceLayeredDriverPropertiesMSFT";
+      case StructureType::eCalibratedTimestampInfoKHR: return "CalibratedTimestampInfoKHR";
       case StructureType::ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV: return "PhysicalDeviceDescriptorPoolOverallocationFeaturesNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
@@ -7895,20 +7896,6 @@ namespace VULKAN_HPP_NAMESPACE
     return "(void)";
   }
 
-  //=== VK_EXT_calibrated_timestamps ===
-
-  VULKAN_HPP_INLINE std::string to_string( TimeDomainEXT value )
-  {
-    switch ( value )
-    {
-      case TimeDomainEXT::eDevice: return "Device";
-      case TimeDomainEXT::eClockMonotonic: return "ClockMonotonic";
-      case TimeDomainEXT::eClockMonotonicRaw: return "ClockMonotonicRaw";
-      case TimeDomainEXT::eQueryPerformanceCounter: return "QueryPerformanceCounter";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
   //=== VK_KHR_global_priority ===
 
   VULKAN_HPP_INLINE std::string to_string( QueueGlobalPriorityKHR value )
@@ -9057,6 +9044,20 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case LayeredDriverUnderlyingApiMSFT::eNone: return "None";
       case LayeredDriverUnderlyingApiMSFT::eD3D12: return "D3D12";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_calibrated_timestamps ===
+
+  VULKAN_HPP_INLINE std::string to_string( TimeDomainKHR value )
+  {
+    switch ( value )
+    {
+      case TimeDomainKHR::eDevice: return "Device";
+      case TimeDomainKHR::eClockMonotonic: return "ClockMonotonic";
+      case TimeDomainKHR::eClockMonotonicRaw: return "ClockMonotonicRaw";
+      case TimeDomainKHR::eQueryPerformanceCounter: return "QueryPerformanceCounter";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

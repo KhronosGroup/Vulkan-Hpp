@@ -593,9 +593,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PipelineCompilerControlFlagBitsAMD;
   using VULKAN_HPP_NAMESPACE::PipelineCompilerControlFlagsAMD;
 
-  //=== VK_EXT_calibrated_timestamps ===
-  using VULKAN_HPP_NAMESPACE::TimeDomainEXT;
-
   //=== VK_KHR_global_priority ===
   using VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT;
   using VULKAN_HPP_NAMESPACE::QueueGlobalPriorityKHR;
@@ -847,6 +844,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_MSFT_layered_driver ===
   using VULKAN_HPP_NAMESPACE::LayeredDriverUnderlyingApiMSFT;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::TimeDomainEXT;
+  using VULKAN_HPP_NAMESPACE::TimeDomainKHR;
 
   //=========================
   //=== Index Type Traits ===
@@ -2429,6 +2430,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTAttachmentFeedbackLoopDynamicStateExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTAttachmentFeedbackLoopDynamicStateSpecVersion;
 
+  //=== VK_KHR_vertex_attribute_divisor ===
+  using VULKAN_HPP_NAMESPACE::KHRVertexAttributeDivisorExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRVertexAttributeDivisorSpecVersion;
+
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
   using VULKAN_HPP_NAMESPACE::QNXExternalMemoryScreenBufferExtensionName;
@@ -2438,6 +2443,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_MSFT_layered_driver ===
   using VULKAN_HPP_NAMESPACE::MSFTLayeredDriverExtensionName;
   using VULKAN_HPP_NAMESPACE::MSFTLayeredDriverSpecVersion;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::KHRCalibratedTimestampsExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRCalibratedTimestampsSpecVersion;
 
   //=== VK_NV_descriptor_pool_overallocation ===
   using VULKAN_HPP_NAMESPACE::NVDescriptorPoolOverallocationExtensionName;
@@ -3431,9 +3440,6 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_AMD_pipeline_compiler_control ===
   using VULKAN_HPP_NAMESPACE::PipelineCompilerControlCreateInfoAMD;
 
-  //=== VK_EXT_calibrated_timestamps ===
-  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT;
-
   //=== VK_AMD_shader_core_properties ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderCorePropertiesAMD;
 
@@ -3457,10 +3463,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DeviceMemoryOverallocationCreateInfoAMD;
 
   //=== VK_EXT_vertex_attribute_divisor ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
-  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT;
-  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT;
 
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_frame_token ===
@@ -4210,6 +4213,15 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_attachment_feedback_loop_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT;
 
+  //=== VK_KHR_vertex_attribute_divisor ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT;
+  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionKHR;
+
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
   using VULKAN_HPP_NAMESPACE::ExternalFormatQNX;
@@ -4221,6 +4233,10 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_MSFT_layered_driver ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceLayeredDriverPropertiesMSFT;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT;
+  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR;
 
   //=== VK_NV_descriptor_pool_overallocation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;

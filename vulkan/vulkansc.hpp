@@ -2816,14 +2816,14 @@ namespace VULKAN_HPP_NAMESPACE
 
     VkResult vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( VkPhysicalDevice  physicalDevice,
                                                              uint32_t *        pTimeDomainCount,
-                                                             VkTimeDomainEXT * pTimeDomains ) const VULKAN_HPP_NOEXCEPT
+                                                             VkTimeDomainKHR * pTimeDomains ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( physicalDevice, pTimeDomainCount, pTimeDomains );
     }
 
     VkResult vkGetCalibratedTimestampsEXT( VkDevice                             device,
                                            uint32_t                             timestampCount,
-                                           const VkCalibratedTimestampInfoEXT * pTimestampInfos,
+                                           const VkCalibratedTimestampInfoKHR * pTimestampInfos,
                                            uint64_t *                           pTimestamps,
                                            uint64_t *                           pMaxDeviation ) const VULKAN_HPP_NOEXCEPT
     {
@@ -4169,12 +4169,16 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderClockSpecVersion   = VK_KHR_SHADER_CLOCK_SPEC_VERSION;
 
   //=== VK_EXT_calibrated_timestamps ===
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_calibrated_timestamps extension has been promoted to VK_KHR_calibrated_timestamps." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTCalibratedTimestampsExtensionName = VK_EXT_CALIBRATED_TIMESTAMPS_EXTENSION_NAME;
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTCalibratedTimestampsSpecVersion   = VK_EXT_CALIBRATED_TIMESTAMPS_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_calibrated_timestamps extension has been promoted to VK_KHR_calibrated_timestamps." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTCalibratedTimestampsSpecVersion = VK_EXT_CALIBRATED_TIMESTAMPS_SPEC_VERSION;
 
   //=== VK_EXT_vertex_attribute_divisor ===
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_vertex_attribute_divisor extension has been promoted to VK_KHR_vertex_attribute_divisor." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeDivisorExtensionName = VK_EXT_VERTEX_ATTRIBUTE_DIVISOR_EXTENSION_NAME;
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeDivisorSpecVersion   = VK_EXT_VERTEX_ATTRIBUTE_DIVISOR_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_vertex_attribute_divisor extension has been promoted to VK_KHR_vertex_attribute_divisor." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTVertexAttributeDivisorSpecVersion = VK_EXT_VERTEX_ATTRIBUTE_DIVISOR_SPEC_VERSION;
 
   //=== VK_KHR_swapchain_mutable_format ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRSwapchainMutableFormatExtensionName = VK_KHR_SWAPCHAIN_MUTABLE_FORMAT_EXTENSION_NAME;
@@ -6281,33 +6285,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  template <>
-  struct StructExtends<PipelineVertexInputDivisorStateCreateInfoEXT, PipelineVertexInputStateCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, PhysicalDeviceFeatures2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<PhysicalDeviceVertexAttributeDivisorFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_EXT_pci_bus_info ===
   template <>
   struct StructExtends<PhysicalDevicePCIBusInfoPropertiesEXT, PhysicalDeviceProperties2>
@@ -7869,7 +7846,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_calibrated_timestamps ===
       vkGetPhysicalDeviceCalibrateableTimeDomainsEXT =
         PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT" ) );
+      if ( !vkGetPhysicalDeviceCalibrateableTimeDomainsKHR )
+        vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = vkGetPhysicalDeviceCalibrateableTimeDomainsEXT;
       vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetInstanceProcAddr( instance, "vkGetCalibratedTimestampsEXT" ) );
+      if ( !vkGetCalibratedTimestampsKHR )
+        vkGetCalibratedTimestampsKHR = vkGetCalibratedTimestampsEXT;
 
       //=== VK_KHR_fragment_shading_rate ===
       vkGetPhysicalDeviceFragmentShadingRatesKHR =
@@ -8276,6 +8257,8 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_calibrated_timestamps ===
       vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetDeviceProcAddr( device, "vkGetCalibratedTimestampsEXT" ) );
+      if ( !vkGetCalibratedTimestampsKHR )
+        vkGetCalibratedTimestampsKHR = vkGetCalibratedTimestampsEXT;
 
       //=== VK_KHR_fragment_shading_rate ===
       vkCmdSetFragmentShadingRateKHR = PFN_vkCmdSetFragmentShadingRateKHR( vkGetDeviceProcAddr( device, "vkCmdSetFragmentShadingRateKHR" ) );

@@ -1977,10 +1977,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
       case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
       case StructureType::ePhysicalDeviceShaderClockFeaturesKHR: return "PhysicalDeviceShaderClockFeaturesKHR";
-      case StructureType::eCalibratedTimestampInfoEXT: return "CalibratedTimestampInfoEXT";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
-      case StructureType::ePipelineVertexInputDivisorStateCreateInfoEXT: return "PipelineVertexInputDivisorStateCreateInfoEXT";
-      case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesEXT: return "PhysicalDeviceVertexAttributeDivisorFeaturesEXT";
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT: return "PhysicalDevicePciBusInfoPropertiesEXT";
       case StructureType::eFragmentShadingRateAttachmentInfoKHR: return "FragmentShadingRateAttachmentInfoKHR";
       case StructureType::ePipelineFragmentShadingRateStateCreateInfoKHR: return "PipelineFragmentShadingRateStateCreateInfoKHR";
@@ -4273,20 +4270,6 @@ namespace VULKAN_HPP_NAMESPACE
       case BlendOverlapEXT::eUncorrelated: return "Uncorrelated";
       case BlendOverlapEXT::eDisjoint: return "Disjoint";
       case BlendOverlapEXT::eConjoint: return "Conjoint";
-      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
-    }
-  }
-
-  //=== VK_EXT_calibrated_timestamps ===
-
-  VULKAN_HPP_INLINE std::string to_string( TimeDomainEXT value )
-  {
-    switch ( value )
-    {
-      case TimeDomainEXT::eDevice: return "Device";
-      case TimeDomainEXT::eClockMonotonic: return "ClockMonotonic";
-      case TimeDomainEXT::eClockMonotonicRaw: return "ClockMonotonicRaw";
-      case TimeDomainEXT::eQueryPerformanceCounter: return "QueryPerformanceCounter";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

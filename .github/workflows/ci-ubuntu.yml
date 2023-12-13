@@ -12,13 +12,11 @@ jobs:
     strategy:
       matrix:
         build_type: [Debug, Release]
-        compiler:
-          - {cxx: "g++-9", c: "gcc-9"}
-          - {cxx: "g++-10", c: "gcc-10"}
-          - {cxx: "g++-11", c: "gcc-11"}
-          - {cxx: "clang++-13", c: "clang-13"}
-          - {cxx: "clang++-14", c: "clang-14"}
-        cxx_standard: [11, 14, 17, 20, 23]
+        compiler: [clang++-13, clang++-14, g++-9, g++-10, g++-11]
+        cxx_standard: [11, 14, 17, 20]
+        include:
+          - compiler: g++-11
+            cxx_standard: 23
 
     steps:
     - uses: actions/checkout@v4
@@ -42,8 +40,7 @@ jobs:
             -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON
             -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
             -DVULKAN_HPP_RUN_GENERATOR=ON
-            -DCMAKE_CXX_COMPILER=${{matrix.compiler.cxx}}
-            -DCMAKE_C_COMPILER=${{matrix.compiler.c}}
+            -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
             -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
             -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
             

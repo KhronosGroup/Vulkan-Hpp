@@ -24,6 +24,10 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+if ( NOT CMAKE_CXX_STANDARD )
+	set( CMAKE_CXX_STANDARD 11 )
+endif()
+
 # all the options for this project
 option( VULKAN_HPP_PRECOMPILE "Precompile vulkan.hpp and vulkan_raii.hpp for sample builds" ON )
 option( VULKAN_HPP_RUN_GENERATOR "Run the HPP generator" OFF )
@@ -121,7 +125,6 @@ function( vulkan_hpp__setup_library )
 		vulkan_hpp__setup_platform( NAME ${TARGET_NAME} )
 		vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 		vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
-		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD 11 )
 		set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
 	endif()
 	set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER} )
@@ -145,7 +148,7 @@ function( vulkan_hpp__setup_sample )
 	vulkan_hpp__setup_vulkan_include( NAME ${TARGET_NAME} )
 	vulkan_hpp__setup_warning_level( NAME ${TARGET_NAME} )
 
-	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON )
+	set_target_properties( ${TARGET_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON )
 
 	if( TARGET_FOLDER )
 		set_target_properties( ${TARGET_NAME} PROPERTIES FOLDER "${TARGET_FOLDER}" )
@@ -252,7 +255,7 @@ function( vulkan_hpp__setup_test )
 		message( FATAL_ERROR "NAME must be defined in vulkan_hpp__setup_test" )
 	endif()
 	if( NOT TARGET_CXX_STANDARD )
-		set( TARGET_CXX_STANDARD 11 )
+		set( TARGET_CXX_STANDARD ${CMAKE_CXX_STANDARD} )
 	endif()
 
 	vulkan_hpp__setup_project( NAME ${TARGET_NAME} )

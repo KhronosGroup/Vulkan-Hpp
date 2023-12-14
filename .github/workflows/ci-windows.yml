@@ -9,12 +9,15 @@ jobs:
   build:
     runs-on: ${{matrix.os}}
     
+    defaults:
+      run:
+        shell: bash
+    
     strategy:
       matrix:
         os: [windows-latest, windows-2019]
         architecture: [x86, x64]
-        build_type: [Debug, Release]
-        cxx_standard: [11, 14, 17, 20, 23]
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -24,19 +27,23 @@ jobs:
       uses: TheMrMilchmann/setup-msvc-dev@v2
       with:
         arch: ${{matrix.architecture}}
-      
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build
-            -DVULKAN_HPP_SAMPLES_BUILD=ON
-            -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON
-            -DVULKAN_HPP_SAMPLES_BUILD_WITH_LOCAL_VULKAN_HPP=ON
-            -DVULKAN_HPP_TESTS_BUILD=ON
-            -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON
-            -DVULKAN_HPP_TESTS_BUILD_WITH_LOCAL_VULKAN_HPP=ON
-            -DVULKAN_HPP_PRECOMPILE=OFF
-            -DVULKAN_HPP_RUN_GENERATOR=ON
-            -DCMAKE_CXX_STANDARD=${{matrix.cxx_standard}}
-            -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --parallel
+        
+    - name: Loop over cpp_standards (11, 14, ...) and build_types (Debug, Release)
+      run: |
+        for cpp_standard in 11 14 17 20 23
+        do
+          for build_type in Debug Release
+          do
+            cmake -B build/$cpp_standard/$build_type        \
+              -DVULKAN_HPP_SAMPLES_BUILD=ON                 \
+              -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON    \
+              -DVULKAN_HPP_TESTS_BUILD=ON                   \
+              -DVULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC=ON      \
+              -DVULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP=ON   \
+              -DVULKAN_HPP_PRECOMPILE=OFF                   \
+              -DVULKAN_HPP_RUN_GENERATOR=ON                 \
+              -DCMAKE_CXX_STANDARD=$cpp_standard            \
+              -DCMAKE_BUILD_TYPE=$build_type
+            cmake --build build/$cpp_standard/$build_type --parallel
+          done
+        done

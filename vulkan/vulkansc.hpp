@@ -4363,6 +4363,61 @@ namespace VULKAN_HPP_NAMESPACE
   //=== STRUCTS EXTENDS ===
   //=======================
 
+  //=== VK_VERSION_1_0 ===
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, BindDescriptorSetsInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, PushConstantsInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, PushDescriptorSetInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, PushDescriptorSetWithTemplateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, SetDescriptorBufferOffsetsInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, BindDescriptorBufferEmbeddedSamplersInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_VERSION_1_1 ===
   template <>
   struct StructExtends<PhysicalDeviceSubgroupProperties, PhysicalDeviceProperties2>

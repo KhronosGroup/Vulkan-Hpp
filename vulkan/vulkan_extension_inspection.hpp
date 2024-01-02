@@ -93,10 +93,8 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_AMD_negative_viewport_height",
       "VK_AMD_gpu_shader_half_float",
       "VK_AMD_shader_ballot",
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      "VK_EXT_video_encode_h264",
-      "VK_EXT_video_encode_h265",
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      "VK_KHR_video_encode_h264",
+      "VK_KHR_video_encode_h265",
       "VK_KHR_video_decode_h264",
       "VK_AMD_texture_gather_bias_lod",
       "VK_AMD_shader_info",
@@ -298,9 +296,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_KHR_present_id",
       "VK_EXT_private_data",
       "VK_EXT_pipeline_creation_cache_control",
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       "VK_KHR_video_encode_queue",
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       "VK_NV_device_diagnostics_config",
       "VK_QCOM_render_pass_store_ops",
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -412,6 +408,8 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_low_latency2",
       "VK_KHR_cooperative_matrix",
       "VK_QCOM_multiview_per_view_render_areas",
+      "VK_KHR_video_maintenance1",
+      "VK_NV_per_stage_descriptor_set",
       "VK_QCOM_image_processing2",
       "VK_QCOM_filter_cubic_weights",
       "VK_QCOM_ycbcr_degamma",
@@ -423,6 +421,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
       "VK_MSFT_layered_driver",
       "VK_KHR_calibrated_timestamps",
+      "VK_KHR_maintenance6",
       "VK_NV_descriptor_pool_overallocation"
     };
     return deviceExtensions;
@@ -578,18 +577,16 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      { "VK_EXT_video_encode_h264",
+      { "VK_KHR_video_encode_h264",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_video_encode_queue",
             } } } } },
-      { "VK_EXT_video_encode_h265",
+      { "VK_KHR_video_encode_h265",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_video_encode_queue",
             } } } } },
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       { "VK_KHR_video_decode_h264",
         { { "VK_VERSION_1_0",
             { {
@@ -1482,14 +1479,12 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       { "VK_KHR_video_encode_queue",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_video_queue",
               "VK_KHR_synchronization2",
             } } } } },
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       { "VK_NV_device_diagnostics_config",
         { { "VK_VERSION_1_0",
             { {
@@ -2001,6 +1996,16 @@ namespace VULKAN_HPP_NAMESPACE
             { {
               "VK_KHR_get_physical_device_properties2",
             } } } } },
+      { "VK_KHR_video_maintenance1",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_video_queue",
+            } } } } },
+      { "VK_NV_per_stage_descriptor_set",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_maintenance6",
+            } } } } },
       { "VK_QCOM_image_processing2",
         { { "VK_VERSION_1_0",
             { {
@@ -2057,6 +2062,7 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_maintenance6", { { "VK_VERSION_1_0", { {} } } } },
       { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } }
     };
     auto depIt = dependencies.find( extension );
@@ -2625,12 +2631,9 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_video_decode_queue" ) || ( extension == "VK_AMD_gcn_shader" ) || ( extension == "VK_NV_dedicated_allocation" ) ||
            ( extension == "VK_EXT_transform_feedback" ) || ( extension == "VK_NVX_binary_import" ) || ( extension == "VK_NVX_image_view_handle" ) ||
            ( extension == "VK_AMD_draw_indirect_count" ) || ( extension == "VK_AMD_negative_viewport_height" ) ||
-           ( extension == "VK_AMD_gpu_shader_half_float" ) || ( extension == "VK_AMD_shader_ballot" )
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-        || ( extension == "VK_EXT_video_encode_h264" ) || ( extension == "VK_EXT_video_encode_h265" )
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-        || ( extension == "VK_KHR_video_decode_h264" ) || ( extension == "VK_AMD_texture_gather_bias_lod" ) || ( extension == "VK_AMD_shader_info" ) ||
-           ( extension == "VK_KHR_dynamic_rendering" ) || ( extension == "VK_AMD_shader_image_load_store_lod" ) ||
+           ( extension == "VK_AMD_gpu_shader_half_float" ) || ( extension == "VK_AMD_shader_ballot" ) || ( extension == "VK_KHR_video_encode_h264" ) ||
+           ( extension == "VK_KHR_video_encode_h265" ) || ( extension == "VK_KHR_video_decode_h264" ) || ( extension == "VK_AMD_texture_gather_bias_lod" ) ||
+           ( extension == "VK_AMD_shader_info" ) || ( extension == "VK_KHR_dynamic_rendering" ) || ( extension == "VK_AMD_shader_image_load_store_lod" ) ||
            ( extension == "VK_NV_corner_sampled_image" ) || ( extension == "VK_KHR_multiview" ) || ( extension == "VK_IMG_format_pvrtc" ) ||
            ( extension == "VK_NV_external_memory" )
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -2732,11 +2735,9 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_QCOM_render_pass_transform" ) || ( extension == "VK_EXT_depth_bias_control" ) || ( extension == "VK_EXT_device_memory_report" ) ||
            ( extension == "VK_EXT_robustness2" ) || ( extension == "VK_EXT_custom_border_color" ) || ( extension == "VK_GOOGLE_user_type" ) ||
            ( extension == "VK_KHR_pipeline_library" ) || ( extension == "VK_NV_present_barrier" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) ||
-           ( extension == "VK_KHR_present_id" ) || ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" )
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-        || ( extension == "VK_KHR_video_encode_queue" )
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-        || ( extension == "VK_NV_device_diagnostics_config" ) || ( extension == "VK_QCOM_render_pass_store_ops" )
+           ( extension == "VK_KHR_present_id" ) || ( extension == "VK_EXT_private_data" ) || ( extension == "VK_EXT_pipeline_creation_cache_control" ) ||
+           ( extension == "VK_KHR_video_encode_queue" ) || ( extension == "VK_NV_device_diagnostics_config" ) ||
+           ( extension == "VK_QCOM_render_pass_store_ops" )
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
         || ( extension == "VK_NV_cuda_kernel_launch" )
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
@@ -2796,13 +2797,14 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_EXT_mutable_descriptor_type" ) || ( extension == "VK_ARM_shader_core_builtins" ) ||
            ( extension == "VK_EXT_pipeline_library_group_handles" ) || ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) ||
            ( extension == "VK_NV_low_latency2" ) || ( extension == "VK_KHR_cooperative_matrix" ) ||
-           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_QCOM_image_processing2" ) ||
+           ( extension == "VK_QCOM_multiview_per_view_render_areas" ) || ( extension == "VK_KHR_video_maintenance1" ) ||
+           ( extension == "VK_NV_per_stage_descriptor_set" ) || ( extension == "VK_QCOM_image_processing2" ) ||
            ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) || ( extension == "VK_QCOM_filter_cubic_clamp" ) ||
            ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) || ( extension == "VK_KHR_vertex_attribute_divisor" )
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
         || ( extension == "VK_QNX_external_memory_screen_buffer" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
-        || ( extension == "VK_MSFT_layered_driver" ) || ( extension == "VK_KHR_calibrated_timestamps" ) ||
+        || ( extension == "VK_MSFT_layered_driver" ) || ( extension == "VK_KHR_calibrated_timestamps" ) || ( extension == "VK_KHR_maintenance6" ) ||
            ( extension == "VK_NV_descriptor_pool_overallocation" );
   }
 

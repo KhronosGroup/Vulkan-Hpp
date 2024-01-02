@@ -18963,7 +18963,6 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_KHR_video_encode_queue ===
 
   template <typename Dispatch>
@@ -18979,7 +18978,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                  reinterpret_cast<VkVideoEncodeQualityLevelPropertiesKHR *>( pQualityLevelProperties ) ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::VideoEncodeQualityLevelPropertiesKHR>::type
     PhysicalDevice::getVideoEncodeQualityLevelPropertiesKHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoEncodeQualityLevelInfoKHR & qualityLevelInfo,
@@ -19015,7 +19014,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), structureChain );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
@@ -19034,7 +19033,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                pData ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Uint8_tAllocator, typename Dispatch>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
@@ -19189,7 +19188,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::encodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeInfoKHR * pEncodeInfo,
@@ -19199,7 +19198,7 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkCmdEncodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoEncodeInfoKHR *>( pEncodeInfo ) );
   }
 
-#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::encodeVideoKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeInfoKHR & encodeInfo,
                                                         Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
@@ -19208,8 +19207,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdEncodeVideoKHR( m_commandBuffer, reinterpret_cast<const VkVideoEncodeInfoKHR *>( &encodeInfo ) );
   }
-#  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-#endif   /*VK_ENABLE_BETA_EXTENSIONS*/
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
   //=== VK_NV_cuda_kernel_launch ===
@@ -23479,6 +23477,132 @@ namespace VULKAN_HPP_NAMESPACE
     resultCheck( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampKHR" );
 
     return createResultValueType( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_KHR_maintenance6 ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindDescriptorSets2KHR( const VULKAN_HPP_NAMESPACE::BindDescriptorSetsInfoKHR * pBindDescriptorSetsInfo,
+                                                                Dispatch const &                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBindDescriptorSets2KHR( m_commandBuffer, reinterpret_cast<const VkBindDescriptorSetsInfoKHR *>( pBindDescriptorSetsInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindDescriptorSets2KHR( const VULKAN_HPP_NAMESPACE::BindDescriptorSetsInfoKHR & bindDescriptorSetsInfo,
+                                                                Dispatch const &                                        d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdBindDescriptorSets2KHR( m_commandBuffer, reinterpret_cast<const VkBindDescriptorSetsInfoKHR *>( &bindDescriptorSetsInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::pushConstants2KHR( const VULKAN_HPP_NAMESPACE::PushConstantsInfoKHR * pPushConstantsInfo,
+                                                           Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdPushConstants2KHR( m_commandBuffer, reinterpret_cast<const VkPushConstantsInfoKHR *>( pPushConstantsInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::pushConstants2KHR( const VULKAN_HPP_NAMESPACE::PushConstantsInfoKHR & pushConstantsInfo,
+                                                           Dispatch const &                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdPushConstants2KHR( m_commandBuffer, reinterpret_cast<const VkPushConstantsInfoKHR *>( &pushConstantsInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::pushDescriptorSet2KHR( const VULKAN_HPP_NAMESPACE::PushDescriptorSetInfoKHR * pPushDescriptorSetInfo,
+                                                               Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdPushDescriptorSet2KHR( m_commandBuffer, reinterpret_cast<const VkPushDescriptorSetInfoKHR *>( pPushDescriptorSetInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::pushDescriptorSet2KHR( const VULKAN_HPP_NAMESPACE::PushDescriptorSetInfoKHR & pushDescriptorSetInfo,
+                                                               Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdPushDescriptorSet2KHR( m_commandBuffer, reinterpret_cast<const VkPushDescriptorSetInfoKHR *>( &pushDescriptorSetInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::pushDescriptorSetWithTemplate2KHR( const VULKAN_HPP_NAMESPACE::PushDescriptorSetWithTemplateInfoKHR * pPushDescriptorSetWithTemplateInfo,
+                                                      Dispatch const &                                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdPushDescriptorSetWithTemplate2KHR( m_commandBuffer,
+                                              reinterpret_cast<const VkPushDescriptorSetWithTemplateInfoKHR *>( pPushDescriptorSetWithTemplateInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::pushDescriptorSetWithTemplate2KHR( const VULKAN_HPP_NAMESPACE::PushDescriptorSetWithTemplateInfoKHR & pushDescriptorSetWithTemplateInfo,
+                                                      Dispatch const &                                                   d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdPushDescriptorSetWithTemplate2KHR( m_commandBuffer,
+                                              reinterpret_cast<const VkPushDescriptorSetWithTemplateInfoKHR *>( &pushDescriptorSetWithTemplateInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setDescriptorBufferOffsets2EXT( const VULKAN_HPP_NAMESPACE::SetDescriptorBufferOffsetsInfoEXT * pSetDescriptorBufferOffsetsInfo,
+                                                   Dispatch const &                                                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDescriptorBufferOffsets2EXT( m_commandBuffer, reinterpret_cast<const VkSetDescriptorBufferOffsetsInfoEXT *>( pSetDescriptorBufferOffsetsInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setDescriptorBufferOffsets2EXT( const VULKAN_HPP_NAMESPACE::SetDescriptorBufferOffsetsInfoEXT & setDescriptorBufferOffsetsInfo,
+                                                   Dispatch const &                                                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdSetDescriptorBufferOffsets2EXT( m_commandBuffer, reinterpret_cast<const VkSetDescriptorBufferOffsetsInfoEXT *>( &setDescriptorBufferOffsetsInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindDescriptorBufferEmbeddedSamplers2EXT(
+    const VULKAN_HPP_NAMESPACE::BindDescriptorBufferEmbeddedSamplersInfoEXT * pBindDescriptorBufferEmbeddedSamplersInfo,
+    Dispatch const &                                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
+      m_commandBuffer, reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( pBindDescriptorBufferEmbeddedSamplersInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::bindDescriptorBufferEmbeddedSamplers2EXT(
+    const VULKAN_HPP_NAMESPACE::BindDescriptorBufferEmbeddedSamplersInfoEXT & bindDescriptorBufferEmbeddedSamplersInfo,
+    Dispatch const &                                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+
+    d.vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
+      m_commandBuffer, reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( &bindDescriptorBufferEmbeddedSamplersInfo ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

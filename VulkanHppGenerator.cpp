@@ -14907,6 +14907,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                                                         "VkIndirectCommandsLayoutTokenNV",
                                                         "VkPresentInfoKHR",
                                                         "VkSemaphoreWaitInfo",
+                                                        "VkSetDescriptorBufferOffsetsInfoEXT",
                                                         "VkSubmitInfo",
                                                         "VkSubpassDescription",
                                                         "VkSubpassDescription2",

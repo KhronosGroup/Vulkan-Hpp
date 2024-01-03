@@ -16302,9 +16302,9 @@ namespace VULKAN_HPP_NAMESPACE
         }
 #  elif defined( __APPLE__ )
         m_library = dlopen( "libvulkan.dylib", RTLD_NOW | RTLD_LOCAL );
-        if (m_library == nullptr)
+        if ( m_library == nullptr )
         {
-          m_library = dlopen("libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL);
+          m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
           m_library = ::LoadLibraryA( "vulkan-1.dll" );

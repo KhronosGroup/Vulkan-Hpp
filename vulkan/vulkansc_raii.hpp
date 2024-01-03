@@ -8,6 +8,7 @@
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
+#include <memory>   // std::unique_ptr
 #include <utility>  // std::exchange, std::forward
 #include <vulkan/vulkansc.hpp>
 

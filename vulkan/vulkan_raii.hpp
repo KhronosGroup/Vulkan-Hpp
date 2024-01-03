@@ -8,6 +8,7 @@
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
+#include <memory>   // std::unique_ptr
 #include <utility>  // std::exchange, std::forward
 #include <vulkan/vulkan.hpp>
 
@@ -35,7 +36,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
       using Type = VULKAN_HPP_EXPECTED<T, VULKAN_HPP_NAMESPACE::Result>;
 #  else
-      using Type                                                                    = T;
+      using Type                                                              = T;
 #  endif
     };
 

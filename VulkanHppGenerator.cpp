@@ -12948,11 +12948,11 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     {
       assert( requireData.depends.empty() );
       requireData.depends = attribute.second;
-      checkForError( std::none_of( extensionData.requireData.begin(),
-                                   extensionData.requireData.end(),
-                                   [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
-                     line,
-                     "required extension <" + requireData.depends + "> already listed" );
+      checkForWarning( std::none_of( extensionData.requireData.begin(),
+                                     extensionData.requireData.end(),
+                                     [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
+                       line,
+                       "required dependency <" + requireData.depends + "> already listed for extension <" + extensionData.name + ">" );
     }
   }
 

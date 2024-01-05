@@ -699,15 +699,15 @@ If you intend to use CMake's C++ module support (and possibly Ninja), then more 
 * CMake 3.28 or later
 * Ninja 1.10.2 or later
 
+> [!WARNING]
+> The Vulkan-Hpp C++ named module is still experimental. Some suggested ways to use it in your projects are below. The long-term goal is to submit patches to the CMake [`FindVulkan`](https://cmake.org/cmake/help/latest/module/FindVulkan.html) module so that users may transparently configure the named module, without needing to declare it as an additional library in consumer CMake code.
+
 ##### Usage with CMake
 
 CMake is recommended for use with the Vulkan-Hpp named module, as it provides a convenient platform-agnostic way to configure your project.
-CMake version 3.28 or later is required to support C++ modules.
+CMake version 3.28 or later is required to support C++ modules. Refer to the [CMake documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html) on the topic.
 
 CMake provides the [FindVulkan module](https://cmake.org/cmake/help/latest/module/FindVulkan.html), which may be used to source the Vulkan SDK and Vulkan headers on your system.
-
-> [!WARNING]
-> The Vulkan-Hpp C++ named module is still experimental. Some suggested ways to use it in your projects are below. The long-term goal is to submit patches to the CMake [`FindVulkan`](https://cmake.org/cmake/help/latest/module/FindVulkan.html) module so that users may transparently configure the named module, without needing to declare it as an additional library in consumer CMake code.
 
 ```cmake
 # find Vulkan SDK
@@ -717,8 +717,8 @@ find_package( Vulkan REQUIRED )
 add_library( VulkanHppModule )
 target_sources( VulkanHppModule PRIVATE
   FILE_SET CXX_MODULES
-  BASE_DIRS ${Vulkan_INCLUDE_DIR}/vulkan
-  FILES ${Vulkan_INCLUDE_DIR}/vulkan.cppm
+  BASE_DIRS ${Vulkan_INCLUDE_DIR}
+  FILES ${Vulkan_INCLUDE_DIR}/vulkan/vulkan.cppm
 )
 target_link_libraries( VulkanHppModule PUBLIC Vulkan::Vulkan )
 
@@ -748,7 +748,13 @@ target_compile_definitions( VulkanHppModule PUBLIC
 target_link_libraries( YourProject PRIVATE VulkanHppModule )
 ```
 
-Furthermore, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, include `<vulkan/vulkan_hpp_macros.hpp>`, a lightweight header providing all Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
+Furthermore, you may also prefer linking `VulkanHppModule` to just the `Vulkan::Headers` target with the `PUBLIC` scope instead of `Vulkan::Vulkan`, so that the `vulkan-1` library is not linked in, and the Vulkan headers are available to your consuming project, as detailed further below.
+
+```cmake
+target_link_libraries( VulkanHppModule PUBLIC Vulkan::Headers )
+```
+
+Finally, supply the macro `VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE` exactly once in your source code, just as in the non-module case. In order to have that macro available, include `<vulkan/vulkan_hpp_macros.hpp>`, a lightweight header providing all Vulkan-Hpp related macros and defines. And as explained above, you need to initialize that dispatcher in two or three steps:
 
 ```cpp
 import vulkan_hpp;

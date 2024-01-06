@@ -893,6 +893,11 @@ By defining ```VULKAN_HPP_NO_SMART_HANDLE``` before including vulkan.hpp, the he
 
 With C++20, the so-called spaceship-operator ```<=>``` is introduced. If that operator is supported, all the structs and classes in vulkan.hpp use the default implementation of it. As currently some implementations of this operator are very slow, and others seem to be incomplete, by defining ```VULKAN_HPP_NO_SPACESHIP_OPERATOR``` before including vulkan.hpp you can remove that operator from those structs and classes.
 
+#### VULKAN_HPP_NO_WIN32_PROTOTYPES
+
+By default, if ```VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL``` is enabled on Win32, ```vulkan.hpp``` declares ```HINSTANCE```, ```LoadLibraryA```, and other required symbols. It could cause conflicts with the ```Windows.h``` alternatives, such as ```WindowsHModular```.
+With this define, you can disable these declarations, but you will have to declare them before the ```vulkan.hpp``` is included.
+
 #### VULKAN_HPP_RAII_NO_EXCEPTIONS
 
 If both, VULKAN_HPP_NO_EXCEPTIONS and VULKAN_HPP_EXPECTED are defined, the vk::raii-classes don't throw exceptions. That is, the actual constructors are not available, but the creation-functions must be used. For more details have a look at the vk_raii_ProgrammingGuide.md.

@@ -1,4 +1,4 @@
-// Copyright 2015-2023 The Khronos Group Inc.
+// Copyright 2015-2024 The Khronos Group Inc.
 //
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 //
@@ -1422,12 +1422,6 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
-      { "VK_QCOM_render_pass_transform",
-        { { "VK_VERSION_1_0",
-            { {
-              "VK_KHR_swapchain",
-              "VK_KHR_surface",
-            } } } } },
       { "VK_EXT_depth_bias_control",
         { { "VK_VERSION_1_0",
             { {
@@ -1555,7 +1549,6 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_QCOM_rotated_copy_commands",
         { { "VK_VERSION_1_0",
             { {
-              "VK_KHR_swapchain",
               "VK_KHR_copy_commands2",
             } } } } },
       { "VK_EXT_image_robustness",
@@ -2062,7 +2055,7 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
-      { "VK_KHR_maintenance6", { { "VK_VERSION_1_0", { {} } } } },
+      { "VK_KHR_maintenance6", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } }
     };
     auto depIt = dependencies.find( extension );

@@ -718,7 +718,7 @@ private:
   std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
   std::string generateFormatTraits() const;
-  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const;
+  std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;
   std::string generateHandleDependencies( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;

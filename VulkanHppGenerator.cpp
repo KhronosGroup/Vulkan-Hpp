@@ -3460,6 +3460,9 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   ${nodiscard}VULKAN_HPP_INLINE ${decoratedReturnType} ${className}${classSeparator}${commandName}( ${argumentList} )${const}${noexcept}
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#if (VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+${functionPointerCheck}
+#endif
 ${vectorSizeCheck}
     ${dataSizeChecks}
     ${dataDeclarations}
@@ -3482,6 +3485,7 @@ ${vectorSizeCheck}
                              { "dataPreparation", dataPreparation },
                              { "dataSizeChecks", dataSizeChecks },
                              { "decoratedReturnType", decoratedReturnType },
+                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy, false ) },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
@@ -7507,7 +7511,7 @@ ${widthDivisorCases}
                            { "texelsPerBlockCases", texelsPerBlockCases } } );
 }
 
-std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy ) const
+std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const
 {
   std::string functionPointerCheck;
   if ( !requiredBy.empty() )
@@ -7518,7 +7522,7 @@ std::string VulkanHppGenerator::generateFunctionPointerCheck( std::string const 
       message += " or <" + *it + ">";
     }
 
-    functionPointerCheck = "VULKAN_HPP_ASSERT( getDispatcher()->" + function + " && \"" + message + "\" );";
+    functionPointerCheck = std::string( "VULKAN_HPP_ASSERT( " ) + ( raii ? "getDispatcher()->" : "d." ) + function + " && \"" + message + "\" );";
   }
   return functionPointerCheck;
 }
@@ -8672,7 +8676,7 @@ ${vectorSizeCheck}
                              { "dataDeclarations", dataDeclarations },
                              { "dataPreparation", dataPreparation },
                              { "dataSizeChecks", dataSizeChecks },
-                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy ) },
+                             { "functionPointerCheck", generateFunctionPointerCheck( name, commandData.requiredBy, true ) },
                              { "nodiscard", nodiscard },
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },

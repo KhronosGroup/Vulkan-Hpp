@@ -11435,27 +11435,17 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
         {
           extendedElementType = "UniqueHandle<" + elementType + ", Dispatch>";
         }
-        std::string index = std::to_string( i );
-        if ( definition )
+        elementType = startUpperCase( stripPrefix( elementType, "VULKAN_HPP_NAMESPACE::" ) );
+        if ( !enableIf.empty() )
         {
-          typenameCheck += ", typename B" + index;
+          enableIf += " && ";
         }
-        else
-        {
-          typenameCheck += ", typename B" + index + " = " + startUpperCase( stripPrefix( elementType, "VULKAN_HPP_NAMESPACE::" ) ) + "Allocator";
-        }
-        enableIf += enableIf.empty() ? ", typename std::enable_if<" : " && ";
-        enableIf += "std::is_same<typename B" + index + "::value_type, " + extendedElementType + ">::value";
+        enableIf += "std::is_same<typename " + elementType + "Allocator::value_type, " + extendedElementType + " > ::value ";
       }
     }
-    assert( !typenameCheck.empty() );
-    if ( !typenameCheck.empty() )
+    if ( !enableIf.empty() )
     {
-      typenameCheck += enableIf + ", int>::type";
-      if ( !definition )
-      {
-        typenameCheck += " = 0";
-      }
+      typenameCheck = ", typename std::enable_if<" + enableIf + ", int>::type" + ( definition ? "" : " = 0" );
     }
   }
   return typenameCheck;

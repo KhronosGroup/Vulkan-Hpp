@@ -35,7 +35,7 @@
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL == 1
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
 #    include <dlfcn.h>
-#  elif defined( _WIN32 )
+#  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
 typedef struct HINSTANCE__ * HINSTANCE;
 #    if defined( _WIN64 )
 typedef int64_t( __stdcall * FARPROC )();
@@ -16307,7 +16307,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

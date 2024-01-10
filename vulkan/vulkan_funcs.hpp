@@ -136,8 +136,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PhysicalDeviceAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDevice>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PhysicalDeviceAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDevice>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDevice, PhysicalDeviceAllocator>>::type
                        Instance::enumeratePhysicalDevices( PhysicalDeviceAllocator & physicalDeviceAllocator, Dispatch const & d ) const
   {
@@ -328,10 +327,10 @@ namespace VULKAN_HPP_NAMESPACE
     return queueFamilyProperties;
   }
 
-  template <typename QueueFamilyPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties>::value, int>::type>
+  template <
+    typename QueueFamilyPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename QueueFamilyPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties, QueueFamilyPropertiesAllocator>
     PhysicalDevice::getQueueFamilyProperties( QueueFamilyPropertiesAllocator & queueFamilyPropertiesAllocator, Dispatch const & d ) const
   {
@@ -549,10 +548,10 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename ExtensionPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type>
+  template <
+    typename ExtensionPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties, ExtensionPropertiesAllocator>>::type
                        enumerateInstanceExtensionProperties( Optional<const std::string>    layerName,
                                                              ExtensionPropertiesAllocator & extensionPropertiesAllocator,
@@ -631,10 +630,10 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename ExtensionPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type>
+  template <
+    typename ExtensionPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties, ExtensionPropertiesAllocator>>::type
                        PhysicalDevice::enumerateDeviceExtensionProperties( Optional<const std::string>    layerName,
                                                         ExtensionPropertiesAllocator & extensionPropertiesAllocator,
@@ -712,8 +711,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename LayerPropertiesAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type>
+            typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::LayerProperties, LayerPropertiesAllocator>>::type
                        enumerateInstanceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d )
   {
@@ -788,8 +786,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename LayerPropertiesAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type>
+            typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::LayerProperties, LayerPropertiesAllocator>>::type
                        PhysicalDevice::enumerateDeviceLayerProperties( LayerPropertiesAllocator & layerPropertiesAllocator, Dispatch const & d ) const
   {
@@ -1319,8 +1316,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SparseImageMemoryRequirementsAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename SparseImageMemoryRequirementsAllocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements, SparseImageMemoryRequirementsAllocator>
                                          Device::getImageSparseMemoryRequirements( VULKAN_HPP_NAMESPACE::Image              image,
                                               SparseImageMemoryRequirementsAllocator & sparseImageMemoryRequirementsAllocator,
@@ -1415,10 +1413,11 @@ namespace VULKAN_HPP_NAMESPACE
     return properties;
   }
 
-  template <typename SparseImageFormatPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>::value, int>::type>
+  template <
+    typename SparseImageFormatPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename SparseImageFormatPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties, SparseImageFormatPropertiesAllocator>
                                          PhysicalDevice::getSparseImageFormatProperties( VULKAN_HPP_NAMESPACE::Format              format,
                                                     VULKAN_HPP_NAMESPACE::ImageType           type,
@@ -2933,8 +2932,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
     Device::getPipelineCacheData( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
   {
@@ -3045,8 +3043,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache                                                              pipelineCache,
                                      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -3136,10 +3133,10 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
   }
 
-  template <typename Dispatch,
-            typename PipelineAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename PipelineAllocator,
+    typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                                          Device::createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                                              pipelineCache,
                                            VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -3252,8 +3249,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache                                                             pipelineCache,
                                     VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -3343,10 +3339,10 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
   }
 
-  template <typename Dispatch,
-            typename PipelineAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename PipelineAllocator,
+    typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                                          Device::createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                                             pipelineCache,
                                           VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -3975,8 +3971,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename DescriptorSetAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::DescriptorSet>::value, int>::type>
+            typename std::enable_if<std::is_same<typename DescriptorSetAllocator::value_type, VULKAN_HPP_NAMESPACE::DescriptorSet>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator>>::type
                        Device::allocateDescriptorSets( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
                                     DescriptorSetAllocator &                                descriptorSetAllocator,
@@ -4020,10 +4015,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, std::move( uniqueDescriptorSets ) );
   }
 
-  template <typename Dispatch,
-            typename DescriptorSetAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename DescriptorSetAllocator,
+    typename std::enable_if<std::is_same<typename DescriptorSetAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
     Device::allocateDescriptorSetsUnique( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
@@ -4565,8 +4561,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename CommandBufferAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::CommandBuffer>::value, int>::type>
+            typename std::enable_if<std::is_same<typename CommandBufferAllocator::value_type, VULKAN_HPP_NAMESPACE::CommandBuffer>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator>>::type
                        Device::allocateCommandBuffers( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
                                     CommandBufferAllocator &                                commandBufferAllocator,
@@ -4610,10 +4605,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, std::move( uniqueCommandBuffers ) );
   }
 
-  template <typename Dispatch,
-            typename CommandBufferAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename CommandBufferAllocator,
+    typename std::enable_if<std::is_same<typename CommandBufferAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
     Device::allocateCommandBuffersUnique( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
@@ -5898,8 +5894,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PhysicalDeviceGroupPropertiesAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
     Instance::enumeratePhysicalDeviceGroups( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator, Dispatch const & d ) const
@@ -6072,8 +6069,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SparseImageMemoryRequirements2Allocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
                                          Device::getImageSparseMemoryRequirements2( const VULKAN_HPP_NAMESPACE::ImageSparseMemoryRequirementsInfo2 & info,
                                                SparseImageMemoryRequirements2Allocator &                        sparseImageMemoryRequirements2Allocator,
@@ -6325,10 +6323,10 @@ namespace VULKAN_HPP_NAMESPACE
     return queueFamilyProperties;
   }
 
-  template <typename QueueFamilyProperties2Allocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>::value, int>::type>
+  template <
+    typename QueueFamilyProperties2Allocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2, QueueFamilyProperties2Allocator>
     PhysicalDevice::getQueueFamilyProperties2( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator, Dispatch const & d ) const
   {
@@ -6391,8 +6389,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename StructureChain,
             typename StructureChainAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, StructureChain>::value, int>::type>
+            typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator>
     PhysicalDevice::getQueueFamilyProperties2( StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
   {
@@ -6514,10 +6511,11 @@ namespace VULKAN_HPP_NAMESPACE
     return properties;
   }
 
-  template <typename SparseImageFormatProperties2Allocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>::value, int>::type>
+  template <
+    typename SparseImageFormatProperties2Allocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
     PhysicalDevice::getSparseImageFormatProperties2( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
                                                      SparseImageFormatProperties2Allocator &                            sparseImageFormatProperties2Allocator,
@@ -7392,10 +7390,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, toolProperties );
   }
 
-  template <typename PhysicalDeviceToolPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>::value, int>::type>
+  template <
+    typename PhysicalDeviceToolPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
     PhysicalDevice::getToolProperties( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
@@ -8241,8 +8240,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SparseImageMemoryRequirements2Allocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
                                          Device::getImageSparseMemoryRequirements( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirements & info,
                                               SparseImageMemoryRequirements2Allocator &                   sparseImageMemoryRequirements2Allocator,
@@ -8433,8 +8433,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SurfaceFormatKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename SurfaceFormatKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR, SurfaceFormatKHRAllocator>>::type
                        PhysicalDevice::getSurfaceFormatsKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
                                           SurfaceFormatKHRAllocator &      surfaceFormatKHRAllocator,
@@ -8515,8 +8514,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PresentModeKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PresentModeKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PresentModeKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PresentModeKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR, PresentModeKHRAllocator>>::type
                        PhysicalDevice::getSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface,
                                                PresentModeKHRAllocator &        presentModeKHRAllocator,
@@ -8713,8 +8711,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename ImageAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::Image>::value, int>::type>
+            typename std::enable_if<std::is_same<typename ImageAllocator::value_type, VULKAN_HPP_NAMESPACE::Image>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::Image, ImageAllocator>>::type
                        Device::getSwapchainImagesKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, ImageAllocator & imageAllocator, Dispatch const & d ) const
   {
@@ -8920,8 +8917,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Rect2DAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::Rect2D>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Rect2DAllocator::value_type, VULKAN_HPP_NAMESPACE::Rect2D>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::Rect2D, Rect2DAllocator>>::type
     PhysicalDevice::getPresentRectanglesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface, Rect2DAllocator & rect2DAllocator, Dispatch const & d ) const
   {
@@ -9032,10 +9028,10 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename DisplayPropertiesKHRAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>::value, int>::type>
+  template <
+    typename DisplayPropertiesKHRAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename DisplayPropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR, DisplayPropertiesKHRAllocator>>::type
                        PhysicalDevice::getDisplayPropertiesKHR( DisplayPropertiesKHRAllocator & displayPropertiesKHRAllocator, Dispatch const & d ) const
   {
@@ -9110,10 +9106,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename DisplayPlanePropertiesKHRAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>::value, int>::type>
+  template <
+    typename DisplayPlanePropertiesKHRAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename DisplayPlanePropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR, DisplayPlanePropertiesKHRAllocator>>::type
     PhysicalDevice::getDisplayPlanePropertiesKHR( DisplayPlanePropertiesKHRAllocator & displayPlanePropertiesKHRAllocator, Dispatch const & d ) const
@@ -9191,8 +9188,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename DisplayKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename DisplayKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayKHR, DisplayKHRAllocator>>::type
     PhysicalDevice::getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex, DisplayKHRAllocator & displayKHRAllocator, Dispatch const & d ) const
   {
@@ -9271,8 +9267,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename DisplayModePropertiesKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename DisplayModePropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR, DisplayModePropertiesKHRAllocator>>::type
     PhysicalDevice::getDisplayModePropertiesKHR( VULKAN_HPP_NAMESPACE::DisplayKHR    display,
@@ -9512,8 +9508,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SwapchainKHRAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::SwapchainKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename SwapchainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SwapchainKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator>>::type
     Device::createSharedSwapchainsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                    allocator,
@@ -9593,8 +9588,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Dispatch,
             typename SwapchainKHRAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>::value, int>::type>
+            typename std::enable_if<std::is_same<typename SwapchainKHRAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
     Device::createSharedSwapchainsKHRUnique( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
@@ -10445,8 +10440,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename VideoFormatPropertiesKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename VideoFormatPropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoFormatPropertiesKHR, VideoFormatPropertiesKHRAllocator>>::type
     PhysicalDevice::getVideoFormatPropertiesKHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoFormatInfoKHR & videoFormatInfo,
@@ -10655,8 +10650,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename VideoSessionMemoryRequirementsKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename VideoSessionMemoryRequirementsKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::VideoSessionMemoryRequirementsKHR, VideoSessionMemoryRequirementsKHRAllocator>>::type
     Device::getVideoSessionMemoryRequirementsKHR( VULKAN_HPP_NAMESPACE::VideoSessionKHR        videoSession,
@@ -11570,8 +11566,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
                        Device::getShaderInfoAMD( VULKAN_HPP_NAMESPACE::Pipeline            pipeline,
                               VULKAN_HPP_NAMESPACE::ShaderStageFlagBits shaderStage,
@@ -12032,10 +12027,10 @@ namespace VULKAN_HPP_NAMESPACE
     return queueFamilyProperties;
   }
 
-  template <typename QueueFamilyProperties2Allocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>::value, int>::type>
+  template <
+    typename QueueFamilyProperties2Allocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2, QueueFamilyProperties2Allocator>
     PhysicalDevice::getQueueFamilyProperties2KHR( QueueFamilyProperties2Allocator & queueFamilyProperties2Allocator, Dispatch const & d ) const
   {
@@ -12098,8 +12093,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename StructureChain,
             typename StructureChainAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, StructureChain>::value, int>::type>
+            typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<StructureChain, StructureChainAllocator>
     PhysicalDevice::getQueueFamilyProperties2KHR( StructureChainAllocator & structureChainAllocator, Dispatch const & d ) const
   {
@@ -12222,10 +12216,11 @@ namespace VULKAN_HPP_NAMESPACE
     return properties;
   }
 
-  template <typename SparseImageFormatProperties2Allocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>::value, int>::type>
+  template <
+    typename SparseImageFormatProperties2Allocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename SparseImageFormatProperties2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageFormatProperties2, SparseImageFormatProperties2Allocator>
     PhysicalDevice::getSparseImageFormatProperties2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseImageFormatInfo2 & formatInfo,
                                                         SparseImageFormatProperties2Allocator & sparseImageFormatProperties2Allocator,
@@ -12435,8 +12430,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PhysicalDeviceGroupPropertiesAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
     Instance::enumeratePhysicalDeviceGroupsKHR( PhysicalDeviceGroupPropertiesAllocator & physicalDeviceGroupPropertiesAllocator, Dispatch const & d ) const
@@ -13458,10 +13454,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, presentationTimings );
   }
 
-  template <typename PastPresentationTimingGOOGLEAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE>::value, int>::type>
+  template <
+    typename PastPresentationTimingGOOGLEAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename PastPresentationTimingGOOGLEAllocator::value_type, VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PastPresentationTimingGOOGLE, PastPresentationTimingGOOGLEAllocator>>::type
     Device::getPastPresentationTimingGOOGLE( VULKAN_HPP_NAMESPACE::SwapchainKHR      swapchain,
@@ -13970,11 +13967,10 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename PerformanceCounterKHRAllocator,
             typename PerformanceCounterDescriptionKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename B2,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>::value &&
-                                      std::is_same<typename B2::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>::value,
-                                    int>::type>
+            typename std::enable_if<
+              std::is_same<typename PerformanceCounterKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>::value &&
+                std::is_same<typename PerformanceCounterDescriptionKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
                                        std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>>::type
@@ -14196,8 +14192,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SurfaceFormat2KHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename SurfaceFormat2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR, SurfaceFormat2KHRAllocator>>::type
                        PhysicalDevice::getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                                            SurfaceFormat2KHRAllocator &                                surfaceFormat2KHRAllocator,
@@ -14284,8 +14279,7 @@ namespace VULKAN_HPP_NAMESPACE
   template <typename StructureChain,
             typename StructureChainAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, StructureChain>::value, int>::type>
+            typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
                        PhysicalDevice::getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                                            StructureChainAllocator &                                   structureChainAllocator,
@@ -14380,10 +14374,10 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename DisplayProperties2KHRAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>::value, int>::type>
+  template <
+    typename DisplayProperties2KHRAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename DisplayProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR, DisplayProperties2KHRAllocator>>::type
     PhysicalDevice::getDisplayProperties2KHR( DisplayProperties2KHRAllocator & displayProperties2KHRAllocator, Dispatch const & d ) const
@@ -14461,10 +14455,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename DisplayPlaneProperties2KHRAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>::value, int>::type>
+  template <
+    typename DisplayPlaneProperties2KHRAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename DisplayPlaneProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR, DisplayPlaneProperties2KHRAllocator>>::type
     PhysicalDevice::getDisplayPlaneProperties2KHR( DisplayPlaneProperties2KHRAllocator & displayPlaneProperties2KHRAllocator, Dispatch const & d ) const
@@ -14543,10 +14538,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, properties );
   }
 
-  template <typename DisplayModeProperties2KHRAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>::value, int>::type>
+  template <
+    typename DisplayModeProperties2KHRAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename DisplayModeProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR, DisplayModeProperties2KHRAllocator>>::type
     PhysicalDevice::getDisplayModeProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayKHR     display,
@@ -15191,8 +15187,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>> Device::createExecutionGraphPipelinesAMDX(
     VULKAN_HPP_NAMESPACE::PipelineCache                                                                        pipelineCache,
     VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ExecutionGraphPipelineCreateInfoAMDX> const & createInfos,
@@ -15283,10 +15278,10 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
   }
 
-  template <typename Dispatch,
-            typename PipelineAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename PipelineAllocator,
+    typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                                          Device::createExecutionGraphPipelinesAMDXUnique(
       VULKAN_HPP_NAMESPACE::PipelineCache                                                                        pipelineCache,
@@ -15676,8 +15671,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SparseImageMemoryRequirements2Allocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
                                          Device::getImageSparseMemoryRequirements2KHR( const VULKAN_HPP_NAMESPACE::ImageSparseMemoryRequirementsInfo2 & info,
                                                   SparseImageMemoryRequirements2Allocator &                        sparseImageMemoryRequirements2Allocator,
@@ -16489,8 +16485,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesKHR( VULKAN_HPP_NAMESPACE::DeferredOperationKHR deferredOperation,
                                           VULKAN_HPP_NAMESPACE::PipelineCache        pipelineCache,
@@ -16596,10 +16591,10 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
   }
 
-  template <typename Dispatch,
-            typename PipelineAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename PipelineAllocator,
+    typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                                          Device::createRayTracingPipelinesKHRUnique(
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR                                                            deferredOperation,
@@ -17219,8 +17214,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
     Device::getValidationCacheDataEXT( VULKAN_HPP_NAMESPACE::ValidationCacheEXT validationCache, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
   {
@@ -17673,8 +17667,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                                          Device::createRayTracingPipelinesNV( VULKAN_HPP_NAMESPACE::PipelineCache                                                                  pipelineCache,
                                          VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
@@ -17764,10 +17757,10 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
   }
 
-  template <typename Dispatch,
-            typename PipelineAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename PipelineAllocator,
+    typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                                          Device::createRayTracingPipelinesNVUnique( VULKAN_HPP_NAMESPACE::PipelineCache pipelineCache,
                                                VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::RayTracingPipelineCreateInfoNV> const & createInfos,
@@ -18196,8 +18189,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename TimeDomainKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
                        PhysicalDevice::getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
   {
@@ -18267,8 +18259,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint64_tAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, uint64_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint64_tAllocator::value_type, uint64_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
     Device::getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
                                         Uint64_tAllocator &                                                                              uint64_tAllocator,
@@ -18464,8 +18455,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename CheckpointDataNVAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::CheckpointDataNV>::value, int>::type>
+            typename std::enable_if<std::is_same<typename CheckpointDataNVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointDataNV>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointDataNV, CheckpointDataNVAllocator>
                                          Queue::getCheckpointDataNV( CheckpointDataNVAllocator & checkpointDataNVAllocator, Dispatch const & d ) const
   {
@@ -19047,8 +19037,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PhysicalDeviceFragmentShadingRateKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PhysicalDeviceFragmentShadingRateKHRAllocator::value_type,
+                                                 VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR, PhysicalDeviceFragmentShadingRateKHRAllocator>>::type
     PhysicalDevice::getFragmentShadingRatesKHR( PhysicalDeviceFragmentShadingRateKHRAllocator & physicalDeviceFragmentShadingRateKHRAllocator,
@@ -19184,10 +19175,11 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, toolProperties );
   }
 
-  template <typename PhysicalDeviceToolPropertiesAllocator,
-            typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>::value, int>::type>
+  template <
+    typename PhysicalDeviceToolPropertiesAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>::value,
+                            int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
     PhysicalDevice::getToolPropertiesEXT( PhysicalDeviceToolPropertiesAllocator & physicalDeviceToolPropertiesAllocator, Dispatch const & d ) const
@@ -19301,8 +19293,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename CooperativeMatrixPropertiesNVAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename CooperativeMatrixPropertiesNVAllocator::value_type, VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesNV, CooperativeMatrixPropertiesNVAllocator>>::type
     PhysicalDevice::getCooperativeMatrixPropertiesNV( CooperativeMatrixPropertiesNVAllocator & cooperativeMatrixPropertiesNVAllocator,
@@ -19386,8 +19379,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename FramebufferMixedSamplesCombinationNVAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV>::value, int>::type>
+            typename std::enable_if<std::is_same<typename FramebufferMixedSamplesCombinationNVAllocator::value_type,
+                                                 VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::FramebufferMixedSamplesCombinationNV, FramebufferMixedSamplesCombinationNVAllocator>>::type
     PhysicalDevice::getSupportedFramebufferMixedSamplesCombinationsNV(
@@ -19480,8 +19474,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PresentModeKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PresentModeKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PresentModeKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PresentModeKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR, PresentModeKHRAllocator>>::type
                        PhysicalDevice::getSurfacePresentModes2EXT( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                                                 PresentModeKHRAllocator &                                   presentModeKHRAllocator,
@@ -20180,8 +20173,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineExecutablePropertiesKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename PipelineExecutablePropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutablePropertiesKHR, PipelineExecutablePropertiesKHRAllocator>>::type
     Device::getPipelineExecutablePropertiesKHR( const VULKAN_HPP_NAMESPACE::PipelineInfoKHR & pipelineInfo,
@@ -20276,8 +20270,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineExecutableStatisticKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename PipelineExecutableStatisticKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableStatisticKHR, PipelineExecutableStatisticKHRAllocator>>::type
     Device::getPipelineExecutableStatisticsKHR( const VULKAN_HPP_NAMESPACE::PipelineExecutableInfoKHR & executableInfo,
@@ -20374,8 +20369,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename PipelineExecutableInternalRepresentationKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename PipelineExecutableInternalRepresentationKHRAllocator::value_type,
+                                                 VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR>::value,
+                                    int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<
     std::vector<VULKAN_HPP_NAMESPACE::PipelineExecutableInternalRepresentationKHR, PipelineExecutableInternalRepresentationKHRAllocator>>::type
     Device::getPipelineExecutableInternalRepresentationsKHR(
@@ -21271,8 +21267,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B2,
-            typename std::enable_if<std::is_same<typename B2::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersFeedbackInfoKHR, std::vector<uint8_t, Uint8_tAllocator>>>::type
     Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
@@ -21360,8 +21355,7 @@ namespace VULKAN_HPP_NAMESPACE
             typename... Z,
             typename Uint8_tAllocator,
             typename Dispatch,
-            typename B2,
-            typename std::enable_if<std::is_same<typename B2::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>, std::vector<uint8_t, Uint8_tAllocator>>>::type
     Device::getEncodedVideoSessionParametersKHR( const VULKAN_HPP_NAMESPACE::VideoEncodeSessionParametersGetInfoKHR & videoSessionParametersInfo,
@@ -21536,8 +21530,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
                        Device::getCudaModuleCacheNV( VULKAN_HPP_NAMESPACE::CudaModuleNV module, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
   {
@@ -21983,8 +21976,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename CheckpointData2NVAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type>
+            typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
                                          Queue::getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d ) const
   {
@@ -24148,8 +24140,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename SparseImageMemoryRequirements2Allocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
                                          Device::getImageSparseMemoryRequirementsKHR( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirements & info,
                                                  SparseImageMemoryRequirements2Allocator &                   sparseImageMemoryRequirements2Allocator,
@@ -24920,8 +24913,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename OpticalFlowImageFormatPropertiesNVAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename OpticalFlowImageFormatPropertiesNVAllocator::value_type, VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatPropertiesNV, OpticalFlowImageFormatPropertiesNVAllocator>>::type
     PhysicalDevice::getOpticalFlowImageFormatsNV( const VULKAN_HPP_NAMESPACE::OpticalFlowImageFormatInfoNV & opticalFlowImageFormatInfo,
@@ -25334,8 +25328,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename ShaderEXTAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, VULKAN_HPP_NAMESPACE::ShaderEXT>::value, int>::type>
+            typename std::enable_if<std::is_same<typename ShaderEXTAllocator::value_type, VULKAN_HPP_NAMESPACE::ShaderEXT>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>::type
                        Device::createShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                 allocator,
@@ -25413,10 +25406,10 @@ namespace VULKAN_HPP_NAMESPACE
     return createResultValueType( result, std::move( uniqueShaders ) );
   }
 
-  template <typename Dispatch,
-            typename ShaderEXTAllocator,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>::value, int>::type>
+  template <
+    typename Dispatch,
+    typename ShaderEXTAllocator,
+    typename std::enable_if<std::is_same<typename ShaderEXTAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>::type
     Device::createShadersEXTUnique( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
@@ -25567,8 +25560,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint8_tAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, uint8_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint8_tAllocator::value_type, uint8_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<uint8_t, Uint8_tAllocator>>::type
                        Device::getShaderBinaryDataEXT( VULKAN_HPP_NAMESPACE::ShaderEXT shader, Uint8_tAllocator & uint8_tAllocator, Dispatch const & d ) const
   {
@@ -25685,8 +25677,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename TilePropertiesQCOMAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::TilePropertiesQCOM>::value, int>::type>
+            typename std::enable_if<std::is_same<typename TilePropertiesQCOMAllocator::value_type, VULKAN_HPP_NAMESPACE::TilePropertiesQCOM>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TilePropertiesQCOM, TilePropertiesQCOMAllocator>>::type
                        Device::getFramebufferTilePropertiesQCOM( VULKAN_HPP_NAMESPACE::Framebuffer framebuffer,
                                               TilePropertiesQCOMAllocator &     tilePropertiesQCOMAllocator,
@@ -25927,8 +25918,9 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename CooperativeMatrixPropertiesKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR>::value, int>::type>
+            typename std::enable_if<
+              std::is_same<typename CooperativeMatrixPropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR>::value,
+              int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
     typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixPropertiesKHR, CooperativeMatrixPropertiesKHRAllocator>>::type
     PhysicalDevice::getCooperativeMatrixPropertiesKHR( CooperativeMatrixPropertiesKHRAllocator & cooperativeMatrixPropertiesKHRAllocator,
@@ -26071,8 +26063,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename TimeDomainKHRAllocator,
             typename Dispatch,
-            typename B1,
-            typename std::enable_if<std::is_same<typename B1::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type>
+            typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
                        PhysicalDevice::getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d ) const
   {
@@ -26142,8 +26133,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <typename Uint64_tAllocator,
             typename Dispatch,
-            typename B0,
-            typename std::enable_if<std::is_same<typename B0::value_type, uint64_t>::value, int>::type>
+            typename std::enable_if<std::is_same<typename Uint64_tAllocator::value_type, uint64_t>::value, int>::type>
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
     Device::getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
                                         Uint64_tAllocator &                                                                              uint64_tAllocator,

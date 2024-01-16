@@ -64,11 +64,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::DescriptorPool     descriptorPool( device, descriptorPoolCreateInfo );
 
     // allocate a descriptor set
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( *descriptorPool, *descriptorSetLayout );
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo( descriptorPool, *descriptorSetLayout );
     vk::raii::DescriptorSet       descriptorSet = std::move( vk::raii::DescriptorSets( device, descriptorSetAllocateInfo ).front() );
 
-    vk::DescriptorBufferInfo descriptorBufferInfo( *uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
-    vk::WriteDescriptorSet   writeDescriptorSet( *descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
+    vk::DescriptorBufferInfo descriptorBufferInfo( uniformBufferData.buffer, 0, sizeof( glm::mat4x4 ) );
+    vk::WriteDescriptorSet   writeDescriptorSet( descriptorSet, 0, 0, vk::DescriptorType::eUniformBuffer, {}, descriptorBufferInfo );
     device.updateDescriptorSets( writeDescriptorSet, nullptr );
 
     /* VULKAN_HPP_KEY_END */

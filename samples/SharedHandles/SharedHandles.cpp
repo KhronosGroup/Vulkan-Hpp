@@ -15,6 +15,8 @@
 // VulkanHpp Samples : SharedHandles
 //                     Draw a textured cube using shared handles for resource management and correct order of destruction
 
+#define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+
 #include "../utils/geometries.hpp"
 #include "../utils/math.hpp"
 #include "../utils/shaders.hpp"
@@ -34,9 +36,16 @@ std::vector<vk::SharedFramebuffer> makeSharedFramebuffers( const vk::SharedDevic
                                                            const vk::SharedImageView &        depthImageView,
                                                            const vk::Extent2D &               extent )
 {
+  // show the simplified usage with VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST defined
+#if defined( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+  auto                               renderPassHandle = renderPass.get();  // lvalue reference is required for the capture below
+  std::vector<vk::SharedFramebuffer> sharedFramebuffers;
+  std::vector<vk::Framebuffer>       framebuffers = vk::su::createFramebuffers( device, renderPassHandle, imageViews, depthImageView, extent );
+#else
   auto                               renderPassHandle = renderPass.get();  // lvalue reference is required for the capture below
   std::vector<vk::SharedFramebuffer> sharedFramebuffers;
   std::vector<vk::Framebuffer>       framebuffers = vk::su::createFramebuffers( device.get(), renderPassHandle, imageViews, depthImageView.get(), extent );
+#endif
   sharedFramebuffers.reserve( framebuffers.size() );
   for ( auto & framebuffer : framebuffers )
   {
@@ -74,7 +83,7 @@ public:
   void createDeviceAndSwapChain( const vk::su::WindowData & window )
   {
     VkSurfaceKHR surface;
-    VkResult err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
+    VkResult     err = glfwCreateWindowSurface( static_cast<VkInstance>( instance.get() ), window.handle, nullptr, &surface );
     if ( err != VK_SUCCESS )
       throw std::runtime_error( "Failed to create window!" );
     vk::SharedSurfaceKHR sharedSurface{ surface, instance };
@@ -114,7 +123,6 @@ public:
       vk::SharedCommandPool{ device->createCommandPool( { vk::CommandPoolCreateFlagBits::eResetCommandBuffer, graphicsAndPresentQueueFamilyIndex.first } ),
                              device };
     graphicsQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.first, 0 ), device };
-
 
     presentQueue = vk::SharedQueue{ device->getQueue( graphicsAndPresentQueueFamilyIndex.second, 0 ), device };
 

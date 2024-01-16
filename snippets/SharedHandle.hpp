@@ -69,7 +69,10 @@ class ReferenceCounter
 {
 public:
   template <typename... Args>
-  ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... ){}
+  ReferenceCounter( Args &&... control_args ) : m_header( std::forward<Args>( control_args )... )
+  {
+  }
+
   ReferenceCounter( const ReferenceCounter & )             = delete;
   ReferenceCounter & operator=( const ReferenceCounter & ) = delete;
 
@@ -162,6 +165,13 @@ public:
   {
     return bool( m_handle );
   }
+
+#if defined( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+  operator HandleType() const VULKAN_HPP_NOEXCEPT
+  {
+    return m_handle;
+  }
+#endif
 
   const HandleType * operator->() const VULKAN_HPP_NOEXCEPT
   {

@@ -47,7 +47,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // determine a queueFamilyIndex that suports present
     // first check if the graphicsQueueFamiliyIndex is good enough
-    uint32_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, *surface )
+    uint32_t presentQueueFamilyIndex = physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface )
                                        ? graphicsQueueFamilyIndex
                                        : vk::su::checked_cast<uint32_t>( queueFamilyProperties.size() );
     if ( presentQueueFamilyIndex == queueFamilyProperties.size() )
@@ -57,7 +57,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
       {
         if ( ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics ) &&
-             physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), *surface ) )
+             physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), surface ) )
         {
           graphicsQueueFamilyIndex = vk::su::checked_cast<uint32_t>( i );
           presentQueueFamilyIndex  = graphicsQueueFamilyIndex;
@@ -70,7 +70,7 @@ int main( int /*argc*/, char ** /*argv*/ )
         // family index that supports present
         for ( size_t i = 0; i < queueFamilyProperties.size(); i++ )
         {
-          if ( physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), *surface ) )
+          if ( physicalDevice.getSurfaceSupportKHR( vk::su::checked_cast<uint32_t>( i ), surface ) )
           {
             presentQueueFamilyIndex = vk::su::checked_cast<uint32_t>( i );
             break;
@@ -87,11 +87,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsQueueFamilyIndex, vk::su::getDeviceExtensions() );
 
     // get the supported VkFormats
-    std::vector<vk::SurfaceFormatKHR> formats = physicalDevice.getSurfaceFormatsKHR( *surface );
+    std::vector<vk::SurfaceFormatKHR> formats = physicalDevice.getSurfaceFormatsKHR( surface );
     assert( !formats.empty() );
     vk::Format format = ( formats[0].format == vk::Format::eUndefined ) ? vk::Format::eB8G8R8A8Unorm : formats[0].format;
 
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( *surface );
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
     vk::Extent2D               swapchainExtent;
     if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
     {
@@ -119,7 +119,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                                                          : vk::CompositeAlphaFlagBitsKHR::eOpaque;
 
     vk::SwapchainCreateInfoKHR swapChainCreateInfo( vk::SwapchainCreateFlagsKHR(),
-                                                    *surface,
+                                                    surface,
                                                     vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                     format,
                                                     vk::ColorSpaceKHR::eSrgbNonlinear,

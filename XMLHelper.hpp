@@ -274,7 +274,7 @@ inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContai
   return childElements;
 }
 
-inline bool isHexNumber(std::string const& name)
+inline bool isHexNumber( std::string const & name )
 {
   return name.starts_with( "0x" ) && ( name.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
 }

@@ -87,9 +87,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, typeIndex );
     vk::raii::DeviceMemory depthMemory( device, memoryAllocateInfo );
-    depthImage.bindMemory( *depthMemory, 0 );
+    depthImage.bindMemory( depthMemory, 0 );
 
-    vk::ImageViewCreateInfo imageViewCreateInfo( {}, *depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
+    vk::ImageViewCreateInfo imageViewCreateInfo( {}, depthImage, vk::ImageViewType::e2D, depthFormat, {}, { vk::ImageAspectFlagBits::eDepth, 0, 1, 0, 1 } );
     vk::raii::ImageView     depthView( device, imageViewCreateInfo );
 
     // while all vk::raii objects are automatically destroyed on scope leave, the Image should to be destroyed before the bound DeviceMemory

@@ -14,6 +14,8 @@
 //
 // VulkanHpp Test: Compile test for Unique handles
 
+#define VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+
 #include "../../samples/utils/geometries.hpp"
 #include "../../samples/utils/shaders.hpp"
 #include "../../samples/utils/utils.hpp"
@@ -42,7 +44,7 @@ public:
   };
 };
 
-vk::UniqueDescriptorSetLayout createDescriptorSetLayoutUnique( vk::Device const &                                                                  device,
+vk::UniqueDescriptorSetLayout createDescriptorSetLayoutUnique( vk::UniqueDevice const &                                                            device,
                                                                std::vector<std::tuple<vk::DescriptorType, uint32_t, vk::ShaderStageFlags>> const & bindingData,
                                                                vk::DescriptorSetLayoutCreateFlags                                                  flags = {} )
 {
@@ -52,7 +54,7 @@ vk::UniqueDescriptorSetLayout createDescriptorSetLayoutUnique( vk::Device const 
     bindings[i] = vk::DescriptorSetLayoutBinding(
       vk::su::checked_cast<uint32_t>( i ), std::get<0>( bindingData[i] ), std::get<1>( bindingData[i] ), std::get<2>( bindingData[i] ) );
   }
-  return device.createDescriptorSetLayoutUnique( vk::DescriptorSetLayoutCreateInfo( flags, bindings ) );
+  return device->createDescriptorSetLayoutUnique( vk::DescriptorSetLayoutCreateInfo( flags, bindings ) );
 }
 
 vk::UniqueInstance createInstanceUnique( std::string const &              appName,
@@ -90,11 +92,36 @@ vk::UniqueInstance createInstanceUnique( std::string const &              appNam
   return instance;
 }
 
-vk::UniqueRenderPass createRenderPassUnique( vk::Device const &   device,
-                                             vk::Format           colorFormat,
-                                             vk::Format           depthFormat,
-                                             vk::AttachmentLoadOp loadOp           = vk::AttachmentLoadOp::eClear,
-                                             vk::ImageLayout      colorFinalLayout = vk::ImageLayout::ePresentSrcKHR )
+vk::UniqueDevice createDeviceUnique( vk::PhysicalDevice const &         physicalDevice,
+                                     uint32_t                           queueFamilyIndex,
+                                     std::vector<std::string> const &   extensions,
+                                     vk::PhysicalDeviceFeatures const * physicalDeviceFeatures = nullptr,
+                                     void const *                       pNext                  = nullptr )
+{
+  std::vector<char const *> enabledExtensions;
+  enabledExtensions.reserve( extensions.size() );
+  for ( auto const & ext : extensions )
+  {
+    enabledExtensions.push_back( ext.data() );
+  }
+
+  float                     queuePriority = 0.0f;
+  vk::DeviceQueueCreateInfo deviceQueueCreateInfo( {}, queueFamilyIndex, 1, &queuePriority );
+  vk::DeviceCreateInfo      deviceCreateInfo( {}, deviceQueueCreateInfo, {}, enabledExtensions, physicalDeviceFeatures, pNext );
+
+  vk::UniqueDevice device = physicalDevice.createDeviceUnique( deviceCreateInfo );
+#if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+  // initialize function pointers for instance
+  VULKAN_HPP_DEFAULT_DISPATCHER.init( *device );
+#endif
+  return device;
+}
+
+vk::UniqueRenderPass createRenderPassUnique( vk::UniqueDevice const & device,
+                                             vk::Format               colorFormat,
+                                             vk::Format               depthFormat,
+                                             vk::AttachmentLoadOp     loadOp           = vk::AttachmentLoadOp::eClear,
+                                             vk::ImageLayout          colorFinalLayout = vk::ImageLayout::ePresentSrcKHR )
 {
   std::vector<vk::AttachmentDescription> attachmentDescriptions;
   assert( colorFormat != vk::Format::eUndefined );
@@ -123,14 +150,14 @@ vk::UniqueRenderPass createRenderPassUnique( vk::Device const &   device,
   vk::AttachmentReference depthAttachment( 1, vk::ImageLayout::eDepthStencilAttachmentOptimal );
   vk::SubpassDescription  subpassDescription( vk::SubpassDescriptionFlags(),
                                              vk::PipelineBindPoint::eGraphics,
-                                             {},
+                                              {},
                                              colorAttachment,
-                                             {},
+                                              {},
                                              ( depthFormat != vk::Format::eUndefined ) ? &depthAttachment : nullptr );
-  return device.createRenderPassUnique( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
+  return device->createRenderPassUnique( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
 }
 
-vk::UniqueShaderModule createShaderModuleUnique( vk::Device const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText )
+vk::UniqueShaderModule createShaderModuleUnique( vk::UniqueDevice const & device, vk::ShaderStageFlagBits shaderStage, std::string const & shaderText )
 {
   std::vector<unsigned int> shaderSPV;
   if ( !vk::su::GLSLtoSPV( shaderStage, shaderText, shaderSPV ) )
@@ -138,7 +165,49 @@ vk::UniqueShaderModule createShaderModuleUnique( vk::Device const & device, vk::
     throw std::runtime_error( "Could not convert glsl shader to spir-v -> terminating" );
   }
 
-  return device.createShaderModuleUnique( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
+  return device->createShaderModuleUnique( vk::ShaderModuleCreateInfo( vk::ShaderModuleCreateFlags(), shaderSPV ) );
+}
+
+vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevice, vk::UniqueDevice const & device, vk::SurfaceKHR surface )
+{
+  vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
+  vk::SurfaceFormatKHR       surfaceFormat       = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
+  vk::Extent2D               swapchainExtent;
+  if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
+  {
+    // If the surface size is undefined, the size is set to the size of the images requested.
+    swapchainExtent.width  = vk::su::clamp<uint32_t>( 64, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
+    swapchainExtent.height = vk::su::clamp<uint32_t>( 64, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height );
+  }
+  else
+  {
+    // If the surface size is defined, the swap chain size must match
+    swapchainExtent = surfaceCapabilities.currentExtent;
+  }
+  vk::SurfaceTransformFlagBitsKHR preTransform = ( surfaceCapabilities.supportedTransforms & vk::SurfaceTransformFlagBitsKHR::eIdentity )
+                                                 ? vk::SurfaceTransformFlagBitsKHR::eIdentity
+                                                 : surfaceCapabilities.currentTransform;
+  vk::CompositeAlphaFlagBitsKHR   compositeAlpha =
+    ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePreMultiplied )    ? vk::CompositeAlphaFlagBitsKHR::ePreMultiplied
+      : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::ePostMultiplied ) ? vk::CompositeAlphaFlagBitsKHR::ePostMultiplied
+      : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit )        ? vk::CompositeAlphaFlagBitsKHR::eInherit
+                                                                                                         : vk::CompositeAlphaFlagBitsKHR::eOpaque;
+  vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
+                                                  surface,
+                                                  vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+                                                  surfaceFormat.format,
+                                                  surfaceFormat.colorSpace,
+                                                  swapchainExtent,
+                                                  1,
+                                                  vk::ImageUsageFlagBits::eColorAttachment,
+                                                  vk::SharingMode::eExclusive,
+                                                  {},
+                                                  preTransform,
+                                                  compositeAlpha,
+                                                  vk::PresentModeKHR::eFifo,
+                                                  true,
+                                                  nullptr );
+  return device->createSwapchainKHRUnique( swapChainCreateInfo );
 }
 
 int main( int /*argc*/, char ** /*argv*/ )
@@ -161,25 +230,30 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( graphicsQueueFamilyIndex < queueFamilyProperties.size() );
 
     // create a Device
-    float                     queuePriority = 0.0f;
-    vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-    vk::DeviceCreateInfo      deviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo );
-    vk::UniqueDevice          device = physicalDevices[0].createDeviceUnique( deviceCreateInfo );
+    vk::UniqueDevice device = createDeviceUnique( physicalDevices[0], static_cast<uint32_t>( graphicsQueueFamilyIndex ), vk::su::getDeviceExtensions() );
 
     // create a PipelineCache
     vk::UniquePipelineCache pipelineCache = device->createPipelineCacheUnique( vk::PipelineCacheCreateInfo() );
 
     // get some vk::ShaderModules
     glslang::InitializeProcess();
-    vk::UniqueShaderModule vertexShaderModule   = createShaderModuleUnique( *device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C );
-    vk::UniqueShaderModule fragmentShaderModule = createShaderModuleUnique( *device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C );
+    vk::UniqueShaderModule vertexShaderModule   = createShaderModuleUnique( device, vk::ShaderStageFlagBits::eVertex, vertexShaderText_PC_C );
+    vk::UniqueShaderModule fragmentShaderModule = createShaderModuleUnique( device, vk::ShaderStageFlagBits::eFragment, fragmentShaderText_C_C );
     glslang::FinalizeProcess();
 
     // initialize an array of vk::PipelineShaderStageCreateInfos
+    // showing the simplified usage when VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST is defined
+#if defined( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+    std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
+      vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, vertexShaderModule, "main" ),
+      vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, fragmentShaderModule, "main" )
+    };
+#else
     std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
       vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eVertex, *vertexShaderModule, "main" ),
       vk::PipelineShaderStageCreateInfo( vk::PipelineShaderStageCreateFlags(), vk::ShaderStageFlagBits::eFragment, *fragmentShaderModule, "main" )
     };
+#endif
 
     vk::VertexInputBindingDescription                  vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
     std::array<vk::VertexInputAttributeDescription, 2> vertexInputAttributeDescriptions = {
@@ -247,14 +321,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::PipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo( vk::PipelineDynamicStateCreateFlags(), dynamicStates );
 
     vk::UniqueDescriptorSetLayout descriptorSetLayout =
-      createDescriptorSetLayoutUnique( *device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
+      createDescriptorSetLayoutUnique( device, { { vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex } } );
     vk::UniquePipelineLayout pipelineLayout =
       device->createPipelineLayoutUnique( vk::PipelineLayoutCreateInfo( vk::PipelineLayoutCreateFlags(), *descriptorSetLayout ) );
 
     vk::su::SurfaceData surfaceData( *instance, AppName, vk::Extent2D( 500, 500 ) );
 
     vk::UniqueRenderPass renderPass = createRenderPassUnique(
-      *device, vk::su::pickSurfaceFormat( physicalDevices[0].getSurfaceFormatsKHR( surfaceData.surface ) ).format, vk::Format::eD16Unorm );
+      device, vk::su::pickSurfaceFormat( physicalDevices[0].getSurfaceFormatsKHR( surfaceData.surface ) ).format, vk::Format::eD16Unorm );
 
     // initialize the vk::GraphicsPipelineCreateInfo
     vk::GraphicsPipelineCreateInfo graphicsPipelineCreateInfo( vk::PipelineCreateFlags(),              // flags
@@ -289,11 +363,15 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniquePipeline graphicsPipeline3 =
       std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
 
-    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique( {} );
+    vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eUniformBuffer, 1 );
+    vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique( { vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize } );
 
-    vk::UniqueSwapchainKHR swapchain = device->createSharedSwapchainKHRUnique( {} );
+    std::vector<vk::UniqueDescriptorSet> descriptorSets = device->allocateDescriptorSetsUnique( { *descriptorPool, *descriptorSetLayout } );
 
-    // destroy the non-Unique surface used here
+    vk::UniqueSwapchainKHR swapchain = createSwapchainKHRUnique( physicalDevices[0], device, surfaceData.surface );
+
+    // destroy the non-Unique surface used here, but swapchain needs to be destroyed first
+    swapchain.reset();
     instance->destroySurfaceKHR( surfaceData.surface );
   }
   catch ( vk::SystemError & err )

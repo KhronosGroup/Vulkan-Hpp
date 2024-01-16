@@ -94,13 +94,13 @@ int main( int /*argc*/, char ** /*argv*/ )
     deviceMemory.unmapMemory();
 
     // and bind the device memory to the vertex buffer
-    vertexBuffer.bindMemory( *deviceMemory, 0 );
+    vertexBuffer.bindMemory( deviceMemory, 0 );
 
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
 
     vk::Result result;
     uint32_t   imageIndex;
-    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -110,10 +110,10 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     commandBuffer.begin( {} );
 
-    vk::RenderPassBeginInfo renderPassBeginInfo( *renderPass, *framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
+    vk::RenderPassBeginInfo renderPassBeginInfo( renderPass, framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
     commandBuffer.beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
 
-    commandBuffer.bindVertexBuffers( 0, { *vertexBuffer }, { 0 } );
+    commandBuffer.bindVertexBuffers( 0, { vertexBuffer }, { 0 } );
 
     commandBuffer.endRenderPass();
     commandBuffer.end();

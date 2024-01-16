@@ -23,7 +23,7 @@
 
 // only if VULKAN_HPP_RAII_NO_EXCEPTIONS really is defined, this test is meaningfull and needs to compile and run.
 #if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-#include <vulkan/vulkan_raii.hpp>
+#  include <vulkan/vulkan_raii.hpp>
 
 static char const * AppName    = "NoExceptions";
 static char const * EngineName = "Vulkan.hpp";
@@ -56,16 +56,15 @@ int main( int /*argc*/, char ** /*argv*/ )
   // create a Device
   float                     queuePriority = 0.0f;
   vk::DeviceQueueCreateInfo deviceQueueCreateInfo( vk::DeviceQueueCreateFlags(), static_cast<uint32_t>( graphicsQueueFamilyIndex ), 1, &queuePriority );
-  auto device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
+  auto                      device = physicalDevice.createDevice( vk::DeviceCreateInfo( vk::DeviceCreateFlags(), deviceQueueCreateInfo ) );
   assert( device.has_value() );
 
   // create a CommandPool to allocate a CommandBuffer from
-  auto commandPool =
-    device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), deviceQueueCreateInfo.queueFamilyIndex ) );
+  auto commandPool = device->createCommandPool( vk::CommandPoolCreateInfo( vk::CommandPoolCreateFlags(), deviceQueueCreateInfo.queueFamilyIndex ) );
   assert( commandPool.has_value() );
 
   // allocate a CommandBuffer from the CommandPool
-  auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( **commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
+  auto commandBuffers = device->allocateCommandBuffers( vk::CommandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 ) );
   assert( commandBuffers.has_value() );
 
   auto commandBuffer = std::move( commandBuffers->front() );

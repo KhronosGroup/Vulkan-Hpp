@@ -2833,6 +2833,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_instance;
       }
 
+      operator VULKAN_HPP_NAMESPACE::Instance() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_instance;
+      }
+
       void clear() VULKAN_HPP_NOEXCEPT
       {
         if ( m_instance )
@@ -3096,6 +3101,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::PhysicalDevice const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_physicalDevice;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::PhysicalDevice() const VULKAN_HPP_NOEXCEPT
       {
         return m_physicalDevice;
       }
@@ -3557,6 +3567,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Device const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_device;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Device() const VULKAN_HPP_NOEXCEPT
       {
         return m_device;
       }
@@ -4584,7 +4599,7 @@ namespace VULKAN_HPP_NAMESPACE
       AccelerationStructureKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                 VkAccelerationStructureKHR                                                      accelerationStructure,
                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_accelerationStructure( accelerationStructure )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -4624,6 +4639,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::AccelerationStructureKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructure;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::AccelerationStructureKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructure;
       }
@@ -4699,7 +4719,7 @@ namespace VULKAN_HPP_NAMESPACE
       AccelerationStructureNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                VkAccelerationStructureNV                                                       accelerationStructure,
                                VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_accelerationStructure( accelerationStructure )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -4739,6 +4759,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::AccelerationStructureNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_accelerationStructure;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::AccelerationStructureNV() const VULKAN_HPP_NOEXCEPT
       {
         return m_accelerationStructure;
       }
@@ -4822,7 +4847,7 @@ namespace VULKAN_HPP_NAMESPACE
       Buffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
               VkBuffer                                                                        buffer,
               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_buffer( buffer )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -4862,6 +4887,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Buffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_buffer;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Buffer() const VULKAN_HPP_NOEXCEPT
       {
         return m_buffer;
       }
@@ -4943,7 +4973,7 @@ namespace VULKAN_HPP_NAMESPACE
       BufferCollectionFUCHSIA( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                VkBufferCollectionFUCHSIA                                                       collection,
                                VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_collection( collection )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -4983,6 +5013,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_collection;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::BufferCollectionFUCHSIA() const VULKAN_HPP_NOEXCEPT
       {
         return m_collection;
       }
@@ -5067,7 +5102,7 @@ namespace VULKAN_HPP_NAMESPACE
       BufferView( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                   VkBufferView                                                                    bufferView,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_bufferView( bufferView )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -5107,6 +5142,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::BufferView const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_bufferView;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::BufferView() const VULKAN_HPP_NOEXCEPT
       {
         return m_bufferView;
       }
@@ -5181,7 +5221,7 @@ namespace VULKAN_HPP_NAMESPACE
       CommandPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                    VkCommandPool                                                                   commandPool,
                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_commandPool( commandPool )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -5221,6 +5261,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CommandPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandPool;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CommandPool() const VULKAN_HPP_NOEXCEPT
       {
         return m_commandPool;
       }
@@ -5296,7 +5341,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     public:
       CommandBuffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const & device, VkCommandBuffer commandBuffer, VkCommandPool commandPool )
-        : m_device( *device ), m_commandPool( commandPool ), m_commandBuffer( commandBuffer ), m_dispatcher( device.getDispatcher() )
+        : m_device( device ), m_commandPool( commandPool ), m_commandBuffer( commandBuffer ), m_dispatcher( device.getDispatcher() )
       {
       }
 
@@ -5333,6 +5378,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CommandBuffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_commandBuffer;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CommandBuffer() const VULKAN_HPP_NOEXCEPT
       {
         return m_commandBuffer;
       }
@@ -6362,7 +6412,7 @@ namespace VULKAN_HPP_NAMESPACE
       CuFunctionNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                      VkCuFunctionNVX                                                                 function,
                      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_function( function )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -6402,6 +6452,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CuFunctionNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_function;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CuFunctionNVX() const VULKAN_HPP_NOEXCEPT
       {
         return m_function;
       }
@@ -6476,7 +6531,7 @@ namespace VULKAN_HPP_NAMESPACE
       CuModuleNVX( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                    VkCuModuleNVX                                                                   module,
                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_module( module )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -6516,6 +6571,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CuModuleNVX const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_module;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CuModuleNVX() const VULKAN_HPP_NOEXCEPT
       {
         return m_module;
       }
@@ -6591,7 +6651,7 @@ namespace VULKAN_HPP_NAMESPACE
       CudaFunctionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                       VkCudaFunctionNV                                                                function,
                       VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_function( function )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -6631,6 +6691,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CudaFunctionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_function;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CudaFunctionNV() const VULKAN_HPP_NOEXCEPT
       {
         return m_function;
       }
@@ -6707,7 +6772,7 @@ namespace VULKAN_HPP_NAMESPACE
       CudaModuleNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                     VkCudaModuleNV                                                                  module,
                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_module( module )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -6747,6 +6812,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::CudaModuleNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_module;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::CudaModuleNV() const VULKAN_HPP_NOEXCEPT
       {
         return m_module;
       }
@@ -6826,7 +6896,7 @@ namespace VULKAN_HPP_NAMESPACE
       DebugReportCallbackEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                               VkDebugReportCallbackEXT                                                        callback,
                               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_instance( *instance )
+        : m_instance( instance )
         , m_callback( callback )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( instance.getDispatcher() )
@@ -6866,6 +6936,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_callback;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DebugReportCallbackEXT() const VULKAN_HPP_NOEXCEPT
       {
         return m_callback;
       }
@@ -6941,7 +7016,7 @@ namespace VULKAN_HPP_NAMESPACE
       DebugUtilsMessengerEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                               VkDebugUtilsMessengerEXT                                                        messenger,
                               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_instance( *instance )
+        : m_instance( instance )
         , m_messenger( messenger )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( instance.getDispatcher() )
@@ -6981,6 +7056,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_messenger;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT() const VULKAN_HPP_NOEXCEPT
       {
         return m_messenger;
       }
@@ -7055,7 +7135,7 @@ namespace VULKAN_HPP_NAMESPACE
       DeferredOperationKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                             VkDeferredOperationKHR                                                          operation,
                             VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_operation( operation )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -7095,6 +7175,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DeferredOperationKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_operation;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DeferredOperationKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_operation;
       }
@@ -7178,7 +7263,7 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                       VkDescriptorPool                                                                descriptorPool,
                       VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_descriptorPool( descriptorPool )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -7218,6 +7303,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DescriptorPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorPool;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DescriptorPool() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorPool;
       }
@@ -7286,7 +7376,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     public:
       DescriptorSet( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const & device, VkDescriptorSet descriptorSet, VkDescriptorPool descriptorPool )
-        : m_device( *device ), m_descriptorPool( descriptorPool ), m_descriptorSet( descriptorSet ), m_dispatcher( device.getDispatcher() )
+        : m_device( device ), m_descriptorPool( descriptorPool ), m_descriptorSet( descriptorSet ), m_dispatcher( device.getDispatcher() )
       {
       }
 
@@ -7323,6 +7413,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DescriptorSet const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSet;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DescriptorSet() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSet;
       }
@@ -7439,7 +7534,7 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorSetLayout( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                            VkDescriptorSetLayout                                                           descriptorSetLayout,
                            VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_descriptorSetLayout( descriptorSetLayout )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -7479,6 +7574,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DescriptorSetLayout const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorSetLayout;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DescriptorSetLayout() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorSetLayout;
       }
@@ -7560,7 +7660,7 @@ namespace VULKAN_HPP_NAMESPACE
       DescriptorUpdateTemplate( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                 VkDescriptorUpdateTemplate                                                      descriptorUpdateTemplate,
                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_descriptorUpdateTemplate( descriptorUpdateTemplate )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -7600,6 +7700,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_descriptorUpdateTemplate;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate() const VULKAN_HPP_NOEXCEPT
       {
         return m_descriptorUpdateTemplate;
       }
@@ -7675,7 +7780,7 @@ namespace VULKAN_HPP_NAMESPACE
       DeviceMemory( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                     VkDeviceMemory                                                                  memory,
                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_memory( memory )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -7715,6 +7820,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DeviceMemory const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_memory;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DeviceMemory() const VULKAN_HPP_NOEXCEPT
       {
         return m_memory;
       }
@@ -7823,7 +7933,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
       DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice, VkDisplayKHR display )
-        : m_physicalDevice( *physicalDevice ), m_display( display ), m_dispatcher( physicalDevice.getDispatcher() )
+        : m_physicalDevice( physicalDevice ), m_display( display ), m_dispatcher( physicalDevice.getDispatcher() )
       {
       }
 
@@ -7858,6 +7968,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::DisplayKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_display;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::DisplayKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_display;
       }
@@ -8014,6 +8129,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_displayModeKHR;
       }
 
+      operator VULKAN_HPP_NAMESPACE::DisplayModeKHR() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_displayModeKHR;
+      }
+
       void clear() VULKAN_HPP_NOEXCEPT
       {
         m_physicalDevice = nullptr;
@@ -8074,7 +8194,7 @@ namespace VULKAN_HPP_NAMESPACE
       Event( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
              VkEvent                                                                         event,
              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_event( event )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8114,6 +8234,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Event const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_event;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Event() const VULKAN_HPP_NOEXCEPT
       {
         return m_event;
       }
@@ -8215,7 +8340,7 @@ namespace VULKAN_HPP_NAMESPACE
       Fence( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
              VkFence                                                                         fence,
              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_fence( fence )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8255,6 +8380,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Fence const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_fence;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Fence() const VULKAN_HPP_NOEXCEPT
       {
         return m_fence;
       }
@@ -8333,7 +8463,7 @@ namespace VULKAN_HPP_NAMESPACE
       Framebuffer( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                    VkFramebuffer                                                                   framebuffer,
                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_framebuffer( framebuffer )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8373,6 +8503,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Framebuffer const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_framebuffer;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Framebuffer() const VULKAN_HPP_NOEXCEPT
       {
         return m_framebuffer;
       }
@@ -8451,7 +8586,7 @@ namespace VULKAN_HPP_NAMESPACE
       Image( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
              VkImage                                                                         image,
              VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_image( image )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8491,6 +8626,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Image const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_image;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Image() const VULKAN_HPP_NOEXCEPT
       {
         return m_image;
       }
@@ -8598,7 +8738,7 @@ namespace VULKAN_HPP_NAMESPACE
       ImageView( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                  VkImageView                                                                     imageView,
                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_imageView( imageView )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8638,6 +8778,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::ImageView const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_imageView;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::ImageView() const VULKAN_HPP_NOEXCEPT
       {
         return m_imageView;
       }
@@ -8716,7 +8861,7 @@ namespace VULKAN_HPP_NAMESPACE
       IndirectCommandsLayoutNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                 VkIndirectCommandsLayoutNV                                                      indirectCommandsLayout,
                                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_indirectCommandsLayout( indirectCommandsLayout )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8756,6 +8901,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_indirectCommandsLayout;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV() const VULKAN_HPP_NOEXCEPT
       {
         return m_indirectCommandsLayout;
       }
@@ -8831,7 +8981,7 @@ namespace VULKAN_HPP_NAMESPACE
       MicromapEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                    VkMicromapEXT                                                                   micromap,
                    VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_micromap( micromap )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8871,6 +9021,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::MicromapEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_micromap;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::MicromapEXT() const VULKAN_HPP_NOEXCEPT
       {
         return m_micromap;
       }
@@ -8945,7 +9100,7 @@ namespace VULKAN_HPP_NAMESPACE
       OpticalFlowSessionNV( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                             VkOpticalFlowSessionNV                                                          session,
                             VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_session( session )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -8985,6 +9140,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_session;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::OpticalFlowSessionNV() const VULKAN_HPP_NOEXCEPT
       {
         return m_session;
       }
@@ -9063,7 +9223,7 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif
 
       PerformanceConfigurationINTEL( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const & device, VkPerformanceConfigurationINTEL configuration )
-        : m_device( *device ), m_configuration( configuration ), m_dispatcher( device.getDispatcher() )
+        : m_device( device ), m_configuration( configuration ), m_dispatcher( device.getDispatcher() )
       {
       }
 
@@ -9098,6 +9258,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_configuration;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL() const VULKAN_HPP_NOEXCEPT
       {
         return m_configuration;
       }
@@ -9168,7 +9333,7 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineCache( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                      VkPipelineCache                                                                 pipelineCache,
                      VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_pipelineCache( pipelineCache )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -9208,6 +9373,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::PipelineCache const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineCache;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::PipelineCache() const VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineCache;
       }
@@ -9334,7 +9504,7 @@ namespace VULKAN_HPP_NAMESPACE
                 VkPipeline                                                                      pipeline,
                 VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator   = nullptr,
                 VULKAN_HPP_NAMESPACE::Result                                                    successCode = VULKAN_HPP_NAMESPACE::Result::eSuccess )
-        : m_device( *device )
+        : m_device( device )
         , m_pipeline( pipeline )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_constructorSuccessCode( successCode )
@@ -9377,6 +9547,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Pipeline const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipeline;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Pipeline() const VULKAN_HPP_NOEXCEPT
       {
         return m_pipeline;
       }
@@ -9572,7 +9747,7 @@ namespace VULKAN_HPP_NAMESPACE
       PipelineLayout( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                       VkPipelineLayout                                                                pipelineLayout,
                       VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_pipelineLayout( pipelineLayout )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -9612,6 +9787,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::PipelineLayout const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pipelineLayout;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::PipelineLayout() const VULKAN_HPP_NOEXCEPT
       {
         return m_pipelineLayout;
       }
@@ -9687,7 +9867,7 @@ namespace VULKAN_HPP_NAMESPACE
       PrivateDataSlot( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                        VkPrivateDataSlot                                                               privateDataSlot,
                        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_privateDataSlot( privateDataSlot )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -9727,6 +9907,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::PrivateDataSlot const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_privateDataSlot;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::PrivateDataSlot() const VULKAN_HPP_NOEXCEPT
       {
         return m_privateDataSlot;
       }
@@ -9802,7 +9987,7 @@ namespace VULKAN_HPP_NAMESPACE
       QueryPool( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                  VkQueryPool                                                                     queryPool,
                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_queryPool( queryPool )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -9842,6 +10027,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::QueryPool const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queryPool;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::QueryPool() const VULKAN_HPP_NOEXCEPT
       {
         return m_queryPool;
       }
@@ -9986,6 +10176,11 @@ namespace VULKAN_HPP_NAMESPACE
         return m_queue;
       }
 
+      operator VULKAN_HPP_NAMESPACE::Queue() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_queue;
+      }
+
       void clear() VULKAN_HPP_NOEXCEPT
       {
         m_queue      = nullptr;
@@ -10093,7 +10288,7 @@ namespace VULKAN_HPP_NAMESPACE
       RenderPass( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                   VkRenderPass                                                                    renderPass,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_renderPass( renderPass )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10133,6 +10328,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::RenderPass const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_renderPass;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::RenderPass() const VULKAN_HPP_NOEXCEPT
       {
         return m_renderPass;
       }
@@ -10215,7 +10415,7 @@ namespace VULKAN_HPP_NAMESPACE
       Sampler( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                VkSampler                                                                       sampler,
                VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_sampler( sampler )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10255,6 +10455,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Sampler const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_sampler;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Sampler() const VULKAN_HPP_NOEXCEPT
       {
         return m_sampler;
       }
@@ -10329,7 +10534,7 @@ namespace VULKAN_HPP_NAMESPACE
       SamplerYcbcrConversion( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                               VkSamplerYcbcrConversion                                                        ycbcrConversion,
                               VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_ycbcrConversion( ycbcrConversion )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10369,6 +10574,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_ycbcrConversion;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion() const VULKAN_HPP_NOEXCEPT
       {
         return m_ycbcrConversion;
       }
@@ -10444,7 +10654,7 @@ namespace VULKAN_HPP_NAMESPACE
       Semaphore( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                  VkSemaphore                                                                     semaphore,
                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_semaphore( semaphore )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10484,6 +10694,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::Semaphore const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_semaphore;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::Semaphore() const VULKAN_HPP_NOEXCEPT
       {
         return m_semaphore;
       }
@@ -10566,7 +10781,7 @@ namespace VULKAN_HPP_NAMESPACE
       ShaderEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                  VkShaderEXT                                                                     shader,
                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_shader( shader )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10606,6 +10821,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::ShaderEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_shader;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::ShaderEXT() const VULKAN_HPP_NOEXCEPT
       {
         return m_shader;
       }
@@ -10711,7 +10931,7 @@ namespace VULKAN_HPP_NAMESPACE
       ShaderModule( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                     VkShaderModule                                                                  shaderModule,
                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_shaderModule( shaderModule )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -10751,6 +10971,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::ShaderModule const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_shaderModule;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::ShaderModule() const VULKAN_HPP_NOEXCEPT
       {
         return m_shaderModule;
       }
@@ -10981,7 +11206,7 @@ namespace VULKAN_HPP_NAMESPACE
       SurfaceKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance const &               instance,
                   VkSurfaceKHR                                                                    surface,
                   VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_instance( *instance )
+        : m_instance( instance )
         , m_surface( surface )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( instance.getDispatcher() )
@@ -11021,6 +11246,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::SurfaceKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_surface;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::SurfaceKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_surface;
       }
@@ -11095,7 +11325,7 @@ namespace VULKAN_HPP_NAMESPACE
       SwapchainKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                     VkSwapchainKHR                                                                  swapchain,
                     VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_swapchain( swapchain )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -11135,6 +11365,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::SwapchainKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_swapchain;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::SwapchainKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_swapchain;
       }
@@ -11285,7 +11520,7 @@ namespace VULKAN_HPP_NAMESPACE
       ValidationCacheEXT( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                           VkValidationCacheEXT                                                            validationCache,
                           VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_validationCache( validationCache )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -11325,6 +11560,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::ValidationCacheEXT const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_validationCache;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::ValidationCacheEXT() const VULKAN_HPP_NOEXCEPT
       {
         return m_validationCache;
       }
@@ -11406,7 +11646,7 @@ namespace VULKAN_HPP_NAMESPACE
       VideoSessionKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                        VkVideoSessionKHR                                                               videoSession,
                        VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_videoSession( videoSession )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -11446,6 +11686,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::VideoSessionKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSession;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::VideoSessionKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_videoSession;
       }
@@ -11527,7 +11772,7 @@ namespace VULKAN_HPP_NAMESPACE
       VideoSessionParametersKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device const &                 device,
                                  VkVideoSessionParametersKHR                                                     videoSessionParameters,
                                  VULKAN_HPP_NAMESPACE::Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator = nullptr )
-        : m_device( *device )
+        : m_device( device )
         , m_videoSessionParameters( videoSessionParameters )
         , m_allocator( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) )
         , m_dispatcher( device.getDispatcher() )
@@ -11567,6 +11812,11 @@ namespace VULKAN_HPP_NAMESPACE
       }
 
       VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR const & operator*() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_videoSessionParameters;
+      }
+
+      operator VULKAN_HPP_NAMESPACE::VideoSessionParametersKHR() const VULKAN_HPP_NOEXCEPT
       {
         return m_videoSessionParameters;
       }

@@ -46,7 +46,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     for ( size_t i = 0; i < physicalDevices.size(); i++ )
     {
       std::cout << "PhysicalDevice " << i << "\n";
-      std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevices[i].getSurfaceFormatsKHR( *surfaceData.surface );
+      std::vector<vk::SurfaceFormatKHR> surfaceFormats = physicalDevices[i].getSurfaceFormatsKHR( surfaceData.surface );
       for ( size_t j = 0; j < surfaceFormats.size(); j++ )
       {
         std::cout << std::string( "\t" ) << "Format " << j << "\n";

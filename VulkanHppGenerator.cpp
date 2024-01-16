@@ -8404,6 +8404,11 @@ ${moveAssignmentInstructions}
       return m_${handleName};
     }
 
+    operator VULKAN_HPP_NAMESPACE::${handleType}() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_${handleName};
+    }
+
     void clear() VULKAN_HPP_NOEXCEPT
     {
 ${clearMembers}
@@ -9016,7 +9021,7 @@ std::string
     {
       if ( destructorParam.type.type == "Vk" + parentType )
       {
-        initializationList += "m_" + parentName + "( *" + parentName + " ), ";
+        initializationList += "m_" + parentName + "( " + parentName + " ), ";
       }
       else if ( destructorParam.type.type == handle.first )
       {

@@ -919,6 +919,13 @@ namespace VULKAN_HPP_NAMESPACE
       return m_value.operator bool();
     }
 
+#    if defined( VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST )
+    operator Type() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_value;
+    }
+#    endif
+
     Type const * operator->() const VULKAN_HPP_NOEXCEPT
     {
       return &m_value;

@@ -43,7 +43,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::raii::CommandPool     commandPool( device, commandPoolCreateInfo );
 
     // allocate a CommandBuffer from the CommandPool
-    vk::CommandBufferAllocateInfo commandBufferAllocateInfo( *commandPool, vk::CommandBufferLevel::ePrimary, 1 );
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo( commandPool, vk::CommandBufferLevel::ePrimary, 1 );
     vk::raii::CommandBuffer       commandBuffer = std::move( vk::raii::CommandBuffers( device, commandBufferAllocateInfo ).front() );
 
     /* VULKAN_HPP_KEY_END */

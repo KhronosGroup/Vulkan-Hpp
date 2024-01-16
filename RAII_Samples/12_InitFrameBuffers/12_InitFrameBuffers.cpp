@@ -55,14 +55,14 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 
     std::array<vk::ImageView, 2> attachments;
-    attachments[1] = *depthBufferData.imageView;
+    attachments[1] = depthBufferData.imageView;
 
     std::vector<vk::raii::Framebuffer> framebuffers;
     framebuffers.reserve( swapChainData.imageViews.size() );
     for ( auto const & view : swapChainData.imageViews )
     {
-      attachments[0] = *view;
-      vk::FramebufferCreateInfo framebufferCreateInfo( {}, *renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
+      attachments[0] = view;
+      vk::FramebufferCreateInfo framebufferCreateInfo( {}, renderPass, attachments, surfaceData.extent.width, surfaceData.extent.height, 1 );
       framebuffers.push_back( vk::raii::Framebuffer( device, framebufferCreateInfo ) );
     }
 

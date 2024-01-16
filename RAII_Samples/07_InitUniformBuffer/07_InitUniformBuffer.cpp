@@ -76,7 +76,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     memcpy( pData, &mvpc, sizeof( mvpc ) );
     uniformDataMemory.unmapMemory();
 
-    uniformDataBuffer.bindMemory( *uniformDataMemory, 0 );
+    uniformDataBuffer.bindMemory( uniformDataMemory, 0 );
 
     // while all vk::raii objects are automatically destroyed on scope leave, the Buffer should to be destroyed before the bound DeviceMemory
     // but the standard destruction order would destroy the DeviceMemory before the Buffer, so destroy the Buffer here

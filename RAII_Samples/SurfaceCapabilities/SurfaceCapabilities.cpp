@@ -84,11 +84,12 @@ int main( int /*argc*/, char ** /*argv*/ )
       std::cout << "PhysicalDevice " << i << "\n";
       if ( supportsGetSurfaceCapabilities2 )
       {
-        auto surfaceCapabilities2 = physicalDevices[i]
-                                      .getSurfaceCapabilities2KHR<vk::SurfaceCapabilities2KHR,
-                                                                  vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
-                                                                  vk::SharedPresentSurfaceCapabilitiesKHR,
-                                                                  vk::SurfaceProtectedCapabilitiesKHR>( { *surfaceData.surface } );
+        auto surfaceCapabilities2 =
+          physicalDevices[i]
+            .getSurfaceCapabilities2KHR<vk::SurfaceCapabilities2KHR,
+                                        vk::DisplayNativeHdrSurfaceCapabilitiesAMD,
+                                        vk::SharedPresentSurfaceCapabilitiesKHR,
+                                        vk::SurfaceProtectedCapabilitiesKHR>( { static_cast<vk::SurfaceKHR>( surfaceData.surface ) } );
 
         vk::SurfaceCapabilitiesKHR const & surfaceCapabilities = surfaceCapabilities2.get<vk::SurfaceCapabilities2KHR>().surfaceCapabilities;
         cout( surfaceCapabilities );
@@ -121,7 +122,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       }
       else
       {
-        vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[i].getSurfaceCapabilitiesKHR( *surfaceData.surface );
+        vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevices[i].getSurfaceCapabilitiesKHR( surfaceData.surface );
         cout( surfaceCapabilities );
       }
     }

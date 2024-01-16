@@ -65,7 +65,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::DepthBufferData depthBufferData( physicalDevice, device, vk::Format::eD16Unorm, surfaceData.extent );
 
-    vk::Format           colorFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( *surfaceData.surface ) ).format;
+    vk::Format           colorFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface ) ).format;
     vk::raii::RenderPass renderPass  = vk::raii::su::makeRenderPass( device, colorFormat, depthBufferData.format );
 
     glslang::InitializeProcess();
@@ -120,29 +120,31 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // create a DescriptorPool with vk::DescriptorType::eUniformBufferDynamic
     vk::raii::DescriptorPool descriptorPool = vk::raii::su::makeDescriptorPool( device, { { vk::DescriptorType::eUniformBufferDynamic, 1 } } );
-    vk::raii::DescriptorSet  descriptorSet  = std::move( vk::raii::DescriptorSets( device, { *descriptorPool, *descriptorSetLayout } ).front() );
+    vk::raii::DescriptorSet  descriptorSet  = std::move( vk::raii::DescriptorSets( device, { descriptorPool, *descriptorSetLayout } ).front() );
 
-    vk::raii::su::updateDescriptorSets( device, descriptorSet, { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, bufferSize, nullptr } }, {} );
+    vk::raii::su::updateDescriptorSets(
+      device, descriptorSet, { { vk::DescriptorType::eUniformBufferDynamic, uniformBufferData.buffer, bufferSize, nullptr } }, {} );
 
     vk::raii::PipelineCache pipelineCache( device, vk::PipelineCacheCreateInfo() );
-    vk::raii::Pipeline      graphicsPipeline = vk::raii::su::makeGraphicsPipeline( device,
-                                                                              pipelineCache,
-                                                                              vertexShaderModule,
-                                                                              nullptr,
-                                                                              fragmentShaderModule,
-                                                                              nullptr,
-                                                                              sizeof( coloredCubeData[0] ),
-                                                                              { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
-                                                                              vk::FrontFace::eClockwise,
-                                                                              true,
-                                                                              pipelineLayout,
-                                                                              renderPass );
+    vk::raii::Pipeline      graphicsPipeline =
+      vk::raii::su::makeGraphicsPipeline( device,
+                                          pipelineCache,
+                                          vertexShaderModule,
+                                          nullptr,
+                                          fragmentShaderModule,
+                                          nullptr,
+                                          sizeof( coloredCubeData[0] ),
+                                          { { vk::Format::eR32G32B32A32Sfloat, 0 }, { vk::Format::eR32G32B32A32Sfloat, 16 } },
+                                          vk::FrontFace::eClockwise,
+                                          true,
+                                          pipelineLayout,
+                                          renderPass );
 
     // Get the index of the next available swapchain image:
     vk::raii::Semaphore imageAcquiredSemaphore( device, vk::SemaphoreCreateInfo() );
     vk::Result          result;
     uint32_t            imageIndex;
-    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -151,9 +153,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     std::array<vk::ClearValue, 2> clearValues;
     clearValues[0].color        = vk::ClearColorValue( 0.2f, 0.2f, 0.2f, 0.2f );
     clearValues[1].depthStencil = vk::ClearDepthStencilValue( 1.0f, 0 );
-    vk::RenderPassBeginInfo renderPassBeginInfo( *renderPass, *framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
+    vk::RenderPassBeginInfo renderPassBeginInfo( renderPass, framebuffers[imageIndex], vk::Rect2D( vk::Offset2D( 0, 0 ), surfaceData.extent ), clearValues );
     commandBuffer.beginRenderPass( renderPassBeginInfo, vk::SubpassContents::eInline );
-    commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, *graphicsPipeline );
+    commandBuffer.bindPipeline( vk::PipelineBindPoint::eGraphics, graphicsPipeline );
 
     commandBuffer.setViewport(
       0, vk::Viewport( 0.0f, 0.0f, static_cast<float>( surfaceData.extent.width ), static_cast<float>( surfaceData.extent.height ), 0.0f, 1.0f ) );
@@ -161,14 +163,14 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     /* The first draw should use the first matrix in the buffer */
     uint32_t dynamicOffset = 0;
-    commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { *descriptorSet }, dynamicOffset );
+    commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
 
-    commandBuffer.bindVertexBuffers( 0, { *vertexBufferData.buffer }, { 0 } );
+    commandBuffer.bindVertexBuffers( 0, { vertexBufferData.buffer }, { 0 } );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 
     // the second draw should use the second matrix in the buffer;
     dynamicOffset = (uint32_t)bufferSize;
-    commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, *pipelineLayout, 0, { *descriptorSet }, dynamicOffset );
+    commandBuffer.bindDescriptorSets( vk::PipelineBindPoint::eGraphics, pipelineLayout, 0, { descriptorSet }, dynamicOffset );
     commandBuffer.draw( 12 * 3, 1, 0, 0 );
 
     commandBuffer.endRenderPass();
@@ -180,7 +182,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::SubmitInfo         submitInfo( *imageAcquiredSemaphore, waitDestinationStageMask, *commandBuffer );
     graphicsQueue.submit( submitInfo, *drawFence );
 
-    while ( vk::Result::eTimeout == device.waitForFences( { *drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
+    while ( vk::Result::eTimeout == device.waitForFences( { drawFence }, VK_TRUE, vk::su::FenceTimeout ) )
       ;
 
     vk::PresentInfoKHR presentInfoKHR( nullptr, *swapChainData.swapChain, imageIndex );

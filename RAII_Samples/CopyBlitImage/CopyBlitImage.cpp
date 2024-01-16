@@ -35,7 +35,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::su::SurfaceData surfaceData( instance, AppName, vk::Extent2D( 640, 640 ) );
 
-    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( *surfaceData.surface );
+    vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surfaceData.surface );
     if ( !( surfaceCapabilities.supportedUsageFlags & vk::ImageUsageFlagBits::eTransferDst ) )
     {
       std::cout << "Surface cannot be destination of blit - abort \n";
@@ -73,7 +73,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     // Get the index of the next available swapchain image:
     vk::Result result;
     uint32_t   imageIndex;
-    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *imageAcquiredSemaphore );
+    std::tie( result, imageIndex ) = swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, imageAcquiredSemaphore );
     assert( result == vk::Result::eSuccess );
     assert( imageIndex < swapChainData.images.size() );
 
@@ -105,9 +105,9 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::MemoryAllocateInfo memoryAllocateInfo( memoryRequirements.size, memoryTypeIndex );
     deviceMemory = vk::raii::DeviceMemory( device, memoryAllocateInfo );
-    blitSourceImage.bindMemory( *deviceMemory, 0 );
+    blitSourceImage.bindMemory( deviceMemory, 0 );
 
-    vk::raii::su::setImageLayout( commandBuffer, *blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral );
+    vk::raii::su::setImageLayout( commandBuffer, blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eGeneral );
 
     commandBuffer.end();
 
@@ -118,7 +118,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     graphicsQueue.submit( submitInfo, *commandFence );
 
     /* Make sure command buffer is finished before mapping */
-    while ( device.waitForFences( { *commandFence }, true, vk::su::FenceTimeout ) == vk::Result::eTimeout )
+    while ( device.waitForFences( { commandFence }, true, vk::su::FenceTimeout ) == vk::Result::eTimeout )
       ;
 
     unsigned char * pImageMemory = static_cast<unsigned char *>( deviceMemory.mapMemory( 0, memoryRequirements.size ) );
@@ -138,7 +138,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     }
 
     // Flush the mapped memory and then unmap it. Assume it isn't coherent since we didn't really confirm
-    vk::MappedMemoryRange mappedMemoryRange( *deviceMemory, 0, memoryRequirements.size );
+    vk::MappedMemoryRange mappedMemoryRange( deviceMemory, 0, memoryRequirements.size );
     device.flushMappedMemoryRanges( mappedMemoryRange );
     deviceMemory.unmapMemory();
 
@@ -148,7 +148,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
 
     // Intend to blit from this image, set the layout accordingly
-    vk::raii::su::setImageLayout( commandBuffer, *blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal );
+    vk::raii::su::setImageLayout( commandBuffer, blitSourceImage, swapChainData.colorFormat, vk::ImageLayout::eGeneral, vk::ImageLayout::eTransferSrcOptimal );
 
     vk::Image blitDestinationImage = static_cast<vk::Image>( swapChainData.images[imageIndex] );
 
@@ -159,7 +159,7 @@ int main( int /*argc*/, char ** /*argv*/ )
                              imageSubresourceLayers,
                                           { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( surfaceData.extent.width, surfaceData.extent.height, 1 ) } } );
     commandBuffer.blitImage(
-      *blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear );
+      blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageBlit, vk::Filter::eLinear );
 
     // Use a barrier to make sure the blit is finished before the copy starts
     // Note: for a layout of vk::ImageLayout::eTransferDstOptimal, the access mask is supposed to be vk::AccessFlagBits::eTransferWrite
@@ -175,7 +175,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     // Do a image copy to part of the dst image - checks should stay small
     vk::ImageCopy imageCopy( imageSubresourceLayers, vk::Offset3D(), imageSubresourceLayers, vk::Offset3D( 256, 256, 0 ), vk::Extent3D( 128, 128, 1 ) );
-    commandBuffer.copyImage( *blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy );
+    commandBuffer.copyImage( blitSourceImage, vk::ImageLayout::eTransferSrcOptimal, blitDestinationImage, vk::ImageLayout::eTransferDstOptimal, imageCopy );
 
     // Note: for a layout of vk::ImageLayout::ePresentSrcKHR, the access mask is supposed to be empty
     vk::ImageMemoryBarrier prePresentBarrier( vk::AccessFlagBits::eTransferWrite,
@@ -191,11 +191,11 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::raii::Fence drawFence( device, vk::FenceCreateInfo() );
     submitInfo = vk::SubmitInfo( {}, {}, *commandBuffer );
-    graphicsQueue.submit( submitInfo, *drawFence );
+    graphicsQueue.submit( submitInfo, drawFence );
     graphicsQueue.waitIdle();
 
     /* Make sure command buffer is finished before presenting */
-    while ( device.waitForFences( { *drawFence }, true, vk::su::FenceTimeout ) == vk::Result::eTimeout )
+    while ( device.waitForFences( { drawFence }, true, vk::su::FenceTimeout ) == vk::Result::eTimeout )
       ;
 
     /* Now present the image in the window */

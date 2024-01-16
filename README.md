@@ -934,6 +934,10 @@ With this define, you can disable these declarations, but you will have to decla
 
 If both, VULKAN_HPP_NO_EXCEPTIONS and VULKAN_HPP_EXPECTED are defined, the vk::raii-classes don't throw exceptions. That is, the actual constructors are not available, but the creation-functions must be used. For more details have a look at the vk_raii_ProgrammingGuide.md.
 
+#### VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
+
+Even though the ```vk::UniqueHandles``` and the ```vk::SharedHandles``` are semantically close to pointers, an implicit cast operator to the underlying ```vk::Handle``` might be handy. You can add that implicit cast operator by defining ```VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST```.
+
 #### VULKAN_HPP_STORAGE_API
 
 With this define you can specify whether the ```DispatchLoaderDynamic``` is imported or exported (see ```VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE```). If ```VULKAN_HPP_STORAGE_API``` is not defined externally, and ```VULKAN_HPP_STORAGE_SHARED``` is defined, depending on the ```VULKAN_HPP_STORAGE_SHARED_EXPORT``` being defined, ```VULKAN_HPP_STORAGE_API``` is either set to ```__declspec( dllexport )``` (for MSVC) / ```__attribute__( ( visibility( "default" ) ) )``` (for gcc or clang) or ```__declspec( dllimport )``` (for MSVC), respectively. For other compilers, you might specify the corresponding storage by defining ```VULKAN_HPP_STORAGE_API``` on your own.

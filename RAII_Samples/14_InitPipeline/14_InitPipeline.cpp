@@ -53,7 +53,7 @@ int main( int /*argc*/, char ** /*argv*/ )
       vk::raii::su::findGraphicsAndPresentQueueFamilyIndex( physicalDevice, surfaceData.surface );
     vk::raii::Device device = vk::raii::su::makeDevice( physicalDevice, graphicsAndPresentQueueFamilyIndex.first, vk::su::getDeviceExtensions() );
 
-    vk::Format           colorFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( *surfaceData.surface ) ).format;
+    vk::Format           colorFormat = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surfaceData.surface ) ).format;
     vk::raii::RenderPass renderPass  = vk::raii::su::makeRenderPass( device, colorFormat, vk::Format::eD16Unorm );
 
     vk::raii::DescriptorSetLayout descriptorSetLayout =
@@ -68,8 +68,8 @@ int main( int /*argc*/, char ** /*argv*/ )
     /* VULKAN_KEY_START */
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> pipelineShaderStageCreateInfos = {
-      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eVertex, *vertexShaderModule, "main" ),
-      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eFragment, *fragmentShaderModule, "main" )
+      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eVertex, vertexShaderModule, "main" ),
+      vk::PipelineShaderStageCreateInfo( {}, vk::ShaderStageFlagBits::eFragment, fragmentShaderModule, "main" )
     };
 
     vk::VertexInputBindingDescription                  vertexInputBindingDescription( 0, sizeof( coloredCubeData[0] ) );
@@ -147,8 +147,8 @@ int main( int /*argc*/, char ** /*argv*/ )
                                                                &pipelineDepthStencilStateCreateInfo,   // pDepthStencilState
                                                                &pipelineColorBlendStateCreateInfo,     // pColorBlendState
                                                                &pipelineDynamicStateCreateInfo,        // pDynamicState
-                                                               *pipelineLayout,                        // layout
-                                                               *renderPass                             // renderPass
+                                                               pipelineLayout,                         // layout
+                                                               renderPass                              // renderPass
     );
 
     vk::raii::Pipeline pipeline( device, nullptr, graphicsPipelineCreateInfo );

@@ -1,0 +1,266 @@
+/**
+\cond
+File generate using `python3 docs/generate_samples_dox.py`
+\endcond
+\page Samples Samples
+\subpage Samples_01_InitInstance
+
+\subpage Samples_02_EnumerateDevices
+
+\subpage Samples_03_InitDevice
+
+\subpage Samples_04_InitCommandBuffer
+
+\subpage Samples_05_InitSwapchain
+
+\subpage Samples_06_InitDepthBuffer
+
+\subpage Samples_07_InitUniformBuffer
+
+\subpage Samples_08_InitPipelineLayout
+
+\subpage Samples_09_InitDescriptorSet
+
+\subpage Samples_10_InitRenderPass
+
+\subpage Samples_11_InitShaders
+
+\subpage Samples_12_InitFrameBuffers
+
+\subpage Samples_13_InitVertexBuffer
+
+\subpage Samples_14_InitPipeline
+
+\subpage Samples_15_DrawCube
+
+\subpage Samples_16_Vulkan_1_1
+
+\subpage Samples_CopyBlitImage
+
+\subpage Samples_CreateDebugUtilsMessenger
+
+\subpage Samples_DebugUtilsObjectName
+
+\subpage Samples_DrawTexturedCube
+
+\subpage Samples_DynamicUniform
+
+\subpage Samples_EnableValidationWithCallback
+
+\subpage Samples_EnumerateDevicesAdvanced
+
+\subpage Samples_Events
+
+\subpage Samples_ImmutableSampler
+
+\subpage Samples_InitTexture
+
+\subpage Samples_InputAttachment
+
+\subpage Samples_InstanceExtensionProperties
+
+\subpage Samples_InstanceLayerExtensionProperties
+
+\subpage Samples_InstanceLayerProperties
+
+\subpage Samples_InstanceVersion
+
+\subpage Samples_MultipleSets
+
+\subpage Samples_OcclusionQuery
+
+\subpage Samples_PhysicalDeviceExtensions
+
+\subpage Samples_PhysicalDeviceFeatures
+
+\subpage Samples_PhysicalDeviceGroups
+
+\subpage Samples_PhysicalDeviceMemoryProperties
+
+\subpage Samples_PhysicalDeviceProperties
+
+\subpage Samples_PhysicalDeviceQueueFamilyProperties
+
+\subpage Samples_PipelineCache
+
+\subpage Samples_PipelineDerivative
+
+\subpage Samples_PushConstants
+
+\subpage Samples_PushDescriptors
+
+\subpage Samples_RayTracing
+
+\subpage Samples_SecondaryCommandBuffer
+
+\subpage Samples_SeparateImageSampler
+
+\subpage Samples_SharedHandles
+
+\subpage Samples_SurfaceCapabilities
+
+\subpage Samples_SurfaceFormats
+
+\subpage Samples_Template
+
+\subpage Samples_TexelBuffer
+
+\subpage Samples_utils
+
+
+\page Samples_01_InitInstance 01_InitInstance
+\include samples/01_InitInstance/01_InitInstance.cpp
+
+\page Samples_02_EnumerateDevices 02_EnumerateDevices
+\include samples/02_EnumerateDevices/02_EnumerateDevices.cpp
+
+\page Samples_03_InitDevice 03_InitDevice
+\include samples/03_InitDevice/03_InitDevice.cpp
+
+\page Samples_04_InitCommandBuffer 04_InitCommandBuffer
+\include samples/04_InitCommandBuffer/04_InitCommandBuffer.cpp
+
+\page Samples_05_InitSwapchain 05_InitSwapchain
+\include samples/05_InitSwapchain/05_InitSwapchain.cpp
+
+\page Samples_06_InitDepthBuffer 06_InitDepthBuffer
+\include samples/06_InitDepthBuffer/06_InitDepthBuffer.cpp
+
+\page Samples_07_InitUniformBuffer 07_InitUniformBuffer
+\include samples/07_InitUniformBuffer/07_InitUniformBuffer.cpp
+
+\page Samples_08_InitPipelineLayout 08_InitPipelineLayout
+\include samples/08_InitPipelineLayout/08_InitPipelineLayout.cpp
+
+\page Samples_09_InitDescriptorSet 09_InitDescriptorSet
+\include samples/09_InitDescriptorSet/09_InitDescriptorSet.cpp
+
+\page Samples_10_InitRenderPass 10_InitRenderPass
+\include samples/10_InitRenderPass/10_InitRenderPass.cpp
+
+\page Samples_11_InitShaders 11_InitShaders
+\include samples/11_InitShaders/11_InitShaders.cpp
+
+\page Samples_12_InitFrameBuffers 12_InitFrameBuffers
+\include samples/12_InitFrameBuffers/12_InitFrameBuffers.cpp
+
+\page Samples_13_InitVertexBuffer 13_InitVertexBuffer
+\include samples/13_InitVertexBuffer/13_InitVertexBuffer.cpp
+
+\page Samples_14_InitPipeline 14_InitPipeline
+\include samples/14_InitPipeline/14_InitPipeline.cpp
+
+\page Samples_15_DrawCube 15_DrawCube
+\include samples/15_DrawCube/15_DrawCube.cpp
+
+\page Samples_16_Vulkan_1_1 16_Vulkan_1_1
+\include samples/16_Vulkan_1_1/16_Vulkan_1_1.cpp
+
+\page Samples_CopyBlitImage CopyBlitImage
+\include samples/CopyBlitImage/CopyBlitImage.cpp
+
+\page Samples_CreateDebugUtilsMessenger CreateDebugUtilsMessenger
+\include samples/CreateDebugUtilsMessenger/CreateDebugUtilsMessenger.cpp
+
+\page Samples_DebugUtilsObjectName DebugUtilsObjectName
+\include samples/DebugUtilsObjectName/DebugUtilsObjectName.cpp
+
+\page Samples_DrawTexturedCube DrawTexturedCube
+\include samples/DrawTexturedCube/DrawTexturedCube.cpp
+
+\page Samples_DynamicUniform DynamicUniform
+\include samples/DynamicUniform/DynamicUniform.cpp
+
+\page Samples_EnableValidationWithCallback EnableValidationWithCallback
+\include samples/EnableValidationWithCallback/EnableValidationWithCallback.cpp
+
+\page Samples_EnumerateDevicesAdvanced EnumerateDevicesAdvanced
+\include samples/EnumerateDevicesAdvanced/EnumerateDevicesAdvanced.cpp
+
+\page Samples_Events Events
+\include samples/Events/Events.cpp
+
+\page Samples_ImmutableSampler ImmutableSampler
+\include samples/ImmutableSampler/ImmutableSampler.cpp
+
+\page Samples_InitTexture InitTexture
+\include samples/InitTexture/InitTexture.cpp
+
+\page Samples_InputAttachment InputAttachment
+\include samples/InputAttachment/InputAttachment.cpp
+
+\page Samples_InstanceExtensionProperties InstanceExtensionProperties
+\include samples/InstanceExtensionProperties/InstanceExtensionProperties.cpp
+
+\page Samples_InstanceLayerExtensionProperties InstanceLayerExtensionProperties
+\include samples/InstanceLayerExtensionProperties/InstanceLayerExtensionProperties.cpp
+
+\page Samples_InstanceLayerProperties InstanceLayerProperties
+\include samples/InstanceLayerProperties/InstanceLayerProperties.cpp
+
+\page Samples_InstanceVersion InstanceVersion
+\include samples/InstanceVersion/InstanceVersion.cpp
+
+\page Samples_MultipleSets MultipleSets
+\include samples/MultipleSets/MultipleSets.cpp
+
+\page Samples_OcclusionQuery OcclusionQuery
+\include samples/OcclusionQuery/OcclusionQuery.cpp
+
+\page Samples_PhysicalDeviceExtensions PhysicalDeviceExtensions
+\include samples/PhysicalDeviceExtensions/PhysicalDeviceExtensions.cpp
+
+\page Samples_PhysicalDeviceFeatures PhysicalDeviceFeatures
+\include samples/PhysicalDeviceFeatures/PhysicalDeviceFeatures.cpp
+
+\page Samples_PhysicalDeviceGroups PhysicalDeviceGroups
+\include samples/PhysicalDeviceGroups/PhysicalDeviceGroups.cpp
+
+\page Samples_PhysicalDeviceMemoryProperties PhysicalDeviceMemoryProperties
+\include samples/PhysicalDeviceMemoryProperties/PhysicalDeviceMemoryProperties.cpp
+
+\page Samples_PhysicalDeviceProperties PhysicalDeviceProperties
+\include samples/PhysicalDeviceProperties/PhysicalDeviceProperties.cpp
+
+\page Samples_PhysicalDeviceQueueFamilyProperties PhysicalDeviceQueueFamilyProperties
+\include samples/PhysicalDeviceQueueFamilyProperties/PhysicalDeviceQueueFamilyProperties.cpp
+
+\page Samples_PipelineCache PipelineCache
+\include samples/PipelineCache/PipelineCache.cpp
+
+\page Samples_PipelineDerivative PipelineDerivative
+\include samples/PipelineDerivative/PipelineDerivative.cpp
+
+\page Samples_PushConstants PushConstants
+\include samples/PushConstants/PushConstants.cpp
+
+\page Samples_PushDescriptors PushDescriptors
+\include samples/PushDescriptors/PushDescriptors.cpp
+
+\page Samples_RayTracing RayTracing
+\include samples/RayTracing/RayTracing.cpp
+
+\page Samples_SecondaryCommandBuffer SecondaryCommandBuffer
+\include samples/SecondaryCommandBuffer/SecondaryCommandBuffer.cpp
+
+\page Samples_SeparateImageSampler SeparateImageSampler
+\include samples/SeparateImageSampler/SeparateImageSampler.cpp
+
+\page Samples_SharedHandles SharedHandles
+\include samples/SharedHandles/SharedHandles.cpp
+
+\page Samples_SurfaceCapabilities SurfaceCapabilities
+\include samples/SurfaceCapabilities/SurfaceCapabilities.cpp
+
+\page Samples_SurfaceFormats SurfaceFormats
+\include samples/SurfaceFormats/SurfaceFormats.cpp
+
+\page Samples_Template Template
+\include samples/Template/Template.cpp
+
+\page Samples_TexelBuffer TexelBuffer
+\include samples/TexelBuffer/TexelBuffer.cpp
+
+\page Samples_utils utils
+\include samples/utils/utils.cpp
+*/

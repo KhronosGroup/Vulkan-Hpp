@@ -13,3 +13,6 @@
 [submodule "glfw"]
 	path = glfw
 	url = https://github.com/glfw/glfw
+[submodule "doxygen-awesome-css"]
+	path = doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git

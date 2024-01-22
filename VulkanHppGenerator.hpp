@@ -22,7 +22,7 @@
 #include <tinyxml2.h>
 #include <vector>
 
-const size_t INVALID_INDEX = (size_t)~0;
+constexpr size_t INVALID_INDEX = static_cast<size_t>( ~0 );
 
 template <typename BitType>
 class Flags

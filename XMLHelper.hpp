@@ -65,32 +65,32 @@ struct TypeInfo
            ( postfix.empty() ? "" : " " ) + postfix;
   }
 
-  bool operator==( TypeInfo const & rhs ) const
+  bool operator==( TypeInfo const & rhs ) const noexcept
   {
     return ( prefix == rhs.prefix ) && ( type == rhs.type ) && ( postfix == rhs.postfix );
   }
 
-  bool operator!=( TypeInfo const & rhs ) const
+  bool operator!=( TypeInfo const & rhs ) const noexcept
   {
     return !operator==( rhs );
   }
 
-  bool operator<( TypeInfo const & rhs ) const
+  bool operator<( TypeInfo const & rhs ) const noexcept
   {
     return ( prefix < rhs.prefix ) || ( ( prefix == rhs.prefix ) && ( ( type < rhs.type ) || ( ( type == rhs.type ) && ( postfix < rhs.postfix ) ) ) );
   }
 
-  bool isConstPointer() const
+  bool isConstPointer() const noexcept
   {
     return ( prefix.find( "const" ) != std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
   }
 
-  bool isNonConstPointer() const
+  bool isNonConstPointer() const noexcept
   {
     return ( prefix.find( "const" ) == std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
   }
 
-  bool isValue() const
+  bool isValue() const noexcept
   {
     return ( ( prefix.find( '*' ) == std::string::npos ) && ( postfix.find( '*' ) == std::string::npos ) );
   }
@@ -171,7 +171,7 @@ inline void checkAttributes( int                                                
         checkForWarning( false, line, "unknown attribute <" + a.first + ">" );
         continue;
       }
-      if ( !optionalIt->second.empty() )
+      else if ( !optionalIt->second.empty() )
       {
         std::vector<std::string> values = tokenize( a.second, "," );
         for ( auto const & v : values )
@@ -254,6 +254,7 @@ inline std::string generateStandardArrayWrapper( std::string const & type, std::
 
 inline std::map<std::string, std::string> getAttributes( tinyxml2::XMLElement const * element )
 {
+  assert( element );
   std::map<std::string, std::string> attributes;
   for ( auto attribute = element->FirstAttribute(); attribute; attribute = attribute->Next() )
   {
@@ -274,19 +275,19 @@ inline std::vector<tinyxml2::XMLElement const *> getChildElements( ElementContai
   return childElements;
 }
 
-inline bool isHexNumber( std::string const & name )
+inline bool isHexNumber( std::string const & name ) noexcept
 {
   return name.starts_with( "0x" ) && ( name.find_first_not_of( "0123456789ABCDEF", 2 ) == std::string::npos );
 }
 
-inline bool isNumber( std::string const & name )
+inline bool isNumber( std::string const & name ) noexcept
 {
   return name.find_first_not_of( "0123456789" ) == std::string::npos;
 }
 
 inline std::string readComment( tinyxml2::XMLElement const * element )
 {
-  int line = element->GetLineNum();
+  const int line = element->GetLineNum();
   checkAttributes( line, getAttributes( element ), {}, {} );
   checkElements( line, getChildElements( element ), {} );
   return element->GetText();
@@ -306,7 +307,7 @@ inline std::pair<std::vector<std::string>, std::string> readModifiers( tinyxml2:
       std::string::size_type endPos = 0;
       while ( endPos + 1 != value.length() )
       {
-        std::string::size_type startPos = value.find( '[', endPos );
+        const std::string::size_type startPos = value.find( '[', endPos );
         checkForError( startPos != std::string::npos, node->GetLineNum(), "could not find '[' in <" + value + ">" );
         endPos = value.find( ']', startPos );
         checkForError( endPos != std::string::npos, node->GetLineNum(), "could not find ']' in <" + value + ">" );
@@ -526,15 +527,15 @@ std::string toUpperCase( std::string const & name )
 inline std::string trim( std::string const & input )
 {
   std::string result = input;
-  result.erase( result.begin(), std::find_if( result.begin(), result.end(), []( char c ) { return !std::isspace( c ); } ) );
-  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(), result.end() );
+  result.erase( result.begin(), std::find_if( result.begin(), result.end(), []( char c ) noexcept { return !std::isspace( c ); } ) );
+  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) noexcept { return !std::isspace( c ); } ).base(), result.end() );
   return result;
 }
 
 inline std::string trimEnd( std::string const & input )
 {
   std::string result = input;
-  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) { return !std::isspace( c ); } ).base(), result.end() );
+  result.erase( std::find_if( result.rbegin(), result.rend(), []( char c ) noexcept { return !std::isspace( c ); } ).base(), result.end() );
   return result;
 }
 
@@ -567,8 +568,8 @@ void writeToFile( std::string const & str, std::string const & fileName )
 
 #if defined( CLANG_FORMAT_EXECUTABLE )
   std::cout << "VulkanHppGenerator: Formatting " << fileName << " ..." << std::endl;
-  std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
-  int         ret           = std::system( commandString.c_str() );
+  const std::string commandString = "\"" CLANG_FORMAT_EXECUTABLE "\" -i --style=file " + fileName;
+  const int         ret           = std::system( commandString.c_str() );
   if ( ret != 0 )
   {
     std::cout << "VulkanHppGenerator: failed to format file " << fileName << " with error <" << ret << ">\n";

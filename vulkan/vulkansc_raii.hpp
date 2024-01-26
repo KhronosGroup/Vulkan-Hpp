@@ -583,6 +583,8 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_EXT_line_rasterization ===
         vkCmdSetLineStippleEXT = PFN_vkCmdSetLineStippleEXT( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleEXT" ) );
+        if ( !vkCmdSetLineStippleKHR )
+          vkCmdSetLineStippleKHR = vkCmdSetLineStippleEXT;
 
         //=== VK_EXT_extended_dynamic_state ===
         vkCmdSetCullModeEXT = PFN_vkCmdSetCullModeEXT( vkGetDeviceProcAddr( device, "vkCmdSetCullModeEXT" ) );
@@ -10558,7 +10560,8 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_INLINE void CommandBuffer::setLineStippleEXT( uint32_t lineStippleFactor, uint16_t lineStipplePattern ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLineStippleEXT && "Function <vkCmdSetLineStippleEXT> requires <VK_EXT_line_rasterization>" );
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLineStippleEXT &&
+                         "Function <vkCmdSetLineStippleEXT> requires <VK_EXT_line_rasterization> or <VK_KHR_line_rasterization>" );
 
       getDispatcher()->vkCmdSetLineStippleEXT( static_cast<VkCommandBuffer>( m_commandBuffer ), lineStippleFactor, lineStipplePattern );
     }

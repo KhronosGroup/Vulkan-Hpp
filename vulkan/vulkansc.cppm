@@ -399,9 +399,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateFlagBitsEXT;
   using VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateFlagsEXT;
 
-  //=== VK_EXT_line_rasterization ===
-  using VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT;
-
   //=== VK_KHR_object_refresh ===
   using VULKAN_HPP_NAMESPACE::RefreshObjectFlagBitsKHR;
   using VULKAN_HPP_NAMESPACE::RefreshObjectFlagsKHR;
@@ -1445,16 +1442,8 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_headless_surface ===
   using VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateInfoEXT;
 
-  //=== VK_EXT_line_rasterization ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationFeaturesEXT;
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationPropertiesEXT;
-  using VULKAN_HPP_NAMESPACE::PipelineRasterizationLineStateCreateInfoEXT;
-
   //=== VK_EXT_shader_atomic_float ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicFloatFeaturesEXT;
-
-  //=== VK_EXT_index_type_uint8 ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceIndexTypeUint8FeaturesEXT;
 
   //=== VK_EXT_extended_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceExtendedDynamicStateFeaturesEXT;

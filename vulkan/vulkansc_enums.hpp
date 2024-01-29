@@ -3514,16 +3514,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR HeadlessSurfaceCreateFlagsEXT allFlags  = {};
   };
 
-  //=== VK_EXT_line_rasterization ===
-
-  enum class LineRasterizationModeEXT
-  {
-    eDefault           = VK_LINE_RASTERIZATION_MODE_DEFAULT_EXT,
-    eRectangular       = VK_LINE_RASTERIZATION_MODE_RECTANGULAR_EXT,
-    eBresenham         = VK_LINE_RASTERIZATION_MODE_BRESENHAM_EXT,
-    eRectangularSmooth = VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_EXT
-  };
-
   //=== VK_KHR_object_refresh ===
 
   enum class RefreshObjectFlagBitsKHR : VkRefreshObjectFlagsKHR
@@ -3587,18 +3577,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct CppType<IndexType, IndexType::eUint32>
   {
     using Type = uint32_t;
-  };
-
-  template <>
-  struct IndexTypeValue<uint8_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint8EXT;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint8EXT>
-  {
-    using Type = uint8_t;
   };
 
   //===========================================================

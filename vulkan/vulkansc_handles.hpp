@@ -636,16 +636,8 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_headless_surface ===
   struct HeadlessSurfaceCreateInfoEXT;
 
-  //=== VK_EXT_line_rasterization ===
-  struct PhysicalDeviceLineRasterizationFeaturesEXT;
-  struct PhysicalDeviceLineRasterizationPropertiesEXT;
-  struct PipelineRasterizationLineStateCreateInfoEXT;
-
   //=== VK_EXT_shader_atomic_float ===
   struct PhysicalDeviceShaderAtomicFloatFeaturesEXT;
-
-  //=== VK_EXT_index_type_uint8 ===
-  struct PhysicalDeviceIndexTypeUint8FeaturesEXT;
 
   //=== VK_EXT_extended_dynamic_state ===
   struct PhysicalDeviceExtendedDynamicStateFeaturesEXT;

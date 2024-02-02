@@ -15191,7 +15191,9 @@ TypeInfo VulkanHppGenerator::readTypeInfo( tinyxml2::XMLElement const * element 
 void VulkanHppGenerator::registerDeleter( std::string const & commandName, CommandData const & commandData )
 {
   // some special handling for release functions that don't release an object
-  const std::set<std::string> noDeleterFunctions = { "vkReleaseFullScreenExclusiveModeEXT", "vkReleaseProfilingLockKHR", "vkReleaseSwapchainImagesEXT" };
+  const std::set<std::string> noDeleterFunctions = {
+    "vkReleaseCapturedPipelineDataKHR", "vkReleaseFullScreenExclusiveModeEXT", "vkReleaseProfilingLockKHR", "vkReleaseSwapchainImagesEXT"
+  };
 
   if ( ( commandName.substr( 2, 7 ) == "Destroy" ) || ( commandName.substr( 2, 4 ) == "Free" ) ||
        ( ( commandName.substr( 2, 7 ) == "Release" ) && !noDeleterFunctions.contains( commandName ) ) )

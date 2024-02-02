@@ -10602,18 +10602,17 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
       }
     }
 
-    std::string arguments, initializers;
-    bool        listedArgument = false;
-    bool        firstArgument  = true;
-    bool        arrayListed    = false;
-    std::string templateHeader, sizeChecks, copyOps;
+    std::string              arguments;
+    std::vector<std::string> initializersList;
+    bool                     listedArgument = false;
+    bool                     arrayListed    = false;
+    std::string              templateHeader, sizeChecks, copyOps;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
       // gather the initializers
       if ( mit->name == "pNext" )  // for pNext, we just get the initializer... the argument is added at the end
       {
-        initializers += std::string( firstArgument ? ":" : "," ) + " pNext( pNext_ )";
-        firstArgument = false;
+        initializersList.push_back( "pNext( pNext_ )" );
       }
       else if ( mit->value.empty() )  // skip constant members
       {
@@ -10621,8 +10620,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
         if ( litit != lenIts.end() )
         {
           // len arguments just have an initalizer, from the array size
-          initializers +=
-            ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
+          initializersList.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
         else if ( hasLen( *mit ) )
@@ -10670,7 +10668,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
 
           if ( mit->type.isPointer() )
           {
-            initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + argumentName + ".data() )";
+            initializersList.push_back( mit->name + "( " + argumentName + ".data() )" );
           }
           else
           {
@@ -10697,9 +10695,8 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             listedArgument = true;
             arguments += argument;
           }
-          initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + mit->name + "_ )";
+          initializersList.push_back( mit->name + "( " + mit->name + "_ )" );
         }
-        firstArgument = false;
       }
     }
 
@@ -10709,6 +10706,16 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
     {
       // add pNext as a last optional argument to the constructor
       arguments += std::string( listedArgument ? ", " : "" ) + pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr";
+    }
+
+    std::string initializers;
+    if ( !initializersList.empty() )
+    {
+      initializers = ": " + initializersList[0];
+      for ( size_t i = 1; i < initializersList.size(); ++i )
+      {
+        initializers += ", " + initializersList[i];
+      }
     }
 
     static const std::string constructorTemplate = R"(

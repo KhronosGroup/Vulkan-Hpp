@@ -30,10 +30,10 @@ Alternatively, you can use a creation function to create a `vk::raii::Device`:
     // create a vk::raii::Device, given a vk::raii::PhysicalDevice physicalDevice and a vk::DeviceCreateInfo deviceCreateInfo
     vk::raii::Device device = physicalDevice.createDevice( deviceCreateInfo );
 
-Finally, if you have defined `VULKAN_HPP_NO_EXCPETIONS` and compile for at least C++23, the constructors as described above are not available (they would potentially throw an exception which is not allowed then) but you have to use the construction functions. Those functions then do not return the created object, but a `std::expected<vk::raii::Object, vk::Result>`:
+Finally, if you have defined `VULKAN_HPP_NO_EXCEPTIONS` and compile for at least C++23, the constructors as described above are not available (they would potentially throw an exception which is not allowed then) but you have to use the construction functions. Those functions then do not return the created object, but a `std::expected<vk::raii::Object, vk::Result>`:
 
     // create a vk::raii::Device, given a vk::raii::PhysicalDevice physicalDevice and a vk::DeviceCreateInfo deviceCreateInfo
-	// when VULKAN_HPP_NO_EXCPETIONS is defined and your using at least C++23
+	// when VULKAN_HPP_NO_EXCEPTIONS is defined and your using at least C++23
 	auto deviceExpected = physicalDevice.createDevice( deviceCreateInfo );
 	if ( deviceExpected.has_value() )
 	{

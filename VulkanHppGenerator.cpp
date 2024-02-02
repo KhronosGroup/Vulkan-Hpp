@@ -11325,7 +11325,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     ${structureName} & set${ArrayName}( std::string const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( ${arrayName}_.size() < ${arraySize} );
-      strncpy( ${arrayName}, ${arrayName}_.data(), std::min<size_t>( ${arrayName}_.size(), ${arraySize} );
+      strncpy( ${arrayName}, ${arrayName}_.data(), std::min<size_t>( ${arrayName}_.size(), ${arraySize} ) );
       return *this;
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

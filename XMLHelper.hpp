@@ -82,12 +82,17 @@ struct TypeInfo
 
   bool isConstPointer() const noexcept
   {
-    return ( prefix.find( "const" ) != std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
+    return isPointer() && ( prefix.find( "const" ) != std::string::npos );
   }
 
   bool isNonConstPointer() const noexcept
   {
-    return ( prefix.find( "const" ) == std::string::npos ) && ( postfix.find( '*' ) != std::string::npos );
+    return isPointer() && ( prefix.find( "const" ) == std::string::npos );
+  }
+
+  bool isPointer() const noexcept
+  {
+    return postfix.find( '*' ) != std::string::npos;
   }
 
   bool isValue() const noexcept

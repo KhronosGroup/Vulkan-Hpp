@@ -7969,8 +7969,9 @@ std::string VulkanHppGenerator::generateLenInitializer(
     assert( ( arrayIt->lenExpressions.front() == litit->first->name ) ||
             ( ( arrayIt->lenExpressions.front() == "codeSize / 4" ) && ( litit->first->name == "codeSize" ) ) );
 
-    assert( arrayIt->name.starts_with( "p" ) );
-    std::string argumentName = startLowerCase( stripPrefix( arrayIt->name, "p" ) ) + "_";
+    assert( arrayIt->type.isPointer() || !arrayIt->arraySizes.empty() );
+    assert( !arrayIt->type.isPointer() || arrayIt->name.starts_with( "p" ) );
+    std::string argumentName = ( arrayIt->type.isPointer() ? startLowerCase( stripPrefix( arrayIt->name, "p" ) ) : arrayIt->name ) + "_";
 
     assert( mit->type.prefix.empty() && mit->type.postfix.empty() );
     initializer = argumentName + ".size()";
@@ -7987,6 +7988,11 @@ std::string VulkanHppGenerator::generateLenInitializer(
   if ( mit->type.type != "size_t" )
   {
     initializer = "static_cast<" + mit->type.type + ">( " + initializer + " )";
+  }
+  if ( !litit->second.front()->arraySizes.empty() )
+  {
+    assert( litit->second.front()->arraySizes.size() == 1 );
+    initializer = "std::min( " + initializer + ", " + litit->second.front()->arraySizes[0] + " )";
   }
   return initializer;
 }
@@ -10390,14 +10396,28 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
       if ( member.lenExpressions.size() == 1 )
       {
         assert( member.lenExpressions[0] == "null-terminated" );
-        compareMembers += intro + "( ( " + member.name + " == rhs." + member.name + " ) || ( strcmp( " + member.name + ", rhs." + member.name + " ) == 0 ) )";
+        if ( member.arraySizes.empty() )
+        {
+          compareMembers += intro + "( ( " + member.name + " == rhs." + member.name + " ) || ( strcmp( " + member.name + ", rhs." + member.name + " ) == 0 ) )";
 
-        static const std::string spaceshipMemberTemplate =
-          R"(     if ( ${name} != rhs.${name} )
+          static const std::string spaceshipMemberTemplate =
+            R"(     if ( ${name} != rhs.${name} )
         if ( auto cmp = strcmp( ${name}, rhs.${name} ); cmp != 0 )
           return ( cmp < 0 ) ? ${ordering}::less : ${ordering}::greater;
 )";
-        spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering } } );
+          spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering } } );
+        }
+        else
+        {
+          assert( member.arraySizes.size() == 1 );
+          compareMembers += intro + "( strcmp( " + member.name + ", rhs." + member.name + " ) == 0 )";
+
+          static const std::string spaceshipMemberTemplate =
+            R"(     if ( auto cmp = strcmp( ${name}, rhs.${name} ); cmp != 0 )
+          return ( cmp < 0 ) ? ${ordering}::less : ${ordering}::greater;
+)";
+          spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "name", member.name }, { "ordering", spaceshipOrdering } } );
+        }
       }
       else
       {
@@ -10417,6 +10437,27 @@ std::string VulkanHppGenerator::generateStructCompareOperators( std::pair<std::s
         spaceshipMembers +=
           replaceWithMap( spaceshipMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "ordering", spaceshipOrdering } } );
       }
+    }
+    else if ( !member.arraySizes.empty() && !member.lenExpressions.empty() )
+    {
+      nonDefaultCompare = true;
+
+      assert( ( member.arraySizes.size() == 1 ) && ( member.lenExpressions.size() == 1 ) );
+      assert( std::find_if( structData.second.members.begin(),
+                            structData.second.members.end(),
+                            [&member]( MemberData const & m ) { return m.name == member.lenExpressions[0]; } ) != structData.second.members.end() );
+
+      std::string type = member.type.type.starts_with( "Vk" ) ? member.type.compose( "VULKAN_HPP_NAMESPACE" ) : member.type.type;
+
+      static const std::string compareMemberTemplate = R"(( memcmp( ${name}, rhs.${name}, ${count} * sizeof( ${type} ) ) == 0 ))";
+      compareMembers += intro + replaceWithMap( compareMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name }, { "type", type } } );
+
+      static const std::string spaceshipMemberTemplate = R"(      for ( size_t i = 0; i < ${count}; ++i )
+      {
+        if ( auto cmp = ${name}[i] <=> rhs.${name}[i]; cmp != 0 ) return cmp;
+      }
+)";
+      spaceshipMembers += replaceWithMap( spaceshipMemberTemplate, { { "count", member.lenExpressions[0] }, { "name", member.name } } );
     }
     else
     {
@@ -10565,7 +10606,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
     bool        listedArgument = false;
     bool        firstArgument  = true;
     bool        arrayListed    = false;
-    std::string templateHeader, sizeChecks;
+    std::string templateHeader, sizeChecks, copyOps;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
       // gather the initializers
@@ -10579,18 +10620,21 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
         auto litit = lenIts.find( mit );
         if ( litit != lenIts.end() )
         {
-          // len arguments just have an initalizer, from the ArrayProxyNoTemporaries size
+          // len arguments just have an initalizer, from the array size
           initializers +=
             ( firstArgument ? ": " : ", " ) + mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )";
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
         else if ( hasLen( *mit ) )
         {
-          assert( mit->name.starts_with( "p" ) );
-          std::string argumentName = startLowerCase( stripPrefix( mit->name, "p" ) ) + "_";
+          assert( mit->type.isPointer() || !mit->arraySizes.empty() );
+          std::string argumentName = ( mit->type.isPointer() ? startLowerCase( stripPrefix( mit->name, "p" ) ) : mit->name ) + "_";
 
-          assert( mit->type.postfix.ends_with( "*" ) );
-          std::string argumentType = trimEnd( stripPostfix( mit->type.compose( "VULKAN_HPP_NAMESPACE" ), "*" ) );
+          std::string argumentType = mit->type.compose( "VULKAN_HPP_NAMESPACE" );
+          if ( mit->type.isPointer() )
+          {
+            argumentType = trimEnd( stripPostfix( argumentType, "*" ) );
+          }
           if ( ( mit->type.type == "void" ) && ( argumentType.find( '*' ) == std::string::npos ) )
           {
             // the argument after stripping one pointer is just void
@@ -10603,7 +10647,20 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
           }
 
           arguments += listedArgument ? ", " : "";
-          arguments += "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName;
+          if ( mit->lenExpressions[0] == "null-terminated" )
+          {
+            assert( ( mit->type.type == "char" ) && ( mit->arraySizes.size() == 1 ) );
+            arguments += "std::string const & " + argumentName;
+          }
+          else if ( mit->arraySizes.empty() )
+          {
+            arguments += "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName;
+          }
+          else
+          {
+            assert( mit->arraySizes.size() == 1 );
+            arguments += "VULKAN_HPP_NAMESPACE::ArrayProxy<" + argumentType + "> const & " + argumentName;
+          }
           if ( arrayListed )
           {
             arguments += " = {}";
@@ -10611,7 +10668,26 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
           listedArgument = true;
           arrayListed    = true;
 
-          initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + argumentName + ".data() )";
+          if ( mit->type.isPointer() )
+          {
+            initializers += ( firstArgument ? ": " : ", " ) + mit->name + "( " + argumentName + ".data() )";
+          }
+          else
+          {
+            assert( mit->arraySizes.size() == 1 );
+            static const std::string copyOpsTemplate = R"(
+    VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
+    ${copyOp}( ${memberName}, ${memberName}_.data(), ${arraySizeExpression} );)";
+
+            std::string arraySizeExpression = ( mit->lenExpressions[0] == "null-terminated" )
+                                              ? ( "std::min( " + mit->name + "_.size(), " + mit->arraySizes[0] + " )" )
+                                              : ( mit->lenExpressions[0] + " * sizeof( " + argumentType + " )" );
+            copyOps += replaceWithMap( copyOpsTemplate,
+                                       { { "arraySize", mit->arraySizes[0] },
+                                         { "arraySizeExpression", arraySizeExpression },
+                                         { "copyOp", mit->lenExpressions[0] == "null-terminated" ? "strncpy" : "memcpy" },
+                                         { "memberName", mit->name } } );
+          }
         }
         else
         {
@@ -10639,12 +10715,13 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 ${templateHeader}    ${structName}( ${arguments} )
     ${initializers}
-    {${sizeChecks}}
+    {${sizeChecks}${copyOps}}
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 )";
 
     return replaceWithMap( constructorTemplate,
                            { { "arguments", arguments },
+                             { "copyOps", copyOps },
                              { "initializers", initializers },
                              { "sizeChecks", sizeChecks },
                              { "structName", stripPrefix( structData.first, "Vk" ) },
@@ -11228,45 +11305,81 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
 
     if ( hasLen( member ) )
     {
-      assert( member.name.front() == 'p' );
-      std::string arrayName = startLowerCase( stripPrefix( member.name, "p" ) );
+      assert( member.type.isPointer() || !member.arraySizes.empty() );
+      assert( !member.type.isPointer() || member.name.starts_with( "p" ) );
+      std::string arrayName = member.type.isPointer() ? startLowerCase( stripPrefix( member.name, "p" ) ) : member.name;
 
-      std::string lenName, lenValue;
-      if ( member.lenExpressions[0] == "codeSize / 4" )
+      if ( member.lenExpressions[0] == "null-terminated" )
       {
-        lenName  = "codeSize";
-        lenValue = arrayName + "_.size() * 4";
+        assert( member.lenMembers.empty() && ( member.lenExpressions.size() == 1 ) && ( member.arraySizes.size() == 1 ) && ( member.type.type == "char" ) );
+
+        static const std::string setStringTemplate = R"(
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ${structureName} & set${ArrayName}( std::string const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( ${arrayName}_.size() < ${arraySize} );
+      strncpy( ${arrayName}, ${arrayName}_.data(), std::min( ${arrayName}_.size(), ${arraySize} );
+      return *this;
+    }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
+
+        str += replaceWithMap( setStringTemplate,
+                               { { "arrayName", arrayName },
+                                 { "ArrayName", startUpperCase( arrayName ) },
+                                 { "arraySize", member.arraySizes[0] },
+                                 { "structureName", structureName } } );
       }
       else
       {
-        lenName  = member.lenExpressions[0];
-        lenValue = arrayName + "_.size()";
-      }
+        assert( ( member.lenExpressions[0] == member.lenMembers[0].first ) || ( member.lenExpressions[0] == "codeSize / 4" ) );
+        std::string lenName, lenValue;
+        if ( member.lenExpressions[0] == "codeSize / 4" )
+        {
+          lenName  = "codeSize";
+          lenValue = arrayName + "_.size() * 4";
+        }
+        else
+        {
+          lenName  = member.lenExpressions[0];
+          lenValue = arrayName + "_.size()";
+        }
 
-      assert( memberType.back() == '*' );
-      memberType = trimEnd( stripPostfix( memberType, "*" ) );
+        if ( member.type.isPointer() )
+        {
+          assert( memberType.back() == '*' );
+          memberType = trimEnd( stripPostfix( memberType, "*" ) );
+        }
 
-      std::string templateHeader;
-      if ( ( member.type.type == "void" ) && ( memberType.find( '*' ) == std::string::npos ) )
-      {
-        assert( templateHeader.empty() );
-        templateHeader = "template <typename T>\n    ";
+        std::string templateHeader;
+        if ( ( member.type.type == "void" ) && ( memberType.find( '*' ) == std::string::npos ) )
+        {
+          assert( templateHeader.empty() );
+          templateHeader = "template <typename T>\n    ";
 
-        const size_t pos = memberType.find( "void" );
-        assert( pos != std::string::npos );
-        memberType.replace( pos, strlen( "void" ), "T" );
+          const size_t pos = memberType.find( "void" );
+          assert( pos != std::string::npos );
+          memberType.replace( pos, strlen( "void" ), "T" );
 
-        lenValue += " * sizeof(T)";
-      }
+          lenValue += " * sizeof(T)";
+        }
 
-      auto lenMember = findStructMemberIt( lenName, memberData );
-      assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
-      if ( lenMember->type.type != "size_t" )
-      {
-        lenValue = "static_cast<" + lenMember->type.type + ">( " + lenValue + " )";
-      }
+        auto lenMember = findStructMemberIt( lenName, memberData );
+        assert( lenMember != memberData.end() && lenMember->type.prefix.empty() && lenMember->type.postfix.empty() );
+        if ( lenMember->type.type != "size_t" )
+        {
+          lenValue = "static_cast<" + lenMember->type.type + ">( " + lenValue + " )";
+        }
 
-      static const std::string setArrayTemplate = R"(
+        if ( !member.arraySizes.empty() )
+        {
+          assert( member.arraySizes.size() == 1 );
+          lenValue = "std::min( " + lenValue + ", " + member.arraySizes[0] + " )";
+        }
+
+        if ( member.type.isPointer() )
+        {
+          static const std::string setArrayTemplate = R"(
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
     ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
@@ -11277,15 +11390,43 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 )";
 
-      str += replaceWithMap( setArrayTemplate,
-                             { { "arrayName", arrayName },
-                               { "ArrayName", startUpperCase( arrayName ) },
-                               { "lenName", lenName },
-                               { "lenValue", lenValue },
-                               { "memberName", member.name },
-                               { "memberType", memberType },
-                               { "structureName", structureName },
-                               { "templateHeader", templateHeader } } );
+          str += replaceWithMap( setArrayTemplate,
+                                 { { "arrayName", arrayName },
+                                   { "ArrayName", startUpperCase( arrayName ) },
+                                   { "lenName", lenName },
+                                   { "lenValue", lenValue },
+                                   { "memberName", member.name },
+                                   { "memberType", memberType },
+                                   { "structureName", structureName },
+                                   { "templateHeader", templateHeader } } );
+        }
+        else
+        {
+          assert( member.arraySizes.size() == 1 );
+
+          static const std::string setArrayTemplate = R"(
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ${templateHeader}${structureName} & set${ArrayName}( VULKAN_HPP_NAMESPACE::ArrayProxy<${memberType}> const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( ${arrayName}_.size() <= ${arraySize} );
+      ${lenName} = ${lenValue};
+      memcpy( ${arrayName}, ${arrayName}_.data(), ${lenName} );
+      return *this;
+    }
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
+
+          str += replaceWithMap( setArrayTemplate,
+                                 { { "arrayName", arrayName },
+                                   { "ArrayName", startUpperCase( arrayName ) },
+                                   { "arraySize", member.arraySizes[0] },
+                                   { "lenName", lenName },
+                                   { "lenValue", lenValue },
+                                   { "memberType", member.type.compose( "VULKAN_HPP_NAMESPACE" ) },
+                                   { "structureName", structureName },
+                                   { "templateHeader", templateHeader } } );
+        }
+      }
     }
   }
   return str;
@@ -12249,8 +12390,9 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
 bool VulkanHppGenerator::hasLen( MemberData const & memberData ) const
 {
   assert( memberData.lenMembers.size() <= memberData.lenExpressions.size() );
-  return !memberData.lenMembers.empty() && ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) ||
-                                             ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) );
+  return ( !memberData.lenMembers.empty() && ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) ||
+                                               ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) ) ) ||
+         ( !memberData.lenExpressions.empty() && ( memberData.lenExpressions[0] == "null-terminated" ) && !memberData.arraySizes.empty() );
 }
 
 bool VulkanHppGenerator::hasParentHandle( std::string const & handle, std::string const & parent ) const

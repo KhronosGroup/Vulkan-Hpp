@@ -531,6 +531,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      { "VK_EXT_vertex_attribute_divisor", "VK_KHR_vertex_attribute_divisor" },
                                                                      { "VK_KHR_shader_terminate_invocation", "VK_VERSION_1_3" },
                                                                      { "VK_EXT_subgroup_size_control", "VK_VERSION_1_3" },
+                                                                     { "VK_EXT_line_rasterization", "VK_KHR_line_rasterization" },
                                                                      { "VK_EXT_index_type_uint8", "VK_KHR_index_type_uint8" },
                                                                      { "VK_EXT_extended_dynamic_state", "VK_VERSION_1_3" },
                                                                      { "VK_EXT_shader_demote_to_helper_invocation", "VK_VERSION_1_3" },
@@ -594,6 +595,10 @@ namespace VULKAN_HPP_NAMESPACE
     if ( extension == "VK_EXT_subgroup_size_control" )
     {
       return "VK_VERSION_1_3";
+    }
+    if ( extension == "VK_EXT_line_rasterization" )
+    {
+      return "VK_KHR_line_rasterization";
     }
     if ( extension == "VK_EXT_index_type_uint8" )
     {
@@ -703,7 +708,7 @@ namespace VULKAN_HPP_NAMESPACE
     return ( extension == "VK_EXT_texture_compression_astc_hdr" ) || ( extension == "VK_EXT_global_priority" ) ||
            ( extension == "VK_EXT_calibrated_timestamps" ) || ( extension == "VK_EXT_vertex_attribute_divisor" ) ||
            ( extension == "VK_KHR_shader_terminate_invocation" ) || ( extension == "VK_EXT_subgroup_size_control" ) ||
-           ( extension == "VK_EXT_index_type_uint8" ) || ( extension == "VK_EXT_extended_dynamic_state" ) ||
+           ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_index_type_uint8" ) || ( extension == "VK_EXT_extended_dynamic_state" ) ||
            ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) || ( extension == "VK_EXT_texel_buffer_alignment" ) ||
            ( extension == "VK_KHR_synchronization2" ) || ( extension == "VK_EXT_ycbcr_2plane_444_formats" ) || ( extension == "VK_EXT_image_robustness" ) ||
            ( extension == "VK_KHR_copy_commands2" ) || ( extension == "VK_EXT_4444_formats" ) || ( extension == "VK_EXT_extended_dynamic_state2" );

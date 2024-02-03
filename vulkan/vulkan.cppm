@@ -2412,6 +2412,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::QCOMMultiviewPerViewRenderAreasExtensionName;
   using VULKAN_HPP_NAMESPACE::QCOMMultiviewPerViewRenderAreasSpecVersion;
 
+  //=== VK_KHR_video_decode_av1 ===
+  using VULKAN_HPP_NAMESPACE::KHRVideoDecodeAv1ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRVideoDecodeAv1SpecVersion;
+  using VULKAN_HPP_NAMESPACE::MaxVideoAv1ReferencesPerFrameKHR;
+
   //=== VK_KHR_video_maintenance1 ===
   using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance1ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRVideoMaintenance1SpecVersion;
@@ -4226,6 +4231,13 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
+
+  //=== VK_KHR_video_decode_av1 ===
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1CapabilitiesKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1DpbSlotInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1PictureInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1ProfileInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VideoDecodeAV1SessionParametersCreateInfoKHR;
 
   //=== VK_KHR_video_maintenance1 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVideoMaintenance1FeaturesKHR;

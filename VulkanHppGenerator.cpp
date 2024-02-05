@@ -2036,7 +2036,7 @@ std::map<size_t, VulkanHppGenerator::VectorParamData> VulkanHppGenerator::determ
   // look for the parameters whose len equals the name of an other parameter
   for ( size_t i = 0; i < params.size(); i++ )
   {
-    if ( !params[i].lenExpression.empty() && ( params[i].lenExpression != "null-terminated" ) )
+    if ( !params[i].lenExpression.empty() && ( params[i].lenExpression != "null-terminated" ) && ( params[i].lenExpression != "1" ) )
     {
       VectorParamData & vpd = vectorParams[i];
 
@@ -2914,7 +2914,7 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedNonConstPointer( Par
 {
   std::string argument;
   std::string name = startLowerCase( stripPrefix( param.name, "p" ) );
-  if ( param.lenExpression.empty() )
+  if ( param.lenExpression.empty() || ( param.lenExpression == "1" ) )
   {
     assert( param.arraySizes.empty() );
     if ( param.type.type.starts_with( "Vk" ) )
@@ -12813,7 +12813,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
         }
         else
         {
-          checkForError( ( attribute.second == "null-terminated" ) || isLenByStructMember( attribute.second, params ),
+          checkForError( ( attribute.second == "null-terminated" ) || ( attribute.second == "1" ) || isLenByStructMember( attribute.second, params ),
                          line,
                          "attribute <len> holds an unknown value <" + attribute.second + ">" );
         }

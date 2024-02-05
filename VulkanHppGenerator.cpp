@@ -12813,7 +12813,7 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
         }
         else
         {
-          checkForError( ( attribute.second == "null-terminated" ) || isLenByStructMember( attribute.second, params ),
+          checkForError( ( attribute.second == "null-terminated" ) || ( attribute.second == "1" ) || isLenByStructMember( attribute.second, params ),
                          line,
                          "attribute <len> holds an unknown value <" + attribute.second + ">" );
         }

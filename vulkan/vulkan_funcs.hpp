@@ -22589,8 +22589,34 @@ namespace VULKAN_HPP_NAMESPACE
     std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> data_;
     VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT &                                                    faultCounts = data_.first;
     VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT &                                                      faultInfo   = data_.second;
-    VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetDeviceFaultInfoEXT(
-      m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) ) );
+    VULKAN_HPP_NAMESPACE::Result                                                                    result;
+    do
+    {
+      result =
+        static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), nullptr ) );
+      if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        std::free( faultInfo.pAddressInfos );
+        if ( faultCounts.addressInfoCount )
+        {
+          faultInfo.pAddressInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT *>(
+            std::malloc( faultCounts.addressInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT ) ) );
+        }
+        std::free( faultInfo.pVendorInfos );
+        if ( faultCounts.vendorInfoCount )
+        {
+          faultInfo.pVendorInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *>(
+            std::malloc( faultCounts.vendorInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT ) ) );
+        }
+        std::free( faultInfo.pVendorBinaryData );
+        if ( faultCounts.vendorBinarySize )
+        {
+          faultInfo.pVendorBinaryData = std::malloc( faultCounts.vendorBinarySize );
+        }
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetDeviceFaultInfoEXT(
+          m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) ) );
+      }
+    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
     resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultInfoEXT", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
 

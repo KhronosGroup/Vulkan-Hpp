@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 276, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 277, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -6852,6 +6852,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_shader_module_identifier ===
   VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxShaderModuleIdentifierSizeEXT = VK_MAX_SHADER_MODULE_IDENTIFIER_SIZE_EXT;
 
+  //=== VK_KHR_video_decode_av1 ===
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t MaxVideoAv1ReferencesPerFrameKHR = VK_MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -7969,8 +7972,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRBufferDeviceAddressSpecVersion = VK_KHR_BUFFER_DEVICE_ADDRESS_SPEC_VERSION;
 
   //=== VK_EXT_line_rasterization ===
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_line_rasterization extension has been promoted to VK_KHR_line_rasterization." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationExtensionName = VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME;
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationSpecVersion   = VK_EXT_LINE_RASTERIZATION_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_EXT_line_rasterization extension has been promoted to VK_KHR_line_rasterization." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationSpecVersion = VK_EXT_LINE_RASTERIZATION_SPEC_VERSION;
 
   //=== VK_EXT_shader_atomic_float ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderAtomicFloatExtensionName = VK_EXT_SHADER_ATOMIC_FLOAT_EXTENSION_NAME;
@@ -8583,6 +8588,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMMultiviewPerViewRenderAreasExtensionName = VK_QCOM_MULTIVIEW_PER_VIEW_RENDER_AREAS_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto QCOMMultiviewPerViewRenderAreasSpecVersion   = VK_QCOM_MULTIVIEW_PER_VIEW_RENDER_AREAS_SPEC_VERSION;
+
+  //=== VK_KHR_video_decode_av1 ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRVideoDecodeAv1ExtensionName = VK_KHR_VIDEO_DECODE_AV1_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRVideoDecodeAv1SpecVersion   = VK_KHR_VIDEO_DECODE_AV1_SPEC_VERSION;
 
   //=== VK_KHR_video_maintenance1 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRVideoMaintenance1ExtensionName = VK_KHR_VIDEO_MAINTENANCE_1_EXTENSION_NAME;
@@ -16022,6 +16031,61 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM, RenderingInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_KHR_video_decode_av1 ===
+  template <>
+  struct StructExtends<VideoDecodeAV1ProfileInfoKHR, VideoProfileInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoDecodeAV1ProfileInfoKHR, QueryPoolCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoDecodeAV1CapabilitiesKHR, VideoCapabilitiesKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoDecodeAV1SessionParametersCreateInfoKHR, VideoSessionParametersCreateInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoDecodeAV1PictureInfoKHR, VideoDecodeInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<VideoDecodeAV1DpbSlotInfoKHR, VideoReferenceSlotInfoKHR>
   {
     enum
     {

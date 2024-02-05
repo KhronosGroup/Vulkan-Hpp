@@ -1724,6 +1724,13 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
   struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
 
+  //=== VK_KHR_video_decode_av1 ===
+  struct VideoDecodeAV1ProfileInfoKHR;
+  struct VideoDecodeAV1CapabilitiesKHR;
+  struct VideoDecodeAV1SessionParametersCreateInfoKHR;
+  struct VideoDecodeAV1PictureInfoKHR;
+  struct VideoDecodeAV1DpbSlotInfoKHR;
+
   //=== VK_KHR_video_maintenance1 ===
   struct PhysicalDeviceVideoMaintenance1FeaturesKHR;
   struct VideoInlineQueryInfoKHR;

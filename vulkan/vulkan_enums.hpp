@@ -1372,6 +1372,11 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCooperativeMatrixPropertiesKHR                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_PROPERTIES_KHR,
     ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_RENDER_AREAS_FEATURES_QCOM,
     eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM          = VK_STRUCTURE_TYPE_MULTIVIEW_PER_VIEW_RENDER_AREAS_RENDER_PASS_BEGIN_INFO_QCOM,
+    eVideoDecodeAv1CapabilitiesKHR                               = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_CAPABILITIES_KHR,
+    eVideoDecodeAv1PictureInfoKHR                                = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_PICTURE_INFO_KHR,
+    eVideoDecodeAv1ProfileInfoKHR                                = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_PROFILE_INFO_KHR,
+    eVideoDecodeAv1SessionParametersCreateInfoKHR                = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_SESSION_PARAMETERS_CREATE_INFO_KHR,
+    eVideoDecodeAv1DpbSlotInfoKHR                                = VK_STRUCTURE_TYPE_VIDEO_DECODE_AV1_DPB_SLOT_INFO_KHR,
     ePhysicalDeviceVideoMaintenance1FeaturesKHR                  = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VIDEO_MAINTENANCE_1_FEATURES_KHR,
     eVideoInlineQueryInfoKHR                                     = VK_STRUCTURE_TYPE_VIDEO_INLINE_QUERY_INFO_KHR,
     ePhysicalDevicePerStageDescriptorSetFeaturesNV               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PER_STAGE_DESCRIPTOR_SET_FEATURES_NV,
@@ -3587,15 +3592,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class SubgroupFeatureFlagBits : VkSubgroupFeatureFlags
   {
-    eBasic           = VK_SUBGROUP_FEATURE_BASIC_BIT,
-    eVote            = VK_SUBGROUP_FEATURE_VOTE_BIT,
-    eArithmetic      = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
-    eBallot          = VK_SUBGROUP_FEATURE_BALLOT_BIT,
-    eShuffle         = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
-    eShuffleRelative = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
-    eClustered       = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
-    eQuad            = VK_SUBGROUP_FEATURE_QUAD_BIT,
-    ePartitionedNV   = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV
+    eBasic              = VK_SUBGROUP_FEATURE_BASIC_BIT,
+    eVote               = VK_SUBGROUP_FEATURE_VOTE_BIT,
+    eArithmetic         = VK_SUBGROUP_FEATURE_ARITHMETIC_BIT,
+    eBallot             = VK_SUBGROUP_FEATURE_BALLOT_BIT,
+    eShuffle            = VK_SUBGROUP_FEATURE_SHUFFLE_BIT,
+    eShuffleRelative    = VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT,
+    eClustered          = VK_SUBGROUP_FEATURE_CLUSTERED_BIT,
+    eQuad               = VK_SUBGROUP_FEATURE_QUAD_BIT,
+    ePartitionedNV      = VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV,
+    eRotateKHR          = VK_SUBGROUP_FEATURE_ROTATE_BIT_KHR,
+    eRotateClusteredKHR = VK_SUBGROUP_FEATURE_ROTATE_CLUSTERED_BIT_KHR
   };
 
   using SubgroupFeatureFlags = Flags<SubgroupFeatureFlagBits>;
@@ -3607,7 +3614,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR SubgroupFeatureFlags allFlags =
       SubgroupFeatureFlagBits::eBasic | SubgroupFeatureFlagBits::eVote | SubgroupFeatureFlagBits::eArithmetic | SubgroupFeatureFlagBits::eBallot |
       SubgroupFeatureFlagBits::eShuffle | SubgroupFeatureFlagBits::eShuffleRelative | SubgroupFeatureFlagBits::eClustered | SubgroupFeatureFlagBits::eQuad |
-      SubgroupFeatureFlagBits::ePartitionedNV;
+      SubgroupFeatureFlagBits::ePartitionedNV | SubgroupFeatureFlagBits::eRotateKHR | SubgroupFeatureFlagBits::eRotateClusteredKHR;
   };
 
   enum class PeerMemoryFeatureFlagBits : VkPeerMemoryFeatureFlags
@@ -4699,7 +4706,8 @@ namespace VULKAN_HPP_NAMESPACE
     eEncodeH264 = VK_VIDEO_CODEC_OPERATION_ENCODE_H264_BIT_KHR,
     eEncodeH265 = VK_VIDEO_CODEC_OPERATION_ENCODE_H265_BIT_KHR,
     eDecodeH264 = VK_VIDEO_CODEC_OPERATION_DECODE_H264_BIT_KHR,
-    eDecodeH265 = VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR
+    eDecodeH265 = VK_VIDEO_CODEC_OPERATION_DECODE_H265_BIT_KHR,
+    eDecodeAv1  = VK_VIDEO_CODEC_OPERATION_DECODE_AV1_BIT_KHR
   };
 
   using VideoCodecOperationFlagsKHR = Flags<VideoCodecOperationFlagBitsKHR>;
@@ -4710,7 +4718,7 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                        isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR VideoCodecOperationFlagsKHR allFlags =
       VideoCodecOperationFlagBitsKHR::eNone | VideoCodecOperationFlagBitsKHR::eEncodeH264 | VideoCodecOperationFlagBitsKHR::eEncodeH265 |
-      VideoCodecOperationFlagBitsKHR::eDecodeH264 | VideoCodecOperationFlagBitsKHR::eDecodeH265;
+      VideoCodecOperationFlagBitsKHR::eDecodeH264 | VideoCodecOperationFlagBitsKHR::eDecodeH265 | VideoCodecOperationFlagBitsKHR::eDecodeAv1;
   };
 
   enum class VideoChromaSubsamplingFlagBitsKHR : VkVideoChromaSubsamplingFlagsKHR

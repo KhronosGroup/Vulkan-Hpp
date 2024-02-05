@@ -3066,6 +3066,39 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                                       bool                                      raiiFactory ) const
 {
   std::string dispatcher = raii ? "getDispatcher()->" : "d.";
+
+  // first a special handling on vkGetDeviceFaultInfoEXT!!
+  if ( name == "vkGetDeviceFaultInfoEXT" )
+  {
+    const std::string callSequenceTemplate =
+      R"(    VULKAN_HPP_NAMESPACE::Result result;
+    do
+  {
+    result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), nullptr ) );
+    if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+    {
+      std::free( faultInfo.pAddressInfos );
+      if ( faultCounts.addressInfoCount )
+      {
+        faultInfo.pAddressInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT *>( std::malloc( faultCounts.addressInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT ) ) );
+      }
+      std::free( faultInfo.pVendorInfos );
+      if ( faultCounts.vendorInfoCount )
+      {
+        faultInfo.pVendorInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *>( std::malloc( faultCounts.vendorInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT ) ) );
+      }
+      std::free( faultInfo.pVendorBinaryData );
+      if ( faultCounts.vendorBinarySize )
+      {
+        faultInfo.pVendorBinaryData = std::malloc( faultCounts.vendorBinarySize );
+      }
+      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) ) );
+    }
+  } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );)";
+
+    return replaceWithMap( callSequenceTemplate, { { "dispatcher", dispatcher } } );
+  }
+
   // if at least one returnParam is a size value of a vector param (and no singular params), we need two calls
   if ( singularParams.empty() &&
        std::any_of( returnParams.begin(),

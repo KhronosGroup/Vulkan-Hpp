@@ -15094,6 +15094,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
                                                         "VkSubmitInfo",
                                                         "VkSubpassDescription",
                                                         "VkSubpassDescription2",
+                                                        "VkVideoDecodeAV1PictureInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoKHR",
                                                         "VkWin32KeyedMutexAcquireReleaseInfoNV" };
     bool                         warned             = false;

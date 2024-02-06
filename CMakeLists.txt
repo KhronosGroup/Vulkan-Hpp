@@ -380,11 +380,12 @@ if( VULKAN_HPP_RUN_GENERATOR )
 			set( VulkanHeaders_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
 		endif()
 	endif()
+	
 	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp vulkan_hpp )
 	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
 
 	add_custom_command(
-		COMMAND VulkanHppGenerator
+		COMMAND VulkanHppGenerator -api vulkan
 		COMMAND VulkanHppGenerator -api vulkansc
 		OUTPUT "${vulkan_hpp}"
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
@@ -392,13 +393,16 @@ if( VULKAN_HPP_RUN_GENERATOR )
 		DEPENDS VulkanHppGenerator "${vk_spec}" )
 	add_custom_target( build_vulkan_hpp ALL DEPENDS "${vulkan_hpp}" "${vk_spec}" )
 
+	file( TO_NATIVE_PATH ${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.hpp vulkan_video_hpp )
+	string( REPLACE "\\" "\\\\" vulkan_video_hpp ${vulkan_video_hpp} )
+
 	add_custom_command(
 		COMMAND VideoHppGenerator
 		OUTPUT "${vulkan_video_hpp}"
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-		COMMENT "run VulkanVideoGenerator"
-		DEPENDS VulkanVideoGenerator "${video_spec}" )
-	add_custom_target( build_vulkan_video ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
+		COMMENT "run VideoHppGenerator"
+		DEPENDS VideoHppGenerator "${video_spec}" )
+	add_custom_target( build_video_hpp ALL DEPENDS "${vulkan_video_hpp}" "${video_spec}" )
 endif()
 
 if( VULKAN_HPP_SAMPLES_BUILD )
@@ -427,12 +431,13 @@ if( ${VULKAN_HPP_INSTALL} )
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_handles.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hash.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_hpp_macros.hpp
-		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_raii.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_static_assertions.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_structs.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_to_string.hpp
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan_video.hpp
 		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.cppm
+		${VulkanHeaders_INCLUDE_DIR}/vulkan/vulkan.hpp
 	)
 	install( FILES ${VK_GENERATED_VULKAN_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/vulkan )
 

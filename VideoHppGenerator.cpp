@@ -42,6 +42,8 @@ void VideoHppGenerator::generateHppFile() const
 #ifndef VULKAN_VIDEO_HPP
 #define VULKAN_VIDEO_HPP
 
+#include <vk_video/vulkan_video_codec_av1std.h>
+#include <vk_video/vulkan_video_codec_av1std_decode.h>
 #include <vk_video/vulkan_video_codecs_common.h>
 #include <vk_video/vulkan_video_codec_h264std.h>
 #include <vk_video/vulkan_video_codec_h264std_decode.h>

@@ -406,11 +406,11 @@ void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "type", { "enum" } } }, {} );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "type", { "enum" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "enum", {} } }, { "comment" } );
 
-  std::string name, type;
+  std::string name;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
@@ -419,7 +419,8 @@ void VideoHppGenerator::readEnums( tinyxml2::XMLElement const * element )
     }
     else if ( attribute.first == "type" )
     {
-      type = attribute.second;
+      assert( !name.empty() );
+      checkForError( attribute.second == "enum", line, "unknown type <" + attribute.second + "> for enum <" + name + ">" );
     }
   }
 

@@ -12617,7 +12617,7 @@ namespace VULKAN_HPP_NAMESPACE
       resultCheck(
         result, VULKAN_HPP_NAMESPACE_STRING "::QueryPool::getResults", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
     }
 
     template <typename DataType>
@@ -12639,7 +12639,7 @@ namespace VULKAN_HPP_NAMESPACE
       resultCheck(
         result, VULKAN_HPP_NAMESPACE_STRING "::QueryPool::getResult", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
     }
 
     VULKAN_HPP_NODISCARD
@@ -15127,7 +15127,7 @@ namespace VULKAN_HPP_NAMESPACE
                      VULKAN_HPP_NAMESPACE::Result::eNotReady,
                      VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
     }
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::Result Queue::presentKHR( const VULKAN_HPP_NAMESPACE::PresentInfoKHR & presentInfo ) const
@@ -15216,7 +15216,7 @@ namespace VULKAN_HPP_NAMESPACE
                      VULKAN_HPP_NAMESPACE::Result::eNotReady,
                      VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
     }
 
     //=== VK_KHR_display ===
@@ -21088,7 +21088,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultInfoEXT",
                    { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data_ );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data_ ) );
     }
 
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
@@ -21327,7 +21327,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE_STRING "::RenderPass::getSubpassShadingMaxWorkgroupSizeHUAWEI",
                    { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), maxWorkgroupSize );
+      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( maxWorkgroupSize ) );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::subpassShadingHUAWEI() const VULKAN_HPP_NOEXCEPT

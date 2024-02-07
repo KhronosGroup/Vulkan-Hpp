@@ -1809,7 +1809,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-    return ResultValue<std::vector<DataType, DataTypeAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return ResultValue<std::vector<DataType, DataTypeAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
   }
 
   template <typename DataType, typename Dispatch>
@@ -1837,7 +1837,7 @@ namespace VULKAN_HPP_NAMESPACE
     resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResult", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-    return ResultValue<DataType>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), data );
+    return ResultValue<DataType>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -2478,7 +2478,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipelines );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                        std::move( pipelines ) );
   }
 
   template <typename PipelineAllocator,
@@ -2508,7 +2509,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipelines );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                        std::move( pipelines ) );
   }
 
   template <typename Dispatch>
@@ -2535,7 +2537,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipeline",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipeline );
+    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( pipeline ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2684,7 +2686,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipelines );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                        std::move( pipelines ) );
   }
 
   template <typename PipelineAllocator,
@@ -2714,7 +2717,8 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipelines );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                        std::move( pipelines ) );
   }
 
   template <typename Dispatch>
@@ -2741,7 +2745,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipeline",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), pipeline );
+    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( pipeline ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -7868,7 +7872,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE::Result::eNotReady,
                    VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
+    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8068,7 +8072,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE::Result::eNotReady,
                    VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), imageIndex );
+    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

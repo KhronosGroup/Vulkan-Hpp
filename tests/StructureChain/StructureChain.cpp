@@ -77,6 +77,9 @@ int main( int /*argc*/, char ** /*argv*/ )
     sc7.assign<vk::PhysicalDeviceIDProperties>( {} );
     assert( pNext == sc7.get<vk::PhysicalDeviceIDProperties>().pNext );
 
+    vk::StructureChain<vk::DeviceQueueCreateInfo, vk::DeviceQueueGlobalPriorityCreateInfoKHR> sc8;
+    sc8.assign<vk::DeviceQueueGlobalPriorityCreateInfoKHR>( {} );
+
 #if !defined( NDEBUG )
     void * pNext1 = sc7.get<vk::PhysicalDeviceMaintenance3Properties>().pNext;
 #endif

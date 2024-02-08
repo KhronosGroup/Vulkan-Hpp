@@ -3439,7 +3439,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string typenameCheck       = generateTypenameCheck( returnParams, vectorParams, chainedReturnParams, definition, dataTypes, flavourFlags );
   std::string nodiscard           = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, false, dataTypes );
-  std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, flavourFlags, false, returnType );
+  std::string decoratedReturnType = generateDecoratedReturnType( name, commandData, returnParams, vectorParams, flavourFlags, false, returnType );
   std::string className           = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string classSeparator      = commandData.handle.empty() ? "" : "::";
   std::string commandName         = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
@@ -6260,7 +6260,8 @@ std::string VulkanHppGenerator::generateDebugReportObjectType( std::string const
   return ( valueIt == enumIt->second.values.end() ) ? "eUnknown" : generateEnumValueName( enumIt->first, valueIt->name, false );
 }
 
-std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &                       commandData,
+std::string VulkanHppGenerator::generateDecoratedReturnType( std::string const &                       name,
+                                                             CommandData const &                       commandData,
                                                              std::vector<size_t> const &               returnParams,
                                                              std::map<size_t, VectorParamData> const & vectorParams,
                                                              CommandFlavourFlags                       flavourFlags,
@@ -6302,7 +6303,9 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &
   {
     assert( commandData.returnType == "VkResult" );
     assert( !commandData.successCodes.empty() && ( commandData.successCodes[0] == "VK_SUCCESS" ) );
-    if ( ( 1 < commandData.successCodes.size() ) && ( ( returnParams.size() == 1 ) || ( ( returnParams.size() == 2 ) && vectorParams.empty() ) ) )
+    // special handling for vkGetDeviceFaultInfoEXT, as it is an atypical enumeration function
+    if ( ( 1 < commandData.successCodes.size() ) && ( ( returnParams.size() == 1 ) || ( ( returnParams.size() == 2 ) && vectorParams.empty() ) ) &&
+         ( name != "vkGetDeviceFaultInfoEXT" ) )
     {
       assert( !commandData.errorCodes.empty() );
       decoratedReturnType = ( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) + returnType + ">";
@@ -8664,7 +8667,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams, skippedParams );
   std::string noexceptString      = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, true );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, true, dataTypes );
-  std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, flavourFlags, true, returnType );
+  std::string decoratedReturnType = generateDecoratedReturnType( name, commandData, returnParams, vectorParams, flavourFlags, true, returnType );
 
   if ( definition )
   {
@@ -9956,7 +9959,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
   std::string returnStatement;
   if ( commandData.returnType.starts_with( "Vk" ) )
   {
-    if ( ( commandData.successCodes.size() == 1 ) || enumerating )
+    if ( ( commandData.successCodes.size() == 1 ) || enumerating || ( commandName == "vkGetDeviceFaultInfoEXT") )
     {
       assert( commandData.successCodes[0] == "VK_SUCCESS" );
       if ( raii || commandData.errorCodes.empty() )
@@ -9991,7 +9994,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         }
         else
         {
-          returnStatement = "return createResultValueType( result, " + returnVariable + " );";
+          returnStatement = "return createResultValueType( result, std::move( " + returnVariable + " ) );";
         }
       }
     }
@@ -10021,8 +10024,8 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       else
       {
         assert( decoratedReturnType.starts_with( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
-        returnStatement =
-          "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( " + returnVariable + " ) );";
+        returnStatement = "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( " +
+                          returnVariable + " ) );";
       }
     }
   }
@@ -10971,7 +10974,7 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
   std::string str = "\n" + enter;
 
   std::string constructorsAndSetters;
-  if (strcmp(&structure.first[0], "VkDeviceFaultInfoEXT") == 0)
+  if ( strcmp( &structure.first[0], "VkDeviceFaultInfoEXT" ) == 0 )
   {
     // special handling for this structure, as it is filled with dynamic memory on vk::Device::getFaultInfoEXT!
     constructorsAndSetters += R"(
@@ -11062,9 +11065,9 @@ ${subConstructors}
 )";
 
     constructorsAndSetters = replaceWithMap( constructorsTemplate,
-                                                         { { "constructors", generateStructConstructors( structure ) },
-                                                           { "structName", stripPrefix( structure.first, "Vk" ) },
-                                                           { "subConstructors", generateStructSubConstructor( structure ) } } );
+                                             { { "constructors", generateStructConstructors( structure ) },
+                                               { "structName", stripPrefix( structure.first, "Vk" ) },
+                                               { "subConstructors", generateStructSubConstructor( structure ) } } );
   }
 
   if ( !structure.second.returnedOnly )

@@ -4413,9 +4413,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_EXT_device_fault ===
 
-      VULKAN_HPP_NODISCARD
-        std::pair<VULKAN_HPP_NAMESPACE::Result, std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>
-        getFaultInfoEXT() const;
+      VULKAN_HPP_NODISCARD std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT> getFaultInfoEXT() const;
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
       //=== VK_FUCHSIA_external_memory ===
@@ -21047,9 +21045,8 @@ namespace VULKAN_HPP_NAMESPACE
 
     //=== VK_EXT_device_fault ===
 
-    VULKAN_HPP_NODISCARD
-      VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::Result, std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>>
-                        Device::getFaultInfoEXT() const
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<VULKAN_HPP_NAMESPACE::DeviceFaultCountsEXT, VULKAN_HPP_NAMESPACE::DeviceFaultInfoEXT>
+                                           Device::getFaultInfoEXT() const
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkGetDeviceFaultInfoEXT && "Function <vkGetDeviceFaultInfoEXT> requires <VK_EXT_device_fault>" );
 
@@ -21088,7 +21085,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultInfoEXT",
                    { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
 
-      return std::make_pair( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data_ ) );
+      return data_;
     }
 
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )

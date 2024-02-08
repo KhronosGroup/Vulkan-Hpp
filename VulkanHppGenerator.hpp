@@ -684,7 +684,8 @@ private:
                                       std::set<size_t> const &                  templatedParams,
                                       bool                                      singular ) const;
   std::string generateDebugReportObjectType( std::string const & objectType ) const;
-  std::string generateDecoratedReturnType( CommandData const &                       commandData,
+  std::string generateDecoratedReturnType( std::string const &                       name,
+                                           CommandData const &                       commandData,
                                            std::vector<size_t> const &               returnParams,
                                            std::map<size_t, VectorParamData> const & vectorParams,
                                            CommandFlavourFlags                       flavourFlags,

@@ -46,7 +46,7 @@ namespace VULKAN_HPP_NAMESPACE
                           reinterpret_cast<VkInstance *>( &instance ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::createInstance" );
 
-    return createResultValueType( result, instance );
+    return createResultValueType( result, std::move( instance ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -131,7 +131,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       physicalDevices.resize( physicalDeviceCount );
     }
-    return createResultValueType( result, physicalDevices );
+    return createResultValueType( result, std::move( physicalDevices ) );
   }
 
   template <typename PhysicalDeviceAllocator,
@@ -164,7 +164,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       physicalDevices.resize( physicalDeviceCount );
     }
-    return createResultValueType( result, physicalDevices );
+    return createResultValueType( result, std::move( physicalDevices ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -263,7 +263,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                   reinterpret_cast<VkImageFormatProperties *>( &imageFormatProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties" );
 
-    return createResultValueType( result, imageFormatProperties );
+    return createResultValueType( result, std::move( imageFormatProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -455,7 +455,7 @@ namespace VULKAN_HPP_NAMESPACE
                         reinterpret_cast<VkDevice *>( &device ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDevice" );
 
-    return createResultValueType( result, device );
+    return createResultValueType( result, std::move( device ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -545,7 +545,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -582,7 +582,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -627,7 +627,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -664,7 +664,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -706,7 +706,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <typename LayerPropertiesAllocator,
@@ -739,7 +739,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -934,7 +934,7 @@ namespace VULKAN_HPP_NAMESPACE
                           reinterpret_cast<VkDeviceMemory *>( &memory ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateMemory" );
 
-    return createResultValueType( result, memory );
+    return createResultValueType( result, std::move( memory ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1002,7 +1002,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                                     &pData ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::mapMemory" );
 
-    return createResultValueType( result, pData );
+    return createResultValueType( result, std::move( pData ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -1237,7 +1237,7 @@ namespace VULKAN_HPP_NAMESPACE
                        reinterpret_cast<VkFence *>( &fence ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createFence" );
 
-    return createResultValueType( result, fence );
+    return createResultValueType( result, std::move( fence ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1434,7 +1434,7 @@ namespace VULKAN_HPP_NAMESPACE
                            reinterpret_cast<VkSemaphore *>( &semaphore ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSemaphore" );
 
-    return createResultValueType( result, semaphore );
+    return createResultValueType( result, std::move( semaphore ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1546,7 +1546,7 @@ namespace VULKAN_HPP_NAMESPACE
                        reinterpret_cast<VkEvent *>( &event ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createEvent" );
 
-    return createResultValueType( result, event );
+    return createResultValueType( result, std::move( event ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1729,7 +1729,7 @@ namespace VULKAN_HPP_NAMESPACE
                            reinterpret_cast<VkQueryPool *>( &queryPool ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createQueryPool" );
 
-    return createResultValueType( result, queryPool );
+    return createResultValueType( result, std::move( queryPool ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1872,7 +1872,7 @@ namespace VULKAN_HPP_NAMESPACE
                         reinterpret_cast<VkBuffer *>( &buffer ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createBuffer" );
 
-    return createResultValueType( result, buffer );
+    return createResultValueType( result, std::move( buffer ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -1984,7 +1984,7 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<VkBufferView *>( &view ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createBufferView" );
 
-    return createResultValueType( result, view );
+    return createResultValueType( result, std::move( view ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2096,7 +2096,7 @@ namespace VULKAN_HPP_NAMESPACE
                        reinterpret_cast<VkImage *>( &image ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createImage" );
 
-    return createResultValueType( result, image );
+    return createResultValueType( result, std::move( image ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2241,7 +2241,7 @@ namespace VULKAN_HPP_NAMESPACE
                            reinterpret_cast<VkImageView *>( &view ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createImageView" );
 
-    return createResultValueType( result, view );
+    return createResultValueType( result, std::move( view ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2355,7 +2355,7 @@ namespace VULKAN_HPP_NAMESPACE
                                reinterpret_cast<VkPipelineCache *>( &pipelineCache ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineCache" );
 
-    return createResultValueType( result, pipelineCache );
+    return createResultValueType( result, std::move( pipelineCache ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2937,7 +2937,7 @@ namespace VULKAN_HPP_NAMESPACE
                                 reinterpret_cast<VkPipelineLayout *>( &pipelineLayout ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPipelineLayout" );
 
-    return createResultValueType( result, pipelineLayout );
+    return createResultValueType( result, std::move( pipelineLayout ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3049,7 +3049,7 @@ namespace VULKAN_HPP_NAMESPACE
                          reinterpret_cast<VkSampler *>( &sampler ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSampler" );
 
-    return createResultValueType( result, sampler );
+    return createResultValueType( result, std::move( sampler ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3161,7 +3161,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkDescriptorSetLayout *>( &setLayout ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorSetLayout" );
 
-    return createResultValueType( result, setLayout );
+    return createResultValueType( result, std::move( setLayout ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3279,7 +3279,7 @@ namespace VULKAN_HPP_NAMESPACE
                                 reinterpret_cast<VkDescriptorPool *>( &descriptorPool ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createDescriptorPool" );
 
-    return createResultValueType( result, descriptorPool );
+    return createResultValueType( result, std::move( descriptorPool ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3358,7 +3358,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo *>( &allocateInfo ), reinterpret_cast<VkDescriptorSet *>( descriptorSets.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateDescriptorSets" );
 
-    return createResultValueType( result, descriptorSets );
+    return createResultValueType( result, std::move( descriptorSets ) );
   }
 
   template <typename DescriptorSetAllocator,
@@ -3379,7 +3379,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkDescriptorSetAllocateInfo *>( &allocateInfo ), reinterpret_cast<VkDescriptorSet *>( descriptorSets.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateDescriptorSets" );
 
-    return createResultValueType( result, descriptorSets );
+    return createResultValueType( result, std::move( descriptorSets ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3561,7 +3561,7 @@ namespace VULKAN_HPP_NAMESPACE
                              reinterpret_cast<VkFramebuffer *>( &framebuffer ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createFramebuffer" );
 
-    return createResultValueType( result, framebuffer );
+    return createResultValueType( result, std::move( framebuffer ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3675,7 +3675,7 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<VkRenderPass *>( &renderPass ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass" );
 
-    return createResultValueType( result, renderPass );
+    return createResultValueType( result, std::move( renderPass ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3815,7 +3815,7 @@ namespace VULKAN_HPP_NAMESPACE
                              reinterpret_cast<VkCommandPool *>( &commandPool ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createCommandPool" );
 
-    return createResultValueType( result, commandPool );
+    return createResultValueType( result, std::move( commandPool ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -3896,7 +3896,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkCommandBufferAllocateInfo *>( &allocateInfo ), reinterpret_cast<VkCommandBuffer *>( commandBuffers.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateCommandBuffers" );
 
-    return createResultValueType( result, commandBuffers );
+    return createResultValueType( result, std::move( commandBuffers ) );
   }
 
   template <typename CommandBufferAllocator,
@@ -3917,7 +3917,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, reinterpret_cast<const VkCommandBufferAllocateInfo *>( &allocateInfo ), reinterpret_cast<VkCommandBuffer *>( commandBuffers.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::allocateCommandBuffers" );
 
-    return createResultValueType( result, commandBuffers );
+    return createResultValueType( result, std::move( commandBuffers ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -5078,7 +5078,7 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkEnumerateInstanceVersion( &apiVersion ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::enumerateInstanceVersion" );
 
-    return createResultValueType( result, apiVersion );
+    return createResultValueType( result, std::move( apiVersion ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -5229,7 +5229,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
     }
-    return createResultValueType( result, physicalDeviceGroupProperties );
+    return createResultValueType( result, std::move( physicalDeviceGroupProperties ) );
   }
 
   template <typename PhysicalDeviceGroupPropertiesAllocator,
@@ -5267,7 +5267,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       physicalDeviceGroupProperties.resize( physicalDeviceGroupCount );
     }
-    return createResultValueType( result, physicalDeviceGroupProperties );
+    return createResultValueType( result, std::move( physicalDeviceGroupProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -5524,7 +5524,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                    reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2" );
 
-    return createResultValueType( result, imageFormatProperties );
+    return createResultValueType( result, std::move( imageFormatProperties ) );
   }
 
   template <typename X, typename Y, typename... Z, typename Dispatch>
@@ -5545,7 +5545,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                    reinterpret_cast<VkImageFormatProperties2 *>( &imageFormatProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getImageFormatProperties2" );
 
-    return createResultValueType( result, structureChain );
+    return createResultValueType( result, std::move( structureChain ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -5792,7 +5792,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSamplerYcbcrConversion *>( &ycbcrConversion ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSamplerYcbcrConversion" );
 
-    return createResultValueType( result, ycbcrConversion );
+    return createResultValueType( result, std::move( ycbcrConversion ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -6097,7 +6097,7 @@ namespace VULKAN_HPP_NAMESPACE
                              reinterpret_cast<VkRenderPass *>( &renderPass ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createRenderPass2" );
 
-    return createResultValueType( result, renderPass );
+    return createResultValueType( result, std::move( renderPass ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -6232,7 +6232,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetSemaphoreCounterValue( m_device, static_cast<VkSemaphore>( semaphore ), &value ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreCounterValue" );
 
-    return createResultValueType( result, value );
+    return createResultValueType( result, std::move( value ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -6408,7 +6408,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       toolProperties.resize( toolCount );
     }
-    return createResultValueType( result, toolProperties );
+    return createResultValueType( result, std::move( toolProperties ) );
   }
 
   template <
@@ -6446,7 +6446,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       toolProperties.resize( toolCount );
     }
-    return createResultValueType( result, toolProperties );
+    return createResultValueType( result, std::move( toolProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -6483,7 +6483,7 @@ namespace VULKAN_HPP_NAMESPACE
                                  reinterpret_cast<VkPrivateDataSlot *>( &privateDataSlot ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createPrivateDataSlot" );
 
-    return createResultValueType( result, privateDataSlot );
+    return createResultValueType( result, std::move( privateDataSlot ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -7377,7 +7377,7 @@ namespace VULKAN_HPP_NAMESPACE
     } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultData" );
 
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 
   template <typename FaultDataAllocator,
@@ -7414,7 +7414,7 @@ namespace VULKAN_HPP_NAMESPACE
     } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFaultData" );
 
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7498,7 +7498,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice, queueFamilyIndex, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkBool32 *>( &supported ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceSupportKHR" );
 
-    return createResultValueType( result, supported );
+    return createResultValueType( result, std::move( supported ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7527,7 +7527,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilitiesKHR *>( &surfaceCapabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilitiesKHR" );
 
-    return createResultValueType( result, surfaceCapabilities );
+    return createResultValueType( result, std::move( surfaceCapabilities ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7572,7 +7572,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       surfaceFormats.resize( surfaceFormatCount );
     }
-    return createResultValueType( result, surfaceFormats );
+    return createResultValueType( result, std::move( surfaceFormats ) );
   }
 
   template <typename SurfaceFormatKHRAllocator,
@@ -7608,7 +7608,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       surfaceFormats.resize( surfaceFormatCount );
     }
-    return createResultValueType( result, surfaceFormats );
+    return createResultValueType( result, std::move( surfaceFormats ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7653,7 +7653,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       presentModes.resize( presentModeCount );
     }
-    return createResultValueType( result, presentModes );
+    return createResultValueType( result, std::move( presentModes ) );
   }
 
   template <typename PresentModeKHRAllocator,
@@ -7689,7 +7689,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       presentModes.resize( presentModeCount );
     }
-    return createResultValueType( result, presentModes );
+    return createResultValueType( result, std::move( presentModes ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7728,7 +7728,7 @@ namespace VULKAN_HPP_NAMESPACE
                               reinterpret_cast<VkSwapchainKHR *>( &swapchain ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSwapchainKHR" );
 
-    return createResultValueType( result, swapchain );
+    return createResultValueType( result, std::move( swapchain ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -7798,7 +7798,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       swapchainImages.resize( swapchainImageCount );
     }
-    return createResultValueType( result, swapchainImages );
+    return createResultValueType( result, std::move( swapchainImages ) );
   }
 
   template <typename ImageAllocator,
@@ -7832,7 +7832,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       swapchainImages.resize( swapchainImageCount );
     }
-    return createResultValueType( result, swapchainImages );
+    return createResultValueType( result, std::move( swapchainImages ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7928,7 +7928,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetDeviceGroupPresentCapabilitiesKHR( m_device, reinterpret_cast<VkDeviceGroupPresentCapabilitiesKHR *>( &deviceGroupPresentCapabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getGroupPresentCapabilitiesKHR" );
 
-    return createResultValueType( result, deviceGroupPresentCapabilities );
+    return createResultValueType( result, std::move( deviceGroupPresentCapabilities ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -7958,7 +7958,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkDeviceGroupPresentModeFlagsKHR *>( &modes ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getGroupSurfacePresentModesKHR" );
 
-    return createResultValueType( result, modes );
+    return createResultValueType( result, std::move( modes ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8004,7 +8004,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       rects.resize( rectCount );
     }
-    return createResultValueType( result, rects );
+    return createResultValueType( result, std::move( rects ) );
   }
 
   template <typename Rect2DAllocator,
@@ -8039,7 +8039,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       rects.resize( rectCount );
     }
-    return createResultValueType( result, rects );
+    return createResultValueType( result, std::move( rects ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8117,7 +8117,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -8151,7 +8151,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8195,7 +8195,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -8231,7 +8231,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8275,7 +8275,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       displays.resize( displayCount );
     }
-    return createResultValueType( result, displays );
+    return createResultValueType( result, std::move( displays ) );
   }
 
   template <typename DisplayKHRAllocator,
@@ -8308,7 +8308,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       displays.resize( displayCount );
     }
-    return createResultValueType( result, displays );
+    return createResultValueType( result, std::move( displays ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8354,7 +8354,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <typename DisplayModePropertiesKHRAllocator,
@@ -8392,7 +8392,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8433,7 +8433,7 @@ namespace VULKAN_HPP_NAMESPACE
                                 reinterpret_cast<VkDisplayModeKHR *>( &mode ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::createDisplayModeKHR" );
 
-    return createResultValueType( result, mode );
+    return createResultValueType( result, std::move( mode ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -8491,7 +8491,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice, static_cast<VkDisplayModeKHR>( mode ), planeIndex, reinterpret_cast<VkDisplayPlaneCapabilitiesKHR *>( &capabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDisplayPlaneCapabilitiesKHR" );
 
-    return createResultValueType( result, capabilities );
+    return createResultValueType( result, std::move( capabilities ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8528,7 +8528,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDisplayPlaneSurfaceKHR" );
 
-    return createResultValueType( result, surface );
+    return createResultValueType( result, std::move( surface ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -8595,7 +8595,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSwapchainKHR *>( swapchains.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSharedSwapchainsKHR" );
 
-    return createResultValueType( result, swapchains );
+    return createResultValueType( result, std::move( swapchains ) );
   }
 
   template <typename SwapchainKHRAllocator,
@@ -8621,7 +8621,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSwapchainKHR *>( swapchains.data() ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSharedSwapchainsKHR" );
 
-    return createResultValueType( result, swapchains );
+    return createResultValueType( result, std::move( swapchains ) );
   }
 
   template <typename Dispatch>
@@ -8644,7 +8644,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSwapchainKHR *>( &swapchain ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSharedSwapchainKHR" );
 
-    return createResultValueType( result, swapchain );
+    return createResultValueType( result, std::move( swapchain ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -8764,7 +8764,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetMemoryFdKHR( m_device, reinterpret_cast<const VkMemoryGetFdInfoKHR *>( &getFdInfo ), &fd ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryFdKHR" );
 
-    return createResultValueType( result, fd );
+    return createResultValueType( result, std::move( fd ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8794,7 +8794,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, static_cast<VkExternalMemoryHandleTypeFlagBits>( handleType ), fd, reinterpret_cast<VkMemoryFdPropertiesKHR *>( &memoryFdProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryFdPropertiesKHR" );
 
-    return createResultValueType( result, memoryFdProperties );
+    return createResultValueType( result, std::move( memoryFdProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8850,7 +8850,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetSemaphoreFdKHR( m_device, reinterpret_cast<const VkSemaphoreGetFdInfoKHR *>( &getFdInfo ), &fd ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreFdKHR" );
 
-    return createResultValueType( result, fd );
+    return createResultValueType( result, std::move( fd ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8905,7 +8905,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice, static_cast<VkSurfaceKHR>( surface ), reinterpret_cast<VkSurfaceCapabilities2EXT *>( &surfaceCapabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilities2EXT" );
 
-    return createResultValueType( result, surfaceCapabilities );
+    return createResultValueType( result, std::move( surfaceCapabilities ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8973,7 +8973,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkFence *>( &fence ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::registerEventEXT" );
 
-    return createResultValueType( result, fence );
+    return createResultValueType( result, std::move( fence ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -9039,7 +9039,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkFence *>( &fence ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::registerDisplayEventEXT" );
 
-    return createResultValueType( result, fence );
+    return createResultValueType( result, std::move( fence ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -9096,7 +9096,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetSwapchainCounterEXT( m_device, static_cast<VkSwapchainKHR>( swapchain ), static_cast<VkSurfaceCounterFlagBitsEXT>( counter ), &counterValue ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSwapchainCounterEXT" );
 
-    return createResultValueType( result, counterValue );
+    return createResultValueType( result, std::move( counterValue ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9265,7 +9265,7 @@ namespace VULKAN_HPP_NAMESPACE
       static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetFenceFdKHR( m_device, reinterpret_cast<const VkFenceGetFdInfoKHR *>( &getFdInfo ), &fd ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFenceFdKHR" );
 
-    return createResultValueType( result, fd );
+    return createResultValueType( result, std::move( fd ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9331,7 +9331,7 @@ namespace VULKAN_HPP_NAMESPACE
       counters.resize( counterCount );
       counterDescriptions.resize( counterCount );
     }
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 
   template <typename PerformanceCounterKHRAllocator,
@@ -9386,7 +9386,7 @@ namespace VULKAN_HPP_NAMESPACE
       counters.resize( counterCount );
       counterDescriptions.resize( counterCount );
     }
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9485,7 +9485,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<VkSurfaceCapabilities2KHR *>( &surfaceCapabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilities2KHR" );
 
-    return createResultValueType( result, surfaceCapabilities );
+    return createResultValueType( result, std::move( surfaceCapabilities ) );
   }
 
   template <typename X, typename Y, typename... Z, typename Dispatch>
@@ -9506,7 +9506,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                     reinterpret_cast<VkSurfaceCapabilities2KHR *>( &surfaceCapabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getSurfaceCapabilities2KHR" );
 
-    return createResultValueType( result, structureChain );
+    return createResultValueType( result, std::move( structureChain ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9557,7 +9557,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       surfaceFormats.resize( surfaceFormatCount );
     }
-    return createResultValueType( result, surfaceFormats );
+    return createResultValueType( result, std::move( surfaceFormats ) );
   }
 
   template <typename SurfaceFormat2KHRAllocator,
@@ -9597,7 +9597,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       surfaceFormats.resize( surfaceFormatCount );
     }
-    return createResultValueType( result, surfaceFormats );
+    return createResultValueType( result, std::move( surfaceFormats ) );
   }
 
   template <typename StructureChain, typename StructureChainAllocator, typename Dispatch>
@@ -9643,7 +9643,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>() = surfaceFormats[i];
     }
-    return createResultValueType( result, structureChains );
+    return createResultValueType( result, std::move( structureChains ) );
   }
 
   template <typename StructureChain,
@@ -9694,7 +9694,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       structureChains[i].template get<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>() = surfaceFormats[i];
     }
-    return createResultValueType( result, structureChains );
+    return createResultValueType( result, std::move( structureChains ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9741,7 +9741,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -9777,7 +9777,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9822,7 +9822,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -9859,7 +9859,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9905,7 +9905,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <
@@ -9944,7 +9944,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       properties.resize( propertyCount );
     }
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -9977,7 +9977,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                                                       reinterpret_cast<VkDisplayPlaneCapabilities2KHR *>( &capabilities ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getDisplayPlaneCapabilities2KHR" );
 
-    return createResultValueType( result, capabilities );
+    return createResultValueType( result, std::move( capabilities ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10171,7 +10171,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkDebugUtilsMessengerEXT *>( &messenger ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createDebugUtilsMessengerEXT" );
 
-    return createResultValueType( result, messenger );
+    return createResultValueType( result, std::move( messenger ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -10368,7 +10368,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, static_cast<VkImage>( image ), reinterpret_cast<VkImageDrmFormatModifierPropertiesEXT *>( &properties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getImageDrmFormatModifierPropertiesEXT" );
 
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10408,7 +10408,7 @@ namespace VULKAN_HPP_NAMESPACE
                                              reinterpret_cast<VkMemoryHostPointerPropertiesEXT *>( &memoryHostPointerProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemoryHostPointerPropertiesEXT" );
 
-    return createResultValueType( result, memoryHostPointerProperties );
+    return createResultValueType( result, std::move( memoryHostPointerProperties ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10454,7 +10454,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       timeDomains.resize( timeDomainCount );
     }
-    return createResultValueType( result, timeDomains );
+    return createResultValueType( result, std::move( timeDomains ) );
   }
 
   template <typename TimeDomainKHRAllocator,
@@ -10488,7 +10488,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       timeDomains.resize( timeDomainCount );
     }
-    return createResultValueType( result, timeDomains );
+    return createResultValueType( result, std::move( timeDomains ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10524,7 +10524,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 
   template <typename Uint64_tAllocator,
@@ -10549,7 +10549,7 @@ namespace VULKAN_HPP_NAMESPACE
       m_device, timestampInfos.size(), reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ), timestamps.data(), &maxDeviation ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
 
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 
   template <typename Dispatch>
@@ -10569,7 +10569,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetCalibratedTimestampsEXT( m_device, 1, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( &timestampInfo ), &timestamp, &maxDeviation ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
 
-    return createResultValueType( result, data_ );
+    return createResultValueType( result, std::move( data_ ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10618,7 +10618,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       fragmentShadingRates.resize( fragmentShadingRateCount );
     }
-    return createResultValueType( result, fragmentShadingRates );
+    return createResultValueType( result, std::move( fragmentShadingRates ) );
   }
 
   template <typename PhysicalDeviceFragmentShadingRateKHRAllocator,
@@ -10658,7 +10658,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       fragmentShadingRates.resize( fragmentShadingRateCount );
     }
-    return createResultValueType( result, fragmentShadingRates );
+    return createResultValueType( result, std::move( fragmentShadingRates ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -10723,7 +10723,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSurfaceKHR *>( &surface ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Instance::createHeadlessSurfaceEXT" );
 
-    return createResultValueType( result, surface );
+    return createResultValueType( result, std::move( surface ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -11454,7 +11454,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetFenceSciSyncFenceNV( m_device, reinterpret_cast<const VkFenceGetSciSyncInfoNV *>( &getSciSyncHandleInfo ), &handle ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFenceSciSyncFenceNV" );
 
-    return createResultValueType( result, handle );
+    return createResultValueType( result, std::move( handle ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -11482,7 +11482,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetFenceSciSyncObjNV( m_device, reinterpret_cast<const VkFenceGetSciSyncInfoNV *>( &getSciSyncHandleInfo ), &handle ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getFenceSciSyncObjNV" );
 
-    return createResultValueType( result, handle );
+    return createResultValueType( result, std::move( handle ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -11591,7 +11591,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetSemaphoreSciSyncObjNV( m_device, reinterpret_cast<const VkSemaphoreGetSciSyncInfoNV *>( &getSciSyncInfo ), &handle ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSemaphoreSciSyncObjNV" );
 
-    return createResultValueType( result, handle );
+    return createResultValueType( result, std::move( handle ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -11650,7 +11650,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetMemorySciBufNV( m_device, reinterpret_cast<const VkMemoryGetSciBufInfoNV *>( &getSciBufInfo ), &handle ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getMemorySciBufNV" );
 
-    return createResultValueType( result, handle );
+    return createResultValueType( result, std::move( handle ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -11690,7 +11690,7 @@ namespace VULKAN_HPP_NAMESPACE
                                                              reinterpret_cast<VkMemorySciBufPropertiesNV *>( &memorySciBufProperties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getExternalMemorySciBufPropertiesNV" );
 
-    return createResultValueType( result, memorySciBufProperties );
+    return createResultValueType( result, std::move( memorySciBufProperties ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -11821,7 +11821,7 @@ namespace VULKAN_HPP_NAMESPACE
       reinterpret_cast<VkSemaphoreSciSyncPoolNV *>( &semaphorePool ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createSemaphoreSciSyncPoolNV" );
 
-    return createResultValueType( result, semaphorePool );
+    return createResultValueType( result, std::move( semaphorePool ) );
   }
 
 #    ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -11878,7 +11878,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetScreenBufferPropertiesQNX( m_device, &buffer, reinterpret_cast<VkScreenBufferPropertiesQNX *>( &properties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getScreenBufferPropertiesQNX" );
 
-    return createResultValueType( result, properties );
+    return createResultValueType( result, std::move( properties ) );
   }
 
   template <typename X, typename Y, typename... Z, typename Dispatch>
@@ -11896,7 +11896,7 @@ namespace VULKAN_HPP_NAMESPACE
       d.vkGetScreenBufferPropertiesQNX( m_device, &buffer, reinterpret_cast<VkScreenBufferPropertiesQNX *>( &properties ) ) );
     resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getScreenBufferPropertiesQNX" );
 
-    return createResultValueType( result, structureChain );
+    return createResultValueType( result, std::move( structureChain ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/

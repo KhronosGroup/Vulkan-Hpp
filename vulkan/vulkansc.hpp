@@ -723,10 +723,10 @@ namespace VULKAN_HPP_NAMESPACE
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     StructureChain & assign( const T & rhs ) VULKAN_HPP_NOEXCEPT
     {
-      T &    lhs   = get<T, Which>();
-      void * pNext = lhs.pNext;
-      lhs          = rhs;
-      lhs.pNext    = pNext;
+      T &  lhs   = get<T, Which>();
+      auto pNext = lhs.pNext;
+      lhs        = rhs;
+      lhs.pNext  = pNext;
       return *this;
     }
 
@@ -6950,7 +6950,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

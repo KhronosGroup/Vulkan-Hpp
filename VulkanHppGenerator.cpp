@@ -10022,7 +10022,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       {
         assert( decoratedReturnType.starts_with( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
         returnStatement =
-          "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), " + returnVariable + " );";
+          "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( " + returnVariable + " ) );";
       }
     }
   }
@@ -10970,7 +10970,84 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
 
   std::string str = "\n" + enter;
 
-  static const std::string constructorsTemplate = R"(
+  std::string constructorsAndSetters;
+  if (strcmp(&structure.first[0], "VkDeviceFaultInfoEXT") == 0)
+  {
+    // special handling for this structure, as it is filled with dynamic memory on vk::Device::getFaultInfoEXT!
+    constructorsAndSetters += R"(
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( std::array<char, VK_MAX_DESCRIPTION_SIZE> const & description_       = {},
+                                                VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT * pAddressInfos_     = {},
+                                                VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *  pVendorInfos_      = {},
+                                                void *                                            pVendorBinaryData_ = {},
+                                                void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext( pNext_ )
+      , description( description_ )
+      , pAddressInfos( pAddressInfos_ )
+      , pVendorInfos( pVendorInfos_ )
+      , pVendorBinaryData( pVendorBinaryData_ )
+    {
+    }
+
+#  ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    VULKAN_HPP_CONSTEXPR_14 DeviceFaultInfoEXT( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    DeviceFaultInfoEXT( VkDeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT : DeviceFaultInfoEXT( *reinterpret_cast<DeviceFaultInfoEXT const *>( &rhs ) ) {}
+
+    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#  else
+    DeviceFaultInfoEXT( DeviceFaultInfoEXT const & )             = delete;
+    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & ) = delete;
+
+    DeviceFaultInfoEXT( DeviceFaultInfoEXT && rhs ) VULKAN_HPP_NOEXCEPT
+      : pNext( rhs.pNext )
+      , pAddressInfos( rhs.pAddressInfos )
+      , pVendorInfos( rhs.pVendorInfos )
+      , pVendorBinaryData( rhs.pVendorBinaryData )
+    {
+      memcpy( description, rhs.description, VK_MAX_DESCRIPTION_SIZE );
+
+      rhs.pNext = nullptr;
+      memset( rhs.description, 0, VK_MAX_DESCRIPTION_SIZE );
+      rhs.pAddressInfos     = nullptr;
+      rhs.pVendorInfos      = nullptr;
+      rhs.pVendorBinaryData = nullptr;
+    }
+
+    DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      free( pAddressInfos );
+      free( pVendorInfos );
+      free( pVendorBinaryData );
+
+      pNext = rhs.pNext;
+      memcpy( description, rhs.description, VK_MAX_DESCRIPTION_SIZE );
+      pAddressInfos     = rhs.pAddressInfos;
+      pVendorInfos      = rhs.pVendorInfos;
+      pVendorBinaryData = rhs.pVendorBinaryData;
+
+      rhs.pNext = nullptr;
+      memset( rhs.description, 0, VK_MAX_DESCRIPTION_SIZE );
+      rhs.pAddressInfos     = nullptr;
+      rhs.pVendorInfos      = nullptr;
+      rhs.pVendorBinaryData = nullptr;
+
+      return *this;
+    }
+
+    ~DeviceFaultInfoEXT() VULKAN_HPP_NOEXCEPT
+    {
+      free( pAddressInfos );
+      free( pVendorInfos );
+      free( pVendorBinaryData );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+)";
+  }
+  else
+  {
+    static const std::string constructorsTemplate = R"(
 #if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
 ${constructors}
 ${subConstructors}
@@ -10984,10 +11061,11 @@ ${subConstructors}
     }
 )";
 
-  std::string constructorsAndSetters = replaceWithMap( constructorsTemplate,
-                                                       { { "constructors", generateStructConstructors( structure ) },
-                                                         { "structName", stripPrefix( structure.first, "Vk" ) },
-                                                         { "subConstructors", generateStructSubConstructor( structure ) } } );
+    constructorsAndSetters = replaceWithMap( constructorsTemplate,
+                                                         { { "constructors", generateStructConstructors( structure ) },
+                                                           { "structName", stripPrefix( structure.first, "Vk" ) },
+                                                           { "subConstructors", generateStructSubConstructor( structure ) } } );
+  }
 
   if ( !structure.second.returnedOnly )
   {

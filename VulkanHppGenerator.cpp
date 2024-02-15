@@ -578,17 +578,17 @@ namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
+#  if ( 14 <= VULKAN_HPP_CPP_VERSION )
+    using std::exchange;
+#  else
     template <class T, class U = T>
     VULKAN_HPP_CONSTEXPR_14 VULKAN_HPP_INLINE T exchange( T & obj, U && newValue )
     {
-#  if ( 14 <= VULKAN_HPP_CPP_VERSION )
-      return std::exchange<T>( obj, std::forward<U>( newValue ) );
-#  else
       T oldValue = std::move( obj );
       obj        = std::forward<U>( newValue );
       return oldValue;
-#  endif
     }
+#  endif
 
     template <class T>
     class CreateReturnType

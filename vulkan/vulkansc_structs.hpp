@@ -17751,6 +17751,14 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    ExtensionProperties( std::string const & extensionName_, uint32_t specVersion_ = {} ) : specVersion( specVersion_ )
+    {
+      VULKAN_HPP_ASSERT( extensionName_.size() < VK_MAX_EXTENSION_NAME_SIZE );
+      strncpy( extensionName, extensionName_.data(), std::min<size_t>( extensionName_.size(), VK_MAX_EXTENSION_NAME_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -17783,22 +17791,26 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ExtensionProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( ExtensionProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = strcmp( extensionName, rhs.extensionName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = specVersion <=> rhs.specVersion; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( ExtensionProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( extensionName == rhs.extensionName ) && ( specVersion == rhs.specVersion );
-#  endif
+      return ( strcmp( extensionName, rhs.extensionName ) == 0 ) && ( specVersion == rhs.specVersion );
     }
 
     bool operator!=( ExtensionProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> extensionName = {};
@@ -26364,6 +26376,17 @@ namespace VULKAN_HPP_NAMESPACE
 
     LayerProperties( VkLayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT : LayerProperties( *reinterpret_cast<LayerProperties const *>( &rhs ) ) {}
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    LayerProperties( std::string const & layerName_, uint32_t specVersion_ = {}, uint32_t implementationVersion_ = {}, std::string const & description_ = {} )
+      : specVersion( specVersion_ ), implementationVersion( implementationVersion_ )
+    {
+      VULKAN_HPP_ASSERT( layerName_.size() < VK_MAX_EXTENSION_NAME_SIZE );
+      strncpy( layerName, layerName_.data(), std::min<size_t>( layerName_.size(), VK_MAX_EXTENSION_NAME_SIZE ) );
+      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
+      strncpy( description, description_.data(), std::min<size_t>( description_.size(), VK_MAX_DESCRIPTION_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -26399,23 +26422,31 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( LayerProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( LayerProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = strcmp( layerName, rhs.layerName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = specVersion <=> rhs.specVersion; cmp != 0 )
+        return cmp;
+      if ( auto cmp = implementationVersion <=> rhs.implementationVersion; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( description, rhs.description ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( LayerProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( layerName == rhs.layerName ) && ( specVersion == rhs.specVersion ) && ( implementationVersion == rhs.implementationVersion ) &&
-             ( description == rhs.description );
-#  endif
+      return ( strcmp( layerName, rhs.layerName ) == 0 ) && ( specVersion == rhs.specVersion ) && ( implementationVersion == rhs.implementationVersion ) &&
+             ( strcmp( description, rhs.description ) == 0 );
     }
 
     bool operator!=( LayerProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_EXTENSION_NAME_SIZE> layerName             = {};
@@ -28037,6 +28068,23 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PerformanceCounterDescriptionKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsKHR flags_,
+                                      std::string const &                                         name_,
+                                      std::string const &                                         category_    = {},
+                                      std::string const &                                         description_ = {},
+                                      void *                                                      pNext_       = nullptr )
+      : pNext( pNext_ ), flags( flags_ )
+    {
+      VULKAN_HPP_ASSERT( name_.size() < VK_MAX_DESCRIPTION_SIZE );
+      strncpy( name, name_.data(), std::min<size_t>( name_.size(), VK_MAX_DESCRIPTION_SIZE ) );
+      VULKAN_HPP_ASSERT( category_.size() < VK_MAX_DESCRIPTION_SIZE );
+      strncpy( category, category_.data(), std::min<size_t>( category_.size(), VK_MAX_DESCRIPTION_SIZE ) );
+      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
+      strncpy( description, description_.data(), std::min<size_t>( description_.size(), VK_MAX_DESCRIPTION_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PerformanceCounterDescriptionKHR & operator=( PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -28074,23 +28122,35 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PerformanceCounterDescriptionKHR const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PerformanceCounterDescriptionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = flags <=> rhs.flags; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( name, rhs.name ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( category, rhs.category ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( description, rhs.description ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PerformanceCounterDescriptionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) && ( name == rhs.name ) && ( category == rhs.category ) &&
-             ( description == rhs.description );
-#  endif
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( flags == rhs.flags ) && ( strcmp( name, rhs.name ) == 0 ) &&
+             ( strcmp( category, rhs.category ) == 0 ) && ( strcmp( description, rhs.description ) == 0 );
     }
 
     bool operator!=( PerformanceCounterDescriptionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType                                 sType       = StructureType::ePerformanceCounterDescriptionKHR;
@@ -30587,6 +30647,21 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceDriverProperties( VULKAN_HPP_NAMESPACE::DriverId           driverID_,
+                                    std::string const &                      driverName_,
+                                    std::string const &                      driverInfo_         = {},
+                                    VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion_ = {},
+                                    void *                                   pNext_              = nullptr )
+      : pNext( pNext_ ), driverID( driverID_ ), conformanceVersion( conformanceVersion_ )
+    {
+      VULKAN_HPP_ASSERT( driverName_.size() < VK_MAX_DRIVER_NAME_SIZE );
+      strncpy( driverName, driverName_.data(), std::min<size_t>( driverName_.size(), VK_MAX_DRIVER_NAME_SIZE ) );
+      VULKAN_HPP_ASSERT( driverInfo_.size() < VK_MAX_DRIVER_INFO_SIZE );
+      strncpy( driverInfo, driverInfo_.data(), std::min<size_t>( driverInfo_.size(), VK_MAX_DRIVER_INFO_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceDriverProperties & operator=( PhysicalDeviceDriverProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -30624,23 +30699,35 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceDriverProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceDriverProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = driverID <=> rhs.driverID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( driverName, rhs.driverName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( driverInfo, rhs.driverInfo ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = conformanceVersion <=> rhs.conformanceVersion; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceDriverProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( driverID == rhs.driverID ) && ( driverName == rhs.driverName ) &&
-             ( driverInfo == rhs.driverInfo ) && ( conformanceVersion == rhs.conformanceVersion );
-#  endif
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( driverID == rhs.driverID ) && ( strcmp( driverName, rhs.driverName ) == 0 ) &&
+             ( strcmp( driverInfo, rhs.driverInfo ) == 0 ) && ( conformanceVersion == rhs.conformanceVersion );
     }
 
     bool operator!=( PhysicalDeviceDriverProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType                                 sType              = StructureType::ePhysicalDeviceDriverProperties;
@@ -32795,6 +32882,19 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceGroupProperties( VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::PhysicalDevice> const & physicalDevices_,
+                                   VULKAN_HPP_NAMESPACE::Bool32                                                   subsetAllocation_ = {},
+                                   void *                                                                         pNext_            = nullptr )
+      : pNext( pNext_ )
+      , physicalDeviceCount( std::min( static_cast<uint32_t>( physicalDevices_.size() ), VK_MAX_DEVICE_GROUP_SIZE ) )
+      , subsetAllocation( subsetAllocation_ )
+    {
+      VULKAN_HPP_ASSERT( physicalDevices_.size() < VK_MAX_DEVICE_GROUP_SIZE );
+      memcpy( physicalDevices, physicalDevices_.data(), physicalDeviceCount * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceGroupProperties & operator=( PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -32831,23 +32931,37 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceGroupProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceGroupProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = physicalDeviceCount <=> rhs.physicalDeviceCount; cmp != 0 )
+        return cmp;
+      for ( size_t i = 0; i < physicalDeviceCount; ++i )
+      {
+        if ( auto cmp = physicalDevices[i] <=> rhs.physicalDevices[i]; cmp != 0 )
+          return cmp;
+      }
+      if ( auto cmp = subsetAllocation <=> rhs.subsetAllocation; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceGroupProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
       return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( physicalDeviceCount == rhs.physicalDeviceCount ) &&
-             ( physicalDevices == rhs.physicalDevices ) && ( subsetAllocation == rhs.subsetAllocation );
-#  endif
+             ( memcmp( physicalDevices, rhs.physicalDevices, physicalDeviceCount * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) ) == 0 ) &&
+             ( subsetAllocation == rhs.subsetAllocation );
     }
 
     bool operator!=( PhysicalDeviceGroupProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType                                                                  sType = StructureType::ePhysicalDeviceGroupProperties;
@@ -34927,6 +35041,19 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceMemoryProperties( VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryType> const & memoryTypes_,
+                                    VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryHeap> const & memoryHeaps_ = {} )
+      : memoryTypeCount( std::min( static_cast<uint32_t>( memoryTypes_.size() ), VK_MAX_MEMORY_TYPES ) )
+      , memoryHeapCount( std::min( static_cast<uint32_t>( memoryHeaps_.size() ), VK_MAX_MEMORY_HEAPS ) )
+    {
+      VULKAN_HPP_ASSERT( memoryTypes_.size() < VK_MAX_MEMORY_TYPES );
+      memcpy( memoryTypes, memoryTypes_.data(), memoryTypeCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) );
+      VULKAN_HPP_ASSERT( memoryHeaps_.size() < VK_MAX_MEMORY_HEAPS );
+      memcpy( memoryHeaps, memoryHeaps_.data(), memoryHeapCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -34962,23 +35089,39 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceMemoryProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceMemoryProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = memoryTypeCount <=> rhs.memoryTypeCount; cmp != 0 )
+        return cmp;
+      for ( size_t i = 0; i < memoryTypeCount; ++i )
+      {
+        if ( auto cmp = memoryTypes[i] <=> rhs.memoryTypes[i]; cmp != 0 )
+          return cmp;
+      }
+      if ( auto cmp = memoryHeapCount <=> rhs.memoryHeapCount; cmp != 0 )
+        return cmp;
+      for ( size_t i = 0; i < memoryHeapCount; ++i )
+      {
+        if ( auto cmp = memoryHeaps[i] <=> rhs.memoryHeaps[i]; cmp != 0 )
+          return cmp;
+      }
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceMemoryProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( memoryTypeCount == rhs.memoryTypeCount ) && ( memoryTypes == rhs.memoryTypes ) && ( memoryHeapCount == rhs.memoryHeapCount ) &&
-             ( memoryHeaps == rhs.memoryHeaps );
-#  endif
+      return ( memoryTypeCount == rhs.memoryTypeCount ) &&
+             ( memcmp( memoryTypes, rhs.memoryTypes, memoryTypeCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) ) == 0 ) &&
+             ( memoryHeapCount == rhs.memoryHeapCount ) &&
+             ( memcmp( memoryHeaps, rhs.memoryHeaps, memoryHeapCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) ) == 0 );
     }
 
     bool operator!=( PhysicalDeviceMemoryProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     uint32_t                                                                                    memoryTypeCount = {};
@@ -35979,6 +36122,30 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceProperties( uint32_t                                             apiVersion_,
+                              uint32_t                                             driverVersion_,
+                              uint32_t                                             vendorID_,
+                              uint32_t                                             deviceID_,
+                              VULKAN_HPP_NAMESPACE::PhysicalDeviceType             deviceType_,
+                              std::string const &                                  deviceName_,
+                              std::array<uint8_t, VK_UUID_SIZE> const &            pipelineCacheUUID_ = {},
+                              VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits           limits_            = {},
+                              VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseProperties sparseProperties_  = {} )
+      : apiVersion( apiVersion_ )
+      , driverVersion( driverVersion_ )
+      , vendorID( vendorID_ )
+      , deviceID( deviceID_ )
+      , deviceType( deviceType_ )
+      , pipelineCacheUUID( pipelineCacheUUID_ )
+      , limits( limits_ )
+      , sparseProperties( sparseProperties_ )
+    {
+      VULKAN_HPP_ASSERT( deviceName_.size() < VK_MAX_PHYSICAL_DEVICE_NAME_SIZE );
+      strncpy( deviceName, deviceName_.data(), std::min<size_t>( deviceName_.size(), VK_MAX_PHYSICAL_DEVICE_NAME_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -36019,24 +36186,42 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = apiVersion <=> rhs.apiVersion; cmp != 0 )
+        return cmp;
+      if ( auto cmp = driverVersion <=> rhs.driverVersion; cmp != 0 )
+        return cmp;
+      if ( auto cmp = vendorID <=> rhs.vendorID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = deviceID <=> rhs.deviceID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = deviceType <=> rhs.deviceType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( deviceName, rhs.deviceName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = pipelineCacheUUID <=> rhs.pipelineCacheUUID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = limits <=> rhs.limits; cmp != 0 )
+        return cmp;
+      if ( auto cmp = sparseProperties <=> rhs.sparseProperties; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
       return ( apiVersion == rhs.apiVersion ) && ( driverVersion == rhs.driverVersion ) && ( vendorID == rhs.vendorID ) && ( deviceID == rhs.deviceID ) &&
-             ( deviceType == rhs.deviceType ) && ( deviceName == rhs.deviceName ) && ( pipelineCacheUUID == rhs.pipelineCacheUUID ) &&
+             ( deviceType == rhs.deviceType ) && ( strcmp( deviceName, rhs.deviceName ) == 0 ) && ( pipelineCacheUUID == rhs.pipelineCacheUUID ) &&
              ( limits == rhs.limits ) && ( sparseProperties == rhs.sparseProperties );
-#  endif
     }
 
     bool operator!=( PhysicalDeviceProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     uint32_t                                                                     apiVersion        = {};
@@ -39506,6 +39691,26 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceToolProperties( std::string const &                    name_,
+                                  std::string const &                    version_     = {},
+                                  VULKAN_HPP_NAMESPACE::ToolPurposeFlags purposes_    = {},
+                                  std::string const &                    description_ = {},
+                                  std::string const &                    layer_       = {},
+                                  void *                                 pNext_       = nullptr )
+      : pNext( pNext_ ), purposes( purposes_ )
+    {
+      VULKAN_HPP_ASSERT( name_.size() < VK_MAX_EXTENSION_NAME_SIZE );
+      strncpy( name, name_.data(), std::min<size_t>( name_.size(), VK_MAX_EXTENSION_NAME_SIZE ) );
+      VULKAN_HPP_ASSERT( version_.size() < VK_MAX_EXTENSION_NAME_SIZE );
+      strncpy( version, version_.data(), std::min<size_t>( version_.size(), VK_MAX_EXTENSION_NAME_SIZE ) );
+      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
+      strncpy( description, description_.data(), std::min<size_t>( description_.size(), VK_MAX_DESCRIPTION_SIZE ) );
+      VULKAN_HPP_ASSERT( layer_.size() < VK_MAX_EXTENSION_NAME_SIZE );
+      strncpy( layer, layer_.data(), std::min<size_t>( layer_.size(), VK_MAX_EXTENSION_NAME_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceToolProperties & operator=( PhysicalDeviceToolProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -39544,23 +39749,37 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceToolProperties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceToolProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( name, rhs.name ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( version, rhs.version ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = purposes <=> rhs.purposes; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( description, rhs.description ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( layer, rhs.layer ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceToolProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( name == rhs.name ) && ( version == rhs.version ) && ( purposes == rhs.purposes ) &&
-             ( description == rhs.description ) && ( layer == rhs.layer );
-#  endif
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( strcmp( name, rhs.name ) == 0 ) && ( strcmp( version, rhs.version ) == 0 ) &&
+             ( purposes == rhs.purposes ) && ( strcmp( description, rhs.description ) == 0 ) && ( strcmp( layer, rhs.layer ) == 0 );
     }
 
     bool operator!=( PhysicalDeviceToolProperties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType                                    sType       = StructureType::ePhysicalDeviceToolProperties;
@@ -41176,6 +41395,120 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    PhysicalDeviceVulkan12Properties(
+      VULKAN_HPP_NAMESPACE::DriverId                        driverID_,
+      std::string const &                                   driverName_,
+      std::string const &                                   driverInfo_                 = {},
+      VULKAN_HPP_NAMESPACE::ConformanceVersion              conformanceVersion_         = {},
+      VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence denormBehaviorIndependence_ = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly,
+      VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence roundingModeIndependence_   = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly,
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat16_                = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat32_                = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat64_                = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat16_                          = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat32_                          = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat64_                          = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat16_                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat32_                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat64_                       = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat16_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat32_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat64_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat16_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat32_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat64_                         = {},
+      uint32_t                                              maxUpdateAfterBindDescriptorsInAllPools_              = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderUniformBufferArrayNonUniformIndexingNative_     = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderSampledImageArrayNonUniformIndexingNative_      = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderStorageBufferArrayNonUniformIndexingNative_     = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderStorageImageArrayNonUniformIndexingNative_      = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          shaderInputAttachmentArrayNonUniformIndexingNative_   = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          robustBufferAccessUpdateAfterBind_                    = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          quadDivergentImplicitLod_                             = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindSamplers_         = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindUniformBuffers_   = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindStorageBuffers_   = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindSampledImages_    = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindStorageImages_    = {},
+      uint32_t                                              maxPerStageDescriptorUpdateAfterBindInputAttachments_ = {},
+      uint32_t                                              maxPerStageUpdateAfterBindResources_                  = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindSamplers_              = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindUniformBuffers_        = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageBuffers_        = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindSampledImages_         = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageImages_         = {},
+      uint32_t                                              maxDescriptorSetUpdateAfterBindInputAttachments_      = {},
+      VULKAN_HPP_NAMESPACE::ResolveModeFlags                supportedDepthResolveModes_                           = {},
+      VULKAN_HPP_NAMESPACE::ResolveModeFlags                supportedStencilResolveModes_                         = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          independentResolveNone_                               = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          independentResolve_                                   = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          filterMinmaxSingleComponentFormats_                   = {},
+      VULKAN_HPP_NAMESPACE::Bool32                          filterMinmaxImageComponentMapping_                    = {},
+      uint64_t                                              maxTimelineSemaphoreValueDifference_                  = {},
+      VULKAN_HPP_NAMESPACE::SampleCountFlags                framebufferIntegerColorSampleCounts_                  = {},
+      void *                                                pNext_                                                = nullptr )
+      : pNext( pNext_ )
+      , driverID( driverID_ )
+      , conformanceVersion( conformanceVersion_ )
+      , denormBehaviorIndependence( denormBehaviorIndependence_ )
+      , roundingModeIndependence( roundingModeIndependence_ )
+      , shaderSignedZeroInfNanPreserveFloat16( shaderSignedZeroInfNanPreserveFloat16_ )
+      , shaderSignedZeroInfNanPreserveFloat32( shaderSignedZeroInfNanPreserveFloat32_ )
+      , shaderSignedZeroInfNanPreserveFloat64( shaderSignedZeroInfNanPreserveFloat64_ )
+      , shaderDenormPreserveFloat16( shaderDenormPreserveFloat16_ )
+      , shaderDenormPreserveFloat32( shaderDenormPreserveFloat32_ )
+      , shaderDenormPreserveFloat64( shaderDenormPreserveFloat64_ )
+      , shaderDenormFlushToZeroFloat16( shaderDenormFlushToZeroFloat16_ )
+      , shaderDenormFlushToZeroFloat32( shaderDenormFlushToZeroFloat32_ )
+      , shaderDenormFlushToZeroFloat64( shaderDenormFlushToZeroFloat64_ )
+      , shaderRoundingModeRTEFloat16( shaderRoundingModeRTEFloat16_ )
+      , shaderRoundingModeRTEFloat32( shaderRoundingModeRTEFloat32_ )
+      , shaderRoundingModeRTEFloat64( shaderRoundingModeRTEFloat64_ )
+      , shaderRoundingModeRTZFloat16( shaderRoundingModeRTZFloat16_ )
+      , shaderRoundingModeRTZFloat32( shaderRoundingModeRTZFloat32_ )
+      , shaderRoundingModeRTZFloat64( shaderRoundingModeRTZFloat64_ )
+      , maxUpdateAfterBindDescriptorsInAllPools( maxUpdateAfterBindDescriptorsInAllPools_ )
+      , shaderUniformBufferArrayNonUniformIndexingNative( shaderUniformBufferArrayNonUniformIndexingNative_ )
+      , shaderSampledImageArrayNonUniformIndexingNative( shaderSampledImageArrayNonUniformIndexingNative_ )
+      , shaderStorageBufferArrayNonUniformIndexingNative( shaderStorageBufferArrayNonUniformIndexingNative_ )
+      , shaderStorageImageArrayNonUniformIndexingNative( shaderStorageImageArrayNonUniformIndexingNative_ )
+      , shaderInputAttachmentArrayNonUniformIndexingNative( shaderInputAttachmentArrayNonUniformIndexingNative_ )
+      , robustBufferAccessUpdateAfterBind( robustBufferAccessUpdateAfterBind_ )
+      , quadDivergentImplicitLod( quadDivergentImplicitLod_ )
+      , maxPerStageDescriptorUpdateAfterBindSamplers( maxPerStageDescriptorUpdateAfterBindSamplers_ )
+      , maxPerStageDescriptorUpdateAfterBindUniformBuffers( maxPerStageDescriptorUpdateAfterBindUniformBuffers_ )
+      , maxPerStageDescriptorUpdateAfterBindStorageBuffers( maxPerStageDescriptorUpdateAfterBindStorageBuffers_ )
+      , maxPerStageDescriptorUpdateAfterBindSampledImages( maxPerStageDescriptorUpdateAfterBindSampledImages_ )
+      , maxPerStageDescriptorUpdateAfterBindStorageImages( maxPerStageDescriptorUpdateAfterBindStorageImages_ )
+      , maxPerStageDescriptorUpdateAfterBindInputAttachments( maxPerStageDescriptorUpdateAfterBindInputAttachments_ )
+      , maxPerStageUpdateAfterBindResources( maxPerStageUpdateAfterBindResources_ )
+      , maxDescriptorSetUpdateAfterBindSamplers( maxDescriptorSetUpdateAfterBindSamplers_ )
+      , maxDescriptorSetUpdateAfterBindUniformBuffers( maxDescriptorSetUpdateAfterBindUniformBuffers_ )
+      , maxDescriptorSetUpdateAfterBindUniformBuffersDynamic( maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ )
+      , maxDescriptorSetUpdateAfterBindStorageBuffers( maxDescriptorSetUpdateAfterBindStorageBuffers_ )
+      , maxDescriptorSetUpdateAfterBindStorageBuffersDynamic( maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ )
+      , maxDescriptorSetUpdateAfterBindSampledImages( maxDescriptorSetUpdateAfterBindSampledImages_ )
+      , maxDescriptorSetUpdateAfterBindStorageImages( maxDescriptorSetUpdateAfterBindStorageImages_ )
+      , maxDescriptorSetUpdateAfterBindInputAttachments( maxDescriptorSetUpdateAfterBindInputAttachments_ )
+      , supportedDepthResolveModes( supportedDepthResolveModes_ )
+      , supportedStencilResolveModes( supportedStencilResolveModes_ )
+      , independentResolveNone( independentResolveNone_ )
+      , independentResolve( independentResolve_ )
+      , filterMinmaxSingleComponentFormats( filterMinmaxSingleComponentFormats_ )
+      , filterMinmaxImageComponentMapping( filterMinmaxImageComponentMapping_ )
+      , maxTimelineSemaphoreValueDifference( maxTimelineSemaphoreValueDifference_ )
+      , framebufferIntegerColorSampleCounts( framebufferIntegerColorSampleCounts_ )
+    {
+      VULKAN_HPP_ASSERT( driverName_.size() < VK_MAX_DRIVER_NAME_SIZE );
+      strncpy( driverName, driverName_.data(), std::min<size_t>( driverName_.size(), VK_MAX_DRIVER_NAME_SIZE ) );
+      VULKAN_HPP_ASSERT( driverInfo_.size() < VK_MAX_DRIVER_INFO_SIZE );
+      strncpy( driverInfo, driverInfo_.data(), std::min<size_t>( driverInfo_.size(), VK_MAX_DRIVER_INFO_SIZE ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
     PhysicalDeviceVulkan12Properties & operator=( PhysicalDeviceVulkan12Properties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -41314,15 +41647,125 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDeviceVulkan12Properties const & ) const = default;
-#else
+    std::strong_ordering operator<=>( PhysicalDeviceVulkan12Properties const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( auto cmp = sType <=> rhs.sType; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pNext <=> rhs.pNext; cmp != 0 )
+        return cmp;
+      if ( auto cmp = driverID <=> rhs.driverID; cmp != 0 )
+        return cmp;
+      if ( auto cmp = strcmp( driverName, rhs.driverName ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = strcmp( driverInfo, rhs.driverInfo ); cmp != 0 )
+        return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = conformanceVersion <=> rhs.conformanceVersion; cmp != 0 )
+        return cmp;
+      if ( auto cmp = denormBehaviorIndependence <=> rhs.denormBehaviorIndependence; cmp != 0 )
+        return cmp;
+      if ( auto cmp = roundingModeIndependence <=> rhs.roundingModeIndependence; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderSignedZeroInfNanPreserveFloat16 <=> rhs.shaderSignedZeroInfNanPreserveFloat16; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderSignedZeroInfNanPreserveFloat32 <=> rhs.shaderSignedZeroInfNanPreserveFloat32; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderSignedZeroInfNanPreserveFloat64 <=> rhs.shaderSignedZeroInfNanPreserveFloat64; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormPreserveFloat16 <=> rhs.shaderDenormPreserveFloat16; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormPreserveFloat32 <=> rhs.shaderDenormPreserveFloat32; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormPreserveFloat64 <=> rhs.shaderDenormPreserveFloat64; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormFlushToZeroFloat16 <=> rhs.shaderDenormFlushToZeroFloat16; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormFlushToZeroFloat32 <=> rhs.shaderDenormFlushToZeroFloat32; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderDenormFlushToZeroFloat64 <=> rhs.shaderDenormFlushToZeroFloat64; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTEFloat16 <=> rhs.shaderRoundingModeRTEFloat16; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTEFloat32 <=> rhs.shaderRoundingModeRTEFloat32; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTEFloat64 <=> rhs.shaderRoundingModeRTEFloat64; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTZFloat16 <=> rhs.shaderRoundingModeRTZFloat16; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTZFloat32 <=> rhs.shaderRoundingModeRTZFloat32; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderRoundingModeRTZFloat64 <=> rhs.shaderRoundingModeRTZFloat64; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxUpdateAfterBindDescriptorsInAllPools <=> rhs.maxUpdateAfterBindDescriptorsInAllPools; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderUniformBufferArrayNonUniformIndexingNative <=> rhs.shaderUniformBufferArrayNonUniformIndexingNative; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderSampledImageArrayNonUniformIndexingNative <=> rhs.shaderSampledImageArrayNonUniformIndexingNative; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderStorageBufferArrayNonUniformIndexingNative <=> rhs.shaderStorageBufferArrayNonUniformIndexingNative; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderStorageImageArrayNonUniformIndexingNative <=> rhs.shaderStorageImageArrayNonUniformIndexingNative; cmp != 0 )
+        return cmp;
+      if ( auto cmp = shaderInputAttachmentArrayNonUniformIndexingNative <=> rhs.shaderInputAttachmentArrayNonUniformIndexingNative; cmp != 0 )
+        return cmp;
+      if ( auto cmp = robustBufferAccessUpdateAfterBind <=> rhs.robustBufferAccessUpdateAfterBind; cmp != 0 )
+        return cmp;
+      if ( auto cmp = quadDivergentImplicitLod <=> rhs.quadDivergentImplicitLod; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindSamplers <=> rhs.maxPerStageDescriptorUpdateAfterBindSamplers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindUniformBuffers <=> rhs.maxPerStageDescriptorUpdateAfterBindUniformBuffers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindStorageBuffers <=> rhs.maxPerStageDescriptorUpdateAfterBindStorageBuffers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindSampledImages <=> rhs.maxPerStageDescriptorUpdateAfterBindSampledImages; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindStorageImages <=> rhs.maxPerStageDescriptorUpdateAfterBindStorageImages; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageDescriptorUpdateAfterBindInputAttachments <=> rhs.maxPerStageDescriptorUpdateAfterBindInputAttachments; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxPerStageUpdateAfterBindResources <=> rhs.maxPerStageUpdateAfterBindResources; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindSamplers <=> rhs.maxDescriptorSetUpdateAfterBindSamplers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindUniformBuffers <=> rhs.maxDescriptorSetUpdateAfterBindUniformBuffers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindUniformBuffersDynamic <=> rhs.maxDescriptorSetUpdateAfterBindUniformBuffersDynamic; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindStorageBuffers <=> rhs.maxDescriptorSetUpdateAfterBindStorageBuffers; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindStorageBuffersDynamic <=> rhs.maxDescriptorSetUpdateAfterBindStorageBuffersDynamic; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindSampledImages <=> rhs.maxDescriptorSetUpdateAfterBindSampledImages; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindStorageImages <=> rhs.maxDescriptorSetUpdateAfterBindStorageImages; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxDescriptorSetUpdateAfterBindInputAttachments <=> rhs.maxDescriptorSetUpdateAfterBindInputAttachments; cmp != 0 )
+        return cmp;
+      if ( auto cmp = supportedDepthResolveModes <=> rhs.supportedDepthResolveModes; cmp != 0 )
+        return cmp;
+      if ( auto cmp = supportedStencilResolveModes <=> rhs.supportedStencilResolveModes; cmp != 0 )
+        return cmp;
+      if ( auto cmp = independentResolveNone <=> rhs.independentResolveNone; cmp != 0 )
+        return cmp;
+      if ( auto cmp = independentResolve <=> rhs.independentResolve; cmp != 0 )
+        return cmp;
+      if ( auto cmp = filterMinmaxSingleComponentFormats <=> rhs.filterMinmaxSingleComponentFormats; cmp != 0 )
+        return cmp;
+      if ( auto cmp = filterMinmaxImageComponentMapping <=> rhs.filterMinmaxImageComponentMapping; cmp != 0 )
+        return cmp;
+      if ( auto cmp = maxTimelineSemaphoreValueDifference <=> rhs.maxTimelineSemaphoreValueDifference; cmp != 0 )
+        return cmp;
+      if ( auto cmp = framebufferIntegerColorSampleCounts <=> rhs.framebufferIntegerColorSampleCounts; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
     bool operator==( PhysicalDeviceVulkan12Properties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( driverID == rhs.driverID ) && ( driverName == rhs.driverName ) &&
-             ( driverInfo == rhs.driverInfo ) && ( conformanceVersion == rhs.conformanceVersion ) &&
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( driverID == rhs.driverID ) && ( strcmp( driverName, rhs.driverName ) == 0 ) &&
+             ( strcmp( driverInfo, rhs.driverInfo ) == 0 ) && ( conformanceVersion == rhs.conformanceVersion ) &&
              ( denormBehaviorIndependence == rhs.denormBehaviorIndependence ) && ( roundingModeIndependence == rhs.roundingModeIndependence ) &&
              ( shaderSignedZeroInfNanPreserveFloat16 == rhs.shaderSignedZeroInfNanPreserveFloat16 ) &&
              ( shaderSignedZeroInfNanPreserveFloat32 == rhs.shaderSignedZeroInfNanPreserveFloat32 ) &&
@@ -41362,14 +41805,12 @@ namespace VULKAN_HPP_NAMESPACE
              ( filterMinmaxImageComponentMapping == rhs.filterMinmaxImageComponentMapping ) &&
              ( maxTimelineSemaphoreValueDifference == rhs.maxTimelineSemaphoreValueDifference ) &&
              ( framebufferIntegerColorSampleCounts == rhs.framebufferIntegerColorSampleCounts );
-#  endif
     }
 
     bool operator!=( PhysicalDeviceVulkan12Properties const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return !operator==( rhs );
     }
-#endif
 
   public:
     VULKAN_HPP_NAMESPACE::StructureType                                 sType              = StructureType::ePhysicalDeviceVulkan12Properties;

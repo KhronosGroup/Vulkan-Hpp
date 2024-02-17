@@ -382,9 +382,16 @@ namespace VULKAN_HPP_NAMESPACE
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags )
+  VULKAN_HPP_INLINE std::string to_string( MemoryMapFlags value )
   {
-    return "{}";
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & MemoryMapFlagBits::ePlacedEXT )
+      result += "PlacedEXT | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlags value )
@@ -2810,9 +2817,16 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_map_memory2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryUnmapFlagsKHR )
+  VULKAN_HPP_INLINE std::string to_string( MemoryUnmapFlagsKHR value )
   {
-    return "{}";
+    if ( !value )
+      return "{}";
+
+    std::string result;
+    if ( value & MemoryUnmapFlagBitsKHR::eReserveEXT )
+      result += "ReserveEXT | ";
+
+    return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
 
   //=== VK_EXT_surface_maintenance1 ===
@@ -3579,7 +3593,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eOperationNotDeferredKHR: return "OperationNotDeferredKHR";
       case Result::eErrorInvalidVideoStdParametersKHR: return "ErrorInvalidVideoStdParametersKHR";
       case Result::eErrorCompressionExhaustedEXT: return "ErrorCompressionExhaustedEXT";
-      case Result::eErrorIncompatibleShaderBinaryEXT: return "ErrorIncompatibleShaderBinaryEXT";
+      case Result::eIncompatibleShaderBinaryEXT: return "IncompatibleShaderBinaryEXT";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4184,6 +4198,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eHostImageCopyDevicePerformanceQueryEXT: return "HostImageCopyDevicePerformanceQueryEXT";
       case StructureType::eMemoryMapInfoKHR: return "MemoryMapInfoKHR";
       case StructureType::eMemoryUnmapInfoKHR: return "MemoryUnmapInfoKHR";
+      case StructureType::ePhysicalDeviceMapMemoryPlacedFeaturesEXT: return "PhysicalDeviceMapMemoryPlacedFeaturesEXT";
+      case StructureType::ePhysicalDeviceMapMemoryPlacedPropertiesEXT: return "PhysicalDeviceMapMemoryPlacedPropertiesEXT";
+      case StructureType::eMemoryMapPlacedInfoEXT: return "MemoryMapPlacedInfoEXT";
       case StructureType::ePhysicalDeviceShaderAtomicFloat2FeaturesEXT: return "PhysicalDeviceShaderAtomicFloat2FeaturesEXT";
       case StructureType::eSurfacePresentModeEXT: return "SurfacePresentModeEXT";
       case StructureType::eSurfacePresentScalingCapabilitiesEXT: return "SurfacePresentScalingCapabilitiesEXT";
@@ -4532,6 +4549,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSetDescriptorBufferOffsetsInfoEXT: return "SetDescriptorBufferOffsetsInfoEXT";
       case StructureType::eBindDescriptorBufferEmbeddedSamplersInfoEXT: return "BindDescriptorBufferEmbeddedSamplersInfoEXT";
       case StructureType::ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV: return "PhysicalDeviceDescriptorPoolOverallocationFeaturesNV";
+      case StructureType::ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV: return "PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -5151,9 +5169,13 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryMapFlagBits )
+  VULKAN_HPP_INLINE std::string to_string( MemoryMapFlagBits value )
   {
-    return "(void)";
+    switch ( value )
+    {
+      case MemoryMapFlagBits::ePlacedEXT: return "PlacedEXT";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
   }
 
   VULKAN_HPP_INLINE std::string to_string( ImageAspectFlagBits value )
@@ -8111,9 +8133,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_map_memory2 ===
 
-  VULKAN_HPP_INLINE std::string to_string( MemoryUnmapFlagBitsKHR )
+  VULKAN_HPP_INLINE std::string to_string( MemoryUnmapFlagBitsKHR value )
   {
-    return "(void)";
+    switch ( value )
+    {
+      case MemoryUnmapFlagBitsKHR::eReserveEXT: return "ReserveEXT";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
   }
 
   //=== VK_EXT_surface_maintenance1 ===

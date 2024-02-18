@@ -944,7 +944,7 @@ With this define you can specify whether the ```DispatchLoaderDynamic``` is impo
 
 #### VULKAN_HPP_TYPESAFE_CONVERSION
 
-32-bit vulkan is not typesafe for non-dispatchable handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms define ```VULKAN_HPP_TYPESAFE_CONVERSION```.
+32-bit vulkan is not typesafe for non-dispatchable handles, so we don't allow copy constructors on this platform by default. To enable this feature on 32-bit platforms, ```#define VULKAN_HPP_TYPESAFE_CONVERSION 1```. To disable this feature on 64-bit platforms, ```#define VULKAN_HPP_TYPESAFE_CONVERSION 0```.
 
 #### VULKAN_HPP_UNEXPECTED
 

@@ -1701,7 +1701,7 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
 {
   for ( auto const & m : members )
   {
-    if (m.type.isValue())
+    if ( m.type.isValue() )
     {
       if ( ( m.type.type == "float" ) || ( m.type.type == "double" ) )
       {
@@ -1710,7 +1710,7 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
       else
       {
         auto structureIt = m_structs.find( m.type.type );
-        if (structureIt != m_structs.end() && containsFloatingPoints(structureIt->second.members))
+        if ( structureIt != m_structs.end() && containsFloatingPoints( structureIt->second.members ) )
         {
           return true;
         }
@@ -9970,7 +9970,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
   std::string returnStatement;
   if ( commandData.returnType.starts_with( "Vk" ) )
   {
-    if ( ( commandData.successCodes.size() == 1 ) || enumerating || ( commandName == "vkGetDeviceFaultInfoEXT") )
+    if ( ( commandData.successCodes.size() == 1 ) || enumerating || ( commandName == "vkGetDeviceFaultInfoEXT" ) )
     {
       assert( commandData.successCodes[0] == "VK_SUCCESS" );
       if ( raii || commandData.errorCodes.empty() )
@@ -10722,16 +10722,13 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             assert( mit->arraySizes.size() == 1 );
             static const std::string copyOpsTemplate = R"(
     VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
-    ${copyOp}( ${memberName}, ${memberName}_.data(), ${arraySizeExpression} );)";
+    ${copyOp}( ${memberName}, ${memberSize}, ${memberName}_.data(), ${memberName}_.size() );)";
 
-            std::string arraySizeExpression = ( mit->lenExpressions[0] == "null-terminated" )
-                                              ? ( "std::min<size_t>( " + mit->name + "_.size(), " + mit->arraySizes[0] + " )" )
-                                              : ( mit->lenExpressions[0] + " * sizeof( " + argumentType + " )" );
             copyOps += replaceWithMap( copyOpsTemplate,
                                        { { "arraySize", mit->arraySizes[0] },
-                                         { "arraySizeExpression", arraySizeExpression },
-                                         { "copyOp", mit->lenExpressions[0] == "null-terminated" ? "strncpy" : "memcpy" },
-                                         { "memberName", mit->name } } );
+                                         { "copyOp", mit->lenExpressions[0] == "null-terminated" ? "strncpy_s" : "memcpy_s" },
+                                         { "memberName", mit->name },
+                                         { "memberSize", mit->arraySizes[0] } } );
           }
         }
         else
@@ -11450,7 +11447,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     ${structureName} & set${ArrayName}( std::string const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( ${arrayName}_.size() < ${arraySize} );
-      strncpy( ${arrayName}, ${arrayName}_.data(), std::min<size_t>( ${arrayName}_.size(), ${arraySize} ) );
+      strncpy_s( ${arrayName}, ${arraySize}, ${arrayName}_.data(), ${arrayName}_.size() );
       return *this;
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

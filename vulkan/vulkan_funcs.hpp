@@ -20667,8 +20667,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE Result Device::unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR * pMemoryUnmapInfo,
-                                                    Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result Device::unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR * pMemoryUnmapInfo,
+                                                                         Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     return static_cast<Result>( d.vkUnmapMemory2KHR( m_device, reinterpret_cast<const VkMemoryUnmapInfoKHR *>( pMemoryUnmapInfo ) ) );
@@ -20676,15 +20676,19 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void Device::unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR & memoryUnmapInfo,
-                                                  Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE typename ResultValueType<void>::type Device::unmapMemory2KHR( const VULKAN_HPP_NAMESPACE::MemoryUnmapInfoKHR & memoryUnmapInfo,
+                                                                                  Dispatch const &                                 d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkUnmapMemory2KHR && "Function <vkUnmapMemory2KHR> requires <VK_KHR_map_memory2>" );
 #  endif
 
-    d.vkUnmapMemory2KHR( m_device, reinterpret_cast<const VkMemoryUnmapInfoKHR *>( &memoryUnmapInfo ) );
+    VULKAN_HPP_NAMESPACE::Result result =
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkUnmapMemory2KHR( m_device, reinterpret_cast<const VkMemoryUnmapInfoKHR *>( &memoryUnmapInfo ) ) );
+    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::unmapMemory2KHR" );
+
+    return createResultValueType( result );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -23210,8 +23214,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>
-    Device::getSubpassShadingMaxWorkgroupSizeHUAWEI( VULKAN_HPP_NAMESPACE::RenderPass renderpass, Dispatch const & d ) const
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::Extent2D>::type
+                       Device::getSubpassShadingMaxWorkgroupSizeHUAWEI( VULKAN_HPP_NAMESPACE::RenderPass renderpass, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -23222,11 +23226,9 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::Extent2D maxWorkgroupSize;
     VULKAN_HPP_NAMESPACE::Result   result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetDeviceSubpassShadingMaxWorkgroupSizeHUAWEI(
       m_device, static_cast<VkRenderPass>( renderpass ), reinterpret_cast<VkExtent2D *>( &maxWorkgroupSize ) ) );
-    resultCheck( result,
-                 VULKAN_HPP_NAMESPACE_STRING "::Device::getSubpassShadingMaxWorkgroupSizeHUAWEI",
-                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncomplete } );
+    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getSubpassShadingMaxWorkgroupSizeHUAWEI" );
 
-    return ResultValue<VULKAN_HPP_NAMESPACE::Extent2D>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( maxWorkgroupSize ) );
+    return createResultValueType( result, std::move( maxWorkgroupSize ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -25388,8 +25390,8 @@ namespace VULKAN_HPP_NAMESPACE
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename ShaderEXTAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>::type
-                       Device::createShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>
+    Device::createShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                 allocator,
                               Dispatch const &                                                                          d ) const
   {
@@ -25405,16 +25407,19 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( createInfos.data() ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
 
-    return createResultValueType( result, std::move( shaders ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                          std::move( shaders ) );
   }
 
   template <typename ShaderEXTAllocator,
             typename Dispatch,
             typename std::enable_if<std::is_same<typename ShaderEXTAllocator::value_type, VULKAN_HPP_NAMESPACE::ShaderEXT>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>::type
-                       Device::createShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>
+    Device::createShadersEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
                               Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                 allocator,
                               ShaderEXTAllocator &                                                                      shaderEXTAllocator,
                               Dispatch const &                                                                          d ) const
@@ -25431,14 +25436,17 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( createInfos.data() ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXT",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
 
-    return createResultValueType( result, std::move( shaders ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::ShaderEXT, ShaderEXTAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+                                                                                          std::move( shaders ) );
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::ShaderEXT>::type
-                       Device::createShaderEXT( const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT &         createInfo,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<VULKAN_HPP_NAMESPACE::ShaderEXT>
+                                         Device::createShaderEXT( const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT &         createInfo,
                              Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
                              Dispatch const &                                          d ) const
   {
@@ -25454,15 +25462,16 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( &createInfo ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( &shader ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXT" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXT",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
 
-    return createResultValueType( result, std::move( shader ) );
+    return ResultValue<VULKAN_HPP_NAMESPACE::ShaderEXT>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( shader ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
   template <typename Dispatch, typename ShaderEXTAllocator>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>::type
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>
     Device::createShadersEXTUnique( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
                                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                 allocator,
                                     Dispatch const &                                                                          d ) const
@@ -25479,7 +25488,9 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( createInfos.data() ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXTUnique" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXTUnique",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
     std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator> uniqueShaders;
     uniqueShaders.reserve( createInfos.size() );
     ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
@@ -25487,15 +25498,15 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniqueShaders.push_back( UniqueHandle<ShaderEXT, Dispatch>( shader, deleter ) );
     }
-    return createResultValueType( result, std::move( uniqueShaders ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniqueShaders ) );
   }
 
   template <
     typename Dispatch,
     typename ShaderEXTAllocator,
     typename std::enable_if<std::is_same<typename ShaderEXTAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE
-    typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>::type
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>
     Device::createShadersEXTUnique( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT> const & createInfos,
                                     Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>                                 allocator,
                                     ShaderEXTAllocator &                                                                      shaderEXTAllocator,
@@ -25513,7 +25524,9 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( createInfos.data() ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( shaders.data() ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXTUnique" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShadersEXTUnique",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
     std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator> uniqueShaders( shaderEXTAllocator );
     uniqueShaders.reserve( createInfos.size() );
     ObjectDestroy<Device, Dispatch> deleter( *this, allocator, d );
@@ -25521,12 +25534,13 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniqueShaders.push_back( UniqueHandle<ShaderEXT, Dispatch>( shader, deleter ) );
     }
-    return createResultValueType( result, std::move( uniqueShaders ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>, ShaderEXTAllocator>>(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniqueShaders ) );
   }
 
   template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>::type
-                       Device::createShaderEXTUnique( const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT &         createInfo,
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>
+                                         Device::createShaderEXTUnique( const VULKAN_HPP_NAMESPACE::ShaderCreateInfoEXT &         createInfo,
                                    Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
                                    Dispatch const &                                          d ) const
   {
@@ -25542,10 +25556,13 @@ namespace VULKAN_HPP_NAMESPACE
                             reinterpret_cast<const VkShaderCreateInfoEXT *>( &createInfo ),
                             reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
                             reinterpret_cast<VkShaderEXT *>( &shader ) ) );
-    resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXTUnique" );
+    resultCheck( result,
+                 VULKAN_HPP_NAMESPACE_STRING "::Device::createShaderEXTUnique",
+                 { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eIncompatibleShaderBinaryEXT } );
 
-    return createResultValueType( result,
-                                  UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>( shader, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+    return ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>>(
+      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
+      UniqueHandle<VULKAN_HPP_NAMESPACE::ShaderEXT, Dispatch>( shader, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */

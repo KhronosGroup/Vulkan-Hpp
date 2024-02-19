@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 277, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 278, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -6549,14 +6549,6 @@ namespace VULKAN_HPP_NAMESPACE
     CompressionExhaustedEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorCompressionExhaustedEXT ), message ) {}
   };
 
-  class IncompatibleShaderBinaryEXTError : public SystemError
-  {
-  public:
-    IncompatibleShaderBinaryEXTError( std::string const & message ) : SystemError( make_error_code( Result::eErrorIncompatibleShaderBinaryEXT ), message ) {}
-
-    IncompatibleShaderBinaryEXTError( char const * message ) : SystemError( make_error_code( Result::eErrorIncompatibleShaderBinaryEXT ), message ) {}
-  };
-
   namespace detail
   {
     [[noreturn]] VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
@@ -6599,7 +6591,6 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /*VK_USE_PLATFORM_WIN32_KHR*/
         case Result::eErrorInvalidVideoStdParametersKHR: throw InvalidVideoStdParametersKHRError( message );
         case Result::eErrorCompressionExhaustedEXT: throw CompressionExhaustedEXTError( message );
-        case Result::eErrorIncompatibleShaderBinaryEXT: throw IncompatibleShaderBinaryEXTError( message );
         default: throw SystemError( make_error_code( result ), message );
       }
     }
@@ -8015,6 +8006,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMapMemory2ExtensionName = VK_KHR_MAP_MEMORY_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMapMemory2SpecVersion   = VK_KHR_MAP_MEMORY_2_SPEC_VERSION;
 
+  //=== VK_EXT_map_memory_placed ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTMapMemoryPlacedExtensionName = VK_EXT_MAP_MEMORY_PLACED_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTMapMemoryPlacedSpecVersion   = VK_EXT_MAP_MEMORY_PLACED_SPEC_VERSION;
+
   //=== VK_EXT_shader_atomic_float2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderAtomicFloat2ExtensionName = VK_EXT_SHADER_ATOMIC_FLOAT_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderAtomicFloat2SpecVersion   = VK_EXT_SHADER_ATOMIC_FLOAT_2_SPEC_VERSION;
@@ -8666,6 +8661,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_descriptor_pool_overallocation ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVDescriptorPoolOverallocationExtensionName = VK_NV_DESCRIPTOR_POOL_OVERALLOCATION_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVDescriptorPoolOverallocationSpecVersion   = VK_NV_DESCRIPTOR_POOL_OVERALLOCATION_SPEC_VERSION;
+
+  //=== VK_NV_shader_atomic_float16_vector ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVShaderAtomicFloat16VectorExtensionName = VK_NV_SHADER_ATOMIC_FLOAT16_VECTOR_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVShaderAtomicFloat16VectorSpecVersion   = VK_NV_SHADER_ATOMIC_FLOAT16_VECTOR_SPEC_VERSION;
 
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -12833,6 +12832,43 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_map_memory_placed ===
+  template <>
+  struct StructExtends<PhysicalDeviceMapMemoryPlacedFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMapMemoryPlacedFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceMapMemoryPlacedPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MemoryMapPlacedInfoEXT, MemoryMapInfoKHR>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_atomic_float2 ===
   template <>
   struct StructExtends<PhysicalDeviceShaderAtomicFloat2FeaturesEXT, PhysicalDeviceFeatures2>
@@ -16545,6 +16581,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceDescriptorPoolOverallocationFeaturesNV, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_NV_shader_atomic_float16_vector ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV, DeviceCreateInfo>
   {
     enum
     {

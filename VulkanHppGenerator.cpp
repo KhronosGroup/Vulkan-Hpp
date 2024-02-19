@@ -10720,15 +10720,35 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
           else
           {
             assert( mit->arraySizes.size() == 1 );
-            static const std::string copyOpsTemplate = R"(
+            if ( mit->lenExpressions[0] == "null-terminated" )
+            {
+              static const std::string strcpyTemplate = R"(
     VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
-    ${copyOp}( ${memberName}, ${memberSize}, ${memberName}_.data(), ${memberName}_.size() );)";
+#if defined( WIN32 )
+    strncpy_s( ${memberName}, ${memberSize}, ${memberName}_.data(), ${memberName}_.size() );
+#else
+    strncpy( ${memberName}, ${memberName}_.data(), std::min<size_t>( ${memberSize}, ${memberName}_.size() ) );
+#endif
+)";
 
-            copyOps += replaceWithMap( copyOpsTemplate,
-                                       { { "arraySize", mit->arraySizes[0] },
-                                         { "copyOp", mit->lenExpressions[0] == "null-terminated" ? "strncpy_s" : "memcpy_s" },
-                                         { "memberName", mit->name },
-                                         { "memberSize", mit->arraySizes[0] } } );
+              copyOps +=
+                replaceWithMap( strcpyTemplate, { { "arraySize", mit->arraySizes[0] }, { "memberName", mit->name }, { "memberSize", mit->arraySizes[0] } } );
+            }
+            else
+            {
+              static const std::string memcpyTemplate = R"(
+    VULKAN_HPP_ASSERT( ${memberName}_.size() < ${arraySize} );
+    memcpy( ${memberName}, ${memberName}_.data(), ${lenExpression} * sizeof( ${argumentType} ) );)";
+
+              std::string arraySizeExpression = ( mit->lenExpressions[0] == "null-terminated" )
+                                                ? ( "std::min<size_t>( " + mit->name + "_.size(), " + mit->arraySizes[0] + " )" )
+                                                : ( mit->lenExpressions[0] + " * sizeof( " + argumentType + " )" );
+              copyOps += replaceWithMap( memcpyTemplate,
+                                         { { "arraySize", mit->arraySizes[0] },
+                                           { "argumentType", argumentType },
+                                           { "lenExpression", mit->lenExpressions[0] },
+                                           { "memberName", mit->name } } );
+            }
           }
         }
         else
@@ -11447,7 +11467,11 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
     ${structureName} & set${ArrayName}( std::string const & ${arrayName}_ ) VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( ${arrayName}_.size() < ${arraySize} );
+#if defined( WIN32 )
       strncpy_s( ${arrayName}, ${arraySize}, ${arrayName}_.data(), ${arrayName}_.size() );
+#else
+      strncpy( ${arrayName}, ${arrayName}_.data(), std::min<size_t>( ${arraySize}, ${arrayName}_.size() ) );
+#endif
       return *this;
     }
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/

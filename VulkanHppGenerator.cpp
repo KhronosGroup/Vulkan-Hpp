@@ -1701,9 +1701,20 @@ bool VulkanHppGenerator::containsFloatingPoints( std::vector<MemberData> const &
 {
   for ( auto const & m : members )
   {
-    if ( ( ( m.type.type == "float" ) || ( m.type.type == "double" ) ) && m.type.isValue() )
+    if (m.type.isValue())
     {
-      return true;
+      if ( ( m.type.type == "float" ) || ( m.type.type == "double" ) )
+      {
+        return true;
+      }
+      else
+      {
+        auto structureIt = m_structs.find( m.type.type );
+        if (structureIt != m_structs.end() && containsFloatingPoints(structureIt->second.members))
+        {
+          return true;
+        }
+      }
     }
   }
   return false;

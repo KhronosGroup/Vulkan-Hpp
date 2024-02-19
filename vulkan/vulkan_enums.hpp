@@ -285,6 +285,7 @@ namespace VULKAN_HPP_NAMESPACE
     eErrorPipelineCompileRequiredEXT     = VK_ERROR_PIPELINE_COMPILE_REQUIRED_EXT,
     eErrorInvalidVideoStdParametersKHR   = VK_ERROR_INVALID_VIDEO_STD_PARAMETERS_KHR,
     eErrorCompressionExhaustedEXT        = VK_ERROR_COMPRESSION_EXHAUSTED_EXT,
+    eIncompatibleShaderBinaryEXT         = VK_INCOMPATIBLE_SHADER_BINARY_EXT,
     eErrorIncompatibleShaderBinaryEXT    = VK_ERROR_INCOMPATIBLE_SHADER_BINARY_EXT
   };
 
@@ -1027,6 +1028,9 @@ namespace VULKAN_HPP_NAMESPACE
     eHostImageCopyDevicePerformanceQueryEXT                  = VK_STRUCTURE_TYPE_HOST_IMAGE_COPY_DEVICE_PERFORMANCE_QUERY_EXT,
     eMemoryMapInfoKHR                                        = VK_STRUCTURE_TYPE_MEMORY_MAP_INFO_KHR,
     eMemoryUnmapInfoKHR                                      = VK_STRUCTURE_TYPE_MEMORY_UNMAP_INFO_KHR,
+    ePhysicalDeviceMapMemoryPlacedFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAP_MEMORY_PLACED_FEATURES_EXT,
+    ePhysicalDeviceMapMemoryPlacedPropertiesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAP_MEMORY_PLACED_PROPERTIES_EXT,
+    eMemoryMapPlacedInfoEXT                                  = VK_STRUCTURE_TYPE_MEMORY_MAP_PLACED_INFO_EXT,
     ePhysicalDeviceShaderAtomicFloat2FeaturesEXT             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_2_FEATURES_EXT,
     eSurfacePresentModeEXT                                   = VK_STRUCTURE_TYPE_SURFACE_PRESENT_MODE_EXT,
     eSurfacePresentScalingCapabilitiesEXT                    = VK_STRUCTURE_TYPE_SURFACE_PRESENT_SCALING_CAPABILITIES_EXT,
@@ -1417,7 +1421,8 @@ namespace VULKAN_HPP_NAMESPACE
     ePushDescriptorSetWithTemplateInfoKHR                 = VK_STRUCTURE_TYPE_PUSH_DESCRIPTOR_SET_WITH_TEMPLATE_INFO_KHR,
     eSetDescriptorBufferOffsetsInfoEXT                    = VK_STRUCTURE_TYPE_SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT,
     eBindDescriptorBufferEmbeddedSamplersInfoEXT          = VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT,
-    ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV
+    ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV,
+    ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV
   };
 
   enum class PipelineCacheHeaderVersion
@@ -2185,6 +2190,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class MemoryMapFlagBits : VkMemoryMapFlags
   {
+    ePlacedEXT = VK_MEMORY_MAP_PLACED_BIT_EXT
   };
 
   using MemoryMapFlags = Flags<MemoryMapFlagBits>;
@@ -2193,7 +2199,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<MemoryMapFlagBits>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool           isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryMapFlags allFlags  = {};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryMapFlags allFlags  = MemoryMapFlagBits::ePlacedEXT;
   };
 
   enum class ImageAspectFlagBits : VkImageAspectFlags
@@ -6078,6 +6084,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class MemoryUnmapFlagBitsKHR : VkMemoryUnmapFlagsKHR
   {
+    eReserveEXT = VK_MEMORY_UNMAP_RESERVE_BIT_EXT
   };
 
   using MemoryUnmapFlagsKHR = Flags<MemoryUnmapFlagBitsKHR>;
@@ -6086,7 +6093,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct FlagTraits<MemoryUnmapFlagBitsKHR>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryUnmapFlagsKHR allFlags  = {};
+    static VULKAN_HPP_CONST_OR_CONSTEXPR MemoryUnmapFlagsKHR allFlags  = MemoryUnmapFlagBitsKHR::eReserveEXT;
   };
 
   //=== VK_EXT_surface_maintenance1 ===

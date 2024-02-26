@@ -13565,16 +13565,17 @@ void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line,
-                   attributes,
-                   { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "12", "16", "24", "32" } },
-                     { "class", {} },
-                     { "name", {} },
-                     { "texelsPerBlock", { "1", "16", "20", "25", "30", "36", "40", "48", "50", "60", "64", "80", "100", "120", "144" } } },
-                   { { "blockExtent", { "1", "2", "4", "5", "6", "8", "10", "12" } },
-                     { "chroma", { "420", "422", "444" } },
-                     { "compressed", { "ASTC HDR", "ASTC LDR", "BC", "EAC", "ETC", "ETC2", "PVRTC" } },
-                     { "packed", { "8", "16", "32" } } } );
+  checkAttributes(
+    line,
+    attributes,
+    { { "blockSize", { "1", "2", "3", "4", "5", "6", "8", "12", "16", "24", "27", "32", "36", "48", "64", "80", "100", "125", "150", "180", "216" } },
+      { "class", {} },
+      { "name", {} },
+      { "texelsPerBlock", { "1", "16", "20", "25", "27", "30", "36", "40", "48", "50", "60", "64", "80", "100", "120", "125", "144", "150", "180", "216" } } },
+    { { "blockExtent", { "1", "2", "3", "4", "5", "6", "8", "10", "12" } },
+      { "chroma", { "420", "422", "444" } },
+      { "compressed", { "ASTC HDR", "ASTC LDR", "BC", "EAC", "ETC", "ETC2", "PVRTC" } },
+      { "packed", { "8", "16", "32" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "component", false } }, { "plane", "spirvimageformat" } );
 
@@ -13752,7 +13753,7 @@ void VulkanHppGenerator::readFormatPlane( tinyxml2::XMLElement const * element, 
 void VulkanHppGenerator::readFormats( tinyxml2::XMLElement const * element )
 {
   const int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, {} );
+  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "format", false } } );
 
@@ -13878,7 +13879,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "enums", false },
                    { "extensions", true },
                    { "feature", false },
-                   { "formats", true },
+                   { "formats", false },
                    { "platforms", true },
                    { "spirvcapabilities", true },
                    { "spirvextensions", true },

@@ -209,7 +209,7 @@ inline void checkElements( int                                               lin
     // check: r.second (means: required excactly once) => (encouteredIt->second == 1)
     checkForError( !r.second || ( encounteredIt->second == 1 ),
                    line,
-                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) );
+                   "required element <" + r.first + "> is supposed to be listed exactly once, but is listed " + std::to_string( encounteredIt->second ) + " times" );
   }
 }
 

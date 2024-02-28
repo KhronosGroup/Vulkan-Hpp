@@ -901,9 +901,6 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
           assert( pos != std::string::npos );
           std::string flagBits = bitmaskIt->first.substr( 0, pos + 4 ) + "Bit" + bitmaskIt->first.substr( pos + 4 );
 
-          // as the bitmask's requirement is still empty, this flagBits should not be listed in the require list!
-          assert( std::none_of( require.types.begin(), require.types.end(), [&flagBits]( std::string const & type ) { return ( type == flagBits ); } ) );
-
           bitmaskIt->second.require = flagBits;
 
           // some flagsBits are specified but never listed as required for any flags!
@@ -921,10 +918,8 @@ void VulkanHppGenerator::addMissingFlagBits( std::vector<RequireData> & requireD
             assert( m_types.contains( flagBits ) );
             enumIt->second.isBitmask = true;
           }
-
-          newTypes.push_back( flagBits );
         }
-        else if ( std::find( require.types.begin(), require.types.end(), bitmaskIt->second.require ) == require.types.end() )
+        if ( std::find( require.types.begin(), require.types.end(), bitmaskIt->second.require ) == require.types.end() )
         {
           // this bitmask requires a flags type that is not listed in here, so add it
           newTypes.push_back( bitmaskIt->second.require );
@@ -1289,9 +1284,9 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
             auto enumIt = m_enums.find( type );
             if ( enumIt != m_enums.end() )
             {
-              if ( enumIt->second.isBitmask )
+              if ( enumIt->second.isBitmask && !enumIt->second.values.empty() )
               {
-                // check that any enum of a bitmask is listed as "require" or "bitvalues" for a bitmask
+                // check that any non-empty enum of a bitmask is listed as "require" or "bitvalues" for a bitmask
                 auto bitmaskIt =
                   std::find_if( m_bitmasks.begin(), m_bitmasks.end(), [&enumIt]( auto const & bitmask ) { return bitmask.second.require == enumIt->first; } );
                 checkForError( bitmaskIt != m_bitmasks.end(),

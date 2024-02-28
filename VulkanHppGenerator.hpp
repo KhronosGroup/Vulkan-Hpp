@@ -918,7 +918,7 @@ private:
   bool                                handleRemovalCommand( std::string const & command, std::vector<RequireData> & requireData );
   void                                handleRemovals();
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
-  bool                                hasLen( MemberData const & md ) const;
+  bool                                hasLen( MemberData const & md, std::vector<MemberData> const & members ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
   bool                                isDeviceCommand( CommandData const & commandData ) const;
   bool                                isExtension( std::string const & name ) const;

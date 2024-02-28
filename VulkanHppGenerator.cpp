@@ -10634,13 +10634,15 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 
 std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const
 {
-  if ( std::any_of( structData.second.members.begin(), structData.second.members.end(), [this]( MemberData const & md ) { return hasLen( md ); } ) )
+  if ( std::any_of( structData.second.members.begin(),
+                    structData.second.members.end(),
+                    [this, &members = structData.second.members]( MemberData const & md ) { return hasLen( md, members ); } ) )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
-      if ( hasLen( *mit ) )
+      if ( hasLen( *mit, structData.second.members ) )
       {
         std::string lenName = ( mit->lenExpressions.front() == "codeSize / 4" ) ? "codeSize" : mit->lenExpressions.front();
         auto        lenIt   = findStructMemberIt( lenName, structData.second.members );
@@ -10670,7 +10672,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
           initializersList.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
-        else if ( hasLen( *mit ) )
+        else if ( hasLen( *mit, structData.second.members ) )
         {
           assert( mit->type.isPointer() || !mit->arraySizes.empty() );
           std::string argumentName = ( mit->type.isPointer() ? startLowerCase( stripPrefix( mit->name, "p" ) ) : mit->name ) + "_";
@@ -11452,7 +11454,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                              { "reference", ( member.type.postfix.empty() && m_structs.contains( member.type.type ) ) ? "const & " : "" },
                              { "structureName", structureName } } );
 
-    if ( hasLen( member ) )
+    if ( hasLen( member, memberData ) )
     {
       assert( member.type.isPointer() || !member.arraySizes.empty() );
       assert( !member.type.isPointer() || member.name.starts_with( "p" ) );
@@ -12540,11 +12542,12 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
   return removed;
 }
 
-bool VulkanHppGenerator::hasLen( MemberData const & memberData ) const
+bool VulkanHppGenerator::hasLen( MemberData const & memberData, std::vector<MemberData> const & members ) const
 {
   assert( memberData.lenMembers.size() <= memberData.lenExpressions.size() );
-  return ( !memberData.lenMembers.empty() && ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) ||
-                                               ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) ) ) ||
+  return ( !memberData.lenMembers.empty() &&
+           ( ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) && members[memberData.lenMembers[0].second].type.isValue() ) ||
+             ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) ) ) ||
          ( !memberData.lenExpressions.empty() && ( memberData.lenExpressions[0] == "null-terminated" ) && !memberData.arraySizes.empty() );
 }
 
@@ -12995,6 +12998,8 @@ std::pair<bool, VulkanHppGenerator::ParamData> VulkanHppGenerator::readCommandPa
                    ( paramData.type.postfix == "* const *" ),
                  line,
                  "unexpected type postfix <" + paramData.type.postfix + ">" );
+  checkForError(
+    paramData.lenParams.empty() || paramData.type.isPointer(), line, "parameter <" + nameData.name + "> has an attribute <len> but is not a pointer" );
   paramData.name       = nameData.name;
   paramData.arraySizes = nameData.arraySizes;
 
@@ -14524,6 +14529,10 @@ void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const *           
     {
       assert( attribute.first == "name" );
       auto namePtr = findEnumValueData( accessFlagBits2It, attribute.second );
+      while ( namePtr && !namePtr->alias.empty() )
+      {
+        namePtr = findEnumValueData( accessFlagBits2It, namePtr->alias );
+      }
       checkForError( namePtr != nullptr, line, "syncaccess name <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
       if ( aliasPtr != nullptr )
       {
@@ -14632,6 +14641,10 @@ void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const *            
     {
       assert( attribute.first == "name" );
       auto namePtr = findEnumValueData( stageFlagBits2It, attribute.second );
+      while ( namePtr && !namePtr->alias.empty() )
+      {
+        namePtr = findEnumValueData( stageFlagBits2It, namePtr->alias );
+      }
       checkForError( namePtr != nullptr, line, "syncstage name <" + attribute.second + "> not specified as a VkPipelineStageFlagBits2 value!" );
       if ( aliasPtr != nullptr )
       {

@@ -2399,7 +2399,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT SurfaceKHR( VkSurfaceKHR surfaceKHR ) VULKAN_HPP_NOEXCEPT : m_surfaceKHR( surfaceKHR ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     SurfaceKHR & operator=( VkSurfaceKHR surfaceKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_surfaceKHR = surfaceKHR;
@@ -2489,7 +2489,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DebugReportCallbackEXT & operator=( VkDebugReportCallbackEXT debugReportCallbackEXT ) VULKAN_HPP_NOEXCEPT
     {
       m_debugReportCallbackEXT = debugReportCallbackEXT;
@@ -2579,7 +2579,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DebugUtilsMessengerEXT & operator=( VkDebugUtilsMessengerEXT debugUtilsMessengerEXT ) VULKAN_HPP_NOEXCEPT
     {
       m_debugUtilsMessengerEXT = debugUtilsMessengerEXT;
@@ -2660,7 +2660,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayKHR( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT : m_displayKHR( displayKHR ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DisplayKHR & operator=( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_displayKHR = displayKHR;
@@ -2747,7 +2747,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT SwapchainKHR( VkSwapchainKHR swapchainKHR ) VULKAN_HPP_NOEXCEPT : m_swapchainKHR( swapchainKHR ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     SwapchainKHR & operator=( VkSwapchainKHR swapchainKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_swapchainKHR = swapchainKHR;
@@ -2834,7 +2834,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Semaphore( VkSemaphore semaphore ) VULKAN_HPP_NOEXCEPT : m_semaphore( semaphore ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Semaphore & operator=( VkSemaphore semaphore ) VULKAN_HPP_NOEXCEPT
     {
       m_semaphore = semaphore;
@@ -2921,7 +2921,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Fence( VkFence fence ) VULKAN_HPP_NOEXCEPT : m_fence( fence ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Fence & operator=( VkFence fence ) VULKAN_HPP_NOEXCEPT
     {
       m_fence = fence;
@@ -3011,7 +3011,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     PerformanceConfigurationINTEL & operator=( VkPerformanceConfigurationINTEL performanceConfigurationINTEL ) VULKAN_HPP_NOEXCEPT
     {
       m_performanceConfigurationINTEL = performanceConfigurationINTEL;
@@ -3092,7 +3092,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT QueryPool( VkQueryPool queryPool ) VULKAN_HPP_NOEXCEPT : m_queryPool( queryPool ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     QueryPool & operator=( VkQueryPool queryPool ) VULKAN_HPP_NOEXCEPT
     {
       m_queryPool = queryPool;
@@ -3179,7 +3179,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Buffer( VkBuffer buffer ) VULKAN_HPP_NOEXCEPT : m_buffer( buffer ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Buffer & operator=( VkBuffer buffer ) VULKAN_HPP_NOEXCEPT
     {
       m_buffer = buffer;
@@ -3266,7 +3266,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineLayout( VkPipelineLayout pipelineLayout ) VULKAN_HPP_NOEXCEPT : m_pipelineLayout( pipelineLayout ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     PipelineLayout & operator=( VkPipelineLayout pipelineLayout ) VULKAN_HPP_NOEXCEPT
     {
       m_pipelineLayout = pipelineLayout;
@@ -3353,7 +3353,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorSet( VkDescriptorSet descriptorSet ) VULKAN_HPP_NOEXCEPT : m_descriptorSet( descriptorSet ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DescriptorSet & operator=( VkDescriptorSet descriptorSet ) VULKAN_HPP_NOEXCEPT
     {
       m_descriptorSet = descriptorSet;
@@ -3440,7 +3440,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ImageView( VkImageView imageView ) VULKAN_HPP_NOEXCEPT : m_imageView( imageView ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     ImageView & operator=( VkImageView imageView ) VULKAN_HPP_NOEXCEPT
     {
       m_imageView = imageView;
@@ -3527,7 +3527,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Pipeline( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT : m_pipeline( pipeline ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Pipeline & operator=( VkPipeline pipeline ) VULKAN_HPP_NOEXCEPT
     {
       m_pipeline = pipeline;
@@ -3614,7 +3614,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ShaderEXT( VkShaderEXT shaderEXT ) VULKAN_HPP_NOEXCEPT : m_shaderEXT( shaderEXT ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     ShaderEXT & operator=( VkShaderEXT shaderEXT ) VULKAN_HPP_NOEXCEPT
     {
       m_shaderEXT = shaderEXT;
@@ -3695,7 +3695,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Image( VkImage image ) VULKAN_HPP_NOEXCEPT : m_image( image ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Image & operator=( VkImage image ) VULKAN_HPP_NOEXCEPT
     {
       m_image = image;
@@ -3785,7 +3785,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     AccelerationStructureNV & operator=( VkAccelerationStructureNV accelerationStructureNV ) VULKAN_HPP_NOEXCEPT
     {
       m_accelerationStructureNV = accelerationStructureNV;
@@ -3875,7 +3875,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     OpticalFlowSessionNV & operator=( VkOpticalFlowSessionNV opticalFlowSessionNV ) VULKAN_HPP_NOEXCEPT
     {
       m_opticalFlowSessionNV = opticalFlowSessionNV;
@@ -3959,7 +3959,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DescriptorUpdateTemplate & operator=( VkDescriptorUpdateTemplate descriptorUpdateTemplate ) VULKAN_HPP_NOEXCEPT
     {
       m_descriptorUpdateTemplate = descriptorUpdateTemplate;
@@ -4048,7 +4048,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Event( VkEvent event ) VULKAN_HPP_NOEXCEPT : m_event( event ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Event & operator=( VkEvent event ) VULKAN_HPP_NOEXCEPT
     {
       m_event = event;
@@ -4138,7 +4138,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     AccelerationStructureKHR & operator=( VkAccelerationStructureKHR accelerationStructureKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_accelerationStructureKHR = accelerationStructureKHR;
@@ -4225,7 +4225,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT MicromapEXT( VkMicromapEXT micromapEXT ) VULKAN_HPP_NOEXCEPT : m_micromapEXT( micromapEXT ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     MicromapEXT & operator=( VkMicromapEXT micromapEXT ) VULKAN_HPP_NOEXCEPT
     {
       m_micromapEXT = micromapEXT;
@@ -6694,7 +6694,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DeviceMemory( VkDeviceMemory deviceMemory ) VULKAN_HPP_NOEXCEPT : m_deviceMemory( deviceMemory ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DeviceMemory & operator=( VkDeviceMemory deviceMemory ) VULKAN_HPP_NOEXCEPT
     {
       m_deviceMemory = deviceMemory;
@@ -6781,7 +6781,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT VideoSessionKHR( VkVideoSessionKHR videoSessionKHR ) VULKAN_HPP_NOEXCEPT : m_videoSessionKHR( videoSessionKHR ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     VideoSessionKHR & operator=( VkVideoSessionKHR videoSessionKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_videoSessionKHR = videoSessionKHR;
@@ -6865,7 +6865,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DeferredOperationKHR & operator=( VkDeferredOperationKHR deferredOperationKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_deferredOperationKHR = deferredOperationKHR;
@@ -6950,7 +6950,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#  if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     BufferCollectionFUCHSIA & operator=( VkBufferCollectionFUCHSIA bufferCollectionFUCHSIA ) VULKAN_HPP_NOEXCEPT
     {
       m_bufferCollectionFUCHSIA = bufferCollectionFUCHSIA;
@@ -7038,7 +7038,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT BufferView( VkBufferView bufferView ) VULKAN_HPP_NOEXCEPT : m_bufferView( bufferView ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     BufferView & operator=( VkBufferView bufferView ) VULKAN_HPP_NOEXCEPT
     {
       m_bufferView = bufferView;
@@ -7125,7 +7125,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CommandPool( VkCommandPool commandPool ) VULKAN_HPP_NOEXCEPT : m_commandPool( commandPool ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     CommandPool & operator=( VkCommandPool commandPool ) VULKAN_HPP_NOEXCEPT
     {
       m_commandPool = commandPool;
@@ -7212,7 +7212,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PipelineCache( VkPipelineCache pipelineCache ) VULKAN_HPP_NOEXCEPT : m_pipelineCache( pipelineCache ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     PipelineCache & operator=( VkPipelineCache pipelineCache ) VULKAN_HPP_NOEXCEPT
     {
       m_pipelineCache = pipelineCache;
@@ -7299,7 +7299,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CuFunctionNVX( VkCuFunctionNVX cuFunctionNVX ) VULKAN_HPP_NOEXCEPT : m_cuFunctionNVX( cuFunctionNVX ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     CuFunctionNVX & operator=( VkCuFunctionNVX cuFunctionNVX ) VULKAN_HPP_NOEXCEPT
     {
       m_cuFunctionNVX = cuFunctionNVX;
@@ -7386,7 +7386,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CuModuleNVX( VkCuModuleNVX cuModuleNVX ) VULKAN_HPP_NOEXCEPT : m_cuModuleNVX( cuModuleNVX ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     CuModuleNVX & operator=( VkCuModuleNVX cuModuleNVX ) VULKAN_HPP_NOEXCEPT
     {
       m_cuModuleNVX = cuModuleNVX;
@@ -7474,7 +7474,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CudaFunctionNV( VkCudaFunctionNV cudaFunctionNV ) VULKAN_HPP_NOEXCEPT : m_cudaFunctionNV( cudaFunctionNV ) {}
 
-#  if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#  if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     CudaFunctionNV & operator=( VkCudaFunctionNV cudaFunctionNV ) VULKAN_HPP_NOEXCEPT
     {
       m_cudaFunctionNV = cudaFunctionNV;
@@ -7563,7 +7563,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT CudaModuleNV( VkCudaModuleNV cudaModuleNV ) VULKAN_HPP_NOEXCEPT : m_cudaModuleNV( cudaModuleNV ) {}
 
-#  if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#  if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     CudaModuleNV & operator=( VkCudaModuleNV cudaModuleNV ) VULKAN_HPP_NOEXCEPT
     {
       m_cudaModuleNV = cudaModuleNV;
@@ -7651,7 +7651,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DescriptorPool( VkDescriptorPool descriptorPool ) VULKAN_HPP_NOEXCEPT : m_descriptorPool( descriptorPool ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DescriptorPool & operator=( VkDescriptorPool descriptorPool ) VULKAN_HPP_NOEXCEPT
     {
       m_descriptorPool = descriptorPool;
@@ -7741,7 +7741,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DescriptorSetLayout & operator=( VkDescriptorSetLayout descriptorSetLayout ) VULKAN_HPP_NOEXCEPT
     {
       m_descriptorSetLayout = descriptorSetLayout;
@@ -7828,7 +7828,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Framebuffer( VkFramebuffer framebuffer ) VULKAN_HPP_NOEXCEPT : m_framebuffer( framebuffer ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Framebuffer & operator=( VkFramebuffer framebuffer ) VULKAN_HPP_NOEXCEPT
     {
       m_framebuffer = framebuffer;
@@ -7918,7 +7918,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     IndirectCommandsLayoutNV & operator=( VkIndirectCommandsLayoutNV indirectCommandsLayoutNV ) VULKAN_HPP_NOEXCEPT
     {
       m_indirectCommandsLayoutNV = indirectCommandsLayoutNV;
@@ -7999,7 +7999,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT PrivateDataSlot( VkPrivateDataSlot privateDataSlot ) VULKAN_HPP_NOEXCEPT : m_privateDataSlot( privateDataSlot ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     PrivateDataSlot & operator=( VkPrivateDataSlot privateDataSlot ) VULKAN_HPP_NOEXCEPT
     {
       m_privateDataSlot = privateDataSlot;
@@ -8082,7 +8082,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT RenderPass( VkRenderPass renderPass ) VULKAN_HPP_NOEXCEPT : m_renderPass( renderPass ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     RenderPass & operator=( VkRenderPass renderPass ) VULKAN_HPP_NOEXCEPT
     {
       m_renderPass = renderPass;
@@ -8169,7 +8169,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT Sampler( VkSampler sampler ) VULKAN_HPP_NOEXCEPT : m_sampler( sampler ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     Sampler & operator=( VkSampler sampler ) VULKAN_HPP_NOEXCEPT
     {
       m_sampler = sampler;
@@ -8259,7 +8259,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     SamplerYcbcrConversion & operator=( VkSamplerYcbcrConversion samplerYcbcrConversion ) VULKAN_HPP_NOEXCEPT
     {
       m_samplerYcbcrConversion = samplerYcbcrConversion;
@@ -8348,7 +8348,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT ShaderModule( VkShaderModule shaderModule ) VULKAN_HPP_NOEXCEPT : m_shaderModule( shaderModule ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     ShaderModule & operator=( VkShaderModule shaderModule ) VULKAN_HPP_NOEXCEPT
     {
       m_shaderModule = shaderModule;
@@ -8437,7 +8437,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     ValidationCacheEXT & operator=( VkValidationCacheEXT validationCacheEXT ) VULKAN_HPP_NOEXCEPT
     {
       m_validationCacheEXT = validationCacheEXT;
@@ -8527,7 +8527,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     VideoSessionParametersKHR & operator=( VkVideoSessionParametersKHR videoSessionParametersKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_videoSessionParametersKHR = videoSessionParametersKHR;
@@ -13991,7 +13991,7 @@ namespace VULKAN_HPP_NAMESPACE
 
     VULKAN_HPP_TYPESAFE_EXPLICIT DisplayModeKHR( VkDisplayModeKHR displayModeKHR ) VULKAN_HPP_NOEXCEPT : m_displayModeKHR( displayModeKHR ) {}
 
-#if defined( VULKAN_HPP_TYPESAFE_CONVERSION )
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
     DisplayModeKHR & operator=( VkDisplayModeKHR displayModeKHR ) VULKAN_HPP_NOEXCEPT
     {
       m_displayModeKHR = displayModeKHR;

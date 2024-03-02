@@ -10654,6 +10654,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRawAccessChainsFeaturesNV>
+  {
+    std::size_t
+      operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRawAccessChainsFeaturesNV const & physicalDeviceRawAccessChainsFeaturesNV ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRawAccessChainsFeaturesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRawAccessChainsFeaturesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRawAccessChainsFeaturesNV.shaderRawAccessChains );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayQueryFeaturesKHR>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayQueryFeaturesKHR const & physicalDeviceRayQueryFeaturesKHR ) const VULKAN_HPP_NOEXCEPT

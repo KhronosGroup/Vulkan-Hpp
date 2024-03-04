@@ -1422,6 +1422,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSetDescriptorBufferOffsetsInfoEXT                    = VK_STRUCTURE_TYPE_SET_DESCRIPTOR_BUFFER_OFFSETS_INFO_EXT,
     eBindDescriptorBufferEmbeddedSamplersInfoEXT          = VK_STRUCTURE_TYPE_BIND_DESCRIPTOR_BUFFER_EMBEDDED_SAMPLERS_INFO_EXT,
     ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV,
+    ePhysicalDeviceRawAccessChainsFeaturesNV              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV,
     ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV
   };
 
@@ -6990,17 +6991,15 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_ENABLE_BETA_EXTENSIONS )
     eExecutionGraphScratchAMDX = VK_BUFFER_USAGE_2_EXECUTION_GRAPH_SCRATCH_BIT_AMDX,
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
-    eConditionalRenderingEXT           = VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT,
-    eShaderBindingTable                = VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR,
-    eRayTracingNV                      = VK_BUFFER_USAGE_2_RAY_TRACING_BIT_NV,
-    eTransformFeedbackBufferEXT        = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
-    eTransformFeedbackCounterBufferEXT = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
-    eVideoDecodeSrc                    = VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR,
-    eVideoDecodeDst                    = VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR,
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-    eVideoEncodeDst = VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR,
-    eVideoEncodeSrc = VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR,
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+    eConditionalRenderingEXT                 = VK_BUFFER_USAGE_2_CONDITIONAL_RENDERING_BIT_EXT,
+    eShaderBindingTable                      = VK_BUFFER_USAGE_2_SHADER_BINDING_TABLE_BIT_KHR,
+    eRayTracingNV                            = VK_BUFFER_USAGE_2_RAY_TRACING_BIT_NV,
+    eTransformFeedbackBufferEXT              = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_BUFFER_BIT_EXT,
+    eTransformFeedbackCounterBufferEXT       = VK_BUFFER_USAGE_2_TRANSFORM_FEEDBACK_COUNTER_BUFFER_BIT_EXT,
+    eVideoDecodeSrc                          = VK_BUFFER_USAGE_2_VIDEO_DECODE_SRC_BIT_KHR,
+    eVideoDecodeDst                          = VK_BUFFER_USAGE_2_VIDEO_DECODE_DST_BIT_KHR,
+    eVideoEncodeDst                          = VK_BUFFER_USAGE_2_VIDEO_ENCODE_DST_BIT_KHR,
+    eVideoEncodeSrc                          = VK_BUFFER_USAGE_2_VIDEO_ENCODE_SRC_BIT_KHR,
     eShaderDeviceAddress                     = VK_BUFFER_USAGE_2_SHADER_DEVICE_ADDRESS_BIT_KHR,
     eAccelerationStructureBuildInputReadOnly = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR,
     eAccelerationStructureStorage            = VK_BUFFER_USAGE_2_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR,
@@ -7026,14 +7025,12 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       | BufferUsageFlagBits2KHR::eConditionalRenderingEXT | BufferUsageFlagBits2KHR::eShaderBindingTable |
       BufferUsageFlagBits2KHR::eTransformFeedbackBufferEXT | BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT |
-      BufferUsageFlagBits2KHR::eVideoDecodeSrc | BufferUsageFlagBits2KHR::eVideoDecodeDst
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
-      | BufferUsageFlagBits2KHR::eVideoEncodeDst | BufferUsageFlagBits2KHR::eVideoEncodeSrc
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
-      | BufferUsageFlagBits2KHR::eShaderDeviceAddress | BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly |
-      BufferUsageFlagBits2KHR::eAccelerationStructureStorage | BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT |
-      BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT | BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT |
-      BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT | BufferUsageFlagBits2KHR::eMicromapStorageEXT;
+      BufferUsageFlagBits2KHR::eVideoDecodeSrc | BufferUsageFlagBits2KHR::eVideoDecodeDst | BufferUsageFlagBits2KHR::eVideoEncodeDst |
+      BufferUsageFlagBits2KHR::eVideoEncodeSrc | BufferUsageFlagBits2KHR::eShaderDeviceAddress |
+      BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly | BufferUsageFlagBits2KHR::eAccelerationStructureStorage |
+      BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT | BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT |
+      BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT | BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT |
+      BufferUsageFlagBits2KHR::eMicromapStorageEXT;
   };
 
   //=== VK_EXT_shader_object ===

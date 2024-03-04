@@ -3472,12 +3472,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "VideoDecodeSrc | ";
     if ( value & BufferUsageFlagBits2KHR::eVideoDecodeDst )
       result += "VideoDecodeDst | ";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
     if ( value & BufferUsageFlagBits2KHR::eVideoEncodeDst )
       result += "VideoEncodeDst | ";
     if ( value & BufferUsageFlagBits2KHR::eVideoEncodeSrc )
       result += "VideoEncodeSrc | ";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & BufferUsageFlagBits2KHR::eShaderDeviceAddress )
       result += "ShaderDeviceAddress | ";
     if ( value & BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly )
@@ -4549,6 +4547,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eSetDescriptorBufferOffsetsInfoEXT: return "SetDescriptorBufferOffsetsInfoEXT";
       case StructureType::eBindDescriptorBufferEmbeddedSamplersInfoEXT: return "BindDescriptorBufferEmbeddedSamplersInfoEXT";
       case StructureType::ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV: return "PhysicalDeviceDescriptorPoolOverallocationFeaturesNV";
+      case StructureType::ePhysicalDeviceRawAccessChainsFeaturesNV: return "PhysicalDeviceRawAccessChainsFeaturesNV";
       case StructureType::ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV: return "PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
@@ -8867,10 +8866,8 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits2KHR::eTransformFeedbackCounterBufferEXT: return "TransformFeedbackCounterBufferEXT";
       case BufferUsageFlagBits2KHR::eVideoDecodeSrc: return "VideoDecodeSrc";
       case BufferUsageFlagBits2KHR::eVideoDecodeDst: return "VideoDecodeDst";
-#if defined( VK_ENABLE_BETA_EXTENSIONS )
       case BufferUsageFlagBits2KHR::eVideoEncodeDst: return "VideoEncodeDst";
       case BufferUsageFlagBits2KHR::eVideoEncodeSrc: return "VideoEncodeSrc";
-#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case BufferUsageFlagBits2KHR::eShaderDeviceAddress: return "ShaderDeviceAddress";
       case BufferUsageFlagBits2KHR::eAccelerationStructureBuildInputReadOnly: return "AccelerationStructureBuildInputReadOnly";
       case BufferUsageFlagBits2KHR::eAccelerationStructureStorage: return "AccelerationStructureStorage";

@@ -2494,6 +2494,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVDescriptorPoolOverallocationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVDescriptorPoolOverallocationSpecVersion;
 
+  //=== VK_NV_raw_access_chains ===
+  using VULKAN_HPP_NAMESPACE::NVRawAccessChainsExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVRawAccessChainsSpecVersion;
+
   //=== VK_NV_shader_atomic_float16_vector ===
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorExtensionName;
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorSpecVersion;
@@ -4334,6 +4338,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_descriptor_pool_overallocation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDescriptorPoolOverallocationFeaturesNV;
+
+  //=== VK_NV_raw_access_chains ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRawAccessChainsFeaturesNV;
 
   //=== VK_NV_shader_atomic_float16_vector ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV;

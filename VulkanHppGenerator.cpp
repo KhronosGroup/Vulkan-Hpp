@@ -27,15 +27,16 @@ namespace
 {
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   std::string                                 generateCArraySizes( std::vector<std::string> const & sizes );
-  std::string                                 generateNamespacedType( std::string const & type );
-  std::string                                 generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
-  std::string                                 generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
-  bool                                        isAllUpper( std::string const & name );
-  VulkanHppGenerator::MacroData               parseMacro( std::vector<std::string> const & completeMacro );
-  std::string                                 readSnippet( std::string const & snippetFile );
-  std::string                                 startLowerCase( std::string const & input );
-  std::string                                 startUpperCase( std::string const & input );
-  std::vector<std::string>                    tokenizeAny( std::string const & tokenString, std::string const & separators );
+  std::string                   generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
+  std::string                   generateNamespacedType( std::string const & type );
+  std::string                   generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
+  std::string                   generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+  bool                          isAllUpper( std::string const & name );
+  VulkanHppGenerator::MacroData parseMacro( std::vector<std::string> const & completeMacro );
+  std::string                   readSnippet( std::string const & snippetFile );
+  std::string                   startLowerCase( std::string const & input );
+  std::string                   startUpperCase( std::string const & input );
+  std::vector<std::string>      tokenizeAny( std::string const & tokenString, std::string const & separators );
 }  // namespace
 
 void writeToFile( std::string const & str, std::string const & fileName );
@@ -2288,16 +2289,11 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
   const bool   withAllocators    = flavourFlags & CommandFlavourFlagBits::withAllocator;
   const size_t defaultStartIndex = withAllocators ? ~0 : determineDefaultStartIndex( params, skippedParams );
 
-  std::string argumentList;
-  bool        encounteredArgument = false;
+  std::vector<std::string> arguments;
   for ( size_t i = 0; i < params.size(); ++i )
   {
     if ( !skippedParams.contains( i ) )
     {
-      if ( encounteredArgument )
-      {
-        argumentList += ", ";
-      }
       bool hasDefaultAssignment = false;
 
       std::string composedType = params[i].type.compose( "VULKAN_HPP_NAMESPACE" );
@@ -2309,7 +2305,7 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
                 params[i].type.type.starts_with( "Vk" ) );
         assert( !isHandleType( params[i].type.type ) );
         assert( composedType.ends_with( " *" ) );
-        argumentList += stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) );
+        arguments.push_back( stripPostfix( composedType, " *" ) + " & " + stripPluralS( startLowerCase( stripPrefix( params[i].name, "p" ) ) ) );
       }
       else if ( params[i].type.isConstPointer() )
       {
@@ -2322,18 +2318,18 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           assert( params[i].arraySizes.empty() );
           if ( params[i].type.type == "void" )
           {
-            argumentList +=
-              templatedParams.contains( i ) ? ( stripPrefix( params[i].name, "p" ) + "Type const & " + name ) : ( composedType + " " + params[i].name );
+            arguments.push_back( templatedParams.contains( i ) ? ( stripPrefix( params[i].name, "p" ) + "Type const & " + name )
+                                                               : ( composedType + " " + params[i].name ) );
           }
           else if ( params[i].optional )
           {
-            argumentList += "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
-                            ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+            arguments.push_back( "Optional<" + stripPostfix( composedType, " *" ) + "> " + name +
+                                 ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" ) );
             hasDefaultAssignment = true;
           }
           else
           {
-            argumentList += stripPostfix( composedType, " *" ) + " & " + name;
+            arguments.push_back( stripPostfix( composedType, " *" ) + " & " + name );
           }
         }
         else
@@ -2346,13 +2342,13 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             assert( params[i].type.type == "char" );
             if ( params[i].optional )
             {
-              argumentList +=
-                "Optional<const std::string> " + name + ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" );
+              arguments.push_back( "Optional<const std::string> " + name +
+                                   ( ( definition || withAllocators ) ? "" : " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT" ) );
               hasDefaultAssignment = true;
             }
             else
             {
-              argumentList += "const std::string & " + name;
+              arguments.push_back( "const std::string & " + name );
             }
           }
           else
@@ -2364,12 +2360,12 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
             {
               type.replace( pos, 4, stripPrefix( params[i].name, "p" ) + "Type" );
             }
-            argumentList +=
-              std::string( "VULKAN_HPP_NAMESPACE::" ) + ( params[i].strideParam.first.empty() ? "" : "Strided" ) + "ArrayProxy<" + type + "> const & " + name;
+            arguments.push_back( std::string( "VULKAN_HPP_NAMESPACE::" ) + ( params[i].strideParam.first.empty() ? "" : "Strided" ) + "ArrayProxy<" + type +
+                                 "> const & " + name );
             if ( params[i].optional && !definition )
             {
               assert( params[i].strideParam.first.empty() );
-              argumentList += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
+              arguments.back() += " VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT";
               hasDefaultAssignment = true;
             }
           }
@@ -2379,36 +2375,30 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       {
         if ( ( params[i].type.type == "void" ) && ( flavourFlags & CommandFlavourFlagBits::keepVoidPtr ) )
         {
-          argumentList += composedType + " ";
+          arguments.push_back( composedType + " " );
         }
         else
         {
           assert( withDispatcher || !isHandleType( params[i].type.type ) );
           assert( params[i].lenExpression.empty() && !params[i].optional );
           assert( composedType.ends_with( " *" ) );
-          argumentList += stripPostfix( composedType, " *" ) + " & ";
+          arguments.push_back( stripPostfix( composedType, " *" ) + " & " );
         }
-        argumentList += params[i].name;
+        arguments.back() += params[i].name;
       }
       else
       {
         assert( params[i].type.isValue() );
-        argumentList += composedType + " " + params[i].name + generateCArraySizes( params[i].arraySizes );
+        arguments.push_back( composedType + " " + params[i].name + generateCArraySizes( params[i].arraySizes ) );
       }
-      argumentList += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" : "" );
-      encounteredArgument = true;
+      arguments.back() += std::string( !definition && ( defaultStartIndex <= i ) && !hasDefaultAssignment ? " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT" : "" );
     }
   }
   if ( withAllocators )
   {
     if ( ( flavourFlags & CommandFlavourFlagBits::chained ) && needsStructureChainResize( vectorParams, chainedReturnParams ) )
     {
-      if ( encounteredArgument )
-      {
-        argumentList += ", ";
-      }
-      argumentList += "StructureChainAllocator & structureChainAllocator";
-      encounteredArgument = true;
+      arguments.push_back( "StructureChainAllocator & structureChainAllocator" );
     }
     else
     {
@@ -2416,10 +2406,6 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
       {
         if ( !params[sp].lenExpression.empty() )
         {
-          if ( encounteredArgument )
-          {
-            argumentList += ", ";
-          }
           std::string type;
           if ( templatedParams.contains( sp ) )
           {
@@ -2440,21 +2426,16 @@ std::string VulkanHppGenerator::generateArgumentListEnhanced( std::vector<ParamD
           {
             type = ( params[sp].type.type == "void" ) ? "Uint8_t" : startUpperCase( stripPrefix( params[sp].type.type, "Vk" ) );
           }
-          argumentList += type + "Allocator & " + startLowerCase( type ) + "Allocator";
-          encounteredArgument = true;
+          arguments.push_back( type + "Allocator & " + startLowerCase( type ) + "Allocator" );
         }
       }
     }
   }
   if ( withDispatcher )
   {
-    if ( encounteredArgument )
-    {
-      argumentList += ", ";
-    }
-    argumentList += std::string( "Dispatch const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" );
+    arguments.push_back( std::string( "Dispatch const & d" ) + ( definition ? "" : " VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT" ) );
   }
-  return argumentList;
+  return generateList( arguments, "", ", " );
 }
 
 std::string VulkanHppGenerator::generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const
@@ -2712,8 +2693,7 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
                                                                CommandFlavourFlags      flavourFlags ) const
 {
   assert( initialSkipCount <= commandData.params.size() );
-  std::string arguments;
-  bool        encounteredArgument = false;
+  std::vector<std::string> arguments;
   if ( raii )
   {
     switch ( initialSkipCount )
@@ -2723,8 +2703,7 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
         assert( isHandleType( commandData.params[0].type.type ) && commandData.params[0].type.isValue() );
         assert( commandData.params[0].arraySizes.empty() && commandData.params[0].lenExpression.empty() );
         assert( commandData.params[0].type.type == commandData.handle );
-        arguments           = "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )";
-        encounteredArgument = true;
+        arguments.push_back( "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )" );
         break;
       case 2:
         {
@@ -2733,12 +2712,11 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
           assert( commandData.params[0].type.type == commandData.handle );
           auto handleIt = m_handles.find( commandData.params[1].type.type );
           assert( handleIt != m_handles.end() );
-          arguments = "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )";
+          arguments.push_back( "static_cast<" + commandData.handle + ">( m_" + startLowerCase( stripPrefix( commandData.handle, "Vk" ) ) + " )" );
 
           assert( commandData.params[1].type.isValue() && commandData.params[1].arraySizes.empty() && commandData.params[1].lenExpression.empty() );
-          arguments += ", static_cast<" + commandData.params[1].type.type + ">( m_" +
-                       generateRAIIHandleConstructorParamName( handleIt->first, handleIt->second.destructorIt ) + " )";
-          encounteredArgument = true;
+          arguments.push_back( "static_cast<" + commandData.params[1].type.type + ">( m_" +
+                               generateRAIIHandleConstructorParamName( handleIt->first, handleIt->second.destructorIt ) + " )" );
         }
         break;
       default: assert( false ); break;
@@ -2748,42 +2726,28 @@ std::string VulkanHppGenerator::generateCallArgumentsEnhanced( CommandData const
   {
     for ( size_t i = 0; i < initialSkipCount; ++i )
     {
-      if ( encounteredArgument )
-      {
-        arguments += ", ";
-      }
       assert( isHandleType( commandData.params[i].type.type ) && commandData.params[i].type.isValue() );
       assert( commandData.params[i].arraySizes.empty() && commandData.params[i].lenExpression.empty() );
-      arguments += "m_" + startLowerCase( stripPrefix( commandData.params[i].type.type, "Vk" ) );
-      encounteredArgument = true;
+      arguments.push_back( "m_" + startLowerCase( stripPrefix( commandData.params[i].type.type, "Vk" ) ) );
     }
   }
   for ( size_t i = initialSkipCount; i < commandData.params.size(); ++i )
   {
-    if ( encounteredArgument )
-    {
-      arguments += ", ";
-    }
-    arguments += generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams, flavourFlags, raiiFactory );
-    encounteredArgument = true;
+    arguments.push_back(
+      generateCallArgumentEnhanced( commandData.params, i, nonConstPointerAsNullptr, singularParams, templatedParams, flavourFlags, raiiFactory ) );
   }
-  return arguments;
+  return generateList( arguments, "", ", " );
 }
 
 std::string VulkanHppGenerator::generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const
 {
-  std::string arguments;
-  bool        encounteredArgument = false;
+  std::vector<std::string> arguments;
   for ( auto const & param : params )
   {
-    if ( encounteredArgument )
-    {
-      arguments += ", ";
-    }
     if ( ( param.type.type == handle ) && param.type.isValue() )
     {
       assert( param.arraySizes.empty() && param.lenExpression.empty() );
-      arguments += "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) );
+      arguments.push_back( "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) ) );
     }
     else
     {
@@ -2807,11 +2771,10 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::string const
           argument = "reinterpret_cast<" + param.type.compose( "" ) + ">( " + argument + " )";
         }
       }
-      arguments += argument;
+      arguments.push_back( argument );
     }
-    encounteredArgument = true;
   }
-  return arguments;
+  return generateList( arguments, "", ", " );
 }
 
 std::string VulkanHppGenerator::generateCallArgumentEnhanced( std::vector<ParamData> const & params,
@@ -8836,21 +8799,15 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactoryArgumentList( st
                                                                               bool                           definition,
                                                                               bool                           singular ) const
 {
-  std::string arguments;
-  bool        encounteredArgument = false;
+  std::vector<std::string> arguments;
   for ( size_t i = 0; i < params.size(); ++i )
   {
     if ( !skippedParams.contains( i ) )
     {
-      if ( encounteredArgument )
-      {
-        arguments += ", ";
-      }
-      arguments += generateRAIIHandleConstructorArgument( params[i], definition, singular, false );
-      encounteredArgument = true;
+      arguments.push_back( generateRAIIHandleConstructorArgument( params[i], definition, singular, false ) );
     }
   }
-  return arguments;
+  return generateList( arguments, "", ", " );
 }
 
 std::pair<std::string, std::string>
@@ -9503,30 +9460,25 @@ ${memberFunctionDeclarations}
 std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::string const &                                handleType,
                                                                            std::map<std::string, CommandData>::const_iterator destructorIt ) const
 {
-  std::string arguments;
-  bool        encounteredArgument = false;
+  std::vector<std::string> arguments;
   for ( auto param : destructorIt->second.params )
   {
-    if ( encounteredArgument )
-    {
-      arguments += ", ";
-    }
     if ( param.type.type == handleType )
     {
       std::string handleName = param.name;
       if ( param.type.isValue() )
       {
-        arguments += "static_cast<" + handleType + ">( m_" + handleName + " )";
+        arguments.push_back( "static_cast<" + handleType + ">( m_" + handleName + " )" );
       }
       else
       {
-        arguments += "reinterpret_cast<" + handleType + " const *>( &m_" + stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ) ) + " )";
+        arguments.push_back( "reinterpret_cast<" + handleType + " const *>( &m_" + stripPluralS( startLowerCase( stripPrefix( handleName, "p" ) ) ) + " )" );
       }
     }
     else if ( param.type.type == "VkAllocationCallbacks" )
     {
       // vk::AllocationCallbacks is stored as a member of the handle class
-      arguments += "reinterpret_cast<const VkAllocationCallbacks *>( m_allocator )";
+      arguments.push_back( "reinterpret_cast<const VkAllocationCallbacks *>( m_allocator )" );
     }
     else if ( isHandleType( param.type.type ) )
     {
@@ -9534,7 +9486,7 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
       std::string argument = "m_" + param.name;
       if ( param.type.isValue() )
       {
-        arguments += "static_cast<" + param.type.type + ">( " + argument + " )";
+        arguments.push_back( "static_cast<" + param.type.type + ">( " + argument + " )" );
       }
       else
       {
@@ -9542,7 +9494,7 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
         assert( !param.lenExpression.empty() && std::any_of( destructorIt->second.params.begin(),
                                                              destructorIt->second.params.end(),
                                                              [&param]( ParamData const & pd ) { return pd.name == param.lenExpression; } ) );
-        arguments += "reinterpret_cast<" + param.type.type + " const *>( &" + argument + " )";
+        arguments.push_back( "reinterpret_cast<" + param.type.type + " const *>( &" + argument + " )" );
       }
     }
     else
@@ -9550,11 +9502,10 @@ std::string VulkanHppGenerator::generateRAIIHandleDestructorCallArguments( std::
       assert( ( param.type.type == "uint32_t" ) && param.type.isValue() && param.arraySizes.empty() && param.lenExpression.empty() && !param.optional );
       assert( std::any_of(
         destructorIt->second.params.begin(), destructorIt->second.params.end(), [&param]( ParamData const & pd ) { return pd.lenExpression == param.name; } ) );
-      arguments += "1";
+      arguments.push_back( "1" );
     }
-    encounteredArgument = true;
   }
-  return arguments;
+  return generateList( arguments, "", ", " );
 }
 
 std::tuple<std::string, std::string, std::string, std::string, std::string, std::string, std::string>
@@ -10590,37 +10541,33 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
     {}
 )";
 
-  std::string arguments, initializers;
-  bool        listedArgument = false;
-  bool        firstArgument  = true;
+  std::vector<std::string> arguments, initializers;
   for ( auto const & member : structData.second.members )
   {
     // gather the arguments
-    std::string argument = generateStructConstructorArgument( listedArgument, member, true );
+    std::string argument = generateStructConstructorArgument( member, true );
     if ( !argument.empty() )
     {
-      listedArgument = true;
-      arguments += argument;
+      arguments.push_back( argument );
     }
 
     // gather the initializers; skip members with exactly one legal value
     if ( member.value.empty() )
     {
-      initializers += std::string( firstArgument ? ": " : ", " ) + member.name + "( " + member.name + "_ )";
-      firstArgument = false;
+      initializers.push_back( member.name + "( " + member.name + "_ )" );
     }
   }
   auto pNextIt = std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) { return md.name == "pNext"; } );
   if ( pNextIt != structData.second.members.end() )
   {
     // add pNext as a last optional argument to the constructor
-    arguments += std::string( listedArgument ? ", " : "" ) + pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr";
+    arguments.push_back( pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
   }
 
   std::string str = replaceWithMap( constructors,
-                                    { { "arguments", arguments },
+                                    { { "arguments", generateList( arguments, "", ", " ) },
                                       { "constexpr", generateConstexprString( structData.first ) },
-                                      { "initializers", initializers },
+                                      { "initializers", generateList( initializers, ": ", ", " ) },
                                       { "structName", stripPrefix( structData.first, "Vk" ) } } );
 
   str += generateStructConstructorsEnhanced( structData );
@@ -10646,17 +10593,15 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
       }
     }
 
-    std::string              arguments;
-    std::vector<std::string> initializersList;
-    bool                     listedArgument = false;
-    bool                     arrayListed    = false;
+    std::vector<std::string> arguments, initializers;
+    bool                     arrayListed = false;
     std::string              templateHeader, sizeChecks, copyOps;
     for ( auto mit = structData.second.members.begin(); mit != structData.second.members.end(); ++mit )
     {
       // gather the initializers
       if ( mit->name == "pNext" )  // for pNext, we just get the initializer... the argument is added at the end
       {
-        initializersList.push_back( "pNext( pNext_ )" );
+        initializers.push_back( "pNext( pNext_ )" );
       }
       else if ( mit->value.empty() )  // skip constant members
       {
@@ -10664,7 +10609,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
         if ( litit != lenIts.end() )
         {
           // len arguments just have an initalizer, from the array size
-          initializersList.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
+          initializers.push_back( mit->name + "( " + generateLenInitializer( mit, litit, structData.second.mutualExclusiveLens ) + " )" );
           sizeChecks += generateSizeCheck( litit->second, stripPrefix( structData.first, "Vk" ), structData.second.mutualExclusiveLens );
         }
         else if ( hasLen( *mit, structData.second.members ) )
@@ -10688,31 +10633,29 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
             argumentType.replace( pos, strlen( "void" ), "T" );
           }
 
-          arguments += listedArgument ? ", " : "";
           if ( mit->lenExpressions[0] == "null-terminated" )
           {
             assert( ( mit->type.type == "char" ) && ( mit->arraySizes.size() == 1 ) );
-            arguments += "std::string const & " + argumentName;
+            arguments.push_back( "std::string const & " + argumentName );
           }
           else if ( mit->arraySizes.empty() )
           {
-            arguments += "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName;
+            arguments.push_back( "VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<" + argumentType + "> const & " + argumentName );
           }
           else
           {
             assert( mit->arraySizes.size() == 1 );
-            arguments += "VULKAN_HPP_NAMESPACE::ArrayProxy<" + argumentType + "> const & " + argumentName;
+            arguments.push_back( "VULKAN_HPP_NAMESPACE::ArrayProxy<" + argumentType + "> const & " + argumentName );
           }
           if ( arrayListed )
           {
-            arguments += " = {}";
+            arguments.back() += " = {}";
           }
-          listedArgument = true;
-          arrayListed    = true;
+          arrayListed = true;
 
           if ( mit->type.isPointer() )
           {
-            initializersList.push_back( mit->name + "( " + argumentName + ".data() )" );
+            initializers.push_back( mit->name + "( " + argumentName + ".data() )" );
           }
           else
           {
@@ -10750,13 +10693,12 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
         }
         else
         {
-          std::string argument = generateStructConstructorArgument( listedArgument, *mit, arrayListed );
+          std::string argument = generateStructConstructorArgument( *mit, arrayListed );
           if ( !argument.empty() )
           {
-            listedArgument = true;
-            arguments += argument;
+            arguments.push_back( argument );
           }
-          initializersList.push_back( mit->name + "( " + mit->name + "_ )" );
+          initializers.push_back( mit->name + "( " + mit->name + "_ )" );
         }
       }
     }
@@ -10766,17 +10708,7 @@ std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<st
     if ( pNextIt != structData.second.members.end() )
     {
       // add pNext as a last optional argument to the constructor
-      arguments += std::string( listedArgument ? ", " : "" ) + pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr";
-    }
-
-    std::string initializers;
-    if ( !initializersList.empty() )
-    {
-      initializers = ": " + initializersList[0];
-      for ( size_t i = 1; i < initializersList.size(); ++i )
-      {
-        initializers += ", " + initializersList[i];
-      }
+      arguments.push_back( pNextIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + " pNext_ = nullptr" );
     }
 
     static const std::string constructorTemplate = R"(
@@ -10788,9 +10720,9 @@ ${templateHeader}    ${structName}( ${arguments} )
 )";
 
     return replaceWithMap( constructorTemplate,
-                           { { "arguments", arguments },
+                           { { "arguments", generateList( arguments, "", ", " ) },
                              { "copyOps", copyOps },
-                             { "initializers", initializers },
+                             { "initializers", generateList( initializers, ": ", ", " ) },
                              { "sizeChecks", sizeChecks },
                              { "structName", stripPrefix( structData.first, "Vk" ) },
                              { "templateHeader", templateHeader } } );
@@ -10798,13 +10730,12 @@ ${templateHeader}    ${structName}( ${arguments} )
   return "";
 }
 
-std::string VulkanHppGenerator::generateStructConstructorArgument( bool listedArgument, MemberData const & memberData, bool withDefault ) const
+std::string VulkanHppGenerator::generateStructConstructorArgument( MemberData const & memberData, bool withDefault ) const
 {
   // skip members 'pNext' and members with a specified value, as they are never explicitly set
   std::string str;
   if ( ( memberData.name != "pNext" ) && memberData.value.empty() )
   {
-    str += ( listedArgument ? ( ", " ) : "" );
     if ( memberData.arraySizes.empty() )
     {
       str += memberData.type.compose( "VULKAN_HPP_NAMESPACE" ) + " ";
@@ -11607,15 +11538,13 @@ std::string VulkanHppGenerator::generateStructSubConstructor( std::pair<std::str
       firstArgument = false;
     }
 
-    std::string subArguments;
-    bool        listedArgument = true;
+    std::vector<std::string> subArguments;
     for ( size_t i = subStruct->second.members.size(); i < structData.second.members.size(); i++ )
     {
-      std::string argument = generateStructConstructorArgument( listedArgument, structData.second.members[i], true );
+      std::string argument = generateStructConstructorArgument( structData.second.members[i], true );
       if ( !argument.empty() )
       {
-        listedArgument = true;
-        subArguments += argument;
+        subArguments.push_back( argument );
       }
 
       assert( structData.second.members[i].arraySizes.empty() );
@@ -11630,7 +11559,7 @@ ${subCopies}    {}
 )";
     return replaceWithMap( subStructConstructorTemplate,
                            { { "structName", stripPrefix( structData.first, "Vk" ) },
-                             { "subArguments", subArguments },
+                             { "subArguments", generateList( subArguments, ", ", ", " ) },
                              { "subCopies", subCopies },
                              { "subStructArgumentName", subStructArgumentName },
                              { "subStructName", stripPrefix( subStruct->first, "Vk" ) } } );
@@ -11797,19 +11726,12 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
         assert( memberIt->arraySizes.size() == 1 );
         const int size = std::stoi( memberIt->arraySizes[0] );
         assert( std::to_string( size ) == memberIt->arraySizes[0] );
-        std::string arguments, callArguments;
-        bool        firstArgument = true;
+        std::vector<std::string> arguments, callArguments;
         for ( int i = 0; i < size; i++ )
         {
-          if ( !firstArgument )
-          {
-            arguments += ", ";
-            callArguments += ", ";
-          }
           std::string argumentIndex = std::to_string( i );
-          arguments += memberIt->type.type + " " + memberIt->name + "_" + argumentIndex;
-          callArguments += memberIt->name + "_" + argumentIndex;
-          firstArgument = false;
+          arguments.push_back( memberIt->type.type + " " + memberIt->name + "_" + argumentIndex );
+          callArguments.push_back( memberIt->name + "_" + argumentIndex );
         }
 
         static const std::string constructorBySequenceTemplate = R"(
@@ -11818,8 +11740,8 @@ std::string VulkanHppGenerator::generateUnion( std::pair<std::string, StructureD
     {})";
 
         constructors += "\n" + replaceWithMap( constructorBySequenceTemplate,
-                                               { { "arguments", arguments },
-                                                 { "callArguments", callArguments },
+                                               { { "arguments", generateList( arguments, "", ", " ) },
+                                                 { "callArguments", generateList( callArguments, "", ", " ) },
                                                  { "memberName", memberIt->name },
                                                  { "unionName", stripPrefix( structure.first, "Vk" ) } } );
       }
@@ -15566,6 +15488,20 @@ namespace
       arraySizes += "[" + s + "]";
     }
     return arraySizes;
+  }
+
+  std::string generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator )
+  {
+    std::string list;
+    if ( !elements.empty() )
+    {
+      list = prefix + elements[0];
+      for ( size_t i = 1; i < elements.size(); ++i )
+      {
+        list += separator + elements[i];
+      }
+    }
+    return list;
   }
 
   std::string generateNamespacedType( std::string const & type )

@@ -1809,7 +1809,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResults",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-    return ResultValue<std::vector<DataType, DataTypeAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
+    return ResultValue<std::vector<DataType, DataTypeAllocator>>( result, std::move( data ) );
   }
 
   template <typename DataType, typename Dispatch>
@@ -1837,7 +1837,7 @@ namespace VULKAN_HPP_NAMESPACE
     resultCheck(
       result, VULKAN_HPP_NAMESPACE_STRING "::Device::getQueryPoolResult", { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::eNotReady } );
 
-    return ResultValue<DataType>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( data ) );
+    return ResultValue<DataType>( result, std::move( data ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -2478,8 +2478,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-                                                                                        std::move( pipelines ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
   }
 
   template <typename PipelineAllocator,
@@ -2509,8 +2508,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-                                                                                        std::move( pipelines ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
   }
 
   template <typename Dispatch>
@@ -2537,7 +2535,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createGraphicsPipeline",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( pipeline ) );
+    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( result, std::move( pipeline ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2571,8 +2569,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniquePipelines.push_back( UniqueHandle<Pipeline, Dispatch>( pipeline, deleter ) );
     }
-    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>( result, std::move( uniquePipelines ) );
   }
 
   template <
@@ -2609,8 +2606,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniquePipelines.push_back( UniqueHandle<Pipeline, Dispatch>( pipeline, deleter ) );
     }
-    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>( result, std::move( uniquePipelines ) );
   }
 
   template <typename Dispatch>
@@ -2638,8 +2634,7 @@ namespace VULKAN_HPP_NAMESPACE
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
     return ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-      UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>( pipeline, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+      result, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>( pipeline, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -2686,8 +2681,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-                                                                                        std::move( pipelines ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
   }
 
   template <typename PipelineAllocator,
@@ -2717,8 +2711,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipelines",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-                                                                                        std::move( pipelines ) );
+    return ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>( result, std::move( pipelines ) );
   }
 
   template <typename Dispatch>
@@ -2745,7 +2738,7 @@ namespace VULKAN_HPP_NAMESPACE
                  VULKAN_HPP_NAMESPACE_STRING "::Device::createComputePipeline",
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
-    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( pipeline ) );
+    return ResultValue<VULKAN_HPP_NAMESPACE::Pipeline>( result, std::move( pipeline ) );
   }
 
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
@@ -2779,8 +2772,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniquePipelines.push_back( UniqueHandle<Pipeline, Dispatch>( pipeline, deleter ) );
     }
-    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>( result, std::move( uniquePipelines ) );
   }
 
   template <
@@ -2817,8 +2809,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       uniquePipelines.push_back( UniqueHandle<Pipeline, Dispatch>( pipeline, deleter ) );
     }
-    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( uniquePipelines ) );
+    return ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>( result, std::move( uniquePipelines ) );
   }
 
   template <typename Dispatch>
@@ -2846,8 +2837,7 @@ namespace VULKAN_HPP_NAMESPACE
                  { VULKAN_HPP_NAMESPACE::Result::eSuccess, VULKAN_HPP_NAMESPACE::Result::ePipelineCompileRequiredEXT } );
 
     return ResultValue<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>(
-      static_cast<VULKAN_HPP_NAMESPACE::Result>( result ),
-      UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>( pipeline, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+      result, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>( pipeline, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
   }
 #  endif /* VULKAN_HPP_NO_SMART_HANDLE */
 #endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
@@ -7872,7 +7862,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE::Result::eNotReady,
                    VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
+    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
@@ -8072,7 +8062,7 @@ namespace VULKAN_HPP_NAMESPACE
                    VULKAN_HPP_NAMESPACE::Result::eNotReady,
                    VULKAN_HPP_NAMESPACE::Result::eSuboptimalKHR } );
 
-    return ResultValue<uint32_t>( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( imageIndex ) );
+    return ResultValue<uint32_t>( result, std::move( imageIndex ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

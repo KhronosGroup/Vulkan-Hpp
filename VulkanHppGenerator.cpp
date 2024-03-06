@@ -9966,7 +9966,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       {
         assert( returnParam != INVALID_INDEX );
         assert( decoratedReturnType.starts_with( "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
-        returnStatement = "return " + decoratedReturnType + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), ";
+        returnStatement = "return " + decoratedReturnType + "( result, ";
         if ( dataType.starts_with( "std::" ) )
         {
           returnStatement += "std::move( unique" + startUpperCase( returnVariable ) + " )";
@@ -9981,8 +9981,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
       else
       {
         assert( decoratedReturnType.starts_with( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) && decoratedReturnType.ends_with( ">" ) );
-        returnStatement = "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( static_cast<VULKAN_HPP_NAMESPACE::Result>( result ), std::move( " +
-                          returnVariable + " ) );";
+        returnStatement = "return " + ( raii ? "std::make_pair" : decoratedReturnType ) + "( result, std::move( " + returnVariable + " ) );";
       }
     }
   }

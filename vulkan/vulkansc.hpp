@@ -36,11 +36,11 @@
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
 #    include <dlfcn.h>
 #  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
-typedef struct HINSTANCE__ * HINSTANCE;
+using HINSTANCE = struct HINSTANCE__ *;
 #    if defined( _WIN64 )
-typedef int64_t( __stdcall * FARPROC )();
+using FARPROC   = int64_t( __stdcall * )();
 #    else
-typedef int( __stdcall * FARPROC )();
+using FARPROC = int( __stdcall * )();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
 extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );
@@ -3838,9 +3838,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct ResultValueType
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    typedef ResultValue<T> type;
+    using type = ResultValue<T>;
 #else
-    typedef T    type;
+    using type = T;
 #endif
   };
 
@@ -3848,9 +3848,9 @@ namespace VULKAN_HPP_NAMESPACE
   struct ResultValueType<void>
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    typedef Result type;
+    using type = Result;
 #else
-    typedef void type;
+    using type = void;
 #endif
   };
 
@@ -6950,7 +6950,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

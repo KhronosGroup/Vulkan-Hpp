@@ -1366,13 +1366,13 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
     {
       checkForError( isFeature( extension.deprecatedBy ) || isExtension( extension.deprecatedBy ),
                      extension.xmlLine,
-                     "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.promotedTo + ">" );
+                     "extension <" + extension.name + "> is deprecated by unknown extension/version <" + extension.deprecatedBy + ">" );
     }
     if ( !extension.obsoletedBy.empty() )
     {
       checkForError( isFeature( extension.obsoletedBy ) || isExtension( extension.obsoletedBy ),
                      extension.xmlLine,
-                     "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.promotedTo + ">" );
+                     "extension <" + extension.name + "> is obsoleted by unknown extension/version <" + extension.obsoletedBy + ">" );
     }
     if ( !extension.promotedTo.empty() )
     {

@@ -26,11 +26,11 @@
 #  if defined( __unix__ ) || defined( __APPLE__ ) || defined( __QNX__ ) || defined( __Fuchsia__ )
 #    include <dlfcn.h>
 #  elif defined( _WIN32 ) && !defined( VULKAN_HPP_NO_WIN32_PROTOTYPES )
-typedef struct HINSTANCE__ * HINSTANCE;
+using HINSTANCE = struct HINSTANCE__ *;
 #    if defined( _WIN64 )
-typedef int64_t( __stdcall * FARPROC )();
+using FARPROC = int64_t(__stdcall *)();
 #    else
-typedef int( __stdcall * FARPROC )();
+using FARPROC = int(__stdcall *)();
 #    endif
 extern "C" __declspec( dllimport ) HINSTANCE __stdcall LoadLibraryA( char const * lpLibFileName );
 extern "C" __declspec( dllimport ) int __stdcall FreeLibrary( HINSTANCE hLibModule );

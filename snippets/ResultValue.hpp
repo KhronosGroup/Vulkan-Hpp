@@ -91,9 +91,9 @@
   struct ResultValueType
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    typedef ResultValue<T>  type;
+	using type = ResultValue<T>;
 #else
-    typedef T               type;
+	using type = T;
 #endif
   };
 
@@ -101,9 +101,9 @@
   struct ResultValueType<void>
   {
 #ifdef VULKAN_HPP_NO_EXCEPTIONS
-    typedef Result type;
+    using type = Result;
 #else
-    typedef void   type;
+    using type = void;
 #endif
   };
 

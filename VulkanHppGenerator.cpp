@@ -7582,7 +7582,7 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     }
 
     const std::string typesafeExplicitKeyword          = handleData.second.isDispatchable ? "" : "VULKAN_HPP_TYPESAFE_EXPLICIT ";
-    const std::string typesafeConversionConditional    = handleData.second.isDispatchable ? "" : "#if defined(VULKAN_HPP_TYPESAFE_CONVERSION)\n";
+    const std::string typesafeConversionConditional    = handleData.second.isDispatchable ? "" : "#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )\n";
     const std::string typesafeConversionConditionalEnd = handleData.second.isDispatchable ? "" : "#endif\n";
 
     static const std::string templateString = R"(

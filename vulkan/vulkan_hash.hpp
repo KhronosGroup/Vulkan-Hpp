@@ -10813,6 +10813,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV const & physicalDeviceRayTracingValidationFeaturesNV ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingValidationFeaturesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingValidationFeaturesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceRayTracingValidationFeaturesNV.rayTracingValidation );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceRelaxedLineRasterizationFeaturesIMG const & physicalDeviceRelaxedLineRasterizationFeaturesIMG )

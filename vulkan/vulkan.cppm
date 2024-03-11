@@ -2502,6 +2502,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorExtensionName;
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorSpecVersion;
 
+  //=== VK_NV_ray_tracing_validation ===
+  using VULKAN_HPP_NAMESPACE::NVRayTracingValidationExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVRayTracingValidationSpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -4344,6 +4348,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_shader_atomic_float16_vector ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV;
+
+  //=== VK_NV_ray_tracing_validation ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV;
 
   //===============
   //=== HANDLEs ===

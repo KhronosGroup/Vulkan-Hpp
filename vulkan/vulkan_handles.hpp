@@ -1826,6 +1826,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_shader_atomic_float16_vector ===
   struct PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV;
 
+  //=== VK_NV_ray_tracing_validation ===
+  struct PhysicalDeviceRayTracingValidationFeaturesNV;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

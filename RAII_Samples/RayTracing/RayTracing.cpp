@@ -45,6 +45,7 @@
 #include "../utils/utils.hpp"
 #include "CameraManipulator.hpp"
 #include "SPIRV/GlslangToSpv.h"
+#include "glslang/Public/ShaderLang.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>

@@ -14299,9 +14299,6 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
         {
           auto lenMemberIt = findStructMemberIt( memberData.lenExpressions[0], members );
           checkForError( lenMemberIt != members.end(), line, "member attribute <len> holds unknown value <" + memberData.lenExpressions[0] + ">" );
-          checkForError( lenMemberIt->type.prefix.empty(),
-                         line,
-                         "member attribute <len> references a member of unexpected type <" + lenMemberIt->type.compose( "VULKAN_HPP_NAMESPACE" ) + ">" );
           memberData.lenMembers.push_back( { memberData.lenExpressions[0], std::distance( members.cbegin(), lenMemberIt ) } );
         }
         if ( 1 < memberData.lenExpressions.size() )

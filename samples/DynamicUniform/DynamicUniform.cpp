@@ -26,6 +26,7 @@
 #endif                               // endif (_MSC_VER )
 
 #include "SPIRV/GlslangToSpv.h"
+#include "glslang/Public/ShaderLang.h"
 
 #if defined( _MSC_VER )
 #  pragma warning( pop )

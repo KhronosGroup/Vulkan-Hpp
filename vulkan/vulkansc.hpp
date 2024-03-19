@@ -3392,6 +3392,10 @@ namespace VULKAN_HPP_NAMESPACE
   using RemoteAddressNV = void *;
   using SampleMask      = uint32_t;
 
+  template <typename Type, Type value = 0>
+  struct CppType
+  {
+  };
 }  // namespace VULKAN_HPP_NAMESPACE
 
 #include <vulkan/vulkansc_enums.hpp>

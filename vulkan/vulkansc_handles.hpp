@@ -1087,6 +1087,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkDebugUtilsMessengerEXT, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -1169,6 +1175,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSurfaceKHR>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::SurfaceKHR;
+  };
+
+  template <>
+  struct CppType<VkSurfaceKHR, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::SurfaceKHR;
   };
@@ -1261,6 +1273,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkSwapchainKHR, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::SwapchainKHR;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::SwapchainKHR>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -1343,6 +1361,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSemaphore>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Semaphore;
+  };
+
+  template <>
+  struct CppType<VkSemaphore, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::Semaphore;
   };
@@ -1435,6 +1459,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkFence, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Fence;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Fence>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -1517,6 +1547,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueryPool>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::QueryPool;
+  };
+
+  template <>
+  struct CppType<VkQueryPool, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::QueryPool;
   };
@@ -1609,6 +1645,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkPipelineLayout, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::PipelineLayout;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::PipelineLayout>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -1691,6 +1733,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorSet>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DescriptorSet;
+  };
+
+  template <>
+  struct CppType<VkDescriptorSet, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::DescriptorSet;
   };
@@ -1783,6 +1831,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkBuffer, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Buffer;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Buffer>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -1865,6 +1919,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::ePipeline>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Pipeline;
+  };
+
+  template <>
+  struct CppType<VkPipeline, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::Pipeline;
   };
@@ -1957,6 +2017,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkImage, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Image;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Image>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -2039,6 +2105,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eEvent>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Event;
+  };
+
+  template <>
+  struct CppType<VkEvent, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::Event;
   };
@@ -3182,6 +3254,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkCommandBuffer, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::CommandBuffer;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::CommandBuffer>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -3264,6 +3342,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDeviceMemory>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DeviceMemory;
+  };
+
+  template <>
+  struct CppType<VkDeviceMemory, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::DeviceMemory;
   };
@@ -3356,6 +3440,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkBufferView, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::BufferView;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::BufferView>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -3438,6 +3528,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eCommandPool>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::CommandPool;
+  };
+
+  template <>
+  struct CppType<VkCommandPool, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::CommandPool;
   };
@@ -3530,6 +3626,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkPipelineCache, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::PipelineCache;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::PipelineCache>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -3612,6 +3714,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDescriptorPool>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DescriptorPool;
+  };
+
+  template <>
+  struct CppType<VkDescriptorPool, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::DescriptorPool;
   };
@@ -3707,6 +3815,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkDescriptorSetLayout, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DescriptorSetLayout;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::DescriptorSetLayout>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -3789,6 +3903,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eFramebuffer>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Framebuffer;
+  };
+
+  template <>
+  struct CppType<VkFramebuffer, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::Framebuffer;
   };
@@ -3881,6 +4001,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkImageView, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::ImageView;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::ImageView>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -3957,6 +4083,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::ePrivateDataSlot>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::PrivateDataSlot;
+  };
+
+  template <>
+  struct CppType<VkPrivateDataSlot, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::PrivateDataSlot;
   };
@@ -4051,6 +4183,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkRenderPass, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::RenderPass;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::RenderPass>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -4138,6 +4276,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkSampler, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Sampler;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Sampler>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -4217,6 +4361,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion;
+  };
+
+  template <>
+  struct CppType<VkSamplerYcbcrConversion, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion;
   };
@@ -4309,6 +4459,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkSemaphoreSciSyncPoolNV, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::SemaphoreSciSyncPoolNV;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::SemaphoreSciSyncPoolNV>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -4392,6 +4548,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
+  };
+
+  template <>
+  struct CppType<VkDisplayKHR, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
   };
@@ -4581,6 +4743,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eQueue>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Queue;
+  };
+
+  template <>
+  struct CppType<VkQueue, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::Queue;
   };
@@ -6728,6 +6896,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkDevice, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Device;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Device>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -6810,6 +6984,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayModeKHR>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DisplayModeKHR;
+  };
+
+  template <>
+  struct CppType<VkDisplayModeKHR, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::DisplayModeKHR;
   };
@@ -7673,6 +7853,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkPhysicalDevice, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::PhysicalDevice;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::PhysicalDevice>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -7939,6 +8125,12 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   template <>
+  struct CppType<VkInstance, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::Instance;
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::Instance>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -8089,6 +8281,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eShaderModule>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::ShaderModule;
+  };
+
+  template <>
+  struct CppType<VkShaderModule, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::ShaderModule;
   };

@@ -91,9 +91,6 @@ namespace VULKAN_HPP_NAMESPACE
 {
 ${Flags}
 
-  template <typename EnumType, EnumType value>
-  struct CppType
-  {};
 ${enums}
 ${indexTypeTraits}
 ${objectTypeToDebugReportObjectType}
@@ -458,6 +455,10 @@ ${ObjectRelease}
 ${PoolFree}
 #endif // !VULKAN_HPP_NO_SMART_HANDLE
 ${baseTypes}
+
+  template <typename Type, Type value = 0>
+  struct CppType
+  {};
 } // namespace VULKAN_HPP_NAMESPACE
 
 #include <vulkan/${api}_enums.hpp>
@@ -7662,6 +7663,12 @@ ${commands}
 ${CppType}
 
   template <>
+  struct CppType<Vk${className}, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::${className};
+  };
+
+  template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
@@ -8378,7 +8385,7 @@ ${enter}  class ${handleType}
   {
   public:
     using CType = Vk${handleType};
-    using CppType = vk::${handleType};
+    using CppType = VULKAN_HPP_NAMESPACE::${handleType};
 
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::${objTypeEnum};
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};

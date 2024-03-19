@@ -216,11 +216,6 @@ namespace VULKAN_HPP_NAMESPACE
     return ~( Flags<BitType>( bit ) );
   }
 
-  template <typename EnumType, EnumType value>
-  struct CppType
-  {
-  };
-
   //=============
   //=== ENUMs ===
   //=============

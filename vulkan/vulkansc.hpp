@@ -3704,6 +3704,14 @@ namespace VULKAN_HPP_NAMESPACE
     }
   };
 
+  class NotPermittedKHRError : public SystemError
+  {
+  public:
+    NotPermittedKHRError( std::string const & message ) : SystemError( make_error_code( Result::eErrorNotPermittedKHR ), message ) {}
+
+    NotPermittedKHRError( char const * message ) : SystemError( make_error_code( Result::eErrorNotPermittedKHR ), message ) {}
+  };
+
   namespace detail
   {
     [[noreturn]] VULKAN_HPP_INLINE void throwResultException( Result result, char const * message )
@@ -3735,6 +3743,7 @@ namespace VULKAN_HPP_NAMESPACE
         case Result::eErrorOutOfDateKHR: throw OutOfDateKHRError( message );
         case Result::eErrorIncompatibleDisplayKHR: throw IncompatibleDisplayKHRError( message );
         case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: throw InvalidDrmFormatModifierPlaneLayoutEXTError( message );
+        case Result::eErrorNotPermittedKHR: throw NotPermittedKHRError( message );
         default: throw SystemError( make_error_code( result ), message );
       }
     }

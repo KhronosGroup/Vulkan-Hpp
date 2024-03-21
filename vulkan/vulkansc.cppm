@@ -449,6 +449,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MemoryMapFailedError;
   using VULKAN_HPP_NAMESPACE::NativeWindowInUseKHRError;
   using VULKAN_HPP_NAMESPACE::NoPipelineMatchError;
+  using VULKAN_HPP_NAMESPACE::NotPermittedKHRError;
   using VULKAN_HPP_NAMESPACE::OutOfDateKHRError;
   using VULKAN_HPP_NAMESPACE::OutOfDeviceMemoryError;
   using VULKAN_HPP_NAMESPACE::OutOfHostMemoryError;

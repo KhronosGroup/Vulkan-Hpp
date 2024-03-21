@@ -135,12 +135,12 @@ private:
 
   struct EnumValueData
   {
-    std::string alias   = {};
-    std::string bitpos  = {};
-    std::string name    = {};
-    std::string protect = {};
-    std::string value   = {};
-    int         xmlLine = {};
+    std::map<std::string, int> aliases = {};
+    std::string                bitpos  = {};
+    std::string                name    = {};
+    std::string                protect = {};
+    std::string                value   = {};
+    int                        xmlLine = {};
   };
 
   struct EnumData
@@ -465,6 +465,7 @@ private:
   std::vector<MemberData>::const_iterator          findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator       findSupportedExtension( std::string const & name ) const;
   std::string                                      findTag( std::string const & name, std::string const & postfix = "" ) const;
+  void                                             fixEnumValueIssues();
   std::pair<std::string, std::string>              generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                                std::vector<std::string> const &          returnDataTypes,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,

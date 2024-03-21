@@ -137,11 +137,12 @@ private:
   {
     std::map<std::string, int> aliases = {};
     std::string                bitpos  = {};
-    std::string                name    = {};
     std::string                protect = {};
     std::string                value   = {};
     int                        xmlLine = {};
   };
+
+  using EnumValue = std::pair<std::string, EnumValueData>;
 
   struct EnumData
   {
@@ -149,11 +150,11 @@ private:
     void addEnumValue(
       int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
 
-    std::string                bitwidth          = {};
-    bool                       isBitmask         = false;
-    std::vector<EnumValueData> unsupportedValues = {};
-    std::vector<EnumValueData> values            = {};
-    int                        xmlLine           = {};
+    std::string                          bitwidth          = {};
+    bool                                 isBitmask         = false;
+    std::map<std::string, EnumValueData> unsupportedValues = {};
+    std::vector<EnumValue>               values            = {};
+    int                                  xmlLine           = {};
   };
 
   struct NameData
@@ -428,6 +429,7 @@ private:
                                              std::vector<std::string> const &          dataTypes,
                                              CommandFlavourFlags                       flavourFlags,
                                              bool                                      raii ) const;
+  bool                     contains( std::vector<EnumValue> const & enumValues, std::string const & name ) const;
   bool                     containsArray( std::string const & type ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
@@ -700,10 +702,8 @@ private:
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
-  std::string generateEnumInitializer( TypeInfo const &                   type,
-                                       std::vector<std::string> const &   arraySizes,
-                                       std::vector<EnumValueData> const & values,
-                                       bool                               bitmask ) const;
+  std::string
+    generateEnumInitializer( TypeInfo const & type, std::vector<std::string> const & arraySizes, std::vector<EnumValue> const & values, bool bitmask ) const;
   std::string generateEnums() const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumsToString() const;

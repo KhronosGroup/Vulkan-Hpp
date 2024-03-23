@@ -296,7 +296,6 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_bind_memory2",
               "VK_KHR_get_physical_device_properties2",
               "VK_KHR_sampler_ycbcr_conversion",
-              "VK_KHR_image_format_list",
             } } },
           { "VK_VERSION_1_1",
             { {
@@ -359,7 +358,6 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_KHR_fragment_shading_rate",
         { { "VK_VERSION_1_0",
             { {
-              "VK_KHR_create_renderpass2",
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1",

@@ -11496,7 +11496,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setLatencySleepModeNV( const VULKAN_HPP_NAMESPACE::LatencySleepModeInfoNV & sleepModeInfo ) const;
 
-      void latencySleepNV( const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo ) const;
+      void latencySleepNV( const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo ) const VULKAN_HPP_NOEXCEPT;
 
       void setLatencyMarkerNV( const VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV & latencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT;
 
@@ -22679,13 +22679,12 @@ namespace VULKAN_HPP_NAMESPACE
       resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::setLatencySleepModeNV" );
     }
 
-    VULKAN_HPP_INLINE void SwapchainKHR::latencySleepNV( const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo ) const
+    VULKAN_HPP_INLINE void SwapchainKHR::latencySleepNV( const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkLatencySleepNV && "Function <vkLatencySleepNV> requires <VK_NV_low_latency2>" );
 
-      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkLatencySleepNV(
-        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) ) );
-      resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::SwapchainKHR::latencySleepNV" );
+      getDispatcher()->vkLatencySleepNV(
+        static_cast<VkDevice>( m_device ), static_cast<VkSwapchainKHR>( m_swapchain ), reinterpret_cast<const VkLatencySleepInfoNV *>( &sleepInfo ) );
     }
 
     VULKAN_HPP_INLINE void SwapchainKHR::setLatencyMarkerNV( const VULKAN_HPP_NAMESPACE::SetLatencyMarkerInfoNV & latencyMarkerInfo ) const VULKAN_HPP_NOEXCEPT

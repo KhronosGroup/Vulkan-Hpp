@@ -6963,7 +6963,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

@@ -20,7 +20,10 @@
 static_assert( std::is_same<vk::CppType<vk::IndexType, vk::IndexType::eUint16>::Type, uint16_t>::value, "" );
 static_assert( std::is_same<vk::CppType<vk::ObjectType, vk::ObjectType::eInstance>::Type, vk::Instance>::value, "" );
 static_assert( std::is_same<vk::CppType<vk::DebugReportObjectTypeEXT, vk::DebugReportObjectTypeEXT ::eInstance>::Type, vk::Instance>::value, "" );
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
 static_assert( std::is_same<vk::CppType<VkInstance>::Type, vk::Instance>::value, "" );
+#endif
 
 #include <vulkan/vulkan_raii.hpp>
 

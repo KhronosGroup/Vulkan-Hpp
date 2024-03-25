@@ -1,0 +1,58 @@
+PROJECT_NAME           = Vulkan-Hpp
+SEARCHENGINE           = YES
+GENERATE_TAGFILE       = html/tagfile.xml  # generate a tag file
+DOT_IMAGE_FORMAT       = svg
+DOT_TRANSPARENT        = YES
+INTERACTIVE_SVG        = YES
+EXTRACT_ALL            = YES
+RECURSIVE = YES
+INPUT = vulkan/vulkan.cppm \
+vulkan/vulkan.hpp \
+vulkan/vulkan_enums.hpp \
+vulkan/vulkan_extension_inspection.hpp \
+vulkan/vulkan_format_traits.hpp \
+vulkan/vulkan_funcs.hpp \
+vulkan/vulkan_hash.hpp \
+vulkan/vulkan_hpp_macros.hpp \
+vulkan/vulkan_to_string.hpp \
+vulkan/vulkan_handles.hpp \
+vulkan/vulkan_video.hpp \
+vulkan/vulkan_static_assertions.hpp \
+vulkan/vulkan_raii.hpp \
+vulkan/vulkan_structs.hpp \
+vulkan/vulkan_structs.hpp \
+Vulkan-Headers/include/vulkan/vulkan.h \
+Vulkan-Headers/include/vulkan/vulkan_core.h \
+Vulkan-Headers/include/vk_video \
+README.md \
+vk_raii_ProgrammingGuide.md \
+docs/mainpage.dox \
+docs/Samples.dox \
+docs/RAII_Samples.dox \
+samples
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXAMPLE_PATH = . samples
+
+PREDEFINED += VULKAN_HPP_NAMESPACE="vk"
+PREDEFINED += VULKAN_HPP_RAII_NAMESPACE="raii"
+PREDEFINED += VK_ENABLE_BETA_EXTENSIONS="1"
+
+EXCLUDE = vulkan/vulkan_shared.hpp vulkan/vulkansc_shared.hpp
+#EXLUDE_PATTERNS = */vulkan/*
+HAVE_DOT = NO
+CLASS_GRAPH = NO
+INHERIT_DOCS = NO
+INCLUDE_PATH = include Vulkan-Headers/include/
+REFERENCES_LINK_SOURCE = YES
+TEMPLATE_RELATIONS = YES
+SOURCE_BROWSER = YES
+REFERENCES_RELATION = NO
+REFERENCED_BY_RELATION = NO
+
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+HTML_EXTRA_STYLESHEET  = doxygen-awesome-css/doxygen-awesome.css \
+                        doxygen-awesome-css/doxygen-awesome-sidebar-only.css
+HTML_COLORSTYLE        = LIGHT # required with Doxygen >= 1.9.5

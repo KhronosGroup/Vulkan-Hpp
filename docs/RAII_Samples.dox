@@ -1,0 +1,256 @@
+/**
+\cond
+File generate using `python3 docs/generate_samples_dox.py -s RAII_Samples/ -o docs/RAII_Samples.dox`
+\endcond
+\page RAII_Samples RAII Samples
+\subpage RAII_Samples_01_InitInstance
+
+\subpage RAII_Samples_02_EnumerateDevices
+
+\subpage RAII_Samples_03_InitDevice
+
+\subpage RAII_Samples_04_InitCommandBuffer
+
+\subpage RAII_Samples_05_InitSwapchain
+
+\subpage RAII_Samples_06_InitDepthBuffer
+
+\subpage RAII_Samples_07_InitUniformBuffer
+
+\subpage RAII_Samples_08_InitPipelineLayout
+
+\subpage RAII_Samples_09_InitDescriptorSet
+
+\subpage RAII_Samples_10_InitRenderPass
+
+\subpage RAII_Samples_11_InitShaders
+
+\subpage RAII_Samples_12_InitFrameBuffers
+
+\subpage RAII_Samples_13_InitVertexBuffer
+
+\subpage RAII_Samples_14_InitPipeline
+
+\subpage RAII_Samples_15_DrawCube
+
+\subpage RAII_Samples_16_Vulkan_1_1
+
+\subpage RAII_Samples_CopyBlitImage
+
+\subpage RAII_Samples_CreateDebugUtilsMessenger
+
+\subpage RAII_Samples_DebugUtilsObjectName
+
+\subpage RAII_Samples_DrawTexturedCube
+
+\subpage RAII_Samples_DynamicUniform
+
+\subpage RAII_Samples_EnableValidationWithCallback
+
+\subpage RAII_Samples_EnumerateDevicesAdvanced
+
+\subpage RAII_Samples_Events
+
+\subpage RAII_Samples_ImmutableSampler
+
+\subpage RAII_Samples_InitTexture
+
+\subpage RAII_Samples_InputAttachment
+
+\subpage RAII_Samples_InstanceExtensionProperties
+
+\subpage RAII_Samples_InstanceLayerExtensionProperties
+
+\subpage RAII_Samples_InstanceLayerProperties
+
+\subpage RAII_Samples_InstanceVersion
+
+\subpage RAII_Samples_MultipleSets
+
+\subpage RAII_Samples_OcclusionQuery
+
+\subpage RAII_Samples_PhysicalDeviceExtensions
+
+\subpage RAII_Samples_PhysicalDeviceFeatures
+
+\subpage RAII_Samples_PhysicalDeviceGroups
+
+\subpage RAII_Samples_PhysicalDeviceMemoryProperties
+
+\subpage RAII_Samples_PhysicalDeviceProperties
+
+\subpage RAII_Samples_PhysicalDeviceQueueFamilyProperties
+
+\subpage RAII_Samples_PipelineCache
+
+\subpage RAII_Samples_PipelineDerivative
+
+\subpage RAII_Samples_PushConstants
+
+\subpage RAII_Samples_PushDescriptors
+
+\subpage RAII_Samples_RayTracing
+
+\subpage RAII_Samples_SecondaryCommandBuffer
+
+\subpage RAII_Samples_SeparateImageSampler
+
+\subpage RAII_Samples_SurfaceCapabilities
+
+\subpage RAII_Samples_SurfaceFormats
+
+\subpage RAII_Samples_Template
+
+\subpage RAII_Samples_TexelBuffer
+
+
+\page RAII_Samples_01_InitInstance 01_InitInstance
+\include RAII_Samples/01_InitInstance/01_InitInstance.cpp
+
+\page RAII_Samples_02_EnumerateDevices 02_EnumerateDevices
+\include RAII_Samples/02_EnumerateDevices/02_EnumerateDevices.cpp
+
+\page RAII_Samples_03_InitDevice 03_InitDevice
+\include RAII_Samples/03_InitDevice/03_InitDevice.cpp
+
+\page RAII_Samples_04_InitCommandBuffer 04_InitCommandBuffer
+\include RAII_Samples/04_InitCommandBuffer/04_InitCommandBuffer.cpp
+
+\page RAII_Samples_05_InitSwapchain 05_InitSwapchain
+\include RAII_Samples/05_InitSwapchain/05_InitSwapchain.cpp
+
+\page RAII_Samples_06_InitDepthBuffer 06_InitDepthBuffer
+\include RAII_Samples/06_InitDepthBuffer/06_InitDepthBuffer.cpp
+
+\page RAII_Samples_07_InitUniformBuffer 07_InitUniformBuffer
+\include RAII_Samples/07_InitUniformBuffer/07_InitUniformBuffer.cpp
+
+\page RAII_Samples_08_InitPipelineLayout 08_InitPipelineLayout
+\include RAII_Samples/08_InitPipelineLayout/08_InitPipelineLayout.cpp
+
+\page RAII_Samples_09_InitDescriptorSet 09_InitDescriptorSet
+\include RAII_Samples/09_InitDescriptorSet/09_InitDescriptorSet.cpp
+
+\page RAII_Samples_10_InitRenderPass 10_InitRenderPass
+\include RAII_Samples/10_InitRenderPass/10_InitRenderPass.cpp
+
+\page RAII_Samples_11_InitShaders 11_InitShaders
+\include RAII_Samples/11_InitShaders/11_InitShaders.cpp
+
+\page RAII_Samples_12_InitFrameBuffers 12_InitFrameBuffers
+\include RAII_Samples/12_InitFrameBuffers/12_InitFrameBuffers.cpp
+
+\page RAII_Samples_13_InitVertexBuffer 13_InitVertexBuffer
+\include RAII_Samples/13_InitVertexBuffer/13_InitVertexBuffer.cpp
+
+\page RAII_Samples_14_InitPipeline 14_InitPipeline
+\include RAII_Samples/14_InitPipeline/14_InitPipeline.cpp
+
+\page RAII_Samples_15_DrawCube 15_DrawCube
+\include RAII_Samples/15_DrawCube/15_DrawCube.cpp
+
+\page RAII_Samples_16_Vulkan_1_1 16_Vulkan_1_1
+\include RAII_Samples/16_Vulkan_1_1/16_Vulkan_1_1.cpp
+
+\page RAII_Samples_CopyBlitImage CopyBlitImage
+\include RAII_Samples/CopyBlitImage/CopyBlitImage.cpp
+
+\page RAII_Samples_CreateDebugUtilsMessenger CreateDebugUtilsMessenger
+\include RAII_Samples/CreateDebugUtilsMessenger/CreateDebugUtilsMessenger.cpp
+
+\page RAII_Samples_DebugUtilsObjectName DebugUtilsObjectName
+\include RAII_Samples/DebugUtilsObjectName/DebugUtilsObjectName.cpp
+
+\page RAII_Samples_DrawTexturedCube DrawTexturedCube
+\include RAII_Samples/DrawTexturedCube/DrawTexturedCube.cpp
+
+\page RAII_Samples_DynamicUniform DynamicUniform
+\include RAII_Samples/DynamicUniform/DynamicUniform.cpp
+
+\page RAII_Samples_EnableValidationWithCallback EnableValidationWithCallback
+\include RAII_Samples/EnableValidationWithCallback/EnableValidationWithCallback.cpp
+
+\page RAII_Samples_EnumerateDevicesAdvanced EnumerateDevicesAdvanced
+\include RAII_Samples/EnumerateDevicesAdvanced/EnumerateDevicesAdvanced.cpp
+
+\page RAII_Samples_Events Events
+\include RAII_Samples/Events/Events.cpp
+
+\page RAII_Samples_ImmutableSampler ImmutableSampler
+\include RAII_Samples/ImmutableSampler/ImmutableSampler.cpp
+
+\page RAII_Samples_InitTexture InitTexture
+\include RAII_Samples/InitTexture/InitTexture.cpp
+
+\page RAII_Samples_InputAttachment InputAttachment
+\include RAII_Samples/InputAttachment/InputAttachment.cpp
+
+\page RAII_Samples_InstanceExtensionProperties InstanceExtensionProperties
+\include RAII_Samples/InstanceExtensionProperties/InstanceExtensionProperties.cpp
+
+\page RAII_Samples_InstanceLayerExtensionProperties InstanceLayerExtensionProperties
+\include RAII_Samples/InstanceLayerExtensionProperties/InstanceLayerExtensionProperties.cpp
+
+\page RAII_Samples_InstanceLayerProperties InstanceLayerProperties
+\include RAII_Samples/InstanceLayerProperties/InstanceLayerProperties.cpp
+
+\page RAII_Samples_InstanceVersion InstanceVersion
+\include RAII_Samples/InstanceVersion/InstanceVersion.cpp
+
+\page RAII_Samples_MultipleSets MultipleSets
+\include RAII_Samples/MultipleSets/MultipleSets.cpp
+
+\page RAII_Samples_OcclusionQuery OcclusionQuery
+\include RAII_Samples/OcclusionQuery/OcclusionQuery.cpp
+
+\page RAII_Samples_PhysicalDeviceExtensions PhysicalDeviceExtensions
+\include RAII_Samples/PhysicalDeviceExtensions/PhysicalDeviceExtensions.cpp
+
+\page RAII_Samples_PhysicalDeviceFeatures PhysicalDeviceFeatures
+\include RAII_Samples/PhysicalDeviceFeatures/PhysicalDeviceFeatures.cpp
+
+\page RAII_Samples_PhysicalDeviceGroups PhysicalDeviceGroups
+\include RAII_Samples/PhysicalDeviceGroups/PhysicalDeviceGroups.cpp
+
+\page RAII_Samples_PhysicalDeviceMemoryProperties PhysicalDeviceMemoryProperties
+\include RAII_Samples/PhysicalDeviceMemoryProperties/PhysicalDeviceMemoryProperties.cpp
+
+\page RAII_Samples_PhysicalDeviceProperties PhysicalDeviceProperties
+\include RAII_Samples/PhysicalDeviceProperties/PhysicalDeviceProperties.cpp
+
+\page RAII_Samples_PhysicalDeviceQueueFamilyProperties PhysicalDeviceQueueFamilyProperties
+\include RAII_Samples/PhysicalDeviceQueueFamilyProperties/PhysicalDeviceQueueFamilyProperties.cpp
+
+\page RAII_Samples_PipelineCache PipelineCache
+\include RAII_Samples/PipelineCache/PipelineCache.cpp
+
+\page RAII_Samples_PipelineDerivative PipelineDerivative
+\include RAII_Samples/PipelineDerivative/PipelineDerivative.cpp
+
+\page RAII_Samples_PushConstants PushConstants
+\include RAII_Samples/PushConstants/PushConstants.cpp
+
+\page RAII_Samples_PushDescriptors PushDescriptors
+\include RAII_Samples/PushDescriptors/PushDescriptors.cpp
+
+\page RAII_Samples_RayTracing RayTracing
+\include RAII_Samples/RayTracing/RayTracing.cpp
+
+\page RAII_Samples_SecondaryCommandBuffer SecondaryCommandBuffer
+\include RAII_Samples/SecondaryCommandBuffer/SecondaryCommandBuffer.cpp
+
+\page RAII_Samples_SeparateImageSampler SeparateImageSampler
+\include RAII_Samples/SeparateImageSampler/SeparateImageSampler.cpp
+
+\page RAII_Samples_SurfaceCapabilities SurfaceCapabilities
+\include RAII_Samples/SurfaceCapabilities/SurfaceCapabilities.cpp
+
+\page RAII_Samples_SurfaceFormats SurfaceFormats
+\include RAII_Samples/SurfaceFormats/SurfaceFormats.cpp
+
+\page RAII_Samples_Template Template
+\include RAII_Samples/Template/Template.cpp
+
+\page RAII_Samples_TexelBuffer TexelBuffer
+\include RAII_Samples/TexelBuffer/TexelBuffer.cpp
+*/

@@ -9,7 +9,7 @@ The goal of the Vulkan-Hpp is to provide header only C++ bindings for the Vulkan
 
 ## Getting Started
 
-Vulkan-Hpp is part of the [LunarG Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) since version 1.0.24. Just `#include <vulkan/vulkan.hpp>` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK, you can find the latest version of the header [here](vulkan/vulkan.hpp).
+Vulkan-Hpp is part of the [LunarG Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) since version 1.0.24. Just `#include <vulkan/vulkan.hpp>` and you're ready to use the C++ bindings. If you're using a Vulkan version not yet supported by the Vulkan SDK, you can find the latest version of the headers [here](vulkan).
 
 ### Minimum Requirements
 
@@ -101,14 +101,14 @@ On 64-bit platforms Vulkan-Hpp supports implicit conversions between C++ Vulkan 
 
 The scoped enum feature adds type safety to the flags, but also prevents using the flag bits as input for bitwise operations such as `&` and `|`.
 
-As solution Vulkan-Hpp provides a class template `vk::Flags` which brings the standard operations like `&=`, `|=`, `&`, and `|` to our scoped enums. Except for the initialization with 0 this class behaves exactly like a normal bitmask with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
+As solution Vulkan-Hpp provides a class template `vk::Flags` which brings the standard operations like `&=`, `|=`, `&`, and `|` to our scoped enums. Except for the initialization with `0` this class behaves exactly like a normal bitmask with the improvement that it is impossible to set bits not specified by the corresponding enum by accident. Here are a few examples for the bitmask handling:
 
 ```c++
 vk::ImageUsageFlags iu1; // initialize a bitmask with no bit set
 vk::ImageUsageFlags iu2 = {}; // initialize a bitmask with no bit set
 vk::ImageUsageFlags iu3 = vk::ImageUsageFlagBits::eColorAttachment; // initialize with a single value
 vk::ImageUsageFlags iu4 = vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eStorage; // or two bits to get a bitmask
-PipelineShaderStageCreateInfo ci( {} /* pass a flag without any bits set */, ...);
+PipelineShaderStageCreateInfo ci({} /* pass a flag without any bits set */, ...);
 ```
 
 ### CreateInfo structs
@@ -152,7 +152,7 @@ vk::ImageCreateInfo ci({}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
 vk::Image image = device.createImage(ci);
 ```
 
-With constructors for `CreateInfo` structures one can also pass temporaries to Vulkan functions like this:
+With constructors for `CreateInfo` structures, one can also pass temporaries to Vulkan functions like this:
 
 ```c++
 vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B8A8Unorm,
@@ -165,6 +165,7 @@ vk::Image image = device.createImage({{}, vk::ImageType::e2D, vk::Format::eR8G8B
 ### Designated Initializers
 
 Beginning with C++20, C++ supports designated initializers. As that feature requires to not have any user-declared or inherited constructors, you have to `#define VULKAN_HPP_NO_CONSTRUCTORS`, which removes all the structure and union constructors from `vulkan.hpp`. Instead you can then use aggregate initialization. The first few vk-lines in your source might then look like:
+
 ```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
@@ -176,7 +177,9 @@ vk::ApplicationInfo applicationInfo{ .pApplicationName   = AppName,
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo{ .pApplicationInfo = &applicationInfo };
 ```
+
 instead of
+
 ```c++
 // initialize the vk::ApplicationInfo structure
 vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_1);
@@ -184,14 +187,15 @@ vk::ApplicationInfo applicationInfo(AppName, 1, EngineName, 1, VK_API_VERSION_1_
 // initialize the vk::InstanceCreateInfo
 vk::InstanceCreateInfo instanceCreateInfo({}, &applicationInfo);
 ```
+
 Note, that the designator order needs to match the declaration order.
 Note as well, that now you can explicitly set the `sType` member of vk-structures. This is neither neccessary (as they are correctly initialized by default) nor recommended.
 
 ### Passing Arrays to Functions using ArrayProxy
 
-The Vulkan API has several places which require (count, pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs with the `ArrayProxy` class template which accepts empty arrays and a single value as well as STL containers `std::initializer_list`, `std::array` and `std::vector` as argument for construction. This way a single generated Vulkan version can accept a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.
+The Vulkan API has several places which require (count, pointer) as two function arguments and C++ has a few containers which map perfectly to this pair. To simplify development the Vulkan-Hpp bindings have replaced those argument pairs with the `vk::ArrayProxy` class template which accepts empty arrays and a single value as well as STL containers `std::initializer_list`, `std::array` and `std::vector` as argument for construction. This way a single generated Vulkan version can accept a variety of inputs without having the combinatoric explosion which would occur when creating a function for each container type.
 
-Here are some code samples on how to use the `ArrayProxy`:
+Here are some code samples on how to use the `vk::ArrayProxy`:
 
 ```c++
 vk::CommandBuffer c;
@@ -293,7 +297,7 @@ vk::MemoryRequirements2KHR memoryRequirements = device.getBufferMemoryRequiremen
 
 ### Return values, Error Codes & Exceptions
 
-By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a `vk::Result`. If `vk::Result` is a failure a `std::runtime_error` will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases `ResultValue<SomeType>::type` is defined as the returned type.
+By default Vulkan-Hpp has exceptions enabled. This means that Vulkan-Hpp checks the return code of each function call which returns a `vk::Result`. If `vk::Result` is a failure a `std::runtime_error` will be thrown. Since there is no need to return the error code anymore the C++ bindings can now return the actual desired return value, i.e. a vulkan handle. In those cases `vk::ResultValue<SomeType>::type` is defined as the returned type.
 
 To create a device you can now just write:
 
@@ -301,7 +305,7 @@ To create a device you can now just write:
 vk::Device device = physicalDevice.createDevice(createInfo);
 ```
 
-Some functions allow more than just `vk::Result::eSuccess` to be considered as a success code. For those functions, we always return a `ResultValue<SomeType>`. An example is `acquireNextImage2KHR`, that can be used like this:
+Some functions allow more than just `vk::Result::eSuccess` to be considered as a success code. For those functions, we always return a `vk::ResultValue<SomeType>`. An example is `acquireNextImage2KHR`, that can be used like this:
 
 ```c++
 vk::ResultValue<uint32_t> result = device->acquireNextImage2KHR(acquireNextImageInfo);
@@ -323,7 +327,7 @@ switch (result.result)
 
 As time passes, some vulkan functions might change, such that they start to support more result codes than `vk::Result::eSuccess` as a success code. That logical change would not be visible in the C API, but in the C++ API, as such a function would now return a `vk::ResultValue<SomeType>` instead of just `SomeType`. In such (rare) cases, you would have to adjust your cpp-sources to reflect that API change.
 
-If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
+If exception handling is disabled by defining `VULKAN_HPP_NO_EXCEPTIONS` the type of `vk::ResultValue<SomeType>::type` is a struct holding a `vk::Result` and a `SomeType`. This struct supports unpacking the return values by using `std::tie`.
 
 In case you don’t want to use the `vk::ArrayProxy` and return value transformation, you can still call the plain C-style function. Below are three examples showing the 3 ways to use the API:
 
@@ -331,19 +335,19 @@ The first snippet shows how to use the API without exceptions and the return val
 
 ```c++
 // No exceptions, no return value transformation
-ShaderModuleCreateInfo createInfo(...);
-ShaderModule shader1;
-Result result = device.createShaderModule(&createInfo, allocator, &shader1);
-if (result.result != VK_SUCCESS)
+vk::ShaderModuleCreateInfo createInfo(...);
+vk::ShaderModule shader1;
+vk::Result result = device.createShaderModule(&createInfo, allocator, &shader1);
+if (result.result != vk::Result::eSuccess)
 {
   handle error code;
   cleanup?
   return?
 }
 
-ShaderModule shader2;
-Result result = device.createShaderModule(&createInfo, allocator, &shader2);
-if (result != VK_SUCCESS)
+vk::ShaderModule shader2;
+vk::Result result = device.createShaderModule(&createInfo, allocator, &shader2);
+if (result != vk::Result::eSuccess)
 {
   handle error code;
   cleanup?
@@ -354,8 +358,8 @@ if (result != VK_SUCCESS)
 The second snippet shows how to use the API using return value transformation, but without exceptions. It’s already a little bit shorter than the original code:
 
 ```c++
-ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
-if (shaderResult1.result != VK_SUCCESS)
+vk::ResultValue<ShaderModule> shaderResult1 = device.createShaderModule({...} /* createInfo temporary */);
+if (shaderResult1.result != vk::Result::eSuccess)
 {
   handle error code;
   cleanup?
@@ -363,10 +367,10 @@ if (shaderResult1.result != VK_SUCCESS)
 }
 
 // std::tie support.
-Result result;
-ShaderModule shaderModule2;
-std::tie(result, shaderModule2)  = device.createShaderModule({...} /* createInfo temporary */);
-if (result != VK_SUCCESS)
+vk::Result result;
+vk::ShaderModule shaderModule2;
+std::tie(result, shaderModule2) = device.createShaderModule({...} /* createInfo temporary */);
+if (result != vk::Result::eSuccess)
 {
   handle error code;
   cleanup?
@@ -383,8 +387,8 @@ auto [result, shaderModule2] = device.createShaderModule({...} /* createInfo tem
 Finally, the last code example is using exceptions and return value transformation. This is the default mode of the API.
 
 ```c++
-ShaderModule shader1;
-ShaderModule shader2;
+vk::ShaderModule shader1;
+vk::ShaderModule shader2;
 try
 {
   shader1 = device.createShaderModule({...});
@@ -410,19 +414,19 @@ For the return value transformation, there's one special class of return values 
 ```c++
 std::vector<LayerProperties, Allocator> properties;
 uint32_t propertyCount;
-Result result;
+vk::Result result;
 do
 {
   // determine number of elements to query
-  result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, nullptr ) );
-  if ( ( result == Result::eSuccess ) && propertyCount )
+  result = static_cast<vk::Result>(vk::enumerateDeviceLayerProperties(m_physicalDevice, &propertyCount, nullptr));
+  if ((result == vk::Result::eSuccess) && propertyCount)
   {
     // allocate memory & query again
-    properties.resize( propertyCount );
-    result = static_cast<Result>( vk::enumerateDeviceLayerProperties( m_physicalDevice, &propertyCount, reinterpret_cast
-     <VkLayerProperties*>( properties.data() ) ) );
+    properties.resize(propertyCount);
+    result = static_cast<vk::Result>(vk::enumerateDeviceLayerProperties(m_physicalDevice, &propertyCount, reinterpret_cast
+     <VkLayerProperties*>(properties.data())));
   }
-} while ( result == Result::eIncomplete );
+} while (result == vk::Result::eIncomplete);
 // it's possible that the count has changed, start again if properties was not big enough
 properties.resize(propertyCount);
 ```
@@ -445,9 +449,9 @@ Note that using `vk::UniqueHandle` comes at a cost since most deleters have to s
 
 Vulkan-Hpp provides a `vk::SharedHandle<Type>` interface. For each Vulkan handle type `vk::Type` there is a shared handle `vk::SharedType` which will delete the underlying Vulkan resource upon destruction, e.g. `vk::SharedBuffer` is the shared handle for `vk::Buffer`.
 
-Unlike `UniqueHandle`, `SharedHandle` takes shared ownership of the resource as well as its parent. This means that the parent handle will not be destroyed until all child resources are deleted. This is useful for resources that are shared between multiple threads or objects.
+Unlike `vk::UniqueHandle`, `vk::SharedHandle` takes shared ownership of the resource as well as its parent. This means that the parent handle will not be destroyed until all child resources are deleted. This is useful for resources that are shared between multiple threads or objects.
 
-This mechanism ensures correct destruction order even if the parent `SharedHandle` is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any of its child object should be last to delete (first created, first in class declaration).
+This mechanism ensures correct destruction order even if the parent `vk::SharedHandle` is destroyed before its child handle. Otherwise, the handle behaves like `std::shared_ptr`. `vk::SharedInstance` or any of its child object should be last to delete (first created, first in class declaration).
 
 There are no functions which return a `vk::SharedHandle` directly yet. Instead, you can construct a `vk::SharedHandle` from a `vk::Handle`:
 
@@ -516,7 +520,7 @@ You can also use a stateful custom allocator by providing it as an argument to t
 
 ```c++
 MyStatefulCustomAllocator allocator;
-std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties( allocator, {} );
+std::vector<LayerProperties, MyStatefulCustomAllocator> properties = physicalDevice.enumerateDeviceLayerProperties(allocator, {});
 ```
 
 ### Custom assertions
@@ -590,7 +594,7 @@ For all functions, that `VULKAN_HPP_DEFAULT_DISPATCHER` is the default for the l
 	Maps `ObjectType` values (`ObjectType::eInstance`, `ObjectType::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
 	Maps `DebugReportObjectType` values (`DebugReportObjectTypeEXT::eInstance`, `DebugReportObjectTypeEXT::eDevice`, ...) to the corresponding type (`vk::Instance`, `vk::Device`, ...) by the member type `Type`;
 - `template <typename T> struct IndexTypeValue`
-	Maps scalar types (`uint16_t`, `uint32_t`, ...) to the corresponding `IndexType` value (`IndexType::eUint16`, `IndexType::eUint3`2, ...).
+	Maps scalar types (`uint16_t`, `uint32_t`, ...) to the corresponding `IndexType` value (`IndexType::eUint16`, `IndexType::eUint32`, ...).
 - `template <typename T> struct isVulkanHandleType`
 	Maps a type to `true` if and only if it's a handle class (`vk::Instance`, `vk::Device`, ...) by the static member `value`.
 - `HandleClass::CType`
@@ -683,7 +687,7 @@ Some functions might provide information that depends on the vulkan version. As 
 
 #### Overview
 
-Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules),  `vulkan_hpp` in [`vulkan.cppm`](vulkan/vulkan.cppm).
+Vulkan-Hpp provides a [C++ named module](https://en.cppreference.com/w/cpp/language/modules), `vulkan_hpp` in [`vulkan.cppm`](vulkan/vulkan.cppm).
 C++ modules are intended to supersede header files. Modules have potential to drastically improve compilation times for large projects, as declarations and definitions may be easily shared across translation units without repeatedly parsing headers.
 Vulkan-Hpp has some extremely long headers (e.g. [`vulkan_structs.hpp`](vulkan/vulkan_structs.hpp)), and the C++ module is likely to shorten compile times for projects currently using it.
 
@@ -783,7 +787,7 @@ auto main(int argc, char* const argv[]) -> int
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 #endif
 
-  auto appInfo = vk::ApplicationInfo( "My App", 1, "My Engine", 1, vk::makeApiVersion( 1, 0, 0, 0 ) );
+  auto appInfo = vk::ApplicationInfo("My App", 1, "My Engine", 1, vk::makeApiVersion(1, 0, 0, 0));
   // ...
 }
 ```
@@ -898,11 +902,11 @@ This is set to be the compiler-dependent attribute used to mark functions as inl
 
 #### VULKAN_HPP_NAMESPACE
 
-By default, the namespace used with vulkan.hpp is `vk`. By defining `VULKAN_HPP_NAMESPACE` before including `vulkan.hpp`, you can adjust this.
+By default, the namespace used with `vulkan.hpp` is `vk`. By defining `VULKAN_HPP_NAMESPACE` before including `vulkan.hpp`, you can adjust this.
 
 #### VULKAN_HPP_NO_TO_STRING
 
-By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by vulkan.hpp and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
+By default, the file [`vulkan_to_string.hpp`](vulkan/vulkan_to_string.hpp) is included by `vulkan.hpp` and provides functions `vk::to_string` for enums and bitmasks. If you don't need those functions, you can define `VULKAN_HPP_NO_TO_STRING` to prevent that inclusion. If you have certain files where you want to use those functions nevertheless, you can explicitly include `vulkan_to_string.hpp` there.
 
 #### VULKAN_HPP_NO_CONSTRUCTORS
 
@@ -922,7 +926,7 @@ By defining `VULKAN_HPP_NO_SETTERS` before including `vulkan.hpp`, setter member
 
 #### VULKAN_HPP_NO_SMART_HANDLE
 
-By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the helper class `UniqueHandle` and all the unique handle types are not available.
+By defining `VULKAN_HPP_NO_SMART_HANDLE` before including `vulkan.hpp`, the helper class `vk::UniqueHandle` and all the unique handle types are not available.
 
 #### VULKAN_HPP_NO_SPACESHIP_OPERATOR
 
@@ -939,7 +943,7 @@ If both, `VULKAN_HPP_NO_EXCEPTIONS` and `VULKAN_HPP_EXPECTED` are defined, the v
 
 #### VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST
 
-Even though the `vk::UniqueHandles` and the `vk::SharedHandles` are semantically close to pointers, an implicit cast operator to the underlying `vk::Handle` might be handy. You can add that implicit cast operator by defining `VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST`.
+Even though `vk::UniqueHandle` and `vk::SharedHandle` are semantically close to pointers, an implicit cast operator to the underlying `vk::Handle` might be handy. You can add that implicit cast operator by defining `VULKAN_HPP_SMART_HANDLE_IMPLICIT_CAST`.
 
 #### VULKAN_HPP_STORAGE_API
 

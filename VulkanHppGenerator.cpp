@@ -7650,11 +7650,13 @@ ${commands}
 
 ${CppType}
 
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
   template <>
   struct CppType<Vk${className}, VK_NULL_HANDLE>
   {
     using Type = VULKAN_HPP_NAMESPACE::${className};
   };
+#endif
 
   template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::${className}>

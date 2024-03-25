@@ -14152,14 +14152,14 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR               swapchain,
-                                                const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV * pSleepInfo,
-                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    Result latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR               swapchain,
+                           const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV * pSleepInfo,
+                           Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    typename ResultValueType<void>::type latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR               swapchain,
-                                                         const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo,
-                                                         Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    void latencySleepNV( VULKAN_HPP_NAMESPACE::SwapchainKHR               swapchain,
+                         const VULKAN_HPP_NAMESPACE::LatencySleepInfoNV & sleepInfo,
+                         Dispatch const & d                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>

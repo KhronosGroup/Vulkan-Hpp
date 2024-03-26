@@ -133,16 +133,25 @@ private:
     int         xmlLine = {};
   };
 
-  struct EnumValueData
+  struct EnumValueAlias
   {
-    std::map<std::string, int> aliases = {};
-    std::string                bitpos  = {};
-    std::string                protect = {};
-    std::string                value   = {};
-    int                        xmlLine = {};
+    std::string alias     = {};
+    std::string name      = {};
+    std::string protect   = {};
+    bool        supported = {};
+    int         xmlLine   = {};
   };
 
-  using EnumValue = std::pair<std::string, EnumValueData>;
+  struct EnumValueData
+  {
+    std::map<std::string, int> aliases   = {};
+    std::string                bitpos    = {};
+    std::string                name      = {};
+    std::string                protect   = {};
+    bool                       supported = {};
+    std::string                value     = {};
+    int                        xmlLine   = {};
+  };
 
   struct EnumData
   {
@@ -150,11 +159,11 @@ private:
     void addEnumValue(
       int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
 
-    std::string                          bitwidth          = {};
-    bool                                 isBitmask         = false;
-    std::map<std::string, EnumValueData> unsupportedValues = {};
-    std::vector<EnumValue>               values            = {};
-    int                                  xmlLine           = {};
+    std::string                 bitwidth     = {};
+    bool                        isBitmask    = false;
+    std::vector<EnumValueAlias> valueAliases = {};  // temporary storage for aliases, as they might be specified before the actual value is specified
+    std::vector<EnumValueData>  values       = {};
+    int                         xmlLine      = {};
   };
 
   struct NameData
@@ -429,7 +438,7 @@ private:
                                              std::vector<std::string> const &          dataTypes,
                                              CommandFlavourFlags                       flavourFlags,
                                              bool                                      raii ) const;
-  bool                     contains( std::vector<EnumValue> const & enumValues, std::string const & name ) const;
+  bool                     contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const;
   bool                     containsArray( std::string const & type ) const;
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
@@ -456,18 +465,17 @@ private:
   std::string                                      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
   std::map<size_t, VectorParamData>                determineVectorParams( std::vector<ParamData> const & params ) const;
   std::set<size_t>                                 determineVoidPointerParams( std::vector<ParamData> const & params ) const;
+  void                                             distributeEnumValueAliases();
   void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
   void                                             filterLenMembers();
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
   std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
-  EnumValueData const *                            findEnumValueData( std::map<std::string, EnumData>::const_iterator enumIt, std::string const & name ) const;
   std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
   std::vector<ParamData>::const_iterator           findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
   std::vector<MemberData>::const_iterator          findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
   std::vector<ExtensionData>::const_iterator       findSupportedExtension( std::string const & name ) const;
   std::string                                      findTag( std::string const & name, std::string const & postfix = "" ) const;
-  void                                             fixEnumValueIssues();
   std::pair<std::string, std::string>              generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
                                                                                std::vector<std::string> const &          returnDataTypes,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
@@ -702,8 +710,10 @@ private:
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
   std::string generateEnum( std::pair<std::string, EnumData> const & enumData, std::string const & surroundingProtect ) const;
-  std::string
-    generateEnumInitializer( TypeInfo const & type, std::vector<std::string> const & arraySizes, std::vector<EnumValue> const & values, bool bitmask ) const;
+  std::string generateEnumInitializer( TypeInfo const &                   type,
+                                       std::vector<std::string> const &   arraySizes,
+                                       std::vector<EnumValueData> const & values,
+                                       bool                               bitmask ) const;
   std::string generateEnums() const;
   std::string generateEnums( std::vector<RequireData> const & requireData, std::set<std::string> & listedEnums, std::string const & title ) const;
   std::string generateEnumsToString() const;

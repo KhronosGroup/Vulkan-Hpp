@@ -5594,7 +5594,7 @@ namespace VULKAN_HPP_NAMESPACE
 
       static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion;
       static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
-        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+        VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSamplerYcbcrConversion;
 
     public:
 #  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )

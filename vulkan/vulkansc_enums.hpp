@@ -256,9 +256,7 @@ namespace VULKAN_HPP_NAMESPACE
     eSuboptimalKHR                               = VK_SUBOPTIMAL_KHR,
     eErrorOutOfDateKHR                           = VK_ERROR_OUT_OF_DATE_KHR,
     eErrorIncompatibleDisplayKHR                 = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
-    eErrorNotPermittedKHR                        = VK_ERROR_NOT_PERMITTED_KHR,
-    eErrorNotPermittedEXT                        = VK_ERROR_NOT_PERMITTED_EXT
+    eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT
   };
 
   enum class StructureType
@@ -579,19 +577,11 @@ namespace VULKAN_HPP_NAMESPACE
     eDrmFormatModifierPropertiesList2EXT                     = VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT,
     ePhysicalDeviceImageViewImageFormatInfoEXT               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_VIEW_IMAGE_FORMAT_INFO_EXT,
     eFilterCubicImageViewImageFormatPropertiesEXT            = VK_STRUCTURE_TYPE_FILTER_CUBIC_IMAGE_VIEW_IMAGE_FORMAT_PROPERTIES_EXT,
-    eDeviceQueueGlobalPriorityCreateInfoKHR                  = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR,
-    eDeviceQueueGlobalPriorityCreateInfoEXT                  = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_EXT,
     eImportMemoryHostPointerInfoEXT                          = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
     eMemoryHostPointerPropertiesEXT                          = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
     ePhysicalDeviceShaderClockFeaturesKHR                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR,
-    eCalibratedTimestampInfoKHR                              = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_KHR,
-    eCalibratedTimestampInfoEXT                              = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_EXT,
     ePhysicalDeviceVertexAttributeDivisorPropertiesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
-    ePipelineVertexInputDivisorStateCreateInfoKHR            = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR,
-    ePipelineVertexInputDivisorStateCreateInfoEXT            = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_EXT,
-    ePhysicalDeviceVertexAttributeDivisorFeaturesKHR         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR,
-    ePhysicalDeviceVertexAttributeDivisorFeaturesEXT         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_EXT,
     ePhysicalDevicePciBusInfoPropertiesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
     eFragmentShadingRateAttachmentInfoKHR                    = VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
     ePipelineFragmentShadingRateStateCreateInfoKHR           = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR,
@@ -604,15 +594,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceFragmentShaderInterlockFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT,
     ePhysicalDeviceYcbcrImageArraysFeaturesEXT               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_IMAGE_ARRAYS_FEATURES_EXT,
     eHeadlessSurfaceCreateInfoEXT                            = VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT,
-    ePhysicalDeviceLineRasterizationFeaturesKHR              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR,
-    ePhysicalDeviceLineRasterizationFeaturesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
-    ePipelineRasterizationLineStateCreateInfoKHR             = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR,
-    ePipelineRasterizationLineStateCreateInfoEXT             = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
-    ePhysicalDeviceLineRasterizationPropertiesKHR            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR,
-    ePhysicalDeviceLineRasterizationPropertiesEXT            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
     ePhysicalDeviceShaderAtomicFloatFeaturesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT_FEATURES_EXT,
-    ePhysicalDeviceIndexTypeUint8FeaturesKHR                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR,
-    ePhysicalDeviceIndexTypeUint8FeaturesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
     ePhysicalDeviceExtendedDynamicStateFeaturesEXT           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
     ePhysicalDeviceTexelBufferAlignmentFeaturesEXT           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TEXEL_BUFFER_ALIGNMENT_FEATURES_EXT,
     ePhysicalDeviceRobustness2FeaturesEXT                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_EXT,
@@ -1750,8 +1732,6 @@ namespace VULKAN_HPP_NAMESPACE
     eDiscardRectangleModeEXT     = VK_DYNAMIC_STATE_DISCARD_RECTANGLE_MODE_EXT,
     eSampleLocationsEXT          = VK_DYNAMIC_STATE_SAMPLE_LOCATIONS_EXT,
     eFragmentShadingRateKHR      = VK_DYNAMIC_STATE_FRAGMENT_SHADING_RATE_KHR,
-    eLineStippleKHR              = VK_DYNAMIC_STATE_LINE_STIPPLE_KHR,
-    eLineStippleEXT              = VK_DYNAMIC_STATE_LINE_STIPPLE_EXT,
     eVertexInputEXT              = VK_DYNAMIC_STATE_VERTEX_INPUT_EXT,
     ePatchControlPointsEXT       = VK_DYNAMIC_STATE_PATCH_CONTROL_POINTS_EXT,
     eLogicOpEXT                  = VK_DYNAMIC_STATE_LOGIC_OP_EXT,
@@ -2335,10 +2315,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class IndexType
   {
-    eUint16   = VK_INDEX_TYPE_UINT16,
-    eUint32   = VK_INDEX_TYPE_UINT32,
-    eUint8KHR = VK_INDEX_TYPE_UINT8_KHR,
-    eUint8EXT = VK_INDEX_TYPE_UINT8_EXT
+    eUint16 = VK_INDEX_TYPE_UINT16,
+    eUint32 = VK_INDEX_TYPE_UINT32
   };
 
   enum class StencilFaceFlagBits : VkStencilFaceFlags
@@ -3635,7 +3613,7 @@ namespace VULKAN_HPP_NAMESPACE
 
         //=== VK_VERSION_1_1 ===
       case VULKAN_HPP_NAMESPACE::ObjectType::eSamplerYcbcrConversion:
-        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eUnknown;
+        return VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eSamplerYcbcrConversion;
 
         //=== VK_VERSION_1_3 ===
       case VULKAN_HPP_NAMESPACE::ObjectType::ePrivateDataSlot:

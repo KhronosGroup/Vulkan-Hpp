@@ -27,20 +27,22 @@ namespace
 {
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
   template <typename T>
-  typename std::vector<std::pair<std::string, T>>::const_iterator find( std::vector<std::pair<std::string, T>> const & values, std::string const & name );
+  typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
   template <typename T>
-  typename std::vector<std::pair<std::string, T>>::iterator find( std::vector<std::pair<std::string, T>> & values, std::string const & name );
-  std::string                                               generateCArraySizes( std::vector<std::string> const & sizes );
-  std::string                   generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
-  std::string                   generateNamespacedType( std::string const & type );
-  std::string                   generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
-  std::string                   generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
-  bool                          isAllUpper( std::string const & name );
-  VulkanHppGenerator::MacroData parseMacro( std::vector<std::string> const & completeMacro );
-  std::string                   readSnippet( std::string const & snippetFile );
-  std::string                   startLowerCase( std::string const & input );
-  std::string                   startUpperCase( std::string const & input );
-  std::vector<std::string>      tokenizeAny( std::string const & tokenString, std::string const & separators );
+  typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
+  template <typename T>
+  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
+  std::string                       generateCArraySizes( std::vector<std::string> const & sizes );
+  std::string                       generateList( std::vector<std::string> const & elements, std::string const & prefix, std::string const & separator );
+  std::string                       generateNamespacedType( std::string const & type );
+  std::string                       generateNoDiscard( bool returnsSomething, bool multiSuccessCodes, bool multiErrorCodes );
+  std::string                       generateStandardArray( std::string const & type, std::vector<std::string> const & sizes );
+  bool                              isAllUpper( std::string const & name );
+  VulkanHppGenerator::MacroData     parseMacro( std::vector<std::string> const & completeMacro );
+  std::string                       readSnippet( std::string const & snippetFile );
+  std::string                       startLowerCase( std::string const & input );
+  std::string                       startUpperCase( std::string const & input );
+  std::vector<std::string>          tokenizeAny( std::string const & tokenString, std::string const & separators );
 }  // namespace
 
 void writeToFile( std::string const & str, std::string const & fileName );
@@ -63,7 +65,6 @@ VulkanHppGenerator::VulkanHppGenerator( tinyxml2::XMLDocument const & document, 
   checkForError( elements.size() == 1, line, "encountered " + std::to_string( elements.size() ) + " elements named <registry> but only one is allowed" );
   readRegistry( elements[0] );
   filterLenMembers();
-  fixEnumValueIssues();
   checkCorrectness();
   handleRemovals();
 
@@ -1124,19 +1125,20 @@ void VulkanHppGenerator::checkCommandCorrectness() const
   std::set<std::string> resultCodes;
   for ( auto rc : resultIt->second.values )
   {
-    resultCodes.insert( rc.first );
-    for ( auto ac : rc.second.aliases )
+    resultCodes.insert( rc.name );
+    for ( auto ac : rc.aliases )
     {
       resultCodes.insert( ac.first );
     }
   }
-  for ( auto rc : resultIt->second.unsupportedValues )
+  // some special handling needed for vulkansc!!
+  if ( m_api == "vulkansc" )
   {
-    resultCodes.insert( rc.first );
-    for ( auto ac : rc.second.aliases )
-    {
-      resultCodes.insert( ac.first );
-    }
+    resultCodes.insert( { "VK_ERROR_FRAGMENTATION_EXT",
+                          "VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR",
+                          "VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS_KHR",
+                          "VK_ERROR_NOT_PERMITTED_EXT",
+                          "VK_PIPELINE_COMPILE_REQUIRED_EXT" } );
   }
 
   // command checks
@@ -1215,19 +1217,6 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     auto typeIt = m_types.find( e.first );
     assert( typeIt != m_types.end() );
     checkForWarning( !typeIt->second.requiredBy.empty(), e.second.xmlLine, "enum <" + e.first + "> not required in any feature or extension" );
-
-    // check that each enum value actually is specified (and not only listed as an alias)
-    for ( auto const & evd : e.second.values )
-    {
-      if ( evd.second.xmlLine == -1 )
-      {
-        assert( !evd.second.aliases.empty() );
-        checkForError( false,
-                       evd.second.aliases.begin()->second,
-                       "enum alias value <" + evd.second.aliases.begin()->first + "> is listed as an alias of enum value <" + evd.first +
-                         "> but that value has never been listed" );
-      }
-    }
   }
 
   // enum checks by features and extensions
@@ -1251,10 +1240,12 @@ void VulkanHppGenerator::checkEnumCorrectness() const
   {
     auto enumIt = m_enums.find( "VkFormat" );
     assert( enumIt != m_enums.end() );
-    assert( enumIt->second.values.front().first == "VK_FORMAT_UNDEFINED" );
+    assert( enumIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
     for ( auto enumValueIt = std::next( enumIt->second.values.begin() ); enumValueIt != enumIt->second.values.end(); ++enumValueIt )
     {
-      checkForError( m_formats.contains( enumValueIt->first ), enumValueIt->second.xmlLine, "missing format specification for <" + enumValueIt->first + ">" );
+      checkForError( !enumValueIt->supported || m_formats.contains( enumValueIt->name ),
+                     enumValueIt->xmlLine,
+                     "missing format specification for <" + enumValueIt->name + ">" );
     }
   }
 }
@@ -1454,14 +1445,14 @@ void VulkanHppGenerator::checkHandleCorrectness() const
   // check that all specified objectType values are used with a handle type
   for ( auto const & objectTypeValue : objectTypeIt->second.values )
   {
-    if ( objectTypeValue.first != "VK_OBJECT_TYPE_UNKNOWN" )
+    if ( objectTypeValue.name != "VK_OBJECT_TYPE_UNKNOWN" )
     {
       checkForError( std::any_of( m_handles.begin(),
                                   m_handles.end(),
                                   [&objectTypeValue]( std::pair<std::string, HandleData> const & hd )
-                                  { return hd.second.objTypeEnum == objectTypeValue.first; } ),
-                     objectTypeValue.second.xmlLine,
-                     "VkObjectType value <" + objectTypeValue.first + "> not specified as \"objtypeenum\" for any handle" );
+                                  { return hd.second.objTypeEnum == objectTypeValue.name; } ),
+                     objectTypeValue.xmlLine,
+                     "VkObjectType value <" + objectTypeValue.name + "> not specified as \"objtypeenum\" for any handle" );
     }
   }
 }
@@ -1503,14 +1494,15 @@ void VulkanHppGenerator::checkStructCorrectness() const
                                                   "VK_STRUCTURE_TYPE_PRIVATE_VENDOR_INFO_PLACEHOLDER_OFFSET_0_NV" };
   for ( auto const & enumValue : structureTypeIt->second.values )
   {
-    if ( reservedValues.contains( enumValue.first ) )
+    if ( reservedValues.contains( enumValue.name ) )
     {
-      checkForError(
-        !sTypeValues.contains( enumValue.first ), enumValue.second.xmlLine, "Reserved VkStructureType enum value <" + enumValue.first + "> is used" );
+      checkForError( !sTypeValues.contains( enumValue.name ), enumValue.xmlLine, "Reserved VkStructureType enum value <" + enumValue.name + "> is used" );
     }
     else
     {
-      checkForWarning( sTypeValues.erase( enumValue.first ) == 1, enumValue.second.xmlLine, "VkStructureType enum value <" + enumValue.first + "> never used" );
+      checkForWarning( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
+                       enumValue.xmlLine,
+                       "VkStructureType enum value <" + enumValue.name + "> never used" );
     }
   }
   assert( sTypeValues.empty() );
@@ -1551,7 +1543,7 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
         assert( !unionMember.selection.empty() );
         for ( auto const & selection : unionMember.selection )
         {
-          checkForError( contains( selectorEnumIt->second.values, selection ) || selectorEnumIt->second.unsupportedValues.contains( selection ),
+          checkForError( contains( selectorEnumIt->second.values, selection ),
                          unionMember.xmlLine,
                          "union member <" + unionMember.name + "> uses selection <" + selection + "> that is not part of the selector type <" +
                            selectorIt->type.type + ">" );
@@ -1665,9 +1657,10 @@ std::string VulkanHppGenerator::combineDataTypes( std::map<size_t, VectorParamDa
   return combinedType;
 }
 
-bool VulkanHppGenerator::contains( std::vector<EnumValue> const & enumValues, std::string const & name ) const
+bool VulkanHppGenerator::contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const
 {
-  return std::any_of( enumValues.begin(), enumValues.end(), [&name]( EnumValue const & ev ) { return ev.first == name; } );
+  return std::any_of(
+    enumValues.begin(), enumValues.end(), [&name]( EnumValueData const & ev ) { return ( ev.name == name ) || ev.aliases.contains( name ); } );
 }
 
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
@@ -2091,6 +2084,35 @@ std::set<size_t> VulkanHppGenerator::determineVoidPointerParams( std::vector<Par
   return voidPointerParams;
 }
 
+void VulkanHppGenerator::distributeEnumValueAliases()
+{
+  for ( auto & e : m_enums )
+  {
+    for ( auto & a : e.second.valueAliases )
+    {
+      auto valueIt = findByName( e.second.values, a.alias );
+      if ( valueIt == e.second.values.end() )
+      {
+        auto aliasIt = findByName( e.second.valueAliases, a.alias );
+        checkForError(
+          aliasIt != e.second.valueAliases.end(), a.xmlLine, "enum value alias <" + a.name + "> aliases non-existent enum value <" + a.alias + ">" );
+        valueIt = findByName( e.second.values, aliasIt->alias );
+      }
+      checkForError( valueIt != e.second.values.end(), a.xmlLine, "enum value alias <" + a.name + "> aliases non-existent enum value <" + a.alias + ">" );
+      if ( a.supported && valueIt->supported )
+      {
+        // only supported enum values need to be kept!
+        checkForError(
+          a.protect == valueIt->protect, a.xmlLine, "enum value alias <" + a.name + "> aliases enum value <" + a.alias + "> with different properties" );
+        checkForError( valueIt->aliases.insert( { a.name, a.xmlLine } ).second,
+                       a.xmlLine,
+                       "enum value alias <" + a.name + "> already contained as alias for enum value <" + a.alias + ">" );
+      }
+    }
+    e.second.valueAliases.clear();
+  }
+}
+
 void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> const & specialFunctions )
 {
   // distribute commands from instance/device to second-level handles, like Queue, Event,... for RAII handles
@@ -2177,26 +2199,6 @@ std::string VulkanHppGenerator::findBaseName( std::string aliasName, std::map<st
   return baseName;
 }
 
-VulkanHppGenerator::EnumValueData const * VulkanHppGenerator::findEnumValueData( std::map<std::string, EnumData>::const_iterator enumIt,
-                                                                                 std::string const &                             name ) const
-{
-  EnumValueData const * evdPtr = nullptr;
-  auto                  evIt   = find( enumIt->second.values, name );
-  if ( evIt == enumIt->second.values.end() )
-  {
-    auto uvIt = enumIt->second.unsupportedValues.find( name );
-    if ( uvIt != enumIt->second.unsupportedValues.end() )
-    {
-      evdPtr = &uvIt->second;
-    }
-  }
-  else
-  {
-    evdPtr = &evIt->second;
-  }
-  return evdPtr;
-}
-
 std::vector<VulkanHppGenerator::FeatureData>::const_iterator VulkanHppGenerator::findFeature( std::string const & name ) const
 {
   return std::find_if( m_features.begin(), m_features.end(), [&name]( FeatureData const & fd ) { return fd.name == name; } );
@@ -2230,31 +2232,6 @@ std::string VulkanHppGenerator::findTag( std::string const & name, std::string c
   auto tagIt = std::find_if(
     m_tags.begin(), m_tags.end(), [&name, &postfix]( std::pair<std::string, TagData> const & t ) { return name.ends_with( t.first + postfix ); } );
   return ( tagIt != m_tags.end() ) ? tagIt->first : "";
-}
-
-void VulkanHppGenerator::fixEnumValueIssues()
-{
-  for ( auto & e : m_enums )
-  {
-    // fix enum values that are only listed as an alias, but actually are listed as an unsupported value
-    for ( auto & evd : e.second.values )
-    {
-      if ( evd.second.xmlLine == -1 )
-      {
-        assert( !evd.second.aliases.empty() );
-        auto unsupportedIt = e.second.unsupportedValues.find( evd.first );
-        if ( unsupportedIt != e.second.unsupportedValues.end() )
-        {
-          assert( unsupportedIt->second.aliases.empty() );
-          // "fix" this, by moving that unsupported enum over to the supported
-          auto aliases       = evd.second.aliases;
-          evd.second         = unsupportedIt->second;
-          evd.second.aliases = aliases;
-          e.second.unsupportedValues.erase( unsupportedIt );
-        }
-      }
-    }
-  }
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
@@ -2555,7 +2532,8 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     ( aliasBitmaskIt == m_bitmaskAliases.end() ) ? "" : ( "  using " + stripPrefix( aliasBitmaskIt->first, "Vk" ) + " = " + bitmaskName + ";\n" );
 
   std::string allFlags;
-  if ( bitmaskBitsIt->second.values.empty() )
+  if ( bitmaskBitsIt->second.values.empty() ||
+       std::none_of( bitmaskBitsIt->second.values.begin(), bitmaskBitsIt->second.values.end(), []( auto const & evd ) { return evd.supported; } ) )
   {
     allFlags = " {};";
   }
@@ -2565,18 +2543,21 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      // if the value's protect differs from the surrounding protect, generate protection code
-      std::string enter, leave;
-      if ( !value.second.protect.empty() && ( value.second.protect != surroundingProtect ) )
+      if ( value.supported )
       {
-        tie( enter, leave ) = generateProtection( value.second.protect );
+        // if the value's protect differs from the surrounding protect, generate protection code
+        std::string enter, leave;
+        if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
+        {
+          tie( enter, leave ) = generateProtection( value.protect );
+        }
+        std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
+        allFlags += ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) + enumName +
+                    "::" + valueName;
+        encounteredFlag = true;
+        previousEnter   = enter;
+        previousLeave   = leave;
       }
-      std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.first, true );
-      allFlags +=
-        ( ( previousEnter != enter ) ? ( "\n" + previousLeave + enter ) : "\n" ) + "        " + ( encounteredFlag ? "| " : "  " ) + enumName + "::" + valueName;
-      encounteredFlag = true;
-      previousEnter   = enter;
-      previousLeave   = leave;
     }
     if ( !previousLeave.empty() )
     {
@@ -2584,7 +2565,6 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     }
     allFlags += ";";
   }
-
   static const std::string bitmaskTemplate = R"(
   using ${bitmaskName} = Flags<${enumName}>;
 ${alias}
@@ -2652,7 +2632,8 @@ std::string VulkanHppGenerator::generateBitmaskToString( std::map<std::string, B
   std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string str;
-  if ( bitmaskBitsIt->second.values.empty() )
+  if ( bitmaskBitsIt->second.values.empty() ||
+       std::none_of( bitmaskBitsIt->second.values.begin(), bitmaskBitsIt->second.values.end(), []( auto const & evd ) { return evd.supported; } ) )
   {
     static std::string bitmaskToStringTemplate = R"(
   VULKAN_HPP_INLINE std::string to_string( ${bitmaskName} )
@@ -2681,19 +2662,22 @@ ${toStringChecks}
     std::string previousEnter, previousLeave;
     for ( auto const & value : bitmaskBitsIt->second.values )
     {
-      std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.first, true );
-      if ( value.second.value == "0" )
+      if ( value.supported )
       {
-        assert( emptyValue == "{}" );
-        emptyValue = valueName.substr( 1 );
-      }
-      else if ( !value.second.bitpos.empty() )
-      {
-        const auto [enter, leave] = generateProtection( value.second.protect );
-        toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
-                          " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
-        previousEnter = enter;
-        previousLeave = leave;
+        std::string valueName = generateEnumValueName( bitmaskBitsIt->first, value.name, true );
+        if ( value.value == "0" )
+        {
+          assert( emptyValue == "{}" );
+          emptyValue = valueName.substr( 1 );
+        }
+        else if ( !value.bitpos.empty() )
+        {
+          const auto [enter, leave] = generateProtection( value.protect );
+          toStringChecks += ( ( previousEnter != enter ) ? ( previousLeave + enter ) : "" ) + "    if ( value & " + enumName + "::" + valueName +
+                            " ) result += \"" + valueName.substr( 1 ) + " | \";\n";
+          previousEnter = enter;
+          previousLeave = leave;
+        }
       }
     }
     if ( !previousLeave.empty() )
@@ -5669,13 +5653,13 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const & [name, data]   = *m_enums.find( "VkResult" );
   for ( auto const & value : data.values )
   {
-    if ( value.first.starts_with( "VK_ERROR" ) )
+    if ( value.supported && value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave] = generateProtection( value.second.protect );
+      auto [enter, leave] = generateProtection( value.protect );
       enter               = enter.empty() ? enter : "\n" + enter;
       leave               = leave.empty() ? leave : leave + "\n";
 
-      auto const valueName = generateEnumValueName( name, value.first, false );
+      auto const valueName = generateEnumValueName( name, value.name, false );
       auto const className = stripPrefix( valueName, "eError" ) + "Error";
 
       resultExceptionsUsings += enter + replaceWithMap( usingTemplate, { { "className", className } } ) + leave;
@@ -6597,59 +6581,62 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   std::map<std::string, std::string> valueToNameMap;
   for ( auto const & value : enumData.second.values )
   {
-    std::string valueName = generateEnumValueName( enumData.first, value.first, enumData.second.isBitmask );
-    checkForError( valueToNameMap.insert( { valueName, value.first } ).second,
-                   value.second.xmlLine,
-                   "generated enum value name <" + valueName + "> already listed for enum <" + enumData.first + ">" );
+    if ( value.supported )
+    {
+      std::string valueName = generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask );
+      checkForError( valueToNameMap.insert( { valueName, value.name } ).second,
+                     value.xmlLine,
+                     "generated enum value name <" + valueName + "> already listed for enum <" + enumData.first + ">" );
 
-    // if the value's protect differs from the surrounding protect, generate protection code
-    std::string enter, leave;
-    if ( !value.second.protect.empty() && ( value.second.protect != surroundingProtect ) )
-    {
-      tie( enter, leave ) = generateProtection( value.second.protect );
-    }
-    if ( previousEnter != enter )
-    {
-      enumValues += previousLeave + enter;
-    }
-    enumValues += "    " + valueName + " = " + value.first + ",\n";
-
-    for ( auto const & alias : value.second.aliases )
-    {
-      std::string enumName = enumData.first;
-      auto aliasIt = std::find_if( m_enumAliases.begin(), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } );
-      if ( aliasIt != m_enumAliases.end() )
+      // if the value's protect differs from the surrounding protect, generate protection code
+      std::string enter, leave;
+      if ( !value.protect.empty() && ( value.protect != surroundingProtect ) )
       {
-        assert( std::find_if( std::next( aliasIt ), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } ) ==
-                m_enumAliases.end() );
-        std::string enumTag  = findTag( enumData.first );
-        std::string aliasTag = findTag( aliasIt->first );
-        std::string valueTag = findTag( alias.first );
-        if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( aliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
+        tie( enter, leave ) = generateProtection( value.protect );
+      }
+      if ( previousEnter != enter )
+      {
+        enumValues += previousLeave + enter;
+      }
+      enumValues += "    " + valueName + " = " + value.name + ",\n";
+
+      for ( auto const & alias : value.aliases )
+      {
+        std::string enumName = enumData.first;
+        auto aliasIt = std::find_if( m_enumAliases.begin(), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } );
+        if ( aliasIt != m_enumAliases.end() )
         {
-          enumName = aliasIt->first;
+          assert( std::find_if( std::next( aliasIt ), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } ) ==
+                  m_enumAliases.end() );
+          std::string enumTag  = findTag( enumData.first );
+          std::string aliasTag = findTag( aliasIt->first );
+          std::string valueTag = findTag( alias.first );
+          if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( aliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
+          {
+            enumName = aliasIt->first;
+          }
+        }
+
+        std::string aliasName  = generateEnumValueName( enumName, alias.first, enumData.second.isBitmask );
+        auto [mapIt, inserted] = valueToNameMap.insert( { aliasName, alias.first } );
+        if ( inserted )
+        {
+          enumValues += "    " + aliasName + " = " + alias.first + ",\n";
+        }
+        else
+        {
+          // some aliases are so close to the original, that no new entry can be generated!
+          assert( mapIt->second != alias.first );
+          checkForError( ( mapIt->second == value.name ) || value.aliases.contains( mapIt->second ),
+                         alias.second,
+                         "generated enum alias value name <" + aliasName + ">, generated from <" + alias.first +
+                           "> is already generated from different enum value <" + mapIt->second + ">" );
         }
       }
 
-      std::string aliasName  = generateEnumValueName( enumName, alias.first, enumData.second.isBitmask );
-      auto [mapIt, inserted] = valueToNameMap.insert( { aliasName, alias.first } );
-      if ( inserted )
-      {
-        enumValues += "    " + aliasName + " = " + alias.first + ",\n";
-      }
-      else
-      {
-        // some aliases are so close to the original, that no new entry can be generated!
-        assert( mapIt->second != alias.first );
-        checkForError( ( mapIt->second == value.first ) || value.second.aliases.contains( mapIt->second ),
-                       alias.second,
-                       "generated enum alias value name <" + aliasName + ">, generated from <" + alias.first +
-                         "> is already generated from different enum value <" + mapIt->second + ">" );
-      }
+      previousEnter = enter;
+      previousLeave = leave;
     }
-
-    previousEnter = enter;
-    previousLeave = leave;
   }
   enumValues += previousLeave;
 
@@ -6782,14 +6769,14 @@ std::string VulkanHppGenerator::generateEnumsToString( std::vector<RequireData> 
   return addTitleAndProtection( title, str );
 }
 
-std::string VulkanHppGenerator::generateEnumInitializer( TypeInfo const &                 type,
-                                                         std::vector<std::string> const & arraySizes,
-                                                         std::vector<EnumValue> const &   values,
-                                                         bool                             bitmask ) const
+std::string VulkanHppGenerator::generateEnumInitializer( TypeInfo const &                   type,
+                                                         std::vector<std::string> const &   arraySizes,
+                                                         std::vector<EnumValueData> const & values,
+                                                         bool                               bitmask ) const
 {
   // enum arguments might need special initialization
   assert( type.prefix.empty() && !values.empty() );
-  std::string valueName = generateEnumValueName( type.type, values.front().first, bitmask );
+  std::string valueName = generateEnumValueName( type.type, values.front().name, bitmask );
   std::string value     = generateNamespacedType( type.type ) + "::" + valueName;
   std::string str;
   if ( arraySizes.empty() )
@@ -6816,7 +6803,9 @@ std::string VulkanHppGenerator::generateEnumToString( std::pair<std::string, Enu
 {
   std::string enumName = stripPrefix( enumData.first, "Vk" );
   std::string functionBody;
-  if ( enumData.second.values.empty() )
+  bool        isEmpty = enumData.second.values.empty() ||
+                 std::none_of( enumData.second.values.begin(), enumData.second.values.end(), []( auto const & evd ) { return evd.supported; } );
+  if ( isEmpty )
   {
     functionBody = R"x(    return "(void)";)x";
   }
@@ -6825,20 +6814,23 @@ std::string VulkanHppGenerator::generateEnumToString( std::pair<std::string, Enu
     std::string cases, previousEnter, previousLeave;
     for ( auto const & value : enumData.second.values )
     {
-      const auto [enter, leave] = generateProtection( value.second.protect );
-      if ( previousEnter != enter )
+      if ( value.supported )
       {
-        cases += previousLeave + enter;
-      }
+        const auto [enter, leave] = generateProtection( value.protect );
+        if ( previousEnter != enter )
+        {
+          cases += previousLeave + enter;
+        }
 
-      const std::string caseTemplate = R"(      case ${enumName}::e${valueName} : return "${valueName}";
+        const std::string caseTemplate = R"(      case ${enumName}::e${valueName} : return "${valueName}";
 )";
-      cases += replaceWithMap(
-        caseTemplate,
-        { { "enumName", enumName }, { "valueName", generateEnumValueName( enumData.first, value.first, enumData.second.isBitmask ).substr( 1 ) } } );
+        cases += replaceWithMap(
+          caseTemplate,
+          { { "enumName", enumName }, { "valueName", generateEnumValueName( enumData.first, value.name, enumData.second.isBitmask ).substr( 1 ) } } );
 
-      previousEnter = enter;
-      previousLeave = leave;
+        previousEnter = enter;
+        previousLeave = leave;
+      }
     }
     cases += previousLeave;
 
@@ -6859,8 +6851,7 @@ ${functionBody}
   }
 )";
 
-  return replaceWithMap( enumToStringTemplate,
-                         { { "argument", enumData.second.values.empty() ? "" : " value" }, { "enumName", enumName }, { "functionBody", functionBody } } );
+  return replaceWithMap( enumToStringTemplate, { { "argument", isEmpty ? "" : " value" }, { "enumName", enumName }, { "functionBody", functionBody } } );
 }
 
 std::pair<std::string, std::string> VulkanHppGenerator::generateEnumSuffixes( std::string const & name, bool bitmask ) const
@@ -7321,31 +7312,33 @@ ${texelsPerBlockCases}
 
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
-  assert( formatIt->second.values.front().first == "VK_FORMAT_UNDEFINED" );
+  assert( formatIt->second.values.front().name == "VK_FORMAT_UNDEFINED" );
 
   std::string blockSizeCases, blockExtentCases, classCases, componentBitsCases, componentCountCases, componentNameCases, componentNumericFormatCases,
     componentPlaneIndexCases, componentsAreCompressedCases, compressionSchemeCases, packedCases, planeCompatibleCases, planeCountCases, planeHeightDivisorCases,
     planeWidthDivisorCases, texelsPerBlockCases;
   for ( auto formatValuesIt = std::next( formatIt->second.values.begin() ); formatValuesIt != formatIt->second.values.end(); ++formatValuesIt )
   {
-    auto traitIt = m_formats.find( formatValuesIt->first );
-    assert( traitIt != m_formats.end() );
-    std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false ) + ":";
-
-    blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
-
-    if ( !traitIt->second.blockExtent.empty() )
+    if ( formatValuesIt->supported )
     {
-      std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
-      assert( blockExtent.size() == 3 );
-      blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
-    }
+      auto traitIt = m_formats.find( formatValuesIt->name );
+      assert( traitIt != m_formats.end() );
+      std::string caseString = "      case VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->first, false ) + ":";
 
-    classCases += caseString + " return \"" + traitIt->second.classAttribute + "\";\n";
+      blockSizeCases += caseString + " return " + traitIt->second.blockSize + ";\n";
 
-    if ( traitIt->second.components.front().bits != "compressed" )
-    {
-      const std::string componentBitsCaseTemplate = R"(${caseString}
+      if ( !traitIt->second.blockExtent.empty() )
+      {
+        std::vector<std::string> blockExtent = tokenize( traitIt->second.blockExtent, "," );
+        assert( blockExtent.size() == 3 );
+        blockExtentCases += caseString + " return {{ " + blockExtent[0] + ", " + blockExtent[1] + ", " + blockExtent[2] + " }};\n";
+      }
+
+      classCases += caseString + " return \"" + traitIt->second.classAttribute + "\";\n";
+
+      if ( traitIt->second.components.front().bits != "compressed" )
+      {
+        const std::string componentBitsCaseTemplate = R"(${caseString}
         switch( component )
         {
 ${componentCases}
@@ -7353,19 +7346,19 @@ ${componentCases}
         }
 )";
 
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
+        std::string componentCases;
+        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+        {
+          componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].bits + ";\n";
+        }
+        componentCases.pop_back();
+        componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
       }
-      componentCases.pop_back();
-      componentBitsCases += replaceWithMap( componentBitsCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
 
-    componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
+      componentCountCases += caseString + " return " + std::to_string( traitIt->second.components.size() ) + ";\n";
 
-    {
-      const std::string componentNameCaseTemplate = R"(${caseString}
+      {
+        const std::string componentNameCaseTemplate = R"(${caseString}
         switch( component )
         {
 ${componentCases}
@@ -7373,17 +7366,17 @@ ${componentCases}
         }
 )";
 
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
+        std::string componentCases;
+        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+        {
+          componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].name + "\";\n";
+        }
+        componentCases.pop_back();
+        componentNameCases += replaceWithMap( componentNameCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
       }
-      componentCases.pop_back();
-      componentNameCases += replaceWithMap( componentNameCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
 
-    {
-      const std::string componentNumericFormatCaseTemplate = R"(${caseString}
+      {
+        const std::string componentNumericFormatCaseTemplate = R"(${caseString}
         switch( component )
         {
 ${componentCases}
@@ -7391,19 +7384,19 @@ ${componentCases}
         }
 )";
 
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].numericFormat + "\";\n";
+        std::string componentCases;
+        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+        {
+          componentCases += "          case " + std::to_string( i ) + ": return \"" + traitIt->second.components[i].numericFormat + "\";\n";
+        }
+        componentCases.pop_back();
+        componentNumericFormatCases +=
+          replaceWithMap( componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
       }
-      componentCases.pop_back();
-      componentNumericFormatCases +=
-        replaceWithMap( componentNumericFormatCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
 
-    if ( !traitIt->second.components.front().planeIndex.empty() )
-    {
-      const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
+      if ( !traitIt->second.components.front().planeIndex.empty() )
+      {
+        const std::string componentPlaneIndexCaseTemplate = R"(${caseString}
         switch( component )
         {
 ${componentCases}
@@ -7411,33 +7404,33 @@ ${componentCases}
         }
 )";
 
-      std::string componentCases;
-      for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
-      {
-        componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
+        std::string componentCases;
+        for ( size_t i = 0; i < traitIt->second.components.size(); ++i )
+        {
+          componentCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.components[i].planeIndex + ";\n";
+        }
+        componentCases.pop_back();
+        componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
       }
-      componentCases.pop_back();
-      componentPlaneIndexCases += replaceWithMap( componentPlaneIndexCaseTemplate, { { "caseString", caseString }, { "componentCases", componentCases } } );
-    }
 
-    if ( traitIt->second.components.front().bits == "compressed" )
-    {
-      componentsAreCompressedCases += caseString + "\n";
-    }
+      if ( traitIt->second.components.front().bits == "compressed" )
+      {
+        componentsAreCompressedCases += caseString + "\n";
+      }
 
-    if ( !traitIt->second.compressed.empty() )
-    {
-      compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
-    }
+      if ( !traitIt->second.compressed.empty() )
+      {
+        compressionSchemeCases += caseString + " return \"" + traitIt->second.compressed + "\";\n";
+      }
 
-    if ( !traitIt->second.packed.empty() )
-    {
-      packedCases += caseString + " return " + traitIt->second.packed + ";\n";
-    }
+      if ( !traitIt->second.packed.empty() )
+      {
+        packedCases += caseString + " return " + traitIt->second.packed + ";\n";
+      }
 
-    if ( !traitIt->second.planes.empty() )
-    {
-      const std::string planeCompatibleCaseTemplate = R"(${caseString}
+      if ( !traitIt->second.planes.empty() )
+      {
+        const std::string planeCompatibleCaseTemplate = R"(${caseString}
         switch( plane )
         {
 ${compatibleCases}
@@ -7445,7 +7438,7 @@ ${compatibleCases}
         }
 )";
 
-      const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
+        const std::string planeHeightDivisorCaseTemplate = R"(${caseString}
         switch( plane )
         {
 ${heightDivisorCases}
@@ -7453,7 +7446,7 @@ ${heightDivisorCases}
         }
 )";
 
-      const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
+        const std::string planeWidthDivisorCaseTemplate = R"(${caseString}
         switch( plane )
         {
 ${widthDivisorCases}
@@ -7461,29 +7454,31 @@ ${widthDivisorCases}
         }
 )";
 
-      std::string compatibleCases, heightDivisorCases, widthDivisorCases;
-      for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
-      {
-        compatibleCases += "          case " + std::to_string( i ) +
-                           ": return VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false ) + ";\n";
-        heightDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
-        widthDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
+        std::string compatibleCases, heightDivisorCases, widthDivisorCases;
+        for ( size_t i = 0; i < traitIt->second.planes.size(); ++i )
+        {
+          compatibleCases += "          case " + std::to_string( i ) +
+                             ": return VULKAN_HPP_NAMESPACE::Format::" + generateEnumValueName( "VkFormat", traitIt->second.planes[i].compatible, false ) +
+                             ";\n";
+          heightDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].heightDivisor + ";\n";
+          widthDivisorCases += "          case " + std::to_string( i ) + ": return " + traitIt->second.planes[i].widthDivisor + ";\n";
+        }
+        compatibleCases.pop_back();
+        heightDivisorCases.pop_back();
+        widthDivisorCases.pop_back();
+
+        planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
+
+        planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
+
+        planeHeightDivisorCases +=
+          replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
+
+        planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
       }
-      compatibleCases.pop_back();
-      heightDivisorCases.pop_back();
-      widthDivisorCases.pop_back();
 
-      planeCompatibleCases += replaceWithMap( planeCompatibleCaseTemplate, { { "caseString", caseString }, { "compatibleCases", compatibleCases } } );
-
-      planeCountCases += caseString + " return " + std::to_string( traitIt->second.planes.size() ) + ";\n";
-
-      planeHeightDivisorCases +=
-        replaceWithMap( planeHeightDivisorCaseTemplate, { { "caseString", caseString }, { "heightDivisorCases", heightDivisorCases } } );
-
-      planeWidthDivisorCases += replaceWithMap( planeWidthDivisorCaseTemplate, { { "caseString", caseString }, { "widthDivisorCases", widthDivisorCases } } );
+      texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
     }
-
-    texelsPerBlockCases += caseString + " return " + traitIt->second.texelsPerBlock + ";\n";
   }
 
   return replaceWithMap( formatTraitsTemplate,
@@ -7911,10 +7906,10 @@ ${indexTypeTraits}
   std::string indexTypeTraits;
   for ( auto const & value : indexType->second.values )
   {
-    assert( value.first.starts_with( "VK_INDEX_TYPE_UINT" ) || value.first.starts_with( "VK_INDEX_TYPE_NONE" ) );
-    if ( value.first.starts_with( "VK_INDEX_TYPE_UINT" ) )
+    assert( value.name.starts_with( "VK_INDEX_TYPE_UINT" ) || value.name.starts_with( "VK_INDEX_TYPE_NONE" ) );
+    if ( value.name.starts_with( "VK_INDEX_TYPE_UINT" ) )
     {
-      std::string valueName = generateEnumValueName( indexType->first, value.first, false );
+      std::string valueName = generateEnumValueName( indexType->first, value.name, false );
       assert( valueName.starts_with( "eUint" ) );
       auto beginDigit = valueName.begin() + strlen( "eUint" );
       assert( isdigit( *beginDigit ) );
@@ -9876,10 +9871,10 @@ ${leave})";
   auto        enumIt = m_enums.find( "VkResult" );
   for ( auto const & value : enumIt->second.values )
   {
-    if ( value.first.starts_with( "VK_ERROR" ) )
+    if ( value.supported && value.name.starts_with( "VK_ERROR" ) )
     {
-      auto [enter, leave]   = generateProtection( value.second.protect );
-      std::string valueName = generateEnumValueName( enumIt->first, value.first, false );
+      auto [enter, leave]   = generateProtection( value.protect );
+      std::string valueName = generateEnumValueName( enumIt->first, value.name, false );
       str += replaceWithMap( templateString,
                              { { "className", stripPrefix( valueName, "eError" ) + "Error" },
                                { "enter", enter },
@@ -11600,10 +11595,10 @@ std::string VulkanHppGenerator::generateThrowResultException() const
   std::string cases;
   for ( auto const & value : enumIt->second.values )
   {
-    if ( value.first.starts_with( "VK_ERROR" ) )
+    if ( value.supported && value.name.starts_with( "VK_ERROR" ) )
     {
-      const auto [enter, leave] = generateProtection( value.second.protect );
-      std::string valueName     = generateEnumValueName( enumIt->first, value.first, false );
+      const auto [enter, leave] = generateProtection( value.protect );
+      std::string valueName     = generateEnumValueName( enumIt->first, value.name, false );
       cases += enter + "      case Result::" + valueName + ": throw " + stripPrefix( valueName, "eError" ) + "Error( message );\n" + leave;
     }
   }
@@ -12338,7 +12333,7 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
     bool removed = false;
     for ( auto enumIt = m_enums.begin(); !removed && enumIt != m_enums.end(); ++enumIt )
     {
-      auto valueIt = find( enumIt->second.values, e );
+      auto valueIt = findByName( enumIt->second.values, e );
       if ( valueIt != enumIt->second.values.end() )
       {
         enumIt->second.values.erase( valueIt );
@@ -13565,14 +13560,7 @@ void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
   auto formatIt = m_enums.find( "VkFormat" );
   assert( formatIt != m_enums.end() );
 
-  if ( contains( formatIt->second.values, name ) )
-  {
-    checkForError( m_formats.insert( { name, format } ).second, line, "format <" + name + "> already specified" );
-  }
-  else
-  {
-    checkForError( formatIt->second.unsupportedValues.contains( name ), line, "unknown format <" + name + ">" );
-  }
+  checkForError( contains( formatIt->second.values, name ) && m_formats.insert( { name, format } ).second, line, "format <" + name + "> already specified" );
 }
 
 void VulkanHppGenerator::readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData )
@@ -13807,6 +13795,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     else if ( value == "extensions" )
     {
       readExtensions( child );
+      distributeEnumValueAliases();  // after extensions are read, there should be no more enums/aliases specified!
     }
     else if ( value == "feature" )
     {
@@ -14107,9 +14096,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
       const auto enumIt = m_enums.find( bitmaskIt->second.require );
       checkForError(
         enumIt != m_enums.end(), line, "member <" + member + "> specified for SPIR-V capability requires an unknown enum <" + bitmaskIt->second.require + ">" );
-      checkForError( contains( enumIt->second.values, value ) || enumIt->second.unsupportedValues.contains( value ),
-                     line,
-                     "unknown attribute value <" + value + "> specified for SPIR-V capability" );
+      checkForError( contains( enumIt->second.values, value ), line, "unknown attribute value <" + value + "> specified for SPIR-V capability" );
     }
   }
   else if ( attributes.contains( "struct" ) )
@@ -14404,24 +14391,27 @@ void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const *           
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "comment", "syncequivalent", "syncsupport" } );
 
-  std::string           aliasName;
-  EnumValueData const * aliasPtr = nullptr;
+  std::string aliasName;
+  auto        aliasIt = accessFlagBitsIt->second.values.end();
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
+      assert( aliasIt == accessFlagBitsIt->second.values.end() );
       aliasName = attribute.second;
-      aliasPtr  = findEnumValueData( accessFlagBitsIt, attribute.second );
-      checkForError( aliasPtr != nullptr, line, "syncaccess alias <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
+      aliasIt   = findByNameOrAlias( accessFlagBitsIt->second.values, attribute.second );
+      checkForError(
+        aliasIt != accessFlagBitsIt->second.values.end(), line, "syncaccess alias <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
     }
     else
     {
       assert( attribute.first == "name" );
-      auto namePtr = findEnumValueData( accessFlagBits2It, attribute.second );
-      checkForError( namePtr != nullptr, line, "syncaccess name <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
-      if ( aliasPtr != nullptr )
+      auto nameIt = findByNameOrAlias( accessFlagBits2It->second.values, attribute.second );
+      checkForError(
+        nameIt != accessFlagBits2It->second.values.end(), line, "syncaccess name <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
+      if ( aliasIt != accessFlagBitsIt->second.values.end() )
       {
-        checkForError( ( aliasPtr->value == namePtr->value ) && ( aliasPtr->bitpos == namePtr->bitpos ),
+        checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
                        line,
                        "syncaccess name <" + attribute.second + "> has an alias <" + aliasName + "> with a different value or bitpos!" );
       }
@@ -14455,7 +14445,7 @@ void VulkanHppGenerator::readSyncAccessEquivalent( tinyxml2::XMLElement const * 
     std::vector<std::string> access = tokenize( attribute.second, "," );
     for ( auto const & a : access )
     {
-      checkForError( findEnumValueData( accessFlagBits2It, a ) != nullptr, line, "syncequivalent access uses unknown value <" + a + ">!" );
+      checkForError( contains( accessFlagBits2It->second.values, a ), line, "syncequivalent access uses unknown value <" + a + ">!" );
     }
   }
 }
@@ -14474,7 +14464,7 @@ void VulkanHppGenerator::readSyncAccessSupport( tinyxml2::XMLElement const * ele
       std::vector<std::string> stage = tokenize( attribute.second, "," );
       for ( auto const & s : stage )
       {
-        checkForError( findEnumValueData( stageFlagBits2It, s ) != nullptr, line, "syncsupport stage uses unknown value <" + s + ">!" );
+        checkForError( contains( stageFlagBits2It->second.values, s ), line, "syncsupport stage uses unknown value <" + s + ">!" );
       }
     }
   }
@@ -14514,24 +14504,27 @@ void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const *            
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "syncequivalent", "syncsupport" } );
 
-  std::string           aliasName;
-  EnumValueData const * aliasPtr = nullptr;
+  std::string aliasName;
+  auto        aliasIt = stageFlagBitsIt->second.values.end();
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
+      assert( aliasIt == stageFlagBitsIt->second.values.end() );
       aliasName = attribute.second;
-      aliasPtr  = findEnumValueData( stageFlagBitsIt, attribute.second );
-      checkForError( aliasPtr != nullptr, line, "syncstage alias <" + attribute.second + "> not specified as a VkPipelineStageFlagBits value!" );
+      aliasIt   = findByNameOrAlias( stageFlagBitsIt->second.values, attribute.second );
+      checkForError(
+        aliasIt != stageFlagBitsIt->second.values.end(), line, "syncstage alias <" + attribute.second + "> not specified as a VkPipelineStageFlagBits value!" );
     }
     else
     {
       assert( attribute.first == "name" );
-      auto namePtr = findEnumValueData( stageFlagBits2It, attribute.second );
-      checkForError( namePtr != nullptr, line, "syncstage name <" + attribute.second + "> not specified as a VkPipelineStageFlagBits2 value!" );
-      if ( aliasPtr != nullptr )
+      auto nameIt = findByNameOrAlias( stageFlagBits2It->second.values, attribute.second );
+      checkForError(
+        nameIt != stageFlagBits2It->second.values.end(), line, "syncstage name <" + attribute.second + "> not specified as a VkPipelineStageFlagBits2 value!" );
+      if ( aliasIt != stageFlagBitsIt->second.values.end() )
       {
-        checkForError( ( aliasPtr->value == namePtr->value ) && ( aliasPtr->bitpos == namePtr->bitpos ),
+        checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
                        line,
                        "syncstate name <" + attribute.second + "> has an alias <" + aliasName + "> with a different value or bitpos!" );
       }
@@ -14566,7 +14559,7 @@ void VulkanHppGenerator::readSyncStageEquivalent( tinyxml2::XMLElement const * e
     std::vector<std::string> stage = tokenize( attribute.second, "," );
     for ( auto const & s : stage )
     {
-      checkForError( findEnumValueData( stageFlagBits2It, s ) != nullptr, line, "syncequivalent stage uses unknown value <" + s + ">!" );
+      checkForError( contains( stageFlagBits2It->second.values, s ), line, "syncequivalent stage uses unknown value <" + s + ">!" );
     }
   }
 }
@@ -15387,88 +15380,30 @@ std::string VulkanHppGenerator::toString( TypeCategory category )
 
 void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported )
 {
-  EnumValueData * valuePtr = nullptr;
-  if ( supported )
+  auto aliasIt = findByName( valueAliases, name );
+  if ( aliasIt == valueAliases.end() )
   {
-    auto valueIt = find( values, alias );
-    if ( valueIt == values.end() )
-    {
-      valueIt = std::find_if( values.begin(), values.end(), [alias]( auto const value ) { return value.second.aliases.contains( alias ); } );
-    }
-    if ( valueIt != values.end() )
-    {
-      valuePtr = &valueIt->second;
-    }
+    valueAliases.push_back( { alias, name, protect, supported, line } );
   }
   else
   {
-    auto valueIt = unsupportedValues.find( alias );
-    if ( valueIt == unsupportedValues.end() )
-    {
-      valueIt =
-        std::find_if( unsupportedValues.begin(), unsupportedValues.end(), [alias]( auto const value ) { return value.second.aliases.contains( alias ); } );
-    }
-    if ( valueIt != unsupportedValues.end() )
-    {
-      valuePtr = &valueIt->second;
-    }
-  }
-
-  if ( valuePtr )
-  {
-    checkForError( protect == valuePtr->protect,
+    checkForError( ( alias == aliasIt->alias ) && ( protect == aliasIt->protect ) && ( supported == aliasIt->supported ),
                    line,
-                   "enum alias value <" + name + "> uses a different protection <" + protect + "> than the aliased enum value <" + alias + ">" );
-    valuePtr->aliases.insert( { name, line } );  // it happens, that the very same alias is listed multiple times -> no error check here!
-  }
-  else
-  {
-    // the alias is defined before the aliased enum!! -> insert a preliminary enum on line -1 and add this alias again
-    addEnumValue( -1, alias, "", "", "", supported );
-    addEnumAlias( line, name, alias, protect, supported );
+                   "enum value alias <" + name + "> already listed with different properties" );
   }
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(
   int line, std::string const & name, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported )
 {
-  EnumValueData * valuePtr = nullptr;
-  if ( supported )
+  auto valueIt = findByName( values, name );
+  if ( valueIt == values.end() )
   {
-    auto valueIt = find( values, name );
-    if ( valueIt != values.end() )
-    {
-      valuePtr = &valueIt->second;
-    }
+    values.push_back( { {}, bitpos, name, protect, supported, value, line } );
   }
-  else
+  else if ( supported )  // only for supported enum values, we need to check for consistency!
   {
-    auto valueIt = unsupportedValues.find( name );
-    if ( valueIt != unsupportedValues.end() )
-    {
-      valuePtr = &valueIt->second;
-    }
-  }
-  if ( !valuePtr )
-  {
-    if ( supported )
-    {
-      values.push_back( { name, { {}, bitpos, protect, value, line } } );
-    }
-    else
-    {
-      unsupportedValues.insert( { name, { {}, bitpos, protect, value, line } } );
-    }
-  }
-  else if ( valuePtr->xmlLine == -1 )
-  {
-    // this enum value has been listed by an alias before!
-    assert( !valuePtr->aliases.empty() && valuePtr->bitpos.empty() && valuePtr->protect.empty() && valuePtr->value.empty() );
-    *valuePtr = { valuePtr->aliases, bitpos, protect, value, line };
-  }
-  else
-  {
-    checkForError( ( protect == valuePtr->protect ) && ( bitpos == valuePtr->bitpos ) && ( value == valuePtr->value ),
+    checkForError( ( bitpos == valueIt->bitpos ) && ( protect == valueIt->protect ) && ( supported == valueIt->supported ) && ( value == valueIt->value ),
                    line,
                    "enum value <" + name + "> already listed with different properties" );
   }
@@ -15494,19 +15429,21 @@ namespace
   }
 
   template <typename T>
-  typename std::vector<std::pair<std::string, T>>::const_iterator find( std::vector<std::pair<std::string, T>> const & values, std::string const & name )
+  typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
   {
-    return std::find_if( values.begin(),
-                         values.end(),
-                         [&name]( std::pair<std::string, T> const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
+    return std::find_if( values.begin(), values.end(), [&name]( T const & value ) { return value.name == name; } );
   }
 
   template <typename T>
-  typename std::vector<std::pair<std::string, T>>::iterator find( std::vector<std::pair<std::string, T>> & values, std::string const & name )
+  typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
-    return std::find_if( values.begin(),
-                         values.end(),
-                         [&name]( std::pair<std::string, T> const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
+    return std::find_if( values.begin(), values.end(), [&name]( T const & value ) { return ( value.name == name ) || value.aliases.contains( name ); } );
+  }
+
+  template <typename T>
+  typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name )
+  {
+    return std::find_if( values.begin(), values.end(), [&name]( T const & value ) { return ( value.name == name ) || value.aliases.contains( name ); } );
   }
 
   std::string generateCArraySizes( std::vector<std::string> const & sizes )

@@ -1676,7 +1676,6 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorOutOfDateKHR: return "ErrorOutOfDateKHR";
       case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
-      case Result::eErrorNotPermittedKHR: return "ErrorNotPermittedKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -1974,15 +1973,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eDrmFormatModifierPropertiesList2EXT: return "DrmFormatModifierPropertiesList2EXT";
       case StructureType::ePhysicalDeviceImageViewImageFormatInfoEXT: return "PhysicalDeviceImageViewImageFormatInfoEXT";
       case StructureType::eFilterCubicImageViewImageFormatPropertiesEXT: return "FilterCubicImageViewImageFormatPropertiesEXT";
-      case StructureType::eDeviceQueueGlobalPriorityCreateInfoKHR: return "DeviceQueueGlobalPriorityCreateInfoKHR";
       case StructureType::eImportMemoryHostPointerInfoEXT: return "ImportMemoryHostPointerInfoEXT";
       case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
       case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
       case StructureType::ePhysicalDeviceShaderClockFeaturesKHR: return "PhysicalDeviceShaderClockFeaturesKHR";
-      case StructureType::eCalibratedTimestampInfoKHR: return "CalibratedTimestampInfoKHR";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
-      case StructureType::ePipelineVertexInputDivisorStateCreateInfoKHR: return "PipelineVertexInputDivisorStateCreateInfoKHR";
-      case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesKHR: return "PhysicalDeviceVertexAttributeDivisorFeaturesKHR";
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT: return "PhysicalDevicePciBusInfoPropertiesEXT";
       case StructureType::eFragmentShadingRateAttachmentInfoKHR: return "FragmentShadingRateAttachmentInfoKHR";
       case StructureType::ePipelineFragmentShadingRateStateCreateInfoKHR: return "PipelineFragmentShadingRateStateCreateInfoKHR";
@@ -1995,11 +1990,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceFragmentShaderInterlockFeaturesEXT: return "PhysicalDeviceFragmentShaderInterlockFeaturesEXT";
       case StructureType::ePhysicalDeviceYcbcrImageArraysFeaturesEXT: return "PhysicalDeviceYcbcrImageArraysFeaturesEXT";
       case StructureType::eHeadlessSurfaceCreateInfoEXT: return "HeadlessSurfaceCreateInfoEXT";
-      case StructureType::ePhysicalDeviceLineRasterizationFeaturesKHR: return "PhysicalDeviceLineRasterizationFeaturesKHR";
-      case StructureType::ePipelineRasterizationLineStateCreateInfoKHR: return "PipelineRasterizationLineStateCreateInfoKHR";
-      case StructureType::ePhysicalDeviceLineRasterizationPropertiesKHR: return "PhysicalDeviceLineRasterizationPropertiesKHR";
       case StructureType::ePhysicalDeviceShaderAtomicFloatFeaturesEXT: return "PhysicalDeviceShaderAtomicFloatFeaturesEXT";
-      case StructureType::ePhysicalDeviceIndexTypeUint8FeaturesKHR: return "PhysicalDeviceIndexTypeUint8FeaturesKHR";
       case StructureType::ePhysicalDeviceExtendedDynamicStateFeaturesEXT: return "PhysicalDeviceExtendedDynamicStateFeaturesEXT";
       case StructureType::ePhysicalDeviceTexelBufferAlignmentFeaturesEXT: return "PhysicalDeviceTexelBufferAlignmentFeaturesEXT";
       case StructureType::ePhysicalDeviceRobustness2FeaturesEXT: return "PhysicalDeviceRobustness2FeaturesEXT";
@@ -2969,7 +2960,6 @@ namespace VULKAN_HPP_NAMESPACE
       case DynamicState::eDiscardRectangleModeEXT: return "DiscardRectangleModeEXT";
       case DynamicState::eSampleLocationsEXT: return "SampleLocationsEXT";
       case DynamicState::eFragmentShadingRateKHR: return "FragmentShadingRateKHR";
-      case DynamicState::eLineStippleKHR: return "LineStippleKHR";
       case DynamicState::eVertexInputEXT: return "VertexInputEXT";
       case DynamicState::ePatchControlPointsEXT: return "PatchControlPointsEXT";
       case DynamicState::eLogicOpEXT: return "LogicOpEXT";
@@ -3416,7 +3406,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case IndexType::eUint16: return "Uint16";
       case IndexType::eUint32: return "Uint32";
-      case IndexType::eUint8KHR: return "Uint8KHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

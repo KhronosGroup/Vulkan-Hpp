@@ -15496,13 +15496,17 @@ namespace
   template <typename T>
   typename std::vector<std::pair<std::string, T>>::const_iterator find( std::vector<std::pair<std::string, T>> const & values, std::string const & name )
   {
-    return std::find_if( values.begin(), values.end(), [&name]( std::pair<std::string, T> const & value ) { return value.first == name; } );
+    return std::find_if( values.begin(),
+                         values.end(),
+                         [&name]( std::pair<std::string, T> const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
   }
 
   template <typename T>
   typename std::vector<std::pair<std::string, T>>::iterator find( std::vector<std::pair<std::string, T>> & values, std::string const & name )
   {
-    return std::find_if( values.begin(), values.end(), [&name]( std::pair<std::string, T> const & value ) { return value.first == name; } );
+    return std::find_if( values.begin(),
+                         values.end(),
+                         [&name]( std::pair<std::string, T> const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
   }
 
   std::string generateCArraySizes( std::vector<std::string> const & sizes )

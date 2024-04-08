@@ -128,9 +128,10 @@ private:
 
   struct BitmaskData
   {
-    std::string require = {};
-    std::string type    = {};
-    int         xmlLine = {};
+    std::map<std::string, int> aliases = {};
+    std::string                require = {};
+    std::string                type    = {};
+    int                        xmlLine = {};
   };
 
   struct EnumValueAlias
@@ -186,13 +187,14 @@ private:
 
   struct CommandData
   {
-    std::vector<std::string> errorCodes   = {};
-    std::string              handle       = {};
-    std::vector<ParamData>   params       = {};
-    std::set<std::string>    requiredBy   = {};
-    std::string              returnType   = {};
-    std::vector<std::string> successCodes = {};
-    int                      xmlLine      = {};
+    std::map<std::string, int> aliases      = {};
+    std::vector<std::string>   errorCodes   = {};
+    std::string                handle       = {};
+    std::vector<ParamData>     params       = {};
+    std::set<std::string>      requiredBy   = {};
+    std::string                returnType   = {};
+    std::vector<std::string>   successCodes = {};
+    int                        xmlLine      = {};
   };
 
   struct ConstantData
@@ -705,7 +707,8 @@ private:
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
-  std::string generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & firstArg ) const;
+  std::string
+    generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & aliasName, std::string const & firstArg ) const;
   std::string generateDispatchLoaderStaticCommands( std::vector<RequireData> const & requireData,
                                                     std::set<std::string> &          listedCommands,
                                                     std::string const &              title ) const;
@@ -912,7 +915,6 @@ private:
                                                                std::map<size_t, std::vector<size_t>> const & countToVectorMap,
                                                                std::set<size_t> const &                      skippedParams,
                                                                bool                                          onlyThrows ) const;
-  CommandData const &                 getCommandData( std::string const & command ) const;
   std::pair<std::string, std::string> getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const;
   std::string                         getPlatform( std::string const & title ) const;
   std::pair<std::string, std::string> getPoolTypeAndName( std::string const & type ) const;
@@ -1029,9 +1031,7 @@ private:
 private:
   std::string                             m_api;
   std::map<std::string, BaseTypeData>     m_baseTypes;
-  std::map<std::string, AliasData>        m_bitmaskAliases;
   std::map<std::string, BitmaskData>      m_bitmasks;
-  std::map<std::string, AliasData>        m_commandAliases;
   std::map<std::string, CommandData>      m_commands;
   std::map<std::string, AliasData>        m_constantAliases;
   std::map<std::string, ConstantData>     m_constants;

@@ -5669,17 +5669,15 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   usings += exceptionsLeave + "\n";
 
-  // ResultValue
-  auto const hardCodedResultValueTypes = std::array{ "ignore", "ResultValue", "ResultValueType", "createResultValueType" };
-  for ( auto const & className : hardCodedResultValueTypes )
+  // some hardcoded types
+  auto const hardCodedResultValueTypes =
+    std::array{ "ResultValue", "ResultValueType", "detail::createResultValueType", "detail::ignore", "detail::resultCheck" };
+  for ( auto const & valueType : hardCodedResultValueTypes )
   {
-    usings += replaceWithMap( usingTemplate, { { "className", className } } );
+    usings += replaceWithMap( usingTemplate, { { "className", valueType } } );
   }
 
-  // resultCheck
-  usings += replaceWithMap( usingTemplate, { { "className", "resultCheck" } } ) + "\n";
-
-  usings += generateConstexprUsings() + "\n";
+  usings += "\n" + generateConstexprUsings() + "\n";
 
   // structs, handles, UniqueHandles, etc
   usings += generateCppModuleStructUsings();
@@ -9812,7 +9810,7 @@ std::string VulkanHppGenerator::generateResultCheck(
     std::string successCodeList = generateSuccessCodeList( commandData.successCodes, enumerating );
 
     std::string const resultCheckTemplate =
-      R"(resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );)";
+      R"(VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::${className}${classSeparator}${commandName}"${successCodeList} );)";
 
     resultCheck = replaceWithMap(
       resultCheckTemplate,
@@ -9918,12 +9916,12 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         if ( returnVariable.empty() )
         {
           assert( !unique );
-          returnStatement = "return createResultValueType( result );";
+          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );";
         }
         else if ( unique )
         {
           assert( returnParam != INVALID_INDEX );
-          returnStatement = "return createResultValueType( result, ";
+          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, ";
           if ( dataType.starts_with( "std::" ) )
           {
             returnStatement += "std::move( unique" + startUpperCase( returnVariable ) + " )";
@@ -9938,7 +9936,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
         }
         else
         {
-          returnStatement = "return createResultValueType( result, std::move( " + returnVariable + " ) );";
+          returnStatement = "return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( " + returnVariable + " ) );";
         }
       }
     }

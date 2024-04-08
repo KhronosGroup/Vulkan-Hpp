@@ -10308,10 +10308,22 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
   std::string str;
   for ( auto const & member : structure.second.members )
   {
-    auto structIt = m_structs.find( member.type.type );
-    if ( ( structIt != m_structs.end() ) && ( structure.first != member.type.type ) && !listedStructs.contains( member.type.type ) )
+    auto typeIt = m_types.find( member.type.type );
+    assert( typeIt != m_types.end() );
+    if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
     {
-      str += generateStruct( *structIt, listedStructs );
+      auto structIt = m_structs.find( member.type.type );
+      if ( structIt == m_structs.end() )
+      {
+        auto aliasIt = m_structAliases.find( member.type.type );
+        assert( aliasIt != m_structAliases.end() );
+        structIt = m_structs.find( aliasIt->second.name );
+      }
+      assert( structIt != m_structs.end() );
+      if ( ( structure.first != member.type.type ) && !listedStructs.contains( member.type.type ) )
+      {
+        str += generateStruct( *structIt, listedStructs );
+      }
     }
   }
 

@@ -195,7 +195,7 @@ vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevi
                                                                                                          : vk::CompositeAlphaFlagBitsKHR::eOpaque;
   vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
                                                   surface,
-                                                  vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+                                                  vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                   surfaceFormat.format,
                                                   surfaceFormat.colorSpace,
                                                   swapchainExtent,

@@ -120,7 +120,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::SwapchainCreateInfoKHR swapChainCreateInfo( vk::SwapchainCreateFlagsKHR(),
                                                     surface,
-                                                    vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+                                                    vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                     format,
                                                     vk::ColorSpaceKHR::eSrgbNonlinear,
                                                     swapchainExtent,

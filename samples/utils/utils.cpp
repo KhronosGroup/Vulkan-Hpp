@@ -826,7 +826,7 @@ namespace vk
       vk::PresentModeKHR         presentMode = vk::su::pickPresentMode( physicalDevice.getSurfacePresentModesKHR( surface ) );
       vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
                                                       surface,
-                                                      vk::su::clamp( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+                                                      vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
                                                       colorFormat,
                                                       surfaceFormat.colorSpace,
                                                       swapchainExtent,

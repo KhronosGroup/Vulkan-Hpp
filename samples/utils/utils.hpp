@@ -74,6 +74,16 @@ namespace vk
       return v < lo ? lo : hi < v ? hi : v;
     }
 
+    VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
+    {
+      uint32_t imageCount = std::max( desiredImageCount, minImageCount );
+      if( maxImageCount > 0 )
+      {
+        imageCount = std::min( imageCount, maxImageCount );
+      }
+      return imageCount;
+    }
+
     void setImageLayout(
       vk::CommandBuffer const & commandBuffer, vk::Image image, vk::Format format, vk::ImageLayout oldImageLayout, vk::ImageLayout newImageLayout );
 

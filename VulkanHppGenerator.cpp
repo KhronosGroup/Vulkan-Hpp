@@ -29,6 +29,10 @@ namespace
   template <typename T>
   typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name );
   template <typename T>
+  typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name );
+  template <typename T>
+  typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name );
+  template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name );
   template <typename T>
   typename std::vector<T>::iterator findByNameOrAlias( std::vector<T> & values, std::string const & name );
@@ -880,13 +884,14 @@ void VulkanHppGenerator::addCommandsToHandle( std::vector<RequireData> const & r
   {
     for ( auto const & command : require.commands )
     {
-      auto const & commandData = getCommandData( command );
-      auto         handleIt    = m_handles.find( commandData.handle );
+      auto commandIt = findByNameOrAlias( m_commands, command );
+      assert( commandIt != m_commands.end() );
+      auto handleIt = m_handles.find( commandIt->second.handle );
       assert( handleIt != m_handles.end() );
       if ( !handleIt->second.commands.contains( command ) )
       {
         handleIt->second.commands.insert( command );
-        registerDeleter( command, commandData );
+        registerDeleter( command, commandIt->second );
       }
     }
   }
@@ -983,20 +988,21 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
     {
       if ( listedCommands.insert( command ).second )
       {
-        auto const & commandData = getCommandData( command );
+        auto commandIt = findByNameOrAlias( m_commands, command );
+        assert( commandIt != m_commands.end() );
 
         members += "    PFN_" + command + " " + command + " = 0;\n";
         placeholders += "    PFN_dummy " + command + "_placeholder = 0;\n";
-        if ( commandData.handle.empty() )
+        if ( commandIt->second.handle.empty() )
         {
-          initial += generateDispatchLoaderDynamicCommandAssignment( command, "NULL" );
+          initial += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "NULL" );
         }
         else
         {
-          instance += generateDispatchLoaderDynamicCommandAssignment( command, "instance" );
-          if ( isDeviceCommand( commandData ) )
+          instance += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "instance" );
+          if ( isDeviceCommand( commandIt->second ) )
           {
-            device += generateDispatchLoaderDynamicCommandAssignment( command, "device" );
+            device += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "device" );
           }
         }
       }
@@ -1044,23 +1050,20 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
     {
       if ( listedCommands.insert( command ).second )
       {
-        auto const & commandData = getCommandData( command );
-        if ( commandData.handle.empty() )
+        auto commandIt = findByNameOrAlias( m_commands, command );
+        if ( commandIt->second.handle.empty() )
         {
-          assert( findAlias( command, m_commandAliases ) == m_commandAliases.end() );
-
           ci += ", " + command + "( PFN_" + command + "( getProcAddr( NULL, \"" + command + "\" ) ) )";
 
           cm += "      PFN_" + command + " " + command + " = 0;\n";
         }
-        else if ( ( commandData.handle == "VkDevice" ) || hasParentHandle( commandData.handle, "VkDevice" ) )
+        else if ( ( commandIt->second.handle == "VkDevice" ) || hasParentHandle( commandIt->second.handle, "VkDevice" ) )
         {
           da += "        " + command + " = PFN_" + command + "( vkGetDeviceProcAddr( device, \"" + command + "\" ) );\n";
           // if this is an alias'ed function, use it as a fallback for the original one
-          auto aliasIt = m_commandAliases.find( command );
-          if ( aliasIt != m_commandAliases.end() )
+          if ( command != commandIt->first )
           {
-            da += "        if ( !" + aliasIt->second.name + " ) " + aliasIt->second.name + " = " + command + ";\n";
+            da += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command + ";\n";
           }
 
           dm += "      PFN_" + command + " " + command + " = 0;\n";
@@ -1068,7 +1071,7 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
         }
         else
         {
-          assert( ( commandData.handle == "VkInstance" ) || hasParentHandle( commandData.handle, "VkInstance" ) );
+          assert( ( commandIt->second.handle == "VkInstance" ) || hasParentHandle( commandIt->second.handle, "VkInstance" ) );
 
           // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
           // instance nullptr !
@@ -1076,10 +1079,9 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
           {
             ia += "        " + command + " = PFN_" + command + "( vkGetInstanceProcAddr( instance, \"" + command + "\" ) );\n";
             // if this is an alias'ed function, use it as a fallback for the original one
-            auto aliasIt = m_commandAliases.find( command );
-            if ( aliasIt != m_commandAliases.end() )
+            if ( command != commandIt->first )
             {
-              ia += "        if ( !" + aliasIt->second.name + " ) " + aliasIt->second.name + " = " + command + ";\n";
+              ia += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command + ";\n";
             }
           }
 
@@ -1276,11 +1278,6 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
                                "bitmask <" + bitmaskIt->first + "> requires <" + bitmaskIt->second.require +
                                  "> which is not required by any feature or extension!" );
               }
-            }
-            else
-            {
-              // every bitmask not listed in the m_bitmasks, should be an alias of such a thing
-              checkForError( m_bitmaskAliases.contains( type ), typeIt->second.xmlLine, "bitmask type <" + type + "> is not listed as a bitmask" );
             }
           }
           break;
@@ -1820,14 +1817,8 @@ size_t VulkanHppGenerator::determineInitialSkipCount( std::string const & comman
   // -> 0: the command is not bound to an instance or a device (the corresponding handle has no name)
   // -> 1: the command bound to an instance or a device (the corresponding handle has a name)
   // -> 2: the command has been moved to a second handle
-  auto commandIt = m_commands.find( command );
-  if ( commandIt == m_commands.end() )
-  {
-    auto aliasIt = m_commandAliases.find( command );
-    assert( aliasIt != m_commandAliases.end() );
-    commandIt = m_commands.find( aliasIt->second.name );
-    assert( commandIt != m_commands.end() );
-  }
+  auto commandIt = findByNameOrAlias( m_commands, command );
+  assert( commandIt != m_commands.end() );
   auto handleIt = m_handles.find( commandIt->second.handle );
   assert( handleIt != m_handles.end() );
   if ( !handleIt->second.commands.contains( command ) )
@@ -2125,11 +2116,12 @@ void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> co
         bool foundCommand = false;
         if ( !specialFunctions.contains( *command ) )
         {
-          auto const & commandData = getCommandData( *command );
-          assert( commandData.params.front().type.type == handle.first );
-          if ( ( 1 < commandData.params.size() ) && ( isHandleType( commandData.params[1].type.type ) ) && !commandData.params[1].optional )
+          auto commandIt = findByNameOrAlias( m_commands, *command );
+          assert( commandIt != m_commands.end() );
+          assert( commandIt->second.params.front().type.type == handle.first );
+          if ( ( 1 < commandIt->second.params.size() ) && ( isHandleType( commandIt->second.params[1].type.type ) ) && !commandIt->second.params[1].optional )
           {
-            auto handleIt = m_handles.find( commandData.params[1].type.type );
+            auto handleIt = m_handles.find( commandIt->second.params[1].type.type );
             assert( handleIt != m_handles.end() );
             // filter out functions seem to fit due to taking handles as first and second argument, but the first argument is not the
             // type to create the second one, and so it's unknown to the raii handle!
@@ -2525,11 +2517,8 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
   auto bitmaskBitsIt = m_enums.find( bitmaskIt->second.require );
   assert( bitmaskBitsIt != m_enums.end() );
 
-  std::string bitmaskName    = stripPrefix( bitmaskIt->first, "Vk" );
-  std::string enumName       = stripPrefix( bitmaskBitsIt->first, "Vk" );
-  auto        aliasBitmaskIt = findAlias( bitmaskIt->first, m_bitmaskAliases );
-  std::string alias =
-    ( aliasBitmaskIt == m_bitmaskAliases.end() ) ? "" : ( "  using " + stripPrefix( aliasBitmaskIt->first, "Vk" ) + " = " + bitmaskName + ";\n" );
+  std::string bitmaskName = stripPrefix( bitmaskIt->first, "Vk" );
+  std::string enumName    = stripPrefix( bitmaskBitsIt->first, "Vk" );
 
   std::string allFlags;
   if ( bitmaskBitsIt->second.values.empty() ||
@@ -2565,9 +2554,16 @@ std::string VulkanHppGenerator::generateBitmask( std::map<std::string, BitmaskDa
     }
     allFlags += ";";
   }
+
+  std::string aliases;
+  for ( auto const & a : bitmaskIt->second.aliases )
+  {
+    aliases += "  using " + stripPrefix( a.first, "Vk" ) + " = " + bitmaskName + ";\n";
+  }
+
   static const std::string bitmaskTemplate = R"(
   using ${bitmaskName} = Flags<${enumName}>;
-${alias}
+${aliases}
 
   template <> struct FlagTraits<${enumName}>
   {
@@ -2576,7 +2572,7 @@ ${alias}
   };
 )";
 
-  return replaceWithMap( bitmaskTemplate, { { "alias", alias }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "enumName", enumName } } );
+  return replaceWithMap( bitmaskTemplate, { { "aliases", aliases }, { "allFlags", allFlags }, { "bitmaskName", bitmaskName }, { "enumName", enumName } } );
 }
 
 std::string VulkanHppGenerator::generateBitmasksToString() const
@@ -3307,7 +3303,9 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
     {
       if ( listedCommands.insert( command ).second )
       {
-        str += generateCommandDefinitions( command, getCommandData( command ).handle );
+        auto commandIt = findByNameOrAlias( m_commands, command );
+        assert( commandIt != m_commands.end() );
+        str += generateCommandDefinitions( command, commandIt->second.handle );
       }
     }
   }
@@ -3316,16 +3314,17 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
 
 std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & command, std::string const & handle ) const
 {
-  auto const & commandData = getCommandData( command );
+  auto commandIt = findByNameOrAlias( m_commands, command );
+  assert( commandIt != m_commands.end() );
 
-  std::string str = "\n" + generateCommand( command, commandData, handle.empty() ? 0 : 1, true, false );
+  std::string str = "\n" + generateCommand( command, commandIt->second, handle.empty() ? 0 : 1, true, false );
 
   // special handling for destroy functions, filter out alias functions
-  std::string commandName = generateCommandName( command, commandData.params, 1 );
-  if ( !m_commandAliases.contains( command ) && ( ( ( command.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
-                                                  ( command.substr( 2, 4 ) == "Free" ) || ( command == "vkReleasePerformanceConfigurationINTEL" ) ) )
+  std::string commandName = generateCommandName( command, commandIt->second.params, 1 );
+  if ( ( command == commandIt->first ) && ( ( ( command.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) ||
+                                            ( command.substr( 2, 4 ) == "Free" ) || ( command == "vkReleasePerformanceConfigurationINTEL" ) ) )
   {
-    CommandData specialCommandData = commandData;
+    CommandData specialCommandData = commandIt->second;
     assert( ( 1 < specialCommandData.params.size() ) && ( specialCommandData.params[0].type.type == handle ) );
     specialCommandData.params[1].optional = false;  // make sure, the object to destroy/free/release is not optional in the shortened version!
 
@@ -3365,10 +3364,10 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::string const & 
     }
 
     // we need to remove the default argument for the first argument, to prevent ambiguities!
-    assert( 1 < commandData.params.size() );
-    pos = destroyCommandString.find( commandData.params[1].name );  // skip the standard version of the function
+    assert( 1 < commandIt->second.params.size() );
+    pos = destroyCommandString.find( commandIt->second.params[1].name );  // skip the standard version of the function
     assert( pos != std::string::npos );
-    pos = destroyCommandString.find( commandData.params[1].name,
+    pos = destroyCommandString.find( commandIt->second.params[1].name,
                                      pos + 1 );  // get the argument to destroy in the advanced version
     assert( pos != std::string::npos );
     pos = destroyCommandString.find( " VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT", pos );
@@ -6455,8 +6454,8 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
 {
   // special handling for destroy functions, filter out alias functions
   std::string commandName = generateCommandName( name, commandData.params, 1 );
-  if ( !m_commandAliases.contains( name ) && ( ( ( name.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) || ( name.substr( 2, 4 ) == "Free" ) ||
-                                               ( name == "vkReleasePerformanceConfigurationINTEL" ) ) )
+  if ( m_commands.contains( name ) && ( ( ( name.substr( 2, 7 ) == "Destroy" ) && ( commandName != "destroy" ) ) || ( name.substr( 2, 4 ) == "Free" ) ||
+                                        ( name == "vkReleasePerformanceConfigurationINTEL" ) ) )
   {
     assert( 1 < commandData.params.size() );
     // make sure, the object to destroy/free/release is not optional in the shortened version!
@@ -6502,7 +6501,9 @@ std::string VulkanHppGenerator::generateDestroyCommand( std::string const & name
   return "";
 }
 
-std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName, std::string const & firstArg ) const
+std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( std::string const & commandName,
+                                                                                std::string const & aliasName,
+                                                                                std::string const & firstArg ) const
 {
   if ( commandName == "vkGetInstanceProcAddr" )
   {
@@ -6512,10 +6513,9 @@ std::string VulkanHppGenerator::generateDispatchLoaderDynamicCommandAssignment( 
   std::string str = "      " + commandName + " = PFN_" + commandName + "( vkGet" + ( ( firstArg == "device" ) ? "Device" : "Instance" ) + "ProcAddr( " +
                     firstArg + ", \"" + commandName + "\" ) );\n";
   // if this is an alias'ed function, use it as a fallback for the original one
-  auto aliasIt = m_commandAliases.find( commandName );
-  if ( aliasIt != m_commandAliases.end() )
+  if ( commandName != aliasName )
   {
-    str += "      if ( !" + aliasIt->second.name + " ) " + aliasIt->second.name + " = " + commandName + ";\n";
+    str += "      if ( !" + aliasName + " ) " + aliasName + " = " + commandName + ";\n";
   }
   return str;
 }
@@ -6532,12 +6532,13 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
       // some commands are listed for multiple extensions !
       if ( listedCommands.insert( command ).second )
       {
-        auto const & commandData = getCommandData( command );
+        auto commandIt = findByNameOrAlias( m_commands, command );
+        assert( commandIt != m_commands.end() );
 
         str += "\n";
         std::string parameterList, parameters;
-        assert( !commandData.params.empty() );
-        for ( auto param : commandData.params )
+        assert( !commandIt->second.params.empty() );
+        for ( auto param : commandIt->second.params )
         {
           parameterList += param.type.compose( "" ) + " " + param.name + generateCArraySizes( param.arraySizes ) + ", ";
           parameters += param.name + ", ";
@@ -6555,7 +6556,7 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
 
         str += replaceWithMap(
           commandTemplate,
-          { { "commandName", command }, { "parameterList", parameterList }, { "parameters", parameters }, { "returnType", commandData.returnType } } );
+          { { "commandName", command }, { "parameterList", parameterList }, { "parameters", parameters }, { "returnType", commandIt->second.returnType } } );
       }
     }
   }
@@ -7707,13 +7708,14 @@ std::string VulkanHppGenerator::generateHandleCommandDeclarations( std::set<std:
       str += "\n" + enter + "  //=== " + extension.name + " ===\n";
       for ( auto const & command : commandNames )
       {
-        auto const & commandData = getCommandData( command );
+        auto commandIt = findByNameOrAlias( m_commands, command );
+        assert( commandIt != m_commands.end() );
 
         std::string commandString;
-        std::string commandName = generateCommandName( command, commandData.params, 1 );
+        std::string commandName = generateCommandName( command, commandIt->second.params, 1 );
         str += "\n";
-        str += generateCommand( command, commandData, 1, false, false );
-        str += generateDestroyCommand( command, commandData );
+        str += generateCommand( command, commandIt->second, 1, false, false );
+        str += generateDestroyCommand( command, commandIt->second );
       }
       str += leave;
     }
@@ -7726,8 +7728,9 @@ std::string VulkanHppGenerator::generateHandleDependencies( std::pair<std::strin
   std::string str;
   for ( auto const & command : handleData.second.commands )
   {
-    auto const & commandData = getCommandData( command );
-    for ( auto const & parameter : commandData.params )
+    auto commandIt = findByNameOrAlias( m_commands, command );
+    assert( commandIt != m_commands.end() );
+    for ( auto const & parameter : commandIt->second.params )
     {
       auto handleIt = m_handles.find( parameter.type.type );
       if ( ( handleIt != m_handles.end() ) && ( parameter.type.type != handleData.first ) && !listedHandles.contains( parameter.type.type ) )
@@ -8492,7 +8495,9 @@ std::string VulkanHppGenerator::generateRAIIHandleCommand( std::string const & c
   std::string str;
   if ( !m_RAIISpecialFunctions.contains( command ) )
   {
-    str = generateCommand( command, getCommandData( command ), initialSkipCount, definition, true );
+    auto commandIt = findByNameOrAlias( m_commands, command );
+    assert( commandIt != m_commands.end() );
+    str = generateCommand( command, commandIt->second, initialSkipCount, definition, true );
   }
   return str;
 }
@@ -12155,19 +12160,6 @@ ${throws}
   return onlyThrows ? throws : replaceWithMap( sizeCheckTemplate, { { "assertions", assertions }, { "throws", throws } } );
 }
 
-VulkanHppGenerator::CommandData const & VulkanHppGenerator::getCommandData( std::string const & command ) const
-{
-  auto commandIt = m_commands.find( command );
-  if ( commandIt == m_commands.end() )
-  {
-    auto aliasIt = m_commandAliases.find( command );
-    assert( aliasIt != m_commandAliases.end() );
-    commandIt = m_commands.find( aliasIt->second.name );
-    assert( commandIt != m_commands.end() );
-  }
-  return commandIt->second;
-}
-
 std::pair<std::string, std::string> VulkanHppGenerator::getParentTypeAndName( std::pair<std::string, HandleData> const & handle ) const
 {
   std::string parentType, parentName;
@@ -12305,14 +12297,8 @@ void VulkanHppGenerator::handleRemoval( RemoveData const & removeData )
   for ( auto const & command : removeData.commands )
   {
     bool removed   = false;
-    auto commandIt = m_commands.find( command );
-    if ( commandIt == m_commands.end() )
-    {
-      auto aliasIt = m_commandAliases.find( command );
-      assert( aliasIt != m_commandAliases.end() );
-      commandIt = m_commands.find( aliasIt->second.name );
-      assert( commandIt != m_commands.end() );
-    }
+    auto commandIt = findByNameOrAlias( m_commands, command );
+    assert( commandIt != m_commands.end() );
     for ( auto const & requiredBy : commandIt->second.requiredBy )
     {
       auto featureIt = std::find_if( m_features.begin(), m_features.end(), [&requiredBy]( FeatureData const & fd ) { return fd.name == requiredBy; } );
@@ -12730,8 +12716,10 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
     std::string name  = attributes.find( "name" )->second;
 
     checkForError( name.starts_with( "vk" ), line, "name <" + name + "> should begin with \"vk\"" );
-    checkForError( m_commands.contains( alias ), line, "command <" + name + "> is aliased to unknown command <" + alias + ">" );
-    checkForError( m_commandAliases.insert( { name, { alias, line } } ).second, line, "command <" + name + "> already specified as alias" );
+    auto commandIt = m_commands.find( alias );
+    checkForError( commandIt != m_commands.end(), line, "command <" + name + "> is aliased to unknown command <" + alias + ">" );
+    checkForError(
+      commandIt->second.aliases.insert( { name, line } ).second, line, "command <" + name + "> is already listed as alias for command <" + alias + ">" );
   }
   else
   {
@@ -13850,14 +13838,8 @@ std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const *
   checkElements( line, getChildElements( element ), {} );
 
   std::string name      = attributes.find( "name" )->second;
-  auto        commandIt = m_commands.find( name );
-  if ( commandIt == m_commands.end() )
-  {
-    auto aliasIt = m_commandAliases.find( name );
-    checkForError( aliasIt != m_commandAliases.end(), line, "unknown required command <" + name + ">" );
-    commandIt = m_commands.find( aliasIt->second.name );
-    assert( commandIt != m_commands.end() );
-  }
+  auto        commandIt = findByNameOrAlias( m_commands, name );
+  assert( commandIt != m_commands.end() );
   commandIt->second.requiredBy.insert( requiredBy );
 
   return name;
@@ -14634,19 +14616,31 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
 {
   const int line = element->GetLineNum();
 
-  auto aliasIt = attributes.find( "alias" );
-  if ( aliasIt != attributes.end() )
+  if ( attributes.contains( "alias" ) )
   {
     checkAttributes( line, attributes, { { "alias", {} }, { "category", { "bitmask" } }, { "name", {} } }, {} );
     checkElements( line, getChildElements( element ), {} );
 
-    std::string alias = aliasIt->second;
-    std::string name  = attributes.find( "name" )->second;
+    std::string alias, name;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+    }
 
-    checkForError( m_bitmasks.contains( alias ), line, "bitmask <" + name + "> is an alias of an unknown bitmask <" + alias + ">." );
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + name + "> already specified" );
-    assert( !m_bitmaskAliases.contains( name ) );
-    m_bitmaskAliases[name] = { alias, line };
+
+    auto bitmaskIt = m_bitmasks.find( alias );
+    checkForError( bitmaskIt != m_bitmasks.end(), line, "bitmask <" + name + "> is an alias of an unknown bitmask <" + alias + ">." );
+    checkForError( bitmaskIt->second.aliases.insert( { name, line } ).second,
+                   line,
+                   "bitmask alias <" + name + "> is already listed as an alias for bitmask <" + alias + ">" );
   }
   else
   {
@@ -14691,7 +14685,7 @@ void VulkanHppGenerator::readTypeBitmask( tinyxml2::XMLElement const * element, 
       checkForError(
         m_types.insert( { nameData.name, TypeData{ TypeCategory::Bitmask, {}, line } } ).second, line, "bitmask <" + nameData.name + "> already specified" );
       assert( !m_bitmasks.contains( nameData.name ) );
-      m_bitmasks[nameData.name] = { require, typeInfo.type, line };
+      m_bitmasks[nameData.name] = { {}, require, typeInfo.type, line };
     }
   }
 }
@@ -15442,6 +15436,32 @@ namespace
   typename std::vector<T>::iterator findByName( std::vector<T> & values, std::string const & name )
   {
     return std::find_if( values.begin(), values.end(), [&name]( T const & value ) { return value.name == name; } );
+  }
+
+  template <typename T>
+  typename std::map<std::string, T>::const_iterator findByNameOrAlias( std::map<std::string, T> const & values, std::string const & name )
+  {
+    auto it = values.find( name );
+    if ( it == values.end() )
+    {
+      it = std::find_if(
+        values.begin(), values.end(), [&name]( auto const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
+    }
+    assert( it != values.end() );
+    return it;
+  }
+
+  template <typename T>
+  typename std::map<std::string, T>::iterator findByNameOrAlias( std::map<std::string, T> & values, std::string const & name )
+  {
+    auto it = values.find( name );
+    if ( it == values.end() )
+    {
+      it = std::find_if(
+        values.begin(), values.end(), [&name]( auto const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
+    }
+    assert( it != values.end() );
+    return it;
   }
 
   template <typename T>

@@ -1801,6 +1801,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePvrtc14BppSrgbBlockIMG                  = VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG,
     ePvrtc22BppSrgbBlockIMG                  = VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG,
     ePvrtc24BppSrgbBlockIMG                  = VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG,
+    eR16G16Sfixed5NV                         = VK_FORMAT_R16G16_SFIXED5_NV,
     eR16G16S105NV                            = VK_FORMAT_R16G16_S10_5_NV,
     eA1B5G5R5UnormPack16KHR                  = VK_FORMAT_A1B5G5R5_UNORM_PACK16_KHR,
     eA8UnormKHR                              = VK_FORMAT_A8_UNORM_KHR

@@ -199,9 +199,10 @@ private:
 
   struct ConstantData
   {
-    std::string type    = {};
-    std::string value   = {};
-    int         xmlLine = {};
+    std::map<std::string, int> aliases = {};
+    std::string                type    = {};
+    std::string                value   = {};
+    int                        xmlLine = {};
   };
 
   struct DefineData
@@ -1033,7 +1034,6 @@ private:
   std::map<std::string, BaseTypeData>     m_baseTypes;
   std::map<std::string, BitmaskData>      m_bitmasks;
   std::map<std::string, CommandData>      m_commands;
-  std::map<std::string, AliasData>        m_constantAliases;
   std::map<std::string, ConstantData>     m_constants;
   std::map<std::string, DefineData>       m_defines;
   DefinesPartition                        m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values

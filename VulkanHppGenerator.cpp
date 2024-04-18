@@ -6899,7 +6899,7 @@ std::string VulkanHppGenerator::generateEnumValueName( std::string const & enumN
   std::string result = "e" + toCamelCase( stripPostfix( stripPrefix( valueName, prefix ), postfix ) );
   if ( bitmask )
   {
-    const size_t pos = result.find( "Bit" );
+    const size_t pos = result.rfind( "Bit" );
     if ( pos != std::string::npos )
     {
       result.erase( pos, 3 );

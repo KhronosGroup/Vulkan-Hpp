@@ -2915,8 +2915,8 @@ namespace VULKAN_HPP_NAMESPACE
     std::string result;
     if ( value & VideoEncodeCapabilityFlagBitsKHR::ePrecedingExternallyEncodedBytes )
       result += "PrecedingExternallyEncodedBytes | ";
-    if ( value & VideoEncodeCapabilityFlagBitsKHR::eInsufficientstreamBufferRangeDetectionBit )
-      result += "InsufficientstreamBufferRangeDetectionBit | ";
+    if ( value & VideoEncodeCapabilityFlagBitsKHR::eInsufficientBitstreamBufferRangeDetection )
+      result += "InsufficientBitstreamBufferRangeDetection | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -2927,12 +2927,12 @@ namespace VULKAN_HPP_NAMESPACE
       return "{}";
 
     std::string result;
-    if ( value & VideoEncodeFeedbackFlagBitsKHR::estreamBufferOffsetBit )
-      result += "streamBufferOffsetBit | ";
-    if ( value & VideoEncodeFeedbackFlagBitsKHR::estreamBytesWrittenBit )
-      result += "streamBytesWrittenBit | ";
-    if ( value & VideoEncodeFeedbackFlagBitsKHR::estreamHasOverridesBit )
-      result += "streamHasOverridesBit | ";
+    if ( value & VideoEncodeFeedbackFlagBitsKHR::eBitstreamBufferOffset )
+      result += "BitstreamBufferOffset | ";
+    if ( value & VideoEncodeFeedbackFlagBitsKHR::eBitstreamBytesWritten )
+      result += "BitstreamBytesWritten | ";
+    if ( value & VideoEncodeFeedbackFlagBitsKHR::eBitstreamHasOverrides )
+      result += "BitstreamHasOverrides | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -8247,7 +8247,7 @@ namespace VULKAN_HPP_NAMESPACE
     switch ( value )
     {
       case VideoEncodeCapabilityFlagBitsKHR::ePrecedingExternallyEncodedBytes: return "PrecedingExternallyEncodedBytes";
-      case VideoEncodeCapabilityFlagBitsKHR::eInsufficientstreamBufferRangeDetectionBit: return "InsufficientstreamBufferRangeDetectionBit";
+      case VideoEncodeCapabilityFlagBitsKHR::eInsufficientBitstreamBufferRangeDetection: return "InsufficientBitstreamBufferRangeDetection";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -8256,9 +8256,9 @@ namespace VULKAN_HPP_NAMESPACE
   {
     switch ( value )
     {
-      case VideoEncodeFeedbackFlagBitsKHR::estreamBufferOffsetBit: return "streamBufferOffsetBit";
-      case VideoEncodeFeedbackFlagBitsKHR::estreamBytesWrittenBit: return "streamBytesWrittenBit";
-      case VideoEncodeFeedbackFlagBitsKHR::estreamHasOverridesBit: return "streamHasOverridesBit";
+      case VideoEncodeFeedbackFlagBitsKHR::eBitstreamBufferOffset: return "BitstreamBufferOffset";
+      case VideoEncodeFeedbackFlagBitsKHR::eBitstreamBytesWritten: return "BitstreamBytesWritten";
+      case VideoEncodeFeedbackFlagBitsKHR::eBitstreamHasOverrides: return "BitstreamHasOverrides";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

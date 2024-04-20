@@ -6918,6 +6918,7 @@ namespace VULKAN_HPP_NAMESPACE
     eDisableOptimization                      = VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT_KHR,
     eAllowDerivatives                         = VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT_KHR,
     eDerivative                               = VK_PIPELINE_CREATE_2_DERIVATIVE_BIT_KHR,
+    eEnableLegacyDitheringEXT                 = VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT,
     eViewIndexFromDeviceIndex                 = VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
     eDispatchBase                             = VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT_KHR,
     eDeferCompileNV                           = VK_PIPELINE_CREATE_2_DEFER_COMPILE_BIT_NV,
@@ -6956,11 +6957,12 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                    isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCreateFlags2KHR allFlags =
       PipelineCreateFlagBits2KHR::eDisableOptimization | PipelineCreateFlagBits2KHR::eAllowDerivatives | PipelineCreateFlagBits2KHR::eDerivative |
-      PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex | PipelineCreateFlagBits2KHR::eDispatchBase | PipelineCreateFlagBits2KHR::eDeferCompileNV |
-      PipelineCreateFlagBits2KHR::eCaptureStatistics | PipelineCreateFlagBits2KHR::eCaptureInternalRepresentations |
-      PipelineCreateFlagBits2KHR::eFailOnPipelineCompileRequired | PipelineCreateFlagBits2KHR::eEarlyReturnOnFailure |
-      PipelineCreateFlagBits2KHR::eLinkTimeOptimizationEXT | PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfoEXT |
-      PipelineCreateFlagBits2KHR::eLibrary | PipelineCreateFlagBits2KHR::eRayTracingSkipTriangles | PipelineCreateFlagBits2KHR::eRayTracingSkipAabbs |
+      PipelineCreateFlagBits2KHR::eEnableLegacyDitheringEXT | PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex |
+      PipelineCreateFlagBits2KHR::eDispatchBase | PipelineCreateFlagBits2KHR::eDeferCompileNV | PipelineCreateFlagBits2KHR::eCaptureStatistics |
+      PipelineCreateFlagBits2KHR::eCaptureInternalRepresentations | PipelineCreateFlagBits2KHR::eFailOnPipelineCompileRequired |
+      PipelineCreateFlagBits2KHR::eEarlyReturnOnFailure | PipelineCreateFlagBits2KHR::eLinkTimeOptimizationEXT |
+      PipelineCreateFlagBits2KHR::eRetainLinkTimeOptimizationInfoEXT | PipelineCreateFlagBits2KHR::eLibrary |
+      PipelineCreateFlagBits2KHR::eRayTracingSkipTriangles | PipelineCreateFlagBits2KHR::eRayTracingSkipAabbs |
       PipelineCreateFlagBits2KHR::eRayTracingNoNullAnyHitShaders | PipelineCreateFlagBits2KHR::eRayTracingNoNullClosestHitShaders |
       PipelineCreateFlagBits2KHR::eRayTracingNoNullMissShaders | PipelineCreateFlagBits2KHR::eRayTracingNoNullIntersectionShaders |
       PipelineCreateFlagBits2KHR::eRayTracingShaderGroupHandleCaptureReplay | PipelineCreateFlagBits2KHR::eIndirectBindableNV |

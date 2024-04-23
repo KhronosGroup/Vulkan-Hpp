@@ -1231,12 +1231,6 @@ void VulkanHppGenerator::checkEnumCorrectness() const
     checkEnumCorrectness( ext.requireData );
   }
 
-  // enum alias checks
-  for ( auto const & alias : m_enumAliases )
-  {
-    checkForError( m_enums.contains( alias.second.name ), alias.second.xmlLine, "enum <" + alias.first + "> uses unknown alias <" + alias.second.name + ">" );
-  }
-
   // special check for VkFormat
   if ( !m_formats.empty() )
   {
@@ -1305,7 +1299,7 @@ void VulkanHppGenerator::checkEnumCorrectness( std::vector<RequireData> const & 
             else
             {
               // every enum not listed in the m_enums, should be an alias of such a thing
-              checkForError( m_enumAliases.contains( type ), typeIt->second.xmlLine, "enum type <" + type + "> is not listed as an enum" );
+              checkForError( findByNameOrAlias( m_enums, type ) != m_enums.end(), typeIt->second.xmlLine, "enum type <" + type + "> is not listed as an enum" );
             }
           }
           break;
@@ -5429,9 +5423,9 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
           auto const enumName = stripPrefix( enumIt->first, "Vk" );
           localUsings += replaceWithMap( usingTemplate, { { "enumName", enumName } } );
 
-          if ( auto const aliasIt = findAlias( enumIt->first, m_enumAliases ); aliasIt != m_enumAliases.end() )
+          for ( auto const & alias : enumIt->second.aliases )
           {
-            localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( aliasIt->first, "Vk" ) } } );
+            localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( alias.first, "Vk" ) } } );
           }
 
           if ( auto const bitmaskIt =
@@ -6561,7 +6555,6 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     bitmask  = generateBitmask( bitmaskIt, surroundingProtect );
   }
 
-  auto                               aliasEnumIt = findAlias( enumData.first, m_enumAliases );
   std::string                        enumValues, previousEnter, previousLeave;
   std::map<std::string, std::string> valueToNameMap;
   for ( auto const & value : enumData.second.values )
@@ -6585,36 +6578,35 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
       }
       enumValues += "    " + valueName + " = " + value.name + ",\n";
 
-      for ( auto const & alias : value.aliases )
+      for ( auto const & valueAlias : value.aliases )
       {
         std::string enumName = enumData.first;
-        auto aliasIt = std::find_if( m_enumAliases.begin(), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } );
-        if ( aliasIt != m_enumAliases.end() )
+        if ( !enumData.second.aliases.empty() )
         {
-          assert( std::find_if( std::next( aliasIt ), m_enumAliases.end(), [&enumData]( auto const & ad ) { return ad.second.name == enumData.first; } ) ==
-                  m_enumAliases.end() );
-          std::string enumTag  = findTag( enumData.first );
-          std::string aliasTag = findTag( aliasIt->first );
-          std::string valueTag = findTag( alias.first );
-          if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( aliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
+          assert( enumData.second.aliases.size() == 1 );
+          auto        enumAliasIt = enumData.second.aliases.begin();
+          std::string enumTag     = findTag( enumData.first );
+          std::string aliasTag    = findTag( enumAliasIt->first );
+          std::string valueTag    = findTag( valueAlias.first );
+          if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( enumAliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
           {
-            enumName = aliasIt->first;
+            enumName = enumAliasIt->first;
           }
         }
 
-        std::string aliasName  = generateEnumValueName( enumName, alias.first, enumData.second.isBitmask );
-        auto [mapIt, inserted] = valueToNameMap.insert( { aliasName, alias.first } );
+        std::string aliasName  = generateEnumValueName( enumName, valueAlias.first, enumData.second.isBitmask );
+        auto [mapIt, inserted] = valueToNameMap.insert( { aliasName, valueAlias.first } );
         if ( inserted )
         {
-          enumValues += "    " + aliasName + " = " + alias.first + ",\n";
+          enumValues += "    " + aliasName + " = " + valueAlias.first + ",\n";
         }
         else
         {
           // some aliases are so close to the original, that no new entry can be generated!
-          assert( mapIt->second != alias.first );
+          assert( mapIt->second != valueAlias.first );
           checkForError( ( mapIt->second == value.name ) || value.aliases.contains( mapIt->second ),
-                         alias.second,
-                         "generated enum alias value name <" + aliasName + ">, generated from <" + alias.first +
+                         valueAlias.second,
+                         "generated enum alias value name <" + aliasName + ">, generated from <" + valueAlias.first +
                            "> is already generated from different enum value <" + mapIt->second + ">" );
         }
       }
@@ -6634,9 +6626,9 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
   }
 
   std::string enumUsing;
-  if ( aliasEnumIt != m_enumAliases.end() )
+  for ( auto const & alias : enumData.second.aliases )
   {
-    enumUsing += "  using " + stripPrefix( aliasEnumIt->first, "Vk" ) + " = " + stripPrefix( enumData.first, "Vk" ) + ";\n";
+    enumUsing += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + stripPrefix( enumData.first, "Vk" ) + ";\n";
   }
 
   const std::string enumTemplate = R"(  enum class ${enumName}${baseType}
@@ -12963,15 +12955,7 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
     checkForError( !type.empty(), line, "enum without type" );
 
     // get the EnumData entry in enum map
-    auto enumIt = m_enums.find( name );
-    if ( enumIt == m_enums.end() )
-    {
-      auto aliasIt = m_enumAliases.find( name );
-      if ( aliasIt != m_enumAliases.end() )
-      {
-        enumIt = m_enums.find( aliasIt->second.name );
-      }
-    }
+    auto enumIt = findByNameOrAlias( m_enums, name );
     checkForError( enumIt != m_enums.end(), line, "enum <" + name + "> is not listed as enum in the types section" );
     checkForError( enumIt->second.values.empty(), line, "enum <" + name + "> already holds values" );
 
@@ -13871,8 +13855,7 @@ void VulkanHppGenerator::readRequireEnum(
       // enum aliases that don't extend something are listed as constants
       auto typeIt = m_types.find( alias );
       checkForError( typeIt != m_types.end(), line, "enum alias <" + name + "> is an alias of an unknown enum <" + alias + ">" );
-      checkForError(
-        typeIt->second.category == TypeCategory::Constant, line, "enum alias <" + name + "> is an alias of a non-constant type <" + alias + ">" );
+      checkForError( typeIt->second.category == TypeCategory::Constant, line, "enum alias <" + name + "> is an alias of a non-constant type <" + alias + ">" );
       checkForError(
         m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second, line, "required enum <" + name + "> already specified" );
 
@@ -14837,7 +14820,9 @@ void VulkanHppGenerator::readTypeEnum( tinyxml2::XMLElement const * element, std
   }
   else
   {
-    checkForError( m_enumAliases.insert( { name, { alias, line } } ).second, line, "enum <" + name + "> already specified as some alias" );
+    auto enumIt = m_enums.find( alias );
+    checkForError( enumIt != m_enums.end(), line, "enum <" + name + "> is an alias of an unknown enum <" + alias + ">" );
+    checkForError( enumIt->second.aliases.insert( { name, line } ).second, line, "enum <" + name + "> already specified as some alias" );
   }
 }
 

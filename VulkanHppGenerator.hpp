@@ -160,6 +160,7 @@ private:
     void addEnumValue(
       int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
 
+    std::map<std::string, int>  aliases      = {};
     std::string                 bitwidth     = {};
     bool                        isBitmask    = false;
     std::vector<EnumValueAlias> valueAliases = {};  // temporary storage for aliases, as they might be specified before the actual value is specified
@@ -1037,7 +1038,6 @@ private:
   std::map<std::string, ConstantData>     m_constants;
   std::map<std::string, DefineData>       m_defines;
   DefinesPartition                        m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
-  std::map<std::string, AliasData>        m_enumAliases;
   std::map<std::string, EnumData>         m_enums;
   std::set<std::string>                   m_extendedStructs;  // structs which are referenced by the structextends tag
   std::vector<ExtensionData>              m_extensions;

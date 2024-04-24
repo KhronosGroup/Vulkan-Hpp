@@ -422,7 +422,7 @@ inline std::string stripPrefix( std::string const & value, std::string const & p
 
 inline std::string toCamelCase( std::string const & value, bool keepSeparatedNumbersSeparated )
 {
-  assert( !value.empty() && ( isupper( value[0] ) || isdigit( value[0] ) ) );
+  assert( value.empty() || isupper( value[0] ) || isdigit( value[0] ) );
   std::string result;
   result.reserve( value.size() );
   for ( size_t i = 0; i < value.size(); ++i )
@@ -439,30 +439,6 @@ inline std::string toCamelCase( std::string const & value, bool keepSeparatedNum
       result.push_back( ( ( 0 == i ) || ( value[i - 1] == '_' ) || isdigit( value[i - 1] ) ) ? value[i] : static_cast<char>( tolower( value[i] ) ) );
     }
   }
-#if 0
-  bool keepUpper = true;
-  for ( auto c : value )
-  {
-    if ( c == '_' )
-    {
-      keepUpper = true;
-    }
-    else if ( isdigit( c ) )
-    {
-      keepUpper = true;
-      result.push_back( c );
-    }
-    else if ( keepUpper )
-    {
-      result.push_back( c );
-      keepUpper = false;
-    }
-    else
-    {
-      result.push_back( static_cast<char>( tolower( c ) ) );
-    }
-  }
-#endif
   return result;
 }
 

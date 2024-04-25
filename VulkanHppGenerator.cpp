@@ -7557,7 +7557,12 @@ ${enter}  class ${className}
     static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType = VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::${debugReportObjectType};
 
   public:
-    VULKAN_HPP_CONSTEXPR ${className}() = default;
+    ${className}() = default;
+    ${className}( ${className} const & rhs ) = default;
+    ${className} & operator=( ${className} const & rhs ) = default;
+    ${className}( ${className} && rhs ) = default;
+    ${className} & operator=( ${className} && rhs ) = default;
+
     VULKAN_HPP_CONSTEXPR ${className}( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
     {}
     ${typesafeExplicitKeyword}${className}( Vk${className} ${memberName} ) VULKAN_HPP_NOEXCEPT
@@ -10262,6 +10267,7 @@ std::string VulkanHppGenerator::generateStaticAssertions( std::vector<RequireDat
       {
         std::string const assertionTemplate = R"(
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::${className} ) == sizeof( Vk${className} ), "handle and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_copy_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not copy_constructible!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::${className}>::value, "${className} is not nothrow_move_constructible!" );
 )";
         str += replaceWithMap( assertionTemplate, { { "className", stripPrefix( handleIt->first, "Vk" ) } } );

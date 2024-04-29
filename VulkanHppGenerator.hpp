@@ -322,16 +322,17 @@ private:
 
   struct HandleData
   {
-    std::set<std::string> childrenHandles     = {};
-    std::set<std::string> commands            = {};
-    std::string           deleteCommand       = {};
-    std::string           deletePool          = {};
-    std::string           destructorType      = {};
-    std::string           objTypeEnum         = {};
-    std::string           parent              = {};
-    std::set<std::string> secondLevelCommands = {};
-    bool                  isDispatchable      = {};
-    int                   xmlLine             = {};
+    std::map<std::string, int> aliases             = {};
+    std::set<std::string>      childrenHandles     = {};
+    std::set<std::string>      commands            = {};
+    std::string                deleteCommand       = {};
+    std::string                deletePool          = {};
+    std::string                destructorType      = {};
+    std::string                objTypeEnum         = {};
+    std::string                parent              = {};
+    std::set<std::string>      secondLevelCommands = {};
+    bool                       isDispatchable      = {};
+    int                        xmlLine             = {};
 
     // RAII data
     std::map<std::string, CommandData>::const_iterator              destructorIt   = {};
@@ -1045,7 +1046,6 @@ private:
   std::vector<FeatureData>                m_features;
   std::map<std::string, FormatData>       m_formats;
   std::map<std::string, FuncPointerData>  m_funcPointers;
-  std::map<std::string, AliasData>        m_handleAliases;
   std::map<std::string, HandleData>       m_handles;
   std::map<std::string, IncludeData>      m_includes;
   std::map<std::string, PlatformData>     m_platforms;

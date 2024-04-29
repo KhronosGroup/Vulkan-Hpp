@@ -5668,8 +5668,11 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
-  auto const [enterDynamicLoader, leaveDynamicLoader] = generateProtection( "VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL" );
-  usings += "\n" + enterDynamicLoader + replaceWithMap( usingTemplate, { { "className", "DynamicLoader" } } ) + leaveDynamicLoader + "\n";
+  auto const dynamicLoaderUsing = std::string{R"(#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+  using VULKAN_HPP_NAMESPACE::DynamicLoader;
+#endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
+)"};
+  usings += dynamicLoaderUsing;
 
   usings += generateCppModuleFormatTraitsUsings();
   usings += generateCppModuleExtensionInspectionUsings();

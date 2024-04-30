@@ -354,16 +354,18 @@ namespace vk
                                                                 void * /*pUserData*/ )
     {
 #if !defined( NDEBUG )
-      if ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) == 0x822806fa )
+      switch ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) )
       {
-        // Validation Warning: vkCreateInstance(): to enable extension VK_EXT_debug_utils, but this extension is intended to support use by applications when
-        // debugging and it is strongly recommended that it be otherwise avoided.
-        return vk::False;
-      }
-      else if ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) == 0xe8d1a9fe )
-      {
-        // Validation Performance Warning: Using debug builds of the validation layers *will* adversely affect performance.
-        return vk::False;
+        case 0:
+          // Validation Warning: Override layer has override paths set to C:/VulkanSDK/<version>/Bin
+          return vk::False;
+        case 0x822806fa:
+          // Validation Warning: vkCreateInstance(): to enable extension VK_EXT_debug_utils, but this extension is intended to support use by applications when
+          // debugging and it is strongly recommended that it be otherwise avoided.
+          return vk::False;
+        case 0xe8d1a9fe:
+          // Validation Performance Warning: Using debug builds of the validation layers *will* adversely affect performance.
+          return vk::False;
       }
 #endif
 
@@ -824,21 +826,22 @@ namespace vk
           : ( surfaceCapabilities.supportedCompositeAlpha & vk::CompositeAlphaFlagBitsKHR::eInherit )        ? vk::CompositeAlphaFlagBitsKHR::eInherit
                                                                                                              : vk::CompositeAlphaFlagBitsKHR::eOpaque;
       vk::PresentModeKHR         presentMode = vk::su::pickPresentMode( physicalDevice.getSurfacePresentModesKHR( surface ) );
-      vk::SwapchainCreateInfoKHR swapChainCreateInfo( {},
-                                                      surface,
-                                                      vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
-                                                      colorFormat,
-                                                      surfaceFormat.colorSpace,
-                                                      swapchainExtent,
-                                                      1,
-                                                      usage,
-                                                      vk::SharingMode::eExclusive,
-                                                      {},
-                                                      preTransform,
-                                                      compositeAlpha,
-                                                      presentMode,
-                                                      true,
-                                                      oldSwapChain );
+      vk::SwapchainCreateInfoKHR swapChainCreateInfo(
+        {},
+        surface,
+        vk::su::clampSurfaceImageCount( 3u, surfaceCapabilities.minImageCount, surfaceCapabilities.maxImageCount ),
+        colorFormat,
+        surfaceFormat.colorSpace,
+        swapchainExtent,
+        1,
+        usage,
+        vk::SharingMode::eExclusive,
+        {},
+        preTransform,
+        compositeAlpha,
+        presentMode,
+        true,
+        oldSwapChain );
       if ( graphicsQueueFamilyIndex != presentQueueFamilyIndex )
       {
         uint32_t queueFamilyIndices[2] = { graphicsQueueFamilyIndex, presentQueueFamilyIndex };

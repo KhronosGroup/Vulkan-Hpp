@@ -1450,11 +1450,6 @@ void VulkanHppGenerator::checkHandleCorrectness() const
 
 void VulkanHppGenerator::checkStructCorrectness() const
 {
-  for ( auto const & structAlias : m_structAliases )
-  {
-    checkForError( m_structs.contains( structAlias.second.name ), structAlias.second.xmlLine, "unknown struct alias <" + structAlias.second.name + ">" );
-  }
-
   std::set<std::string> sTypeValues;
   for ( auto const & structure : m_structs )
   {
@@ -1468,7 +1463,7 @@ void VulkanHppGenerator::checkStructCorrectness() const
     // check for existence of all structs that are extended by this struct
     for ( auto const & extend : structure.second.structExtends )
     {
-      checkForError( m_structs.contains( extend ) || m_structAliases.contains( extend ),
+      checkForError( findByNameOrAlias( m_structs, extend ) != m_structs.end(),
                      structure.second.xmlLine,
                      "struct <" + structure.first + "> extends unknown <" + extend + ">" );
     }
@@ -2138,6 +2133,20 @@ void VulkanHppGenerator::distributeSecondLevelCommands( std::set<std::string> co
       }
     }
   }
+}
+
+void VulkanHppGenerator::distributeStructAliases()
+{
+  for ( auto const & alias : m_structsAliases )
+  {
+    auto structIt = m_structs.find( alias.second.name );
+    checkForError(
+      structIt != m_structs.end(), alias.second.xmlLine, "struct alias <" + alias.first + "> references an unknown struct <" + alias.second.name + ">" );
+    checkForError( structIt->second.aliases.insert( { alias.first, alias.second.xmlLine } ).second,
+                   alias.second.xmlLine,
+                   "struct alias <" + alias.first + "> already listed as an alias for struct <" + alias.second.name + ">" );
+  }
+  m_structsAliases.clear();
 }
 
 void VulkanHppGenerator::filterLenMembers()
@@ -5251,15 +5260,9 @@ std::string VulkanHppGenerator::generateCppModuleStructUsings() const
           auto const structureType = stripPrefix( structIt->first, "Vk" );
           localUsings += replaceWithMap( usingTemplate, { { "structName", structureType } } );
 
-          // replace the findAlias call with the contents, because it includes an assert that breaks in Debug mode, which shouldn't break. There are multiple
-          // aliases for a given struct, and that's ok. Maybe we should refactor
-          for ( auto const & [alias, aliasData] : m_structAliases )
+          for ( auto const & alias : structIt->second.aliases )
           {
-            if ( aliasData.name == structIt->first )
-            {
-              auto const aliasName = stripPrefix( alias, "Vk" );
-              localUsings += replaceWithMap( usingTemplate, { { "structName", aliasName } } );
-            }
+            localUsings += replaceWithMap( usingTemplate, { { "structName", stripPrefix( alias.first, "Vk" ) } } );
           }
         }
       }
@@ -10303,13 +10306,7 @@ std::string VulkanHppGenerator::generateStruct( std::pair<std::string, Structure
     assert( typeIt != m_types.end() );
     if ( ( typeIt->second.category == TypeCategory::Struct ) || ( typeIt->second.category == TypeCategory::Union ) )
     {
-      auto structIt = m_structs.find( member.type.type );
-      if ( structIt == m_structs.end() )
-      {
-        auto aliasIt = m_structAliases.find( member.type.type );
-        assert( aliasIt != m_structAliases.end() );
-        structIt = m_structs.find( aliasIt->second.name );
-      }
+      auto structIt = findByNameOrAlias( m_structs, member.type.type );
       assert( structIt != m_structs.end() );
       if ( ( structure.first != member.type.type ) && !listedStructs.contains( member.type.type ) )
       {
@@ -11110,12 +11107,9 @@ ${members}
     str += replaceWithMap( cppTypeTemplate, { { "sTypeValue", sTypeValue }, { "structureType", structureType } } );
   }
 
-  for ( auto const & alias : m_structAliases )
+  for ( auto const & alias : structure.second.aliases )
   {
-    if ( alias.second.name == structure.first )
-    {
-      str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
-    }
+    str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
   }
 
   str += leave;
@@ -11162,19 +11156,8 @@ std::string VulkanHppGenerator::generateStructExtendsStructs( std::vector<Requir
         // append all allowed structure chains
         for ( auto extendName : structIt->second.structExtends )
         {
-          std::map<std::string, StructureData>::const_iterator itExtend = m_structs.find( extendName );
-          if ( itExtend == m_structs.end() )
-          {
-            // look if the extendName acutally is an alias of some other structure
-            auto aliasIt = m_structAliases.find( extendName );
-            if ( aliasIt != m_structAliases.end() )
-            {
-              itExtend = m_structs.find( aliasIt->second.name );
-              assert( itExtend != m_structs.end() );
-            }
-          }
-
-          const auto [subEnter, subLeave] = generateProtection( getProtectFromType( itExtend->first ) );
+          auto extendsIt                  = findByNameOrAlias( m_structs, extendName );
+          const auto [subEnter, subLeave] = generateProtection( getProtectFromType( extendsIt->first ) );
 
           if ( enter != subEnter )
           {
@@ -11234,12 +11217,9 @@ std::string VulkanHppGenerator::generateStructForwardDeclarations( std::vector<R
         std::string structureType = stripPrefix( structIt->first, "Vk" );
         str += ( structIt->second.isUnion ? "  union " : "  struct " ) + structureType + ";\n";
 
-        for ( auto const & alias : m_structAliases )
+        for ( auto const & alias : structIt->second.aliases )
         {
-          if ( alias.second.name == type )
-          {
-            str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
-          }
+          str += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + structureType + ";\n";
         }
       }
     }
@@ -12548,15 +12528,7 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
 {
   if ( type.starts_with( "Vk" ) )
   {
-    auto it = m_structs.find( type );
-    if ( it == m_structs.end() )
-    {
-      auto aliasIt = m_structAliases.find( type );
-      if ( aliasIt != m_structAliases.end() )
-      {
-        it = m_structs.find( aliasIt->second.name );
-      }
-    }
+    auto it = findByNameOrAlias( m_structs, type );
     if ( it != m_structs.end() )
     {
       return m_extendedStructs.contains( it->first );
@@ -13755,6 +13727,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readExtensions( child );
       distributeEnumValueAliases();  // after extensions are read, there should be no more enums/aliases specified!
+      distributeStructAliases();     // and there should be no more structs/aliases specified
     }
     else if ( value == "feature" )
     {
@@ -14077,7 +14050,7 @@ void VulkanHppGenerator::readSPIRVCapabilityEnable( tinyxml2::XMLElement const *
       }
       else if ( attribute.first == "struct" )
       {
-        checkForError( m_structs.contains( attribute.second ) || m_structAliases.contains( attribute.second ),
+        checkForError( findByNameOrAlias( m_structs, attribute.second ) != m_structs.end(),
                        line,
                        "unknown structure <" + attribute.second + "> specified for SPIR-V capability" );
       }
@@ -14979,8 +14952,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     std::string name  = attributes.find( "name" )->second;
 
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
-    assert( !m_structAliases.contains( name ) );
-    m_structAliases[name] = { alias, line };
+    checkForError( m_structsAliases.insert( { name, { alias, line } } ).second, line, "struct alias <" + name + "> already listed" );
   }
 
   else

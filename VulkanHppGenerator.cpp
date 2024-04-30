@@ -5668,10 +5668,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const [enterDisableEnhanced, leaveDisableEnhanced] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
-  auto const dynamicLoaderUsing = std::string{R"(#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
+  auto const dynamicLoaderUsing = std::string{ R"(#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
   using VULKAN_HPP_NAMESPACE::DynamicLoader;
 #endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
-)"};
+)" };
   usings += dynamicLoaderUsing;
 
   usings += generateCppModuleFormatTraitsUsings();
@@ -7539,10 +7539,9 @@ std::string VulkanHppGenerator::generateHandle( std::pair<std::string, HandleDat
     assert( contains( enumIt->second.values, handleData.second.objTypeEnum ) );
 
     std::string usingAlias;
-    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
-    if ( aliasIt != m_handleAliases.end() )
+    for ( auto const & alias : handleData.second.aliases )
     {
-      usingAlias += "  using " + stripPrefix( aliasIt->first, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) + ";\n";
+      usingAlias += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + stripPrefix( handleData.first, "Vk" ) + ";\n";
     }
 
     const std::string typesafeExplicitKeyword          = handleData.second.isDispatchable ? "" : "VULKAN_HPP_TYPESAFE_EXPLICIT ";
@@ -11812,12 +11811,11 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
   {
     std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
-    if ( aliasIt != m_handleAliases.end() )
+    for ( auto const & alias : handleData.second.aliases )
     {
       static const std::string aliasHandleTemplate = R"(  using Unique${aliasType} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;)";
 
-      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
     }
 
     static const std::string uniqueHandleTemplate = R"(  template <typename Dispatch>
@@ -11889,12 +11887,11 @@ std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, Han
   {
     std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
-    if ( aliasIt != m_handleAliases.end() )
+    for ( auto const & alias : handleData.second.aliases )
     {
       static const std::string aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
 
-      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
     }
 
     static const std::string sharedHandleTemplate = R"(  template <>
@@ -11925,12 +11922,11 @@ std::string VulkanHppGenerator::generateSharedHandleNoDestroy( std::pair<std::st
   {
     std::string type = stripPrefix( handleData.first, "Vk" );
     std::string aliasHandle;
-    auto        aliasIt = findAlias( handleData.first, m_handleAliases );
-    if ( aliasIt != m_handleAliases.end() )
+    for ( auto const & alias : handleData.second.aliases )
     {
       static const std::string aliasHandleTemplate = R"(  using Shared${aliasType} = SharedHandle<${type}>;)";
 
-      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( aliasIt->first, "Vk" ) }, { "type", type } } );
+      aliasHandle += replaceWithMap( aliasHandleTemplate, { { "aliasType", stripPrefix( alias.first, "Vk" ) }, { "type", type } } );
     }
 
     static const std::string sharedHandleTemplate = R"(
@@ -12470,21 +12466,7 @@ bool VulkanHppGenerator::isFeature( std::string const & name ) const
 
 bool VulkanHppGenerator::isHandleType( std::string const & type ) const
 {
-  if ( type.starts_with( "Vk" ) )
-  {
-    auto it = m_handles.find( type );
-    if ( it == m_handles.end() )
-    {
-      auto aliasIt = m_handleAliases.find( type );
-      if ( aliasIt != m_handleAliases.end() )
-      {
-        it = m_handles.find( aliasIt->second.name );
-        assert( it != m_handles.end() );
-      }
-    }
-    return ( it != m_handles.end() );
-  }
-  return false;
+  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_handles, type ) != m_handles.end() );
 }
 
 bool VulkanHppGenerator::isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const
@@ -14901,10 +14883,11 @@ void VulkanHppGenerator::readTypeHandle( tinyxml2::XMLElement const * element, s
     std::string alias = aliasIt->second;
     std::string name  = attributes.find( "name" )->second;
 
-    checkForError( m_handles.contains( alias ), line, "handle <" + name + "> uses unknown alias <" + alias + ">." );
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Handle, {}, line } } ).second, line, "handle <" + name + "> already specified" );
-    assert( !m_handleAliases.contains( name ) );
-    m_handleAliases[name] = { alias, line };
+
+    auto handleIt = m_handles.find( alias );
+    checkForError( handleIt != m_handles.end(), line, "handle <" + name + "> uses unknown alias <" + alias + ">." );
+    checkForError( handleIt->second.aliases.insert( { name, line } ).second, line, "handle <" + name + "> already listed as alias for handle <" + alias + ">" );
   }
   else
   {
@@ -15437,7 +15420,6 @@ namespace
       it = std::find_if(
         values.begin(), values.end(), [&name]( auto const & value ) { return ( value.first == name ) || value.second.aliases.contains( name ); } );
     }
-    assert( it != values.end() );
     return it;
   }
 

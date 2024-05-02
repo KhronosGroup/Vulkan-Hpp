@@ -10538,7 +10538,7 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
     // gather the initializers; skip members with exactly one legal value
     if ( member.value.empty() )
     {
-      initializers.push_back( member.name + "( " + member.name + "_ )" );
+      initializers.push_back( member.name + "{ " + member.name + "_ }" );
     }
   }
   auto pNextIt = std::find_if( structData.second.members.begin(), structData.second.members.end(), []( MemberData const & md ) { return md.name == "pNext"; } );
@@ -10924,11 +10924,11 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
                                                 VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *  pVendorInfos_      = {},
                                                 void *                                            pVendorBinaryData_ = {},
                                                 void *                                            pNext_             = nullptr ) VULKAN_HPP_NOEXCEPT
-      : pNext( pNext_ )
-      , description( description_ )
-      , pAddressInfos( pAddressInfos_ )
-      , pVendorInfos( pVendorInfos_ )
-      , pVendorBinaryData( pVendorBinaryData_ )
+      : pNext{ pNext_ }
+      , description{ description_ }
+      , pAddressInfos{ pAddressInfos_ }
+      , pVendorInfos{ pVendorInfos_ }
+      , pVendorBinaryData{ pVendorBinaryData_ }
     {
     }
 
@@ -10943,10 +10943,10 @@ std::string VulkanHppGenerator::generateStructure( std::pair<std::string, Struct
     DeviceFaultInfoEXT & operator=( DeviceFaultInfoEXT const & ) = delete;
 
     DeviceFaultInfoEXT( DeviceFaultInfoEXT && rhs ) VULKAN_HPP_NOEXCEPT
-      : pNext( rhs.pNext )
-      , pAddressInfos( rhs.pAddressInfos )
-      , pVendorInfos( rhs.pVendorInfos )
-      , pVendorBinaryData( rhs.pVendorBinaryData )
+      : pNext{ rhs.pNext }
+      , pAddressInfos{ rhs.pAddressInfos }
+      , pVendorInfos{ rhs.pVendorInfos }
+      , pVendorBinaryData{ rhs.pVendorBinaryData }
     {
       memcpy( description, rhs.description, VK_MAX_DESCRIPTION_SIZE );
 

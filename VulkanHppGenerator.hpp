@@ -364,14 +364,15 @@ private:
 
   struct StructureData
   {
-    bool                     allowDuplicate      = {};
-    bool                     isUnion             = {};
-    bool                     returnedOnly        = {};
-    bool                     mutualExclusiveLens = {};
-    std::vector<MemberData>  members             = {};
-    std::vector<std::string> structExtends       = {};
-    std::string              subStruct           = {};
-    int                      xmlLine             = {};
+    std::map<std::string, int> aliases             = {};
+    bool                       allowDuplicate      = {};
+    bool                       isUnion             = {};
+    bool                       returnedOnly        = {};
+    bool                       mutualExclusiveLens = {};
+    std::vector<MemberData>    members             = {};
+    std::vector<std::string>   structExtends       = {};
+    std::string                subStruct           = {};
+    int                        xmlLine             = {};
   };
 
   struct TagData
@@ -472,6 +473,7 @@ private:
   std::set<size_t>                                 determineVoidPointerParams( std::vector<ParamData> const & params ) const;
   void                                             distributeEnumValueAliases();
   void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
+  void                                             distributeStructAliases();
   void                                             filterLenMembers();
   std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
   std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
@@ -1050,8 +1052,8 @@ private:
   std::map<std::string, IncludeData>      m_includes;
   std::map<std::string, PlatformData>     m_platforms;
   std::set<std::string>                   m_RAIISpecialFunctions;
-  std::map<std::string, AliasData>        m_structAliases;
   std::map<std::string, StructureData>    m_structs;
+  std::map<std::string, AliasData>        m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
   std::map<std::string, TagData>          m_tags;
   std::map<std::string, TypeData>         m_types;
   std::set<std::string>                   m_unsupportedExtensions;

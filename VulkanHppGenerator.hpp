@@ -366,6 +366,7 @@ private:
   {
     std::map<std::string, int> aliases             = {};
     bool                       allowDuplicate      = {};
+    bool                       isExtended          = {};
     bool                       isUnion             = {};
     bool                       returnedOnly        = {};
     bool                       mutualExclusiveLens = {};
@@ -953,6 +954,7 @@ private:
   bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
+  void markExtendedStructs();
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
                                                                                std::map<size_t, VectorParamData> const & vectorParams,
@@ -1042,7 +1044,6 @@ private:
   std::map<std::string, DefineData>       m_defines;
   DefinesPartition                        m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
   std::map<std::string, EnumData>         m_enums;
-  std::set<std::string>                   m_extendedStructs;  // structs which are referenced by the structextends tag
   std::vector<ExtensionData>              m_extensions;
   std::map<std::string, ExternalTypeData> m_externalTypes;
   std::vector<FeatureData>                m_features;

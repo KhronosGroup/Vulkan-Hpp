@@ -1152,9 +1152,9 @@ int main( int /*argc*/, char ** /*argv*/ )
         swapChainData.swapChain.acquireNextImage( vk::su::FenceTimeout, *perFrameData[frameIndex].presentCompleteSemaphore );
       assert( result == vk::Result::eSuccess );
 
-      while ( vk::Result::eTimeout == device.waitForFences( { *perFrameData[frameIndex].fence }, VK_TRUE, vk::su::FenceTimeout ) )
+      while ( vk::Result::eTimeout == device.waitForFences( *perFrameData[frameIndex].fence, VK_TRUE, vk::su::FenceTimeout ) )
         ;
-      device.resetFences( { *perFrameData[frameIndex].fence } );
+      device.resetFences( *perFrameData[frameIndex].fence );
 
       // reset the command buffer by resetting the complete command pool of this frame
       perFrameData[frameIndex].commandPool.reset();

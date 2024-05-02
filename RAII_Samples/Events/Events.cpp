@@ -58,7 +58,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     int        timeouts = -1;
     do
     {
-      result = device.waitForFences( { fence }, true, vk::su::FenceTimeout );
+      result = device.waitForFences( *fence, true, vk::su::FenceTimeout );
       timeouts++;
     } while ( result == vk::Result::eTimeout );
     assert( result == vk::Result::eSuccess );
@@ -75,16 +75,16 @@ int main( int /*argc*/, char ** /*argv*/ )
     commandPool.reset();
 
     commandBuffer.begin( vk::CommandBufferBeginInfo() );
-    commandBuffer.waitEvents( { event }, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eBottomOfPipe, nullptr, nullptr, nullptr );
+    commandBuffer.waitEvents( *event, vk::PipelineStageFlagBits::eHost, vk::PipelineStageFlagBits::eBottomOfPipe, nullptr, nullptr, nullptr );
     commandBuffer.end();
-    device.resetFences( { fence } );
+    device.resetFences( *fence );
 
     // Note that stepping through this code in the debugger is a bad idea because the GPU can TDR waiting for the event.
     // Execute the code from vk::Queue::submit() through vk::Device::setEvent() without breakpoints
     graphicsQueue.submit( submitInfo, fence );
 
     // We should timeout waiting for the fence because the GPU should be waiting on the event
-    result = device.waitForFences( { fence }, true, vk::su::FenceTimeout );
+    result = device.waitForFences( *fence, true, vk::su::FenceTimeout );
     if ( result != vk::Result::eTimeout )
     {
       std::cout << "Didn't get expected timeout in vk::Device::waitForFences, exiting\n";
@@ -96,11 +96,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     event.set();
     do
     {
-      result = device.waitForFences( { fence }, true, vk::su::FenceTimeout );
+      result = device.waitForFences( *fence, true, vk::su::FenceTimeout );
     } while ( result == vk::Result::eTimeout );
     assert( result == vk::Result::eSuccess );
 
-    device.resetFences( { fence } );
+    device.resetFences( *fence );
     event.reset();
 
     // reset the command buffer by resetting the complete command pool
@@ -116,7 +116,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( result == vk::Result::eEventReset );
 
     // Send the command buffer and loop waiting for the event
-    graphicsQueue.submit( submitInfo, fence );
+    graphicsQueue.submit( submitInfo, *fence );
 
     int polls = 0;
     do
@@ -128,7 +128,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     do
     {
-      result = device.waitForFences( { fence }, true, vk::su::FenceTimeout );
+      result = device.waitForFences( *fence, true, vk::su::FenceTimeout );
     } while ( result == vk::Result::eTimeout );
     assert( result == vk::Result::eSuccess );
 

@@ -11,7 +11,8 @@ jobs:
     
     strategy:
       matrix:
-        compiler: [clang++, g++-11]
+        # g++-12 fails on some very innocent code... excluding it for now
+        compiler: [clang++, g++-11, g++-13]
 
     steps:
     - uses: actions/checkout@v4

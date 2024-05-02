@@ -15,7 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        compiler: [clang++-13, clang++-14, g++-9, g++-10, g++-11]
+        # g++-12 fails on some very innocent code... excluding it for now
+        compiler: [clang++-13, clang++-14, clang++-15, g++-9, g++-10, g++-11, g++-13]
 
     steps:
     - uses: actions/checkout@v4
@@ -51,9 +52,9 @@ jobs:
           done
         done
 
-    - name: Loop over build_types (Debug, Release) with cpp_standard 23 for g++-11 only
+    - name: Loop over build_types (Debug, Release) with cpp_standard 23 for g++-11 and above only
       run: |
-        if [ ${{matrix.compiler}} == g++-11 ]
+        if [ ${{matrix.compiler}} == g++-11 ] || [ ${{matrix.compiler}} == g++-12 ] || [ ${{matrix.compiler}} == g++-13 ]
         then
           cpp_standard=23
           for build_type in Debug Release

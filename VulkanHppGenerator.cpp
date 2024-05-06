@@ -12531,7 +12531,7 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
     auto it = findByNameOrAlias( m_structs, type );
     if ( it != m_structs.end() )
     {
-      return m_extendedStructs.contains( it->first );
+      return it->second.isExtended;
     }
   }
   return false;
@@ -12603,6 +12603,19 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
     }
   }
   return false;
+}
+
+void VulkanHppGenerator::markExtendedStructs()
+{
+  for (auto const& s : m_structs)
+  {
+    for (auto const& extends : s.second.structExtends)
+    {
+      auto structIt = m_structs.find( extends );
+      checkForError( structIt != m_structs.end(), s.second.xmlLine, "struct <" + s.first + "> extends unknown struct <" + extends + ">" );
+      structIt->second.isExtended = true;
+    }
+  }
 }
 
 bool VulkanHppGenerator::needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams,
@@ -13760,6 +13773,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     else if ( value == "types" )
     {
       readTypes( child );
+      markExtendedStructs();
     }
   }
 }
@@ -14954,7 +14968,6 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
     checkForError( m_structsAliases.insert( { name, { alias, line } } ).second, line, "struct alias <" + name + "> already listed" );
   }
-
   else
   {
     checkAttributes( line,
@@ -15075,8 +15088,6 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
         }
       }
     }
-
-    m_extendedStructs.insert( structureData.structExtends.begin(), structureData.structExtends.end() );
   }
 }
 

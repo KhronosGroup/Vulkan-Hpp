@@ -1695,6 +1695,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct MutableDescriptorTypeCreateInfoEXT;
   using MutableDescriptorTypeCreateInfoVALVE = MutableDescriptorTypeCreateInfoEXT;
 
+  //=== VK_EXT_legacy_vertex_attributes ===
+  struct PhysicalDeviceLegacyVertexAttributesFeaturesEXT;
+  struct PhysicalDeviceLegacyVertexAttributesPropertiesEXT;
+
   //=== VK_EXT_layer_settings ===
   struct LayerSettingsCreateInfoEXT;
   struct LayerSettingEXT;

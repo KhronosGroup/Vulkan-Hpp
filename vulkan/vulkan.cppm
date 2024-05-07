@@ -2387,6 +2387,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTMutableDescriptorTypeExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTMutableDescriptorTypeSpecVersion;
 
+  //=== VK_EXT_legacy_vertex_attributes ===
+  using VULKAN_HPP_NAMESPACE::EXTLegacyVertexAttributesExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTLegacyVertexAttributesSpecVersion;
+
   //=== VK_EXT_layer_settings ===
   using VULKAN_HPP_NAMESPACE::EXTLayerSettingsExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTLayerSettingsSpecVersion;
@@ -4217,6 +4221,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MutableDescriptorTypeListVALVE;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMutableDescriptorTypeFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMutableDescriptorTypeFeaturesVALVE;
+
+  //=== VK_EXT_legacy_vertex_attributes ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesPropertiesEXT;
 
   //=== VK_EXT_layer_settings ===
   using VULKAN_HPP_NAMESPACE::LayerSettingEXT;

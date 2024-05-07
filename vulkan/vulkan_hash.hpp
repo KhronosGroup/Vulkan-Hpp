@@ -9413,6 +9413,34 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesFeaturesEXT>
+  {
+    std::size_t operator()(
+      VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesFeaturesEXT const & physicalDeviceLegacyVertexAttributesFeaturesEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesFeaturesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesFeaturesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesFeaturesEXT.legacyVertexAttributes );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesPropertiesEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceLegacyVertexAttributesPropertiesEXT const & physicalDeviceLegacyVertexAttributesPropertiesEXT )
+      const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesPropertiesEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesPropertiesEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceLegacyVertexAttributesPropertiesEXT.nativeUnalignedPerformance );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits const & physicalDeviceLimits ) const VULKAN_HPP_NOEXCEPT

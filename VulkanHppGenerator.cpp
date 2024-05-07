@@ -466,7 +466,7 @@ ${PoolFree}
 #endif // !VULKAN_HPP_NO_SMART_HANDLE
 ${baseTypes}
 
-  template <typename Type, Type value = 0>
+  template <typename Type, Type value = Type{}>
   struct CppType
   {};
 } // namespace VULKAN_HPP_NAMESPACE

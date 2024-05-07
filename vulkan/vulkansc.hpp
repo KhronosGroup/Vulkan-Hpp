@@ -3392,7 +3392,7 @@ namespace VULKAN_HPP_NAMESPACE
   using RemoteAddressNV = void *;
   using SampleMask      = uint32_t;
 
-  template <typename Type, Type value = 0>
+  template <typename Type, Type value = Type{}>
   struct CppType
   {
   };

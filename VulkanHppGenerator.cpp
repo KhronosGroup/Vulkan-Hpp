@@ -3181,6 +3181,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
                                      { "vkCommand", name } } );
           }
         case 2:
+        case 3:
           {
             assert( ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) );
             std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result;
@@ -3420,7 +3421,7 @@ std::string VulkanHppGenerator::generateCommandEnhanced( std::string const &    
   std::string typenameCheck       = generateTypenameCheck( returnParams, vectorParams, chainedReturnParams, definition, dataTypes, flavourFlags );
   std::string nodiscard           = generateNoDiscard( !returnParams.empty(), 1 < commandData.successCodes.size(), 1 < commandData.errorCodes.size() );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, false, dataTypes );
-  std::string decoratedReturnType = generateDecoratedReturnType( name, commandData, returnParams, vectorParams, flavourFlags, false, returnType );
+  std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, flavourFlags, false, returnType );
   std::string className           = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
   std::string classSeparator      = commandData.handle.empty() ? "" : "::";
   std::string commandName         = generateCommandName( name, commandData.params, initialSkipCount, flavourFlags );
@@ -3767,7 +3768,7 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
                                                                                     std::vector<size_t> const & returnParams,
                                                                                     bool                        raii ) const
 {
-  if ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) )
+  if ( ( 2 <= commandData.successCodes.size() ) && ( commandData.successCodes[0] == "VK_SUCCESS" ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) )
   {
     if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
     {
@@ -6219,8 +6220,7 @@ std::string VulkanHppGenerator::generateDebugReportObjectType( std::string const
   return contains( enumIt->second.values, debugReportObjectType ) ? generateEnumValueName( enumIt->first, debugReportObjectType, false ) : "eUnknown";
 }
 
-std::string VulkanHppGenerator::generateDecoratedReturnType( std::string const &                       name,
-                                                             CommandData const &                       commandData,
+std::string VulkanHppGenerator::generateDecoratedReturnType( CommandData const &                       commandData,
                                                              std::vector<size_t> const &               returnParams,
                                                              std::map<size_t, VectorParamData> const & vectorParams,
                                                              CommandFlavourFlags                       flavourFlags,
@@ -6262,19 +6262,20 @@ std::string VulkanHppGenerator::generateDecoratedReturnType( std::string const &
   {
     assert( commandData.returnType == "VkResult" );
     assert( !commandData.successCodes.empty() && ( commandData.successCodes[0] == "VK_SUCCESS" ) );
-    // special handling for vkGetDeviceFaultInfoEXT, as it is an atypical enumeration function
-    if ( ( 1 < commandData.successCodes.size() ) && ( ( returnParams.size() == 1 ) || ( ( returnParams.size() == 2 ) && vectorParams.empty() ) ) &&
-         ( name != "vkGetDeviceFaultInfoEXT" ) )
+    if ( ( commandData.successCodes.size() == 1 ) || ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) )
     {
-      assert( !commandData.errorCodes.empty() );
+      decoratedReturnType = raii ? returnType : ( "typename ResultValueType<" + returnType + ">::type" );
+    }
+    else if ( !commandData.errorCodes.empty() && ( 1 < commandData.successCodes.size() ) &&
+              ( ( returnParams.size() == 1 ) ||
+                ( ( returnParams.size() == 2 ) && ( vectorParams.empty() || ( ( vectorParams.size() == 1 ) && ( commandData.successCodes.size() == 3 ) &&
+                                                                              ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) ) ) ) )
+    {
       decoratedReturnType = ( raii ? "std::pair<VULKAN_HPP_NAMESPACE::Result, " : "ResultValue<" ) + returnType + ">";
     }
     else
     {
-      assert(
-        ( ( commandData.successCodes.size() == 1 ) || ( ( commandData.successCodes.size() == 2 ) && ( commandData.successCodes[1] == "VK_INCOMPLETE" ) ) ) &&
-        ( returnParams.size() <= 3 ) );
-      decoratedReturnType = raii ? returnType : ( "typename ResultValueType<" + returnType + ">::type" );
+      assert( false );
     }
   }
   return decoratedReturnType;
@@ -8245,6 +8246,7 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( std::vector
   auto handleIt = m_handles.find( vkType );
   assert( handleIt != m_handles.end() );
 
+  std::string successCodePassToElement = ( enumerating ? ( successCodes.size() <= 2 ) : ( successCodes.size() <= 1 ) ) ? "" : ", result";
   if ( returnType.starts_with( "std::vector" ) )
   {
     std::string const & returnTemplate             = R"(${returnType} ${returnVariable}RAII;
@@ -8259,7 +8261,6 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( std::vector
     std::string         handleConstructorArguments = generateRAIIHandleSingularConstructorArguments( *handleIt, params, true );
 
     assert( !successCodes.empty() );
-    std::string successCodePassToElement = ( enumerating || ( successCodes.size() == 1 ) ) ? "" : ", result";
 
     return replaceWithMap( returnTemplate,
                            { { "element", element },
@@ -8270,11 +8271,14 @@ std::string VulkanHppGenerator::generateRAIIFactoryReturnStatements( std::vector
   }
   else
   {
-    std::string const & returnTemplate = "return ${returnType}( *this, ${handleConstructorArguments} );";
+    std::string const & returnTemplate = "return ${returnType}( *this, ${handleConstructorArguments}${successCodePassToElement} );";
 
     std::string handleConstructorArguments = generateRAIIHandleSingularConstructorArguments( *handleIt, params, singular );
 
-    return replaceWithMap( returnTemplate, { { "returnType", returnType }, { "handleConstructorArguments", handleConstructorArguments } } );
+    return replaceWithMap( returnTemplate,
+                           { { "returnType", returnType },
+                             { "handleConstructorArguments", handleConstructorArguments },
+                             { "successCodePassToElement", successCodePassToElement } } );
   }
 }
 
@@ -8615,7 +8619,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandEnhanced( std::string c
     needsVectorSizeCheck( commandData.params, vectorParams, returnParams, singularParams, skippedParams );
   std::string noexceptString      = generateNoExcept( commandData.errorCodes, returnParams, vectorParams, flavourFlags, vectorSizeCheck.first, true );
   std::string returnType          = generateReturnType( returnParams, vectorParams, flavourFlags, true, dataTypes );
-  std::string decoratedReturnType = generateDecoratedReturnType( name, commandData, returnParams, vectorParams, flavourFlags, true, returnType );
+  std::string decoratedReturnType = generateDecoratedReturnType( commandData, returnParams, vectorParams, flavourFlags, true, returnType );
 
   if ( definition )
   {
@@ -8961,7 +8965,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorArguments( std::pai
         {
           // this is supposed to be the returned size on an enumeration function!
 #if !defined( NDEBUG )
-          assert( param.type.type == "uint32_t" );
+          assert( ( param.type.type == "size_t" ) || ( param.type.type == "uint32_t" ) );
           auto typeIt = std::find_if( constructorIt->second.params.begin(),
                                       constructorIt->second.params.end(),
                                       [&handle]( ParamData const & pd ) { return pd.type.type == handle.first; } );
@@ -9157,6 +9161,7 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
       }
       break;
     case 2:
+    case 3:
       if ( !constructorIt->second.errorCodes.empty() )
       {
         std::vector<size_t> returnParams = determineReturnParams( constructorIt->second.params );
@@ -9173,7 +9178,8 @@ std::pair<std::string, std::string> VulkanHppGenerator::generateRAIIHandleConstr
             }
             break;
           case 2:
-            if ( constructorIt->second.params[returnParams[0]].type.type == "uint32_t" )
+            if ( ( constructorIt->second.params[returnParams[0]].type.type == "size_t" ) ||
+                 ( constructorIt->second.params[returnParams[0]].type.type == "uint32_t" ) )
             {
               assert( isHandleType( constructorIt->second.params[returnParams[1]].type.type ) );
               std::map<size_t, VectorParamData> vectorParams = determineVectorParams( constructorIt->second.params );
@@ -9301,7 +9307,8 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership( std:
   std::string constructorArguments = generateRAIIHandleConstructorArguments( handle, handle.second.destructorIt, false, true );
   std::string initializationList   = generateRAIIHandleConstructorInitializationList( handle, handle.second.destructorIt, handle.second.destructorIt, true );
   assert( !handle.second.constructorIts.empty() );
-  if ( 1 < handle.second.constructorIts[0]->second.successCodes.size() && ( handle.second.constructorIts[0]->second.successCodes[1] != "VK_INCOMPLETE" ) )
+  if ( ( 1 < handle.second.constructorIts[0]->second.successCodes.size() && ( handle.second.constructorIts[0]->second.successCodes[1] != "VK_INCOMPLETE" ) ) ||
+       ( 2 < handle.second.constructorIts[0]->second.successCodes.size() ) )
   {
 #if !defined( NDEBUG )
     for ( size_t i = 1; i < handle.second.constructorIts.size(); ++i )
@@ -9894,7 +9901,8 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
   std::string returnStatement;
   if ( commandData.returnType.starts_with( "Vk" ) )
   {
-    if ( ( commandData.successCodes.size() == 1 ) || enumerating || ( commandName == "vkGetDeviceFaultInfoEXT" ) )
+    if ( ( commandData.successCodes.size() == 1 ) || ( enumerating && ( commandData.successCodes.size() == 2 ) ) ||
+         ( commandName == "vkGetDeviceFaultInfoEXT" ) )
     {
       assert( commandData.successCodes[0] == "VK_SUCCESS" );
       if ( raii || commandData.errorCodes.empty() )
@@ -11557,7 +11565,8 @@ std::string VulkanHppGenerator::generateSuccessCode( std::string const & code ) 
 std::string VulkanHppGenerator::generateSuccessCodeList( std::vector<std::string> const & successCodes, bool enumerating ) const
 {
   std::string successCodeList;
-  if ( ( 1 < successCodes.size() ) && !enumerating )
+  size_t      skipSize = enumerating ? 2 : 1;
+  if ( skipSize < successCodes.size() )
   {
     successCodeList = ", { " + generateSuccessCode( successCodes[0] );
     for ( size_t i = 1; i < successCodes.size(); ++i )
@@ -12607,9 +12616,9 @@ bool VulkanHppGenerator::isTypeUsed( std::string const & type ) const
 
 void VulkanHppGenerator::markExtendedStructs()
 {
-  for (auto const& s : m_structs)
+  for ( auto const & s : m_structs )
   {
-    for (auto const& extends : s.second.structExtends)
+    for ( auto const & extends : s.second.structExtends )
     {
       auto structIt = m_structs.find( extends );
       checkForError( structIt != m_structs.end(), s.second.xmlLine, "struct <" + s.first + "> extends unknown struct <" + extends + ">" );

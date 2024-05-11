@@ -437,7 +437,8 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_descriptor_pool_overallocation",
       "VK_NV_raw_access_chains",
       "VK_NV_shader_atomic_float16_vector",
-      "VK_NV_ray_tracing_validation"
+      "VK_NV_ray_tracing_validation",
+      "VK_MESA_image_alignment_control"
     };
     return deviceExtensions;
   }
@@ -2312,7 +2313,13 @@ namespace VULKAN_HPP_NAMESPACE
             } } },
           { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_maintenance6", { { "VK_VERSION_1_1", { {} } } } },
-      { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } }
+      { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_MESA_image_alignment_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } }
     };
     auto depIt = dependencies.find( extension );
     return ( depIt != dependencies.end() ) ? depIt->second : noDependencies;
@@ -3076,7 +3083,8 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_MSFT_layered_driver" ) || ( extension == "VK_KHR_index_type_uint8" ) || ( extension == "VK_KHR_line_rasterization" ) ||
            ( extension == "VK_KHR_calibrated_timestamps" ) || ( extension == "VK_KHR_shader_expect_assume" ) || ( extension == "VK_KHR_maintenance6" ) ||
            ( extension == "VK_NV_descriptor_pool_overallocation" ) || ( extension == "VK_NV_raw_access_chains" ) ||
-           ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_NV_ray_tracing_validation" );
+           ( extension == "VK_NV_shader_atomic_float16_vector" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
+           ( extension == "VK_MESA_image_alignment_control" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

@@ -1833,6 +1833,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_validation ===
   struct PhysicalDeviceRayTracingValidationFeaturesNV;
 
+  //=== VK_MESA_image_alignment_control ===
+  struct PhysicalDeviceImageAlignmentControlFeaturesMESA;
+  struct PhysicalDeviceImageAlignmentControlPropertiesMESA;
+  struct ImageAlignmentControlCreateInfoMESA;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================

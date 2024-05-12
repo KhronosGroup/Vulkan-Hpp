@@ -55,7 +55,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     if ( loader_major_version > desiredMajorVersion || ( loader_major_version == desiredMajorVersion && loader_minor_version >= desiredMinorVersion ) )
     {
       // Create the instance
-      vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions() );
+      vk::raii::Instance instance = vk::raii::su::makeInstance( context, AppName, EngineName, {}, vk::su::getInstanceExtensions(), desiredVersion );
 #if !defined( NDEBUG )
       vk::raii::DebugUtilsMessengerEXT debugUtilsMessenger( instance, vk::su::makeDebugUtilsMessengerCreateInfoEXT() );
 #endif

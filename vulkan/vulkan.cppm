@@ -2510,6 +2510,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationSpecVersion;
 
+  //=== VK_MESA_image_alignment_control ===
+  using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlExtensionName;
+  using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlSpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -4359,6 +4363,11 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV;
+
+  //=== VK_MESA_image_alignment_control ===
+  using VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlFeaturesMESA;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlPropertiesMESA;
 
   //===============
   //=== HANDLEs ===

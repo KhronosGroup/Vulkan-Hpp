@@ -83,7 +83,7 @@ vk::UniqueInstance createInstanceUnique( std::string const &              appNam
   );
 
   vk::UniqueInstance instance =
-    vk::createInstanceUnique( vk::su::makeInstanceCreateInfoChain( applicationInfo, enabledLayers, enabledExtensions ).get<vk::InstanceCreateInfo>() );
+    vk::createInstanceUnique( vk::su::makeInstanceCreateInfoChain( {}, applicationInfo, enabledLayers, enabledExtensions ).get<vk::InstanceCreateInfo>() );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
   // initialize function pointers for instance

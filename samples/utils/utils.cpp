@@ -301,7 +301,7 @@ namespace vk
       );
 
       vk::Instance instance =
-        vk::createInstance( makeInstanceCreateInfoChain( applicationInfo, enabledLayers, enabledExtensions ).get<vk::InstanceCreateInfo>() );
+        vk::createInstance( makeInstanceCreateInfoChain( {}, applicationInfo, enabledLayers, enabledExtensions ).get<vk::InstanceCreateInfo>() );
 
 #if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
       // initialize function pointers for instance
@@ -1039,13 +1039,14 @@ namespace vk
 #else
     vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>
 #endif
-      makeInstanceCreateInfoChain( vk::ApplicationInfo const &       applicationInfo,
+      makeInstanceCreateInfoChain( vk::InstanceCreateFlagBits        instanceCreateFlagBits,
+                                   vk::ApplicationInfo const &       applicationInfo,
                                    std::vector<char const *> const & layers,
                                    std::vector<char const *> const & extensions )
     {
 #if defined( NDEBUG )
       // in non-debug mode just use the InstanceCreateInfo for instance creation
-      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo( { {}, &applicationInfo, layers, extensions } );
+      vk::StructureChain<vk::InstanceCreateInfo> instanceCreateInfo( { instanceCreateFlagBits, &applicationInfo, layers, extensions } );
 #else
       // in debug mode, addionally use the debugUtilsMessengerCallback in instance creation!
       vk::DebugUtilsMessageSeverityFlagsEXT severityFlags( vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
@@ -1053,7 +1054,7 @@ namespace vk
       vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags( vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
                                                           vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation );
       vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT> instanceCreateInfo(
-        { {}, &applicationInfo, layers, extensions }, { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback } );
+        { instanceCreateFlagBits, &applicationInfo, layers, extensions }, { {}, severityFlags, messageTypeFlags, &vk::su::debugUtilsMessengerCallback } );
 #endif
       return instanceCreateInfo;
     }

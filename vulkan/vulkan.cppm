@@ -2506,6 +2506,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorExtensionName;
   using VULKAN_HPP_NAMESPACE::NVShaderAtomicFloat16VectorSpecVersion;
 
+  //=== VK_EXT_shader_replicated_composites ===
+  using VULKAN_HPP_NAMESPACE::EXTShaderReplicatedCompositesExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTShaderReplicatedCompositesSpecVersion;
+
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationSpecVersion;
@@ -4360,6 +4364,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NV_shader_atomic_float16_vector ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV;
+
+  //=== VK_EXT_shader_replicated_composites ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderReplicatedCompositesFeaturesEXT;
 
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV;

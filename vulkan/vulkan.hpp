@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 285, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 286, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -8684,6 +8684,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVShaderAtomicFloat16VectorExtensionName = VK_NV_SHADER_ATOMIC_FLOAT16_VECTOR_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVShaderAtomicFloat16VectorSpecVersion   = VK_NV_SHADER_ATOMIC_FLOAT16_VECTOR_SPEC_VERSION;
 
+  //=== VK_EXT_shader_replicated_composites ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderReplicatedCompositesExtensionName = VK_EXT_SHADER_REPLICATED_COMPOSITES_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderReplicatedCompositesSpecVersion   = VK_EXT_SHADER_REPLICATED_COMPOSITES_SPEC_VERSION;
+
   //=== VK_NV_ray_tracing_validation ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationExtensionName = VK_NV_RAY_TRACING_VALIDATION_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationSpecVersion   = VK_NV_RAY_TRACING_VALIDATION_SPEC_VERSION;
@@ -16689,6 +16693,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_shader_replicated_composites ===
+  template <>
+  struct StructExtends<PhysicalDeviceShaderReplicatedCompositesFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceShaderReplicatedCompositesFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_NV_ray_tracing_validation ===
   template <>
   struct StructExtends<PhysicalDeviceRayTracingValidationFeaturesNV, PhysicalDeviceFeatures2>
@@ -16782,7 +16805,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

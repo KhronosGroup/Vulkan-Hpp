@@ -12905,10 +12905,11 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} } }, { { "bitwidth", { "64" } }, { "comment", {} }, { "type", { "bitmask", "enum" } } } );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "bitwidth", { "64" } }, { "comment", {} }, { "type", { "bitmask", "constants", "enum" } } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
 
-  std::string bitwidth, name, type;
+  std::string bitwidth, name;
+  std::string type = "constants";  // hard-coded fallback for older versions, where "API Constants" did not have a type attribute, yet
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "bitwidth" )
@@ -12926,8 +12927,9 @@ void VulkanHppGenerator::readEnums( tinyxml2::XMLElement const * element )
   }
   assert( !name.empty() );
 
-  if ( name == "API Constants" )
+  if ( type == "constants" )
   {
+    assert( name == "API Constants" );
     checkElements( line, children, { { "enum", false } }, {} );
     for ( auto const & child : children )
     {
@@ -13306,7 +13308,7 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, {} );
+  checkAttributes( line, attributes, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "name", {} }, { "number", {} } }, { { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "require", false } }, { "remove" } );
 

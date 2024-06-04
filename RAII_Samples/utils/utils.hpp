@@ -749,7 +749,7 @@ namespace vk
 #else
         vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>
 #endif
-          instanceCreateInfoChain = vk::su::makeInstanceCreateInfoChain( applicationInfo, enabledLayers, enabledExtensions );
+          instanceCreateInfoChain = vk::su::makeInstanceCreateInfoChain( {}, applicationInfo, enabledLayers, enabledExtensions );
 
         return vk::raii::Instance( context, instanceCreateInfoChain.get<vk::InstanceCreateInfo>() );
       }

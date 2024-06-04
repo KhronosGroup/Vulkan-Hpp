@@ -77,7 +77,7 @@ namespace vk
     VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
     {
       uint32_t imageCount = std::max( desiredImageCount, minImageCount );
-      if( maxImageCount > 0 )
+      if ( maxImageCount > 0 )
       {
         imageCount = std::min( imageCount, maxImageCount );
       }
@@ -425,7 +425,8 @@ namespace vk
 #else
     vk::StructureChain<vk::InstanceCreateInfo, vk::DebugUtilsMessengerCreateInfoEXT>
 #endif
-                         makeInstanceCreateInfoChain( vk::ApplicationInfo const &       applicationInfo,
+                         makeInstanceCreateInfoChain( vk::InstanceCreateFlagBits        instanceCreateFlagBits,
+                                                      vk::ApplicationInfo const &       applicationInfo,
                                                       std::vector<char const *> const & layers,
                                                       std::vector<char const *> const & extensions );
     vk::Format           pickDepthFormat( vk::PhysicalDevice const & physicalDevice );

@@ -385,6 +385,7 @@ private:
   {
     size_t lenParam    = INVALID_INDEX;
     size_t strideParam = INVALID_INDEX;
+    bool   byStructure = false;
   };
 
   struct MacroVisitor final : tinyxml2::XMLVisitor
@@ -450,6 +451,7 @@ private:
   bool                     containsFuncPointer( std::string const & type ) const;
   bool                     containsFloatingPoints( std::vector<MemberData> const & members ) const;
   bool                     containsUnion( std::string const & type ) const;
+  bool                     describesVector( StructureData const & structure, std::string const & type = "" ) const;
   std::vector<size_t>      determineChainedReturnParams( std::vector<ParamData> const & params, std::vector<size_t> const & returnParams ) const;
   std::vector<size_t>      determineConstPointerParams( std::vector<ParamData> const & params ) const;
   std::vector<std::string> determineDataTypes( std::vector<VulkanHppGenerator::ParamData> const & params,
@@ -564,7 +566,7 @@ private:
                                        bool                                      definition,
                                        std::map<size_t, VectorParamData> const & vectorParams,
                                        std::vector<size_t> const &               returnParams,
-                                       CommandFlavourFlags                       flavourFlags = {} ) const;
+                                       CommandFlavourFlags                       flavourFlags ) const;
   std::string generateCommandName( std::string const &            vulkanCommandName,
                                    std::vector<ParamData> const & params,
                                    size_t                         initialSkipCount,
@@ -695,7 +697,8 @@ private:
                                        std::map<size_t, VectorParamData> const & vectorParams,
                                        std::set<size_t> const &                  templatedParams,
                                        CommandFlavourFlags                       flavourFlags,
-                                       bool                                      enumerating ) const;
+                                       bool                                      enumerating,
+                                       std::vector<std::string> const &          dataTypes ) const;
   std::string generateDataSizeChecks( CommandData const &                       commandData,
                                       std::vector<size_t> const &               returnParams,
                                       std::vector<std::string> const &          returnParamTypes,
@@ -842,7 +845,8 @@ private:
   std::string generateRAIIHandles() const;
   std::string generateRAIIHandleSingularConstructorArguments( std::pair<std::string, HandleData> const & handle,
                                                               std::vector<ParamData> const &             params,
-                                                              bool                                       singular ) const;
+                                                              std::string const &                        argumentType,
+                                                              std::string const &                        argumentName ) const;
   template <class Predicate, class Extraction>
   std::string generateReplacedExtensionsList( Predicate p, Extraction e ) const;
   std::string generateResultAssignment( CommandData const & commandData ) const;
@@ -938,12 +942,15 @@ private:
   bool                                handleRemovalType( std::string const & type, std::vector<RequireData> & requireData );
   bool                                hasLen( MemberData const & md, std::vector<MemberData> const & members ) const;
   bool                                hasParentHandle( std::string const & handle, std::string const & parent ) const;
-  bool                                isDeviceCommand( CommandData const & commandData ) const;
-  bool                                isExtension( std::string const & name ) const;
-  bool                                isFeature( std::string const & name ) const;
-  bool                                isHandleType( std::string const & type ) const;
-  bool                                isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
-  bool                                isLenByStructMember( std::string const & name, ParamData const & param ) const;
+  bool isConstructorCandidate( std::pair<std::string, VulkanHppGenerator::CommandData> const & command, std::string const & handleType ) const;
+  bool isConstructorCandidate( ParamData const & paramData, std::string const & handleType ) const;
+  bool isDeviceCommand( CommandData const & commandData ) const;
+  bool isExtension( std::string const & name ) const;
+  bool isFeature( std::string const & name ) const;
+  bool isHandleType( std::string const & type ) const;
+  bool isHandleTypeByStructure( std::string const & type ) const;
+  bool isLenByStructMember( std::string const & name, std::vector<ParamData> const & params ) const;
+  bool isLenByStructMember( std::string const & name, ParamData const & param ) const;
   bool isMultiSuccessCodeConstructor( std::vector<std::map<std::string, CommandData>::const_iterator> const & constructorIts ) const;
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
@@ -1033,6 +1040,7 @@ private:
   bool                     skipLeadingGrandParent( std::pair<std::string, HandleData> const & handle ) const;
   std::string              stripPluralS( std::string const & name ) const;
   std::string              toString( TypeCategory category );
+  MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
   std::string                                    m_api;

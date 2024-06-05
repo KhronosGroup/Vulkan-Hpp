@@ -884,14 +884,14 @@ void VulkanHppGenerator::addCommandsToHandle( std::vector<RequireData> const & r
   {
     for ( auto const & command : require.commands )
     {
-      auto commandIt = findByNameOrAlias( m_commands, command );
+      auto commandIt = findByNameOrAlias( m_commands, command.first );
       assert( commandIt != m_commands.end() );
       auto handleIt = m_handles.find( commandIt->second.handle );
       assert( handleIt != m_handles.end() );
-      if ( !handleIt->second.commands.contains( command ) )
+      if ( !handleIt->second.commands.contains( command.first ) )
       {
-        handleIt->second.commands.insert( command );
-        registerDeleter( command, commandIt->second );
+        handleIt->second.commands.insert( command.first );
+        registerDeleter( command.first, commandIt->second );
       }
     }
   }
@@ -986,23 +986,23 @@ void VulkanHppGenerator::appendDispatchLoaderDynamicCommands( std::vector<Requir
   {
     for ( auto const & command : require.commands )
     {
-      if ( listedCommands.insert( command ).second )
+      if ( listedCommands.insert( command.first ).second )
       {
-        auto commandIt = findByNameOrAlias( m_commands, command );
+        auto commandIt = findByNameOrAlias( m_commands, command.first );
         assert( commandIt != m_commands.end() );
 
-        members += "    PFN_" + command + " " + command + " = 0;\n";
-        placeholders += "    PFN_dummy " + command + "_placeholder = 0;\n";
+        members += "    PFN_" + command.first + " " + command.first + " = 0;\n";
+        placeholders += "    PFN_dummy " + command.first + "_placeholder = 0;\n";
         if ( commandIt->second.handle.empty() )
         {
-          initial += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "NULL" );
+          initial += generateDispatchLoaderDynamicCommandAssignment( command.first, commandIt->first, "NULL" );
         }
         else
         {
-          instance += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "instance" );
+          instance += generateDispatchLoaderDynamicCommandAssignment( command.first, commandIt->first, "instance" );
           if ( isDeviceCommand( commandIt->second ) )
           {
-            device += generateDispatchLoaderDynamicCommandAssignment( command, commandIt->first, "device" );
+            device += generateDispatchLoaderDynamicCommandAssignment( command.first, commandIt->first, "device" );
           }
         }
       }
@@ -1048,26 +1048,26 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
   {
     for ( auto const & command : require.commands )
     {
-      if ( listedCommands.insert( command ).second )
+      if ( listedCommands.insert( command.first ).second )
       {
-        auto commandIt = findByNameOrAlias( m_commands, command );
+        auto commandIt = findByNameOrAlias( m_commands, command.first );
         if ( commandIt->second.handle.empty() )
         {
-          ci += ", " + command + "( PFN_" + command + "( getProcAddr( NULL, \"" + command + "\" ) ) )";
+          ci += ", " + command.first + "( PFN_" + command.first + "( getProcAddr( NULL, \"" + command.first + "\" ) ) )";
 
-          cm += "      PFN_" + command + " " + command + " = 0;\n";
+          cm += "      PFN_" + command.first + " " + command.first + " = 0;\n";
         }
         else if ( ( commandIt->second.handle == "VkDevice" ) || hasParentHandle( commandIt->second.handle, "VkDevice" ) )
         {
-          da += "        " + command + " = PFN_" + command + "( vkGetDeviceProcAddr( device, \"" + command + "\" ) );\n";
+          da += "        " + command.first + " = PFN_" + command.first + "( vkGetDeviceProcAddr( device, \"" + command.first + "\" ) );\n";
           // if this is an alias'ed function, use it as a fallback for the original one
-          if ( command != commandIt->first )
+          if ( command.first != commandIt->first )
           {
-            da += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command + ";\n";
+            da += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command.first + ";\n";
           }
 
-          dm += "      PFN_" + command + " " + command + " = 0;\n";
-          dmp += "      PFN_dummy " + command + "_placeholder = 0;\n";
+          dm += "      PFN_" + command.first + " " + command.first + " = 0;\n";
+          dmp += "      PFN_dummy " + command.first + "_placeholder = 0;\n";
         }
         else
         {
@@ -1075,18 +1075,18 @@ void VulkanHppGenerator::appendRAIIDispatcherCommands( std::vector<RequireData> 
 
           // filter out vkGetInstanceProcAddr, as starting with Vulkan 1.2 it can resolve itself only (!) with an
           // instance nullptr !
-          if ( command != "vkGetInstanceProcAddr" )
+          if ( command.first != "vkGetInstanceProcAddr" )
           {
-            ia += "        " + command + " = PFN_" + command + "( vkGetInstanceProcAddr( instance, \"" + command + "\" ) );\n";
+            ia += "        " + command.first + " = PFN_" + command.first + "( vkGetInstanceProcAddr( instance, \"" + command.first + "\" ) );\n";
             // if this is an alias'ed function, use it as a fallback for the original one
-            if ( command != commandIt->first )
+            if ( command.first != commandIt->first )
             {
-              ia += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command + ";\n";
+              ia += "        if ( !" + commandIt->first + " ) " + commandIt->first + " = " + command.first + ";\n";
             }
           }
 
-          im += +"      PFN_" + command + " " + command + " = 0;\n";
-          imp += "      PFN_dummy " + command + "_placeholder = 0;\n";
+          im += +"      PFN_" + command.first + " " + command.first + " = 0;\n";
+          imp += "      PFN_dummy " + command.first + "_placeholder = 0;\n";
         }
       }
     }
@@ -2139,7 +2139,7 @@ void VulkanHppGenerator::distributeStructAliases()
 {
   for ( auto const & alias : m_structsAliases )
   {
-    auto structIt = m_structs.find( alias.second.name );
+    auto structIt = findByNameOrAlias( m_structs, alias.second.name );
     checkForError(
       structIt != m_structs.end(), alias.second.xmlLine, "struct alias <" + alias.first + "> references an unknown struct <" + alias.second.name + ">" );
     checkForError( structIt->second.aliases.insert( { alias.first, alias.second.xmlLine } ).second,
@@ -3305,11 +3305,11 @@ std::string VulkanHppGenerator::generateCommandDefinitions( std::vector<RequireD
   {
     for ( auto const & command : require.commands )
     {
-      if ( listedCommands.insert( command ).second )
+      if ( listedCommands.insert( command.first ).second )
       {
-        auto commandIt = findByNameOrAlias( m_commands, command );
+        auto commandIt = findByNameOrAlias( m_commands, command.first );
         assert( commandIt != m_commands.end() );
-        str += generateCommandDefinitions( command, commandIt->second.handle );
+        str += generateCommandDefinitions( command.first, commandIt->second.handle );
       }
     }
   }
@@ -6517,9 +6517,9 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
     for ( auto const & command : require.commands )
     {
       // some commands are listed for multiple extensions !
-      if ( listedCommands.insert( command ).second )
+      if ( listedCommands.insert( command.first ).second )
       {
-        auto commandIt = findByNameOrAlias( m_commands, command );
+        auto commandIt = findByNameOrAlias( m_commands, command.first );
         assert( commandIt != m_commands.end() );
 
         str += "\n";
@@ -6541,9 +6541,11 @@ std::string VulkanHppGenerator::generateDispatchLoaderStaticCommands( std::vecto
     }
 )";
 
-        str += replaceWithMap(
-          commandTemplate,
-          { { "commandName", command }, { "parameterList", parameterList }, { "parameters", parameters }, { "returnType", commandIt->second.returnType } } );
+        str += replaceWithMap( commandTemplate,
+                               { { "commandName", command.first },
+                                 { "parameterList", parameterList },
+                                 { "parameters", parameters },
+                                 { "returnType", commandIt->second.returnType } } );
       }
     }
   }
@@ -6588,9 +6590,8 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
       for ( auto const & valueAlias : value.aliases )
       {
         std::string enumName = enumData.first;
-        if ( !enumData.second.aliases.empty() )
+        for ( auto aliasIt = enumData.second.aliases.begin(); ( aliasIt != enumData.second.aliases.end() ) && ( enumName == enumData.first ); ++aliasIt )
         {
-          assert( enumData.second.aliases.size() == 1 );
           auto        enumAliasIt = enumData.second.aliases.begin();
           std::string enumTag     = findTag( enumData.first );
           std::string aliasTag    = findTag( enumAliasIt->first );
@@ -8142,9 +8143,9 @@ std::string VulkanHppGenerator::generateRAIICommandDefinitions( std::vector<Requ
   {
     for ( auto const & command : require.commands )
     {
-      if ( listedCommands.insert( command ).second )
+      if ( listedCommands.insert( command.first ).second )
       {
-        str += generateRAIIHandleCommand( command, determineInitialSkipCount( command ), true );
+        str += generateRAIIHandleCommand( command.first, determineInitialSkipCount( command.first ), true );
       }
     }
   }
@@ -8497,8 +8498,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommand( std::string const & c
 std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair<std::string, HandleData> const & handle,
                                                                        std::set<std::string> const &              specialFunctions ) const
 {
-  std::string           functionDeclarations;
-  std::set<std::string> listedCommands;  // some commands are listed with more than one extension !
+  std::string                                        functionDeclarations;
+  std::map<std::string, std::pair<std::string, int>> listedCommands;  // some commands are listed with more than one extension !
   for ( auto const & feature : m_features )
   {
     std::vector<std::string> firstLevelCommands, secondLevelCommands;
@@ -8507,20 +8508,27 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     {
       for ( auto const & command : require.commands )
       {
-        if ( !specialFunctions.contains( command ) )
+        if ( !specialFunctions.contains( command.first ) )
         {
-          if ( handle.second.commands.contains( command ) )
+          if ( handle.second.commands.contains( command.first ) )
           {
-            assert( !listedCommands.contains( command ) );
-            listedCommands.insert( command );
-            firstLevelCommands.push_back( command );
+            assert( !listedCommands.contains( command.first ) );
+            listedCommands.insert( { command.first, { feature.name, command.second } } );
+            firstLevelCommands.push_back( command.first );
           }
-          else if ( handle.second.secondLevelCommands.contains( command ) )
+          else if ( handle.second.secondLevelCommands.contains( command.first ) )
           {
-            assert( !listedCommands.contains( command ) );
-            listedCommands.insert( command );
+            auto listedIt = listedCommands.find( command.first );
+            if ( listedIt != listedCommands.end() )
+            {
+              checkForError( false,
+                             command.second,
+                             "command <" + command.first + "> already listed as required for feature <" + listedIt->second.first + "> on line " +
+                               std::to_string( listedIt->second.second ) );
+            }
+            listedCommands.insert( { command.first, { feature.name, command.second } } );
             assert( !handle.first.empty() );
-            secondLevelCommands.push_back( command );
+            secondLevelCommands.push_back( command.first );
           }
         }
       }
@@ -8547,17 +8555,17 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
     {
       for ( auto const & command : req.commands )
       {
-        if ( !specialFunctions.contains( command ) && !listedCommands.contains( command ) )
+        if ( !specialFunctions.contains( command.first ) && !listedCommands.contains( command.first ) )
         {
-          if ( handle.second.commands.contains( command ) )
+          if ( handle.second.commands.contains( command.first ) )
           {
-            listedCommands.insert( command );
-            firstLevelCommands.push_back( command );
+            listedCommands.insert( { command.first, { extension.name, command.second } } );
+            firstLevelCommands.push_back( command.first );
           }
-          else if ( handle.second.secondLevelCommands.contains( command ) )
+          else if ( handle.second.secondLevelCommands.contains( command.first ) )
           {
-            listedCommands.insert( command );
-            secondLevelCommands.push_back( command );
+            listedCommands.insert( { command.first, { extension.name, command.second } } );
+            secondLevelCommands.push_back( command.first );
           }
         }
       }
@@ -12347,12 +12355,13 @@ bool VulkanHppGenerator::handleRemovalCommand( std::string const & command, std:
   bool removed = false;
   for ( auto requireDataIt = requireData.begin(); !removed && ( requireDataIt != requireData.end() ); ++requireDataIt )
   {
-    auto requireCommandIt = std::find( requireDataIt->commands.begin(), requireDataIt->commands.end(), command );
+    auto requireCommandIt = std::find_if(
+      requireDataIt->commands.begin(), requireDataIt->commands.end(), [&command]( std::pair<std::string, int> c ) { return c.first == command; } );
     if ( requireCommandIt != requireDataIt->commands.end() )
     {
       assert( std::none_of( std::next( requireCommandIt ),
                             requireDataIt->commands.end(),
-                            [&command]( std::string const & requireCommand ) { return requireCommand == command; } ) );
+                            [&command]( std::pair<std::string, int> const & requireCommand ) { return requireCommand.first == command; } ) );
       requireDataIt->commands.erase( requireCommandIt );
       assert( !requireDataIt->commands.empty() || !requireDataIt->types.empty() );
       removed = true;
@@ -12360,8 +12369,9 @@ bool VulkanHppGenerator::handleRemovalCommand( std::string const & command, std:
 #if !defined( NDEBUG )
       for ( auto it = std::next( requireDataIt ); it != requireData.end(); ++it )
       {
-        assert(
-          std::none_of( it->commands.begin(), it->commands.end(), [&command]( std::string const & requireCommand ) { return requireCommand == command; } ) );
+        assert( std::none_of( it->commands.begin(),
+                              it->commands.end(),
+                              [&command]( std::pair<std::string, int> const & requireCommand ) { return requireCommand.first == command; } ) );
       }
 #endif
     }
@@ -13116,7 +13126,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     std::string value = child->Value();
     if ( value == "command" )
     {
-      requireData.commands.push_back( readRequireCommand( child, extensionData.name ) );
+      requireData.commands.push_back( { readRequireCommand( child, extensionData.name ), child->GetLineNum() } );
     }
     else if ( value == "enum" )
     {
@@ -13406,7 +13416,7 @@ VulkanHppGenerator::RequireData
     std::string value = child->Value();
     if ( value == "command" )
     {
-      requireData.commands.push_back( readRequireCommand( child, featureName ) );
+      requireData.commands.push_back( { readRequireCommand( child, featureName ), child->GetLineNum() } );
     }
     else if ( value == "enum" )
     {
@@ -13958,7 +13968,7 @@ void VulkanHppGenerator::readRequireEnum(
       checkForError( typeIt != m_types.end(), line, "enum value <" + name + "> extends unknown type <" + extends + ">" );
       checkForError( typeIt->second.category == TypeCategory::Enum, line, "enum value <" + name + "> extends non-enum type <" + extends + ">" );
       typeIt->second.requiredBy.insert( requiredBy );
-      const auto enumIt = m_enums.find( extends );
+      auto enumIt = findByNameOrAlias( m_enums, extends );
       assert( enumIt != m_enums.end() );
 
       enumIt->second.addEnumValue(
@@ -14977,7 +14987,11 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     std::string name  = attributes.find( "name" )->second;
 
     checkForError( m_types.insert( { name, TypeData{ TypeCategory::Struct, {}, line } } ).second, line, "struct <" + name + "> already specified" );
-    checkForError( m_structsAliases.insert( { name, { alias, line } } ).second, line, "struct alias <" + name + "> already listed" );
+    checkForError(
+      std::none_of( m_structsAliases.begin(), m_structsAliases.end(), [&name]( std::pair<std::string, AliasData> const & ad ) { return ad.first == name; } ),
+      line,
+      "struct alias <" + name + "> already listed" );
+    m_structsAliases.push_back( { name, { alias, line } } );
   }
   else
   {
@@ -15281,9 +15295,9 @@ std::vector<std::string> VulkanHppGenerator::selectCommandsByHandle( std::vector
   {
     for ( auto const & command : require.commands )
     {
-      if ( handleCommands.contains( command ) && listedCommands.insert( command ).second )
+      if ( handleCommands.contains( command.first ) && listedCommands.insert( command.first ).second )
       {
-        selectedCommands.push_back( command );
+        selectedCommands.push_back( command.first );
       }
     }
   }

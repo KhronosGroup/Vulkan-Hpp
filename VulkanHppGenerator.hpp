@@ -234,12 +234,12 @@ private:
 
   struct RequireData
   {
-    std::string                        depends       = {};
-    std::vector<std::string>           commands      = {};
-    std::map<std::string, std::string> enumConstants = {};
-    std::vector<std::string>           constants     = {};
-    std::vector<std::string>           types         = {};
-    int                                xmlLine       = {};
+    std::string                              depends       = {};
+    std::vector<std::pair<std::string, int>> commands      = {};
+    std::map<std::string, std::string>       enumConstants = {};
+    std::vector<std::string>                 constants     = {};
+    std::vector<std::string>                 types         = {};
+    int                                      xmlLine       = {};
   };
 
   struct ExtensionData
@@ -1035,29 +1035,29 @@ private:
   std::string              toString( TypeCategory category );
 
 private:
-  std::string                             m_api;
-  std::map<std::string, BaseTypeData>     m_baseTypes;
-  std::map<std::string, BitmaskData>      m_bitmasks;
-  std::map<std::string, CommandData>      m_commands;
-  std::map<std::string, ConstantData>     m_constants;
-  std::map<std::string, DefineData>       m_defines;
-  DefinesPartition                        m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
-  std::map<std::string, EnumData>         m_enums;
-  std::vector<ExtensionData>              m_extensions;
-  std::map<std::string, ExternalTypeData> m_externalTypes;
-  std::vector<FeatureData>                m_features;
-  std::map<std::string, FormatData>       m_formats;
-  std::map<std::string, FuncPointerData>  m_funcPointers;
-  std::map<std::string, HandleData>       m_handles;
-  std::map<std::string, IncludeData>      m_includes;
-  std::map<std::string, PlatformData>     m_platforms;
-  std::set<std::string>                   m_RAIISpecialFunctions;
-  std::map<std::string, StructureData>    m_structs;
-  std::map<std::string, AliasData>        m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
-  std::map<std::string, TagData>          m_tags;
-  std::map<std::string, TypeData>         m_types;
-  std::set<std::string>                   m_unsupportedExtensions;
-  std::set<std::string>                   m_unsupportedFeatures;
-  std::string                             m_version;
-  std::string                             m_vulkanLicenseHeader;
+  std::string                                    m_api;
+  std::map<std::string, BaseTypeData>            m_baseTypes;
+  std::map<std::string, BitmaskData>             m_bitmasks;
+  std::map<std::string, CommandData>             m_commands;
+  std::map<std::string, ConstantData>            m_constants;
+  std::map<std::string, DefineData>              m_defines;
+  DefinesPartition                               m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
+  std::map<std::string, EnumData>                m_enums;
+  std::vector<ExtensionData>                     m_extensions;
+  std::map<std::string, ExternalTypeData>        m_externalTypes;
+  std::vector<FeatureData>                       m_features;
+  std::map<std::string, FormatData>              m_formats;
+  std::map<std::string, FuncPointerData>         m_funcPointers;
+  std::map<std::string, HandleData>              m_handles;
+  std::map<std::string, IncludeData>             m_includes;
+  std::map<std::string, PlatformData>            m_platforms;
+  std::set<std::string>                          m_RAIISpecialFunctions;
+  std::map<std::string, StructureData>           m_structs;
+  std::vector<std::pair<std::string, AliasData>> m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
+  std::map<std::string, TagData>                 m_tags;
+  std::map<std::string, TypeData>                m_types;
+  std::set<std::string>                          m_unsupportedExtensions;
+  std::set<std::string>                          m_unsupportedFeatures;
+  std::string                                    m_version;
+  std::string                                    m_vulkanLicenseHeader;
 };

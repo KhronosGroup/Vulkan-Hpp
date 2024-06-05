@@ -57,66 +57,72 @@ public:
   }
 #endif
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  std::strong_ordering operator<=>( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) <=> *static_cast<std::array<char, N> const *>( &rhs );
-  }
-#else
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator<( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) < *static_cast<std::array<char, N> const *>( &rhs );
-  }
-
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator<=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) <= *static_cast<std::array<char, N> const *>( &rhs );
-  }
-
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator>( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) > *static_cast<std::array<char, N> const *>( &rhs );
-  }
-
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator>=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) >= *static_cast<std::array<char, N> const *>( &rhs );
-  }
-#endif
-
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator==( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) == *static_cast<std::array<char, N> const *>( &rhs );
-  }
-
-  template <typename B = T, typename std::enable_if<std::is_same<B, char>::value, int>::type = 0>
-  bool operator!=( ArrayWrapper1D<char, N> const & rhs ) const VULKAN_HPP_NOEXCEPT
-  {
-    return *static_cast<std::array<char, N> const *>( this ) != *static_cast<std::array<char, N> const *>( &rhs );
-  }
-
 private:
   VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
   {
-    size_t n = std::min( N, len );
+    size_t n = std::min( N - 1, len );
     for ( size_t i = 0; i < n; ++i )
     {
       ( *this )[i] = data[i];
     }
-    for ( size_t i = n; i < N; ++i )
-    {
-      ( *this )[i] = 0;
-    }
+    ( *this )[n] = 0;
   }
 };
 
+// relational operators between ArrayWrapper1D of chars with potentially different sizes
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+template <size_t N, size_t M>
+std::strong_ordering operator<=>( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  int result = strcmp( lhs.data(), rhs.data() );
+  return ( result < 0 ) ? std::strong_ordering::less : ( ( result > 0 ) ? std::strong_ordering::greater : std::strong_ordering::equal );
+}
+#else
+template <size_t N, size_t M>
+bool operator<( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) < 0;
+}
+
+template <size_t N, size_t M>
+bool operator<=( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) <= 0;
+}
+
+template <size_t N, size_t M>
+bool operator>( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) > 0;
+}
+
+template <size_t N, size_t M>
+bool operator>=( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) >= 0;
+}
+#endif
+
+template <size_t N, size_t M>
+bool operator==( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) == 0;
+}
+
+template <size_t N, size_t M>
+bool operator!=( ArrayWrapper1D<char, N> const & lhs, ArrayWrapper1D<char, M> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return strcmp( lhs.data(), rhs.data() ) != 0;
+}
+
 // specialization of relational operators between std::string and arrays of chars
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+template <size_t N>
+std::strong_ordering operator<=>( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
+{
+  return lhs <=> rhs.data();
+}
+#else
 template <size_t N>
 bool operator<( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT
 {
@@ -140,6 +146,7 @@ bool operator>=( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) 
 {
   return lhs >= rhs.data();
 }
+#endif
 
 template <size_t N>
 bool operator==( std::string const & lhs, ArrayWrapper1D<char, N> const & rhs ) VULKAN_HPP_NOEXCEPT

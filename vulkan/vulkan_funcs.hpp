@@ -19114,17 +19114,20 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::setRenderingInputAttachmentIndicesKHR( const VULKAN_HPP_NAMESPACE::RenderingInputAttachmentIndexInfoKHR * pLocationInfo,
-                                                                               Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setRenderingInputAttachmentIndicesKHR( const VULKAN_HPP_NAMESPACE::RenderingInputAttachmentIndexInfoKHR * pInputAttachmentIndexInfo,
+                                                          Dispatch const &                                                   d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkCmdSetRenderingInputAttachmentIndicesKHR( m_commandBuffer, reinterpret_cast<const VkRenderingInputAttachmentIndexInfoKHR *>( pLocationInfo ) );
+    d.vkCmdSetRenderingInputAttachmentIndicesKHR( m_commandBuffer,
+                                                  reinterpret_cast<const VkRenderingInputAttachmentIndexInfoKHR *>( pInputAttachmentIndexInfo ) );
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::setRenderingInputAttachmentIndicesKHR( const VULKAN_HPP_NAMESPACE::RenderingInputAttachmentIndexInfoKHR & locationInfo,
-                                                                               Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  VULKAN_HPP_INLINE void
+    CommandBuffer::setRenderingInputAttachmentIndicesKHR( const VULKAN_HPP_NAMESPACE::RenderingInputAttachmentIndexInfoKHR & inputAttachmentIndexInfo,
+                                                          Dispatch const &                                                   d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
@@ -19132,7 +19135,8 @@ namespace VULKAN_HPP_NAMESPACE
                        "Function <vkCmdSetRenderingInputAttachmentIndicesKHR> requires <VK_KHR_dynamic_rendering_local_read>" );
 #  endif
 
-    d.vkCmdSetRenderingInputAttachmentIndicesKHR( m_commandBuffer, reinterpret_cast<const VkRenderingInputAttachmentIndexInfoKHR *>( &locationInfo ) );
+    d.vkCmdSetRenderingInputAttachmentIndicesKHR( m_commandBuffer,
+                                                  reinterpret_cast<const VkRenderingInputAttachmentIndexInfoKHR *>( &inputAttachmentIndexInfo ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

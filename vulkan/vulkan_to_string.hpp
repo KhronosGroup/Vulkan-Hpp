@@ -6507,7 +6507,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DriverId::eMesaDozen: return "MesaDozen";
       case DriverId::eMesaNvk: return "MesaNvk";
       case DriverId::eImaginationOpenSourceMESA: return "ImaginationOpenSourceMESA";
-      case DriverId::eMesaAgxv: return "MesaAgxv";
+      case DriverId::eMesaHoneykrisp: return "MesaHoneykrisp";
       case DriverId::eReserved27: return "Reserved27";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }

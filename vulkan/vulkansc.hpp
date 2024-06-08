@@ -6463,6 +6463,24 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, ShaderModuleCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<ValidationFeaturesEXT, ShaderCreateInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_fragment_shader_interlock ===
   template <>
   struct StructExtends<PhysicalDeviceFragmentShaderInterlockFeaturesEXT, PhysicalDeviceFeatures2>
@@ -6967,7 +6985,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

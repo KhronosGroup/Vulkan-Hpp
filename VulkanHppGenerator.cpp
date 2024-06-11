@@ -1721,7 +1721,7 @@ bool VulkanHppGenerator::containsUnion( std::string const & type ) const
 bool VulkanHppGenerator::describesVector( StructureData const & structure, std::string const & type ) const
 {
   return ( structure.members.size() == 4 ) && ( structure.members[0].name == "sType" ) && ( structure.members[1].name == "pNext" ) &&
-         structure.members[2].type.isValue() && ( structure.members[2].type.type == "uint32_t" ) &&
+         structure.members[2].type.isValue() && ( ( structure.members[2].type.type == "size_t" ) || ( structure.members[2].type.type == "uint32_t" ) ) &&
          ( type.empty() ? true : ( structure.members[3].type.type == type ) ) && structure.members[3].type.isNonConstPointer() &&
          ( structure.members[3].lenMembers.size() == 1 ) && ( structure.members[3].lenMembers[0].second == 2 );
 }

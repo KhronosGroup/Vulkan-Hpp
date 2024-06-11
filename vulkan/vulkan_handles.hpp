@@ -14470,10 +14470,19 @@ namespace VULKAN_HPP_NAMESPACE
                               VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV * pLatencyMarkerInfo,
                               Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV
-                         getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain,
-                                              Dispatch const & d                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+    template <typename LatencyTimingsFrameReportNVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV>,
+              typename Dispatch                             = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
+                         getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <
+      typename LatencyTimingsFrameReportNVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV>,
+      typename Dispatch                             = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV>::value,
+                              int>::type            = 0>
+    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
+                         getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR     swapchain,
+                                              LatencyTimingsFrameReportNVAllocator & latencyTimingsFrameReportNVAllocator,
+                                              Dispatch const & d                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )

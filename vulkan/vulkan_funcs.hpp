@@ -25908,19 +25908,48 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV
-    Device::getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  template <typename LatencyTimingsFrameReportNVAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
+                                         Device::getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d ) const
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
 #  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
     VULKAN_HPP_ASSERT( d.vkGetLatencyTimingsNV && "Function <vkGetLatencyTimingsNV> requires <VK_NV_low_latency2>" );
 #  endif
 
-    VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV latencyMarkerInfo;
+    std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> timings;
+    VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV                                                         latencyMarkerInfo;
+    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+    timings.resize( latencyMarkerInfo.timingCount );
+    latencyMarkerInfo.pTimings = timings.data();
     d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
 
-    return latencyMarkerInfo;
+    return timings;
+  }
+
+  template <
+    typename LatencyTimingsFrameReportNVAllocator,
+    typename Dispatch,
+    typename std::enable_if<std::is_same<typename LatencyTimingsFrameReportNVAllocator::value_type, VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV>::value,
+                            int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator>
+                                         Device::getLatencyTimingsNV( VULKAN_HPP_NAMESPACE::SwapchainKHR     swapchain,
+                                 LatencyTimingsFrameReportNVAllocator & latencyTimingsFrameReportNVAllocator,
+                                 Dispatch const &                       d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetLatencyTimingsNV && "Function <vkGetLatencyTimingsNV> requires <VK_NV_low_latency2>" );
+#  endif
+
+    std::vector<VULKAN_HPP_NAMESPACE::LatencyTimingsFrameReportNV, LatencyTimingsFrameReportNVAllocator> timings( latencyTimingsFrameReportNVAllocator );
+    VULKAN_HPP_NAMESPACE::GetLatencyMarkerInfoNV                                                         latencyMarkerInfo;
+    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+    timings.resize( latencyMarkerInfo.timingCount );
+    latencyMarkerInfo.pTimings = timings.data();
+    d.vkGetLatencyTimingsNV( m_device, static_cast<VkSwapchainKHR>( swapchain ), reinterpret_cast<VkGetLatencyMarkerInfoNV *>( &latencyMarkerInfo ) );
+
+    return timings;
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

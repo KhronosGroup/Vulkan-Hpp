@@ -8706,16 +8706,19 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandDeclarations( std::pair
           else if ( handle.second.secondLevelCommands.contains( command.first ) )
           {
             auto listedIt = listedCommands.find( command.first );
-            if ( listedIt != listedCommands.end() )
+            if ( listedIt == listedCommands.end() )
             {
-              checkForError( false,
+              listedCommands.insert( { command.first, { feature.name, command.second } } );
+              assert( !handle.first.empty() );
+              secondLevelCommands.push_back( command.first );
+            }
+            else
+            {
+              checkForError( listedIt->second.first == feature.name,
                              command.second,
                              "command <" + command.first + "> already listed as required for feature <" + listedIt->second.first + "> on line " +
                                std::to_string( listedIt->second.second ) );
             }
-            listedCommands.insert( { command.first, { feature.name, command.second } } );
-            assert( !handle.first.empty() );
-            secondLevelCommands.push_back( command.first );
           }
         }
       }

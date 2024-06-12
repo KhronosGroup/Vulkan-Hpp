@@ -200,7 +200,6 @@ private:
 
   struct ConstantData
   {
-    std::map<std::string, int> aliases = {};
     std::string                type    = {};
     std::string                value   = {};
     int                        xmlLine = {};

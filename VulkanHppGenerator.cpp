@@ -2805,7 +2805,7 @@ std::string VulkanHppGenerator::generateCallArgumentsStandard( std::string const
   std::vector<std::string> arguments;
   for ( auto const & param : params )
   {
-    if ( ( param.type.type == handle ) && param.type.isValue() )
+    if ( arguments.empty() && ( param.type.type == handle ) && param.type.isValue() )
     {
       assert( param.arraySizes.empty() && param.lenExpression.empty() );
       arguments.push_back( "m_" + startLowerCase( stripPrefix( param.type.type, "Vk" ) ) );

@@ -612,6 +612,12 @@ private:
                                                                    bool                        definition,
                                                                    std::vector<size_t> const & returnParamIndices,
                                                                    bool                        raii ) const;
+  std::string generateCommandResultSingleSuccessWithErrors3Return( std::string const &         name,
+                                                                   CommandData const &         commandData,
+                                                                   size_t                      initialSkipCount,
+                                                                   bool                        definition,
+                                                                   std::vector<size_t> const & returnParamIndices,
+                                                                   bool                        raii ) const;
   std::string generateCommandResultWithErrors0Return(
     std::string const & name, CommandData const & commandData, size_t initialSkipCount, bool definition, bool raii ) const;
   std::string generateCommandSet( bool                             definition,

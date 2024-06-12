@@ -3282,11 +3282,29 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
       switch ( commandData.successCodes.size() )
       {
         case 1:
+          assert( commandData.successCodes[0] == "VK_SUCCESS" );
+          if ( commandData.errorCodes.empty() )
           {
-            assert( commandData.successCodes[0] == "VK_SUCCESS" );
             std::string const callSequenceTemplate = R"(${dispatcher}${vkCommand}( ${firstCallArguments} );
       ${resizes}
       ${dispatcher}${vkCommand}( ${secondCallArguments} );
+)";
+
+            return replaceWithMap( callSequenceTemplate,
+                                   { { "dispatcher", dispatcher },
+                                     { "firstCallArguments", firstCallArguments },
+                                     { "secondCallArguments", secondCallArguments },
+                                     { "resizes", resizes },
+                                     { "vkCommand", name } } );
+          }
+          else
+          {
+            std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result = ${dispatcher}${vkCommand}( ${firstCallArguments} );
+      if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+        ${resizes}
+        result = ${dispatcher}${vkCommand}( ${secondCallArguments} );
+      }
 )";
 
             return replaceWithMap( callSequenceTemplate,

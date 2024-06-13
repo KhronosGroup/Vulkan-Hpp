@@ -12716,7 +12716,6 @@ bool VulkanHppGenerator::handleRemovalType( std::string const & type, std::vecto
 
 bool VulkanHppGenerator::hasLen( MemberData const & memberData, std::vector<MemberData> const & members ) const
 {
-  assert( memberData.lenMembers.size() <= memberData.lenExpressions.size() );
   return ( !memberData.lenMembers.empty() &&
            ( ( ( memberData.lenExpressions[0] == memberData.lenMembers[0].first ) && members[memberData.lenMembers[0].second].type.isValue() ) ||
              ( memberData.lenExpressions[0] == ( memberData.lenMembers[0].first + " / 4" ) ) ) ) ||

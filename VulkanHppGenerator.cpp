@@ -5091,7 +5091,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
         {
           if ( !listedConstants.contains( constant ) )
           {
-            auto        constIt = findByNameOrAlias( m_constants, constant );
+            auto        constIt = m_constants.find( constant );
             std::string tag     = findTag( constant );
             constants += replaceWithMap( constexprValueTemplate,
                                          { { "type", constIt->second.type },
@@ -5313,7 +5313,7 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
         {
           if ( !listedConstants.contains( constant ) )
           {
-            assert( findByNameOrAlias( m_constants, constant ) != m_constants.end() );
+            assert( m_constants.find( constant ) != m_constants.end() );
             std::string tag = findTag( constant );
             constants += replaceWithMap( constexprUsingTemplate, { { "constName", stripPrefix( toCamelCase( stripPostfix( constant, tag ) ), "Vk" ) + tag } } );
             listedConstants.insert( constant );
@@ -13266,25 +13266,35 @@ void VulkanHppGenerator::readEnumsConstants( tinyxml2::XMLElement const * elemen
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkElements( line, getChildElements( element ), {} );
 
-  auto aliasIt = attributes.find( "alias" );
+  std::string name, type, value;
+  auto        aliasIt = attributes.find( "alias" );
   if ( aliasIt != attributes.end() )
   {
     checkAttributes( line, attributes, { { "alias", {} }, { "name", {} } }, {} );
 
-    std::string alias = aliasIt->second;
-    std::string name  = attributes.find( "name" )->second;
+    std::string alias;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+        checkForError( !m_constants.contains( name ), line, "already specified enum constant <" + name + ">" );
+      }
+    }
 
     auto constIt = m_constants.find( alias );
     checkForError( constIt != m_constants.end(), line, "constant alias <" + name + "> is an alias of an unknown constant <" + alias + ">." );
-    checkForError( constIt->second.aliases.insert( { name, line } ).second, line, "constant alias <" + name + "> already listed for constant <" + alias + ">" );
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, {}, line } } ).second, line, "enum <" + name + "> already specified" );
+    type  = constIt->second.type;
+    value = constIt->second.value;
   }
   else
   {
-    // checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "type", {} }, { "comment", {} } } );
     checkAttributes( line, attributes, { { "name", {} }, { "type", {} }, { "value", {} } }, { { "comment", {} } } );
 
-    std::string alias, name, type, value;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "name" )
@@ -13301,11 +13311,9 @@ void VulkanHppGenerator::readEnumsConstants( tinyxml2::XMLElement const * elemen
         value = attribute.second;
       }
     }
-
-    checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, {}, line } } ).second, line, "enum <" + name + "> already specified" );
-    assert( !m_constants.contains( name ) );
-    m_constants[name] = { {}, type, value, line };
   }
+  checkForError( m_types.insert( { name, TypeData{ TypeCategory::Constant, {}, line } } ).second, line, "enum <" + name + "> already specified" );
+  m_constants[name] = { type, value, line };
 }
 
 void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt )
@@ -14141,11 +14149,13 @@ void VulkanHppGenerator::readRequireEnum(
       checkForError(
         m_types.insert( { name, TypeData{ TypeCategory::Constant, { requiredBy }, line } } ).second, line, "required enum <" + name + "> already specified" );
 
-      // if that constant is a uint32_t, it's stored in m_constants (I think, this doesn't happen at all!!)
       auto constIt = m_constants.find( alias );
       if ( constIt != m_constants.end() )
       {
-        checkForError( constIt->second.aliases.insert( { name, line } ).second, line, "enum alias <" + name + "> already listed for enum <" + alias + ">" );
+        typeIt = m_types.find( name );
+        typeIt->second.requiredBy.insert( requiredBy );
+        m_constants[name] = { constIt->second.type, constIt->second.value, line };
+        requireData.constants.push_back( name );
       }
     }
     else
@@ -14232,7 +14242,7 @@ void VulkanHppGenerator::readRequireEnum(
           if ( type == "uint32_t" )
           {
             assert( !m_constants.contains( name ) );
-            m_constants[name] = { {}, type, value, line };
+            m_constants[name] = { type, value, line };
           }
         }
 

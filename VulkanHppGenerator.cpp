@@ -3299,11 +3299,11 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
           }
           else
           {
-            std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result = ${dispatcher}${vkCommand}( ${firstCallArguments} );
+            std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
       if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
         ${resizes}
-        result = ${dispatcher}${vkCommand}( ${secondCallArguments} );
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${secondCallArguments} ) );
       }
 )";
 

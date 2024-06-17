@@ -3020,7 +3020,8 @@ std::string VulkanHppGenerator::generateCallArgumentEnhancedValue(
       }
       else
       {
-        argument = "static_cast<" + param.type.compose( "" ) + ">( " + param.name + " )";
+        assert( param.type.isValue() );
+        argument = "static_cast<" + param.type.type + ">( " + param.name + " )";
       }
       // check if this param is used as the stride of an other param
       assert( std::none_of( params.begin(), params.end(), [paramIndex]( ParamData const & pd ) { return pd.strideParam.second == paramIndex; } ) );

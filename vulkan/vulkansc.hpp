@@ -149,7 +149,7 @@ namespace VULKAN_HPP_NAMESPACE
   private:
     VULKAN_HPP_CONSTEXPR_14 void copy( char const * data, size_t len ) VULKAN_HPP_NOEXCEPT
     {
-      size_t n = std::min( N - 1, len );
+      size_t n = ( std::min )( N - 1, len );
       for ( size_t i = 0; i < n; ++i )
       {
         ( *this )[i] = data[i];
@@ -6985,7 +6985,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

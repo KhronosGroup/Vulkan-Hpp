@@ -174,7 +174,7 @@ vk::UniqueSwapchainKHR createSwapchainKHRUnique( vk::PhysicalDevice physicalDevi
   vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
   vk::SurfaceFormatKHR       surfaceFormat       = vk::su::pickSurfaceFormat( physicalDevice.getSurfaceFormatsKHR( surface ) );
   vk::Extent2D               swapchainExtent;
-  if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
+  if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
   {
     // If the surface size is undefined, the size is set to the size of the images requested.
     swapchainExtent.width  = vk::su::clamp<uint32_t>( 64, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );

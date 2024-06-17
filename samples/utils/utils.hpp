@@ -76,10 +76,10 @@ namespace vk
 
     VULKAN_HPP_INLINE uint32_t clampSurfaceImageCount( const uint32_t desiredImageCount, const uint32_t minImageCount, const uint32_t maxImageCount )
     {
-      uint32_t imageCount = std::max( desiredImageCount, minImageCount );
+      uint32_t imageCount = (std::max)( desiredImageCount, minImageCount );
       if ( maxImageCount > 0 )
       {
-        imageCount = std::min( imageCount, maxImageCount );
+        imageCount = (std::min)( imageCount, maxImageCount );
       }
       return imageCount;
     }
@@ -355,7 +355,7 @@ namespace vk
       static_assert( !std::numeric_limits<SourceType>::is_signed, "Only unsigned types supported!" );
       static_assert( std::numeric_limits<TargetType>::is_integer, "Only integer types supported!" );
       static_assert( !std::numeric_limits<TargetType>::is_signed, "Only unsigned types supported!" );
-      assert( value <= std::numeric_limits<TargetType>::max() );
+      assert( value <= (std::numeric_limits<TargetType>::max)() );
       return static_cast<TargetType>( value );
     }
 

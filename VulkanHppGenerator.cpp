@@ -8220,7 +8220,7 @@ std::string VulkanHppGenerator::generateLenInitializer(
   if ( !litit->second.front()->arraySizes.empty() )
   {
     assert( litit->second.front()->arraySizes.size() == 1 );
-    initializer = "std::min( " + initializer + ", " + litit->second.front()->arraySizes[0] + " )";
+    initializer = "(std::min)( " + initializer + ", " + litit->second.front()->arraySizes[0] + " )";
   }
   return initializer;
 }
@@ -11720,7 +11720,7 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
         if ( !member.arraySizes.empty() )
         {
           assert( member.arraySizes.size() == 1 );
-          lenValue = "std::min( " + lenValue + ", " + member.arraySizes[0] + " )";
+          lenValue = "(std::min)( " + lenValue + ", " + member.arraySizes[0] + " )";
         }
 
         if ( member.type.isPointer() )

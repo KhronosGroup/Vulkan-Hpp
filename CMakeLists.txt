@@ -54,7 +54,7 @@ function( vulkan_hpp__setup_platform )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( WIN32 )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC NOMINMAX VK_USE_PLATFORM_WIN32_KHR )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_WIN32_KHR )
 	elseif( APPLE )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_MACOS_MVK )
 	elseif( UNIX )

@@ -32923,7 +32923,7 @@ namespace VULKAN_HPP_NAMESPACE
                                    VULKAN_HPP_NAMESPACE::Bool32                                                   subsetAllocation_ = {},
                                    void *                                                                         pNext_            = nullptr )
       : pNext( pNext_ )
-      , physicalDeviceCount( std::min( static_cast<uint32_t>( physicalDevices_.size() ), VK_MAX_DEVICE_GROUP_SIZE ) )
+      , physicalDeviceCount( ( std::min )( static_cast<uint32_t>( physicalDevices_.size() ), VK_MAX_DEVICE_GROUP_SIZE ) )
       , subsetAllocation( subsetAllocation_ )
     {
       VULKAN_HPP_ASSERT( physicalDevices_.size() < VK_MAX_DEVICE_GROUP_SIZE );
@@ -35080,8 +35080,8 @@ namespace VULKAN_HPP_NAMESPACE
 #  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
     PhysicalDeviceMemoryProperties( VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryType> const & memoryTypes_,
                                     VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryHeap> const & memoryHeaps_ = {} )
-      : memoryTypeCount( std::min( static_cast<uint32_t>( memoryTypes_.size() ), VK_MAX_MEMORY_TYPES ) )
-      , memoryHeapCount( std::min( static_cast<uint32_t>( memoryHeaps_.size() ), VK_MAX_MEMORY_HEAPS ) )
+      : memoryTypeCount( ( std::min )( static_cast<uint32_t>( memoryTypes_.size() ), VK_MAX_MEMORY_TYPES ) )
+      , memoryHeapCount( ( std::min )( static_cast<uint32_t>( memoryHeaps_.size() ), VK_MAX_MEMORY_HEAPS ) )
     {
       VULKAN_HPP_ASSERT( memoryTypes_.size() < VK_MAX_MEMORY_TYPES );
       memcpy( memoryTypes, memoryTypes_.data(), memoryTypeCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) );

@@ -342,7 +342,7 @@ namespace vk
 
           vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
           vk::Extent2D               swapchainExtent;
-          if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
+          if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
           {
             // If the surface size is undefined, the size is set to the size of the images requested.
             swapchainExtent.width  = vk::su::clamp( extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );
@@ -509,7 +509,7 @@ namespace vk
                                                                             vk::raii::SurfaceKHR const &     surface )
       {
         std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-        assert( queueFamilyProperties.size() < std::numeric_limits<uint32_t>::max() );
+        assert( queueFamilyProperties.size() < (std::numeric_limits<uint32_t>::max)() );
 
         uint32_t graphicsQueueFamilyIndex = vk::su::findGraphicsQueueFamilyIndex( queueFamilyProperties );
         if ( physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface ) )

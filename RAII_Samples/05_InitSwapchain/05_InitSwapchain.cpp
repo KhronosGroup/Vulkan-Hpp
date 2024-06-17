@@ -93,7 +93,7 @@ int main( int /*argc*/, char ** /*argv*/ )
 
     vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
     vk::Extent2D               swapchainExtent;
-    if ( surfaceCapabilities.currentExtent.width == std::numeric_limits<uint32_t>::max() )
+    if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
     {
       // If the surface size is undefined, the size is set to the size of the images requested.
       swapchainExtent.width  = vk::su::clamp( width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );

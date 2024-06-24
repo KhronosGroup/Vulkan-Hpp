@@ -3300,7 +3300,8 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
           }
           else
           {
-            std::string const callSequenceTemplate = R"(VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
+            std::string const callSequenceTemplate =
+              R"(VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}${vkCommand}( ${firstCallArguments} ) );
       if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
       {
         ${resizes}
@@ -10855,7 +10856,10 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
                                       { "initializers", generateList( initializers, ": ", ", " ) },
                                       { "structName", stripPrefix( structData.first, "Vk" ) } } );
 
-  str += generateStructConstructorsEnhanced( structData );
+  if ( !structData.second.returnedOnly )
+  {
+    str += generateStructConstructorsEnhanced( structData );
+  }
   return str;
 }
 

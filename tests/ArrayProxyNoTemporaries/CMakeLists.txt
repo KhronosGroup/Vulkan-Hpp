@@ -13,5 +13,5 @@
 # limitations under the License.
 
 if( NOT VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC )
-	vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries )
+	vulkan_hpp__setup_test( NAME ArrayProxyNoTemporaries NO_UTILS )
 endif()

@@ -388,33 +388,14 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-    ArrayProxyNoTemporaries( T & value ) VULKAN_HPP_NOEXCEPT
+    template <typename B = T, typename std::enable_if<std::is_convertible<B, T>::value && std::is_lvalue_reference<B>::value, int>::type = 0>
+    ArrayProxyNoTemporaries( B && value ) VULKAN_HPP_NOEXCEPT
       : m_count( 1 )
       , m_ptr( &value )
     {
     }
-
-    template <typename V>
-    ArrayProxyNoTemporaries( V && value ) = delete;
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( typename std::remove_const<T>::type & value ) VULKAN_HPP_NOEXCEPT
-      : m_count( 1 )
-      , m_ptr( &value )
-    {
-    }
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( typename std::remove_const<T>::type && value ) = delete;
 
     ArrayProxyNoTemporaries( uint32_t count, T * ptr ) VULKAN_HPP_NOEXCEPT
-      : m_count( count )
-      , m_ptr( ptr )
-    {
-    }
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( uint32_t count, typename std::remove_const<T>::type * ptr ) VULKAN_HPP_NOEXCEPT
       : m_count( count )
       , m_ptr( ptr )
     {
@@ -430,59 +411,26 @@ namespace VULKAN_HPP_NAMESPACE
     template <std::size_t C>
     ArrayProxyNoTemporaries( T ( &&ptr )[C] ) = delete;
 
-    template <std::size_t C, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( typename std::remove_const<T>::type ( &ptr )[C] ) VULKAN_HPP_NOEXCEPT
-      : m_count( C )
-      , m_ptr( ptr )
-    {
-    }
-
-    template <std::size_t C, typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( typename std::remove_const<T>::type ( &&ptr )[C] ) = delete;
-
-    ArrayProxyNoTemporaries( std::initializer_list<T> const & list ) VULKAN_HPP_NOEXCEPT
-      : m_count( static_cast<uint32_t>( list.size() ) )
-      , m_ptr( list.begin() )
-    {
-    }
-
-    ArrayProxyNoTemporaries( std::initializer_list<T> const && list ) = delete;
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const & list ) VULKAN_HPP_NOEXCEPT
-      : m_count( static_cast<uint32_t>( list.size() ) )
-      , m_ptr( list.begin() )
-    {
-    }
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> const && list ) = delete;
-
-    ArrayProxyNoTemporaries( std::initializer_list<T> & list ) VULKAN_HPP_NOEXCEPT
-      : m_count( static_cast<uint32_t>( list.size() ) )
-      , m_ptr( list.begin() )
-    {
-    }
-
-    ArrayProxyNoTemporaries( std::initializer_list<T> && list ) = delete;
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> & list ) VULKAN_HPP_NOEXCEPT
-      : m_count( static_cast<uint32_t>( list.size() ) )
-      , m_ptr( list.begin() )
-    {
-    }
-
-    template <typename B = T, typename std::enable_if<std::is_const<B>::value, int>::type = 0>
-    ArrayProxyNoTemporaries( std::initializer_list<typename std::remove_const<T>::type> && list ) = delete;
-
-    // Any type with a .data() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
+    // Any l-value reference with a .data() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
     template <typename V,
-              typename std::enable_if<std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
-                                      std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value>::type * = nullptr>
-    ArrayProxyNoTemporaries( V & v ) VULKAN_HPP_NOEXCEPT
+              typename std::enable_if<!std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
+                                        std::is_convertible<decltype( std::declval<V>().data() ), T *>::value &&
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
+                                      int>::type = 0>
+    ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
       : m_count( static_cast<uint32_t>( v.size() ) )
       , m_ptr( v.data() )
+    {
+    }
+
+    // Any l-value reference with a .begin() return type implicitly convertible to T*, and a .size() return type implicitly convertible to size_t.
+    template <typename V,
+              typename std::enable_if<std::is_convertible<decltype( std::declval<V>().begin() ), T *>::value &&
+                                        std::is_convertible<decltype( std::declval<V>().size() ), std::size_t>::value && std::is_lvalue_reference<V>::value,
+                                      int>::type = 0>
+    ArrayProxyNoTemporaries( V && v ) VULKAN_HPP_NOEXCEPT
+      : m_count( static_cast<uint32_t>( v.size() ) )
+      , m_ptr( v.begin() )
     {
     }
 

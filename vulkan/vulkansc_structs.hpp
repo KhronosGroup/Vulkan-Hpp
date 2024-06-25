@@ -16858,17 +16858,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    DrmFormatModifierPropertiesList2EXT(
-      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<VULKAN_HPP_NAMESPACE::DrmFormatModifierProperties2EXT> const & drmFormatModifierProperties_,
-      void *                                                                                                       pNext_ = nullptr )
-      : pNext( pNext_ )
-      , drmFormatModifierCount( static_cast<uint32_t>( drmFormatModifierProperties_.size() ) )
-      , pDrmFormatModifierProperties( drmFormatModifierProperties_.data() )
-    {
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     DrmFormatModifierPropertiesList2EXT & operator=( DrmFormatModifierPropertiesList2EXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -16955,17 +16944,6 @@ namespace VULKAN_HPP_NAMESPACE
       : DrmFormatModifierPropertiesListEXT( *reinterpret_cast<DrmFormatModifierPropertiesListEXT const *>( &rhs ) )
     {
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    DrmFormatModifierPropertiesListEXT(
-      VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<VULKAN_HPP_NAMESPACE::DrmFormatModifierPropertiesEXT> const & drmFormatModifierProperties_,
-      void *                                                                                                      pNext_ = nullptr )
-      : pNext( pNext_ )
-      , drmFormatModifierCount( static_cast<uint32_t>( drmFormatModifierProperties_.size() ) )
-      , pDrmFormatModifierProperties( drmFormatModifierProperties_.data() )
-    {
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     DrmFormatModifierPropertiesListEXT & operator=( DrmFormatModifierPropertiesListEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
@@ -17750,18 +17728,6 @@ namespace VULKAN_HPP_NAMESPACE
     ExtensionProperties( VkExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT : ExtensionProperties( *reinterpret_cast<ExtensionProperties const *>( &rhs ) )
     {
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    ExtensionProperties( std::string const & extensionName_, uint32_t specVersion_ = {} ) : specVersion( specVersion_ )
-    {
-      VULKAN_HPP_ASSERT( extensionName_.size() < VK_MAX_EXTENSION_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( extensionName, VK_MAX_EXTENSION_NAME_SIZE, extensionName_.data(), extensionName_.size() );
-#    else
-      strncpy( extensionName, extensionName_.data(), std::min<size_t>( VK_MAX_EXTENSION_NAME_SIZE, extensionName_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     ExtensionProperties & operator=( ExtensionProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
@@ -26380,26 +26346,6 @@ namespace VULKAN_HPP_NAMESPACE
 
     LayerProperties( VkLayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT : LayerProperties( *reinterpret_cast<LayerProperties const *>( &rhs ) ) {}
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    LayerProperties( std::string const & layerName_, uint32_t specVersion_ = {}, uint32_t implementationVersion_ = {}, std::string const & description_ = {} )
-      : specVersion( specVersion_ ), implementationVersion( implementationVersion_ )
-    {
-      VULKAN_HPP_ASSERT( layerName_.size() < VK_MAX_EXTENSION_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( layerName, VK_MAX_EXTENSION_NAME_SIZE, layerName_.data(), layerName_.size() );
-#    else
-      strncpy( layerName, layerName_.data(), std::min<size_t>( VK_MAX_EXTENSION_NAME_SIZE, layerName_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( description, VK_MAX_DESCRIPTION_SIZE, description_.data(), description_.size() );
-#    else
-      strncpy( description, description_.data(), std::min<size_t>( VK_MAX_DESCRIPTION_SIZE, description_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     LayerProperties & operator=( LayerProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -28080,37 +28026,6 @@ namespace VULKAN_HPP_NAMESPACE
       : PerformanceCounterDescriptionKHR( *reinterpret_cast<PerformanceCounterDescriptionKHR const *>( &rhs ) )
     {
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PerformanceCounterDescriptionKHR( VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionFlagsKHR flags_,
-                                      std::string const &                                         name_,
-                                      std::string const &                                         category_    = {},
-                                      std::string const &                                         description_ = {},
-                                      void *                                                      pNext_       = nullptr )
-      : pNext( pNext_ ), flags( flags_ )
-    {
-      VULKAN_HPP_ASSERT( name_.size() < VK_MAX_DESCRIPTION_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( name, VK_MAX_DESCRIPTION_SIZE, name_.data(), name_.size() );
-#    else
-      strncpy( name, name_.data(), std::min<size_t>( VK_MAX_DESCRIPTION_SIZE, name_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( category_.size() < VK_MAX_DESCRIPTION_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( category, VK_MAX_DESCRIPTION_SIZE, category_.data(), category_.size() );
-#    else
-      strncpy( category, category_.data(), std::min<size_t>( VK_MAX_DESCRIPTION_SIZE, category_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( description, VK_MAX_DESCRIPTION_SIZE, description_.data(), description_.size() );
-#    else
-      strncpy( description, description_.data(), std::min<size_t>( VK_MAX_DESCRIPTION_SIZE, description_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     PerformanceCounterDescriptionKHR & operator=( PerformanceCounterDescriptionKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
@@ -30674,30 +30589,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceDriverProperties( VULKAN_HPP_NAMESPACE::DriverId           driverID_,
-                                    std::string const &                      driverName_,
-                                    std::string const &                      driverInfo_         = {},
-                                    VULKAN_HPP_NAMESPACE::ConformanceVersion conformanceVersion_ = {},
-                                    void *                                   pNext_              = nullptr )
-      : pNext( pNext_ ), driverID( driverID_ ), conformanceVersion( conformanceVersion_ )
-    {
-      VULKAN_HPP_ASSERT( driverName_.size() < VK_MAX_DRIVER_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( driverName, VK_MAX_DRIVER_NAME_SIZE, driverName_.data(), driverName_.size() );
-#    else
-      strncpy( driverName, driverName_.data(), std::min<size_t>( VK_MAX_DRIVER_NAME_SIZE, driverName_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( driverInfo_.size() < VK_MAX_DRIVER_INFO_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( driverInfo, VK_MAX_DRIVER_INFO_SIZE, driverInfo_.data(), driverInfo_.size() );
-#    else
-      strncpy( driverInfo, driverInfo_.data(), std::min<size_t>( VK_MAX_DRIVER_INFO_SIZE, driverInfo_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     PhysicalDeviceDriverProperties & operator=( PhysicalDeviceDriverProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -32918,19 +32809,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceGroupProperties( VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::PhysicalDevice> const & physicalDevices_,
-                                   VULKAN_HPP_NAMESPACE::Bool32                                                   subsetAllocation_ = {},
-                                   void *                                                                         pNext_            = nullptr )
-      : pNext( pNext_ )
-      , physicalDeviceCount( ( std::min )( static_cast<uint32_t>( physicalDevices_.size() ), VK_MAX_DEVICE_GROUP_SIZE ) )
-      , subsetAllocation( subsetAllocation_ )
-    {
-      VULKAN_HPP_ASSERT( physicalDevices_.size() < VK_MAX_DEVICE_GROUP_SIZE );
-      memcpy( physicalDevices, physicalDevices_.data(), physicalDeviceCount * sizeof( VULKAN_HPP_NAMESPACE::PhysicalDevice ) );
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     PhysicalDeviceGroupProperties & operator=( PhysicalDeviceGroupProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -35077,19 +34955,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceMemoryProperties( VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryType> const & memoryTypes_,
-                                    VULKAN_HPP_NAMESPACE::ArrayProxy<VULKAN_HPP_NAMESPACE::MemoryHeap> const & memoryHeaps_ = {} )
-      : memoryTypeCount( ( std::min )( static_cast<uint32_t>( memoryTypes_.size() ), VK_MAX_MEMORY_TYPES ) )
-      , memoryHeapCount( ( std::min )( static_cast<uint32_t>( memoryHeaps_.size() ), VK_MAX_MEMORY_HEAPS ) )
-    {
-      VULKAN_HPP_ASSERT( memoryTypes_.size() < VK_MAX_MEMORY_TYPES );
-      memcpy( memoryTypes, memoryTypes_.data(), memoryTypeCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryType ) );
-      VULKAN_HPP_ASSERT( memoryHeaps_.size() < VK_MAX_MEMORY_HEAPS );
-      memcpy( memoryHeaps, memoryHeaps_.data(), memoryHeapCount * sizeof( VULKAN_HPP_NAMESPACE::MemoryHeap ) );
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     PhysicalDeviceMemoryProperties & operator=( PhysicalDeviceMemoryProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -36157,34 +36022,6 @@ namespace VULKAN_HPP_NAMESPACE
       : PhysicalDeviceProperties( *reinterpret_cast<PhysicalDeviceProperties const *>( &rhs ) )
     {
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceProperties( uint32_t                                             apiVersion_,
-                              uint32_t                                             driverVersion_,
-                              uint32_t                                             vendorID_,
-                              uint32_t                                             deviceID_,
-                              VULKAN_HPP_NAMESPACE::PhysicalDeviceType             deviceType_,
-                              std::string const &                                  deviceName_,
-                              std::array<uint8_t, VK_UUID_SIZE> const &            pipelineCacheUUID_ = {},
-                              VULKAN_HPP_NAMESPACE::PhysicalDeviceLimits           limits_            = {},
-                              VULKAN_HPP_NAMESPACE::PhysicalDeviceSparseProperties sparseProperties_  = {} )
-      : apiVersion( apiVersion_ )
-      , driverVersion( driverVersion_ )
-      , vendorID( vendorID_ )
-      , deviceID( deviceID_ )
-      , deviceType( deviceType_ )
-      , pipelineCacheUUID( pipelineCacheUUID_ )
-      , limits( limits_ )
-      , sparseProperties( sparseProperties_ )
-    {
-      VULKAN_HPP_ASSERT( deviceName_.size() < VK_MAX_PHYSICAL_DEVICE_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( deviceName, VK_MAX_PHYSICAL_DEVICE_NAME_SIZE, deviceName_.data(), deviceName_.size() );
-#    else
-      strncpy( deviceName, deviceName_.data(), std::min<size_t>( VK_MAX_PHYSICAL_DEVICE_NAME_SIZE, deviceName_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     PhysicalDeviceProperties & operator=( PhysicalDeviceProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
@@ -39730,45 +39567,6 @@ namespace VULKAN_HPP_NAMESPACE
     {
     }
 
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceToolProperties( std::string const &                    name_,
-                                  std::string const &                    version_     = {},
-                                  VULKAN_HPP_NAMESPACE::ToolPurposeFlags purposes_    = {},
-                                  std::string const &                    description_ = {},
-                                  std::string const &                    layer_       = {},
-                                  void *                                 pNext_       = nullptr )
-      : pNext( pNext_ ), purposes( purposes_ )
-    {
-      VULKAN_HPP_ASSERT( name_.size() < VK_MAX_EXTENSION_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( name, VK_MAX_EXTENSION_NAME_SIZE, name_.data(), name_.size() );
-#    else
-      strncpy( name, name_.data(), std::min<size_t>( VK_MAX_EXTENSION_NAME_SIZE, name_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( version_.size() < VK_MAX_EXTENSION_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( version, VK_MAX_EXTENSION_NAME_SIZE, version_.data(), version_.size() );
-#    else
-      strncpy( version, version_.data(), std::min<size_t>( VK_MAX_EXTENSION_NAME_SIZE, version_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( description_.size() < VK_MAX_DESCRIPTION_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( description, VK_MAX_DESCRIPTION_SIZE, description_.data(), description_.size() );
-#    else
-      strncpy( description, description_.data(), std::min<size_t>( VK_MAX_DESCRIPTION_SIZE, description_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( layer_.size() < VK_MAX_EXTENSION_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( layer, VK_MAX_EXTENSION_NAME_SIZE, layer_.data(), layer_.size() );
-#    else
-      strncpy( layer, layer_.data(), std::min<size_t>( VK_MAX_EXTENSION_NAME_SIZE, layer_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
-
     PhysicalDeviceToolProperties & operator=( PhysicalDeviceToolProperties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
 
@@ -41452,129 +41250,6 @@ namespace VULKAN_HPP_NAMESPACE
       : PhysicalDeviceVulkan12Properties( *reinterpret_cast<PhysicalDeviceVulkan12Properties const *>( &rhs ) )
     {
     }
-
-#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-    PhysicalDeviceVulkan12Properties(
-      VULKAN_HPP_NAMESPACE::DriverId                        driverID_,
-      std::string const &                                   driverName_,
-      std::string const &                                   driverInfo_                 = {},
-      VULKAN_HPP_NAMESPACE::ConformanceVersion              conformanceVersion_         = {},
-      VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence denormBehaviorIndependence_ = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly,
-      VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence roundingModeIndependence_   = VULKAN_HPP_NAMESPACE::ShaderFloatControlsIndependence::e32BitOnly,
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat16_                = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat32_                = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderSignedZeroInfNanPreserveFloat64_                = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat16_                          = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat32_                          = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormPreserveFloat64_                          = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat16_                       = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat32_                       = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderDenormFlushToZeroFloat64_                       = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat16_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat32_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTEFloat64_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat16_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat32_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderRoundingModeRTZFloat64_                         = {},
-      uint32_t                                              maxUpdateAfterBindDescriptorsInAllPools_              = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderUniformBufferArrayNonUniformIndexingNative_     = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderSampledImageArrayNonUniformIndexingNative_      = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderStorageBufferArrayNonUniformIndexingNative_     = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderStorageImageArrayNonUniformIndexingNative_      = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          shaderInputAttachmentArrayNonUniformIndexingNative_   = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          robustBufferAccessUpdateAfterBind_                    = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          quadDivergentImplicitLod_                             = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindSamplers_         = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindUniformBuffers_   = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindStorageBuffers_   = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindSampledImages_    = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindStorageImages_    = {},
-      uint32_t                                              maxPerStageDescriptorUpdateAfterBindInputAttachments_ = {},
-      uint32_t                                              maxPerStageUpdateAfterBindResources_                  = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindSamplers_              = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindUniformBuffers_        = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageBuffers_        = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindSampledImages_         = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindStorageImages_         = {},
-      uint32_t                                              maxDescriptorSetUpdateAfterBindInputAttachments_      = {},
-      VULKAN_HPP_NAMESPACE::ResolveModeFlags                supportedDepthResolveModes_                           = {},
-      VULKAN_HPP_NAMESPACE::ResolveModeFlags                supportedStencilResolveModes_                         = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          independentResolveNone_                               = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          independentResolve_                                   = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          filterMinmaxSingleComponentFormats_                   = {},
-      VULKAN_HPP_NAMESPACE::Bool32                          filterMinmaxImageComponentMapping_                    = {},
-      uint64_t                                              maxTimelineSemaphoreValueDifference_                  = {},
-      VULKAN_HPP_NAMESPACE::SampleCountFlags                framebufferIntegerColorSampleCounts_                  = {},
-      void *                                                pNext_                                                = nullptr )
-      : pNext( pNext_ )
-      , driverID( driverID_ )
-      , conformanceVersion( conformanceVersion_ )
-      , denormBehaviorIndependence( denormBehaviorIndependence_ )
-      , roundingModeIndependence( roundingModeIndependence_ )
-      , shaderSignedZeroInfNanPreserveFloat16( shaderSignedZeroInfNanPreserveFloat16_ )
-      , shaderSignedZeroInfNanPreserveFloat32( shaderSignedZeroInfNanPreserveFloat32_ )
-      , shaderSignedZeroInfNanPreserveFloat64( shaderSignedZeroInfNanPreserveFloat64_ )
-      , shaderDenormPreserveFloat16( shaderDenormPreserveFloat16_ )
-      , shaderDenormPreserveFloat32( shaderDenormPreserveFloat32_ )
-      , shaderDenormPreserveFloat64( shaderDenormPreserveFloat64_ )
-      , shaderDenormFlushToZeroFloat16( shaderDenormFlushToZeroFloat16_ )
-      , shaderDenormFlushToZeroFloat32( shaderDenormFlushToZeroFloat32_ )
-      , shaderDenormFlushToZeroFloat64( shaderDenormFlushToZeroFloat64_ )
-      , shaderRoundingModeRTEFloat16( shaderRoundingModeRTEFloat16_ )
-      , shaderRoundingModeRTEFloat32( shaderRoundingModeRTEFloat32_ )
-      , shaderRoundingModeRTEFloat64( shaderRoundingModeRTEFloat64_ )
-      , shaderRoundingModeRTZFloat16( shaderRoundingModeRTZFloat16_ )
-      , shaderRoundingModeRTZFloat32( shaderRoundingModeRTZFloat32_ )
-      , shaderRoundingModeRTZFloat64( shaderRoundingModeRTZFloat64_ )
-      , maxUpdateAfterBindDescriptorsInAllPools( maxUpdateAfterBindDescriptorsInAllPools_ )
-      , shaderUniformBufferArrayNonUniformIndexingNative( shaderUniformBufferArrayNonUniformIndexingNative_ )
-      , shaderSampledImageArrayNonUniformIndexingNative( shaderSampledImageArrayNonUniformIndexingNative_ )
-      , shaderStorageBufferArrayNonUniformIndexingNative( shaderStorageBufferArrayNonUniformIndexingNative_ )
-      , shaderStorageImageArrayNonUniformIndexingNative( shaderStorageImageArrayNonUniformIndexingNative_ )
-      , shaderInputAttachmentArrayNonUniformIndexingNative( shaderInputAttachmentArrayNonUniformIndexingNative_ )
-      , robustBufferAccessUpdateAfterBind( robustBufferAccessUpdateAfterBind_ )
-      , quadDivergentImplicitLod( quadDivergentImplicitLod_ )
-      , maxPerStageDescriptorUpdateAfterBindSamplers( maxPerStageDescriptorUpdateAfterBindSamplers_ )
-      , maxPerStageDescriptorUpdateAfterBindUniformBuffers( maxPerStageDescriptorUpdateAfterBindUniformBuffers_ )
-      , maxPerStageDescriptorUpdateAfterBindStorageBuffers( maxPerStageDescriptorUpdateAfterBindStorageBuffers_ )
-      , maxPerStageDescriptorUpdateAfterBindSampledImages( maxPerStageDescriptorUpdateAfterBindSampledImages_ )
-      , maxPerStageDescriptorUpdateAfterBindStorageImages( maxPerStageDescriptorUpdateAfterBindStorageImages_ )
-      , maxPerStageDescriptorUpdateAfterBindInputAttachments( maxPerStageDescriptorUpdateAfterBindInputAttachments_ )
-      , maxPerStageUpdateAfterBindResources( maxPerStageUpdateAfterBindResources_ )
-      , maxDescriptorSetUpdateAfterBindSamplers( maxDescriptorSetUpdateAfterBindSamplers_ )
-      , maxDescriptorSetUpdateAfterBindUniformBuffers( maxDescriptorSetUpdateAfterBindUniformBuffers_ )
-      , maxDescriptorSetUpdateAfterBindUniformBuffersDynamic( maxDescriptorSetUpdateAfterBindUniformBuffersDynamic_ )
-      , maxDescriptorSetUpdateAfterBindStorageBuffers( maxDescriptorSetUpdateAfterBindStorageBuffers_ )
-      , maxDescriptorSetUpdateAfterBindStorageBuffersDynamic( maxDescriptorSetUpdateAfterBindStorageBuffersDynamic_ )
-      , maxDescriptorSetUpdateAfterBindSampledImages( maxDescriptorSetUpdateAfterBindSampledImages_ )
-      , maxDescriptorSetUpdateAfterBindStorageImages( maxDescriptorSetUpdateAfterBindStorageImages_ )
-      , maxDescriptorSetUpdateAfterBindInputAttachments( maxDescriptorSetUpdateAfterBindInputAttachments_ )
-      , supportedDepthResolveModes( supportedDepthResolveModes_ )
-      , supportedStencilResolveModes( supportedStencilResolveModes_ )
-      , independentResolveNone( independentResolveNone_ )
-      , independentResolve( independentResolve_ )
-      , filterMinmaxSingleComponentFormats( filterMinmaxSingleComponentFormats_ )
-      , filterMinmaxImageComponentMapping( filterMinmaxImageComponentMapping_ )
-      , maxTimelineSemaphoreValueDifference( maxTimelineSemaphoreValueDifference_ )
-      , framebufferIntegerColorSampleCounts( framebufferIntegerColorSampleCounts_ )
-    {
-      VULKAN_HPP_ASSERT( driverName_.size() < VK_MAX_DRIVER_NAME_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( driverName, VK_MAX_DRIVER_NAME_SIZE, driverName_.data(), driverName_.size() );
-#    else
-      strncpy( driverName, driverName_.data(), std::min<size_t>( VK_MAX_DRIVER_NAME_SIZE, driverName_.size() ) );
-#    endif
-
-      VULKAN_HPP_ASSERT( driverInfo_.size() < VK_MAX_DRIVER_INFO_SIZE );
-#    if defined( WIN32 )
-      strncpy_s( driverInfo, VK_MAX_DRIVER_INFO_SIZE, driverInfo_.data(), driverInfo_.size() );
-#    else
-      strncpy( driverInfo, driverInfo_.data(), std::min<size_t>( VK_MAX_DRIVER_INFO_SIZE, driverInfo_.size() ) );
-#    endif
-    }
-#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
     PhysicalDeviceVulkan12Properties & operator=( PhysicalDeviceVulkan12Properties const & rhs ) VULKAN_HPP_NOEXCEPT = default;
 #endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/

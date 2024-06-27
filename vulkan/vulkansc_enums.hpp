@@ -2320,6 +2320,51 @@ namespace VULKAN_HPP_NAMESPACE
     eUint32 = VK_INDEX_TYPE_UINT32
   };
 
+  //=========================
+  //=== Index Type Traits ===
+  //=========================
+
+  template <typename T>
+  struct IndexTypeValue
+  {
+  };
+
+  template <>
+  struct IndexTypeValue<uint16_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint16;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint16>
+  {
+    using Type = uint16_t;
+  };
+
+  template <>
+  struct IndexTypeValue<uint32_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint32;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint32>
+  {
+    using Type = uint32_t;
+  };
+
+  template <>
+  struct IndexTypeValue<uint8_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint8KHR;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint8KHR>
+  {
+    using Type = uint8_t;
+  };
+
   enum class StencilFaceFlagBits : VkStencilFaceFlags
   {
     eFront        = VK_STENCIL_FACE_FRONT_BIT,
@@ -3531,51 +3576,6 @@ namespace VULKAN_HPP_NAMESPACE
     eSemaphore = VK_SCI_SYNC_PRIMITIVE_TYPE_SEMAPHORE_NV
   };
 #endif /*VK_USE_PLATFORM_SCI*/
-
-  //=========================
-  //=== Index Type Traits ===
-  //=========================
-
-  template <typename T>
-  struct IndexTypeValue
-  {
-  };
-
-  template <>
-  struct IndexTypeValue<uint16_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint16;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint16>
-  {
-    using Type = uint16_t;
-  };
-
-  template <>
-  struct IndexTypeValue<uint32_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint32;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint32>
-  {
-    using Type = uint32_t;
-  };
-
-  template <>
-  struct IndexTypeValue<uint8_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint8KHR;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint8KHR>
-  {
-    using Type = uint8_t;
-  };
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

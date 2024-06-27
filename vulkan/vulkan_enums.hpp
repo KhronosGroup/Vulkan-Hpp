@@ -3573,6 +3573,51 @@ namespace VULKAN_HPP_NAMESPACE
     eUint8EXT = VK_INDEX_TYPE_UINT8_EXT
   };
 
+  //=========================
+  //=== Index Type Traits ===
+  //=========================
+
+  template <typename T>
+  struct IndexTypeValue
+  {
+  };
+
+  template <>
+  struct IndexTypeValue<uint16_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint16;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint16>
+  {
+    using Type = uint16_t;
+  };
+
+  template <>
+  struct IndexTypeValue<uint32_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint32;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint32>
+  {
+    using Type = uint32_t;
+  };
+
+  template <>
+  struct IndexTypeValue<uint8_t>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint8KHR;
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::eUint8KHR>
+  {
+    using Type = uint8_t;
+  };
+
   enum class StencilFaceFlagBits : VkStencilFaceFlags
   {
     eFront                 = VK_STENCIL_FACE_FRONT_BIT,
@@ -7091,6 +7136,75 @@ namespace VULKAN_HPP_NAMESPACE
     eString  = VK_LAYER_SETTING_TYPE_STRING_EXT
   };
 
+  //=================================
+  //=== Layer Setting Type Traits ===
+  //=================================
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
+  {
+    using Type = vk::Bool32;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt32>
+  {
+    using Type = int32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt64>
+  {
+    using Type = int64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint32>
+  {
+    using Type = uint32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint64>
+  {
+    using Type = uint64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat32>
+  {
+    using Type = float;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat64>
+  {
+    using Type = double;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eString>
+  {
+    using Type = char *;
+  };
+
+  template <typename T>
+  bool isSameType( LayerSettingTypeEXT layerSettingType )
+  {
+    switch ( layerSettingType )
+    {
+      case LayerSettingTypeEXT::eBool32: return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eInt32: return std::is_same<T, int32_t>::value;
+      case LayerSettingTypeEXT::eInt64: return std::is_same<T, int64_t>::value;
+      case LayerSettingTypeEXT::eUint32: return std::is_same<T, uint32_t>::value;
+      case LayerSettingTypeEXT::eUint64: return std::is_same<T, uint64_t>::value;
+      case LayerSettingTypeEXT::eFloat32: return std::is_same<T, float>::value;
+      case LayerSettingTypeEXT::eFloat64: return std::is_same<T, double>::value;
+      case LayerSettingTypeEXT::eString: return std::is_same<T, char *>::value;
+      default: return false;
+    }
+  }
+
   //=== VK_NV_low_latency2 ===
 
   enum class LatencyMarkerNV
@@ -7189,51 +7303,6 @@ namespace VULKAN_HPP_NAMESPACE
     eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR
   };
   using TimeDomainEXT = TimeDomainKHR;
-
-  //=========================
-  //=== Index Type Traits ===
-  //=========================
-
-  template <typename T>
-  struct IndexTypeValue
-  {
-  };
-
-  template <>
-  struct IndexTypeValue<uint16_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint16;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint16>
-  {
-    using Type = uint16_t;
-  };
-
-  template <>
-  struct IndexTypeValue<uint32_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint32;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint32>
-  {
-    using Type = uint32_t;
-  };
-
-  template <>
-  struct IndexTypeValue<uint8_t>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::eUint8KHR;
-  };
-
-  template <>
-  struct CppType<IndexType, IndexType::eUint8KHR>
-  {
-    using Type = uint8_t;
-  };
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

@@ -756,7 +756,8 @@ private:
   std::string generateHandleHashStructures( std::vector<RequireData> const & requireData, std::string const & title ) const;
   std::string generateHandleHashStructures() const;
   std::string generateHandles() const;
-  std::string generateIndexTypeTraits() const;
+  std::string generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const;
+  std::string generateLayerSettingTypeTraits() const;
   std::string
               generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
                                       std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,

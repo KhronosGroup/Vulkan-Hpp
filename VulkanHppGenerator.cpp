@@ -102,7 +102,6 @@ namespace VULKAN_HPP_NAMESPACE
 ${Flags}
 
 ${enums}
-${indexTypeTraits}
 ${objectTypeToDebugReportObjectType}
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
@@ -111,7 +110,6 @@ ${objectTypeToDebugReportObjectType}
   std::string str = replaceWithMap( vulkanEnumsHppTemplate,
                                     { { "enums", generateEnums() },
                                       { "Flags", readSnippet( "Flags.hpp" ) },
-                                      { "indexTypeTraits", generateIndexTypeTraits() },
                                       { "licenseHeader", m_vulkanLicenseHeader },
                                       { "objectTypeToDebugReportObjectType", generateObjectTypeToDebugReportObjectType() } } );
 
@@ -6880,16 +6878,27 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
     enumUsing += "  using " + stripPrefix( alias.first, "Vk" ) + " = " + stripPrefix( enumData.first, "Vk" ) + ";\n";
   }
 
+  std::string typeTraits;
+  if ( enumData.first == "VkIndexType" )
+  {
+    typeTraits = generateIndexTypeTraits( enumData );
+  }
+  else if ( enumData.first == "VkLayerSettingTypeEXT" )
+  {
+    typeTraits = generateLayerSettingTypeTraits();
+  }
+
   const std::string enumTemplate = R"(  enum class ${enumName}${baseType}
   {${enumValues}};
-${enumUsing}${bitmask})";
+${typeTraits}${enumUsing}${bitmask})";
 
   return replaceWithMap( enumTemplate,
                          { { "baseType", baseType },
                            { "bitmask", bitmask },
                            { "enumName", stripPrefix( enumData.first, "Vk" ) },
                            { "enumUsing", enumUsing },
-                           { "enumValues", enumValues } } );
+                           { "enumValues", enumValues },
+                           { "typeTraits", typeTraits } } );
 }
 
 std::string VulkanHppGenerator::generateEnums() const
@@ -8118,9 +8127,54 @@ std::string VulkanHppGenerator::generateHandles() const
   return str;
 }
 
-std::string VulkanHppGenerator::generateIndexTypeTraits() const
+std::string VulkanHppGenerator::generateIndexTypeTraits( std::pair<std::string, EnumData> const & enumData ) const
 {
-  const std::string indexTypeTraitsTemplate = R"(
+  assert( enumData.first == "VkIndexType" );
+
+  std::string typeTraits;
+  for ( auto const & value : enumData.second.values )
+  {
+    std::string cppType, valueName;
+    if ( value.name == "VK_INDEX_TYPE_UINT8_KHR" )
+    {
+      valueName = "eUint8KHR";
+      cppType   = "uint8_t";
+    }
+    else if ( value.name == "VK_INDEX_TYPE_UINT16" )
+    {
+      valueName = "eUint16";
+      cppType   = "uint16_t";
+    }
+    else if ( value.name == "VK_INDEX_TYPE_UINT32" )
+    {
+      valueName = "eUint32";
+      cppType   = "uint32_t";
+    }
+    else
+    {
+      checkForError( value.name == "VK_INDEX_TYPE_NONE_KHR", value.xmlLine, "unknown IndexType <" + value.name + "> encountered" );
+    }
+
+    if ( !valueName.empty() )
+    {
+      const std::string typeTraitTemplate = R"(  template <>
+  struct IndexTypeValue<${cppType}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::${valueName};
+  };
+
+  template <>
+  struct CppType<IndexType, IndexType::${valueName}>
+  {
+    using Type = ${cppType};
+  };
+)";
+
+      typeTraits += replaceWithMap( typeTraitTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
+    }
+  }
+
+  const std::string typeTraitsTemplate = R"(
   //=========================
   //=== Index Type Traits ===
   //=========================
@@ -8129,48 +8183,95 @@ std::string VulkanHppGenerator::generateIndexTypeTraits() const
   struct IndexTypeValue
   {};
 
-${indexTypeTraits}
+${typeTraits}
 )";
 
-  auto indexType = m_enums.find( "VkIndexType" );
-  assert( indexType != m_enums.end() );
+  return replaceWithMap( typeTraitsTemplate, { { "typeTraits", typeTraits } } );
+}
 
-  std::string indexTypeTraits;
-  for ( auto const & value : indexType->second.values )
+std::string VulkanHppGenerator::generateLayerSettingTypeTraits() const
+{
+#if !defined( NDEBUG )
+  auto enumIt = m_enums.find( "VkLayerSettingTypeEXT" );
+  assert( ( enumIt != m_enums.end() ) && ( enumIt->second.values.size() == 8 ) && ( enumIt->second.values[0].name == "VK_LAYER_SETTING_TYPE_BOOL32_EXT" ) &&
+          ( enumIt->second.values[1].name == "VK_LAYER_SETTING_TYPE_INT32_EXT" ) && ( enumIt->second.values[2].name == "VK_LAYER_SETTING_TYPE_INT64_EXT" ) &&
+          ( enumIt->second.values[3].name == "VK_LAYER_SETTING_TYPE_UINT32_EXT" ) && ( enumIt->second.values[4].name == "VK_LAYER_SETTING_TYPE_UINT64_EXT" ) &&
+          ( enumIt->second.values[5].name == "VK_LAYER_SETTING_TYPE_FLOAT32_EXT" ) &&
+          ( enumIt->second.values[6].name == "VK_LAYER_SETTING_TYPE_FLOAT64_EXT" ) && ( enumIt->second.values[7].name == "VK_LAYER_SETTING_TYPE_STRING_EXT" ) );
+#endif
+
+  const std::string typeTraits = R"(
+  //=================================
+  //=== Layer Setting Type Traits ===
+  //=================================
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
   {
-    assert( value.name.starts_with( "VK_INDEX_TYPE_UINT" ) || value.name.starts_with( "VK_INDEX_TYPE_NONE" ) );
-    if ( value.name.starts_with( "VK_INDEX_TYPE_UINT" ) )
+    using Type = vk::Bool32;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt32>
+  {
+    using Type = int32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt64>
+  {
+    using Type = int64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint32>
+  {
+    using Type = uint32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint64>
+  {
+    using Type = uint64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat32>
+  {
+    using Type = float;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat64>
+  {
+    using Type = double;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eString>
+  {
+    using Type = char *;
+  };
+
+  template <typename T>
+  bool isSameType( LayerSettingTypeEXT layerSettingType )
+  {
+    switch ( layerSettingType )
     {
-      std::string valueName = generateEnumValueName( indexType->first, value.name, false );
-      assert( valueName.starts_with( "eUint" ) );
-      auto beginDigit = valueName.begin() + strlen( "eUint" );
-      assert( isdigit( *beginDigit ) );
-      auto        endDigit = std::find_if( beginDigit, valueName.end(), []( std::string::value_type c ) noexcept { return !isdigit( c ); } );
-      std::string cppType  = "uint" + valueName.substr( strlen( "eUint" ), endDigit - beginDigit ) + "_t";
-
-      // from type to enum value
-      const std::string typeToEnumTemplate = R"(
-  template <>
-  struct IndexTypeValue<${cppType}>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR IndexType value = IndexType::${valueName};
-  };
-)";
-      indexTypeTraits += replaceWithMap( typeToEnumTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
-
-      // from enum value to type
-      const std::string enumToTypeTemplate = R"(
-  template <>
-  struct CppType<IndexType, IndexType::${valueName}>
-  {
-    using Type = ${cppType};
-  };
-)";
-      indexTypeTraits += replaceWithMap( enumToTypeTemplate, { { "cppType", cppType }, { "valueName", valueName } } );
+      case LayerSettingTypeEXT::eBool32: return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eInt32: return std::is_same<T, int32_t>::value;
+      case LayerSettingTypeEXT::eInt64: return std::is_same<T, int64_t>::value;
+      case LayerSettingTypeEXT::eUint32: return std::is_same<T, uint32_t>::value;
+      case LayerSettingTypeEXT::eUint64: return std::is_same<T, uint64_t>::value;
+      case LayerSettingTypeEXT::eFloat32: return std::is_same<T, float>::value;
+      case LayerSettingTypeEXT::eFloat64: return std::is_same<T, double>::value;
+      case LayerSettingTypeEXT::eString: return std::is_same<T, char *>::value;
+      default: return false;
     }
   }
+)";
 
-  return replaceWithMap( indexTypeTraitsTemplate, { { "indexTypeTraits", indexTypeTraits } } );
+  return typeTraits;
 }
 
 std::string VulkanHppGenerator::generateLenInitializer(
@@ -10865,9 +10966,51 @@ std::string VulkanHppGenerator::generateStructConstructors( std::pair<std::strin
 
 std::string VulkanHppGenerator::generateStructConstructorsEnhanced( std::pair<std::string, StructureData> const & structData ) const
 {
-  if ( std::any_of( structData.second.members.begin(),
-                    structData.second.members.end(),
-                    [this, &members = structData.second.members]( MemberData const & md ) { return hasLen( md, members ); } ) )
+  // some structs needs some special handling!
+  if ( structData.first == "VkLayerSettingEXT" )
+  {
+    assert( ( structData.second.members.size() == 5 ) && ( structData.second.members[0].name == "pLayerName" ) &&
+            ( structData.second.members[1].name == "pSettingName" ) && ( structData.second.members[2].name == "type" ) &&
+            ( structData.second.members[3].name == "valueCount" ) && ( structData.second.members[4].name == "pValues" ) );
+
+    static const std::string byTypeTemplate =
+      R"(    LayerSettingEXT( char const * pLayerName_, char const * pSettingName_, VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_, vk::ArrayProxyNoTemporaries<const ${type}> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<${type}>(type) );
+    })";
+
+    static const std::string constructorTemplate = R"(
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+// NOTE: you need to provide the type because vk::Bool32 and uint32_t are indistinguishable!
+${byInt32}
+${byInt64}
+${byUint32}
+${byUint64}
+${byFloat32}
+${byFloat64}
+${byString}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
+
+    return replaceWithMap( constructorTemplate,
+                           {
+                             { "byInt32", replaceWithMap( byTypeTemplate, { { "type", "int32_t" } } ) },
+                             { "byInt64", replaceWithMap( byTypeTemplate, { { "type", "int64_t" } } ) },
+                             { "byUint32", replaceWithMap( byTypeTemplate, { { "type", "uint32_t" } } ) },
+                             { "byUint64", replaceWithMap( byTypeTemplate, { { "type", "uint64_t" } } ) },
+                             { "byFloat32", replaceWithMap( byTypeTemplate, { { "type", "float" } } ) },
+                             { "byFloat64", replaceWithMap( byTypeTemplate, { { "type", "double" } } ) },
+                             { "byString", replaceWithMap( byTypeTemplate, { { "type", "char *" } } ) },
+                           } );
+  }
+  else if ( std::any_of( structData.second.members.begin(),
+                         structData.second.members.end(),
+                         [this, &members = structData.second.members]( MemberData const & md ) { return hasLen( md, members ); } ) )
   {
     // map from len-members to all the array members using that len
     std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>> lenIts;
@@ -11679,6 +11822,41 @@ std::string VulkanHppGenerator::generateStructSetter( std::string const & struct
                                  { "ArrayName", startUpperCase( arrayName ) },
                                  { "arraySize", member.arraySizes[0] },
                                  { "structureName", structureName } } );
+      }
+      else if ( ( structureName == "LayerSettingEXT" ) && ( index == 4 ) )
+      {
+        // VkLayerSettingEXT::pValues needs some special handling!
+        assert( member.name == "pValues" );
+        static const std::string byTypeTemplate =
+          R"(    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const ${type}> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    })";
+
+        static const std::string setArrayTemplate = R"(
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+${byInt32}
+${byInt64}
+${byUint32}
+${byUint64}
+${byFloat32}
+${byFloat64}
+${byString}
+#endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+)";
+
+        return replaceWithMap( setArrayTemplate,
+                               {
+                                 { "byInt32", replaceWithMap( byTypeTemplate, { { "type", "int32_t" } } ) },
+                                 { "byInt64", replaceWithMap( byTypeTemplate, { { "type", "int64_t" } } ) },
+                                 { "byUint32", replaceWithMap( byTypeTemplate, { { "type", "uint32_t" } } ) },
+                                 { "byUint64", replaceWithMap( byTypeTemplate, { { "type", "uint64_t" } } ) },
+                                 { "byFloat32", replaceWithMap( byTypeTemplate, { { "type", "float" } } ) },
+                                 { "byFloat64", replaceWithMap( byTypeTemplate, { { "type", "double" } } ) },
+                                 { "byString", replaceWithMap( byTypeTemplate, { { "type", "char *" } } ) },
+                               } );
       }
       else
       {

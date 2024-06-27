@@ -8134,29 +8134,20 @@ std::string VulkanHppGenerator::generateIndexTypeTraits( std::pair<std::string, 
   std::string typeTraits;
   for ( auto const & value : enumData.second.values )
   {
-    std::string cppType, valueName;
-    if ( value.name == "VK_INDEX_TYPE_UINT8_KHR" )
-    {
-      valueName = "eUint8KHR";
-      cppType   = "uint8_t";
-    }
-    else if ( value.name == "VK_INDEX_TYPE_UINT16" )
-    {
-      valueName = "eUint16";
-      cppType   = "uint16_t";
-    }
-    else if ( value.name == "VK_INDEX_TYPE_UINT32" )
-    {
-      valueName = "eUint32";
-      cppType   = "uint32_t";
-    }
-    else
-    {
-      checkForError( value.name == "VK_INDEX_TYPE_NONE_KHR", value.xmlLine, "unknown IndexType <" + value.name + "> encountered" );
-    }
+    assert( value.name.starts_with( "VK_INDEX_TYPE_" ) );
+    std::string type = stripPrefix( value.name, "VK_INDEX_TYPE_" );
 
-    if ( !valueName.empty() )
+    if ( !type.starts_with( "NONE" ) )
     {
+      checkForError( type.starts_with( "UINT" ), value.xmlLine, "unknown VkIndexType <" + value.name + "> encountered" );
+      std::string::size_type pos = type.find_first_of( "0123456789" );
+      assert( pos != std::string::npos );
+      std::string::size_type end = type.find_first_not_of( "0123456789", pos );
+      std::string::size_type count = ( end != std::string::npos ) ? ( end - pos ) : end;
+
+      std::string valueName = generateEnumValueName( "VkIndexType", value.name, false );
+      std::string cppType   = "uint" + type.substr( pos, count ) + "_t";
+
       const std::string typeTraitTemplate = R"(  template <>
   struct IndexTypeValue<${cppType}>
   {

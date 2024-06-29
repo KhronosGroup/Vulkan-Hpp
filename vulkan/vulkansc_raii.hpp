@@ -174,12 +174,6 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPhysicalDeviceMultisamplePropertiesEXT =
           PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceMultisamplePropertiesEXT" ) );
 
-        //=== VK_EXT_calibrated_timestamps ===
-        vkGetPhysicalDeviceCalibrateableTimeDomainsEXT =
-          PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsEXT" ) );
-        if ( !vkGetPhysicalDeviceCalibrateableTimeDomainsKHR )
-          vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = vkGetPhysicalDeviceCalibrateableTimeDomainsEXT;
-
         //=== VK_KHR_fragment_shading_rate ===
         vkGetPhysicalDeviceFragmentShadingRatesKHR =
           PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceFragmentShadingRatesKHR" ) );
@@ -190,6 +184,12 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_KHR_object_refresh ===
         vkGetPhysicalDeviceRefreshableObjectTypesKHR =
           PFN_vkGetPhysicalDeviceRefreshableObjectTypesKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceRefreshableObjectTypesKHR" ) );
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+        //=== VK_NV_acquire_winrt_display ===
+        vkAcquireWinrtDisplayNV = PFN_vkAcquireWinrtDisplayNV( vkGetInstanceProcAddr( instance, "vkAcquireWinrtDisplayNV" ) );
+        vkGetWinrtDisplayNV     = PFN_vkGetWinrtDisplayNV( vkGetInstanceProcAddr( instance, "vkGetWinrtDisplayNV" ) );
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  if defined( VK_USE_PLATFORM_SCI )
         //=== VK_NV_external_sci_sync ===
@@ -204,6 +204,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPhysicalDeviceSciBufAttributesNV =
           PFN_vkGetPhysicalDeviceSciBufAttributesNV( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceSciBufAttributesNV" ) );
 #  endif /*VK_USE_PLATFORM_SCI*/
+
+        //=== VK_KHR_calibrated_timestamps ===
+        vkGetPhysicalDeviceCalibrateableTimeDomainsKHR =
+          PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR" ) );
 
         vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
       }
@@ -285,9 +289,6 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_sample_locations ===
       PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT vkGetPhysicalDeviceMultisamplePropertiesEXT = 0;
 
-      //=== VK_EXT_calibrated_timestamps ===
-      PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT vkGetPhysicalDeviceCalibrateableTimeDomainsEXT = 0;
-
       //=== VK_KHR_fragment_shading_rate ===
       PFN_vkGetPhysicalDeviceFragmentShadingRatesKHR vkGetPhysicalDeviceFragmentShadingRatesKHR = 0;
 
@@ -296,6 +297,15 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_object_refresh ===
       PFN_vkGetPhysicalDeviceRefreshableObjectTypesKHR vkGetPhysicalDeviceRefreshableObjectTypesKHR = 0;
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+      //=== VK_NV_acquire_winrt_display ===
+      PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV = 0;
+      PFN_vkGetWinrtDisplayNV     vkGetWinrtDisplayNV     = 0;
+#  else
+      PFN_dummy vkAcquireWinrtDisplayNV_placeholder                             = 0;
+      PFN_dummy vkGetWinrtDisplayNV_placeholder                                 = 0;
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  if defined( VK_USE_PLATFORM_SCI )
       //=== VK_NV_external_sci_sync ===
@@ -312,6 +322,9 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_dummy vkGetPhysicalDeviceExternalMemorySciBufPropertiesNV_placeholder = 0;
       PFN_dummy vkGetPhysicalDeviceSciBufAttributesNV_placeholder               = 0;
 #  endif /*VK_USE_PLATFORM_SCI*/
+
+      //=== VK_KHR_calibrated_timestamps ===
+      PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = 0;
 
       PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
     };
@@ -573,11 +586,6 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_EXT_external_memory_host ===
         vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetMemoryHostPointerPropertiesEXT" ) );
 
-        //=== VK_EXT_calibrated_timestamps ===
-        vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetDeviceProcAddr( device, "vkGetCalibratedTimestampsEXT" ) );
-        if ( !vkGetCalibratedTimestampsKHR )
-          vkGetCalibratedTimestampsKHR = vkGetCalibratedTimestampsEXT;
-
         //=== VK_KHR_fragment_shading_rate ===
         vkCmdSetFragmentShadingRateKHR = PFN_vkCmdSetFragmentShadingRateKHR( vkGetDeviceProcAddr( device, "vkCmdSetFragmentShadingRateKHR" ) );
 
@@ -712,6 +720,12 @@ namespace VULKAN_HPP_NAMESPACE
         //=== VK_QNX_external_memory_screen_buffer ===
         vkGetScreenBufferPropertiesQNX = PFN_vkGetScreenBufferPropertiesQNX( vkGetDeviceProcAddr( device, "vkGetScreenBufferPropertiesQNX" ) );
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+        //=== VK_KHR_line_rasterization ===
+        vkCmdSetLineStippleKHR = PFN_vkCmdSetLineStippleKHR( vkGetDeviceProcAddr( device, "vkCmdSetLineStippleKHR" ) );
+
+        //=== VK_KHR_calibrated_timestamps ===
+        vkGetCalibratedTimestampsKHR = PFN_vkGetCalibratedTimestampsKHR( vkGetDeviceProcAddr( device, "vkGetCalibratedTimestampsKHR" ) );
       }
 
     public:
@@ -962,9 +976,6 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_EXT_external_memory_host ===
       PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesEXT = 0;
 
-      //=== VK_EXT_calibrated_timestamps ===
-      PFN_vkGetCalibratedTimestampsEXT vkGetCalibratedTimestampsEXT = 0;
-
       //=== VK_KHR_fragment_shading_rate ===
       PFN_vkCmdSetFragmentShadingRateKHR vkCmdSetFragmentShadingRateKHR = 0;
 
@@ -1056,6 +1067,12 @@ namespace VULKAN_HPP_NAMESPACE
 #  else
       PFN_dummy vkGetScreenBufferPropertiesQNX_placeholder                      = 0;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+      //=== VK_KHR_line_rasterization ===
+      PFN_vkCmdSetLineStippleKHR vkCmdSetLineStippleKHR = 0;
+
+      //=== VK_KHR_calibrated_timestamps ===
+      PFN_vkGetCalibratedTimestampsKHR vkGetCalibratedTimestampsKHR = 0;
     };
 
     //========================================
@@ -1567,10 +1584,6 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MultisamplePropertiesEXT
                            getMultisamplePropertiesEXT( VULKAN_HPP_NAMESPACE::SampleCountFlagBits samples ) const VULKAN_HPP_NOEXCEPT;
 
-      //=== VK_EXT_calibrated_timestamps ===
-
-      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> getCalibrateableTimeDomainsEXT() const;
-
       //=== VK_KHR_fragment_shading_rate ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR> getFragmentShadingRatesKHR() const;
@@ -1578,6 +1591,13 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_object_refresh ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::ObjectType> getRefreshableObjectTypesKHR() const;
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+      //=== VK_NV_acquire_winrt_display ===
+
+      VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>::Type
+                           getWinrtDisplayNV( uint32_t deviceRelativeId ) const VULKAN_HPP_RAII_CREATE_NOEXCEPT;
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #  if defined( VK_USE_PLATFORM_SCI )
       //=== VK_NV_external_sci_sync ===
@@ -1593,6 +1613,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void getSciBufAttributesNV( NvSciBufAttrList pAttributes ) const;
 #  endif /*VK_USE_PLATFORM_SCI*/
+
+      //=== VK_KHR_calibrated_timestamps ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> getCalibrateableTimeDomainsKHR() const;
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice = {};
@@ -2027,14 +2051,6 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::MemoryHostPointerPropertiesEXT
         getMemoryHostPointerPropertiesEXT( VULKAN_HPP_NAMESPACE::ExternalMemoryHandleTypeFlagBits handleType, const void * pHostPointer ) const;
 
-      //=== VK_EXT_calibrated_timestamps ===
-
-      VULKAN_HPP_NODISCARD std::pair<std::vector<uint64_t>, uint64_t>
-        getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos ) const;
-
-      VULKAN_HPP_NODISCARD std::pair<uint64_t, uint64_t>
-                           getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo ) const;
-
 #  if defined( VK_USE_PLATFORM_SCI )
       //=== VK_NV_external_sci_sync ===
 
@@ -2078,6 +2094,14 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer ) const;
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+      //=== VK_KHR_calibrated_timestamps ===
+
+      VULKAN_HPP_NODISCARD std::pair<std::vector<uint64_t>, uint64_t>
+        getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos ) const;
+
+      VULKAN_HPP_NODISCARD std::pair<uint64_t, uint64_t>
+                           getCalibratedTimestampKHR( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo ) const;
 
     private:
       VULKAN_HPP_NAMESPACE::Device                                                       m_device    = {};
@@ -2957,6 +2981,10 @@ namespace VULKAN_HPP_NAMESPACE
 
       void setColorWriteEnableEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::Bool32> const & colorWriteEnables ) const VULKAN_HPP_NOEXCEPT;
 
+      //=== VK_KHR_line_rasterization ===
+
+      void setLineStippleKHR( uint32_t lineStippleFactor, uint16_t lineStipplePattern ) const VULKAN_HPP_NOEXCEPT;
+
     private:
       VULKAN_HPP_NAMESPACE::Device                                              m_device        = {};
       VULKAN_HPP_NAMESPACE::CommandPool                                         m_commandPool   = {};
@@ -3627,6 +3655,15 @@ namespace VULKAN_HPP_NAMESPACE
         VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
 
     public:
+#  if !defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+#    if defined( VK_USE_PLATFORM_WIN32_KHR )
+      DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice, uint32_t deviceRelativeId )
+      {
+        *this = physicalDevice.getWinrtDisplayNV( deviceRelativeId );
+      }
+#    endif /*VK_USE_PLATFORM_WIN32_KHR*/
+#  endif
+
       DisplayKHR( VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice const & physicalDevice, VkDisplayKHR display )
         : m_physicalDevice( physicalDevice ), m_display( display ), m_dispatcher( physicalDevice.getDispatcher() )
       {
@@ -3720,6 +3757,12 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_get_display_properties2 ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR> getModeProperties2() const;
+
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+      //=== VK_NV_acquire_winrt_display ===
+
+      void acquireWinrtNV() const;
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice = {};
@@ -10418,73 +10461,6 @@ namespace VULKAN_HPP_NAMESPACE
       return memoryHostPointerProperties;
     }
 
-    //=== VK_EXT_calibrated_timestamps ===
-
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> PhysicalDevice::getCalibrateableTimeDomainsEXT() const
-    {
-      VULKAN_HPP_ASSERT(
-        getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsEXT &&
-        "Function <vkGetPhysicalDeviceCalibrateableTimeDomainsEXT> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
-
-      std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> timeDomains;
-      uint32_t                                         timeDomainCount;
-      VULKAN_HPP_NAMESPACE::Result                     result;
-      do
-      {
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-          getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( static_cast<VkPhysicalDevice>( m_physicalDevice ), &timeDomainCount, nullptr ) );
-        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && timeDomainCount )
-        {
-          timeDomains.resize( timeDomainCount );
-          result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsEXT(
-            static_cast<VkPhysicalDevice>( m_physicalDevice ), &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) ) );
-        }
-      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsEXT" );
-      VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
-      if ( timeDomainCount < timeDomains.size() )
-      {
-        timeDomains.resize( timeDomainCount );
-      }
-      return timeDomains;
-    }
-
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<uint64_t>, uint64_t> Device::getCalibratedTimestampsEXT(
-      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsEXT &&
-                         "Function <vkGetCalibratedTimestampsEXT> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
-
-      std::pair<std::vector<uint64_t>, uint64_t> data_( std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
-      std::vector<uint64_t> &                    timestamps   = data_.first;
-      uint64_t &                                 maxDeviation = data_.second;
-      VULKAN_HPP_NAMESPACE::Result               result       = static_cast<VULKAN_HPP_NAMESPACE::Result>(
-        getDispatcher()->vkGetCalibratedTimestampsEXT( static_cast<VkDevice>( m_device ),
-                                                       timestampInfos.size(),
-                                                       reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ),
-                                                       timestamps.data(),
-                                                       &maxDeviation ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsEXT" );
-
-      return data_;
-    }
-
-    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint64_t, uint64_t>
-                                           Device::getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo ) const
-    {
-      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsEXT &&
-                         "Function <vkGetCalibratedTimestampsEXT> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
-
-      std::pair<uint64_t, uint64_t> data_;
-      uint64_t &                    timestamp    = data_.first;
-      uint64_t &                    maxDeviation = data_.second;
-      VULKAN_HPP_NAMESPACE::Result  result       = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetCalibratedTimestampsEXT(
-        static_cast<VkDevice>( m_device ), 1, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( &timestampInfo ), &timestamp, &maxDeviation ) );
-      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampEXT" );
-
-      return data_;
-    }
-
     //=== VK_KHR_fragment_shading_rate ===
 
     VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>
@@ -10900,6 +10876,38 @@ namespace VULKAN_HPP_NAMESPACE
                                               reinterpret_cast<const VkResolveImageInfo2 *>( &resolveImageInfo ) );
     }
 
+#  if defined( VK_USE_PLATFORM_WIN32_KHR )
+    //=== VK_NV_acquire_winrt_display ===
+
+    VULKAN_HPP_INLINE void DisplayKHR::acquireWinrtNV() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkAcquireWinrtDisplayNV && "Function <vkAcquireWinrtDisplayNV> requires <VK_NV_acquire_winrt_display>" );
+
+      VULKAN_HPP_NAMESPACE::Result result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        getDispatcher()->vkAcquireWinrtDisplayNV( static_cast<VkPhysicalDevice>( m_physicalDevice ), static_cast<VkDisplayKHR>( m_display ) ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::DisplayKHR::acquireWinrtNV" );
+    }
+
+    VULKAN_HPP_NODISCARD
+      VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CreateReturnType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>::Type
+                        PhysicalDevice::getWinrtDisplayNV( uint32_t deviceRelativeId ) const VULKAN_HPP_RAII_CREATE_NOEXCEPT
+    {
+      VULKAN_HPP_NAMESPACE::DisplayKHR display;
+      VULKAN_HPP_NAMESPACE::Result     result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetWinrtDisplayNV(
+        static_cast<VkPhysicalDevice>( m_physicalDevice ), deviceRelativeId, reinterpret_cast<VkDisplayKHR *>( &display ) ) );
+      if ( result != VULKAN_HPP_NAMESPACE::Result::eSuccess )
+      {
+#    if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
+        return VULKAN_HPP_UNEXPECTED( result );
+#    else
+        VULKAN_HPP_NAMESPACE::detail::throwResultException( result, "PhysicalDevice::getWinrtDisplayNV" );
+#    endif
+      }
+
+      return VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR( *this, *reinterpret_cast<VkDisplayKHR *>( &display ) );
+    }
+#  endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
     //=== VK_EXT_vertex_input_dynamic_state ===
 
     VULKAN_HPP_INLINE void CommandBuffer::setVertexInputEXT(
@@ -11165,6 +11173,83 @@ namespace VULKAN_HPP_NAMESPACE
       return structureChain;
     }
 #  endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+    //=== VK_KHR_line_rasterization ===
+
+    VULKAN_HPP_INLINE void CommandBuffer::setLineStippleKHR( uint32_t lineStippleFactor, uint16_t lineStipplePattern ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkCmdSetLineStippleKHR &&
+                         "Function <vkCmdSetLineStippleKHR> requires <VK_EXT_line_rasterization> or <VK_KHR_line_rasterization>" );
+
+      getDispatcher()->vkCmdSetLineStippleKHR( static_cast<VkCommandBuffer>( m_commandBuffer ), lineStippleFactor, lineStipplePattern );
+    }
+
+    //=== VK_KHR_calibrated_timestamps ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> PhysicalDevice::getCalibrateableTimeDomainsKHR() const
+    {
+      VULKAN_HPP_ASSERT(
+        getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsKHR &&
+        "Function <vkGetPhysicalDeviceCalibrateableTimeDomainsKHR> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> timeDomains;
+      uint32_t                                         timeDomainCount;
+      VULKAN_HPP_NAMESPACE::Result                     result;
+      do
+      {
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+          getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( static_cast<VkPhysicalDevice>( m_physicalDevice ), &timeDomainCount, nullptr ) );
+        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && timeDomainCount )
+        {
+          timeDomains.resize( timeDomainCount );
+          result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceCalibrateableTimeDomainsKHR(
+            static_cast<VkPhysicalDevice>( m_physicalDevice ), &timeDomainCount, reinterpret_cast<VkTimeDomainKHR *>( timeDomains.data() ) ) );
+        }
+      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCalibrateableTimeDomainsKHR" );
+      VULKAN_HPP_ASSERT( timeDomainCount <= timeDomains.size() );
+      if ( timeDomainCount < timeDomains.size() )
+      {
+        timeDomains.resize( timeDomainCount );
+      }
+      return timeDomains;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<std::vector<uint64_t>, uint64_t> Device::getCalibratedTimestampsKHR(
+      VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsKHR &&
+                         "Function <vkGetCalibratedTimestampsKHR> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
+
+      std::pair<std::vector<uint64_t>, uint64_t> data_( std::piecewise_construct, std::forward_as_tuple( timestampInfos.size() ), std::forward_as_tuple( 0 ) );
+      std::vector<uint64_t> &                    timestamps   = data_.first;
+      uint64_t &                                 maxDeviation = data_.second;
+      VULKAN_HPP_NAMESPACE::Result               result       = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        getDispatcher()->vkGetCalibratedTimestampsKHR( static_cast<VkDevice>( m_device ),
+                                                       timestampInfos.size(),
+                                                       reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( timestampInfos.data() ),
+                                                       timestamps.data(),
+                                                       &maxDeviation ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampsKHR" );
+
+      return data_;
+    }
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::pair<uint64_t, uint64_t>
+                                           Device::getCalibratedTimestampKHR( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo ) const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetCalibratedTimestampsKHR &&
+                         "Function <vkGetCalibratedTimestampsKHR> requires <VK_EXT_calibrated_timestamps> or <VK_KHR_calibrated_timestamps>" );
+
+      std::pair<uint64_t, uint64_t> data_;
+      uint64_t &                    timestamp    = data_.first;
+      uint64_t &                    maxDeviation = data_.second;
+      VULKAN_HPP_NAMESPACE::Result  result       = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetCalibratedTimestampsKHR(
+        static_cast<VkDevice>( m_device ), 1, reinterpret_cast<const VkCalibratedTimestampInfoKHR *>( &timestampInfo ), &timestamp, &maxDeviation ) );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::getCalibratedTimestampKHR" );
+
+      return data_;
+    }
 
     //====================
     //=== RAII Helpers ===

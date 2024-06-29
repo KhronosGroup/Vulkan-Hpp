@@ -605,8 +605,13 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_clock ===
   struct PhysicalDeviceShaderClockFeaturesKHR;
 
-  //=== VK_EXT_vertex_attribute_divisor ===
-  struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
+  //=== VK_KHR_global_priority ===
+  struct DeviceQueueGlobalPriorityCreateInfoKHR;
+  using DeviceQueueGlobalPriorityCreateInfoEXT = DeviceQueueGlobalPriorityCreateInfoKHR;
+  struct PhysicalDeviceGlobalPriorityQueryFeaturesKHR;
+  using PhysicalDeviceGlobalPriorityQueryFeaturesEXT = PhysicalDeviceGlobalPriorityQueryFeaturesKHR;
+  struct QueueFamilyGlobalPriorityPropertiesKHR;
+  using QueueFamilyGlobalPriorityPropertiesEXT = QueueFamilyGlobalPriorityPropertiesKHR;
 
   //=== VK_EXT_pci_bus_info ===
   struct PhysicalDevicePCIBusInfoPropertiesEXT;
@@ -713,6 +718,15 @@ namespace VULKAN_HPP_NAMESPACE
   struct DeviceSemaphoreSciSyncPoolReservationCreateInfoNV;
 #endif /*VK_USE_PLATFORM_SCI*/
 
+  //=== VK_KHR_vertex_attribute_divisor ===
+  struct PhysicalDeviceVertexAttributeDivisorPropertiesKHR;
+  struct VertexInputBindingDivisorDescriptionKHR;
+  using VertexInputBindingDivisorDescriptionEXT = VertexInputBindingDivisorDescriptionKHR;
+  struct PipelineVertexInputDivisorStateCreateInfoKHR;
+  using PipelineVertexInputDivisorStateCreateInfoEXT = PipelineVertexInputDivisorStateCreateInfoKHR;
+  struct PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
+  using PhysicalDeviceVertexAttributeDivisorFeaturesEXT = PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
+
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
   struct ScreenBufferPropertiesQNX;
@@ -721,6 +735,22 @@ namespace VULKAN_HPP_NAMESPACE
   struct ExternalFormatQNX;
   struct PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+  //=== VK_KHR_index_type_uint8 ===
+  struct PhysicalDeviceIndexTypeUint8FeaturesKHR;
+  using PhysicalDeviceIndexTypeUint8FeaturesEXT = PhysicalDeviceIndexTypeUint8FeaturesKHR;
+
+  //=== VK_KHR_line_rasterization ===
+  struct PhysicalDeviceLineRasterizationFeaturesKHR;
+  using PhysicalDeviceLineRasterizationFeaturesEXT = PhysicalDeviceLineRasterizationFeaturesKHR;
+  struct PhysicalDeviceLineRasterizationPropertiesKHR;
+  using PhysicalDeviceLineRasterizationPropertiesEXT = PhysicalDeviceLineRasterizationPropertiesKHR;
+  struct PipelineRasterizationLineStateCreateInfoKHR;
+  using PipelineRasterizationLineStateCreateInfoEXT = PipelineRasterizationLineStateCreateInfoKHR;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  struct CalibratedTimestampInfoKHR;
+  using CalibratedTimestampInfoEXT = CalibratedTimestampInfoKHR;
 
   //===================================
   //=== HANDLE forward declarations ===
@@ -1199,6 +1229,105 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::SurfaceKHR>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
+  class DisplayKHR
+  {
+  public:
+    using CType      = VkDisplayKHR;
+    using NativeType = VkDisplayKHR;
+
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
+      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
+
+  public:
+    DisplayKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
+    DisplayKHR( DisplayKHR const & rhs )             = default;
+    DisplayKHR & operator=( DisplayKHR const & rhs ) = default;
+    DisplayKHR( DisplayKHR && rhs )                  = default;
+    DisplayKHR & operator=( DisplayKHR && rhs )      = default;
+
+    VULKAN_HPP_CONSTEXPR DisplayKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT DisplayKHR( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT : m_displayKHR( displayKHR ) {}
+
+#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
+    DisplayKHR & operator=( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT
+    {
+      m_displayKHR = displayKHR;
+      return *this;
+    }
+#endif
+
+    DisplayKHR & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      m_displayKHR = {};
+      return *this;
+    }
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( DisplayKHR const & ) const = default;
+#else
+    bool operator==( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR == rhs.m_displayKHR;
+    }
+
+    bool operator!=( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR != rhs.m_displayKHR;
+    }
+
+    bool operator<( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR < rhs.m_displayKHR;
+    }
+#endif
+
+    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayKHR() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR;
+    }
+
+    explicit operator bool() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR != VK_NULL_HANDLE;
+    }
+
+    bool operator!() const VULKAN_HPP_NOEXCEPT
+    {
+      return m_displayKHR == VK_NULL_HANDLE;
+    }
+
+  private:
+    VkDisplayKHR m_displayKHR = {};
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
+  };
+
+  template <>
+  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
+  };
+
+#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
+  template <>
+  struct CppType<VkDisplayKHR, VK_NULL_HANDLE>
+  {
+    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
+  };
+#endif
+
+  template <>
+  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::DisplayKHR>
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
@@ -3298,6 +3427,13 @@ namespace VULKAN_HPP_NAMESPACE
                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    //=== VK_KHR_line_rasterization ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void setLineStippleKHR( uint32_t           lineStippleFactor,
+                            uint16_t           lineStipplePattern,
+                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
     operator VkCommandBuffer() const VULKAN_HPP_NOEXCEPT
     {
       return m_commandBuffer;
@@ -4632,105 +4768,6 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
   };
 #endif /*VK_USE_PLATFORM_SCI*/
-
-  class DisplayKHR
-  {
-  public:
-    using CType      = VkDisplayKHR;
-    using NativeType = VkDisplayKHR;
-
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::ObjectType objectType = VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT debugReportObjectType =
-      VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR;
-
-  public:
-    DisplayKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
-    DisplayKHR( DisplayKHR const & rhs )             = default;
-    DisplayKHR & operator=( DisplayKHR const & rhs ) = default;
-    DisplayKHR( DisplayKHR && rhs )                  = default;
-    DisplayKHR & operator=( DisplayKHR && rhs )      = default;
-
-    VULKAN_HPP_CONSTEXPR DisplayKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
-
-    VULKAN_HPP_TYPESAFE_EXPLICIT DisplayKHR( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT : m_displayKHR( displayKHR ) {}
-
-#if ( VULKAN_HPP_TYPESAFE_CONVERSION == 1 )
-    DisplayKHR & operator=( VkDisplayKHR displayKHR ) VULKAN_HPP_NOEXCEPT
-    {
-      m_displayKHR = displayKHR;
-      return *this;
-    }
-#endif
-
-    DisplayKHR & operator=( std::nullptr_t ) VULKAN_HPP_NOEXCEPT
-    {
-      m_displayKHR = {};
-      return *this;
-    }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DisplayKHR const & ) const = default;
-#else
-    bool operator==( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR == rhs.m_displayKHR;
-    }
-
-    bool operator!=( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR != rhs.m_displayKHR;
-    }
-
-    bool operator<( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR < rhs.m_displayKHR;
-    }
-#endif
-
-    VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayKHR() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR;
-    }
-
-    explicit operator bool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR != VK_NULL_HANDLE;
-    }
-
-    bool operator!() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR == VK_NULL_HANDLE;
-    }
-
-  private:
-    VkDisplayKHR m_displayKHR = {};
-  };
-
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::ObjectType, VULKAN_HPP_NAMESPACE::ObjectType::eDisplayKHR>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
-  };
-
-  template <>
-  struct CppType<VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT, VULKAN_HPP_NAMESPACE::DebugReportObjectTypeEXT::eDisplayKHR>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
-  };
-
-#if ( VK_USE_64_BIT_PTR_DEFINES == 1 )
-  template <>
-  struct CppType<VkDisplayKHR, VK_NULL_HANDLE>
-  {
-    using Type = VULKAN_HPP_NAMESPACE::DisplayKHR;
-  };
-#endif
-
-  template <>
-  struct isVulkanHandleType<VULKAN_HPP_NAMESPACE::DisplayKHR>
-  {
-    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
-  };
 
   class Queue
   {
@@ -6894,32 +6931,6 @@ namespace VULKAN_HPP_NAMESPACE
                                          Dispatch const & d                                     VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-    //=== VK_EXT_calibrated_timestamps ===
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result getCalibratedTimestampsEXT( uint32_t                                                 timestampCount,
-                                                            const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR * pTimestampInfos,
-                                                            uint64_t *                                               pTimestamps,
-                                                            uint64_t *                                               pMaxDeviation,
-                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Uint64_tAllocator = std::allocator<uint64_t>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
-      getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
-                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename Uint64_tAllocator                                                                                = std::allocator<uint64_t>,
-              typename Dispatch                                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename std::enable_if<std::is_same<typename Uint64_tAllocator::value_type, uint64_t>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
-      getCalibratedTimestampsEXT( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
-                                  Uint64_tAllocator &                                                                              uint64_tAllocator,
-                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<uint64_t, uint64_t>>::type
-      getCalibratedTimestampEXT( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo,
-                                 Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
 #if defined( VK_USE_PLATFORM_SCI )
     //=== VK_NV_external_sci_sync ===
 
@@ -7041,6 +7052,32 @@ namespace VULKAN_HPP_NAMESPACE
       getScreenBufferPropertiesQNX( const struct _screen_buffer & buffer, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 #endif   /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+    //=== VK_KHR_calibrated_timestamps ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getCalibratedTimestampsKHR( uint32_t                                                 timestampCount,
+                                                            const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR * pTimestampInfos,
+                                                            uint64_t *                                               pTimestamps,
+                                                            uint64_t *                                               pMaxDeviation,
+                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Uint64_tAllocator = std::allocator<uint64_t>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
+      getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
+                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename Uint64_tAllocator                                                                                = std::allocator<uint64_t>,
+              typename Dispatch                                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename Uint64_tAllocator::value_type, uint64_t>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
+      getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
+                                  Uint64_tAllocator &                                                                              uint64_tAllocator,
+                                  Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<uint64_t, uint64_t>>::type
+      getCalibratedTimestampKHR( const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR & timestampInfo,
+                                 Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkDevice() const VULKAN_HPP_NOEXCEPT
     {
@@ -7912,23 +7949,6 @@ namespace VULKAN_HPP_NAMESPACE
                                                       Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
-    //=== VK_EXT_calibrated_timestamps ===
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD Result getCalibrateableTimeDomainsEXT( uint32_t *                            pTimeDomainCount,
-                                                                VULKAN_HPP_NAMESPACE::TimeDomainKHR * pTimeDomains,
-                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
-      getCalibrateableTimeDomainsEXT( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>,
-              typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
-      getCalibrateableTimeDomainsEXT( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
     //=== VK_KHR_fragment_shading_rate ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -7968,6 +7988,35 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ObjectType, ObjectTypeAllocator>>::type
       getRefreshableObjectTypesKHR( ObjectTypeAllocator & objectTypeAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+    //=== VK_NV_acquire_winrt_display ===
+
+#  ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result acquireWinrtDisplayNV( VULKAN_HPP_NAMESPACE::DisplayKHR display,
+                                                       Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  else
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD_WHEN_NO_EXCEPTIONS typename ResultValueType<void>::type
+      acquireWinrtDisplayNV( VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getWinrtDisplayNV( uint32_t                           deviceRelativeId,
+                                                   VULKAN_HPP_NAMESPACE::DisplayKHR * pDisplay,
+                                                   Dispatch const & d                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<VULKAN_HPP_NAMESPACE::DisplayKHR>::type
+      getWinrtDisplayNV( uint32_t deviceRelativeId, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    ifndef VULKAN_HPP_NO_SMART_HANDLE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::DisplayKHR, Dispatch>>::type
+      getWinrtDisplayNVUnique( uint32_t deviceRelativeId, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#    endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#  endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+#endif     /*VK_USE_PLATFORM_WIN32_KHR*/
 
 #if defined( VK_USE_PLATFORM_SCI )
     //=== VK_NV_external_sci_sync ===
@@ -8010,6 +8059,23 @@ namespace VULKAN_HPP_NAMESPACE
       getSciBufAttributesNV( NvSciBufAttrList pAttributes, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 #endif   /*VK_USE_PLATFORM_SCI*/
+
+    //=== VK_KHR_calibrated_timestamps ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result getCalibrateableTimeDomainsKHR( uint32_t *                            pTimeDomainCount,
+                                                                VULKAN_HPP_NAMESPACE::TimeDomainKHR * pTimeDomains,
+                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
+      getCalibrateableTimeDomainsKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>,
+              typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
+      getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT
     {

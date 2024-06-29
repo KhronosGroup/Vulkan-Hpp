@@ -388,6 +388,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_blend_operation_advanced ===
   using VULKAN_HPP_NAMESPACE::BlendOverlapEXT;
 
+  //=== VK_KHR_global_priority ===
+  using VULKAN_HPP_NAMESPACE::QueueGlobalPriorityEXT;
+  using VULKAN_HPP_NAMESPACE::QueueGlobalPriorityKHR;
+
   //=== VK_KHR_fragment_shading_rate ===
   using VULKAN_HPP_NAMESPACE::FragmentShadingRateCombinerOpKHR;
 
@@ -408,6 +412,14 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SciSyncClientTypeNV;
   using VULKAN_HPP_NAMESPACE::SciSyncPrimitiveTypeNV;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_KHR_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT;
+  using VULKAN_HPP_NAMESPACE::LineRasterizationModeKHR;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::TimeDomainEXT;
+  using VULKAN_HPP_NAMESPACE::TimeDomainKHR;
 
   //=========================
   //=== Index Type Traits ===
@@ -449,6 +461,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::MemoryMapFailedError;
   using VULKAN_HPP_NAMESPACE::NativeWindowInUseKHRError;
   using VULKAN_HPP_NAMESPACE::NoPipelineMatchError;
+  using VULKAN_HPP_NAMESPACE::NotPermittedKHRError;
   using VULKAN_HPP_NAMESPACE::OutOfDateKHRError;
   using VULKAN_HPP_NAMESPACE::OutOfDeviceMemoryError;
   using VULKAN_HPP_NAMESPACE::OutOfHostMemoryError;
@@ -629,10 +642,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTFilterCubicExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTFilterCubicSpecVersion;
 
-  //=== VK_EXT_global_priority ===
-  using VULKAN_HPP_NAMESPACE::EXTGlobalPriorityExtensionName;
-  using VULKAN_HPP_NAMESPACE::EXTGlobalPrioritySpecVersion;
-
   //=== VK_EXT_external_memory_host ===
   using VULKAN_HPP_NAMESPACE::EXTExternalMemoryHostExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTExternalMemoryHostSpecVersion;
@@ -641,13 +650,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRShaderClockExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRShaderClockSpecVersion;
 
-  //=== VK_EXT_calibrated_timestamps ===
-  using VULKAN_HPP_NAMESPACE::EXTCalibratedTimestampsExtensionName;
-  using VULKAN_HPP_NAMESPACE::EXTCalibratedTimestampsSpecVersion;
-
-  //=== VK_EXT_vertex_attribute_divisor ===
-  using VULKAN_HPP_NAMESPACE::EXTVertexAttributeDivisorExtensionName;
-  using VULKAN_HPP_NAMESPACE::EXTVertexAttributeDivisorSpecVersion;
+  //=== VK_KHR_global_priority ===
+  using VULKAN_HPP_NAMESPACE::KHRGlobalPriorityExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRGlobalPrioritySpecVersion;
+  using VULKAN_HPP_NAMESPACE::MaxGlobalPrioritySizeKHR;
 
   //=== VK_KHR_swapchain_mutable_format ===
   using VULKAN_HPP_NAMESPACE::KHRSwapchainMutableFormatExtensionName;
@@ -749,6 +755,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXT4444FormatsExtensionName;
   using VULKAN_HPP_NAMESPACE::EXT4444FormatsSpecVersion;
 
+#if defined( VK_USE_PLATFORM_WIN32_KHR )
+  //=== VK_NV_acquire_winrt_display ===
+  using VULKAN_HPP_NAMESPACE::NVAcquireWinrtDisplayExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVAcquireWinrtDisplaySpecVersion;
+#endif /*VK_USE_PLATFORM_WIN32_KHR*/
+
   //=== VK_EXT_vertex_input_dynamic_state ===
   using VULKAN_HPP_NAMESPACE::EXTVertexInputDynamicStateExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTVertexInputDynamicStateSpecVersion;
@@ -783,11 +795,27 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVExternalSciSync2SpecVersion;
 #endif /*VK_USE_PLATFORM_SCI*/
 
+  //=== VK_KHR_vertex_attribute_divisor ===
+  using VULKAN_HPP_NAMESPACE::KHRVertexAttributeDivisorExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRVertexAttributeDivisorSpecVersion;
+
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
   using VULKAN_HPP_NAMESPACE::QNXExternalMemoryScreenBufferExtensionName;
   using VULKAN_HPP_NAMESPACE::QNXExternalMemoryScreenBufferSpecVersion;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+  //=== VK_KHR_index_type_uint8 ===
+  using VULKAN_HPP_NAMESPACE::KHRIndexTypeUint8ExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRIndexTypeUint8SpecVersion;
+
+  //=== VK_KHR_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::KHRLineRasterizationExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRLineRasterizationSpecVersion;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::KHRCalibratedTimestampsExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRCalibratedTimestampsSpecVersion;
 
   //========================
   //=== CONSTEXPR VALUEs ===
@@ -1411,8 +1439,13 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_clock ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderClockFeaturesKHR;
 
-  //=== VK_EXT_vertex_attribute_divisor ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesEXT;
+  //=== VK_KHR_global_priority ===
+  using VULKAN_HPP_NAMESPACE::DeviceQueueGlobalPriorityCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::DeviceQueueGlobalPriorityCreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceGlobalPriorityQueryFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceGlobalPriorityQueryFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyGlobalPriorityPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::QueueFamilyGlobalPriorityPropertiesKHR;
 
   //=== VK_EXT_pci_bus_info ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePCIBusInfoPropertiesEXT;
@@ -1519,6 +1552,15 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SemaphoreSciSyncPoolCreateInfoNV;
 #endif /*VK_USE_PLATFORM_SCI*/
 
+  //=== VK_KHR_vertex_attribute_divisor ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorPropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PipelineVertexInputDivisorStateCreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionEXT;
+  using VULKAN_HPP_NAMESPACE::VertexInputBindingDivisorDescriptionKHR;
+
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
   //=== VK_QNX_external_memory_screen_buffer ===
   using VULKAN_HPP_NAMESPACE::ExternalFormatQNX;
@@ -1527,6 +1569,22 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ScreenBufferFormatPropertiesQNX;
   using VULKAN_HPP_NAMESPACE::ScreenBufferPropertiesQNX;
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+
+  //=== VK_KHR_index_type_uint8 ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceIndexTypeUint8FeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceIndexTypeUint8FeaturesKHR;
+
+  //=== VK_KHR_line_rasterization ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceLineRasterizationPropertiesKHR;
+  using VULKAN_HPP_NAMESPACE::PipelineRasterizationLineStateCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PipelineRasterizationLineStateCreateInfoKHR;
+
+  //=== VK_KHR_calibrated_timestamps ===
+  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoEXT;
+  using VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR;
 
   //===============
   //=== HANDLEs ===

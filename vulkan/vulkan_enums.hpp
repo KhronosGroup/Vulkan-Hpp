@@ -1419,6 +1419,11 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_POOL_OVERALLOCATION_FEATURES_NV,
     ePhysicalDeviceRawAccessChainsFeaturesNV                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAW_ACCESS_CHAINS_FEATURES_NV,
     ePhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_RELAXED_EXTENDED_INSTRUCTION_FEATURES_KHR,
+    ePhysicalDeviceMaintenance7FeaturesKHR                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_7_FEATURES_KHR,
+    ePhysicalDeviceMaintenance7PropertiesKHR                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_7_PROPERTIES_KHR,
+    ePhysicalDeviceLayeredApiPropertiesListKHR                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_LIST_KHR,
+    ePhysicalDeviceLayeredApiPropertiesKHR                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LAYERED_API_PROPERTIES_KHR,
+    ePhysicalDeviceLayeredApiVulkanPropertiesKHR               = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LAYERED_API_VULKAN_PROPERTIES_KHR,
     ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_ATOMIC_FLOAT16_VECTOR_FEATURES_NV,
     ePhysicalDeviceShaderReplicatedCompositesFeaturesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_REPLICATED_COMPOSITES_FEATURES_EXT,
     ePhysicalDeviceRayTracingValidationFeaturesNV              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_VALIDATION_FEATURES_NV,
@@ -3640,6 +3645,7 @@ namespace VULKAN_HPP_NAMESPACE
   {
     eInline                              = VK_SUBPASS_CONTENTS_INLINE,
     eSecondaryCommandBuffers             = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS,
+    eInlineAndSecondaryCommandBuffersKHR = VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR,
     eInlineAndSecondaryCommandBuffersEXT = VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT
   };
 
@@ -4329,8 +4335,9 @@ namespace VULKAN_HPP_NAMESPACE
     eContentsSecondaryCommandBuffers = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT,
     eSuspending                      = VK_RENDERING_SUSPENDING_BIT,
     eResuming                        = VK_RENDERING_RESUMING_BIT,
-    eContentsInlineEXT               = VK_RENDERING_CONTENTS_INLINE_BIT_EXT,
-    eEnableLegacyDitheringEXT        = VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT
+    eEnableLegacyDitheringEXT        = VK_RENDERING_ENABLE_LEGACY_DITHERING_BIT_EXT,
+    eContentsInlineKHR               = VK_RENDERING_CONTENTS_INLINE_BIT_KHR,
+    eContentsInlineEXT               = VK_RENDERING_CONTENTS_INLINE_BIT_EXT
   };
   using RenderingFlagBitsKHR = RenderingFlagBits;
 
@@ -4342,8 +4349,8 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool           isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR RenderingFlags allFlags  = RenderingFlagBits::eContentsSecondaryCommandBuffers | RenderingFlagBits::eSuspending |
-                                                                   RenderingFlagBits::eResuming | RenderingFlagBits::eContentsInlineEXT |
-                                                                   RenderingFlagBits::eEnableLegacyDitheringEXT;
+                                                                   RenderingFlagBits::eResuming | RenderingFlagBits::eEnableLegacyDitheringEXT |
+                                                                   RenderingFlagBits::eContentsInlineKHR;
   };
 
   enum class FormatFeatureFlagBits2 : VkFormatFeatureFlags2
@@ -7303,6 +7310,17 @@ namespace VULKAN_HPP_NAMESPACE
     eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR
   };
   using TimeDomainEXT = TimeDomainKHR;
+
+  //=== VK_KHR_maintenance7 ===
+
+  enum class PhysicalDeviceLayeredApiKHR
+  {
+    eVulkan   = VK_PHYSICAL_DEVICE_LAYERED_API_VULKAN_KHR,
+    eD3D12    = VK_PHYSICAL_DEVICE_LAYERED_API_D3D12_KHR,
+    eMetal    = VK_PHYSICAL_DEVICE_LAYERED_API_METAL_KHR,
+    eOpengl   = VK_PHYSICAL_DEVICE_LAYERED_API_OPENGL_KHR,
+    eOpengles = VK_PHYSICAL_DEVICE_LAYERED_API_OPENGLES_KHR
+  };
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

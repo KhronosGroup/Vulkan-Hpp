@@ -1747,10 +1747,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "Suspending | ";
     if ( value & RenderingFlagBits::eResuming )
       result += "Resuming | ";
-    if ( value & RenderingFlagBits::eContentsInlineEXT )
-      result += "ContentsInlineEXT | ";
     if ( value & RenderingFlagBits::eEnableLegacyDitheringEXT )
       result += "EnableLegacyDitheringEXT | ";
+    if ( value & RenderingFlagBits::eContentsInlineKHR )
+      result += "ContentsInlineKHR | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -4553,6 +4553,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceDescriptorPoolOverallocationFeaturesNV: return "PhysicalDeviceDescriptorPoolOverallocationFeaturesNV";
       case StructureType::ePhysicalDeviceRawAccessChainsFeaturesNV: return "PhysicalDeviceRawAccessChainsFeaturesNV";
       case StructureType::ePhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR: return "PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR";
+      case StructureType::ePhysicalDeviceMaintenance7FeaturesKHR: return "PhysicalDeviceMaintenance7FeaturesKHR";
+      case StructureType::ePhysicalDeviceMaintenance7PropertiesKHR: return "PhysicalDeviceMaintenance7PropertiesKHR";
+      case StructureType::ePhysicalDeviceLayeredApiPropertiesListKHR: return "PhysicalDeviceLayeredApiPropertiesListKHR";
+      case StructureType::ePhysicalDeviceLayeredApiPropertiesKHR: return "PhysicalDeviceLayeredApiPropertiesKHR";
+      case StructureType::ePhysicalDeviceLayeredApiVulkanPropertiesKHR: return "PhysicalDeviceLayeredApiVulkanPropertiesKHR";
       case StructureType::ePhysicalDeviceShaderAtomicFloat16VectorFeaturesNV: return "PhysicalDeviceShaderAtomicFloat16VectorFeaturesNV";
       case StructureType::ePhysicalDeviceShaderReplicatedCompositesFeaturesEXT: return "PhysicalDeviceShaderReplicatedCompositesFeaturesEXT";
       case StructureType::ePhysicalDeviceRayTracingValidationFeaturesNV: return "PhysicalDeviceRayTracingValidationFeaturesNV";
@@ -6250,7 +6255,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case SubpassContents::eInline: return "Inline";
       case SubpassContents::eSecondaryCommandBuffers: return "SecondaryCommandBuffers";
-      case SubpassContents::eInlineAndSecondaryCommandBuffersEXT: return "InlineAndSecondaryCommandBuffersEXT";
+      case SubpassContents::eInlineAndSecondaryCommandBuffersKHR: return "InlineAndSecondaryCommandBuffersKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -6734,8 +6739,8 @@ namespace VULKAN_HPP_NAMESPACE
       case RenderingFlagBits::eContentsSecondaryCommandBuffers: return "ContentsSecondaryCommandBuffers";
       case RenderingFlagBits::eSuspending: return "Suspending";
       case RenderingFlagBits::eResuming: return "Resuming";
-      case RenderingFlagBits::eContentsInlineEXT: return "ContentsInlineEXT";
       case RenderingFlagBits::eEnableLegacyDitheringEXT: return "EnableLegacyDitheringEXT";
+      case RenderingFlagBits::eContentsInlineKHR: return "ContentsInlineKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -9077,6 +9082,21 @@ namespace VULKAN_HPP_NAMESPACE
       case TimeDomainKHR::eClockMonotonic: return "ClockMonotonic";
       case TimeDomainKHR::eClockMonotonicRaw: return "ClockMonotonicRaw";
       case TimeDomainKHR::eQueryPerformanceCounter: return "QueryPerformanceCounter";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_maintenance7 ===
+
+  VULKAN_HPP_INLINE std::string to_string( PhysicalDeviceLayeredApiKHR value )
+  {
+    switch ( value )
+    {
+      case PhysicalDeviceLayeredApiKHR::eVulkan: return "Vulkan";
+      case PhysicalDeviceLayeredApiKHR::eD3D12: return "D3D12";
+      case PhysicalDeviceLayeredApiKHR::eMetal: return "Metal";
+      case PhysicalDeviceLayeredApiKHR::eOpengl: return "Opengl";
+      case PhysicalDeviceLayeredApiKHR::eOpengles: return "Opengles";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

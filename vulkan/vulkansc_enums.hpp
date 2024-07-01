@@ -256,7 +256,8 @@ namespace VULKAN_HPP_NAMESPACE
     eSuboptimalKHR                               = VK_SUBOPTIMAL_KHR,
     eErrorOutOfDateKHR                           = VK_ERROR_OUT_OF_DATE_KHR,
     eErrorIncompatibleDisplayKHR                 = VK_ERROR_INCOMPATIBLE_DISPLAY_KHR,
-    eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT
+    eErrorInvalidDrmFormatModifierPlaneLayoutEXT = VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT,
+    eErrorNotPermittedKHR                        = VK_ERROR_NOT_PERMITTED_KHR
   };
 
   enum class StructureType
@@ -581,7 +582,9 @@ namespace VULKAN_HPP_NAMESPACE
     eMemoryHostPointerPropertiesEXT                          = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
     ePhysicalDeviceExternalMemoryHostPropertiesEXT           = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
     ePhysicalDeviceShaderClockFeaturesKHR                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CLOCK_FEATURES_KHR,
-    ePhysicalDeviceVertexAttributeDivisorPropertiesEXT       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT,
+    eDeviceQueueGlobalPriorityCreateInfoKHR                  = VK_STRUCTURE_TYPE_DEVICE_QUEUE_GLOBAL_PRIORITY_CREATE_INFO_KHR,
+    ePhysicalDeviceGlobalPriorityQueryFeaturesKHR            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GLOBAL_PRIORITY_QUERY_FEATURES_KHR,
+    eQueueFamilyGlobalPriorityPropertiesKHR                  = VK_STRUCTURE_TYPE_QUEUE_FAMILY_GLOBAL_PRIORITY_PROPERTIES_KHR,
     ePhysicalDevicePciBusInfoPropertiesEXT                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT,
     eFragmentShadingRateAttachmentInfoKHR                    = VK_STRUCTURE_TYPE_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
     ePipelineFragmentShadingRateStateCreateInfoKHR           = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR,
@@ -636,13 +639,25 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExternalSciSync2FeaturesNV          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SCI_SYNC_2_FEATURES_NV,
     eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV = VK_STRUCTURE_TYPE_DEVICE_SEMAPHORE_SCI_SYNC_POOL_RESERVATION_CREATE_INFO_NV,
 #endif /*VK_USE_PLATFORM_SCI*/
+    ePhysicalDeviceVertexAttributeDivisorPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR,
+    ePipelineVertexInputDivisorStateCreateInfoKHR      = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR,
+    ePhysicalDeviceVertexAttributeDivisorFeaturesKHR   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR,
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
     eScreenBufferPropertiesQNX                           = VK_STRUCTURE_TYPE_SCREEN_BUFFER_PROPERTIES_QNX,
     eScreenBufferFormatPropertiesQNX                     = VK_STRUCTURE_TYPE_SCREEN_BUFFER_FORMAT_PROPERTIES_QNX,
     eImportScreenBufferInfoQNX                           = VK_STRUCTURE_TYPE_IMPORT_SCREEN_BUFFER_INFO_QNX,
     eExternalFormatQNX                                   = VK_STRUCTURE_TYPE_EXTERNAL_FORMAT_QNX,
-    ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_SCREEN_BUFFER_FEATURES_QNX
+    ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_SCREEN_BUFFER_FEATURES_QNX,
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+    ePhysicalDeviceIndexTypeUint8FeaturesKHR      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_KHR,
+    ePhysicalDeviceIndexTypeUint8FeaturesEXT      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INDEX_TYPE_UINT8_FEATURES_EXT,
+    ePhysicalDeviceLineRasterizationFeaturesKHR   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_KHR,
+    ePhysicalDeviceLineRasterizationFeaturesEXT   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_FEATURES_EXT,
+    ePipelineRasterizationLineStateCreateInfoKHR  = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_KHR,
+    ePipelineRasterizationLineStateCreateInfoEXT  = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO_EXT,
+    ePhysicalDeviceLineRasterizationPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_KHR,
+    ePhysicalDeviceLineRasterizationPropertiesEXT = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_LINE_RASTERIZATION_PROPERTIES_EXT,
+    eCalibratedTimestampInfoKHR                   = VK_STRUCTURE_TYPE_CALIBRATED_TIMESTAMP_INFO_KHR
   };
 
   enum class PipelineCacheHeaderVersion
@@ -1736,7 +1751,9 @@ namespace VULKAN_HPP_NAMESPACE
     eVertexInputEXT              = VK_DYNAMIC_STATE_VERTEX_INPUT_EXT,
     ePatchControlPointsEXT       = VK_DYNAMIC_STATE_PATCH_CONTROL_POINTS_EXT,
     eLogicOpEXT                  = VK_DYNAMIC_STATE_LOGIC_OP_EXT,
-    eColorWriteEnableEXT         = VK_DYNAMIC_STATE_COLOR_WRITE_ENABLE_EXT
+    eColorWriteEnableEXT         = VK_DYNAMIC_STATE_COLOR_WRITE_ENABLE_EXT,
+    eLineStippleKHR              = VK_DYNAMIC_STATE_LINE_STIPPLE_KHR,
+    eLineStippleEXT              = VK_DYNAMIC_STATE_LINE_STIPPLE_EXT
   };
 
   enum class FrontFace
@@ -2316,8 +2333,10 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class IndexType
   {
-    eUint16 = VK_INDEX_TYPE_UINT16,
-    eUint32 = VK_INDEX_TYPE_UINT32
+    eUint16   = VK_INDEX_TYPE_UINT16,
+    eUint32   = VK_INDEX_TYPE_UINT32,
+    eUint8KHR = VK_INDEX_TYPE_UINT8_KHR,
+    eUint8EXT = VK_INDEX_TYPE_UINT8_EXT
   };
 
   //=========================
@@ -3496,6 +3515,17 @@ namespace VULKAN_HPP_NAMESPACE
     eConjoint     = VK_BLEND_OVERLAP_CONJOINT_EXT
   };
 
+  //=== VK_KHR_global_priority ===
+
+  enum class QueueGlobalPriorityKHR
+  {
+    eLow      = VK_QUEUE_GLOBAL_PRIORITY_LOW_KHR,
+    eMedium   = VK_QUEUE_GLOBAL_PRIORITY_MEDIUM_KHR,
+    eHigh     = VK_QUEUE_GLOBAL_PRIORITY_HIGH_KHR,
+    eRealtime = VK_QUEUE_GLOBAL_PRIORITY_REALTIME_KHR
+  };
+  using QueueGlobalPriorityEXT = QueueGlobalPriorityKHR;
+
   //=== VK_KHR_fragment_shading_rate ===
 
   enum class FragmentShadingRateCombinerOpKHR
@@ -3576,6 +3606,28 @@ namespace VULKAN_HPP_NAMESPACE
     eSemaphore = VK_SCI_SYNC_PRIMITIVE_TYPE_SEMAPHORE_NV
   };
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_KHR_line_rasterization ===
+
+  enum class LineRasterizationModeKHR
+  {
+    eDefault           = VK_LINE_RASTERIZATION_MODE_DEFAULT_KHR,
+    eRectangular       = VK_LINE_RASTERIZATION_MODE_RECTANGULAR_KHR,
+    eBresenham         = VK_LINE_RASTERIZATION_MODE_BRESENHAM_KHR,
+    eRectangularSmooth = VK_LINE_RASTERIZATION_MODE_RECTANGULAR_SMOOTH_KHR
+  };
+  using LineRasterizationModeEXT = LineRasterizationModeKHR;
+
+  //=== VK_KHR_calibrated_timestamps ===
+
+  enum class TimeDomainKHR
+  {
+    eDevice                  = VK_TIME_DOMAIN_DEVICE_KHR,
+    eClockMonotonic          = VK_TIME_DOMAIN_CLOCK_MONOTONIC_KHR,
+    eClockMonotonicRaw       = VK_TIME_DOMAIN_CLOCK_MONOTONIC_RAW_KHR,
+    eQueryPerformanceCounter = VK_TIME_DOMAIN_QUERY_PERFORMANCE_COUNTER_KHR
+  };
+  using TimeDomainEXT = TimeDomainKHR;
 
   //===========================================================
   //=== Mapping from ObjectType to DebugReportObjectTypeEXT ===

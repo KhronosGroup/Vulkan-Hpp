@@ -1676,6 +1676,7 @@ namespace VULKAN_HPP_NAMESPACE
       case Result::eErrorOutOfDateKHR: return "ErrorOutOfDateKHR";
       case Result::eErrorIncompatibleDisplayKHR: return "ErrorIncompatibleDisplayKHR";
       case Result::eErrorInvalidDrmFormatModifierPlaneLayoutEXT: return "ErrorInvalidDrmFormatModifierPlaneLayoutEXT";
+      case Result::eErrorNotPermittedKHR: return "ErrorNotPermittedKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -1977,7 +1978,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eMemoryHostPointerPropertiesEXT: return "MemoryHostPointerPropertiesEXT";
       case StructureType::ePhysicalDeviceExternalMemoryHostPropertiesEXT: return "PhysicalDeviceExternalMemoryHostPropertiesEXT";
       case StructureType::ePhysicalDeviceShaderClockFeaturesKHR: return "PhysicalDeviceShaderClockFeaturesKHR";
-      case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesEXT: return "PhysicalDeviceVertexAttributeDivisorPropertiesEXT";
+      case StructureType::eDeviceQueueGlobalPriorityCreateInfoKHR: return "DeviceQueueGlobalPriorityCreateInfoKHR";
+      case StructureType::ePhysicalDeviceGlobalPriorityQueryFeaturesKHR: return "PhysicalDeviceGlobalPriorityQueryFeaturesKHR";
+      case StructureType::eQueueFamilyGlobalPriorityPropertiesKHR: return "QueueFamilyGlobalPriorityPropertiesKHR";
       case StructureType::ePhysicalDevicePciBusInfoPropertiesEXT: return "PhysicalDevicePciBusInfoPropertiesEXT";
       case StructureType::eFragmentShadingRateAttachmentInfoKHR: return "FragmentShadingRateAttachmentInfoKHR";
       case StructureType::ePipelineFragmentShadingRateStateCreateInfoKHR: return "PipelineFragmentShadingRateStateCreateInfoKHR";
@@ -2031,6 +2034,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalSciSync2FeaturesNV: return "PhysicalDeviceExternalSciSync2FeaturesNV";
       case StructureType::eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV: return "DeviceSemaphoreSciSyncPoolReservationCreateInfoNV";
 #endif /*VK_USE_PLATFORM_SCI*/
+      case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesKHR: return "PhysicalDeviceVertexAttributeDivisorPropertiesKHR";
+      case StructureType::ePipelineVertexInputDivisorStateCreateInfoKHR: return "PipelineVertexInputDivisorStateCreateInfoKHR";
+      case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesKHR: return "PhysicalDeviceVertexAttributeDivisorFeaturesKHR";
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
       case StructureType::eScreenBufferPropertiesQNX: return "ScreenBufferPropertiesQNX";
       case StructureType::eScreenBufferFormatPropertiesQNX: return "ScreenBufferFormatPropertiesQNX";
@@ -2038,6 +2044,11 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eExternalFormatQNX: return "ExternalFormatQNX";
       case StructureType::ePhysicalDeviceExternalMemoryScreenBufferFeaturesQNX: return "PhysicalDeviceExternalMemoryScreenBufferFeaturesQNX";
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
+      case StructureType::ePhysicalDeviceIndexTypeUint8FeaturesKHR: return "PhysicalDeviceIndexTypeUint8FeaturesKHR";
+      case StructureType::ePhysicalDeviceLineRasterizationFeaturesKHR: return "PhysicalDeviceLineRasterizationFeaturesKHR";
+      case StructureType::ePipelineRasterizationLineStateCreateInfoKHR: return "PipelineRasterizationLineStateCreateInfoKHR";
+      case StructureType::ePhysicalDeviceLineRasterizationPropertiesKHR: return "PhysicalDeviceLineRasterizationPropertiesKHR";
+      case StructureType::eCalibratedTimestampInfoKHR: return "CalibratedTimestampInfoKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -2965,6 +2976,7 @@ namespace VULKAN_HPP_NAMESPACE
       case DynamicState::ePatchControlPointsEXT: return "PatchControlPointsEXT";
       case DynamicState::eLogicOpEXT: return "LogicOpEXT";
       case DynamicState::eColorWriteEnableEXT: return "ColorWriteEnableEXT";
+      case DynamicState::eLineStippleKHR: return "LineStippleKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -3407,6 +3419,7 @@ namespace VULKAN_HPP_NAMESPACE
     {
       case IndexType::eUint16: return "Uint16";
       case IndexType::eUint32: return "Uint32";
+      case IndexType::eUint8KHR: return "Uint8KHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4270,6 +4283,20 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 
+  //=== VK_KHR_global_priority ===
+
+  VULKAN_HPP_INLINE std::string to_string( QueueGlobalPriorityKHR value )
+  {
+    switch ( value )
+    {
+      case QueueGlobalPriorityKHR::eLow: return "Low";
+      case QueueGlobalPriorityKHR::eMedium: return "Medium";
+      case QueueGlobalPriorityKHR::eHigh: return "High";
+      case QueueGlobalPriorityKHR::eRealtime: return "Realtime";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
   //=== VK_KHR_fragment_shading_rate ===
 
   VULKAN_HPP_INLINE std::string to_string( FragmentShadingRateCombinerOpKHR value )
@@ -4354,6 +4381,34 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_KHR_line_rasterization ===
+
+  VULKAN_HPP_INLINE std::string to_string( LineRasterizationModeKHR value )
+  {
+    switch ( value )
+    {
+      case LineRasterizationModeKHR::eDefault: return "Default";
+      case LineRasterizationModeKHR::eRectangular: return "Rectangular";
+      case LineRasterizationModeKHR::eBresenham: return "Bresenham";
+      case LineRasterizationModeKHR::eRectangularSmooth: return "RectangularSmooth";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_KHR_calibrated_timestamps ===
+
+  VULKAN_HPP_INLINE std::string to_string( TimeDomainKHR value )
+  {
+    switch ( value )
+    {
+      case TimeDomainKHR::eDevice: return "Device";
+      case TimeDomainKHR::eClockMonotonic: return "ClockMonotonic";
+      case TimeDomainKHR::eClockMonotonicRaw: return "ClockMonotonicRaw";
+      case TimeDomainKHR::eQueryPerformanceCounter: return "QueryPerformanceCounter";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
 
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

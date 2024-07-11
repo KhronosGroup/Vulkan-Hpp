@@ -23,6 +23,8 @@
 #include <regex>
 #include <sstream>
 
+using namespace std::literals;
+
 namespace
 {
   std::vector<std::pair<std::string, size_t>> filterNumbers( std::vector<std::string> const & names );
@@ -7991,12 +7993,12 @@ std::string VulkanHppGenerator::generateHandleEmpty( HandleData const & handleDa
     std::vector<std::string> commands = selectCommandsByHandle( feature.requireData, handleData.commands, listedCommands );
     if ( !commands.empty() )
     {
-      str += "\n  //=== " + feature.name + " ===\n";
+      str += "\n  //=== "s + feature.name + " ===\n";
       for ( auto const & command : commands )
       {
         auto commandIt = m_commands.find( command );
         assert( commandIt != m_commands.end() );
-        str += "\n" + generateCommand( commandIt->first, commandIt->second, 0, false, false );
+        str += "\n"s + generateCommand( commandIt->first, commandIt->second, 0, false, false );
       }
     }
   }

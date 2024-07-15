@@ -5649,6 +5649,10 @@ std::string VulkanHppGenerator::generateCppModuleEnumUsings() const
                bitmaskIt != m_bitmasks.end() )
           {
             localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( bitmaskIt->first, "Vk" ) } } );
+            for ( auto const & alias : bitmaskIt->second.aliases )
+            {
+              localUsings += replaceWithMap( usingTemplate, { { "enumName", stripPrefix( alias.first, "Vk" ) } } );
+            }
           }
         }
       }

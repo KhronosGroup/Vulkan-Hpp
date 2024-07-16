@@ -53,7 +53,8 @@ jobs:
 
     - name: Loop over build_types (Debug, Release) with cpp_standard 23 for g++-11 and above only
       run: |
-        if [ ${{matrix.compiler}} == g++-11 ] || [ ${{matrix.compiler}} == g++-12 ] || [ ${{matrix.compiler}} == g++-13 ]
+        # g++-10 does not support Cpp-23
+        if [ ${{matrix.compiler}} == clang++-15 ] || [ ${{matrix.compiler}} == g++-11 ] || [ ${{matrix.compiler}} == g++-12 ]
         then
           cpp_standard=23
           for build_type in Debug Release

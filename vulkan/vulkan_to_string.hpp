@@ -4469,6 +4469,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageSubresource2KHR: return "ImageSubresource2KHR";
       case StructureType::ePipelineCreateFlags2CreateInfoKHR: return "PipelineCreateFlags2CreateInfoKHR";
       case StructureType::eBufferUsageFlags2CreateInfoKHR: return "BufferUsageFlags2CreateInfoKHR";
+      case StructureType::ePhysicalDeviceAntiLagFeaturesAMD: return "PhysicalDeviceAntiLagFeaturesAMD";
+      case StructureType::eAntiLagDataAMD: return "AntiLagDataAMD";
+      case StructureType::eAntiLagPresentationInfoAMD: return "AntiLagPresentationInfoAMD";
       case StructureType::ePhysicalDeviceRayTracingPositionFetchFeaturesKHR: return "PhysicalDeviceRayTracingPositionFetchFeaturesKHR";
       case StructureType::ePhysicalDeviceShaderObjectFeaturesEXT: return "PhysicalDeviceShaderObjectFeaturesEXT";
       case StructureType::ePhysicalDeviceShaderObjectPropertiesEXT: return "PhysicalDeviceShaderObjectPropertiesEXT";
@@ -8894,6 +8897,29 @@ namespace VULKAN_HPP_NAMESPACE
       case BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT: return "PushDescriptorsDescriptorBufferEXT";
       case BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT: return "MicromapBuildInputReadOnlyEXT";
       case BufferUsageFlagBits2KHR::eMicromapStorageEXT: return "MicromapStorageEXT";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  //=== VK_AMD_anti_lag ===
+
+  VULKAN_HPP_INLINE std::string to_string( AntiLagModeAMD value )
+  {
+    switch ( value )
+    {
+      case AntiLagModeAMD::eDriverControl: return "DriverControl";
+      case AntiLagModeAMD::eOn: return "On";
+      case AntiLagModeAMD::eOff: return "Off";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
+
+  VULKAN_HPP_INLINE std::string to_string( AntiLagStageAMD value )
+  {
+    switch ( value )
+    {
+      case AntiLagStageAMD::eInput: return "Input";
+      case AntiLagStageAMD::ePresent: return "Present";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

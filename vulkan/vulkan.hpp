@@ -56,7 +56,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 290, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 291, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5714,6 +5714,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetImageSubresourceLayout2KHR( device, image, pSubresource, pLayout );
     }
 
+    //=== VK_AMD_anti_lag ===
+
+    void vkAntiLagUpdateAMD( VkDevice device, const VkAntiLagDataAMD * pData ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkAntiLagUpdateAMD( device, pData );
+    }
+
     //=== VK_EXT_shader_object ===
 
     VkResult vkCreateShadersEXT( VkDevice                      device,
@@ -7576,8 +7583,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVShadingRateImageSpecVersion   = VK_NV_SHADING_RATE_IMAGE_SPEC_VERSION;
 
   //=== VK_NV_ray_tracing ===
+  VULKAN_HPP_DEPRECATED( "The VK_NV_ray_tracing extension has been deprecated by VK_KHR_ray_tracing_pipeline." )
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingExtensionName = VK_NV_RAY_TRACING_EXTENSION_NAME;
-  VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingSpecVersion   = VK_NV_RAY_TRACING_SPEC_VERSION;
+  VULKAN_HPP_DEPRECATED( "The VK_NV_ray_tracing extension has been deprecated by VK_KHR_ray_tracing_pipeline." )
+  VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingSpecVersion = VK_NV_RAY_TRACING_SPEC_VERSION;
 
   //=== VK_NV_representative_fragment_test ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRepresentativeFragmentTestExtensionName = VK_NV_REPRESENTATIVE_FRAGMENT_TEST_EXTENSION_NAME;
@@ -8488,6 +8497,10 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance5 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance5ExtensionName = VK_KHR_MAINTENANCE_5_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRMaintenance5SpecVersion   = VK_KHR_MAINTENANCE_5_SPEC_VERSION;
+
+  //=== VK_AMD_anti_lag ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDAntiLagExtensionName = VK_AMD_ANTI_LAG_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto AMDAntiLagSpecVersion   = VK_AMD_ANTI_LAG_SPEC_VERSION;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRRayTracingPositionFetchExtensionName = VK_KHR_RAY_TRACING_POSITION_FETCH_EXTENSION_NAME;
@@ -15710,6 +15723,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_AMD_anti_lag ===
+  template <>
+  struct StructExtends<PhysicalDeviceAntiLagFeaturesAMD, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceAntiLagFeaturesAMD, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_ray_tracing_position_fetch ===
   template <>
   struct StructExtends<PhysicalDeviceRayTracingPositionFetchFeaturesKHR, PhysicalDeviceFeatures2>
@@ -16851,7 +16883,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-          m_library = ::LoadLibraryA( "vulkan-1.dll" );
+        m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif
@@ -18008,6 +18040,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetRenderingAreaGranularityKHR     vkGetRenderingAreaGranularityKHR     = 0;
     PFN_vkGetDeviceImageSubresourceLayoutKHR vkGetDeviceImageSubresourceLayoutKHR = 0;
     PFN_vkGetImageSubresourceLayout2KHR      vkGetImageSubresourceLayout2KHR      = 0;
+
+    //=== VK_AMD_anti_lag ===
+    PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD = 0;
 
     //=== VK_EXT_shader_object ===
     PFN_vkCreateShadersEXT       vkCreateShadersEXT       = 0;
@@ -19411,6 +19446,9 @@ namespace VULKAN_HPP_NAMESPACE
         PFN_vkGetDeviceImageSubresourceLayoutKHR( vkGetInstanceProcAddr( instance, "vkGetDeviceImageSubresourceLayoutKHR" ) );
       vkGetImageSubresourceLayout2KHR = PFN_vkGetImageSubresourceLayout2KHR( vkGetInstanceProcAddr( instance, "vkGetImageSubresourceLayout2KHR" ) );
 
+      //=== VK_AMD_anti_lag ===
+      vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetInstanceProcAddr( instance, "vkAntiLagUpdateAMD" ) );
+
       //=== VK_EXT_shader_object ===
       vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetInstanceProcAddr( instance, "vkCreateShadersEXT" ) );
       vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetInstanceProcAddr( instance, "vkDestroyShaderEXT" ) );
@@ -20460,6 +20498,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetRenderingAreaGranularityKHR     = PFN_vkGetRenderingAreaGranularityKHR( vkGetDeviceProcAddr( device, "vkGetRenderingAreaGranularityKHR" ) );
       vkGetDeviceImageSubresourceLayoutKHR = PFN_vkGetDeviceImageSubresourceLayoutKHR( vkGetDeviceProcAddr( device, "vkGetDeviceImageSubresourceLayoutKHR" ) );
       vkGetImageSubresourceLayout2KHR      = PFN_vkGetImageSubresourceLayout2KHR( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2KHR" ) );
+
+      //=== VK_AMD_anti_lag ===
+      vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetDeviceProcAddr( device, "vkAntiLagUpdateAMD" ) );
 
       //=== VK_EXT_shader_object ===
       vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );

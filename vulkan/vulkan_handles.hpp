@@ -1660,6 +1660,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineCreateFlags2CreateInfoKHR;
   struct BufferUsageFlags2CreateInfoKHR;
 
+  //=== VK_AMD_anti_lag ===
+  struct PhysicalDeviceAntiLagFeaturesAMD;
+  struct AntiLagDataAMD;
+  struct AntiLagPresentationInfoAMD;
+
   //=== VK_KHR_ray_tracing_position_fetch ===
   struct PhysicalDeviceRayTracingPositionFetchFeaturesKHR;
 
@@ -14316,6 +14321,17 @@ namespace VULKAN_HPP_NAMESPACE
                          getImageSubresourceLayout2KHR( VULKAN_HPP_NAMESPACE::Image                        image,
                                                         const VULKAN_HPP_NAMESPACE::ImageSubresource2KHR & subresource,
                                                         Dispatch const & d                                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_AMD_anti_lag ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void antiLagUpdateAMD( const VULKAN_HPP_NAMESPACE::AntiLagDataAMD * pData,
+                           Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void antiLagUpdateAMD( const VULKAN_HPP_NAMESPACE::AntiLagDataAMD & data,
+                           Dispatch const & d                           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_EXT_shader_object ===

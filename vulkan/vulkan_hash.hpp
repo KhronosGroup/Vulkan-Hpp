@@ -1063,6 +1063,35 @@ namespace std
 #  endif /*VK_USE_PLATFORM_ANDROID_KHR*/
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD const & antiLagPresentationInfoAMD ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagPresentationInfoAMD.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagPresentationInfoAMD.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagPresentationInfoAMD.stage );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagPresentationInfoAMD.frameIndex );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::AntiLagDataAMD>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::AntiLagDataAMD const & antiLagDataAMD ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagDataAMD.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagDataAMD.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagDataAMD.mode );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagDataAMD.maxFPS );
+      VULKAN_HPP_HASH_COMBINE( seed, antiLagDataAMD.pPresentationInfo );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::ApplicationInfo>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::ApplicationInfo const & applicationInfo ) const VULKAN_HPP_NOEXCEPT
@@ -7487,6 +7516,19 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAmigoProfilingFeaturesSEC.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAmigoProfilingFeaturesSEC.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAmigoProfilingFeaturesSEC.amigoProfiling );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceAntiLagFeaturesAMD>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceAntiLagFeaturesAMD const & physicalDeviceAntiLagFeaturesAMD ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAntiLagFeaturesAMD.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAntiLagFeaturesAMD.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceAntiLagFeaturesAMD.antiLag );
       return seed;
     }
   };

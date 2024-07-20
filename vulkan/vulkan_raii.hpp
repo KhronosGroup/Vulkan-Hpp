@@ -1680,6 +1680,9 @@ namespace VULKAN_HPP_NAMESPACE
           PFN_vkGetDeviceImageSubresourceLayoutKHR( vkGetDeviceProcAddr( device, "vkGetDeviceImageSubresourceLayoutKHR" ) );
         vkGetImageSubresourceLayout2KHR = PFN_vkGetImageSubresourceLayout2KHR( vkGetDeviceProcAddr( device, "vkGetImageSubresourceLayout2KHR" ) );
 
+        //=== VK_AMD_anti_lag ===
+        vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetDeviceProcAddr( device, "vkAntiLagUpdateAMD" ) );
+
         //=== VK_EXT_shader_object ===
         vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );
         vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetDeviceProcAddr( device, "vkDestroyShaderEXT" ) );
@@ -2563,6 +2566,9 @@ namespace VULKAN_HPP_NAMESPACE
       PFN_vkGetRenderingAreaGranularityKHR     vkGetRenderingAreaGranularityKHR     = 0;
       PFN_vkGetDeviceImageSubresourceLayoutKHR vkGetDeviceImageSubresourceLayoutKHR = 0;
       PFN_vkGetImageSubresourceLayout2KHR      vkGetImageSubresourceLayout2KHR      = 0;
+
+      //=== VK_AMD_anti_lag ===
+      PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD = 0;
 
       //=== VK_EXT_shader_object ===
       PFN_vkCreateShadersEXT       vkCreateShadersEXT       = 0;
@@ -4551,6 +4557,10 @@ namespace VULKAN_HPP_NAMESPACE
       template <typename X, typename Y, typename... Z>
       VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
                            getImageSubresourceLayoutKHR( const VULKAN_HPP_NAMESPACE::DeviceImageSubresourceInfoKHR & info ) const VULKAN_HPP_NOEXCEPT;
+
+      //=== VK_AMD_anti_lag ===
+
+      void antiLagUpdateAMD( const VULKAN_HPP_NAMESPACE::AntiLagDataAMD & data ) const VULKAN_HPP_NOEXCEPT;
 
       //=== VK_EXT_shader_object ===
 
@@ -22520,6 +22530,15 @@ namespace VULKAN_HPP_NAMESPACE
                                                         reinterpret_cast<VkSubresourceLayout2KHR *>( &layout ) );
 
       return structureChain;
+    }
+
+    //=== VK_AMD_anti_lag ===
+
+    VULKAN_HPP_INLINE void Device::antiLagUpdateAMD( const VULKAN_HPP_NAMESPACE::AntiLagDataAMD & data ) const VULKAN_HPP_NOEXCEPT
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkAntiLagUpdateAMD && "Function <vkAntiLagUpdateAMD> requires <VK_AMD_anti_lag>" );
+
+      getDispatcher()->vkAntiLagUpdateAMD( static_cast<VkDevice>( m_device ), reinterpret_cast<const VkAntiLagDataAMD *>( &data ) );
     }
 
     //=== VK_EXT_shader_object ===

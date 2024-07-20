@@ -832,6 +832,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PipelineCreateFlagBits2KHR;
   using VULKAN_HPP_NAMESPACE::PipelineCreateFlags2KHR;
 
+  //=== VK_AMD_anti_lag ===
+  using VULKAN_HPP_NAMESPACE::AntiLagModeAMD;
+  using VULKAN_HPP_NAMESPACE::AntiLagStageAMD;
+
   //=== VK_EXT_shader_object ===
   using VULKAN_HPP_NAMESPACE::ShaderCodeTypeEXT;
   using VULKAN_HPP_NAMESPACE::ShaderCreateFlagBitsEXT;
@@ -2383,6 +2387,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance5 ===
   using VULKAN_HPP_NAMESPACE::KHRMaintenance5ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRMaintenance5SpecVersion;
+
+  //=== VK_AMD_anti_lag ===
+  using VULKAN_HPP_NAMESPACE::AMDAntiLagExtensionName;
+  using VULKAN_HPP_NAMESPACE::AMDAntiLagSpecVersion;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   using VULKAN_HPP_NAMESPACE::KHRRayTracingPositionFetchExtensionName;
@@ -4231,6 +4239,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::RenderingAreaInfoKHR;
   using VULKAN_HPP_NAMESPACE::SubresourceLayout2EXT;
   using VULKAN_HPP_NAMESPACE::SubresourceLayout2KHR;
+
+  //=== VK_AMD_anti_lag ===
+  using VULKAN_HPP_NAMESPACE::AntiLagDataAMD;
+  using VULKAN_HPP_NAMESPACE::AntiLagPresentationInfoAMD;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceAntiLagFeaturesAMD;
 
   //=== VK_KHR_ray_tracing_position_fetch ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingPositionFetchFeaturesKHR;

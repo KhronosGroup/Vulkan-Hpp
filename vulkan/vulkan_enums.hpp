@@ -1326,6 +1326,9 @@ namespace VULKAN_HPP_NAMESPACE
     eImageSubresource2EXT                                        = VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2_EXT,
     ePipelineCreateFlags2CreateInfoKHR                           = VK_STRUCTURE_TYPE_PIPELINE_CREATE_FLAGS_2_CREATE_INFO_KHR,
     eBufferUsageFlags2CreateInfoKHR                              = VK_STRUCTURE_TYPE_BUFFER_USAGE_FLAGS_2_CREATE_INFO_KHR,
+    ePhysicalDeviceAntiLagFeaturesAMD                            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ANTI_LAG_FEATURES_AMD,
+    eAntiLagDataAMD                                              = VK_STRUCTURE_TYPE_ANTI_LAG_DATA_AMD,
+    eAntiLagPresentationInfoAMD                                  = VK_STRUCTURE_TYPE_ANTI_LAG_PRESENTATION_INFO_AMD,
     ePhysicalDeviceRayTracingPositionFetchFeaturesKHR            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_POSITION_FETCH_FEATURES_KHR,
     ePhysicalDeviceShaderObjectFeaturesEXT                       = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_FEATURES_EXT,
     ePhysicalDeviceShaderObjectPropertiesEXT                     = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_OBJECT_PROPERTIES_EXT,
@@ -7088,6 +7091,21 @@ namespace VULKAN_HPP_NAMESPACE
       BufferUsageFlagBits2KHR::eSamplerDescriptorBufferEXT | BufferUsageFlagBits2KHR::eResourceDescriptorBufferEXT |
       BufferUsageFlagBits2KHR::ePushDescriptorsDescriptorBufferEXT | BufferUsageFlagBits2KHR::eMicromapBuildInputReadOnlyEXT |
       BufferUsageFlagBits2KHR::eMicromapStorageEXT;
+  };
+
+  //=== VK_AMD_anti_lag ===
+
+  enum class AntiLagModeAMD
+  {
+    eDriverControl = VK_ANTI_LAG_MODE_DRIVER_CONTROL_AMD,
+    eOn            = VK_ANTI_LAG_MODE_ON_AMD,
+    eOff           = VK_ANTI_LAG_MODE_OFF_AMD
+  };
+
+  enum class AntiLagStageAMD
+  {
+    eInput   = VK_ANTI_LAG_STAGE_INPUT_AMD,
+    ePresent = VK_ANTI_LAG_STAGE_PRESENT_AMD
   };
 
   //=== VK_EXT_shader_object ===

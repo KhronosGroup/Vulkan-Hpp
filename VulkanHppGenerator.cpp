@@ -8148,7 +8148,7 @@ std::string VulkanHppGenerator::generateIndexTypeTraits( std::pair<std::string, 
       checkForError( type.starts_with( "UINT" ), value.xmlLine, "unknown VkIndexType <" + value.name + "> encountered" );
       std::string::size_type pos = type.find_first_of( "0123456789" );
       assert( pos != std::string::npos );
-      std::string::size_type end = type.find_first_not_of( "0123456789", pos );
+      std::string::size_type end   = type.find_first_not_of( "0123456789", pos );
       std::string::size_type count = ( end != std::string::npos ) ? ( end - pos ) : end;
 
       std::string valueName = generateEnumValueName( "VkIndexType", value.name, false );
@@ -14225,7 +14225,8 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "spirvextensions", true },
                    { "sync", true },
                    { "tags", true },
-                   { "types", true } } );
+                   { "types", true } },
+                 { "videocodecs" } );   // make this optional for now, make it required around October 2024
   for ( auto child : children )
   {
     const std::string value = child->Value();
@@ -14283,6 +14284,10 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
     {
       readTypes( child );
       markExtendedStructs();
+    }
+    else if ( value == "videocodecs" )
+    {
+      readVideoCodecs( child );
     }
   }
 }
@@ -15698,6 +15703,279 @@ TypeInfo VulkanHppGenerator::readTypeInfo( tinyxml2::XMLElement const * element 
     typeInfo.postfix = trimStars( trimEnd( nextSibling->Value() ) );
   }
   return typeInfo;
+}
+
+void VulkanHppGenerator::readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "struct", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  videoCodec.capabilities = attributes.find( "struct" )->second;
+  checkForError( m_structs.contains( videoCodec.capabilities ),
+                 line,
+                 "videocodec <" + videoCodec.name + "> lists unknown capabilities struct <" + videoCodec.capabilities + ">" );
+}
+
+void VulkanHppGenerator::readVideoCodec( tinyxml2::XMLElement const * element )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "extend", {} }, { "value", {} } } );
+
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "videocapabilities", true } }, { "videoformat", "videoprofiles" } );
+
+  VideoCodec videoCodec;
+  videoCodec.xmlLine = line;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "extend" )
+    {
+      videoCodec.extend = attribute.second;
+    }
+    else if ( attribute.first == "name" )
+    {
+      videoCodec.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      videoCodec.value = attribute.second;
+    }
+  }
+
+  checkForError( findByName( m_videoCodecs, videoCodec.name ) == m_videoCodecs.end(), line, "Video Codec <" + videoCodec.name + "> already listed" );
+  checkForError( videoCodec.extend.empty() || findByName( m_videoCodecs, videoCodec.extend ) != m_videoCodecs.end(),
+                 line,
+                 "Video Codec <" + videoCodec.name + "> extends unknown <" + videoCodec.extend + ">" );
+  if ( !videoCodec.value.empty() )
+  {
+    auto enumIt = m_enums.find( "VkVideoCodecOperationFlagBitsKHR" );
+    assert( enumIt != m_enums.end() );
+    checkForError( findByName( enumIt->second.values, videoCodec.value ) != enumIt->second.values.end(),
+                   line,
+                   "Video Codec <" + videoCodec.name + "> lists unknown value <" + videoCodec.value + ">" );
+  }
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "videocapabilities" )
+    {
+      readVideoCapabilities( child, videoCodec );
+    }
+    else if ( value == "videoformat" )
+    {
+      readVideoFormat( child, videoCodec );
+    }
+    else if ( value == "videoprofiles" )
+    {
+      readVideoProfiles( child, videoCodec );
+    }
+  }
+
+  m_videoCodecs.push_back( videoCodec );
+}
+
+void VulkanHppGenerator::readVideoCodecs( tinyxml2::XMLElement const * element )
+{
+  const int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, {} );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, { { "videocodec", false } } );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "videocodec" );
+    readVideoCodec( child );
+  }
+}
+
+void VulkanHppGenerator::readVideoFormat( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} }, { "usage", {} } }, {} );
+
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "videorequirecapabilities" } );
+
+  auto flagBitsIt = m_enums.find( "VkImageUsageFlagBits" );
+  assert( flagBitsIt != m_enums.end() );
+
+  VideoFormat format;
+  format.xmlLine = line;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      format.name = attribute.second;
+      checkForError( findByName( videoCodec.formats, format.name ) == videoCodec.formats.end(),
+                     line,
+                     "Video Format <" + format.name + "> has already been listed for Video Codec <" + videoCodec.name + ">" );
+    }
+    else if ( attribute.first == "usage" )
+    {
+      format.usage = tokenize( attribute.second, "+" );
+      for ( auto const & usage : format.usage )
+      {
+        checkForError( findByName( flagBitsIt->second.values, usage ) != flagBitsIt->second.values.end(),
+                       line,
+                       "Unknown Video Format <" + format.name + "> listed for Video Codec <" + videoCodec.name + ">" );
+      }
+    }
+  }
+  videoCodec.formats.push_back( format );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "videorequirecapabilities" );
+    readVideoRequireCapabilities( child, videoCodec );
+  }
+}
+
+void VulkanHppGenerator::readVideoProfileMember( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} } }, {} );
+
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "videoprofile" } );
+
+  VideoProfileMember profileMember;
+  profileMember.xmlLine = line;
+  profileMember.name    = attributes.find( "name" )->second;
+
+  checkForError( findByName( videoCodec.profiles.back().members, profileMember.name ) == videoCodec.profiles.back().members.end(),
+                 line,
+                 "Video Profile Member <" + profileMember.name + "> already listed for Video Profiles <" + videoCodec.profiles.back().name );
+
+  videoCodec.profiles.back().members.push_back( profileMember );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "videoprofile" );
+    readVideoProfile( child, videoCodec );
+  }
+}
+
+void VulkanHppGenerator::readVideoProfile( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, {} );
+  checkElements( line, getChildElements( element ), {}, {} );
+
+  VideoProfile profile;
+  profile.xmlLine = line;
+
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      profile.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      profile.value = attribute.second;
+    }
+  }
+
+  checkForError( findByName( videoCodec.profiles.back().members.back().profiles, profile.name ) == videoCodec.profiles.back().members.back().profiles.end(),
+                 line,
+                 "Video Profile <" + profile.name + "> already listed for VideoProfileMember <" + videoCodec.profiles.back().members.back().name );
+
+  // value checking would need cross-loading of video.xml !!
+
+  videoCodec.profiles.back().members.back().profiles.push_back( profile );
+}
+
+void VulkanHppGenerator::readVideoProfiles( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "struct", {} } }, {} );
+
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "videoprofilemember" } );
+
+  VideoProfiles profiles;
+  profiles.xmlLine = line;
+  profiles.name    = attributes.find( "struct" )->second;
+
+  checkForError( findByName( videoCodec.profiles, profiles.name ) == videoCodec.profiles.end(),
+                 line,
+                 "Video Profiles struct <" + profiles.name + "> already listed for Video Codec <" + videoCodec.name + ">" );
+  checkForError( m_structs.find( profiles.name ) != m_structs.end(),
+                 line,
+                 "Unknown Video Profiles struct <" + profiles.name + "> used with VideoCodec <" + videoCodec.name + ">" );
+
+  videoCodec.profiles.push_back( profiles );
+
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    assert( value == "videoprofilemember" );
+    readVideoProfileMember( child, videoCodec );
+  }
+}
+
+void VulkanHppGenerator::readVideoRequireCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "member", {} }, { "struct", {} }, { "value", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  VideoRequireCapabilities requireCapabilities;
+  requireCapabilities.xmlLine = line;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "member" )
+    {
+      requireCapabilities.member = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      requireCapabilities.name = attribute.second;
+    }
+    else if ( attribute.first == "value" )
+    {
+      requireCapabilities.value = attribute.second;
+    }
+  }
+
+  VideoFormat & format = videoCodec.formats.back();
+
+  auto structIt = m_structs.find( requireCapabilities.name );
+  checkForError( structIt != m_structs.end(),
+                 line,
+                 "Unknown Video Require Capablities struct <" + requireCapabilities.name + "> listed for Video Format <" + format.name + "> in VideoCodec <" +
+                   videoCodec.name + ">" );
+
+  auto memberIt = findByName( structIt->second.members, requireCapabilities.member );
+  checkForError( memberIt != structIt->second.members.end(),
+                 line,
+                 "Unknown member <" + requireCapabilities.member + "> used for Video Require Capabilities struct <" + requireCapabilities.name +
+                   "> in VideoFormat <" + format.name + "> in VideoCodec <" + videoCodec.name + ">" );
+
+  auto bitmaskIt = m_bitmasks.find( memberIt->type.type );
+  checkForError( bitmaskIt != m_bitmasks.end(), line, "Video Require Capabilities member <" + requireCapabilities.member + "> is not a bitmask" );
+
+  auto enumIt = m_enums.find( bitmaskIt->second.require );
+  assert( enumIt != m_enums.end() );
+
+  checkForError( findByName( enumIt->second.values, requireCapabilities.value ) != enumIt->second.values.end(),
+                 line,
+                 "Unknown value <" + requireCapabilities.value + "> listed for Video Require Capabilities <" + requireCapabilities.name + "> in Video Codec <" +
+                   videoCodec.name + ">" );
+
+  format.requireCapabilities.push_back( requireCapabilities );
 }
 
 void VulkanHppGenerator::registerDeleter( std::string const & commandName, CommandData const & commandData )

@@ -346,8 +346,8 @@ namespace VULKAN_HPP_NAMESPACE
   public:
     void destroy( DestructorType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
     {
-      VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
-      ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
+      if ( m_destroy && m_dispatch )
+        ( parent.*m_destroy )( handle, m_allocationCallbacks, *m_dispatch );
     }
 
   private:

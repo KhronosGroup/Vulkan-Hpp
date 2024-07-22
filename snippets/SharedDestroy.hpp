@@ -135,8 +135,8 @@ public:
 public:
   void destroy( DestructorType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
-    ( parent.*m_destroy )( m_pool.get(), 1u, &handle, *m_dispatch );
+    if( m_destroy && m_dispatch && m_pool )
+      ( parent.*m_destroy )( m_pool.get(), 1u, &handle, *m_dispatch );
   }
 
 private:

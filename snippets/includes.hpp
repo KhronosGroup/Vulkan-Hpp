@@ -2,6 +2,7 @@
 #include <array>     // ArrayWrapperND
 #include <string.h>  // strnlen
 #include <string>    // std::string
+#include <utility>   // std::exchange
 #include <vulkan/${vulkan_h}>
 #include <vulkan/vulkan_hpp_macros.hpp>
 

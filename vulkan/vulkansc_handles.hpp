@@ -1052,8 +1052,22 @@ namespace VULKAN_HPP_NAMESPACE
     DebugUtilsMessengerEXT() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DebugUtilsMessengerEXT( DebugUtilsMessengerEXT const & rhs )             = default;
     DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT const & rhs ) = default;
-    DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs )                  = default;
-    DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs )             = default;
+    DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT && rhs ) = default;
+#else
+    DebugUtilsMessengerEXT( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
+      : m_debugUtilsMessengerEXT( VULKAN_HPP_NAMESPACE::exchange( rhs.m_debugUtilsMessengerEXT, {} ) )
+    {
+    }
+
+    DebugUtilsMessengerEXT & operator=( DebugUtilsMessengerEXT && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_debugUtilsMessengerEXT = VULKAN_HPP_NAMESPACE::exchange( rhs.m_debugUtilsMessengerEXT, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DebugUtilsMessengerEXT( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1148,8 +1162,19 @@ namespace VULKAN_HPP_NAMESPACE
     SurfaceKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     SurfaceKHR( SurfaceKHR const & rhs )             = default;
     SurfaceKHR & operator=( SurfaceKHR const & rhs ) = default;
-    SurfaceKHR( SurfaceKHR && rhs )                  = default;
-    SurfaceKHR & operator=( SurfaceKHR && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    SurfaceKHR( SurfaceKHR && rhs )             = default;
+    SurfaceKHR & operator=( SurfaceKHR && rhs ) = default;
+#else
+    SurfaceKHR( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT : m_surfaceKHR( VULKAN_HPP_NAMESPACE::exchange( rhs.m_surfaceKHR, {} ) ) {}
+
+    SurfaceKHR & operator=( SurfaceKHR && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_surfaceKHR = VULKAN_HPP_NAMESPACE::exchange( rhs.m_surfaceKHR, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR SurfaceKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1247,8 +1272,19 @@ namespace VULKAN_HPP_NAMESPACE
     DisplayKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DisplayKHR( DisplayKHR const & rhs )             = default;
     DisplayKHR & operator=( DisplayKHR const & rhs ) = default;
-    DisplayKHR( DisplayKHR && rhs )                  = default;
-    DisplayKHR & operator=( DisplayKHR && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DisplayKHR( DisplayKHR && rhs )             = default;
+    DisplayKHR & operator=( DisplayKHR && rhs ) = default;
+#else
+    DisplayKHR( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT : m_displayKHR( VULKAN_HPP_NAMESPACE::exchange( rhs.m_displayKHR, {} ) ) {}
+
+    DisplayKHR & operator=( DisplayKHR && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_displayKHR = VULKAN_HPP_NAMESPACE::exchange( rhs.m_displayKHR, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DisplayKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1346,8 +1382,19 @@ namespace VULKAN_HPP_NAMESPACE
     SwapchainKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     SwapchainKHR( SwapchainKHR const & rhs )             = default;
     SwapchainKHR & operator=( SwapchainKHR const & rhs ) = default;
-    SwapchainKHR( SwapchainKHR && rhs )                  = default;
-    SwapchainKHR & operator=( SwapchainKHR && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    SwapchainKHR( SwapchainKHR && rhs )             = default;
+    SwapchainKHR & operator=( SwapchainKHR && rhs ) = default;
+#else
+    SwapchainKHR( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT : m_swapchainKHR( VULKAN_HPP_NAMESPACE::exchange( rhs.m_swapchainKHR, {} ) ) {}
+
+    SwapchainKHR & operator=( SwapchainKHR && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_swapchainKHR = VULKAN_HPP_NAMESPACE::exchange( rhs.m_swapchainKHR, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR SwapchainKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1445,8 +1492,19 @@ namespace VULKAN_HPP_NAMESPACE
     Semaphore() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Semaphore( Semaphore const & rhs )             = default;
     Semaphore & operator=( Semaphore const & rhs ) = default;
-    Semaphore( Semaphore && rhs )                  = default;
-    Semaphore & operator=( Semaphore && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Semaphore( Semaphore && rhs )             = default;
+    Semaphore & operator=( Semaphore && rhs ) = default;
+#else
+    Semaphore( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT : m_semaphore( VULKAN_HPP_NAMESPACE::exchange( rhs.m_semaphore, {} ) ) {}
+
+    Semaphore & operator=( Semaphore && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_semaphore = VULKAN_HPP_NAMESPACE::exchange( rhs.m_semaphore, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Semaphore( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1544,8 +1602,19 @@ namespace VULKAN_HPP_NAMESPACE
     Fence() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Fence( Fence const & rhs )             = default;
     Fence & operator=( Fence const & rhs ) = default;
-    Fence( Fence && rhs )                  = default;
-    Fence & operator=( Fence && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Fence( Fence && rhs )             = default;
+    Fence & operator=( Fence && rhs ) = default;
+#else
+    Fence( Fence && rhs ) VULKAN_HPP_NOEXCEPT : m_fence( VULKAN_HPP_NAMESPACE::exchange( rhs.m_fence, {} ) ) {}
+
+    Fence & operator=( Fence && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_fence = VULKAN_HPP_NAMESPACE::exchange( rhs.m_fence, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Fence( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1643,8 +1712,19 @@ namespace VULKAN_HPP_NAMESPACE
     QueryPool() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     QueryPool( QueryPool const & rhs )             = default;
     QueryPool & operator=( QueryPool const & rhs ) = default;
-    QueryPool( QueryPool && rhs )                  = default;
-    QueryPool & operator=( QueryPool && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    QueryPool( QueryPool && rhs )             = default;
+    QueryPool & operator=( QueryPool && rhs ) = default;
+#else
+    QueryPool( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT : m_queryPool( VULKAN_HPP_NAMESPACE::exchange( rhs.m_queryPool, {} ) ) {}
+
+    QueryPool & operator=( QueryPool && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_queryPool = VULKAN_HPP_NAMESPACE::exchange( rhs.m_queryPool, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR QueryPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1742,8 +1822,19 @@ namespace VULKAN_HPP_NAMESPACE
     PipelineLayout() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     PipelineLayout( PipelineLayout const & rhs )             = default;
     PipelineLayout & operator=( PipelineLayout const & rhs ) = default;
-    PipelineLayout( PipelineLayout && rhs )                  = default;
-    PipelineLayout & operator=( PipelineLayout && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    PipelineLayout( PipelineLayout && rhs )             = default;
+    PipelineLayout & operator=( PipelineLayout && rhs ) = default;
+#else
+    PipelineLayout( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT : m_pipelineLayout( VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipelineLayout, {} ) ) {}
+
+    PipelineLayout & operator=( PipelineLayout && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_pipelineLayout = VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipelineLayout, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR PipelineLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1841,8 +1932,19 @@ namespace VULKAN_HPP_NAMESPACE
     DescriptorSet() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DescriptorSet( DescriptorSet const & rhs )             = default;
     DescriptorSet & operator=( DescriptorSet const & rhs ) = default;
-    DescriptorSet( DescriptorSet && rhs )                  = default;
-    DescriptorSet & operator=( DescriptorSet && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DescriptorSet( DescriptorSet && rhs )             = default;
+    DescriptorSet & operator=( DescriptorSet && rhs ) = default;
+#else
+    DescriptorSet( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT : m_descriptorSet( VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorSet, {} ) ) {}
+
+    DescriptorSet & operator=( DescriptorSet && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_descriptorSet = VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorSet, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DescriptorSet( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -1940,8 +2042,19 @@ namespace VULKAN_HPP_NAMESPACE
     Buffer() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Buffer( Buffer const & rhs )             = default;
     Buffer & operator=( Buffer const & rhs ) = default;
-    Buffer( Buffer && rhs )                  = default;
-    Buffer & operator=( Buffer && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Buffer( Buffer && rhs )             = default;
+    Buffer & operator=( Buffer && rhs ) = default;
+#else
+    Buffer( Buffer && rhs ) VULKAN_HPP_NOEXCEPT : m_buffer( VULKAN_HPP_NAMESPACE::exchange( rhs.m_buffer, {} ) ) {}
+
+    Buffer & operator=( Buffer && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_buffer = VULKAN_HPP_NAMESPACE::exchange( rhs.m_buffer, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Buffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -2039,8 +2152,19 @@ namespace VULKAN_HPP_NAMESPACE
     Pipeline() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Pipeline( Pipeline const & rhs )             = default;
     Pipeline & operator=( Pipeline const & rhs ) = default;
-    Pipeline( Pipeline && rhs )                  = default;
-    Pipeline & operator=( Pipeline && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Pipeline( Pipeline && rhs )             = default;
+    Pipeline & operator=( Pipeline && rhs ) = default;
+#else
+    Pipeline( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT : m_pipeline( VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipeline, {} ) ) {}
+
+    Pipeline & operator=( Pipeline && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_pipeline = VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipeline, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Pipeline( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -2138,8 +2262,19 @@ namespace VULKAN_HPP_NAMESPACE
     Image() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Image( Image const & rhs )             = default;
     Image & operator=( Image const & rhs ) = default;
-    Image( Image && rhs )                  = default;
-    Image & operator=( Image && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Image( Image && rhs )             = default;
+    Image & operator=( Image && rhs ) = default;
+#else
+    Image( Image && rhs ) VULKAN_HPP_NOEXCEPT : m_image( VULKAN_HPP_NAMESPACE::exchange( rhs.m_image, {} ) ) {}
+
+    Image & operator=( Image && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_image = VULKAN_HPP_NAMESPACE::exchange( rhs.m_image, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Image( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -2237,8 +2372,19 @@ namespace VULKAN_HPP_NAMESPACE
     Event() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Event( Event const & rhs )             = default;
     Event & operator=( Event const & rhs ) = default;
-    Event( Event && rhs )                  = default;
-    Event & operator=( Event && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Event( Event && rhs )             = default;
+    Event & operator=( Event && rhs ) = default;
+#else
+    Event( Event && rhs ) VULKAN_HPP_NOEXCEPT : m_event( VULKAN_HPP_NAMESPACE::exchange( rhs.m_event, {} ) ) {}
+
+    Event & operator=( Event && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_event = VULKAN_HPP_NAMESPACE::exchange( rhs.m_event, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Event( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -2336,8 +2482,19 @@ namespace VULKAN_HPP_NAMESPACE
     CommandBuffer() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     CommandBuffer( CommandBuffer const & rhs )             = default;
     CommandBuffer & operator=( CommandBuffer const & rhs ) = default;
-    CommandBuffer( CommandBuffer && rhs )                  = default;
-    CommandBuffer & operator=( CommandBuffer && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    CommandBuffer( CommandBuffer && rhs )             = default;
+    CommandBuffer & operator=( CommandBuffer && rhs ) = default;
+#else
+    CommandBuffer( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT : m_commandBuffer( VULKAN_HPP_NAMESPACE::exchange( rhs.m_commandBuffer, {} ) ) {}
+
+    CommandBuffer & operator=( CommandBuffer && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_commandBuffer = VULKAN_HPP_NAMESPACE::exchange( rhs.m_commandBuffer, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR CommandBuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3493,8 +3650,19 @@ namespace VULKAN_HPP_NAMESPACE
     DeviceMemory() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DeviceMemory( DeviceMemory const & rhs )             = default;
     DeviceMemory & operator=( DeviceMemory const & rhs ) = default;
-    DeviceMemory( DeviceMemory && rhs )                  = default;
-    DeviceMemory & operator=( DeviceMemory && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DeviceMemory( DeviceMemory && rhs )             = default;
+    DeviceMemory & operator=( DeviceMemory && rhs ) = default;
+#else
+    DeviceMemory( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT : m_deviceMemory( VULKAN_HPP_NAMESPACE::exchange( rhs.m_deviceMemory, {} ) ) {}
+
+    DeviceMemory & operator=( DeviceMemory && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_deviceMemory = VULKAN_HPP_NAMESPACE::exchange( rhs.m_deviceMemory, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DeviceMemory( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3517,7 +3685,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
     auto operator<=>( DeviceMemory const & ) const = default;
 #else
-    bool                                 operator==( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator==( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_deviceMemory == rhs.m_deviceMemory;
     }
@@ -3592,8 +3760,19 @@ namespace VULKAN_HPP_NAMESPACE
     BufferView() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     BufferView( BufferView const & rhs )             = default;
     BufferView & operator=( BufferView const & rhs ) = default;
-    BufferView( BufferView && rhs )                  = default;
-    BufferView & operator=( BufferView && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    BufferView( BufferView && rhs )             = default;
+    BufferView & operator=( BufferView && rhs ) = default;
+#else
+    BufferView( BufferView && rhs ) VULKAN_HPP_NOEXCEPT : m_bufferView( VULKAN_HPP_NAMESPACE::exchange( rhs.m_bufferView, {} ) ) {}
+
+    BufferView & operator=( BufferView && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_bufferView = VULKAN_HPP_NAMESPACE::exchange( rhs.m_bufferView, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR BufferView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3691,8 +3870,19 @@ namespace VULKAN_HPP_NAMESPACE
     CommandPool() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     CommandPool( CommandPool const & rhs )             = default;
     CommandPool & operator=( CommandPool const & rhs ) = default;
-    CommandPool( CommandPool && rhs )                  = default;
-    CommandPool & operator=( CommandPool && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    CommandPool( CommandPool && rhs )             = default;
+    CommandPool & operator=( CommandPool && rhs ) = default;
+#else
+    CommandPool( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT : m_commandPool( VULKAN_HPP_NAMESPACE::exchange( rhs.m_commandPool, {} ) ) {}
+
+    CommandPool & operator=( CommandPool && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_commandPool = VULKAN_HPP_NAMESPACE::exchange( rhs.m_commandPool, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR CommandPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3790,8 +3980,19 @@ namespace VULKAN_HPP_NAMESPACE
     PipelineCache() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     PipelineCache( PipelineCache const & rhs )             = default;
     PipelineCache & operator=( PipelineCache const & rhs ) = default;
-    PipelineCache( PipelineCache && rhs )                  = default;
-    PipelineCache & operator=( PipelineCache && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    PipelineCache( PipelineCache && rhs )             = default;
+    PipelineCache & operator=( PipelineCache && rhs ) = default;
+#else
+    PipelineCache( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT : m_pipelineCache( VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipelineCache, {} ) ) {}
+
+    PipelineCache & operator=( PipelineCache && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_pipelineCache = VULKAN_HPP_NAMESPACE::exchange( rhs.m_pipelineCache, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR PipelineCache( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3889,8 +4090,19 @@ namespace VULKAN_HPP_NAMESPACE
     DescriptorPool() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DescriptorPool( DescriptorPool const & rhs )             = default;
     DescriptorPool & operator=( DescriptorPool const & rhs ) = default;
-    DescriptorPool( DescriptorPool && rhs )                  = default;
-    DescriptorPool & operator=( DescriptorPool && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DescriptorPool( DescriptorPool && rhs )             = default;
+    DescriptorPool & operator=( DescriptorPool && rhs ) = default;
+#else
+    DescriptorPool( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT : m_descriptorPool( VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorPool, {} ) ) {}
+
+    DescriptorPool & operator=( DescriptorPool && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_descriptorPool = VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorPool, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DescriptorPool( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -3988,8 +4200,22 @@ namespace VULKAN_HPP_NAMESPACE
     DescriptorSetLayout() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DescriptorSetLayout( DescriptorSetLayout const & rhs )             = default;
     DescriptorSetLayout & operator=( DescriptorSetLayout const & rhs ) = default;
-    DescriptorSetLayout( DescriptorSetLayout && rhs )                  = default;
-    DescriptorSetLayout & operator=( DescriptorSetLayout && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DescriptorSetLayout( DescriptorSetLayout && rhs )             = default;
+    DescriptorSetLayout & operator=( DescriptorSetLayout && rhs ) = default;
+#else
+    DescriptorSetLayout( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
+      : m_descriptorSetLayout( VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorSetLayout, {} ) )
+    {
+    }
+
+    DescriptorSetLayout & operator=( DescriptorSetLayout && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_descriptorSetLayout = VULKAN_HPP_NAMESPACE::exchange( rhs.m_descriptorSetLayout, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DescriptorSetLayout( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4090,8 +4316,19 @@ namespace VULKAN_HPP_NAMESPACE
     Framebuffer() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Framebuffer( Framebuffer const & rhs )             = default;
     Framebuffer & operator=( Framebuffer const & rhs ) = default;
-    Framebuffer( Framebuffer && rhs )                  = default;
-    Framebuffer & operator=( Framebuffer && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Framebuffer( Framebuffer && rhs )             = default;
+    Framebuffer & operator=( Framebuffer && rhs ) = default;
+#else
+    Framebuffer( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT : m_framebuffer( VULKAN_HPP_NAMESPACE::exchange( rhs.m_framebuffer, {} ) ) {}
+
+    Framebuffer & operator=( Framebuffer && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_framebuffer = VULKAN_HPP_NAMESPACE::exchange( rhs.m_framebuffer, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Framebuffer( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4189,8 +4426,19 @@ namespace VULKAN_HPP_NAMESPACE
     ImageView() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     ImageView( ImageView const & rhs )             = default;
     ImageView & operator=( ImageView const & rhs ) = default;
-    ImageView( ImageView && rhs )                  = default;
-    ImageView & operator=( ImageView && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    ImageView( ImageView && rhs )             = default;
+    ImageView & operator=( ImageView && rhs ) = default;
+#else
+    ImageView( ImageView && rhs ) VULKAN_HPP_NOEXCEPT : m_imageView( VULKAN_HPP_NAMESPACE::exchange( rhs.m_imageView, {} ) ) {}
+
+    ImageView & operator=( ImageView && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_imageView = VULKAN_HPP_NAMESPACE::exchange( rhs.m_imageView, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR ImageView( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4288,8 +4536,19 @@ namespace VULKAN_HPP_NAMESPACE
     PrivateDataSlot() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     PrivateDataSlot( PrivateDataSlot const & rhs )             = default;
     PrivateDataSlot & operator=( PrivateDataSlot const & rhs ) = default;
-    PrivateDataSlot( PrivateDataSlot && rhs )                  = default;
-    PrivateDataSlot & operator=( PrivateDataSlot && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    PrivateDataSlot( PrivateDataSlot && rhs )             = default;
+    PrivateDataSlot & operator=( PrivateDataSlot && rhs ) = default;
+#else
+    PrivateDataSlot( PrivateDataSlot && rhs ) VULKAN_HPP_NOEXCEPT : m_privateDataSlot( VULKAN_HPP_NAMESPACE::exchange( rhs.m_privateDataSlot, {} ) ) {}
+
+    PrivateDataSlot & operator=( PrivateDataSlot && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_privateDataSlot = VULKAN_HPP_NAMESPACE::exchange( rhs.m_privateDataSlot, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR PrivateDataSlot( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4383,8 +4642,19 @@ namespace VULKAN_HPP_NAMESPACE
     RenderPass() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     RenderPass( RenderPass const & rhs )             = default;
     RenderPass & operator=( RenderPass const & rhs ) = default;
-    RenderPass( RenderPass && rhs )                  = default;
-    RenderPass & operator=( RenderPass && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    RenderPass( RenderPass && rhs )             = default;
+    RenderPass & operator=( RenderPass && rhs ) = default;
+#else
+    RenderPass( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT : m_renderPass( VULKAN_HPP_NAMESPACE::exchange( rhs.m_renderPass, {} ) ) {}
+
+    RenderPass & operator=( RenderPass && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_renderPass = VULKAN_HPP_NAMESPACE::exchange( rhs.m_renderPass, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR RenderPass( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4482,8 +4752,19 @@ namespace VULKAN_HPP_NAMESPACE
     Sampler() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Sampler( Sampler const & rhs )             = default;
     Sampler & operator=( Sampler const & rhs ) = default;
-    Sampler( Sampler && rhs )                  = default;
-    Sampler & operator=( Sampler && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Sampler( Sampler && rhs )             = default;
+    Sampler & operator=( Sampler && rhs ) = default;
+#else
+    Sampler( Sampler && rhs ) VULKAN_HPP_NOEXCEPT : m_sampler( VULKAN_HPP_NAMESPACE::exchange( rhs.m_sampler, {} ) ) {}
+
+    Sampler & operator=( Sampler && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_sampler = VULKAN_HPP_NAMESPACE::exchange( rhs.m_sampler, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Sampler( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4581,8 +4862,22 @@ namespace VULKAN_HPP_NAMESPACE
     SamplerYcbcrConversion() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     SamplerYcbcrConversion( SamplerYcbcrConversion const & rhs )             = default;
     SamplerYcbcrConversion & operator=( SamplerYcbcrConversion const & rhs ) = default;
-    SamplerYcbcrConversion( SamplerYcbcrConversion && rhs )                  = default;
-    SamplerYcbcrConversion & operator=( SamplerYcbcrConversion && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    SamplerYcbcrConversion( SamplerYcbcrConversion && rhs )             = default;
+    SamplerYcbcrConversion & operator=( SamplerYcbcrConversion && rhs ) = default;
+#else
+    SamplerYcbcrConversion( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
+      : m_samplerYcbcrConversion( VULKAN_HPP_NAMESPACE::exchange( rhs.m_samplerYcbcrConversion, {} ) )
+    {
+    }
+
+    SamplerYcbcrConversion & operator=( SamplerYcbcrConversion && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_samplerYcbcrConversion = VULKAN_HPP_NAMESPACE::exchange( rhs.m_samplerYcbcrConversion, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR SamplerYcbcrConversion( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4686,8 +4981,22 @@ namespace VULKAN_HPP_NAMESPACE
     SemaphoreSciSyncPoolNV() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     SemaphoreSciSyncPoolNV( SemaphoreSciSyncPoolNV const & rhs )             = default;
     SemaphoreSciSyncPoolNV & operator=( SemaphoreSciSyncPoolNV const & rhs ) = default;
-    SemaphoreSciSyncPoolNV( SemaphoreSciSyncPoolNV && rhs )                  = default;
-    SemaphoreSciSyncPoolNV & operator=( SemaphoreSciSyncPoolNV && rhs )      = default;
+
+#  if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    SemaphoreSciSyncPoolNV( SemaphoreSciSyncPoolNV && rhs )             = default;
+    SemaphoreSciSyncPoolNV & operator=( SemaphoreSciSyncPoolNV && rhs ) = default;
+#  else
+    SemaphoreSciSyncPoolNV( SemaphoreSciSyncPoolNV && rhs ) VULKAN_HPP_NOEXCEPT
+      : m_semaphoreSciSyncPoolNV( VULKAN_HPP_NAMESPACE::exchange( rhs.m_semaphoreSciSyncPoolNV, {} ) )
+    {
+    }
+
+    SemaphoreSciSyncPoolNV & operator=( SemaphoreSciSyncPoolNV && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_semaphoreSciSyncPoolNV = VULKAN_HPP_NAMESPACE::exchange( rhs.m_semaphoreSciSyncPoolNV, {} );
+      return *this;
+    }
+#  endif
 
     VULKAN_HPP_CONSTEXPR SemaphoreSciSyncPoolNV( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4783,8 +5092,19 @@ namespace VULKAN_HPP_NAMESPACE
     Queue() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Queue( Queue const & rhs )             = default;
     Queue & operator=( Queue const & rhs ) = default;
-    Queue( Queue && rhs )                  = default;
-    Queue & operator=( Queue && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Queue( Queue && rhs )             = default;
+    Queue & operator=( Queue && rhs ) = default;
+#else
+    Queue( Queue && rhs ) VULKAN_HPP_NOEXCEPT : m_queue( VULKAN_HPP_NAMESPACE::exchange( rhs.m_queue, {} ) ) {}
+
+    Queue & operator=( Queue && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_queue = VULKAN_HPP_NAMESPACE::exchange( rhs.m_queue, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Queue( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -4984,8 +5304,19 @@ namespace VULKAN_HPP_NAMESPACE
     Device() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Device( Device const & rhs )             = default;
     Device & operator=( Device const & rhs ) = default;
-    Device( Device && rhs )                  = default;
-    Device & operator=( Device && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Device( Device && rhs )             = default;
+    Device & operator=( Device && rhs ) = default;
+#else
+    Device( Device && rhs ) VULKAN_HPP_NOEXCEPT : m_device( VULKAN_HPP_NAMESPACE::exchange( rhs.m_device, {} ) ) {}
+
+    Device & operator=( Device && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_device = VULKAN_HPP_NAMESPACE::exchange( rhs.m_device, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Device( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -5006,7 +5337,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
     auto operator<=>( Device const & ) const = default;
 #else
-    bool                                                                         operator==( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator==( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_device == rhs.m_device;
     }
@@ -7138,8 +7469,19 @@ namespace VULKAN_HPP_NAMESPACE
     DisplayModeKHR() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     DisplayModeKHR( DisplayModeKHR const & rhs )             = default;
     DisplayModeKHR & operator=( DisplayModeKHR const & rhs ) = default;
-    DisplayModeKHR( DisplayModeKHR && rhs )                  = default;
-    DisplayModeKHR & operator=( DisplayModeKHR && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    DisplayModeKHR( DisplayModeKHR && rhs )             = default;
+    DisplayModeKHR & operator=( DisplayModeKHR && rhs ) = default;
+#else
+    DisplayModeKHR( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT : m_displayModeKHR( VULKAN_HPP_NAMESPACE::exchange( rhs.m_displayModeKHR, {} ) ) {}
+
+    DisplayModeKHR & operator=( DisplayModeKHR && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_displayModeKHR = VULKAN_HPP_NAMESPACE::exchange( rhs.m_displayModeKHR, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR DisplayModeKHR( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -7162,7 +7504,7 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
     auto operator<=>( DisplayModeKHR const & ) const = default;
 #else
-    bool                                              operator==( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    bool operator==( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
     {
       return m_displayModeKHR == rhs.m_displayModeKHR;
     }
@@ -7237,8 +7579,19 @@ namespace VULKAN_HPP_NAMESPACE
     PhysicalDevice() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     PhysicalDevice( PhysicalDevice const & rhs )             = default;
     PhysicalDevice & operator=( PhysicalDevice const & rhs ) = default;
-    PhysicalDevice( PhysicalDevice && rhs )                  = default;
-    PhysicalDevice & operator=( PhysicalDevice && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    PhysicalDevice( PhysicalDevice && rhs )             = default;
+    PhysicalDevice & operator=( PhysicalDevice && rhs ) = default;
+#else
+    PhysicalDevice( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT : m_physicalDevice( VULKAN_HPP_NAMESPACE::exchange( rhs.m_physicalDevice, {} ) ) {}
+
+    PhysicalDevice & operator=( PhysicalDevice && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_physicalDevice = VULKAN_HPP_NAMESPACE::exchange( rhs.m_physicalDevice, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR PhysicalDevice( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -8136,8 +8489,19 @@ namespace VULKAN_HPP_NAMESPACE
     Instance() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     Instance( Instance const & rhs )             = default;
     Instance & operator=( Instance const & rhs ) = default;
-    Instance( Instance && rhs )                  = default;
-    Instance & operator=( Instance && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    Instance( Instance && rhs )             = default;
+    Instance & operator=( Instance && rhs ) = default;
+#else
+    Instance( Instance && rhs ) VULKAN_HPP_NOEXCEPT : m_instance( VULKAN_HPP_NAMESPACE::exchange( rhs.m_instance, {} ) ) {}
+
+    Instance & operator=( Instance && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_instance = VULKAN_HPP_NAMESPACE::exchange( rhs.m_instance, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR Instance( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 
@@ -8482,8 +8846,19 @@ namespace VULKAN_HPP_NAMESPACE
     ShaderModule() VULKAN_HPP_NOEXCEPT{};  // = default - try to workaround a compiler issue
     ShaderModule( ShaderModule const & rhs )             = default;
     ShaderModule & operator=( ShaderModule const & rhs ) = default;
-    ShaderModule( ShaderModule && rhs )                  = default;
-    ShaderModule & operator=( ShaderModule && rhs )      = default;
+
+#if !defined( VULKAN_HPP_HANDLES_MOVE_EXCHANGE )
+    ShaderModule( ShaderModule && rhs )             = default;
+    ShaderModule & operator=( ShaderModule && rhs ) = default;
+#else
+    ShaderModule( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT : m_shaderModule( VULKAN_HPP_NAMESPACE::exchange( rhs.m_shaderModule, {} ) ) {}
+
+    ShaderModule & operator=( ShaderModule && rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      m_shaderModule = VULKAN_HPP_NAMESPACE::exchange( rhs.m_shaderModule, {} );
+      return *this;
+    }
+#endif
 
     VULKAN_HPP_CONSTEXPR ShaderModule( std::nullptr_t ) VULKAN_HPP_NOEXCEPT {}
 

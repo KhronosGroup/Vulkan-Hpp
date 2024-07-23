@@ -892,6 +892,10 @@ When this is not externally defined and `VULKAN_HPP_CPP_VERSION` is at least `23
 
 By default, the member `m_mask` of the `Flags` class template is private. This is to prevent accidentally setting a `Flags` with some inappropriate value. But it also prevents using a `Flags`, or a structure holding a `Flags`, to be used as a non-type template parameter. If you really need that functionality, and accept the reduced security, you can use this define to change the access specifier for `m_mask` from private to public, which allows using a `Flags` as a non-type template parameter.
 
+#### VULKAN_HPP_HANDLES_MOVE_EXCHANGE
+
+This define can be used to enable `m_handle = exchange( rhs.m_handle, {} )` in move constructors of Vulkan-Hpp handles, which default-initializes the `rhs` underlying value. By default Vulkan-Hpp handles behave like trivial types -- move constructors copying value.
+
 #### VULKAN_HPP_HASH_COMBINE
 
 This define can be used to specify your own hash combiner function. In order to determine the hash of a vk-structure, the hashes of the members of that struct are to be combined. This is done by this define, which by default is identical to what the function `boost::hash_combine()` does. It gets the type of the to-be-combined value, the seed, which is the combined value up to that point, and finally the to-be-combined value. This hash calculation determines a "shallow" hash, as it takes the hashes of any pointer in a structure, and not the hash of a pointed-to value.

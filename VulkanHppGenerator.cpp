@@ -127,11 +127,13 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #  define VULKAN_EXTENSION_INSPECTION_HPP
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
-#include <vulkan/${api}.hpp>
+#if !defined( VULKAN_HPP_STD_MODULE )
+#  include <map>
+#  include <set>
+#  include <string>
+#  include <vector>
+#  include <vulkan/${api}.hpp>
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -583,8 +585,10 @@ void VulkanHppGenerator::generateRAIIHppFile() const
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
-#include <memory>   // std::unique_ptr
-#include <utility>  // std::forward
+#if !defined( VULKAN_HPP_STD_MODULE )
+#  include <memory>   // std::unique_ptr
+#  include <utility>  // std::forward
+#endif
 #include <vulkan/${api}.hpp>
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
@@ -659,8 +663,10 @@ void VulkanHppGenerator::generateSharedHppFile() const
 #define VULKAN_SHARED_HPP
 
 #include <vulkan/${api}.hpp>
-#include <atomic>  // std::atomic_size_t
 
+#if !defined( VULKAN_HPP_STD_MODULE )
+#include <atomic>  // std::atomic_size_t
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -748,10 +754,15 @@ void VulkanHppGenerator::generateToStringHppFile() const
 
 #include <vulkan/${api}_enums.hpp>
 
-#if __cpp_lib_format
-#  include <format>   // std::format
+#if !defined( VULKAN_HPP_STD_MODULE )
+#  if __cpp_lib_format
+#    include <format>   // std::format
+#  else
+#    include <sstream>  // std::stringstream
+#  endif
 #else
-#  include <sstream>  // std::stringstream
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
 #endif
 
 namespace VULKAN_HPP_NAMESPACE
@@ -782,6 +793,15 @@ void VulkanHppGenerator::generateCppModuleFile() const
 // Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
 
 module;
+
+// clang-format off
+#include <vulkan/vulkan_hpp_macros.hpp>
+// clang-format on
+
+#if defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
+#endif
 
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>

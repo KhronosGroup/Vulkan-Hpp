@@ -36,6 +36,28 @@ struct HasDestructor : std::integral_constant<bool, !std::is_same<DestructorType
 {
 };
 
+template <typename HandleType, typename = void>
+struct HasPoolType : std::false_type
+{
+};
+
+template <typename HandleType>
+struct HasPoolType<HandleType, decltype( (void)typename SharedHandleTraits<HandleType>::deleter::PoolTypeExport() )> : std::true_type
+{
+};
+
+template <typename HandleType, typename Enable = void>
+struct GetPoolType
+{
+  using type = NoDestructor;
+};
+
+template <typename HandleType>
+struct GetPoolType<HandleType, typename std::enable_if<HasPoolType<HandleType>::value>::type>
+{
+  using type = typename SharedHandleTraits<HandleType>::deleter::PoolTypeExport;
+};
+
 //=====================================================================================================================
 
 template <typename HandleType>
@@ -241,9 +263,20 @@ private:
 public:
   SharedHandle() = default;
 
-  template <typename T = HandleType, typename = typename std::enable_if<HasDestructor<T>::value>::type>
+  template <typename T = HandleType, typename = typename std::enable_if<HasDestructor<T>::value && !HasPoolType<T>::value>::type>
   explicit SharedHandle( HandleType handle, SharedHandle<DestructorTypeOf<HandleType>> parent, DeleterType deleter = DeleterType() ) VULKAN_HPP_NOEXCEPT
     : BaseType( handle, std::move( parent ), std::move( deleter ) )
+  {
+  }
+
+  template <typename Dispatcher = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+            typename T          = HandleType,
+            typename            = typename std::enable_if<HasDestructor<T>::value && HasPoolType<T>::value>::type>
+  explicit SharedHandle( HandleType                                           handle,
+                         SharedHandle<DestructorTypeOf<HandleType>>           parent,
+                         SharedHandle<typename GetPoolType<HandleType>::type> pool,
+                         const Dispatcher & dispatch                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+    : BaseType( handle, std::move( parent ), DeleterType{ std::move( pool ), dispatch } )
   {
   }
 

@@ -1,21 +1,24 @@
-#include <algorithm>
-#include <array>     // ArrayWrapperND
-#include <string.h>  // strnlen
-#include <string>    // std::string
-#include <utility>   // std::exchange
-#include <vulkan/${vulkan_h}>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#if 17 <= VULKAN_HPP_CPP_VERSION
+#if !defined( VULKAN_HPP_STD_MODULE )
+# include <algorithm>
+# include <array>     // ArrayWrapperND
+# include <string.h>  // strnlen
+# include <string>    // std::string
+# include <utility>   // std::exchange
+#endif
+#include <vulkan/${vulkan_h}>
+
+#if 17 <= VULKAN_HPP_CPP_VERSION && !defined( VULKAN_HPP_STD_MODULE )
 #  include <string_view>
 #endif
 
-#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+#if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE ) && !defined( VULKAN_HPP_STD_MODULE )
 #  include <tuple>   // std::tie
 #  include <vector>  // std::vector
 #endif
 
-#if !defined( VULKAN_HPP_NO_EXCEPTIONS )
+#if !defined( VULKAN_HPP_NO_EXCEPTIONS ) && !defined( VULKAN_HPP_STD_MODULE )
 #  include <system_error>  // std::is_error_code_enum
 #endif
 
@@ -39,10 +42,10 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  endif
 #endif
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR ) && !defined( VULKAN_HPP_STD_MODULE )
 #  include <compare>
 #endif
 
-#if defined( VULKAN_HPP_SUPPORT_SPAN )
+#if defined( VULKAN_HPP_SUPPORT_SPAN ) && !defined( VULKAN_HPP_STD_MODULE )
 #  include <span>
 #endif

@@ -87,6 +87,11 @@
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
+#if !defined( VULKAN_HPP_STD_MODULE ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_modules ) && defined( VULKAN_HPP_ENABLE_STD_MODULE )
+#  define VULKAN_HPP_STD_MODULE        std
+#  define VULKAN_HPP_STD_COMPAT_MODULE std.compat
+#endif
+
 // 32-bit vulkan is not typesafe for non-dispatchable handles, so don't allow copy constructors on this platform by default.
 // To enable this feature on 32-bit platforms please #define VULKAN_HPP_TYPESAFE_CONVERSION 1
 // To disable this feature on 64-bit platforms please #define VULKAN_HPP_TYPESAFE_CONVERSION 0
@@ -285,7 +290,9 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected )
-#  include <expected>
+#  if !defined( VULKAN_HPP_STD_MODULE )
+#    include <expected>
+#  endif
 #  define VULKAN_HPP_EXPECTED   std::expected
 #  define VULKAN_HPP_UNEXPECTED std::unexpected
 #endif

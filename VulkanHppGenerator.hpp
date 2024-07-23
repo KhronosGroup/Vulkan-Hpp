@@ -200,9 +200,9 @@ private:
 
   struct ConstantData
   {
-    std::string                type    = {};
-    std::string                value   = {};
-    int                        xmlLine = {};
+    std::string type    = {};
+    std::string value   = {};
+    int         xmlLine = {};
   };
 
   struct DefineData
@@ -385,6 +385,54 @@ private:
     size_t lenParam    = INVALID_INDEX;
     size_t strideParam = INVALID_INDEX;
     bool   byStructure = false;
+  };
+
+  struct VideoRequireCapabilities
+  {
+    int         xmlLine = {};
+    std::string name;
+    std::string member;
+    std::string value;
+  };
+
+  struct VideoFormat
+  {
+    int                                   xmlLine = {};
+    std::string                           name;
+    std::vector<std::string>              usage;
+    std::vector<VideoRequireCapabilities> requireCapabilities;
+  };
+
+  struct VideoProfile
+  {
+    int         xmlLine = {};
+    std::string name;
+    std::string value;
+  };
+
+  struct VideoProfileMember
+  {
+    int                       xmlLine = {};
+    std::string               name;
+    std::vector<VideoProfile> profiles;
+  };
+
+  struct VideoProfiles
+  {
+    int                             xmlLine = {};
+    std::string                     name;
+    std::vector<VideoProfileMember> members;
+  };
+
+  struct VideoCodec
+  {
+    int                        xmlLine = {};
+    std::string                name;
+    std::string                capabilities;
+    std::string                extend;
+    std::string                value;
+    std::vector<VideoFormat>   formats;
+    std::vector<VideoProfiles> profiles;
   };
 
   struct MacroVisitor final : tinyxml2::XMLVisitor
@@ -1035,6 +1083,14 @@ private:
   void                     readTypes( tinyxml2::XMLElement const * element );
   void                     readTypesType( tinyxml2::XMLElement const * element );
   TypeInfo                 readTypeInfo( tinyxml2::XMLElement const * element ) const;
+  void                     readVideoCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoCodec( tinyxml2::XMLElement const * element );
+  void                     readVideoCodecs( tinyxml2::XMLElement const * element );
+  void                     readVideoFormat( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoProfileMember( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoProfile( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoProfiles( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoRequireCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                     rescheduleRAIIHandle( std::string &                              str,
                                                  std::pair<std::string, HandleData> const & handle,
@@ -1073,5 +1129,6 @@ private:
   std::set<std::string>                          m_unsupportedExtensions;
   std::set<std::string>                          m_unsupportedFeatures;
   std::string                                    m_version;
+  std::vector<VideoCodec>                        m_videoCodecs;
   std::string                                    m_vulkanLicenseHeader;
 };

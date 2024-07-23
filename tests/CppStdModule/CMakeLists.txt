@@ -3,6 +3,7 @@ cmake_minimum_required( VERSION 3.30 )
 set(CMAKE_CXX_MODULE_STD ON)
 
 target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
+target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_ENABLE_STD_MODULE )
 
 vulkan_hpp__setup_test( NAME CppStdModule CXX_STANDARD 23 LIBRARIES VulkanHppModule NO_UTILS )
 

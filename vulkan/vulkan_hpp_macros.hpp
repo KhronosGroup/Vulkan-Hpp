@@ -87,7 +87,7 @@
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
-#if !defined( VULKAN_HPP_STD_MODULE ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_modules ) && defined( VULKAN_HPP_ENABLE_STD_MODULE )
+#if ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_STD_MODULE )
 #  define VULKAN_HPP_STD_MODULE        std
 #  define VULKAN_HPP_STD_COMPAT_MODULE std.compat
 #endif

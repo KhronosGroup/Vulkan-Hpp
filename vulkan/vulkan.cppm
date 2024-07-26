@@ -10,15 +10,6 @@
 
 module;
 
-// clang-format off
-#include <vulkan/vulkan_hpp_macros.hpp>
-// clang-format on
-
-#if defined( VULKAN_HPP_STD_MODULE )
-import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
-#endif
-
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_extension_inspection.hpp>
 #include <vulkan/vulkan_format_traits.hpp>

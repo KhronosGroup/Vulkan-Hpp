@@ -822,15 +822,6 @@ void VulkanHppGenerator::generateCppModuleFile() const
 
 module;
 
-// clang-format off
-#include <vulkan/vulkan_hpp_macros.hpp>
-// clang-format on
-
-#if defined( VULKAN_HPP_STD_MODULE )
-import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
-#endif
-
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>
 #include <vulkan/${api}_format_traits.hpp>

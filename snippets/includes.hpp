@@ -6,6 +6,9 @@
 # include <string.h>  // strnlen
 # include <string>    // std::string
 # include <utility>   // std::exchange
+#else
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
 #endif
 #include <vulkan/${vulkan_h}>
 

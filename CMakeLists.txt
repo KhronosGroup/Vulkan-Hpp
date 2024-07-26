@@ -37,7 +37,7 @@ option( VULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC "Build only dynamic. Required in c
 option( VULKAN_HPP_TESTS_BUILD_ONLY_DYNAMIC "Build only dynamic" OFF )
 option( VULKAN_HPP_BUILD_WITH_LOCAL_VULKAN_HPP "Build with local Vulkan headers" ON )
 option( VULKAN_HPP_ENABLE_CPP20_MODULES "Build Vulkan-Hpp as C++20 module; requires minimum CMake version 3.28" OFF )
-option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" ON )
+option( VULKAN_HPP_ENABLE_STD_MODULE "Build Vulkan-Hpp with import std; requires minimum CMake version 3.30" OFF )
 option( VULKAN_HPP_CPP20_MODULE_DYNAMIC_DISPATCHER "Build C++20 module with dynamic Dispatcher" ON )
 
 if ( VULKAN_HPP_ENABLE_CPP20_MODULES )
@@ -55,9 +55,9 @@ function( vulkan_hpp__setup_platform )
 	cmake_parse_arguments( TARGET "{options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
 	if( WIN32 )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_WIN32_KHR )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC NOMINMAX VK_USE_PLATFORM_WIN32_KHR )
 	elseif( APPLE )
-		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_METAL_EXT )
+		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_MACOS_MVK )
 	elseif( UNIX )
 		target_compile_definitions( ${TARGET_NAME} PUBLIC VK_USE_PLATFORM_XCB_KHR )
 	else()
@@ -279,7 +279,7 @@ endfunction()
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 
 # find a clang-format version to format the generated header files
-find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format)
+find_program(CLANG_FORMAT_EXECUTABLE NAMES clang-format HINTS ${CMAKE_CURRENT_SOURCE_DIR} )
 if( CLANG_FORMAT_EXECUTABLE )
 	# get the clang-format version string
 	execute_process( COMMAND ${CLANG_FORMAT_EXECUTABLE} "--version" OUTPUT_VARIABLE clangFormatVersion )
@@ -347,7 +347,12 @@ if( VULKAN_HPP_ENABLE_CPP20_MODULES )
 	else()
 		target_compile_definitions( VulkanHppModule PUBLIC VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=0 )
 	endif()
-	target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+		if( VULKAN_HPP_ENABLE_STD_MODULE )
+		target_compile_features( VulkanHppModule PUBLIC cxx_std_23 )
+		set_target_properties( VulkanHppModule PROPERTIES CXX_MODULE_STD ON )
+	else()
+		target_compile_features( VulkanHppModule PUBLIC cxx_std_20 )
+	endif()
 	target_sources( VulkanHppModule
 		PUBLIC
 		FILE_SET vulkan_module_file BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} TYPE CXX_MODULES FILES vulkan/vulkan.cppm )

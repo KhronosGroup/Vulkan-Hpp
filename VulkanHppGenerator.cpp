@@ -5864,7 +5864,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
 
   // some hardcoded types
   auto const hardCodedResultValueTypes =
-    std::array{ "ResultValue", "ResultValueType", "detail::createResultValueType", "detail::ignore", "detail::resultCheck" };
+    std::array{ "ResultValue", "ResultValueType" };
   for ( auto const & valueType : hardCodedResultValueTypes )
   {
     usings += replaceWithMap( usingTemplate, { { "className", valueType } } );

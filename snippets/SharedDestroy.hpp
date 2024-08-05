@@ -116,6 +116,8 @@ class PoolFreeShared
 public:
   using DestructorType = typename SharedHandleTraits<HandleType>::DestructorType;
 
+  using PoolTypeExport = PoolType;
+
   template <class Dispatcher>
   using ReturnType = decltype( std::declval<DestructorType>().free( PoolType(), 0u, nullptr, Dispatcher() ) );
 
@@ -135,7 +137,7 @@ public:
 public:
   void destroy( DestructorType parent, HandleType handle ) const VULKAN_HPP_NOEXCEPT
   {
-    VULKAN_HPP_ASSERT( m_destroy && m_dispatch );
+    VULKAN_HPP_ASSERT( m_destroy && m_dispatch && m_pool );
     ( parent.*m_destroy )( m_pool.get(), 1u, &handle, *m_dispatch );
   }
 

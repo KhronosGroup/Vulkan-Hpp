@@ -5785,7 +5785,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   const auto [enterNoSmartHandle, leaveNoSmartHandle] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
   usings += "\n" + enterNoSmartHandle + noSmartHandleUsings + leaveNoSmartHandle + "\n";
 
-  for ( auto const& functionName : hardCodedFunctions )
+  for ( auto const & functionName : hardCodedFunctions )
   {
     usings += "\n" + replaceWithMap( usingTemplate, { { "className", std::string{ functionName } } } );
   }
@@ -5863,8 +5863,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += exceptionsLeave + "\n";
 
   // some hardcoded types
-  auto const hardCodedResultValueTypes =
-    std::array{ "ResultValue", "ResultValueType" };
+  auto const hardCodedResultValueTypes = std::array{ "ResultValue", "ResultValueType" };
   for ( auto const & valueType : hardCodedResultValueTypes )
   {
     usings += replaceWithMap( usingTemplate, { { "className", valueType } } );
@@ -9991,8 +9990,7 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
     clearMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
     memberVariables += "\n    VULKAN_HPP_NAMESPACE::Result m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
     swapMembers += "\n      std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
-    moveConstructorInitializerList +=
-      "m_constructorSuccessCode( VULKAN_HPP_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} ) ), ";
+    moveConstructorInitializerList += "m_constructorSuccessCode( VULKAN_HPP_NAMESPACE::exchange( rhs.m_constructorSuccessCode, {} ) ), ";
     moveAssignmentInstructions += "\n          std::swap( m_constructorSuccessCode, rhs.m_constructorSuccessCode );";
     releaseMembers += "\n        m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;";
   }
@@ -14233,7 +14231,7 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
                    { "sync", true },
                    { "tags", true },
                    { "types", true } },
-                 { "videocodecs" } );   // make this optional for now, make it required around October 2024
+                 { "videocodecs" } );  // make this optional for now, make it required around October 2024
   for ( auto child : children )
   {
     const std::string value = child->Value();
@@ -15719,10 +15717,12 @@ void VulkanHppGenerator::readVideoCapabilities( tinyxml2::XMLElement const * ele
   checkAttributes( line, attributes, { { "struct", {} } }, {} );
   checkElements( line, getChildElements( element ), {} );
 
-  videoCodec.capabilities = attributes.find( "struct" )->second;
-  checkForError( m_structs.contains( videoCodec.capabilities ),
+  std::string capabilities = attributes.find( "struct" )->second;
+  checkForError( std::find( videoCodec.capabilities.begin(), videoCodec.capabilities.end(), capabilities ) == videoCodec.capabilities.end(),
                  line,
-                 "videocodec <" + videoCodec.name + "> lists unknown capabilities struct <" + videoCodec.capabilities + ">" );
+                 "videocapabilities struct <" + capabilities + "> already listed for videoCodec <" + videoCodec.name + ">" );
+  checkForError( m_structs.contains( capabilities ), line, "videocodec <" + videoCodec.name + "> lists unknown capabilities struct <" + capabilities + ">" );
+  videoCodec.capabilities.push_back( capabilities );
 }
 
 void VulkanHppGenerator::readVideoCodec( tinyxml2::XMLElement const * element )
@@ -15732,7 +15732,7 @@ void VulkanHppGenerator::readVideoCodec( tinyxml2::XMLElement const * element )
   checkAttributes( line, attributes, { { "name", {} } }, { { "extend", {} }, { "value", {} } } );
 
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, { { "videocapabilities", true } }, { "videoformat", "videoprofiles" } );
+  checkElements( line, children, { { "videocapabilities", false } }, { "videoformat", "videoprofiles" } );
 
   VideoCodec videoCodec;
   videoCodec.xmlLine = line;
@@ -15804,43 +15804,83 @@ void VulkanHppGenerator::readVideoFormat( tinyxml2::XMLElement const * element, 
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "usage", {} } }, {} );
 
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "videorequirecapabilities" } );
-
-  auto flagBitsIt = m_enums.find( "VkImageUsageFlagBits" );
-  assert( flagBitsIt != m_enums.end() );
-
-  VideoFormat format;
-  format.xmlLine = line;
-  for ( auto const & attribute : attributes )
+  if ( attributes.contains( "extend" ) )
   {
-    if ( attribute.first == "name" )
+    checkAttributes( line, attributes, { { "extend", {} } }, {} );
+
+    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+    checkElements( line, children, { { "videoformatproperties", true } } );
+
+    std::string extend = attributes.find( "extend" )->second;
+
+    std::vector<VideoFormat>::iterator videoFormatIt;
+
+    auto videoCodecIt = std::find_if( m_videoCodecs.begin(),
+                                      m_videoCodecs.end(),
+                                      [&extend, &videoFormatIt]( auto & vc )
+                                      {
+                                        videoFormatIt =
+                                          std::find_if( vc.formats.begin(), vc.formats.end(), [&extend]( auto & vf ) { return vf.name == extend; } );
+                                        return videoFormatIt != vc.formats.end();
+                                      } );
+    checkForError( videoCodecIt != m_videoCodecs.end(), line, "videocodec <" + videoCodec.name + "> extends unknown videoformat <" + extend + ">" );
+
+    for ( auto child : children )
     {
-      format.name = attribute.second;
-      checkForError( findByName( videoCodec.formats, format.name ) == videoCodec.formats.end(),
-                     line,
-                     "Video Format <" + format.name + "> has already been listed for Video Codec <" + videoCodec.name + ">" );
-    }
-    else if ( attribute.first == "usage" )
-    {
-      format.usage = tokenize( attribute.second, "+" );
-      for ( auto const & usage : format.usage )
+      std::string value = child->Value();
+      if ( value == "videoformatproperties" )
       {
-        checkForError( findByName( flagBitsIt->second.values, usage ) != flagBitsIt->second.values.end(),
-                       line,
-                       "Unknown Video Format <" + format.name + "> listed for Video Codec <" + videoCodec.name + ">" );
+        readVideoFormatProperties( child, videoCodecIt->name, *videoFormatIt );
       }
     }
   }
-  videoCodec.formats.push_back( format );
-
-  for ( auto child : children )
+  else
   {
-    std::string value = child->Value();
-    assert( value == "videorequirecapabilities" );
-    readVideoRequireCapabilities( child, videoCodec );
+    checkAttributes( line, attributes, { { "name", {} }, { "usage", {} } }, {} );
+
+    std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+    checkElements( line, children, {}, { "videoformatproperties", "videorequirecapabilities" } );
+
+    auto flagBitsIt = m_enums.find( "VkImageUsageFlagBits" );
+    assert( flagBitsIt != m_enums.end() );
+
+    VideoFormat format;
+    format.xmlLine = line;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "name" )
+      {
+        format.name = attribute.second;
+        checkForError( findByName( videoCodec.formats, format.name ) == videoCodec.formats.end(),
+                       line,
+                       "Video Format <" + format.name + "> has already been listed for Video Codec <" + videoCodec.name + ">" );
+      }
+      else if ( attribute.first == "usage" )
+      {
+        format.usage = tokenize( attribute.second, "+" );
+        for ( auto const & usage : format.usage )
+        {
+          checkForError( findByName( flagBitsIt->second.values, usage ) != flagBitsIt->second.values.end(),
+                         line,
+                         "Unknown Video Format <" + format.name + "> listed for Video Codec <" + videoCodec.name + ">" );
+        }
+      }
+    }
+    videoCodec.formats.push_back( format );
+
+    for ( auto child : children )
+    {
+      std::string value = child->Value();
+      if ( value == "videoformatproperties" )
+      {
+        readVideoFormatProperties( child, videoCodec.name, videoCodec.formats.back() );
+      }
+      else if ( value == "videorequirecapabilities" )
+      {
+        readVideoRequireCapabilities( child, videoCodec );
+      }
+    }
   }
 }
 
@@ -15930,6 +15970,26 @@ void VulkanHppGenerator::readVideoProfiles( tinyxml2::XMLElement const * element
     assert( value == "videoprofilemember" );
     readVideoProfileMember( child, videoCodec );
   }
+}
+
+void VulkanHppGenerator::readVideoFormatProperties( tinyxml2::XMLElement const * element, std::string const & videoCodec, VideoFormat & videoFormat )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "struct", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string formatProperties = attributes.find( "struct" )->second;
+
+  checkForError( m_structs.find( formatProperties ) != m_structs.end(),
+                 line,
+                 "videoCodec <" + videoCodec + "> lists unknown struct <" + formatProperties + "> as videoformatproperties" );
+  checkForError( std::find( videoFormat.formatProperties.begin(), videoFormat.formatProperties.end(), formatProperties ) == videoFormat.formatProperties.end(),
+                 line,
+                 "videoformatproperties <" + formatProperties + "> listed in videocodec <" + videoCodec + "> already listed for videoformat <" +
+                   videoFormat.name + ">" );
+
+  videoFormat.formatProperties.push_back( formatProperties );
 }
 
 void VulkanHppGenerator::readVideoRequireCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec )

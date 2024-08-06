@@ -398,6 +398,7 @@ private:
   struct VideoFormat
   {
     int                                   xmlLine = {};
+    std::vector<std::string>              formatProperties;
     std::string                           name;
     std::vector<std::string>              usage;
     std::vector<VideoRequireCapabilities> requireCapabilities;
@@ -428,7 +429,7 @@ private:
   {
     int                        xmlLine = {};
     std::string                name;
-    std::string                capabilities;
+    std::vector<std::string>   capabilities;
     std::string                extend;
     std::string                value;
     std::vector<VideoFormat>   formats;
@@ -1090,6 +1091,7 @@ private:
   void                     readVideoProfileMember( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     readVideoProfile( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     readVideoProfiles( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
+  void                     readVideoFormatProperties( tinyxml2::XMLElement const * element, std::string const & videoCodec, VideoFormat & videoFormat );
   void                     readVideoRequireCapabilities( tinyxml2::XMLElement const * element, VideoCodec & videoCodec );
   void                     registerDeleter( std::string const & commandName, CommandData const & commandData );
   void                     rescheduleRAIIHandle( std::string &                              str,

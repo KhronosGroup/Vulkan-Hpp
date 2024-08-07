@@ -5209,14 +5209,12 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
 
   auto extensionConstexprs = std::string{};
 
-  static auto const extensionTemplate              = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
+  static auto const extensionTemplate           = std::string{ R"(${deprecated}VULKAN_HPP_CONSTEXPR_INLINE auto ${var} = ${macro};
 )" };
-  static auto const deprecatedPrefixTemplate       = std::string{ R"(VULKAN_HPP_DEPRECATED( ${message} ) )" };
-  static auto const deprecatedByMessageTemplate    = std::string{ R"("The ${extensionName} extension has been deprecated by ${deprecatedBy}.")" };
-  static auto const deprecatedMessageTemplate      = std::string{ R"("The ${extensionName} extension has been deprecated.")" };
-  static auto const obsoletedMessageTemplate       = std::string{ R"("The ${extensionName} extension has been obsoleted by ${obsoletedBy}.")" };
-  static auto const promotedVersionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to core in version ${promotedTo}." )" };
-  static auto const promotedExtensionMessageTemplate = std::string{ R"("The ${extensionName} extension has been promoted to ${promotedTo}.")" };
+  static auto const deprecatedPrefixTemplate    = std::string{ R"(VULKAN_HPP_DEPRECATED( ${message} ) )" };
+  static auto const deprecatedByMessageTemplate = std::string{ R"("The ${extensionName} extension has been deprecated by ${deprecatedBy}.")" };
+  static auto const deprecatedMessageTemplate   = std::string{ R"("The ${extensionName} extension has been deprecated.")" };
+  static auto const obsoletedMessageTemplate    = std::string{ R"("The ${extensionName} extension has been obsoleted by ${obsoletedBy}.")" };
 
   // I really, really wish C++ had discards for structured bindings...
   for ( auto const & extension : m_extensions )
@@ -5265,17 +5263,7 @@ std::string VulkanHppGenerator::generateConstexprDefines() const
     }
     else if ( !extension.promotedTo.empty() )
     {
-      if ( extension.promotedTo.starts_with( "VK_VERSION_" ) )
-      {
-        auto version = stripPrefix( extension.promotedTo, "VK_VERSION_" );
-        std::replace( version.begin(), version.end(), '_', '.' );
-        deprecationMessage = replaceWithMap( promotedVersionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", version } } );
-      }
-      else
-      {
-        deprecationMessage =
-          replaceWithMap( promotedExtensionMessageTemplate, { { "extensionName", extension.name }, { "promotedTo", extension.promotedTo } } );
-      }
+      // promoted extensions are _not_ deprecated!
     }
     auto const deprecatedPrefix = deprecationMessage.empty() ? "" : replaceWithMap( deprecatedPrefixTemplate, { { "message", deprecationMessage } } );
 

@@ -4063,10 +4063,8 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVPrivateVendorInfoSpecVersion   = VK_NV_PRIVATE_VENDOR_INFO_SPEC_VERSION;
 
   //=== VK_EXT_texture_compression_astc_hdr ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_texture_compression_astc_hdr extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTTextureCompressionAstcHdrExtensionName = VK_EXT_TEXTURE_COMPRESSION_ASTC_HDR_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_texture_compression_astc_hdr extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTextureCompressionAstcHdrSpecVersion = VK_EXT_TEXTURE_COMPRESSION_ASTC_HDR_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTextureCompressionAstcHdrSpecVersion   = VK_EXT_TEXTURE_COMPRESSION_ASTC_HDR_SPEC_VERSION;
 
   //=== VK_EXT_astc_decode_mode ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTAstcDecodeModeExtensionName = VK_EXT_ASTC_DECODE_MODE_EXTENSION_NAME;
@@ -4193,16 +4191,12 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTPciBusInfoSpecVersion   = VK_EXT_PCI_BUS_INFO_SPEC_VERSION;
 
   //=== VK_KHR_shader_terminate_invocation ===
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_shader_terminate_invocation extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderTerminateInvocationExtensionName = VK_KHR_SHADER_TERMINATE_INVOCATION_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_shader_terminate_invocation extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderTerminateInvocationSpecVersion = VK_KHR_SHADER_TERMINATE_INVOCATION_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRShaderTerminateInvocationSpecVersion   = VK_KHR_SHADER_TERMINATE_INVOCATION_SPEC_VERSION;
 
   //=== VK_EXT_subgroup_size_control ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_subgroup_size_control extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTSubgroupSizeControlExtensionName = VK_EXT_SUBGROUP_SIZE_CONTROL_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_subgroup_size_control extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTSubgroupSizeControlSpecVersion = VK_EXT_SUBGROUP_SIZE_CONTROL_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTSubgroupSizeControlSpecVersion   = VK_EXT_SUBGROUP_SIZE_CONTROL_SPEC_VERSION;
 
   //=== VK_KHR_fragment_shading_rate ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRFragmentShadingRateExtensionName = VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME;
@@ -4235,38 +4229,28 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTHeadlessSurfaceSpecVersion   = VK_EXT_HEADLESS_SURFACE_SPEC_VERSION;
 
   //=== VK_EXT_line_rasterization ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_line_rasterization extension has been promoted to VK_KHR_line_rasterization." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationExtensionName = VK_EXT_LINE_RASTERIZATION_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_line_rasterization extension has been promoted to VK_KHR_line_rasterization." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationSpecVersion = VK_EXT_LINE_RASTERIZATION_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLineRasterizationSpecVersion   = VK_EXT_LINE_RASTERIZATION_SPEC_VERSION;
 
   //=== VK_EXT_shader_atomic_float ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderAtomicFloatExtensionName = VK_EXT_SHADER_ATOMIC_FLOAT_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderAtomicFloatSpecVersion   = VK_EXT_SHADER_ATOMIC_FLOAT_SPEC_VERSION;
 
   //=== VK_EXT_index_type_uint8 ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_index_type_uint8 extension has been promoted to VK_KHR_index_type_uint8." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTIndexTypeUint8ExtensionName = VK_EXT_INDEX_TYPE_UINT8_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_index_type_uint8 extension has been promoted to VK_KHR_index_type_uint8." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTIndexTypeUint8SpecVersion = VK_EXT_INDEX_TYPE_UINT8_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTIndexTypeUint8SpecVersion   = VK_EXT_INDEX_TYPE_UINT8_SPEC_VERSION;
 
   //=== VK_EXT_extended_dynamic_state ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_extended_dynamic_state extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicStateExtensionName = VK_EXT_EXTENDED_DYNAMIC_STATE_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_extended_dynamic_state extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicStateSpecVersion = VK_EXT_EXTENDED_DYNAMIC_STATE_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicStateSpecVersion   = VK_EXT_EXTENDED_DYNAMIC_STATE_SPEC_VERSION;
 
   //=== VK_EXT_shader_demote_to_helper_invocation ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_shader_demote_to_helper_invocation extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderDemoteToHelperInvocationExtensionName = VK_EXT_SHADER_DEMOTE_TO_HELPER_INVOCATION_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_shader_demote_to_helper_invocation extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderDemoteToHelperInvocationSpecVersion = VK_EXT_SHADER_DEMOTE_TO_HELPER_INVOCATION_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTShaderDemoteToHelperInvocationSpecVersion   = VK_EXT_SHADER_DEMOTE_TO_HELPER_INVOCATION_SPEC_VERSION;
 
   //=== VK_EXT_texel_buffer_alignment ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_texel_buffer_alignment extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTTexelBufferAlignmentExtensionName = VK_EXT_TEXEL_BUFFER_ALIGNMENT_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_texel_buffer_alignment extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTexelBufferAlignmentSpecVersion = VK_EXT_TEXEL_BUFFER_ALIGNMENT_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTTexelBufferAlignmentSpecVersion   = VK_EXT_TEXEL_BUFFER_ALIGNMENT_SPEC_VERSION;
 
   //=== VK_EXT_robustness2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTRobustness2ExtensionName = VK_EXT_ROBUSTNESS_2_EXTENSION_NAME;
@@ -4281,34 +4265,24 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRObjectRefreshSpecVersion   = VK_KHR_OBJECT_REFRESH_SPEC_VERSION;
 
   //=== VK_KHR_synchronization2 ===
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_synchronization2 extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRSynchronization2ExtensionName = VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_synchronization2 extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto KHRSynchronization2SpecVersion = VK_KHR_SYNCHRONIZATION_2_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRSynchronization2SpecVersion   = VK_KHR_SYNCHRONIZATION_2_SPEC_VERSION;
 
   //=== VK_EXT_ycbcr_2plane_444_formats ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_ycbcr_2plane_444_formats extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTYcbcr2Plane444FormatsExtensionName = VK_EXT_YCBCR_2PLANE_444_FORMATS_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_ycbcr_2plane_444_formats extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTYcbcr2Plane444FormatsSpecVersion = VK_EXT_YCBCR_2PLANE_444_FORMATS_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTYcbcr2Plane444FormatsSpecVersion   = VK_EXT_YCBCR_2PLANE_444_FORMATS_SPEC_VERSION;
 
   //=== VK_EXT_image_robustness ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_image_robustness extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageRobustnessExtensionName = VK_EXT_IMAGE_ROBUSTNESS_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_image_robustness extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageRobustnessSpecVersion = VK_EXT_IMAGE_ROBUSTNESS_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTImageRobustnessSpecVersion   = VK_EXT_IMAGE_ROBUSTNESS_SPEC_VERSION;
 
   //=== VK_KHR_copy_commands2 ===
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_copy_commands2 extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRCopyCommands2ExtensionName = VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_KHR_copy_commands2 extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto KHRCopyCommands2SpecVersion = VK_KHR_COPY_COMMANDS_2_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto KHRCopyCommands2SpecVersion   = VK_KHR_COPY_COMMANDS_2_SPEC_VERSION;
 
   //=== VK_EXT_4444_formats ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_4444_formats extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXT4444FormatsExtensionName = VK_EXT_4444_FORMATS_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_4444_formats extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXT4444FormatsSpecVersion = VK_EXT_4444_FORMATS_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXT4444FormatsSpecVersion   = VK_EXT_4444_FORMATS_SPEC_VERSION;
 
 #if defined( VK_USE_PLATFORM_WIN32_KHR )
   //=== VK_NV_acquire_winrt_display ===
@@ -4335,10 +4309,8 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_SCI*/
 
   //=== VK_EXT_extended_dynamic_state2 ===
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_extended_dynamic_state2 extension has been promoted to core in version 1.3." )
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicState2ExtensionName = VK_EXT_EXTENDED_DYNAMIC_STATE_2_EXTENSION_NAME;
-  VULKAN_HPP_DEPRECATED( "The VK_EXT_extended_dynamic_state2 extension has been promoted to core in version 1.3." )
-  VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicState2SpecVersion = VK_EXT_EXTENDED_DYNAMIC_STATE_2_SPEC_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTExtendedDynamicState2SpecVersion   = VK_EXT_EXTENDED_DYNAMIC_STATE_2_SPEC_VERSION;
 
   //=== VK_EXT_color_write_enable ===
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTColorWriteEnableExtensionName = VK_EXT_COLOR_WRITE_ENABLE_EXTENSION_NAME;
@@ -7107,7 +7079,7 @@ namespace VULKAN_HPP_NAMESPACE
           m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
         }
 #  elif defined( _WIN32 )
-        m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

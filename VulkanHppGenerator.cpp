@@ -99,6 +99,9 @@ void VulkanHppGenerator::generateEnumsHppFile() const
 #ifndef VULKAN_ENUMS_HPP
 #  define VULKAN_ENUMS_HPP
 
+// include-what-you-use: make sure, vulkan.hpp is used by code-completers
+// IWYU pragma: private; include "vulkan.hpp"
+
 namespace VULKAN_HPP_NAMESPACE
 {
 ${Flags}
@@ -317,6 +320,9 @@ void VulkanHppGenerator::generateFuncsHppFile() const
 #ifndef VULKAN_FUNCS_HPP
 #  define VULKAN_FUNCS_HPP
 
+// include-what-you-use: make sure, vulkan.hpp is used by code-completers
+// IWYU pragma: private; include "vulkan.hpp"
+
 namespace VULKAN_HPP_NAMESPACE
 {
 ${commandDefinitions}
@@ -338,6 +344,9 @@ void VulkanHppGenerator::generateHandlesHppFile() const
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_HANDLES_HPP
 #  define VULKAN_HANDLES_HPP
+
+// include-what-you-use: make sure, vulkan.hpp is used by code-completers
+// IWYU pragma: private; include "vulkan.hpp"
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -722,6 +731,9 @@ void VulkanHppGenerator::generateStructsHppFile() const
   std::string const vulkanHandlesHppTemplate = R"(${licenseHeader}
 #ifndef VULKAN_STRUCTS_HPP
 #  define VULKAN_STRUCTS_HPP
+
+// include-what-you-use: make sure, vulkan.hpp is used by code-completers
+// IWYU pragma: private; include "vulkan.hpp"
 
 #include <cstring>  // strcmp
 

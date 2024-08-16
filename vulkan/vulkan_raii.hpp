@@ -8,11 +8,11 @@
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
+#include <vulkan/vulkan.hpp>
 #if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #  include <memory>   // std::unique_ptr
 #  include <utility>  // std::forward
 #endif
-#include <vulkan/vulkan.hpp>
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 namespace VULKAN_HPP_NAMESPACE

@@ -10,15 +10,15 @@
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
+#else
 #  include <algorithm>
 #  include <array>     // ArrayWrapperND
 #  include <string.h>  // strnlen
 #  include <string>    // std::string
 #  include <utility>   // std::exchange
-#else
-import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
 #endif
 #include <vulkan/vulkan.h>
 

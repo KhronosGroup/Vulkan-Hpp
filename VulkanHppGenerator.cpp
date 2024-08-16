@@ -130,7 +130,10 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #  define VULKAN_EXTENSION_INSPECTION_HPP
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
+#else
 #  include <map>
 #  include <set>
 #  include <string>
@@ -594,7 +597,7 @@ void VulkanHppGenerator::generateRAIIHppFile() const
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #  include <memory>   // std::unique_ptr
 #  include <utility>  // std::forward
 #endif
@@ -673,7 +676,7 @@ void VulkanHppGenerator::generateSharedHppFile() const
 
 #include <vulkan/${api}.hpp>
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #include <atomic>  // std::atomic_size_t
 #endif
 
@@ -769,21 +772,21 @@ void VulkanHppGenerator::generateToStringHppFile() const
 // ignore warnings on using deprecated enum values in this header
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #elif defined( _MSC_VER )
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #  pragma warning( push )
 #  pragma warning( disable : 4996 )
 #endif
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
+#else
 #  if __cpp_lib_format
 #    include <format>   // std::format
 #  else
 #    include <sstream>  // std::stringstream
 #  endif
-#else
-import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
 #endif
 
 namespace VULKAN_HPP_NAMESPACE

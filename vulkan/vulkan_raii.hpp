@@ -8,7 +8,7 @@
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #  include <memory>   // std::unique_ptr
 #  include <utility>  // std::forward
 #endif

@@ -19,15 +19,15 @@
 #  pragma warning( disable : 4996 )
 #endif
 
-#if !defined( VULKAN_HPP_STD_MODULE )
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+import VULKAN_HPP_STD_COMPAT_MODULE;
+#else
 #  if __cpp_lib_format
 #    include <format>  // std::format
 #  else
 #    include <sstream>  // std::stringstream
 #  endif
-#else
-import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
 #endif
 
 namespace VULKAN_HPP_NAMESPACE

@@ -10,6 +10,10 @@
 
 module;
 
+#if defined( __cpp_lib_modules )
+#  define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
+
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_extension_inspection.hpp>
 #include <vulkan/vulkan_format_traits.hpp>

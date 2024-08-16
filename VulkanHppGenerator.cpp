@@ -822,6 +822,10 @@ void VulkanHppGenerator::generateCppModuleFile() const
 
 module;
 
+#if defined( __cpp_lib_modules )
+#define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
+
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>
 #include <vulkan/${api}_format_traits.hpp>

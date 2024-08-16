@@ -87,7 +87,7 @@
 #  define VULKAN_HPP_SUPPORT_SPAN
 #endif
 
-#if ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_STD_MODULE )
+#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_STD_MODULE ) && defined( VULKAN_HPP_ENABLE_STD_MODULE )
 #  define VULKAN_HPP_STD_MODULE        std
 #  define VULKAN_HPP_STD_COMPAT_MODULE std.compat
 #endif
@@ -290,7 +290,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
 
 #if !defined( VULKAN_HPP_EXPECTED ) && ( 23 <= VULKAN_HPP_CPP_VERSION ) && defined( __cpp_lib_expected )
-#  if !defined( VULKAN_HPP_STD_MODULE )
+#  if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
 #    include <expected>
 #  endif
 #  define VULKAN_HPP_EXPECTED   std::expected

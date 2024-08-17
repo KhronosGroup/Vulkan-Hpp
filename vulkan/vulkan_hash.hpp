@@ -7724,6 +7724,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceCommandBufferInheritanceFeaturesNV>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceCommandBufferInheritanceFeaturesNV const & physicalDeviceCommandBufferInheritanceFeaturesNV )
+      const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCommandBufferInheritanceFeaturesNV.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCommandBufferInheritanceFeaturesNV.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceCommandBufferInheritanceFeaturesNV.commandBufferInheritance );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesFeaturesNV>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesFeaturesNV const & physicalDeviceComputeShaderDerivativesFeaturesNV )

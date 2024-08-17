@@ -1838,6 +1838,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_shader_relaxed_extended_instruction ===
   struct PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR;
 
+  //=== VK_NV_command_buffer_inheritance ===
+  struct PhysicalDeviceCommandBufferInheritanceFeaturesNV;
+
   //=== VK_KHR_maintenance7 ===
   struct PhysicalDeviceMaintenance7FeaturesKHR;
   struct PhysicalDeviceMaintenance7PropertiesKHR;

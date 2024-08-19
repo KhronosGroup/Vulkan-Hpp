@@ -2542,6 +2542,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRShaderRelaxedExtendedInstructionExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRShaderRelaxedExtendedInstructionSpecVersion;
 
+  //=== VK_NV_command_buffer_inheritance ===
+  using VULKAN_HPP_NAMESPACE::NVCommandBufferInheritanceExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVCommandBufferInheritanceSpecVersion;
+
   //=== VK_KHR_maintenance7 ===
   using VULKAN_HPP_NAMESPACE::KHRMaintenance7ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRMaintenance7SpecVersion;
@@ -4413,6 +4417,9 @@ export namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_KHR_shader_relaxed_extended_instruction ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderRelaxedExtendedInstructionFeaturesKHR;
+
+  //=== VK_NV_command_buffer_inheritance ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCommandBufferInheritanceFeaturesNV;
 
   //=== VK_KHR_maintenance7 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceLayeredApiPropertiesKHR;

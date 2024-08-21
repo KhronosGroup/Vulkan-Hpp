@@ -12,8 +12,11 @@ jobs:
     strategy:
       matrix:
         os: [macos-12, macos-13]
-        # gcc-13 fails on some very innocent code... excluding them for now
-        compiler: [clang++, g++-12]
+        compiler: [clang++, g++-12, g++-13]
+        exclude:
+          # g++-13 fails on macos-12 with some error in stdio.h !
+          - os: macos-12
+            compiler: g++-13
 
     steps:
     - uses: actions/checkout@v4

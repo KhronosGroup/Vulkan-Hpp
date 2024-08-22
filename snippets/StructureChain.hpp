@@ -50,6 +50,8 @@
   template <typename... ChainElements>
   class StructureChain : public std::tuple<ChainElements...>
   {
+    // Note: StructureChain has no move constructor or move assignment operator, as it is not supposed to contain movable containers.
+    //       In order to get a copy-operation on a move-operations, those functions are neither deleted nor defaulted.
   public:
     StructureChain() VULKAN_HPP_NOEXCEPT
     {
@@ -58,15 +60,6 @@
     }
 
     StructureChain( StructureChain const & rhs ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( rhs )
-    {
-      static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
-      link( &std::get<0>( *this ),
-            &std::get<0>( rhs ),
-            reinterpret_cast<VkBaseOutStructure *>( &std::get<0>( *this ) ),
-            reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( rhs ) ) );
-    }
-
-    StructureChain( StructureChain && rhs ) VULKAN_HPP_NOEXCEPT : std::tuple<ChainElements...>( std::forward<std::tuple<ChainElements...>>( rhs ) )
     {
       static_assert( StructureChainValidation<sizeof...( ChainElements ) - 1, ChainElements...>::valid, "The structure chain is not valid!" );
       link( &std::get<0>( *this ),
@@ -90,8 +83,6 @@
             reinterpret_cast<VkBaseInStructure const *>( &std::get<0>( rhs ) ) );
       return *this;
     }
-
-    StructureChain & operator=( StructureChain && rhs ) = delete;
 
     template <typename T = typename std::tuple_element<0, std::tuple<ChainElements...>>::type, size_t Which = 0>
     T & get() VULKAN_HPP_NOEXCEPT

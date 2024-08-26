@@ -960,6 +960,17 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedShaderEXT = SharedHandle<ShaderEXT>;
 
+  //=== VK_KHR_pipeline_binary ===
+  template <>
+  class SharedHandleTraits<PipelineBinaryKHR>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = ObjectDestroyShared<PipelineBinaryKHR>;
+  };
+
+  using SharedPipelineBinaryKHR = SharedHandle<PipelineBinaryKHR>;
+
   enum class SwapchainOwns
   {
     no,

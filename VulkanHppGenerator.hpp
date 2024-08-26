@@ -223,12 +223,20 @@ private:
     std::map<std::string, DefineData> values  = {};
   };
 
+  struct RequireFeature
+  {
+    std::string name      = {};
+    std::string structure = {};
+    int         xmlLine   = {};
+  };
+
   struct RemoveData
   {
-    std::vector<std::string> commands = {};
-    std::vector<std::string> enums    = {};
-    std::vector<std::string> types    = {};
-    int                      xmlLine  = {};
+    std::vector<std::string>    commands = {};
+    std::vector<std::string>    enums    = {};
+    std::vector<RequireFeature> features = {};
+    std::vector<std::string>    types    = {};
+    int                         xmlLine  = {};
   };
 
   struct RequireData
@@ -237,6 +245,7 @@ private:
     std::vector<std::pair<std::string, int>> commands      = {};
     std::map<std::string, std::string>       enumConstants = {};
     std::vector<std::string>                 constants     = {};
+    std::vector<RequireFeature>              features      = {};
     std::vector<std::string>                 types         = {};
     int                                      xmlLine       = {};
   };
@@ -252,6 +261,7 @@ private:
     std::string                                                  promotedTo   = {};
     std::map<std::string, std::vector<std::vector<std::string>>> depends      = {};
     std::vector<std::string>                                     ratified     = {};
+    std::vector<RemoveData>                                      removeData   = {};
     std::vector<RequireData>                                     requireData  = {};
     std::vector<std::string>                                     supported    = {};
     std::string                                                  type         = {};
@@ -484,6 +494,7 @@ private:
                                                   std::map<std::string, CommandData>::const_iterator                      constructorIt,
                                                   std::vector<ParamData>::const_iterator                                  lenIt ) const;
   void        checkExtensionCorrectness() const;
+  void        checkFeatureCorrectness() const;
   void        checkFuncPointerCorrectness() const;
   void        checkHandleCorrectness() const;
   void        checkStructCorrectness() const;
@@ -1034,8 +1045,7 @@ private:
   void                          readExtensionRequire( tinyxml2::XMLElement const * element, ExtensionData & extensionData, bool extensionSupported );
   void                          readExtensions( tinyxml2::XMLElement const * element );
   void                          readFeature( tinyxml2::XMLElement const * element );
-  RemoveData                    readFeatureRemove( tinyxml2::XMLElement const * element );
-  RequireData                   readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & featureName, bool featureSupported );
+  void                          readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported );
   void                          readFormat( tinyxml2::XMLElement const * element );
   void                          readFormatComponent( tinyxml2::XMLElement const * element, FormatData & formatData );
   void                          readFormatPlane( tinyxml2::XMLElement const * element, FormatData & formatData );
@@ -1046,9 +1056,11 @@ private:
   void                          readPlatform( tinyxml2::XMLElement const * element );
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
+  RemoveData                    readRemoveData( tinyxml2::XMLElement const * element );
   std::string                   readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredBy );
   void                          readRequireEnum(
                              tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
+  RequireFeature           readRequireFeature( tinyxml2::XMLElement const * element );
   std::string              readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredBy );
   void                     readSPIRVCapability( tinyxml2::XMLElement const * element );
   void                     readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );

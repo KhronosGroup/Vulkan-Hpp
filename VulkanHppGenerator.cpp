@@ -583,7 +583,11 @@ ${macros}
 
   std::string str = replaceWithMap(
     macrosTemplate,
-    { { "licenseHeader", m_vulkanLicenseHeader }, { "macros", replaceWithMap( readSnippet( "macros.hpp" ), { { "vulkan_hpp", m_api + ".hpp" } } ) } } );
+                    { { "licenseHeader", m_vulkanLicenseHeader },
+                      { "macros",
+                        replaceWithMap( readSnippet( "macros.hpp" ),
+                                        { { "vulkan_hpp", m_api + ".hpp" },
+                                          { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } ) } } );
 
   writeToFile( str, macros_hpp );
 }
@@ -824,6 +828,8 @@ void VulkanHppGenerator::generateCppModuleFile() const
 // Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
 
 module;
+
+#include <vulkan/vulkan_hpp_macros.hpp>
 
 #if defined( __cpp_lib_modules )
 #define VULKAN_HPP_ENABLE_STD_MODULE
@@ -16434,6 +16440,12 @@ namespace
     auto rawComment = completeMacro[0];
     std::erase( rawComment, '/' );
     auto const strippedComment = trim( stripPostfix( stripPrefix( rawComment, " DEPRECATED:" ), "#define " ) );
+
+    // special case for VK_DEFINE_NON_DISPATCHABLE_HANDLE which is weird
+    if ( completeMacro.size() == 1 && completeMacro.front().find( "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ) == std::string::npos )
+    {
+      return { {}, {}, {}, strippedComment };
+    }
 
     // macro with parameters and implementation
     if ( completeMacro.size() == 3 )

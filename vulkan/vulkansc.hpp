@@ -3958,7 +3958,8 @@ namespace VULKAN_HPP_NAMESPACE
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
-  VULKAN_HPP_CONSTEXPR_INLINE uint32_t HeaderVersion = VK_HEADER_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t HeaderVersion      = VK_HEADER_VERSION;
+  VULKAN_HPP_CONSTEXPR_INLINE uint32_t Use64BitPtrDefines = VK_USE_64_BIT_PTR_DEFINES;
 
   //=========================
   //=== CONSTEXPR CALLEEs ===

@@ -3100,7 +3100,7 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
 {
   std::string dispatcher = raii ? "getDispatcher()->" : "d.";
 
-  // first some special handling on vkCreatePipelineBinariesKHR and vkGetDeviceFaultInfoEXT!!
+  // first some special handling on vkCreatePipelineBinariesKHR !!
   if ( name == "vkCreatePipelineBinariesKHR" )
   {
 #if !defined( NDEBUG )
@@ -3151,36 +3151,6 @@ std::string VulkanHppGenerator::generateCallSequence( std::string const &       
       generateCallArgumentsEnhanced( commandData, initialSkipCount, false, singularParams, templatedParams, raii, raiiFactory, flavourFlags );
 
     return replaceWithMap( callSequenceTemplate, { { "callArguments", callArguments }, { "dispatcher", dispatcher }, { "vkCommand", name } } );
-  }
-  else if ( name == "vkGetDeviceFaultInfoEXT" )
-  {
-    const std::string callSequenceTemplate =
-      R"(    VULKAN_HPP_NAMESPACE::Result result;
-    do
-    {
-      result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), nullptr ) );
-      if ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess )
-      {
-        std::free( faultInfo.pAddressInfos );
-        if ( faultCounts.addressInfoCount )
-        {
-          faultInfo.pAddressInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT *>( std::malloc( faultCounts.addressInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultAddressInfoEXT ) ) );
-        }
-        std::free( faultInfo.pVendorInfos );
-        if ( faultCounts.vendorInfoCount )
-        {
-          faultInfo.pVendorInfos = reinterpret_cast<VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT *>( std::malloc( faultCounts.vendorInfoCount * sizeof( VULKAN_HPP_NAMESPACE::DeviceFaultVendorInfoEXT ) ) );
-        }
-        std::free( faultInfo.pVendorBinaryData );
-        if ( faultCounts.vendorBinarySize )
-        {
-          faultInfo.pVendorBinaryData = std::malloc( faultCounts.vendorBinarySize );
-        }
-        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( ${dispatcher}vkGetDeviceFaultInfoEXT( m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( &faultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( &faultInfo ) ) );
-      }
-    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );)";
-
-    return replaceWithMap( callSequenceTemplate, { { "dispatcher", dispatcher } } );
   }
 
   // if at least one returnParam is a size value of a vector param (and no singular params), we need two calls
@@ -3843,28 +3813,6 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors1Retu
       }
     }
   }
-  else if ( isStructureChainAnchor( commandData.params[returnParam].type.type ) )
-  {
-    std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-    if ( vectorParams.empty() )
-    {
-#if 0
-      // needs to be verified ...
-      return generateCommandSetInclusive( name,
-                                          commandData,
-                                          initialSkipCount,
-                                          definition,
-                                          { returnParam },
-                                          vectorParams,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained },
-                                          raii,
-                                          false,
-                                          { CommandFlavourFlagBits::enhanced, CommandFlavourFlagBits::chained } );
-#endif
-      return "";
-    }
-  }
   else if ( isHandleType( commandData.params[returnParam].type.type ) )
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
@@ -4023,28 +3971,10 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors2Retu
         }
       }
     }
-    else if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
-              !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+    else if ( isStructureType( commandData.params[returnParams[0]].type.type ) )
     {
-      if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-           !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
-      {
-        std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
-        if ( vectorParams.empty() )
-        {
-          return generateCommandSetInclusive( name,
-                                              commandData,
-                                              initialSkipCount,
-                                              definition,
-                                              returnParams,
-                                              vectorParams,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced },
-                                              raii,
-                                              false,
-                                              { CommandFlavourFlagBits::enhanced } );
-        }
-      }
+      // can't generate an enhanced version for such a complex command! Just use the standard version
+      return generateCommandStandard( name, commandData, initialSkipCount, definition );
     }
   }
 
@@ -4092,11 +4022,9 @@ std::string VulkanHppGenerator::generateCommandResultMultiSuccessWithErrors3Retu
     case 2:
       if ( commandData.params[returnParams[0]].type.type == "uint32_t" )
       {
-        if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-             !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
         {
-          if ( ( commandData.params[returnParams[2]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[2]].type.type ) &&
-               !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) )
+          if ( isStructureType( commandData.params[returnParams[2]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[2]].type.type ) )
           {
             if ( vectorParams.begin()->second.lenParam == std::next( vectorParams.begin() )->second.lenParam )
             {
@@ -4197,8 +4125,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
         std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
         if ( vectorParams.empty() )
         {
-          if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
-               !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+          if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
           {
             return generateCommandSetInclusive( name,
                                                 commandData,
@@ -4218,8 +4145,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessNoErrors(
     case 2:
       if ( ( commandData.params[returnParams[0]].type.type == "size_t" ) || ( commandData.params[returnParams[0]].type.type == "uint32_t" ) )
       {
-        if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-             !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
         {
           std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
           if ( vectorParams.size() == 1 )
@@ -4399,8 +4325,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors1Ret
         {
           if ( commandData.params[vectorParams.begin()->second.lenParam].type.type == "uint32_t" )
           {
-            if ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
-                 !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) &&
+            if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) &&
                  !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
             {
               return generateCommandSetInclusive( name,
@@ -4519,8 +4444,7 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors2Ret
             {
               if ( commandData.params[vectorParams.begin()->second.lenParam].type.isValue() )
               {
-                if ( ( commandData.params[vectorParams.begin()->first].type.type != "void" ) &&
-                     !isHandleType( commandData.params[vectorParams.begin()->first].type.type ) &&
+                if ( isStructureType( commandData.params[vectorParams.begin()->first].type.type ) &&
                      !isStructureChainAnchor( commandData.params[vectorParams.begin()->first].type.type ) )
                 {
                   return generateCommandSetInclusive(
@@ -4553,10 +4477,9 @@ std::string VulkanHppGenerator::generateCommandResultSingleSuccessWithErrors3Ret
                                                                                      std::vector<size_t> const & returnParams,
                                                                                      bool                        raii ) const
 {
-  if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
-       !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) && commandData.params[returnParams[0]].lenParams.empty() &&
-       ( commandData.params[returnParams[1]].type.type == "size_t" ) && commandData.params[returnParams[1]].lenParams.empty() &&
-       ( commandData.params[returnParams[2]].type.type == "void" ) &&
+  if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) &&
+       commandData.params[returnParams[0]].lenParams.empty() && ( commandData.params[returnParams[1]].type.type == "size_t" ) &&
+       commandData.params[returnParams[1]].lenParams.empty() && ( commandData.params[returnParams[2]].type.type == "void" ) &&
        ( commandData.params[returnParams[2]].lenExpression == commandData.params[returnParams[1]].name ) )
   {
     std::map<size_t, VectorParamData> vectorParams = determineVectorParams( commandData.params );
@@ -5009,11 +4932,9 @@ std::string VulkanHppGenerator::generateCommandVoid2Return( std::string const & 
   switch ( vectorParams.size() )
   {
     case 0:
-      if ( ( commandData.params[returnParams[0]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[0]].type.type ) &&
-           !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
+      if ( isStructureType( commandData.params[returnParams[0]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[0]].type.type ) )
       {
-        if ( ( commandData.params[returnParams[1]].type.type != "void" ) && !isHandleType( commandData.params[returnParams[1]].type.type ) &&
-             !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
+        if ( isStructureType( commandData.params[returnParams[1]].type.type ) && !isStructureChainAnchor( commandData.params[returnParams[1]].type.type ) )
         {
           return generateCommandSetInclusive( name,
                                               commandData,
@@ -10290,8 +10211,7 @@ std::string VulkanHppGenerator::generateReturnStatement( std::string const & com
   std::string returnStatement;
   if ( commandData.returnType.starts_with( "Vk" ) )
   {
-    if ( ( commandData.successCodes.size() == 1 ) || ( enumerating && ( commandData.successCodes.size() == 2 ) ) ||
-         ( commandName == "vkGetDeviceFaultInfoEXT" ) )
+    if ( ( commandData.successCodes.size() == 1 ) || ( enumerating && ( commandData.successCodes.size() == 2 ) ) )
     {
       assert( commandData.successCodes[0] == "VK_SUCCESS" );
       if ( raii || commandData.errorCodes.empty() )
@@ -13039,6 +12959,11 @@ bool VulkanHppGenerator::isStructureChainAnchor( std::string const & type ) cons
     }
   }
   return false;
+}
+
+bool VulkanHppGenerator::isStructureType( std::string const & type ) const
+{
+  return type.starts_with( "Vk" ) && ( findByNameOrAlias( m_structs, type ) != m_structs.end() );
 }
 
 bool VulkanHppGenerator::isSupported( std::set<std::string> const & requiredBy ) const

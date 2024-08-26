@@ -1010,6 +1010,7 @@ private:
   bool isParam( std::string const & name, std::vector<ParamData> const & params ) const;
   bool isStructMember( std::string const & name, std::vector<MemberData> const & memberData ) const;
   bool isStructureChainAnchor( std::string const & type ) const;
+  bool isStructureType( std::string const & type ) const;
   bool isSupported( std::set<std::string> const & requiredBy ) const;
   bool isSupportedExtension( std::string const & name ) const;
   bool isSupportedFeature( std::string const & name ) const;

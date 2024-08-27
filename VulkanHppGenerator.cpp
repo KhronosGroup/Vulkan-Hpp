@@ -1196,6 +1196,7 @@ void VulkanHppGenerator::checkCorrectness() const
   checkDefineCorrectness();
   checkEnumCorrectness();
   checkExtensionCorrectness();
+  checkFeatureCorrectness();
   checkFuncPointerCorrectness();
   checkHandleCorrectness();
   checkStructCorrectness();
@@ -1392,6 +1393,23 @@ void VulkanHppGenerator::checkExtensionCorrectness() const
       }
     }
   }
+}
+
+void VulkanHppGenerator::checkFeatureCorrectness() const
+{
+  // check that each require depends actually is an extension
+  // remove this check temporarily !
+  //for ( auto const & feature : m_features )
+  //{
+  //  for ( auto const & require : feature.requireData )
+  //  {
+  //    checkForError(
+  //      require.depends.empty() ||
+  //        std::any_of( m_extensions.begin(), m_extensions.end(), [&depends = require.depends]( ExtensionData const & ed ) { return ed.name == depends; } ),
+  //      require.xmlLine,
+  //      "feature <" + feature.name + "> depends on an unknown extension <" + require.depends + ">" );
+  //  }
+  //}
 }
 
 void VulkanHppGenerator::checkFuncPointerCorrectness() const
@@ -13516,7 +13534,7 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
+  checkElements( line, children, {}, { "command", "comment", "enum", "feature", "type" } );
 
   RequireData requireData{ .xmlLine = line };
   std::string api;
@@ -13549,6 +13567,10 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
     else if ( value == "enum" )
     {
       readRequireEnum( child, extensionData.name, extensionData.platform, extensionSupported && requireSupported, requireData );
+    }
+    else if ( value == "feature" )
+    {
+      requireData.features.push_back( readRequireFeature( child ) );
     }
     else if ( value == "type" )
     {
@@ -13596,7 +13618,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "sortorder", { "1" } },
                      { "specialuse", { "cadsupport", "d3demulation", "debugging", "devtools", "glemulation" } },
                      { "type", { "device", "instance" } } } );
-  checkElements( line, children, { { "require", false } } );
+  checkElements( line, children, { { "require", false } }, { "remove" } );
 
   ExtensionData extensionData{ .xmlLine = line };
   for ( auto const & attribute : attributes )
@@ -13708,7 +13730,15 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
   checkForError( !extensionSupported || !extensionData.type.empty(), line, "missing attribute \"type\" for supported extension <" + extensionData.name + ">" );
   for ( auto child : children )
   {
-    readExtensionRequire( child, extensionData, extensionSupported );
+    std::string value = child->Value();
+    if ( value == "remove" )
+    {
+      extensionData.removeData.push_back( readRemoveData( child ) );
+    }
+    else if ( value == "require" )
+    {
+      readExtensionRequire( child, extensionData, extensionSupported );
+    }
   }
 
   if ( std::none_of( extensionData.supported.begin(), extensionData.supported.end(), []( std::string const & s ) { return s == "disabled"; } ) )
@@ -13768,11 +13798,11 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
     std::string value = child->Value();
     if ( value == "remove" )
     {
-      featureData.removeData.push_back( readFeatureRemove( child ) );
+      featureData.removeData.push_back( readRemoveData( child ) );
     }
     else if ( value == "require" )
     {
-      featureData.requireData.push_back( readFeatureRequire( child, featureData.name, featureSupported ) );
+      readFeatureRequire( child, featureData, featureSupported );
     }
   }
 
@@ -13792,60 +13822,53 @@ void VulkanHppGenerator::readFeature( tinyxml2::XMLElement const * element )
   }
 }
 
-VulkanHppGenerator::RemoveData VulkanHppGenerator::readFeatureRemove( tinyxml2::XMLElement const * element )
+void VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * element, FeatureData & featureData, bool featureSupported )
 {
-  const int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, {}, { { "comment", {} }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "enum", "type" } );
+  checkElements( line, children, {}, { "command", "comment", "enum", "feature", "type" } );
 
-  RemoveData removeData;
-  removeData.xmlLine = line;
+  std::string depends;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "depends" )
+    {
+      assert( depends.empty() );
+      depends = attribute.second;
+      checkForError(
+        std::none_of( featureData.requireData.begin(), featureData.requireData.end(), [&depends]( RequireData const & rd ) { return rd.depends == depends; } ),
+        line,
+        "require depends <" + depends + "> already listed for feature <" + featureData.name + ">" );
+    }
+  }
+
+  featureData.requireData.push_back( {} );
+  RequireData & requireData = featureData.requireData.back();
+  requireData.depends       = depends;
+  requireData.xmlLine       = line;
+
   for ( auto child : children )
   {
     std::string value = child->Value();
     if ( value == "command" )
     {
-      removeData.commands.push_back( readName( child ) );
+      requireData.commands.push_back( { readRequireCommand( child, featureData.name ), child->GetLineNum() } );
     }
     else if ( value == "enum" )
     {
-      removeData.enums.push_back( readName( child ) );
+      readRequireEnum( child, featureData.name, "", featureSupported, requireData );
+    }
+    else if ( value == "feature" )
+    {
+      requireData.features.push_back( readRequireFeature( child ) );
     }
     else if ( value == "type" )
     {
-      removeData.types.push_back( readName( child ) );
+      requireData.types.push_back( readRequireType( child, featureData.name ) );
     }
   }
-  return removeData;
-}
-
-VulkanHppGenerator::RequireData
-  VulkanHppGenerator::readFeatureRequire( tinyxml2::XMLElement const * element, std::string const & featureName, bool featureSupported )
-{
-  const int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} } } );
-  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
-  checkElements( line, children, {}, { "command", "comment", "enum", "type" } );
-
-  RequireData requireData{ .xmlLine = line };
-  for ( auto child : children )
-  {
-    std::string value = child->Value();
-    if ( value == "command" )
-    {
-      requireData.commands.push_back( { readRequireCommand( child, featureName ), child->GetLineNum() } );
-    }
-    else if ( value == "enum" )
-    {
-      readRequireEnum( child, featureName, "", featureSupported, requireData );
-    }
-    else if ( value == "type" )
-    {
-      requireData.types.push_back( readRequireType( child, featureName ) );
-    }
-  }
-  return requireData;
 }
 
 void VulkanHppGenerator::readFormat( tinyxml2::XMLElement const * element )
@@ -14222,6 +14245,38 @@ void VulkanHppGenerator::readRegistry( tinyxml2::XMLElement const * element )
   }
 }
 
+VulkanHppGenerator::RemoveData VulkanHppGenerator::readRemoveData( tinyxml2::XMLElement const * element )
+{
+  const int line = element->GetLineNum();
+  checkAttributes( line, getAttributes( element ), {}, { { "comment", {} }, { "reasonlink", {} } } );
+  std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
+  checkElements( line, children, {}, { "command", "enum", "feature", "type" } );
+
+  RemoveData removeData;
+  removeData.xmlLine = line;
+  for ( auto child : children )
+  {
+    std::string value = child->Value();
+    if ( value == "command" )
+    {
+      removeData.commands.push_back( readName( child ) );
+    }
+    else if ( value == "enum" )
+    {
+      removeData.enums.push_back( readName( child ) );
+    }
+    else if ( value == "feature" )
+    {
+      removeData.features.push_back( readRequireFeature( child ) );
+    }
+    else if ( value == "type" )
+    {
+      removeData.types.push_back( readName( child ) );
+    }
+  }
+  return removeData;
+}
+
 std::string VulkanHppGenerator::readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredBy )
 {
   const int                          line       = element->GetLineNum();
@@ -14400,6 +14455,47 @@ void VulkanHppGenerator::readRequireEnum(
         line, name, protect.empty() ? getProtectFromPlatform( platform ) : protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
     }
   }
+}
+
+VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyxml2::XMLElement const * element )
+{
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "name", {} }, { "struct", {} } }, {} );
+  checkElements( line, getChildElements( element ), {} );
+
+  std::string name, structure;
+  for ( auto const & attribute : attributes )
+  {
+    if ( attribute.first == "name" )
+    {
+      name = attribute.second;
+    }
+    else if ( attribute.first == "struct" )
+    {
+      structure = attribute.second;
+    }
+  }
+  assert( !name.empty() && !structure.empty() );
+
+  auto structIt = m_structs.find( structure );
+  if ( structIt == m_structs.end() )
+  {
+    auto aliasIt = std::find_if(
+      m_structsAliases.begin(), m_structsAliases.end(), [&structure]( std::pair<std::string, AliasData> const & ad ) { return ad.first == structure; } );
+    checkForError( aliasIt != m_structsAliases.end(), line, "encountered unknown required feature struct <" + structure + ">" );
+    structIt = m_structs.find( aliasIt->second.name );
+    assert( structIt != m_structs.end() );
+  }
+  auto memberIt =
+    std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&name]( MemberData const & md ) { return md.name == name; } );
+  checkForWarning(
+    memberIt != structIt->second.members.end(), line, "required feature name <" + name + "> not part of the required feature struct <" + structure + ">" );
+  checkForError( ( memberIt == structIt->second.members.end() ) || ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
+                 line,
+                 "required feature name <" + name + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
+
+  return { name, structure, line };
 }
 
 std::string VulkanHppGenerator::readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredBy )
@@ -15503,6 +15599,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
                                                         "VkImageConstraintsInfoFUCHSIA",
                                                         "VkIndirectCommandsLayoutTokenNV",
+                                                        "VkPipelineBinaryKeysAndDataKHR",
                                                         "VkPresentInfoKHR",
                                                         "VkSemaphoreWaitInfo",
                                                         "VkSetDescriptorBufferOffsetsInfoEXT",

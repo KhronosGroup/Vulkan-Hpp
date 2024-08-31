@@ -16441,8 +16441,8 @@ namespace
     std::erase( rawComment, '/' );
     auto const strippedComment = trim( stripPostfix( stripPrefix( rawComment, " DEPRECATED:" ), "#define " ) );
 
-    // special case for VK_DEFINE_NON_DISPATCHABLE_HANDLE which is weird
-    if ( completeMacro.size() == 1 && completeMacro.front().find( "VK_DEFINE_NON_DISPATCHABLE_HANDLE" ) == std::string::npos )
+    // special case for VK_USE_64_BIT_PTR_DEFINES
+    if ( completeMacro.size() == 1 && completeMacro.front().find( "#ifndef VK_USE_64_BIT_PTR_DEFINES" ) != std::string::npos )
     {
       return { {}, {}, {}, strippedComment };
     }

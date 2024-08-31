@@ -4358,24 +4358,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_VERSION_1_0 ===
   template <>
-  struct StructExtends<ComputePipelineCreateInfo, PipelineCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<GraphicsPipelineCreateInfo, PipelineCreateInfoKHR>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
   struct StructExtends<PipelineLayoutCreateInfo, BindDescriptorSetsInfoKHR>
   {
     enum

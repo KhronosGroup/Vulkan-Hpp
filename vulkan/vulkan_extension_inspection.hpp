@@ -417,6 +417,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_low_latency2",
       "VK_KHR_cooperative_matrix",
       "VK_QCOM_multiview_per_view_render_areas",
+      "VK_KHR_compute_shader_derivatives",
       "VK_KHR_video_decode_av1",
       "VK_KHR_video_maintenance1",
       "VK_NV_per_stage_descriptor_set",
@@ -2226,6 +2227,11 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_KHR_compute_shader_derivatives",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } } } },
       { "VK_KHR_video_decode_av1",
         { { "VK_VERSION_1_0",
             { {
@@ -2426,6 +2432,7 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_KHR_driver_properties", "VK_VERSION_1_2" },
       { "VK_KHR_shader_float_controls", "VK_VERSION_1_2" },
       { "VK_KHR_depth_stencil_resolve", "VK_VERSION_1_2" },
+      { "VK_NV_compute_shader_derivatives", "VK_KHR_compute_shader_derivatives" },
       { "VK_NV_fragment_shader_barycentric", "VK_KHR_fragment_shader_barycentric" },
       { "VK_KHR_timeline_semaphore", "VK_VERSION_1_2" },
       { "VK_KHR_vulkan_memory_model", "VK_VERSION_1_2" },
@@ -2748,6 +2755,10 @@ namespace VULKAN_HPP_NAMESPACE
     if ( extension == "VK_KHR_depth_stencil_resolve" )
     {
       return "VK_VERSION_1_2";
+    }
+    if ( extension == "VK_NV_compute_shader_derivatives" )
+    {
+      return "VK_KHR_compute_shader_derivatives";
     }
     if ( extension == "VK_NV_fragment_shader_barycentric" )
     {
@@ -3091,11 +3102,11 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_ARM_shader_core_builtins" ) || ( extension == "VK_EXT_pipeline_library_group_handles" ) ||
            ( extension == "VK_EXT_dynamic_rendering_unused_attachments" ) || ( extension == "VK_NV_low_latency2" ) ||
            ( extension == "VK_KHR_cooperative_matrix" ) || ( extension == "VK_QCOM_multiview_per_view_render_areas" ) ||
-           ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_maintenance1" ) || ( extension == "VK_NV_per_stage_descriptor_set" ) ||
-           ( extension == "VK_QCOM_image_processing2" ) || ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) ||
-           ( extension == "VK_QCOM_filter_cubic_clamp" ) || ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) ||
-           ( extension == "VK_KHR_vertex_attribute_divisor" ) || ( extension == "VK_KHR_load_store_op_none" ) ||
-           ( extension == "VK_KHR_shader_float_controls2" )
+           ( extension == "VK_KHR_compute_shader_derivatives" ) || ( extension == "VK_KHR_video_decode_av1" ) || ( extension == "VK_KHR_video_maintenance1" ) ||
+           ( extension == "VK_NV_per_stage_descriptor_set" ) || ( extension == "VK_QCOM_image_processing2" ) ||
+           ( extension == "VK_QCOM_filter_cubic_weights" ) || ( extension == "VK_QCOM_ycbcr_degamma" ) || ( extension == "VK_QCOM_filter_cubic_clamp" ) ||
+           ( extension == "VK_EXT_attachment_feedback_loop_dynamic_state" ) || ( extension == "VK_KHR_vertex_attribute_divisor" ) ||
+           ( extension == "VK_KHR_load_store_op_none" ) || ( extension == "VK_KHR_shader_float_controls2" )
 #if defined( VK_USE_PLATFORM_SCREEN_QNX )
         || ( extension == "VK_QNX_external_memory_screen_buffer" )
 #endif /*VK_USE_PLATFORM_SCREEN_QNX*/
@@ -3198,15 +3209,16 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_shader_atomic_int64" ) || ( extension == "VK_EXT_calibrated_timestamps" ) ||
            ( extension == "VK_EXT_vertex_attribute_divisor" ) || ( extension == "VK_EXT_pipeline_creation_feedback" ) ||
            ( extension == "VK_KHR_driver_properties" ) || ( extension == "VK_KHR_shader_float_controls" ) || ( extension == "VK_KHR_depth_stencil_resolve" ) ||
-           ( extension == "VK_NV_fragment_shader_barycentric" ) || ( extension == "VK_KHR_timeline_semaphore" ) ||
-           ( extension == "VK_KHR_vulkan_memory_model" ) || ( extension == "VK_KHR_shader_terminate_invocation" ) ||
-           ( extension == "VK_EXT_scalar_block_layout" ) || ( extension == "VK_EXT_subgroup_size_control" ) || ( extension == "VK_KHR_spirv_1_4" ) ||
-           ( extension == "VK_KHR_separate_depth_stencil_layouts" ) || ( extension == "VK_EXT_tooling_info" ) ||
-           ( extension == "VK_EXT_separate_stencil_usage" ) || ( extension == "VK_KHR_uniform_buffer_standard_layout" ) ||
-           ( extension == "VK_KHR_buffer_device_address" ) || ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_host_query_reset" ) ||
-           ( extension == "VK_EXT_index_type_uint8" ) || ( extension == "VK_EXT_extended_dynamic_state" ) ||
-           ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) || ( extension == "VK_KHR_shader_integer_dot_product" ) ||
-           ( extension == "VK_EXT_texel_buffer_alignment" ) || ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_EXT_private_data" ) ||
+           ( extension == "VK_NV_compute_shader_derivatives" ) || ( extension == "VK_NV_fragment_shader_barycentric" ) ||
+           ( extension == "VK_KHR_timeline_semaphore" ) || ( extension == "VK_KHR_vulkan_memory_model" ) ||
+           ( extension == "VK_KHR_shader_terminate_invocation" ) || ( extension == "VK_EXT_scalar_block_layout" ) ||
+           ( extension == "VK_EXT_subgroup_size_control" ) || ( extension == "VK_KHR_spirv_1_4" ) || ( extension == "VK_KHR_separate_depth_stencil_layouts" ) ||
+           ( extension == "VK_EXT_tooling_info" ) || ( extension == "VK_EXT_separate_stencil_usage" ) ||
+           ( extension == "VK_KHR_uniform_buffer_standard_layout" ) || ( extension == "VK_KHR_buffer_device_address" ) ||
+           ( extension == "VK_EXT_line_rasterization" ) || ( extension == "VK_EXT_host_query_reset" ) || ( extension == "VK_EXT_index_type_uint8" ) ||
+           ( extension == "VK_EXT_extended_dynamic_state" ) || ( extension == "VK_EXT_shader_demote_to_helper_invocation" ) ||
+           ( extension == "VK_KHR_shader_integer_dot_product" ) || ( extension == "VK_EXT_texel_buffer_alignment" ) ||
+           ( extension == "VK_KHR_shader_non_semantic_info" ) || ( extension == "VK_EXT_private_data" ) ||
            ( extension == "VK_EXT_pipeline_creation_cache_control" ) || ( extension == "VK_KHR_synchronization2" ) ||
            ( extension == "VK_KHR_zero_initialize_workgroup_memory" ) || ( extension == "VK_EXT_ycbcr_2plane_444_formats" ) ||
            ( extension == "VK_EXT_image_robustness" ) || ( extension == "VK_KHR_copy_commands2" ) || ( extension == "VK_EXT_4444_formats" ) ||

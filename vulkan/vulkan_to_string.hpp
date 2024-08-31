@@ -4117,7 +4117,6 @@ namespace VULKAN_HPP_NAMESPACE
 #if defined( VK_USE_PLATFORM_GGP )
       case StructureType::ePresentFrameTokenGGP: return "PresentFrameTokenGGP";
 #endif /*VK_USE_PLATFORM_GGP*/
-      case StructureType::ePhysicalDeviceComputeShaderDerivativesFeaturesNV: return "PhysicalDeviceComputeShaderDerivativesFeaturesNV";
       case StructureType::ePhysicalDeviceMeshShaderFeaturesNV: return "PhysicalDeviceMeshShaderFeaturesNV";
       case StructureType::ePhysicalDeviceMeshShaderPropertiesNV: return "PhysicalDeviceMeshShaderPropertiesNV";
       case StructureType::ePhysicalDeviceShaderImageFootprintFeaturesNV: return "PhysicalDeviceShaderImageFootprintFeaturesNV";
@@ -4522,6 +4521,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCooperativeMatrixPropertiesKHR: return "PhysicalDeviceCooperativeMatrixPropertiesKHR";
       case StructureType::ePhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM: return "PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM";
       case StructureType::eMultiviewPerViewRenderAreasRenderPassBeginInfoQCOM: return "MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM";
+      case StructureType::ePhysicalDeviceComputeShaderDerivativesFeaturesKHR: return "PhysicalDeviceComputeShaderDerivativesFeaturesKHR";
+      case StructureType::ePhysicalDeviceComputeShaderDerivativesPropertiesKHR: return "PhysicalDeviceComputeShaderDerivativesPropertiesKHR";
       case StructureType::eVideoDecodeAv1CapabilitiesKHR: return "VideoDecodeAv1CapabilitiesKHR";
       case StructureType::eVideoDecodeAv1PictureInfoKHR: return "VideoDecodeAv1PictureInfoKHR";
       case StructureType::eVideoDecodeAv1ProfileInfoKHR: return "VideoDecodeAv1ProfileInfoKHR";

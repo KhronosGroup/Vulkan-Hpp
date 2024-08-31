@@ -1000,9 +1000,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct PresentFrameTokenGGP;
 #endif /*VK_USE_PLATFORM_GGP*/
 
-  //=== VK_NV_compute_shader_derivatives ===
-  struct PhysicalDeviceComputeShaderDerivativesFeaturesNV;
-
   //=== VK_NV_mesh_shader ===
   struct PhysicalDeviceMeshShaderFeaturesNV;
   struct PhysicalDeviceMeshShaderPropertiesNV;
@@ -1754,6 +1751,11 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   struct PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
   struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
+
+  //=== VK_KHR_compute_shader_derivatives ===
+  struct PhysicalDeviceComputeShaderDerivativesFeaturesKHR;
+  using PhysicalDeviceComputeShaderDerivativesFeaturesNV = PhysicalDeviceComputeShaderDerivativesFeaturesKHR;
+  struct PhysicalDeviceComputeShaderDerivativesPropertiesKHR;
 
   //=== VK_KHR_video_decode_av1 ===
   struct VideoDecodeAV1ProfileInfoKHR;

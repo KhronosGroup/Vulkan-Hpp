@@ -2403,6 +2403,7 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_pipeline_binary ===
   using VULKAN_HPP_NAMESPACE::KHRPipelineBinaryExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRPipelineBinarySpecVersion;
+  using VULKAN_HPP_NAMESPACE::MaxPipelineBinaryKeySizeKHR;
 
   //=== VK_QCOM_tile_properties ===
   using VULKAN_HPP_NAMESPACE::QCOMTilePropertiesExtensionName;
@@ -2459,6 +2460,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::QCOMMultiviewPerViewRenderAreasExtensionName;
   using VULKAN_HPP_NAMESPACE::QCOMMultiviewPerViewRenderAreasSpecVersion;
+
+  //=== VK_KHR_compute_shader_derivatives ===
+  using VULKAN_HPP_NAMESPACE::KHRComputeShaderDerivativesExtensionName;
+  using VULKAN_HPP_NAMESPACE::KHRComputeShaderDerivativesSpecVersion;
 
   //=== VK_KHR_video_decode_av1 ===
   using VULKAN_HPP_NAMESPACE::KHRVideoDecodeAv1ExtensionName;
@@ -3585,9 +3590,6 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PresentFrameTokenGGP;
 #endif /*VK_USE_PLATFORM_GGP*/
 
-  //=== VK_NV_compute_shader_derivatives ===
-  using VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesFeaturesNV;
-
   //=== VK_NV_mesh_shader ===
   using VULKAN_HPP_NAMESPACE::DrawMeshTasksIndirectCommandNV;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMeshShaderFeaturesNV;
@@ -4339,6 +4341,11 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_QCOM_multiview_per_view_render_areas ===
   using VULKAN_HPP_NAMESPACE::MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM;
+
+  //=== VK_KHR_compute_shader_derivatives ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesFeaturesKHR;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesFeaturesNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceComputeShaderDerivativesPropertiesKHR;
 
   //=== VK_KHR_video_decode_av1 ===
   using VULKAN_HPP_NAMESPACE::VideoDecodeAV1CapabilitiesKHR;

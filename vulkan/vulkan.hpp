@@ -13,7 +13,6 @@
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
 #  include <string.h>
 import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
 #else
 #  include <algorithm>
 #  include <array>     // ArrayWrapperND

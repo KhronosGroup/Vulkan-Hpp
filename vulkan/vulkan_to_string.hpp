@@ -21,7 +21,6 @@
 
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
 import VULKAN_HPP_STD_MODULE;
-import VULKAN_HPP_STD_COMPAT_MODULE;
 #else
 #  if __cpp_lib_format
 #    include <format>  // std::format

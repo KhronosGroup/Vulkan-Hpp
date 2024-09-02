@@ -185,6 +185,12 @@
 #  define VULKAN_HPP_DEPRECATED( msg )
 #endif
 
+#if 17 <= VULKAN_HPP_CPP_VERSION
+#  define VULKAN_HPP_DEPRECATED_17( msg ) [[deprecated( msg )]]
+#else
+#  define VULKAN_HPP_DEPRECATED_17( msg )
+#endif
+
 #if ( 17 <= VULKAN_HPP_CPP_VERSION ) && !defined( VULKAN_HPP_NO_NODISCARD_WARNINGS )
 #  define VULKAN_HPP_NODISCARD [[nodiscard]]
 #  if defined( VULKAN_HPP_NO_EXCEPTIONS )

@@ -147,6 +147,7 @@ private:
   {
     std::map<std::string, int> aliases   = {};
     std::string                bitpos    = {};
+    bool                       deprecated = {};
     std::string                name      = {};
     std::string                protect   = {};
     bool                       supported = {};
@@ -157,8 +158,13 @@ private:
   struct EnumData
   {
     void addEnumAlias( int line, std::string const & name, std::string const & alias, std::string const & protect, bool supported );
-    void addEnumValue(
-      int line, std::string const & valueName, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported );
+    void addEnumValue( int                 line,
+                       std::string const & valueName,
+                       std::string const & protect,
+                       std::string const & bitpos,
+                       std::string const & value,
+                       bool                supported,
+                       bool                deprecated );
 
     std::map<std::string, int>  aliases      = {};
     std::string                 bitwidth     = {};

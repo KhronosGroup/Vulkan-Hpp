@@ -775,8 +775,8 @@ void VulkanHppGenerator::generateToStringHppFile() const
 // ignore warnings on using deprecated enum values in this header
 #if defined( __clang__ ) || defined( __GNUC__ )
 #  pragma GCC diagnostic push
-#elif defined( _MSC_VER )
 #  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined( _MSC_VER )
 #  pragma warning( push )
 #  pragma warning( disable : 4996 )
 #endif

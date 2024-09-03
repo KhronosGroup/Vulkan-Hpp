@@ -760,6 +760,15 @@ void VulkanHppGenerator::generateToStringHppFile() const
 
 #include <vulkan/${api}_enums.hpp>
 
+// ignore warnings on using deprecated enum values in this header
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined( _MSC_VER )
+#  pragma warning( push )
+#  pragma warning( disable : 4996 )
+#endif
+
 #if __cpp_lib_format
 #  include <format>   // std::format
 #else
@@ -771,6 +780,13 @@ namespace VULKAN_HPP_NAMESPACE
 ${bitmasksToString}
 ${enumsToString}
 } // namespace VULKAN_HPP_NAMESPACE
+
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic pop
+#elif defined( _MSC_VER )
+#  pragma warning( pop )
+#endif
+
 #endif
 )";
 
@@ -6763,7 +6779,12 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
       {
         enumValues += previousLeave + enter;
       }
-      enumValues += "    " + valueName + " = " + value.name + ",\n";
+      enumValues += "    " + valueName;
+      if ( value.deprecated )
+      {
+        enumValues += " VULKAN_HPP_DEPRECATED_17( \"" + valueName + " is deprecated, but no reason was given in the API XML\" )";
+      }
+      enumValues += " = " + value.name + ",\n";
 
       for ( auto const & valueAlias : value.aliases )
       {
@@ -13464,6 +13485,7 @@ void VulkanHppGenerator::readEnumsConstants( tinyxml2::XMLElement const * elemen
 void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::iterator enumIt )
 {
   const int                          line       = element->GetLineNum();
+  bool                               deprecated = false;
   std::map<std::string, std::string> attributes = getAttributes( element );
   if ( attributes.contains( "alias" ) )
   {
@@ -13484,7 +13506,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
       }
       else if ( attribute.first == "deprecated" )
       {
-        // the enum value is marked as deprecated/aliased but still exisits -> no modifications needed here
+        deprecated = true;
       }
       else if ( attribute.first == "name" )
       {
@@ -13524,7 +13546,7 @@ void VulkanHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, st
     checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
 
     checkForError( bitpos.empty() ^ value.empty(), line, "both or none of \"bitpos\" and \"value\" are set for enum <" + name + "> which is invalid" );
-    enumIt->second.addEnumValue( line, name, "", bitpos, value, true );
+    enumIt->second.addEnumValue( line, name, "", bitpos, value, true, deprecated );
   }
 }
 
@@ -14365,6 +14387,7 @@ void VulkanHppGenerator::readRequireEnum(
                      { { "api", { "vulkan", "vulkansc" } },
                        { "bitpos", {} },
                        { "comment", {} },
+                       { "deprecated", { "true" } },
                        { "dir", { "-" } },
                        { "extends", {} },
                        { "extnumber", {} },
@@ -14374,6 +14397,7 @@ void VulkanHppGenerator::readRequireEnum(
                        { "value", {} } } );
 
     std::string api, bitpos, extends, name, offset, protect, type, value;
+    bool        deprecated = false;
     for ( auto const & attribute : attributes )
     {
       if ( attribute.first == "api" )
@@ -14383,6 +14407,10 @@ void VulkanHppGenerator::readRequireEnum(
       else if ( attribute.first == "bitpos" )
       {
         bitpos = attribute.second;
+      }
+      else if ( attribute.first == "deprecated" )
+      {
+        deprecated = true;
       }
       else if ( attribute.first == "extends" )
       {
@@ -14451,8 +14479,13 @@ void VulkanHppGenerator::readRequireEnum(
       auto enumIt = findByNameOrAlias( m_enums, extends );
       assert( enumIt != m_enums.end() );
 
-      enumIt->second.addEnumValue(
-        line, name, protect.empty() ? getProtectFromPlatform( platform ) : protect, bitpos + offset, value, ( api.empty() || ( api == m_api ) ) && supported );
+      enumIt->second.addEnumValue( line,
+                                   name,
+                                   protect.empty() ? getProtectFromPlatform( platform ) : protect,
+                                   bitpos + offset,
+                                   value,
+                                   ( api.empty() || ( api == m_api ) ) && supported,
+                                   deprecated );
     }
   }
 }
@@ -16244,12 +16277,12 @@ void VulkanHppGenerator::EnumData::addEnumAlias( int line, std::string const & n
 }
 
 void VulkanHppGenerator::EnumData::addEnumValue(
-  int line, std::string const & name, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported )
+  int line, std::string const & name, std::string const & protect, std::string const & bitpos, std::string const & value, bool supported, bool deprecated )
 {
   auto valueIt = findByName( values, name );
   if ( valueIt == values.end() )
   {
-    values.push_back( { {}, bitpos, name, protect, supported, value, line } );
+    values.push_back( { {}, bitpos, deprecated, name, protect, supported, value, line } );
   }
   else if ( supported )  // only for supported enum values, we need to check for consistency!
   {

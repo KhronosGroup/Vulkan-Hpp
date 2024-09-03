@@ -3166,20 +3166,20 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class ColorSpaceKHR
   {
-    eSrgbNonlinear            = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
-    eDisplayP3NonlinearEXT    = VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT,
-    eExtendedSrgbLinearEXT    = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT,
-    eDisplayP3LinearEXT       = VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT,
-    eDciP3NonlinearEXT        = VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT,
-    eBt709LinearEXT           = VK_COLOR_SPACE_BT709_LINEAR_EXT,
-    eBt709NonlinearEXT        = VK_COLOR_SPACE_BT709_NONLINEAR_EXT,
-    eBt2020LinearEXT          = VK_COLOR_SPACE_BT2020_LINEAR_EXT,
-    eHdr10St2084EXT           = VK_COLOR_SPACE_HDR10_ST2084_EXT,
-    eDolbyvisionEXT           = VK_COLOR_SPACE_DOLBYVISION_EXT,
-    eHdr10HlgEXT              = VK_COLOR_SPACE_HDR10_HLG_EXT,
-    eAdobergbLinearEXT        = VK_COLOR_SPACE_ADOBERGB_LINEAR_EXT,
-    eAdobergbNonlinearEXT     = VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT,
-    ePassThroughEXT           = VK_COLOR_SPACE_PASS_THROUGH_EXT,
+    eSrgbNonlinear         = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR,
+    eDisplayP3NonlinearEXT = VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT,
+    eExtendedSrgbLinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT,
+    eDisplayP3LinearEXT    = VK_COLOR_SPACE_DISPLAY_P3_LINEAR_EXT,
+    eDciP3NonlinearEXT     = VK_COLOR_SPACE_DCI_P3_NONLINEAR_EXT,
+    eBt709LinearEXT        = VK_COLOR_SPACE_BT709_LINEAR_EXT,
+    eBt709NonlinearEXT     = VK_COLOR_SPACE_BT709_NONLINEAR_EXT,
+    eBt2020LinearEXT       = VK_COLOR_SPACE_BT2020_LINEAR_EXT,
+    eHdr10St2084EXT        = VK_COLOR_SPACE_HDR10_ST2084_EXT,
+    eDolbyvisionEXT VULKAN_HPP_DEPRECATED_17( "eDolbyvisionEXT is deprecated, but no reason was given in the API XML" ) = VK_COLOR_SPACE_DOLBYVISION_EXT,
+    eHdr10HlgEXT                                                                                                        = VK_COLOR_SPACE_HDR10_HLG_EXT,
+    eAdobergbLinearEXT                                                                                                  = VK_COLOR_SPACE_ADOBERGB_LINEAR_EXT,
+    eAdobergbNonlinearEXT                                                                                               = VK_COLOR_SPACE_ADOBERGB_NONLINEAR_EXT,
+    ePassThroughEXT                                                                                                     = VK_COLOR_SPACE_PASS_THROUGH_EXT,
     eExtendedSrgbNonlinearEXT = VK_COLOR_SPACE_EXTENDED_SRGB_NONLINEAR_EXT
   };
 

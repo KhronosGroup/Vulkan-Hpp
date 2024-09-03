@@ -10,6 +10,15 @@
 
 #include <vulkan/vulkan_enums.hpp>
 
+// ignore warnings on using deprecated enum values in this header
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#elif defined( _MSC_VER )
+#  pragma warning( push )
+#  pragma warning( disable : 4996 )
+#endif
+
 #if __cpp_lib_format
 #  include <format>  // std::format
 #else
@@ -9146,4 +9155,11 @@ namespace VULKAN_HPP_NAMESPACE
   }
 
 }  // namespace VULKAN_HPP_NAMESPACE
+
+#if defined( __clang__ ) || defined( __GNUC__ )
+#  pragma GCC diagnostic pop
+#elif defined( _MSC_VER )
+#  pragma warning( pop )
+#endif
+
 #endif

@@ -130,11 +130,15 @@ void VulkanHppGenerator::generateExtensionInspectionFile() const
 #ifndef VULKAN_EXTENSION_INSPECTION_HPP
 #  define VULKAN_EXTENSION_INSPECTION_HPP
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
-#include <vulkan/${api}.hpp>
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
+#else
+#  include <map>
+#  include <set>
+#  include <string>
+#  include <vector>
+#  include <vulkan/${api}.hpp>
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -578,7 +582,11 @@ ${macros}
 
   std::string str = replaceWithMap(
     macrosTemplate,
-    { { "licenseHeader", m_vulkanLicenseHeader }, { "macros", replaceWithMap( readSnippet( "macros.hpp" ), { { "vulkan_hpp", m_api + ".hpp" } } ) } } );
+                    { { "licenseHeader", m_vulkanLicenseHeader },
+                      { "macros",
+                        replaceWithMap( readSnippet( "macros.hpp" ),
+                                        { { "vulkan_hpp", m_api + ".hpp" },
+                                          { "vulkan_64_bit_ptr_defines", m_defines.at( "VK_USE_64_BIT_PTR_DEFINES" ).possibleDefinition } } ) } } );
 
   writeToFile( str, macros_hpp );
 }
@@ -592,9 +600,11 @@ void VulkanHppGenerator::generateRAIIHppFile() const
 #ifndef VULKAN_RAII_HPP
 #define VULKAN_RAII_HPP
 
-#include <memory>   // std::unique_ptr
-#include <utility>  // std::forward
 #include <vulkan/${api}.hpp>
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#  include <memory>   // std::unique_ptr
+#  include <utility>  // std::forward
+#endif
 
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
 namespace VULKAN_HPP_NAMESPACE
@@ -668,8 +678,10 @@ void VulkanHppGenerator::generateSharedHppFile() const
 #define VULKAN_SHARED_HPP
 
 #include <vulkan/${api}.hpp>
-#include <atomic>  // std::atomic_size_t
 
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#include <atomic>  // std::atomic_size_t
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {
@@ -769,10 +781,14 @@ void VulkanHppGenerator::generateToStringHppFile() const
 #  pragma warning( disable : 4996 )
 #endif
 
-#if __cpp_lib_format
-#  include <format>   // std::format
+#if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
+import VULKAN_HPP_STD_MODULE;
 #else
-#  include <sstream>  // std::stringstream
+#  if __cpp_lib_format
+#    include <format>   // std::format
+#  else
+#    include <sstream>  // std::stringstream
+#  endif
 #endif
 
 namespace VULKAN_HPP_NAMESPACE
@@ -810,6 +826,12 @@ void VulkanHppGenerator::generateCppModuleFile() const
 // Any feedback is welcome on https://github.com/KhronosGroup/Vulkan-Hpp/issues.
 
 module;
+
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+#if defined( __cpp_lib_modules )
+#define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
 
 #include <vulkan/${api}.hpp>
 #include <vulkan/${api}_extension_inspection.hpp>
@@ -16416,6 +16438,12 @@ namespace
     auto rawComment = completeMacro[0];
     std::erase( rawComment, '/' );
     auto const strippedComment = trim( stripPostfix( stripPrefix( rawComment, " DEPRECATED:" ), "#define " ) );
+
+    // special case for VK_USE_64_BIT_PTR_DEFINES
+    if ( completeMacro.size() == 1 && completeMacro.front().find( "#ifndef VK_USE_64_BIT_PTR_DEFINES" ) != std::string::npos )
+    {
+      return { {}, {}, {}, strippedComment };
+    }
 
     // macro with parameters and implementation
     if ( completeMacro.size() == 3 )

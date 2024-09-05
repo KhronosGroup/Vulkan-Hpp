@@ -10,6 +10,12 @@
 
 module;
 
+#include <vulkan/vulkan_hpp_macros.hpp>
+
+#if defined( __cpp_lib_modules )
+#  define VULKAN_HPP_ENABLE_STD_MODULE
+#endif
+
 #include <vulkan/vulkansc.hpp>
 #include <vulkan/vulkansc_extension_inspection.hpp>
 #include <vulkan/vulkansc_format_traits.hpp>
@@ -841,6 +847,7 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== CONSTEXPR VALUEs ===
   //========================
   using VULKAN_HPP_NAMESPACE::HeaderVersion;
+  using VULKAN_HPP_NAMESPACE::Use64BitPtrDefines;
 
   //=========================
   //=== CONSTEXPR CALLEEs ===

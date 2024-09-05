@@ -8,8 +8,11 @@
 #ifndef VULKAN_SHARED_HPP
 #define VULKAN_SHARED_HPP
 
-#include <atomic>  // std::atomic_size_t
 #include <vulkan/vulkansc.hpp>
+
+#if !( defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE ) )
+#  include <atomic>  // std::atomic_size_t
+#endif
 
 namespace VULKAN_HPP_NAMESPACE
 {

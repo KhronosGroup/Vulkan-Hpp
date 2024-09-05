@@ -580,8 +580,8 @@ ${macros}
 
 #endif)";
 
-  std::string str = replaceWithMap(
-    macrosTemplate,
+  std::string str =
+    replaceWithMap( macrosTemplate,
                     { { "licenseHeader", m_vulkanLicenseHeader },
                       { "macros",
                         replaceWithMap( readSnippet( "macros.hpp" ),
@@ -1437,7 +1437,7 @@ void VulkanHppGenerator::checkFeatureCorrectness() const
 {
   // check that each require depends actually is an extension
   // remove this check temporarily !
-  //for ( auto const & feature : m_features )
+  // for ( auto const & feature : m_features )
   //{
   //  for ( auto const & require : feature.requireData )
   //  {
@@ -14539,6 +14539,17 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
     auto aliasIt = std::find_if(
       m_structsAliases.begin(), m_structsAliases.end(), [&structure]( std::pair<std::string, AliasData> const & ad ) { return ad.first == structure; } );
     checkForError( aliasIt != m_structsAliases.end(), line, "encountered unknown required feature struct <" + structure + ">" );
+    auto nextAliasIt = aliasIt;
+    do
+    {
+      nextAliasIt = std::find_if( m_structsAliases.begin(),
+                                  m_structsAliases.end(),
+                                  [&structure = aliasIt->second.name]( std::pair<std::string, AliasData> const & ad ) { return ad.first == structure; } );
+      if ( nextAliasIt != m_structsAliases.end() )
+      {
+        aliasIt = nextAliasIt;
+      }
+    } while ( nextAliasIt != m_structsAliases.end() );
     structIt = m_structs.find( aliasIt->second.name );
     assert( structIt != m_structs.end() );
   }

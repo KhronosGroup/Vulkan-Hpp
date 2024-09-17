@@ -114,7 +114,7 @@ public:
   };
 
 private:
-  struct AliasData
+  struct NameLine
   {
     std::string name    = {};
     int         xmlLine = {};
@@ -145,14 +145,14 @@ private:
 
   struct EnumValueData
   {
-    std::map<std::string, int> aliases   = {};
-    std::string                bitpos    = {};
+    std::map<std::string, int> aliases    = {};
+    std::string                bitpos     = {};
     bool                       deprecated = {};
-    std::string                name      = {};
-    std::string                protect   = {};
-    bool                       supported = {};
-    std::string                value     = {};
-    int                        xmlLine   = {};
+    std::string                name       = {};
+    std::string                protect    = {};
+    bool                       supported  = {};
+    std::string                value      = {};
+    int                        xmlLine    = {};
   };
 
   struct EnumData
@@ -172,6 +172,17 @@ private:
     std::vector<EnumValueAlias> valueAliases = {};  // temporary storage for aliases, as they might be specified before the actual value is specified
     std::vector<EnumValueData>  values       = {};
     int                         xmlLine      = {};
+  };
+
+  struct EnumExtendData
+  {
+    std::string           alias      = {};
+    std::string           api        = {};
+    std::string           name       = {};
+    std::string           platform   = {};
+    std::set<std::string> requiredBy = {};
+    bool                  supported  = {};
+    int                   xmlLine    = {};
   };
 
   struct NameData
@@ -247,31 +258,32 @@ private:
 
   struct RequireData
   {
-    std::string                              depends       = {};
-    std::vector<std::pair<std::string, int>> commands      = {};
-    std::map<std::string, std::string>       enumConstants = {};
-    std::vector<std::string>                 constants     = {};
-    std::vector<RequireFeature>              features      = {};
-    std::vector<std::string>                 types         = {};
-    int                                      xmlLine       = {};
+    std::string                        depends       = {};
+    std::vector<NameLine>              commands      = {};
+    std::map<std::string, std::string> enumConstants = {};
+    std::vector<std::string>           constants     = {};
+    std::vector<RequireFeature>        features      = {};
+    std::vector<NameLine>              types         = {};
+    int                                xmlLine       = {};
   };
 
   struct ExtensionData
   {
-    std::string                                                  deprecatedBy = {};
-    bool                                                         isDeprecated = false;
-    std::string                                                  name         = {};
-    std::string                                                  number       = {};
-    std::string                                                  obsoletedBy  = {};
-    std::string                                                  platform     = {};
-    std::string                                                  promotedTo   = {};
-    std::map<std::string, std::vector<std::vector<std::string>>> depends      = {};
-    std::vector<std::string>                                     ratified     = {};
-    std::vector<RemoveData>                                      removeData   = {};
-    std::vector<RequireData>                                     requireData  = {};
-    std::vector<std::string>                                     supported    = {};
-    std::string                                                  type         = {};
-    int                                                          xmlLine      = 0;
+    std::string                                                  deprecatedBy           = {};
+    bool                                                         isDeprecated           = false;
+    std::string                                                  name                   = {};
+    std::string                                                  number                 = {};
+    std::string                                                  obsoletedBy            = {};
+    std::string                                                  platform               = {};
+    std::string                                                  promotedTo             = {};
+    std::map<std::string, std::vector<std::vector<std::string>>> depends                = {};
+    std::vector<std::string>                                     ratified               = {};
+    std::vector<RemoveData>                                      removeData             = {};
+    std::vector<RequireData>                                     requireData            = {};
+    std::vector<std::string>                                     supported              = {};
+    std::string                                                  type                   = {};
+    std::vector<RequireData>                                     unsupportedRequireData = {};
+    int                                                          xmlLine                = 0;
   };
 
   struct FeatureData
@@ -375,6 +387,12 @@ private:
     std::string                                 selector       = {};
     std::string                                 value          = {};
     int                                         xmlLine        = {};
+  };
+
+  struct SpirVCapabilityData
+  {
+    std::map<std::string, std::map<std::string, int>> structs = {};  // map from structure to map from member to xmlLine
+    int                                               xmlLine = {};
   };
 
   struct StructureData
@@ -503,6 +521,7 @@ private:
   void        checkFeatureCorrectness() const;
   void        checkFuncPointerCorrectness() const;
   void        checkHandleCorrectness() const;
+  void        checkSpirVCapabilityCorrectness() const;
   void        checkStructCorrectness() const;
   void checkStructMemberCorrectness( std::string const & structureName, std::vector<MemberData> const & members, std::set<std::string> & sTypeValues ) const;
   std::string              combineDataTypes( std::map<size_t, VectorParamData> const & vectorParams,
@@ -530,43 +549,46 @@ private:
   std::vector<std::map<std::string, CommandData>::const_iterator>
     determineRAIIHandleConstructors( std::string const & handleType, std::map<std::string, CommandData>::const_iterator destructorIt ) const;
   std::map<std::string, CommandData>::const_iterator determineRAIIHandleDestructor( std::string const & handleType ) const;
-  std::set<size_t>                                 determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
-  std::set<size_t>                                 determineSkippedParams( std::vector<ParamData> const &            params,
-                                                                           size_t                                    initialSkipCount,
-                                                                           std::map<size_t, VectorParamData> const & vectorParams,
-                                                                           std::vector<size_t> const &               returnParam,
-                                                                           bool                                      singular ) const;
-  std::string                                      determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
-  std::map<size_t, VectorParamData>                determineVectorParams( std::vector<ParamData> const & params ) const;
-  std::set<size_t>                                 determineVoidPointerParams( std::vector<ParamData> const & params ) const;
-  void                                             distributeEnumValueAliases();
-  void                                             distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
-  void                                             distributeStructAliases();
-  void                                             filterLenMembers();
-  std::map<std::string, AliasData>::const_iterator findAlias( std::string const & name, std::map<std::string, AliasData> const & aliases ) const;
-  std::string                                      findBaseName( std::string aliasName, std::map<std::string, AliasData> const & aliases ) const;
-  std::vector<FeatureData>::const_iterator         findFeature( std::string const & name ) const;
-  std::vector<ParamData>::const_iterator           findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
-  std::vector<MemberData>::const_iterator          findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
-  std::vector<MemberData>::const_iterator          findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
-  std::vector<ExtensionData>::const_iterator       findSupportedExtension( std::string const & name ) const;
-  std::string                                      findTag( std::string const & name, std::string const & postfix = "" ) const;
-  std::pair<std::string, std::string>              generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
-                                                                               std::vector<std::string> const &          returnDataTypes,
-                                                                               std::map<size_t, VectorParamData> const & vectorParams,
-                                                                               std::vector<size_t> const &               chainedReturnParams,
-                                                                               CommandFlavourFlags                       flavourFlags,
-                                                                               bool                                      definition ) const;
-  std::string                                      generateArgumentListEnhanced( std::vector<ParamData> const &            params,
-                                                                                 std::vector<size_t> const &               returnParams,
-                                                                                 std::map<size_t, VectorParamData> const & vectorParams,
-                                                                                 std::set<size_t> const &                  skippedParams,
-                                                                                 std::set<size_t> const &                  singularParams,
-                                                                                 std::set<size_t> const &                  templatedParams,
-                                                                                 std::vector<size_t> const &               chainedReturnParams,
-                                                                                 bool                                      definition,
-                                                                                 CommandFlavourFlags                       flavourFlags,
-                                                                                 bool                                      withDispatcher ) const;
+  std::set<size_t>                                determineSingularParams( size_t returnParam, std::map<size_t, VectorParamData> const & vectorParams ) const;
+  std::set<size_t>                                determineSkippedParams( std::vector<ParamData> const &            params,
+                                                                          size_t                                    initialSkipCount,
+                                                                          std::map<size_t, VectorParamData> const & vectorParams,
+                                                                          std::vector<size_t> const &               returnParam,
+                                                                          bool                                      singular ) const;
+  std::string                                     determineSubStruct( std::pair<std::string, StructureData> const & structure ) const;
+  std::map<size_t, VectorParamData>               determineVectorParams( std::vector<ParamData> const & params ) const;
+  std::set<size_t>                                determineVoidPointerParams( std::vector<ParamData> const & params ) const;
+  void                                            distributeEnumExtends();
+  void                                            distributeEnumValueAliases();
+  void                                            distributeSecondLevelCommands( std::set<std::string> const & specialFunctions );
+  void                                            distributeRequirements();
+  void                                            distributeRequirements( std::vector<RequireData> const & requireData, std::string const & requiredBy );
+  void                                            distributeStructAliases();
+  void                                            filterLenMembers();
+  std::map<std::string, NameLine>::const_iterator findAlias( std::string const & name, std::map<std::string, NameLine> const & aliases ) const;
+  std::string                                     findBaseName( std::string aliasName, std::map<std::string, NameLine> const & aliases ) const;
+  std::vector<FeatureData>::const_iterator        findFeature( std::string const & name ) const;
+  std::vector<ParamData>::const_iterator          findParamIt( std::string const & name, std::vector<ParamData> const & paramData ) const;
+  std::vector<MemberData>::const_iterator         findStructMemberIt( std::string const & name, std::vector<MemberData> const & memberData ) const;
+  std::vector<MemberData>::const_iterator         findStructMemberItByType( std::string const & type, std::vector<MemberData> const & memberData ) const;
+  std::vector<ExtensionData>::const_iterator      findSupportedExtension( std::string const & name ) const;
+  std::string                                     findTag( std::string const & name, std::string const & postfix = "" ) const;
+  std::pair<std::string, std::string>             generateAllocatorTemplates( std::vector<size_t> const &               returnParams,
+                                                                              std::vector<std::string> const &          returnDataTypes,
+                                                                              std::map<size_t, VectorParamData> const & vectorParams,
+                                                                              std::vector<size_t> const &               chainedReturnParams,
+                                                                              CommandFlavourFlags                       flavourFlags,
+                                                                              bool                                      definition ) const;
+  std::string                                     generateArgumentListEnhanced( std::vector<ParamData> const &            params,
+                                                                                std::vector<size_t> const &               returnParams,
+                                                                                std::map<size_t, VectorParamData> const & vectorParams,
+                                                                                std::set<size_t> const &                  skippedParams,
+                                                                                std::set<size_t> const &                  singularParams,
+                                                                                std::set<size_t> const &                  templatedParams,
+                                                                                std::vector<size_t> const &               chainedReturnParams,
+                                                                                bool                                      definition,
+                                                                                CommandFlavourFlags                       flavourFlags,
+                                                                                bool                                      withDispatcher ) const;
   std::string generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
@@ -1033,6 +1055,8 @@ private:
   bool isSupportedFeature( std::string const & name ) const;
   bool isTypeRequired( std::string const & type ) const;
   bool isTypeUsed( std::string const & type ) const;
+  bool isUnsupportedExtension( std::string const & name ) const;
+  bool isUnsupportedFeature( std::string const & name ) const;
   void markExtendedStructs();
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,
@@ -1063,13 +1087,13 @@ private:
   void                          readPlatforms( tinyxml2::XMLElement const * element );
   void                          readRegistry( tinyxml2::XMLElement const * element );
   RemoveData                    readRemoveData( tinyxml2::XMLElement const * element );
-  std::string                   readRequireCommand( tinyxml2::XMLElement const * element, std::string const & requiredBy );
+  NameLine                      readRequireCommand( tinyxml2::XMLElement const * element );
   void                          readRequireEnum(
                              tinyxml2::XMLElement const * element, std::string const & requiredBy, std::string const & platform, bool supported, RequireData & requireData );
   RequireFeature           readRequireFeature( tinyxml2::XMLElement const * element );
-  std::string              readRequireType( tinyxml2::XMLElement const * element, std::string const & requiredBy );
+  NameLine                 readRequireType( tinyxml2::XMLElement const * element );
   void                     readSPIRVCapability( tinyxml2::XMLElement const * element );
-  void                     readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element );
+  void                     readSPIRVCapabilityEnable( tinyxml2::XMLElement const * element, SpirVCapabilityData & capability );
   void                     readSPIRVCapabilities( tinyxml2::XMLElement const * element );
   void                     readSPIRVExtension( tinyxml2::XMLElement const * element );
   void                     readSPIRVExtensionEnable( tinyxml2::XMLElement const * element );
@@ -1126,30 +1150,32 @@ private:
   MemberData const &       vectorMemberByStructure( std::string const & structureType ) const;
 
 private:
-  std::string                                    m_api;
-  std::map<std::string, BaseTypeData>            m_baseTypes;
-  std::map<std::string, BitmaskData>             m_bitmasks;
-  std::map<std::string, CommandData>             m_commands;
-  std::map<std::string, ConstantData>            m_constants;
-  std::map<std::string, DefineData>              m_defines;
-  DefinesPartition                               m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
-  std::map<std::string, EnumData>                m_enums;
-  std::vector<ExtensionData>                     m_extensions;
-  std::map<std::string, ExternalTypeData>        m_externalTypes;
-  std::vector<FeatureData>                       m_features;
-  std::map<std::string, FormatData>              m_formats;
-  std::map<std::string, FuncPointerData>         m_funcPointers;
-  std::map<std::string, HandleData>              m_handles;
-  std::map<std::string, IncludeData>             m_includes;
-  std::map<std::string, PlatformData>            m_platforms;
-  std::set<std::string>                          m_RAIISpecialFunctions;
-  std::map<std::string, StructureData>           m_structs;
-  std::vector<std::pair<std::string, AliasData>> m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
-  std::map<std::string, TagData>                 m_tags;
-  std::map<std::string, TypeData>                m_types;
-  std::set<std::string>                          m_unsupportedExtensions;
-  std::set<std::string>                          m_unsupportedFeatures;
-  std::string                                    m_version;
-  std::vector<VideoCodec>                        m_videoCodecs;
-  std::string                                    m_vulkanLicenseHeader;
+  std::string                         m_api;
+  std::map<std::string, BaseTypeData> m_baseTypes;
+  std::map<std::string, BitmaskData>  m_bitmasks;
+  std::map<std::string, CommandData>  m_commands;
+  std::map<std::string, ConstantData> m_constants;
+  std::map<std::string, DefineData>   m_defines;
+  DefinesPartition                    m_definesPartition;  // partition defined macros into mutually-exclusive sets of callees, callers, and values
+  std::map<std::string, std::vector<EnumExtendData>> m_enumExtends;
+  std::map<std::string, EnumData>                    m_enums;
+  std::vector<ExtensionData>                         m_extensions;
+  std::map<std::string, ExternalTypeData>            m_externalTypes;
+  std::vector<FeatureData>                           m_features;
+  std::map<std::string, FormatData>                  m_formats;
+  std::map<std::string, FuncPointerData>             m_funcPointers;
+  std::map<std::string, HandleData>                  m_handles;
+  std::map<std::string, IncludeData>                 m_includes;
+  std::map<std::string, PlatformData>                m_platforms;
+  std::set<std::string>                              m_RAIISpecialFunctions;
+  std::map<std::string, SpirVCapabilityData>         m_spirVCapabilities;
+  std::map<std::string, StructureData>               m_structs;
+  std::vector<std::pair<std::string, NameLine>> m_structsAliases;  // temporary storage for aliases, as they might be listed before the actual struct is listed
+  std::map<std::string, TagData>                m_tags;
+  std::map<std::string, TypeData>               m_types;
+  std::vector<ExtensionData>                    m_unsupportedExtensions;
+  std::vector<FeatureData>                      m_unsupportedFeatures;
+  std::string                                   m_version;
+  std::vector<VideoCodec>                       m_videoCodecs;
+  std::string                                   m_vulkanLicenseHeader;
 };

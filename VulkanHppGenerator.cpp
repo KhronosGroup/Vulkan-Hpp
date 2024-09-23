@@ -1240,6 +1240,8 @@ void VulkanHppGenerator::checkCorrectness() const
   checkHandleCorrectness();
   checkSpirVCapabilityCorrectness();
   checkStructCorrectness();
+  checkSyncAccessCorrectness();
+  checkSyncStageCorrectness();
 }
 
 void VulkanHppGenerator::checkDefineCorrectness() const
@@ -1571,9 +1573,9 @@ void VulkanHppGenerator::checkStructCorrectness() const
     }
     else
     {
-      checkForWarning( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
-                       enumValue.xmlLine,
-                       "VkStructureType enum value <" + enumValue.name + "> never used" );
+      checkForError( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
+                     enumValue.xmlLine,
+                     "VkStructureType enum value <" + enumValue.name + "> never used" );
     }
   }
   assert( sTypeValues.empty() );
@@ -1672,6 +1674,62 @@ void VulkanHppGenerator::checkStructMemberCorrectness( std::string const &      
                        "member <" + member.name + "> in structure <" + structureName + "> holds value <" + member.value + "> for an unhandled type <" +
                          member.type.type + ">" );
       }
+    }
+  }
+}
+
+void VulkanHppGenerator::checkSyncAccessCorrectness() const
+{
+  auto accessFlagBitsIt = m_enums.find( "VkAccessFlagBits" );
+  assert( accessFlagBitsIt != m_enums.end() );
+  auto accessFlagBits2It = m_enums.find( "VkAccessFlagBits2" );
+  assert( accessFlagBits2It != m_enums.end() );
+
+  for ( auto const & syncAccess : m_syncAccesses )
+  {
+    auto nameIt = findByNameOrAlias( accessFlagBits2It->second.values, syncAccess.first );
+    checkForError( nameIt != accessFlagBits2It->second.values.end(),
+                   syncAccess.second.xmlLine,
+                   "syncaccess name <" + syncAccess.first + "> not specified as a VkAccessFlagBits value!" );
+
+    if ( !syncAccess.second.name.empty() )
+    {
+      // with alias
+      auto aliasIt = findByNameOrAlias( accessFlagBitsIt->second.values, syncAccess.second.name );
+      checkForError( aliasIt != accessFlagBitsIt->second.values.end(),
+                     syncAccess.second.xmlLine,
+                     "syncaccess alias <" + syncAccess.second.name + "> not specified as a VkAccessFlagBits value!" );
+      checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
+                     syncAccess.second.xmlLine,
+                     "syncaccess name <" + syncAccess.first + "> has an alias <" + syncAccess.second.name + "> with a different value or bitpos!" );
+    }
+  }
+}
+
+void VulkanHppGenerator::checkSyncStageCorrectness() const
+{
+  auto stageFlagBitsIt = m_enums.find( "VkPipelineStageFlagBits" );
+  assert( stageFlagBitsIt != m_enums.end() );
+  auto stageFlagBits2It = m_enums.find( "VkPipelineStageFlagBits2" );
+  assert( stageFlagBits2It != m_enums.end() );
+
+  for ( auto const & syncStage : m_syncStages )
+  {
+    auto nameIt = findByNameOrAlias( stageFlagBits2It->second.values, syncStage.first );
+    checkForError( nameIt != stageFlagBits2It->second.values.end(),
+                   syncStage.second.xmlLine,
+                   "syncstage name <" + syncStage.first + "> not specified as a VkPipelineStageFlagBits2 value!" );
+
+    if ( !syncStage.second.name.empty() )
+    {
+      // with alias
+      auto aliasIt = findByNameOrAlias( stageFlagBitsIt->second.values, syncStage.second.name );
+      checkForError( aliasIt != stageFlagBitsIt->second.values.end(),
+                     syncStage.second.xmlLine,
+                     "syncstage alias <" + syncStage.second.name + "> not specified as a VkPipelineStageFlagBits value!" );
+      checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
+                     syncStage.second.xmlLine,
+                     "syncstate name <" + syncStage.first + "> has an alias <" + syncStage.second.name + "> with a different value or bitpos!" );
     }
   }
 }
@@ -1888,8 +1946,8 @@ size_t VulkanHppGenerator::determineDefaultStartIndex( std::vector<ParamData> co
 
 bool VulkanHppGenerator::determineEnumeration( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & returnParams ) const
 {
-  // a command is considered to be enumerating some data, if for at least one vectorParam the data is a returnParam and either the vectorParams is specified by
-  // a structure or the lenParam is a returnParam as well
+  // a command is considered to be enumerating some data, if for at least one vectorParam the data is a returnParam and either the vectorParams is specified
+  // by a structure or the lenParam is a returnParam as well
   return std::any_of( vectorParams.begin(),
                       vectorParams.end(),
                       [&returnParams]( auto const & vp )
@@ -15035,12 +15093,8 @@ void VulkanHppGenerator::readSync( tinyxml2::XMLElement const * element )
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, { { "syncaccess", false }, { "syncpipeline", false }, { "syncstage", false } }, {} );
 
-  auto accessFlagBitsIt = m_enums.find( "VkAccessFlagBits" );
-  assert( accessFlagBitsIt != m_enums.end() );
   auto accessFlagBits2It = m_enums.find( "VkAccessFlagBits2" );
   assert( accessFlagBits2It != m_enums.end() );
-  auto stageFlagBitsIt = m_enums.find( "VkPipelineStageFlagBits" );
-  assert( stageFlagBitsIt != m_enums.end() );
   auto stageFlagBits2It = m_enums.find( "VkPipelineStageFlagBits2" );
   assert( stageFlagBits2It != m_enums.end() );
 
@@ -15049,7 +15103,7 @@ void VulkanHppGenerator::readSync( tinyxml2::XMLElement const * element )
     std::string value = child->Value();
     if ( value == "syncaccess" )
     {
-      readSyncAccess( child, accessFlagBitsIt, accessFlagBits2It, stageFlagBits2It );
+      readSyncAccess( child, accessFlagBits2It );
     }
     else if ( value == "syncpipeline" )
     {
@@ -15058,15 +15112,12 @@ void VulkanHppGenerator::readSync( tinyxml2::XMLElement const * element )
     else
     {
       assert( value == "syncstage" );
-      readSyncStage( child, stageFlagBitsIt, stageFlagBits2It );
+      readSyncStage( child, stageFlagBits2It );
     }
   }
 }
 
-void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const *                    element,
-                                         std::map<std::string, EnumData>::const_iterator accessFlagBitsIt,
-                                         std::map<std::string, EnumData>::const_iterator accessFlagBits2It,
-                                         std::map<std::string, EnumData>::const_iterator stageFlagBits2It )
+void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator accessFlagBits2It )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -15074,32 +15125,21 @@ void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const *           
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "comment", "syncequivalent", "syncsupport" } );
 
-  std::string aliasName;
-  auto        aliasIt = accessFlagBitsIt->second.values.end();
+  std::string alias, name;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
-      assert( aliasIt == accessFlagBitsIt->second.values.end() );
-      aliasName = attribute.second;
-      aliasIt   = findByNameOrAlias( accessFlagBitsIt->second.values, attribute.second );
-      checkForError(
-        aliasIt != accessFlagBitsIt->second.values.end(), line, "syncaccess alias <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
+      alias = attribute.second;
     }
     else
     {
       assert( attribute.first == "name" );
-      auto nameIt = findByNameOrAlias( accessFlagBits2It->second.values, attribute.second );
-      checkForError(
-        nameIt != accessFlagBits2It->second.values.end(), line, "syncaccess name <" + attribute.second + "> not specified as a VkAccessFlagBits value!" );
-      if ( aliasIt != accessFlagBitsIt->second.values.end() )
-      {
-        checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
-                       line,
-                       "syncaccess name <" + attribute.second + "> has an alias <" + aliasName + "> with a different value or bitpos!" );
-      }
+      name = attribute.second;
     }
   }
+
+  checkForError( m_syncAccesses.insert( { name, { alias, line } } ).second, line, "syncaccess <" + name + "> already listed" );
 
   for ( auto child : children )
   {
@@ -15110,7 +15150,7 @@ void VulkanHppGenerator::readSyncAccess( tinyxml2::XMLElement const *           
     }
     else if ( value == "syncsupport" )
     {
-      readSyncAccessSupport( child, stageFlagBits2It );
+      readSyncAccessSupport( child );
     }
   }
 }
@@ -15133,23 +15173,17 @@ void VulkanHppGenerator::readSyncAccessEquivalent( tinyxml2::XMLElement const * 
   }
 }
 
-void VulkanHppGenerator::readSyncAccessSupport( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator stageFlagBits2It )
+void VulkanHppGenerator::readSyncAccessSupport( tinyxml2::XMLElement const * element )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
   checkAttributes( line, attributes, { { "stage", {} } }, {} );
   checkElements( line, getChildElements( element ), {}, {} );
 
-  for ( auto const & attribute : attributes )
+  std::vector<std::string> stages = tokenize( attributes.find( "stage" )->second, "," );
+  for ( auto const & stage : stages )
   {
-    if ( attribute.first == "stage" )
-    {
-      std::vector<std::string> stage = tokenize( attribute.second, "," );
-      for ( auto const & s : stage )
-      {
-        checkForError( contains( stageFlagBits2It->second.values, s ), line, "syncsupport stage uses unknown value <" + s + ">!" );
-      }
-    }
+    checkForError( m_syncStages.contains( stage ), line, "syncsupport uses unknown stage <" + stage + ">!" );
   }
 }
 
@@ -15174,9 +15208,7 @@ void VulkanHppGenerator::readSyncPipeline( tinyxml2::XMLElement const * element 
   }
 }
 
-void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const *                    element,
-                                        std::map<std::string, EnumData>::const_iterator stageFlagBitsIt,
-                                        std::map<std::string, EnumData>::const_iterator stageFlagBits2It )
+void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator stageFlagBits2It )
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
@@ -15184,32 +15216,21 @@ void VulkanHppGenerator::readSyncStage( tinyxml2::XMLElement const *            
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "syncequivalent", "syncsupport" } );
 
-  std::string aliasName;
-  auto        aliasIt = stageFlagBitsIt->second.values.end();
+  std::string alias, name;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "alias" )
     {
-      assert( aliasIt == stageFlagBitsIt->second.values.end() );
-      aliasName = attribute.second;
-      aliasIt   = findByNameOrAlias( stageFlagBitsIt->second.values, attribute.second );
-      checkForError(
-        aliasIt != stageFlagBitsIt->second.values.end(), line, "syncstage alias <" + attribute.second + "> not specified as a VkPipelineStageFlagBits value!" );
+      alias = attribute.second;
     }
     else
     {
       assert( attribute.first == "name" );
-      auto nameIt = findByNameOrAlias( stageFlagBits2It->second.values, attribute.second );
-      checkForError(
-        nameIt != stageFlagBits2It->second.values.end(), line, "syncstage name <" + attribute.second + "> not specified as a VkPipelineStageFlagBits2 value!" );
-      if ( aliasIt != stageFlagBitsIt->second.values.end() )
-      {
-        checkForError( ( aliasIt->value == nameIt->value ) && ( aliasIt->bitpos == nameIt->bitpos ),
-                       line,
-                       "syncstate name <" + attribute.second + "> has an alias <" + aliasName + "> with a different value or bitpos!" );
-      }
+      name = attribute.second;
     }
   }
+
+  checkForError( m_syncStages.insert( { name, { alias, line } } ).second, line, "syncstage <" + name + "> already listed" );
 
   for ( auto child : children )
   {

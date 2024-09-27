@@ -25682,6 +25682,35 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDepthClampRangeEXT( VULKAN_HPP_NAMESPACE::DepthClampModeEXT          depthClampMode,
+                                                               const VULKAN_HPP_NAMESPACE::DepthClampRangeEXT * pDepthClampRange,
+                                                               Dispatch const &                                 d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdSetDepthClampRangeEXT(
+      m_commandBuffer, static_cast<VkDepthClampModeEXT>( depthClampMode ), reinterpret_cast<const VkDepthClampRangeEXT *>( pDepthClampRange ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::setDepthClampRangeEXT( VULKAN_HPP_NAMESPACE::DepthClampModeEXT                  depthClampMode,
+                                                               Optional<const VULKAN_HPP_NAMESPACE::DepthClampRangeEXT> depthClampRange,
+                                                               Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdSetDepthClampRangeEXT &&
+                       "Function <vkCmdSetDepthClampRangeEXT> requires <VK_EXT_depth_clamp_control> or <VK_EXT_shader_object>" );
+#  endif
+
+    d.vkCmdSetDepthClampRangeEXT(
+      m_commandBuffer,
+      static_cast<VkDepthClampModeEXT>( depthClampMode ),
+      reinterpret_cast<const VkDepthClampRangeEXT *>( static_cast<const VULKAN_HPP_NAMESPACE::DepthClampRangeEXT *>( depthClampRange ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
   //=== VK_KHR_pipeline_binary ===
 
   template <typename Dispatch>
@@ -26871,6 +26900,418 @@ namespace VULKAN_HPP_NAMESPACE
 
     d.vkCmdBindDescriptorBufferEmbeddedSamplers2EXT(
       m_commandBuffer, reinterpret_cast<const VkBindDescriptorBufferEmbeddedSamplersInfoEXT *>( &bindDescriptorBufferEmbeddedSamplersInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  //=== VK_EXT_device_generated_commands ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::getGeneratedCommandsMemoryRequirementsEXT( const VULKAN_HPP_NAMESPACE::GeneratedCommandsMemoryRequirementsInfoEXT * pInfo,
+                                                                            VULKAN_HPP_NAMESPACE::MemoryRequirements2 * pMemoryRequirements,
+                                                                            Dispatch const &                            d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetGeneratedCommandsMemoryRequirementsEXT( m_device,
+                                                   reinterpret_cast<const VkGeneratedCommandsMemoryRequirementsInfoEXT *>( pInfo ),
+                                                   reinterpret_cast<VkMemoryRequirements2 *>( pMemoryRequirements ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::MemoryRequirements2
+    Device::getGeneratedCommandsMemoryRequirementsEXT( const VULKAN_HPP_NAMESPACE::GeneratedCommandsMemoryRequirementsInfoEXT & info,
+                                                       Dispatch const &                                                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetGeneratedCommandsMemoryRequirementsEXT &&
+                       "Function <vkGetGeneratedCommandsMemoryRequirementsEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 memoryRequirements;
+    d.vkGetGeneratedCommandsMemoryRequirementsEXT( m_device,
+                                                   reinterpret_cast<const VkGeneratedCommandsMemoryRequirementsInfoEXT *>( &info ),
+                                                   reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+    return memoryRequirements;
+  }
+
+  template <typename X, typename Y, typename... Z, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...>
+    Device::getGeneratedCommandsMemoryRequirementsEXT( const VULKAN_HPP_NAMESPACE::GeneratedCommandsMemoryRequirementsInfoEXT & info,
+                                                       Dispatch const &                                                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetGeneratedCommandsMemoryRequirementsEXT &&
+                       "Function <vkGetGeneratedCommandsMemoryRequirementsEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    VULKAN_HPP_NAMESPACE::StructureChain<X, Y, Z...> structureChain;
+    VULKAN_HPP_NAMESPACE::MemoryRequirements2 &      memoryRequirements = structureChain.template get<VULKAN_HPP_NAMESPACE::MemoryRequirements2>();
+    d.vkGetGeneratedCommandsMemoryRequirementsEXT( m_device,
+                                                   reinterpret_cast<const VkGeneratedCommandsMemoryRequirementsInfoEXT *>( &info ),
+                                                   reinterpret_cast<VkMemoryRequirements2 *>( &memoryRequirements ) );
+
+    return structureChain;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::preprocessGeneratedCommandsEXT( const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT * pGeneratedCommandsInfo,
+                                                                        VULKAN_HPP_NAMESPACE::CommandBuffer                    stateCommandBuffer,
+                                                                        Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdPreprocessGeneratedCommandsEXT(
+      m_commandBuffer, reinterpret_cast<const VkGeneratedCommandsInfoEXT *>( pGeneratedCommandsInfo ), static_cast<VkCommandBuffer>( stateCommandBuffer ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::preprocessGeneratedCommandsEXT( const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT & generatedCommandsInfo,
+                                                                        VULKAN_HPP_NAMESPACE::CommandBuffer                    stateCommandBuffer,
+                                                                        Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdPreprocessGeneratedCommandsEXT && "Function <vkCmdPreprocessGeneratedCommandsEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkCmdPreprocessGeneratedCommandsEXT(
+      m_commandBuffer, reinterpret_cast<const VkGeneratedCommandsInfoEXT *>( &generatedCommandsInfo ), static_cast<VkCommandBuffer>( stateCommandBuffer ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::executeGeneratedCommandsEXT( VULKAN_HPP_NAMESPACE::Bool32                           isPreprocessed,
+                                                                     const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT * pGeneratedCommandsInfo,
+                                                                     Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdExecuteGeneratedCommandsEXT(
+      m_commandBuffer, static_cast<VkBool32>( isPreprocessed ), reinterpret_cast<const VkGeneratedCommandsInfoEXT *>( pGeneratedCommandsInfo ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::executeGeneratedCommandsEXT( VULKAN_HPP_NAMESPACE::Bool32                           isPreprocessed,
+                                                                     const VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT & generatedCommandsInfo,
+                                                                     Dispatch const &                                       d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCmdExecuteGeneratedCommandsEXT && "Function <vkCmdExecuteGeneratedCommandsEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkCmdExecuteGeneratedCommandsEXT(
+      m_commandBuffer, static_cast<VkBool32>( isPreprocessed ), reinterpret_cast<const VkGeneratedCommandsInfoEXT *>( &generatedCommandsInfo ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::createIndirectCommandsLayoutEXT( const VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoEXT * pCreateInfo,
+                                             const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                 pAllocator,
+                                             VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT *                 pIndirectCommandsLayout,
+                                             Dispatch const &                                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateIndirectCommandsLayoutEXT( m_device,
+                                                                     reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoEXT *>( pCreateInfo ),
+                                                                     reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                                     reinterpret_cast<VkIndirectCommandsLayoutEXT *>( pIndirectCommandsLayout ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT>::type
+                       Device::createIndirectCommandsLayoutEXT( const VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoEXT & createInfo,
+                                             Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>         allocator,
+                                             Dispatch const &                                                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateIndirectCommandsLayoutEXT && "Function <vkCreateIndirectCommandsLayoutEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT indirectCommandsLayout;
+    VULKAN_HPP_NAMESPACE::Result                    result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateIndirectCommandsLayoutEXT(
+      m_device,
+      reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoEXT *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkIndirectCommandsLayoutEXT *>( &indirectCommandsLayout ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectCommandsLayoutEXT" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( indirectCommandsLayout ) );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT, Dispatch>>::type
+                       Device::createIndirectCommandsLayoutEXTUnique( const VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoEXT & createInfo,
+                                                   Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>         allocator,
+                                                   Dispatch const &                                                  d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateIndirectCommandsLayoutEXT && "Function <vkCreateIndirectCommandsLayoutEXT> requires <VK_EXT_device_generated_commands>" );
+#    endif
+
+    VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT indirectCommandsLayout;
+    VULKAN_HPP_NAMESPACE::Result                    result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateIndirectCommandsLayoutEXT(
+      m_device,
+      reinterpret_cast<const VkIndirectCommandsLayoutCreateInfoEXT *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkIndirectCommandsLayoutEXT *>( &indirectCommandsLayout ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectCommandsLayoutEXTUnique" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result,
+                                                                UniqueHandle<VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT, Dispatch>(
+                                                                  indirectCommandsLayout, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+  }
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyIndirectCommandsLayoutEXT( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT   indirectCommandsLayout,
+                                                                   const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                                   Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyIndirectCommandsLayoutEXT(
+      m_device, static_cast<VkIndirectCommandsLayoutEXT>( indirectCommandsLayout ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyIndirectCommandsLayoutEXT( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT           indirectCommandsLayout,
+                                                                   Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                                                   Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyIndirectCommandsLayoutEXT && "Function <vkDestroyIndirectCommandsLayoutEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkDestroyIndirectCommandsLayoutEXT(
+      m_device,
+      static_cast<VkIndirectCommandsLayoutEXT>( indirectCommandsLayout ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT   indirectCommandsLayout,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyIndirectCommandsLayoutEXT(
+      m_device, static_cast<VkIndirectCommandsLayoutEXT>( indirectCommandsLayout ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT           indirectCommandsLayout,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyIndirectCommandsLayoutEXT && "Function <vkDestroyIndirectCommandsLayoutEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkDestroyIndirectCommandsLayoutEXT(
+      m_device,
+      static_cast<VkIndirectCommandsLayoutEXT>( indirectCommandsLayout ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    Device::createIndirectExecutionSetEXT( const VULKAN_HPP_NAMESPACE::IndirectExecutionSetCreateInfoEXT * pCreateInfo,
+                                           const VULKAN_HPP_NAMESPACE::AllocationCallbacks *               pAllocator,
+                                           VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT *                 pIndirectExecutionSet,
+                                           Dispatch const &                                                d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkCreateIndirectExecutionSetEXT( m_device,
+                                                                   reinterpret_cast<const VkIndirectExecutionSetCreateInfoEXT *>( pCreateInfo ),
+                                                                   reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ),
+                                                                   reinterpret_cast<VkIndirectExecutionSetEXT *>( pIndirectExecutionSet ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT>::type
+                       Device::createIndirectExecutionSetEXT( const VULKAN_HPP_NAMESPACE::IndirectExecutionSetCreateInfoEXT & createInfo,
+                                           Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>       allocator,
+                                           Dispatch const &                                                d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateIndirectExecutionSetEXT && "Function <vkCreateIndirectExecutionSetEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT indirectExecutionSet;
+    VULKAN_HPP_NAMESPACE::Result                  result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateIndirectExecutionSetEXT(
+      m_device,
+      reinterpret_cast<const VkIndirectExecutionSetCreateInfoEXT *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkIndirectExecutionSetEXT *>( &indirectExecutionSet ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectExecutionSetEXT" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( indirectExecutionSet ) );
+  }
+
+#  ifndef VULKAN_HPP_NO_SMART_HANDLE
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<UniqueHandle<VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT, Dispatch>>::type
+                       Device::createIndirectExecutionSetEXTUnique( const VULKAN_HPP_NAMESPACE::IndirectExecutionSetCreateInfoEXT & createInfo,
+                                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks>       allocator,
+                                                 Dispatch const &                                                d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#    if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkCreateIndirectExecutionSetEXT && "Function <vkCreateIndirectExecutionSetEXT> requires <VK_EXT_device_generated_commands>" );
+#    endif
+
+    VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT indirectExecutionSet;
+    VULKAN_HPP_NAMESPACE::Result                  result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkCreateIndirectExecutionSetEXT(
+      m_device,
+      reinterpret_cast<const VkIndirectExecutionSetCreateInfoEXT *>( &createInfo ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ),
+      reinterpret_cast<VkIndirectExecutionSetEXT *>( &indirectExecutionSet ) ) );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Device::createIndirectExecutionSetEXTUnique" );
+
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType(
+      result,
+      UniqueHandle<VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT, Dispatch>( indirectExecutionSet, ObjectDestroy<Device, Dispatch>( *this, allocator, d ) ) );
+  }
+#  endif /* VULKAN_HPP_NO_SMART_HANDLE */
+#endif   /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyIndirectExecutionSetEXT( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT     indirectExecutionSet,
+                                                                 const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                                                 Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyIndirectExecutionSetEXT(
+      m_device, static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroyIndirectExecutionSetEXT( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT             indirectExecutionSet,
+                                                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                                                 Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyIndirectExecutionSetEXT && "Function <vkDestroyIndirectExecutionSetEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkDestroyIndirectExecutionSetEXT(
+      m_device,
+      static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT     indirectExecutionSet,
+                                          const VULKAN_HPP_NAMESPACE::AllocationCallbacks * pAllocator,
+                                          Dispatch const &                                  d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkDestroyIndirectExecutionSetEXT(
+      m_device, static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ), reinterpret_cast<const VkAllocationCallbacks *>( pAllocator ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::destroy( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT             indirectExecutionSet,
+                                          Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator,
+                                          Dispatch const &                                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkDestroyIndirectExecutionSetEXT && "Function <vkDestroyIndirectExecutionSetEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkDestroyIndirectExecutionSetEXT(
+      m_device,
+      static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+      reinterpret_cast<const VkAllocationCallbacks *>( static_cast<const VULKAN_HPP_NAMESPACE::AllocationCallbacks *>( allocator ) ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::updateIndirectExecutionSetPipelineEXT( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT indirectExecutionSet,
+                                                                        uint32_t                                      executionSetWriteCount,
+                                                                        const VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetPipelineEXT * pExecutionSetWrites,
+                                                                        Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkUpdateIndirectExecutionSetPipelineEXT( m_device,
+                                               static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+                                               executionSetWriteCount,
+                                               reinterpret_cast<const VkWriteIndirectExecutionSetPipelineEXT *>( pExecutionSetWrites ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::updateIndirectExecutionSetPipelineEXT(
+    VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT                                                              indirectExecutionSet,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetPipelineEXT> const & executionSetWrites,
+    Dispatch const &                                                                                           d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkUpdateIndirectExecutionSetPipelineEXT &&
+                       "Function <vkUpdateIndirectExecutionSetPipelineEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkUpdateIndirectExecutionSetPipelineEXT( m_device,
+                                               static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+                                               executionSetWrites.size(),
+                                               reinterpret_cast<const VkWriteIndirectExecutionSetPipelineEXT *>( executionSetWrites.data() ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::updateIndirectExecutionSetShaderEXT( VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT                    indirectExecutionSet,
+                                                                      uint32_t                                                         executionSetWriteCount,
+                                                                      const VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT * pExecutionSetWrites,
+                                                                      Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkUpdateIndirectExecutionSetShaderEXT( m_device,
+                                             static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+                                             executionSetWriteCount,
+                                             reinterpret_cast<const VkWriteIndirectExecutionSetShaderEXT *>( pExecutionSetWrites ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Device::updateIndirectExecutionSetShaderEXT(
+    VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT                                                            indirectExecutionSet,
+    VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT> const & executionSetWrites,
+    Dispatch const &                                                                                         d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkUpdateIndirectExecutionSetShaderEXT &&
+                       "Function <vkUpdateIndirectExecutionSetShaderEXT> requires <VK_EXT_device_generated_commands>" );
+#  endif
+
+    d.vkUpdateIndirectExecutionSetShaderEXT( m_device,
+                                             static_cast<VkIndirectExecutionSetEXT>( indirectExecutionSet ),
+                                             executionSetWrites.size(),
+                                             reinterpret_cast<const VkWriteIndirectExecutionSetShaderEXT *>( executionSetWrites.data() ) );
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

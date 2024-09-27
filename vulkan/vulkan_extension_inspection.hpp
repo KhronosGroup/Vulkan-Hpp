@@ -450,7 +450,9 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_shader_atomic_float16_vector",
       "VK_EXT_shader_replicated_composites",
       "VK_NV_ray_tracing_validation",
-      "VK_MESA_image_alignment_control"
+      "VK_EXT_device_generated_commands",
+      "VK_MESA_image_alignment_control",
+      "VK_EXT_depth_clamp_control"
     };
     return deviceExtensions;
   }
@@ -2337,7 +2339,19 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_KHR_maintenance6", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_maintenance7", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_device_generated_commands",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_buffer_device_address",
+              "VK_KHR_maintenance5",
+            } } } } },
       { "VK_MESA_image_alignment_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_depth_clamp_control",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -3120,7 +3134,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) || ( extension == "VK_NV_command_buffer_inheritance" ) ||
            ( extension == "VK_KHR_maintenance7" ) || ( extension == "VK_NV_shader_atomic_float16_vector" ) ||
            ( extension == "VK_EXT_shader_replicated_composites" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
-           ( extension == "VK_MESA_image_alignment_control" );
+           ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_MESA_image_alignment_control" ) ||
+           ( extension == "VK_EXT_depth_clamp_control" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

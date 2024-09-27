@@ -4418,6 +4418,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, IndirectCommandsLayoutCreateInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_VERSION_1_1 ===
   template <>
   struct StructExtends<PhysicalDeviceSubgroupProperties, PhysicalDeviceProperties2>

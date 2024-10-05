@@ -885,6 +885,17 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_maintenance7 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceLayeredApiKHR;
 
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsInputModeFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsInputModeFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutUsageFlagBitsEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutUsageFlagsEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsTokenTypeEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetInfoTypeEXT;
+
+  //=== VK_EXT_depth_clamp_control ===
+  using VULKAN_HPP_NAMESPACE::DepthClampModeEXT;
+
   //=========================
   //=== Index Type Traits ===
   //=========================
@@ -2155,6 +2166,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::KHRFormatFeatureFlags2ExtensionName;
   using VULKAN_HPP_NAMESPACE::KHRFormatFeatureFlags2SpecVersion;
 
+  //=== VK_EXT_present_mode_fifo_latest_ready ===
+  using VULKAN_HPP_NAMESPACE::EXTPresentModeFifoLatestReadyExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTPresentModeFifoLatestReadySpecVersion;
+
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
   using VULKAN_HPP_NAMESPACE::FUCHSIAExternalMemoryExtensionName;
@@ -2578,9 +2593,17 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationExtensionName;
   using VULKAN_HPP_NAMESPACE::NVRayTracingValidationSpecVersion;
 
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::EXTDeviceGeneratedCommandsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDeviceGeneratedCommandsSpecVersion;
+
   //=== VK_MESA_image_alignment_control ===
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlExtensionName;
   using VULKAN_HPP_NAMESPACE::MESAImageAlignmentControlSpecVersion;
+
+  //=== VK_EXT_depth_clamp_control ===
+  using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
 
   //========================
   //=== CONSTEXPR VALUEs ===
@@ -3998,6 +4021,9 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_EXT_primitive_topology_list_restart ===
   using VULKAN_HPP_NAMESPACE::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT;
 
+  //=== VK_EXT_present_mode_fifo_latest_ready ===
+  using VULKAN_HPP_NAMESPACE::PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT;
+
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
   using VULKAN_HPP_NAMESPACE::ImportMemoryZirconHandleInfoFUCHSIA;
@@ -4470,10 +4496,40 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_ray_tracing_validation ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceRayTracingValidationFeaturesNV;
 
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::BindIndexBufferIndirectCommandEXT;
+  using VULKAN_HPP_NAMESPACE::BindVertexBufferIndirectCommandEXT;
+  using VULKAN_HPP_NAMESPACE::DrawIndirectCountIndirectCommandEXT;
+  using VULKAN_HPP_NAMESPACE::GeneratedCommandsInfoEXT;
+  using VULKAN_HPP_NAMESPACE::GeneratedCommandsMemoryRequirementsInfoEXT;
+  using VULKAN_HPP_NAMESPACE::GeneratedCommandsPipelineInfoEXT;
+  using VULKAN_HPP_NAMESPACE::GeneratedCommandsShaderInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsExecutionSetTokenEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsIndexBufferTokenEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutTokenEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsPushConstantTokenEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsTokenDataEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsVertexBufferTokenEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetCreateInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetPipelineInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetShaderInfoEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetShaderLayoutInfoEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT;
+  using VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetPipelineEXT;
+  using VULKAN_HPP_NAMESPACE::WriteIndirectExecutionSetShaderEXT;
+
   //=== VK_MESA_image_alignment_control ===
   using VULKAN_HPP_NAMESPACE::ImageAlignmentControlCreateInfoMESA;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlFeaturesMESA;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceImageAlignmentControlPropertiesMESA;
+
+  //=== VK_EXT_depth_clamp_control ===
+  using VULKAN_HPP_NAMESPACE::DepthClampRangeEXT;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT;
+  using VULKAN_HPP_NAMESPACE::PipelineViewportDepthClampControlCreateInfoEXT;
 
   //===============
   //=== HANDLEs ===
@@ -4580,6 +4636,10 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_pipeline_binary ===
   using VULKAN_HPP_NAMESPACE::PipelineBinaryKHR;
 
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutEXT;
+  using VULKAN_HPP_NAMESPACE::IndirectExecutionSetEXT;
+
   //======================
   //=== UNIQUE HANDLEs ===
   //======================
@@ -4680,8 +4740,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::UniqueShaderEXT;
 
   //=== VK_KHR_pipeline_binary ===
-  using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
   using VULKAN_HPP_NAMESPACE::UniquePipelineBinaryKHR;
+
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::UniqueHandleTraits;
+  using VULKAN_HPP_NAMESPACE::UniqueIndirectCommandsLayoutEXT;
+  using VULKAN_HPP_NAMESPACE::UniqueIndirectExecutionSetEXT;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //======================
@@ -4787,8 +4851,12 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SharedShaderEXT;
 
   //=== VK_KHR_pipeline_binary ===
-  using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
   using VULKAN_HPP_NAMESPACE::SharedPipelineBinaryKHR;
+
+  //=== VK_EXT_device_generated_commands ===
+  using VULKAN_HPP_NAMESPACE::SharedHandleTraits;
+  using VULKAN_HPP_NAMESPACE::SharedIndirectCommandsLayoutEXT;
+  using VULKAN_HPP_NAMESPACE::SharedIndirectExecutionSetEXT;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/
 
   //===========================
@@ -4972,6 +5040,10 @@ export namespace VULKAN_HPP_NAMESPACE
     //=== VK_KHR_pipeline_binary ===
     using VULKAN_HPP_RAII_NAMESPACE::PipelineBinaryKHR;
     using VULKAN_HPP_RAII_NAMESPACE::PipelineBinaryKHRs;
+
+    //=== VK_EXT_device_generated_commands ===
+    using VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutEXT;
+    using VULKAN_HPP_RAII_NAMESPACE::IndirectExecutionSetEXT;
 
   }  // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif

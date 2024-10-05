@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 295, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 297, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -5748,6 +5748,13 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdBindShadersEXT( commandBuffer, stageCount, pStages, pShaders );
     }
 
+    void vkCmdSetDepthClampRangeEXT( VkCommandBuffer              commandBuffer,
+                                     VkDepthClampModeEXT          depthClampMode,
+                                     const VkDepthClampRangeEXT * pDepthClampRange ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdSetDepthClampRangeEXT( commandBuffer, depthClampMode, pDepthClampRange );
+    }
+
     //=== VK_KHR_pipeline_binary ===
 
     VkResult vkCreatePipelineBinariesKHR( VkDevice                              device,
@@ -5915,6 +5922,75 @@ namespace VULKAN_HPP_NAMESPACE
       VkCommandBuffer commandBuffer, const VkBindDescriptorBufferEmbeddedSamplersInfoEXT * pBindDescriptorBufferEmbeddedSamplersInfo ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( commandBuffer, pBindDescriptorBufferEmbeddedSamplersInfo );
+    }
+
+    //=== VK_EXT_device_generated_commands ===
+
+    void vkGetGeneratedCommandsMemoryRequirementsEXT( VkDevice                                             device,
+                                                      const VkGeneratedCommandsMemoryRequirementsInfoEXT * pInfo,
+                                                      VkMemoryRequirements2 *                              pMemoryRequirements ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetGeneratedCommandsMemoryRequirementsEXT( device, pInfo, pMemoryRequirements );
+    }
+
+    void vkCmdPreprocessGeneratedCommandsEXT( VkCommandBuffer                    commandBuffer,
+                                              const VkGeneratedCommandsInfoEXT * pGeneratedCommandsInfo,
+                                              VkCommandBuffer                    stateCommandBuffer ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdPreprocessGeneratedCommandsEXT( commandBuffer, pGeneratedCommandsInfo, stateCommandBuffer );
+    }
+
+    void vkCmdExecuteGeneratedCommandsEXT( VkCommandBuffer                    commandBuffer,
+                                           VkBool32                           isPreprocessed,
+                                           const VkGeneratedCommandsInfoEXT * pGeneratedCommandsInfo ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdExecuteGeneratedCommandsEXT( commandBuffer, isPreprocessed, pGeneratedCommandsInfo );
+    }
+
+    VkResult vkCreateIndirectCommandsLayoutEXT( VkDevice                                      device,
+                                                const VkIndirectCommandsLayoutCreateInfoEXT * pCreateInfo,
+                                                const VkAllocationCallbacks *                 pAllocator,
+                                                VkIndirectCommandsLayoutEXT *                 pIndirectCommandsLayout ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateIndirectCommandsLayoutEXT( device, pCreateInfo, pAllocator, pIndirectCommandsLayout );
+    }
+
+    void vkDestroyIndirectCommandsLayoutEXT( VkDevice                      device,
+                                             VkIndirectCommandsLayoutEXT   indirectCommandsLayout,
+                                             const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyIndirectCommandsLayoutEXT( device, indirectCommandsLayout, pAllocator );
+    }
+
+    VkResult vkCreateIndirectExecutionSetEXT( VkDevice                                    device,
+                                              const VkIndirectExecutionSetCreateInfoEXT * pCreateInfo,
+                                              const VkAllocationCallbacks *               pAllocator,
+                                              VkIndirectExecutionSetEXT *                 pIndirectExecutionSet ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCreateIndirectExecutionSetEXT( device, pCreateInfo, pAllocator, pIndirectExecutionSet );
+    }
+
+    void vkDestroyIndirectExecutionSetEXT( VkDevice                      device,
+                                           VkIndirectExecutionSetEXT     indirectExecutionSet,
+                                           const VkAllocationCallbacks * pAllocator ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkDestroyIndirectExecutionSetEXT( device, indirectExecutionSet, pAllocator );
+    }
+
+    void vkUpdateIndirectExecutionSetPipelineEXT( VkDevice                                       device,
+                                                  VkIndirectExecutionSetEXT                      indirectExecutionSet,
+                                                  uint32_t                                       executionSetWriteCount,
+                                                  const VkWriteIndirectExecutionSetPipelineEXT * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkUpdateIndirectExecutionSetPipelineEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
+    }
+
+    void vkUpdateIndirectExecutionSetShaderEXT( VkDevice                                     device,
+                                                VkIndirectExecutionSetEXT                    indirectExecutionSet,
+                                                uint32_t                                     executionSetWriteCount,
+                                                const VkWriteIndirectExecutionSetShaderEXT * pExecutionSetWrites ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkUpdateIndirectExecutionSetShaderEXT( device, indirectExecutionSet, executionSetWriteCount, pExecutionSetWrites );
     }
   };
 
@@ -8157,6 +8233,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRFormatFeatureFlags2ExtensionName = VK_KHR_FORMAT_FEATURE_FLAGS_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRFormatFeatureFlags2SpecVersion   = VK_KHR_FORMAT_FEATURE_FLAGS_2_SPEC_VERSION;
 
+  //=== VK_EXT_present_mode_fifo_latest_ready ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTPresentModeFifoLatestReadyExtensionName = VK_EXT_PRESENT_MODE_FIFO_LATEST_READY_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTPresentModeFifoLatestReadySpecVersion   = VK_EXT_PRESENT_MODE_FIFO_LATEST_READY_SPEC_VERSION;
+
 #if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
   VULKAN_HPP_CONSTEXPR_INLINE auto FUCHSIAExternalMemoryExtensionName = VK_FUCHSIA_EXTERNAL_MEMORY_EXTENSION_NAME;
@@ -8575,9 +8655,17 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationExtensionName = VK_NV_RAY_TRACING_VALIDATION_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVRayTracingValidationSpecVersion   = VK_NV_RAY_TRACING_VALIDATION_SPEC_VERSION;
 
+  //=== VK_EXT_device_generated_commands ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsExtensionName = VK_EXT_DEVICE_GENERATED_COMMANDS_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDeviceGeneratedCommandsSpecVersion   = VK_EXT_DEVICE_GENERATED_COMMANDS_SPEC_VERSION;
+
   //=== VK_MESA_image_alignment_control ===
   VULKAN_HPP_CONSTEXPR_INLINE auto MESAImageAlignmentControlExtensionName = VK_MESA_IMAGE_ALIGNMENT_CONTROL_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto MESAImageAlignmentControlSpecVersion   = VK_MESA_IMAGE_ALIGNMENT_CONTROL_SPEC_VERSION;
+
+  //=== VK_EXT_depth_clamp_control ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDepthClampControlExtensionName = VK_EXT_DEPTH_CLAMP_CONTROL_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTDepthClampControlSpecVersion   = VK_EXT_DEPTH_CLAMP_CONTROL_SPEC_VERSION;
 
 }  // namespace VULKAN_HPP_NAMESPACE
 
@@ -8653,6 +8741,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PipelineLayoutCreateInfo, BindDescriptorBufferEmbeddedSamplersInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineLayoutCreateInfo, IndirectCommandsLayoutCreateInfoEXT>
   {
     enum
     {
@@ -14150,6 +14247,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_present_mode_fifo_latest_ready ===
+  template <>
+  struct StructExtends<PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDevicePresentModeFifoLatestReadyFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
   //=== VK_FUCHSIA_external_memory ===
   template <>
@@ -16808,6 +16924,70 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_EXT_device_generated_commands ===
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDeviceGeneratedCommandsPropertiesEXT, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<GeneratedCommandsPipelineInfoEXT, GeneratedCommandsInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<GeneratedCommandsPipelineInfoEXT, GeneratedCommandsMemoryRequirementsInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<GeneratedCommandsShaderInfoEXT, GeneratedCommandsInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<GeneratedCommandsShaderInfoEXT, GeneratedCommandsMemoryRequirementsInfoEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_MESA_image_alignment_control ===
   template <>
   struct StructExtends<PhysicalDeviceImageAlignmentControlFeaturesMESA, PhysicalDeviceFeatures2>
@@ -16838,6 +17018,34 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<ImageAlignmentControlCreateInfoMESA, ImageCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  //=== VK_EXT_depth_clamp_control ===
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampControlFeaturesEXT, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceDepthClampControlFeaturesEXT, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PipelineViewportDepthClampControlCreateInfoEXT, PipelineViewportStateCreateInfo>
   {
     enum
     {
@@ -18044,10 +18252,11 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkAntiLagUpdateAMD vkAntiLagUpdateAMD = 0;
 
     //=== VK_EXT_shader_object ===
-    PFN_vkCreateShadersEXT       vkCreateShadersEXT       = 0;
-    PFN_vkDestroyShaderEXT       vkDestroyShaderEXT       = 0;
-    PFN_vkGetShaderBinaryDataEXT vkGetShaderBinaryDataEXT = 0;
-    PFN_vkCmdBindShadersEXT      vkCmdBindShadersEXT      = 0;
+    PFN_vkCreateShadersEXT         vkCreateShadersEXT         = 0;
+    PFN_vkDestroyShaderEXT         vkDestroyShaderEXT         = 0;
+    PFN_vkGetShaderBinaryDataEXT   vkGetShaderBinaryDataEXT   = 0;
+    PFN_vkCmdBindShadersEXT        vkCmdBindShadersEXT        = 0;
+    PFN_vkCmdSetDepthClampRangeEXT vkCmdSetDepthClampRangeEXT = 0;
 
     //=== VK_KHR_pipeline_binary ===
     PFN_vkCreatePipelineBinariesKHR      vkCreatePipelineBinariesKHR      = 0;
@@ -18094,6 +18303,17 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdPushDescriptorSetWithTemplate2KHR        vkCmdPushDescriptorSetWithTemplate2KHR        = 0;
     PFN_vkCmdSetDescriptorBufferOffsets2EXT           vkCmdSetDescriptorBufferOffsets2EXT           = 0;
     PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT vkCmdBindDescriptorBufferEmbeddedSamplers2EXT = 0;
+
+    //=== VK_EXT_device_generated_commands ===
+    PFN_vkGetGeneratedCommandsMemoryRequirementsEXT vkGetGeneratedCommandsMemoryRequirementsEXT = 0;
+    PFN_vkCmdPreprocessGeneratedCommandsEXT         vkCmdPreprocessGeneratedCommandsEXT         = 0;
+    PFN_vkCmdExecuteGeneratedCommandsEXT            vkCmdExecuteGeneratedCommandsEXT            = 0;
+    PFN_vkCreateIndirectCommandsLayoutEXT           vkCreateIndirectCommandsLayoutEXT           = 0;
+    PFN_vkDestroyIndirectCommandsLayoutEXT          vkDestroyIndirectCommandsLayoutEXT          = 0;
+    PFN_vkCreateIndirectExecutionSetEXT             vkCreateIndirectExecutionSetEXT             = 0;
+    PFN_vkDestroyIndirectExecutionSetEXT            vkDestroyIndirectExecutionSetEXT            = 0;
+    PFN_vkUpdateIndirectExecutionSetPipelineEXT     vkUpdateIndirectExecutionSetPipelineEXT     = 0;
+    PFN_vkUpdateIndirectExecutionSetShaderEXT       vkUpdateIndirectExecutionSetShaderEXT       = 0;
 
   public:
     DispatchLoaderDynamic() VULKAN_HPP_NOEXCEPT                                    = default;
@@ -19456,10 +19676,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetInstanceProcAddr( instance, "vkAntiLagUpdateAMD" ) );
 
       //=== VK_EXT_shader_object ===
-      vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetInstanceProcAddr( instance, "vkCreateShadersEXT" ) );
-      vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetInstanceProcAddr( instance, "vkDestroyShaderEXT" ) );
-      vkGetShaderBinaryDataEXT = PFN_vkGetShaderBinaryDataEXT( vkGetInstanceProcAddr( instance, "vkGetShaderBinaryDataEXT" ) );
-      vkCmdBindShadersEXT      = PFN_vkCmdBindShadersEXT( vkGetInstanceProcAddr( instance, "vkCmdBindShadersEXT" ) );
+      vkCreateShadersEXT         = PFN_vkCreateShadersEXT( vkGetInstanceProcAddr( instance, "vkCreateShadersEXT" ) );
+      vkDestroyShaderEXT         = PFN_vkDestroyShaderEXT( vkGetInstanceProcAddr( instance, "vkDestroyShaderEXT" ) );
+      vkGetShaderBinaryDataEXT   = PFN_vkGetShaderBinaryDataEXT( vkGetInstanceProcAddr( instance, "vkGetShaderBinaryDataEXT" ) );
+      vkCmdBindShadersEXT        = PFN_vkCmdBindShadersEXT( vkGetInstanceProcAddr( instance, "vkCmdBindShadersEXT" ) );
+      vkCmdSetDepthClampRangeEXT = PFN_vkCmdSetDepthClampRangeEXT( vkGetInstanceProcAddr( instance, "vkCmdSetDepthClampRangeEXT" ) );
 
       //=== VK_KHR_pipeline_binary ===
       vkCreatePipelineBinariesKHR      = PFN_vkCreatePipelineBinariesKHR( vkGetInstanceProcAddr( instance, "vkCreatePipelineBinariesKHR" ) );
@@ -19510,6 +19731,20 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdSetDescriptorBufferOffsets2EXT = PFN_vkCmdSetDescriptorBufferOffsets2EXT( vkGetInstanceProcAddr( instance, "vkCmdSetDescriptorBufferOffsets2EXT" ) );
       vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
         PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetInstanceProcAddr( instance, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
+
+      //=== VK_EXT_device_generated_commands ===
+      vkGetGeneratedCommandsMemoryRequirementsEXT =
+        PFN_vkGetGeneratedCommandsMemoryRequirementsEXT( vkGetInstanceProcAddr( instance, "vkGetGeneratedCommandsMemoryRequirementsEXT" ) );
+      vkCmdPreprocessGeneratedCommandsEXT = PFN_vkCmdPreprocessGeneratedCommandsEXT( vkGetInstanceProcAddr( instance, "vkCmdPreprocessGeneratedCommandsEXT" ) );
+      vkCmdExecuteGeneratedCommandsEXT    = PFN_vkCmdExecuteGeneratedCommandsEXT( vkGetInstanceProcAddr( instance, "vkCmdExecuteGeneratedCommandsEXT" ) );
+      vkCreateIndirectCommandsLayoutEXT   = PFN_vkCreateIndirectCommandsLayoutEXT( vkGetInstanceProcAddr( instance, "vkCreateIndirectCommandsLayoutEXT" ) );
+      vkDestroyIndirectCommandsLayoutEXT  = PFN_vkDestroyIndirectCommandsLayoutEXT( vkGetInstanceProcAddr( instance, "vkDestroyIndirectCommandsLayoutEXT" ) );
+      vkCreateIndirectExecutionSetEXT     = PFN_vkCreateIndirectExecutionSetEXT( vkGetInstanceProcAddr( instance, "vkCreateIndirectExecutionSetEXT" ) );
+      vkDestroyIndirectExecutionSetEXT    = PFN_vkDestroyIndirectExecutionSetEXT( vkGetInstanceProcAddr( instance, "vkDestroyIndirectExecutionSetEXT" ) );
+      vkUpdateIndirectExecutionSetPipelineEXT =
+        PFN_vkUpdateIndirectExecutionSetPipelineEXT( vkGetInstanceProcAddr( instance, "vkUpdateIndirectExecutionSetPipelineEXT" ) );
+      vkUpdateIndirectExecutionSetShaderEXT =
+        PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetInstanceProcAddr( instance, "vkUpdateIndirectExecutionSetShaderEXT" ) );
     }
 
     void init( VULKAN_HPP_NAMESPACE::Device deviceCpp ) VULKAN_HPP_NOEXCEPT
@@ -20516,10 +20751,11 @@ namespace VULKAN_HPP_NAMESPACE
       vkAntiLagUpdateAMD = PFN_vkAntiLagUpdateAMD( vkGetDeviceProcAddr( device, "vkAntiLagUpdateAMD" ) );
 
       //=== VK_EXT_shader_object ===
-      vkCreateShadersEXT       = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );
-      vkDestroyShaderEXT       = PFN_vkDestroyShaderEXT( vkGetDeviceProcAddr( device, "vkDestroyShaderEXT" ) );
-      vkGetShaderBinaryDataEXT = PFN_vkGetShaderBinaryDataEXT( vkGetDeviceProcAddr( device, "vkGetShaderBinaryDataEXT" ) );
-      vkCmdBindShadersEXT      = PFN_vkCmdBindShadersEXT( vkGetDeviceProcAddr( device, "vkCmdBindShadersEXT" ) );
+      vkCreateShadersEXT         = PFN_vkCreateShadersEXT( vkGetDeviceProcAddr( device, "vkCreateShadersEXT" ) );
+      vkDestroyShaderEXT         = PFN_vkDestroyShaderEXT( vkGetDeviceProcAddr( device, "vkDestroyShaderEXT" ) );
+      vkGetShaderBinaryDataEXT   = PFN_vkGetShaderBinaryDataEXT( vkGetDeviceProcAddr( device, "vkGetShaderBinaryDataEXT" ) );
+      vkCmdBindShadersEXT        = PFN_vkCmdBindShadersEXT( vkGetDeviceProcAddr( device, "vkCmdBindShadersEXT" ) );
+      vkCmdSetDepthClampRangeEXT = PFN_vkCmdSetDepthClampRangeEXT( vkGetDeviceProcAddr( device, "vkCmdSetDepthClampRangeEXT" ) );
 
       //=== VK_KHR_pipeline_binary ===
       vkCreatePipelineBinariesKHR      = PFN_vkCreatePipelineBinariesKHR( vkGetDeviceProcAddr( device, "vkCreatePipelineBinariesKHR" ) );
@@ -20564,6 +20800,20 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdSetDescriptorBufferOffsets2EXT = PFN_vkCmdSetDescriptorBufferOffsets2EXT( vkGetDeviceProcAddr( device, "vkCmdSetDescriptorBufferOffsets2EXT" ) );
       vkCmdBindDescriptorBufferEmbeddedSamplers2EXT =
         PFN_vkCmdBindDescriptorBufferEmbeddedSamplers2EXT( vkGetDeviceProcAddr( device, "vkCmdBindDescriptorBufferEmbeddedSamplers2EXT" ) );
+
+      //=== VK_EXT_device_generated_commands ===
+      vkGetGeneratedCommandsMemoryRequirementsEXT =
+        PFN_vkGetGeneratedCommandsMemoryRequirementsEXT( vkGetDeviceProcAddr( device, "vkGetGeneratedCommandsMemoryRequirementsEXT" ) );
+      vkCmdPreprocessGeneratedCommandsEXT = PFN_vkCmdPreprocessGeneratedCommandsEXT( vkGetDeviceProcAddr( device, "vkCmdPreprocessGeneratedCommandsEXT" ) );
+      vkCmdExecuteGeneratedCommandsEXT    = PFN_vkCmdExecuteGeneratedCommandsEXT( vkGetDeviceProcAddr( device, "vkCmdExecuteGeneratedCommandsEXT" ) );
+      vkCreateIndirectCommandsLayoutEXT   = PFN_vkCreateIndirectCommandsLayoutEXT( vkGetDeviceProcAddr( device, "vkCreateIndirectCommandsLayoutEXT" ) );
+      vkDestroyIndirectCommandsLayoutEXT  = PFN_vkDestroyIndirectCommandsLayoutEXT( vkGetDeviceProcAddr( device, "vkDestroyIndirectCommandsLayoutEXT" ) );
+      vkCreateIndirectExecutionSetEXT     = PFN_vkCreateIndirectExecutionSetEXT( vkGetDeviceProcAddr( device, "vkCreateIndirectExecutionSetEXT" ) );
+      vkDestroyIndirectExecutionSetEXT    = PFN_vkDestroyIndirectExecutionSetEXT( vkGetDeviceProcAddr( device, "vkDestroyIndirectExecutionSetEXT" ) );
+      vkUpdateIndirectExecutionSetPipelineEXT =
+        PFN_vkUpdateIndirectExecutionSetPipelineEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetPipelineEXT" ) );
+      vkUpdateIndirectExecutionSetShaderEXT =
+        PFN_vkUpdateIndirectExecutionSetShaderEXT( vkGetDeviceProcAddr( device, "vkUpdateIndirectExecutionSetShaderEXT" ) );
     }
 
     template <typename DynamicLoader>

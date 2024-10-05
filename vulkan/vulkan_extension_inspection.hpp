@@ -346,6 +346,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_depth_clip_control",
       "VK_EXT_primitive_topology_list_restart",
       "VK_KHR_format_feature_flags2",
+      "VK_EXT_present_mode_fifo_latest_ready",
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       "VK_FUCHSIA_external_memory",
       "VK_FUCHSIA_external_semaphore",
@@ -450,7 +451,9 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_NV_shader_atomic_float16_vector",
       "VK_EXT_shader_replicated_composites",
       "VK_NV_ray_tracing_validation",
-      "VK_MESA_image_alignment_control"
+      "VK_EXT_device_generated_commands",
+      "VK_MESA_image_alignment_control",
+      "VK_EXT_depth_clamp_control"
     };
     return deviceExtensions;
   }
@@ -1825,6 +1828,11 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_present_mode_fifo_latest_ready",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_swapchain",
+            } } } } },
 #if defined( VK_USE_PLATFORM_FUCHSIA )
       { "VK_FUCHSIA_external_memory",
         { { "VK_VERSION_1_0",
@@ -2337,7 +2345,19 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_KHR_maintenance6", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_NV_descriptor_pool_overallocation", { { "VK_VERSION_1_1", { {} } } } },
       { "VK_KHR_maintenance7", { { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_device_generated_commands",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_buffer_device_address",
+              "VK_KHR_maintenance5",
+            } } } } },
       { "VK_MESA_image_alignment_control",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1", { {} } } } },
+      { "VK_EXT_depth_clamp_control",
         { { "VK_VERSION_1_0",
             { {
               "VK_KHR_get_physical_device_properties2",
@@ -3067,7 +3087,7 @@ namespace VULKAN_HPP_NAMESPACE
         || ( extension == "VK_VALVE_mutable_descriptor_type" ) || ( extension == "VK_EXT_vertex_input_dynamic_state" ) ||
            ( extension == "VK_EXT_physical_device_drm" ) || ( extension == "VK_EXT_device_address_binding_report" ) ||
            ( extension == "VK_EXT_depth_clip_control" ) || ( extension == "VK_EXT_primitive_topology_list_restart" ) ||
-           ( extension == "VK_KHR_format_feature_flags2" )
+           ( extension == "VK_KHR_format_feature_flags2" ) || ( extension == "VK_EXT_present_mode_fifo_latest_ready" )
 #if defined( VK_USE_PLATFORM_FUCHSIA )
         || ( extension == "VK_FUCHSIA_external_memory" ) || ( extension == "VK_FUCHSIA_external_semaphore" ) || ( extension == "VK_FUCHSIA_buffer_collection" )
 #endif /*VK_USE_PLATFORM_FUCHSIA*/
@@ -3120,7 +3140,8 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_shader_relaxed_extended_instruction" ) || ( extension == "VK_NV_command_buffer_inheritance" ) ||
            ( extension == "VK_KHR_maintenance7" ) || ( extension == "VK_NV_shader_atomic_float16_vector" ) ||
            ( extension == "VK_EXT_shader_replicated_composites" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
-           ( extension == "VK_MESA_image_alignment_control" );
+           ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_MESA_image_alignment_control" ) ||
+           ( extension == "VK_EXT_depth_clamp_control" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

@@ -974,6 +974,27 @@ namespace VULKAN_HPP_NAMESPACE
 
   using SharedPipelineBinaryKHR = SharedHandle<PipelineBinaryKHR>;
 
+  //=== VK_EXT_device_generated_commands ===
+  template <>
+  class SharedHandleTraits<IndirectCommandsLayoutEXT>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = ObjectDestroyShared<IndirectCommandsLayoutEXT>;
+  };
+
+  using SharedIndirectCommandsLayoutEXT = SharedHandle<IndirectCommandsLayoutEXT>;
+
+  template <>
+  class SharedHandleTraits<IndirectExecutionSetEXT>
+  {
+  public:
+    using DestructorType = Device;
+    using deleter        = ObjectDestroyShared<IndirectExecutionSetEXT>;
+  };
+
+  using SharedIndirectExecutionSetEXT = SharedHandle<IndirectExecutionSetEXT>;
+
   enum class SwapchainOwns
   {
     no,

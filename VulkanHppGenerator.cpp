@@ -14732,9 +14732,9 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
   }
   auto memberIt =
     std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&name]( MemberData const & md ) { return md.name == name; } );
-  checkForWarning(
+  checkForError(
     memberIt != structIt->second.members.end(), line, "required feature name <" + name + "> not part of the required feature struct <" + structure + ">" );
-  checkForError( ( memberIt == structIt->second.members.end() ) || ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
+  checkForError( ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
                  line,
                  "required feature name <" + name + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
 
@@ -15809,6 +15809,7 @@ void VulkanHppGenerator::readTypeStruct( tinyxml2::XMLElement const * element, b
     static std::set<std::string> multipleLenStructs = { "VkAccelerationStructureTrianglesDisplacementMicromapNV",
                                                         "VkImageConstraintsInfoFUCHSIA",
                                                         "VkIndirectCommandsLayoutTokenNV",
+                                                        "VkIndirectExecutionSetShaderInfoEXT",
                                                         "VkPipelineBinaryKeysAndDataKHR",
                                                         "VkPresentInfoKHR",
                                                         "VkSemaphoreWaitInfo",

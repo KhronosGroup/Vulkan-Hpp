@@ -591,7 +591,7 @@ private:
                                                                                 bool                                      definition,
                                                                                 CommandFlavourFlags                       flavourFlags,
                                                                                 bool                                      withDispatcher ) const;
-  std::string generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams ) const;
+  std::string generateArgumentListStandard( std::vector<ParamData> const & params, std::set<size_t> const & skippedParams, bool withDispatcher ) const;
   std::string generateArgumentTemplates( std::vector<ParamData> const &            params,
                                          std::vector<size_t> const &               returnParams,
                                          std::map<size_t, VectorParamData> const & vectorParams,
@@ -611,7 +611,7 @@ private:
                                              bool                     raii,
                                              bool                     raiiFactory,
                                              CommandFlavourFlags      flavourFlags ) const;
-  std::string generateCallArgumentsStandard( std::string const & handle, std::vector<ParamData> const & params ) const;
+  std::string generateCallArgumentsStandard( std::vector<ParamData> const & params, size_t initialSkipCount ) const;
   std::string generateCallArgumentEnhanced( std::vector<ParamData> const & params,
                                             size_t                         paramIndex,
                                             bool                           nonConstPointerAsNullptr,
@@ -852,6 +852,7 @@ private:
               generateLenInitializer( std::vector<MemberData>::const_iterator                                                                                 mit,
                                       std::map<std::vector<MemberData>::const_iterator, std::vector<std::vector<MemberData>::const_iterator>>::const_iterator litit,
                                       bool mutualExclusiveLens ) const;
+  std::string generateName( std::string const & type ) const;
   std::string generateName( TypeInfo const & typeInfo ) const;
   std::string generateNoExcept( std::vector<std::string> const &          errorCodes,
                                 std::vector<size_t> const &               returnParams,
@@ -896,6 +897,10 @@ private:
                                                             std::set<size_t> const &       skippedParams,
                                                             bool                           definition,
                                                             bool                           singular ) const;
+  std::string generateRAIIHandleCommandStandard( std::string const &                       name,
+                                                 CommandData const &                       commandData,
+                                                 size_t                                    initialSkipCount,
+                                                 bool                                      definition ) const;
   std::pair<std::string, std::string> generateRAIIHandleConstructor( std::pair<std::string, HandleData> const &         handle,
                                                                      std::map<std::string, CommandData>::const_iterator constructorIt,
                                                                      std::string const &                                enter,
@@ -1059,6 +1064,7 @@ private:
   bool isTypeUsed( std::string const & type ) const;
   bool isUnsupportedExtension( std::string const & name ) const;
   bool isUnsupportedFeature( std::string const & name ) const;
+  bool isVectorByStructure( std::string const & type ) const;
   void markExtendedStructs();
   bool needsStructureChainResize( std::map<size_t, VectorParamData> const & vectorParams, std::vector<size_t> const & chainedReturnParams ) const;
   std::pair<bool, std::map<size_t, std::vector<size_t>>> needsVectorSizeCheck( std::vector<ParamData> const &            params,

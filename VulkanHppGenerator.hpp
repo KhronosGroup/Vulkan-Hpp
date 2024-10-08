@@ -1102,8 +1102,7 @@ private:
   void                     readSPIRVExtensions( tinyxml2::XMLElement const * element );
   void                     readStructMember( tinyxml2::XMLElement const * element, std::vector<MemberData> & members, bool isUnion );
   void                     readSync( tinyxml2::XMLElement const * element );
-  void                     readSyncAccess( tinyxml2::XMLElement const *                    element,
-                                           std::map<std::string, EnumData>::const_iterator accessFlagBits2It );
+  void                     readSyncAccess( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator accessFlagBits2It );
   void                     readSyncAccessEquivalent( tinyxml2::XMLElement const * element, std::map<std::string, EnumData>::const_iterator accessFlagBits2It );
   void                     readSyncAccessSupport( tinyxml2::XMLElement const * element );
   void                     readSyncPipeline( tinyxml2::XMLElement const * element );
@@ -1151,6 +1150,7 @@ private:
   std::string                         m_api;
   std::map<std::string, BaseTypeData> m_baseTypes;
   std::map<std::string, BitmaskData>  m_bitmasks;
+  std::set<std::string>               m_commandQueues;
   std::map<std::string, CommandData>  m_commands;
   std::map<std::string, ConstantData> m_constants;
   std::map<std::string, DefineData>   m_defines;

@@ -13340,7 +13340,7 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
                        { "cmdbufferlevel", { "primary", "secondary" } },
                        { "comment", {} },
                        { "errorcodes", {} },
-                       { "queues", { "compute", "decode", "encode", "graphics", "opticalflow", "sparse_binding", "transfer" } },
+                       { "queues", {} },
                        { "renderpass", { "both", "inside", "outside" } },
                        { "successcodes", {} },
                        { "tasks", { "action", "indirection", "state", "synchronization" } },
@@ -13362,6 +13362,10 @@ void VulkanHppGenerator::readCommand( tinyxml2::XMLElement const * element )
       {
         commandData.errorCodes = tokenize( attribute.second, "," );
         // errorCodes are checked in checkCorrectness after complete reading
+      }
+      else if ( attribute.first == "queues" )
+      {
+        m_commandQueues.insert( attribute.second );
       }
       else if ( attribute.first == "successcodes" )
       {
@@ -15267,9 +15271,16 @@ void VulkanHppGenerator::readSyncStageEquivalent( tinyxml2::XMLElement const * e
 
 void VulkanHppGenerator::readSyncStageSupport( tinyxml2::XMLElement const * element )
 {
-  const int line = element->GetLineNum();
-  checkAttributes( line, getAttributes( element ), { { "queues", { "compute", "decode", "encode", "graphics", "opticalflow", "transfer" } } }, {} );
+  const int                          line       = element->GetLineNum();
+  std::map<std::string, std::string> attributes = getAttributes( element );
+  checkAttributes( line, attributes, { { "queues", {} } }, {} );
   checkElements( line, getChildElements( element ), {}, {} );
+
+  for ( auto const & attribute : attributes )
+  {
+    assert( attribute.first == "queues" );
+    checkForError( m_commandQueues.contains( attribute.second ), line, "syncsupport queues uses unknown value <" + attribute.second + ">" );
+  }
 }
 
 void VulkanHppGenerator::readTag( tinyxml2::XMLElement const * element )

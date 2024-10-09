@@ -21566,8 +21566,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                                            Dispatch const &                             d ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-      return static_cast<Result>( d.vkGetDeviceFaultInfoEXT(
-        m_device, reinterpret_cast<VkDeviceFaultCountsEXT *>( pFaultCounts ), reinterpret_cast<VkDeviceFaultInfoEXT *>( pFaultInfo ) ) );
+      return static_cast<Result>( d.vkGetDeviceFaultInfoEXT( static_cast<VkDevice>( m_device ),
+                                                             reinterpret_cast<VkDeviceFaultCountsEXT *>( pFaultCounts ),
+                                                             reinterpret_cast<VkDeviceFaultInfoEXT *>( pFaultInfo ) ) );
     }
 #  if defined( VK_USE_PLATFORM_WIN32_KHR )
     //=== VK_NV_acquire_winrt_display ===

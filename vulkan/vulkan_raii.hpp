@@ -5947,15 +5947,20 @@ namespace VULKAN_HPP_NAMESPACE
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
       //=== VK_AMDX_shader_enqueue ===
 
-      void initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch ) const VULKAN_HPP_NOEXCEPT;
+      void initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::Pipeline      executionGraph,
+                                             VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                             VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize ) const VULKAN_HPP_NOEXCEPT;
 
       void dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                              VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                               const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo ) const VULKAN_HPP_NOEXCEPT;
 
       void dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                      VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                       const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo ) const VULKAN_HPP_NOEXCEPT;
 
       void dispatchGraphIndirectCountAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                           VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                            VULKAN_HPP_NAMESPACE::DeviceAddress countInfo ) const VULKAN_HPP_NOEXCEPT;
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
@@ -18376,43 +18381,55 @@ namespace VULKAN_HPP_NAMESPACE
       return nodeIndex;
     }
 
-    VULKAN_HPP_INLINE void CommandBuffer::initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch ) const VULKAN_HPP_NOEXCEPT
+    VULKAN_HPP_INLINE void CommandBuffer::initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::Pipeline      executionGraph,
+                                                                            VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                                                            VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdInitializeGraphScratchMemoryAMDX &&
                          "Function <vkCmdInitializeGraphScratchMemoryAMDX> requires <VK_AMDX_shader_enqueue>" );
 
-      getDispatcher()->vkCmdInitializeGraphScratchMemoryAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( scratch ) );
+      getDispatcher()->vkCmdInitializeGraphScratchMemoryAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                              static_cast<VkPipeline>( executionGraph ),
+                                                              static_cast<VkDeviceAddress>( scratch ),
+                                                              static_cast<VkDeviceSize>( scratchSize ) );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                             VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                              const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchGraphAMDX && "Function <vkCmdDispatchGraphAMDX> requires <VK_AMDX_shader_enqueue>" );
 
       getDispatcher()->vkCmdDispatchGraphAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                static_cast<VkDeviceAddress>( scratch ),
+                                               static_cast<VkDeviceSize>( scratchSize ),
                                                reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
     }
 
     VULKAN_HPP_INLINE void
       CommandBuffer::dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                 const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchGraphIndirectAMDX && "Function <vkCmdDispatchGraphIndirectAMDX> requires <VK_AMDX_shader_enqueue>" );
 
       getDispatcher()->vkCmdDispatchGraphIndirectAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                                        static_cast<VkDeviceAddress>( scratch ),
+                                                       static_cast<VkDeviceSize>( scratchSize ),
                                                        reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
     }
 
     VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphIndirectCountAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                                                          VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                                                           VULKAN_HPP_NAMESPACE::DeviceAddress countInfo ) const VULKAN_HPP_NOEXCEPT
     {
       VULKAN_HPP_ASSERT( getDispatcher()->vkCmdDispatchGraphIndirectCountAMDX &&
                          "Function <vkCmdDispatchGraphIndirectCountAMDX> requires <VK_AMDX_shader_enqueue>" );
 
-      getDispatcher()->vkCmdDispatchGraphIndirectCountAMDX(
-        static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( scratch ), static_cast<VkDeviceAddress>( countInfo ) );
+      getDispatcher()->vkCmdDispatchGraphIndirectCountAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                                            static_cast<VkDeviceAddress>( scratch ),
+                                                            static_cast<VkDeviceSize>( scratchSize ),
+                                                            static_cast<VkDeviceAddress>( countInfo ) );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 

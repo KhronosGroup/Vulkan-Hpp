@@ -6078,33 +6078,40 @@ namespace VULKAN_HPP_NAMESPACE
     //=== VK_AMDX_shader_enqueue ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+    void initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::Pipeline      executionGraph,
+                                           VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                           VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                            Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                            VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                             const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX * pCountInfo,
                             Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                            VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                             const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo,
                             Dispatch const & d                                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                    VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                     const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX * pCountInfo,
                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                    VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                     const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo,
                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
     void dispatchGraphIndirectCountAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                         VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                          VULKAN_HPP_NAMESPACE::DeviceAddress countInfo,
                                          Dispatch const & d                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/

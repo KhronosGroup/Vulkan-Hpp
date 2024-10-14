@@ -3385,6 +3385,10 @@ namespace VULKAN_HPP_NAMESPACE
       result += "AllowDerivatives | ";
     if ( value & PipelineCreateFlagBits2KHR::eDerivative )
       result += "Derivative | ";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    if ( value & PipelineCreateFlagBits2KHR::eExecutionGraphAMDX )
+      result += "ExecutionGraphAMDX | ";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     if ( value & PipelineCreateFlagBits2KHR::eEnableLegacyDitheringEXT )
       result += "EnableLegacyDitheringEXT | ";
     if ( value & PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex )
@@ -8919,6 +8923,9 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits2KHR::eDisableOptimization: return "DisableOptimization";
       case PipelineCreateFlagBits2KHR::eAllowDerivatives: return "AllowDerivatives";
       case PipelineCreateFlagBits2KHR::eDerivative: return "Derivative";
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      case PipelineCreateFlagBits2KHR::eExecutionGraphAMDX: return "ExecutionGraphAMDX";
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
       case PipelineCreateFlagBits2KHR::eEnableLegacyDitheringEXT: return "EnableLegacyDitheringEXT";
       case PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex: return "ViewIndexFromDeviceIndex";
       case PipelineCreateFlagBits2KHR::eDispatchBase: return "DispatchBase";

@@ -994,16 +994,14 @@ namespace VULKAN_HPP_NAMESPACE
       { "VK_AMDX_shader_enqueue",
         { { "VK_VERSION_1_0",
             { {
-              "VK_KHR_get_physical_device_properties2",
-            } } },
-          { "VK_VERSION_1_1",
-            { {
               "VK_KHR_synchronization2",
+              "VK_KHR_spirv_1_4",
+              "VK_EXT_extended_dynamic_state",
             } } },
           { "VK_VERSION_1_3",
             { {
+              "VK_KHR_maintenance5",
               "VK_KHR_pipeline_library",
-              "VK_KHR_spirv_1_4",
             } } } } },
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
       { "VK_EXT_inline_uniform_block",

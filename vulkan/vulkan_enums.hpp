@@ -7025,9 +7025,12 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineCreateFlagBits2KHR : VkPipelineCreateFlags2KHR
   {
-    eDisableOptimization                      = VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT_KHR,
-    eAllowDerivatives                         = VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT_KHR,
-    eDerivative                               = VK_PIPELINE_CREATE_2_DERIVATIVE_BIT_KHR,
+    eDisableOptimization = VK_PIPELINE_CREATE_2_DISABLE_OPTIMIZATION_BIT_KHR,
+    eAllowDerivatives    = VK_PIPELINE_CREATE_2_ALLOW_DERIVATIVES_BIT_KHR,
+    eDerivative          = VK_PIPELINE_CREATE_2_DERIVATIVE_BIT_KHR,
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+    eExecutionGraphAMDX = VK_PIPELINE_CREATE_2_EXECUTION_GRAPH_BIT_AMDX,
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
     eEnableLegacyDitheringEXT                 = VK_PIPELINE_CREATE_2_ENABLE_LEGACY_DITHERING_BIT_EXT,
     eViewIndexFromDeviceIndex                 = VK_PIPELINE_CREATE_2_VIEW_INDEX_FROM_DEVICE_INDEX_BIT_KHR,
     eDispatchBase                             = VK_PIPELINE_CREATE_2_DISPATCH_BASE_BIT_KHR,
@@ -7068,8 +7071,11 @@ namespace VULKAN_HPP_NAMESPACE
   {
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                    isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCreateFlags2KHR allFlags =
-      PipelineCreateFlagBits2KHR::eDisableOptimization | PipelineCreateFlagBits2KHR::eAllowDerivatives | PipelineCreateFlagBits2KHR::eDerivative |
-      PipelineCreateFlagBits2KHR::eEnableLegacyDitheringEXT | PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex |
+      PipelineCreateFlagBits2KHR::eDisableOptimization | PipelineCreateFlagBits2KHR::eAllowDerivatives | PipelineCreateFlagBits2KHR::eDerivative
+#if defined( VK_ENABLE_BETA_EXTENSIONS )
+      | PipelineCreateFlagBits2KHR::eExecutionGraphAMDX
+#endif /*VK_ENABLE_BETA_EXTENSIONS*/
+      | PipelineCreateFlagBits2KHR::eEnableLegacyDitheringEXT | PipelineCreateFlagBits2KHR::eViewIndexFromDeviceIndex |
       PipelineCreateFlagBits2KHR::eDispatchBase | PipelineCreateFlagBits2KHR::eDeferCompileNV | PipelineCreateFlagBits2KHR::eCaptureStatistics |
       PipelineCreateFlagBits2KHR::eCaptureInternalRepresentations | PipelineCreateFlagBits2KHR::eFailOnPipelineCompileRequired |
       PipelineCreateFlagBits2KHR::eEarlyReturnOnFailure | PipelineCreateFlagBits2KHR::eLinkTimeOptimizationEXT |

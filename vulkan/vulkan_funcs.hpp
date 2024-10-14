@@ -15575,27 +15575,35 @@ namespace VULKAN_HPP_NAMESPACE
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+  VULKAN_HPP_INLINE void CommandBuffer::initializeGraphScratchMemoryAMDX( VULKAN_HPP_NAMESPACE::Pipeline      executionGraph,
+                                                                          VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                                                          VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                                                           Dispatch const &                    d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkCmdInitializeGraphScratchMemoryAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( scratch ) );
+    d.vkCmdInitializeGraphScratchMemoryAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                             static_cast<VkPipeline>( executionGraph ),
+                                             static_cast<VkDeviceAddress>( scratch ),
+                                             static_cast<VkDeviceSize>( scratchSize ) );
   }
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                           VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                            const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX * pCountInfo,
                                                            Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkCmdDispatchGraphAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
                               static_cast<VkDeviceAddress>( scratch ),
+                              static_cast<VkDeviceSize>( scratchSize ),
                               reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( pCountInfo ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                           VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                            const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo,
                                                            Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
   {
@@ -15604,24 +15612,30 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.vkCmdDispatchGraphAMDX && "Function <vkCmdDispatchGraphAMDX> requires <VK_AMDX_shader_enqueue>" );
 #    endif
 
-    d.vkCmdDispatchGraphAMDX( m_commandBuffer, static_cast<VkDeviceAddress>( scratch ), reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
+    d.vkCmdDispatchGraphAMDX( m_commandBuffer,
+                              static_cast<VkDeviceAddress>( scratch ),
+                              static_cast<VkDeviceSize>( scratchSize ),
+                              reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                                   VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                                    const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX * pCountInfo,
                                                                    Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
     d.vkCmdDispatchGraphIndirectAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
                                       static_cast<VkDeviceAddress>( scratch ),
+                                      static_cast<VkDeviceSize>( scratchSize ),
                                       reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( pCountInfo ) );
   }
 
 #  ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphIndirectAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress                      scratch,
+                                                                   VULKAN_HPP_NAMESPACE::DeviceSize                         scratchSize,
                                                                    const VULKAN_HPP_NAMESPACE::DispatchGraphCountInfoAMDX & countInfo,
                                                                    Dispatch const &                                         d ) const VULKAN_HPP_NOEXCEPT
   {
@@ -15630,19 +15644,24 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_ASSERT( d.vkCmdDispatchGraphIndirectAMDX && "Function <vkCmdDispatchGraphIndirectAMDX> requires <VK_AMDX_shader_enqueue>" );
 #    endif
 
-    d.vkCmdDispatchGraphIndirectAMDX(
-      m_commandBuffer, static_cast<VkDeviceAddress>( scratch ), reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
+    d.vkCmdDispatchGraphIndirectAMDX( m_commandBuffer,
+                                      static_cast<VkDeviceAddress>( scratch ),
+                                      static_cast<VkDeviceSize>( scratchSize ),
+                                      reinterpret_cast<const VkDispatchGraphCountInfoAMDX *>( &countInfo ) );
   }
 #  endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
   template <typename Dispatch>
   VULKAN_HPP_INLINE void CommandBuffer::dispatchGraphIndirectCountAMDX( VULKAN_HPP_NAMESPACE::DeviceAddress scratch,
+                                                                        VULKAN_HPP_NAMESPACE::DeviceSize    scratchSize,
                                                                         VULKAN_HPP_NAMESPACE::DeviceAddress countInfo,
                                                                         Dispatch const &                    d ) const VULKAN_HPP_NOEXCEPT
   {
     VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkCmdDispatchGraphIndirectCountAMDX(
-      static_cast<VkCommandBuffer>( m_commandBuffer ), static_cast<VkDeviceAddress>( scratch ), static_cast<VkDeviceAddress>( countInfo ) );
+    d.vkCmdDispatchGraphIndirectCountAMDX( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                           static_cast<VkDeviceAddress>( scratch ),
+                                           static_cast<VkDeviceSize>( scratchSize ),
+                                           static_cast<VkDeviceAddress>( countInfo ) );
   }
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
 

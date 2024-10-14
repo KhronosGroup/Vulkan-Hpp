@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 297, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 298, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -3632,28 +3632,36 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkGetExecutionGraphPipelineNodeIndexAMDX( device, executionGraph, pNodeInfo, pNodeIndex );
     }
 
-    void vkCmdInitializeGraphScratchMemoryAMDX( VkCommandBuffer commandBuffer, VkDeviceAddress scratch ) const VULKAN_HPP_NOEXCEPT
+    void vkCmdInitializeGraphScratchMemoryAMDX( VkCommandBuffer commandBuffer,
+                                                VkPipeline      executionGraph,
+                                                VkDeviceAddress scratch,
+                                                VkDeviceSize    scratchSize ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkCmdInitializeGraphScratchMemoryAMDX( commandBuffer, scratch );
+      return ::vkCmdInitializeGraphScratchMemoryAMDX( commandBuffer, executionGraph, scratch, scratchSize );
     }
 
     void vkCmdDispatchGraphAMDX( VkCommandBuffer                      commandBuffer,
                                  VkDeviceAddress                      scratch,
+                                 VkDeviceSize                         scratchSize,
                                  const VkDispatchGraphCountInfoAMDX * pCountInfo ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkCmdDispatchGraphAMDX( commandBuffer, scratch, pCountInfo );
+      return ::vkCmdDispatchGraphAMDX( commandBuffer, scratch, scratchSize, pCountInfo );
     }
 
     void vkCmdDispatchGraphIndirectAMDX( VkCommandBuffer                      commandBuffer,
                                          VkDeviceAddress                      scratch,
+                                         VkDeviceSize                         scratchSize,
                                          const VkDispatchGraphCountInfoAMDX * pCountInfo ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkCmdDispatchGraphIndirectAMDX( commandBuffer, scratch, pCountInfo );
+      return ::vkCmdDispatchGraphIndirectAMDX( commandBuffer, scratch, scratchSize, pCountInfo );
     }
 
-    void vkCmdDispatchGraphIndirectCountAMDX( VkCommandBuffer commandBuffer, VkDeviceAddress scratch, VkDeviceAddress countInfo ) const VULKAN_HPP_NOEXCEPT
+    void vkCmdDispatchGraphIndirectCountAMDX( VkCommandBuffer commandBuffer,
+                                              VkDeviceAddress scratch,
+                                              VkDeviceSize    scratchSize,
+                                              VkDeviceAddress countInfo ) const VULKAN_HPP_NOEXCEPT
     {
-      return ::vkCmdDispatchGraphIndirectCountAMDX( commandBuffer, scratch, countInfo );
+      return ::vkCmdDispatchGraphIndirectCountAMDX( commandBuffer, scratch, scratchSize, countInfo );
     }
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 

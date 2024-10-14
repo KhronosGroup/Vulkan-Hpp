@@ -4626,7 +4626,9 @@ namespace std
       std::size_t seed = 0;
       VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.sType );
       VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.size );
+      VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.minSize );
+      VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.maxSize );
+      VULKAN_HPP_HASH_COMBINE( seed, executionGraphPipelineScratchSizeAMDX.sizeGranularity );
       return seed;
     }
   };
@@ -11865,6 +11867,7 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueueFeaturesAMDX.sType );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueueFeaturesAMDX.pNext );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueueFeaturesAMDX.shaderEnqueue );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueueFeaturesAMDX.shaderMeshEnqueue );
       return seed;
     }
   };
@@ -11885,6 +11888,11 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueuePropertiesAMDX.maxExecutionGraphShaderPayloadSize );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueuePropertiesAMDX.maxExecutionGraphShaderPayloadCount );
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueuePropertiesAMDX.executionGraphDispatchAddressAlignment );
+      for ( size_t i = 0; i < 3; ++i )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueuePropertiesAMDX.maxExecutionGraphWorkgroupCount[i] );
+      }
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceShaderEnqueuePropertiesAMDX.maxExecutionGraphWorkgroups );
       return seed;
     }
   };

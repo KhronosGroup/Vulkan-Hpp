@@ -242,9 +242,9 @@ private:
 
   struct RequireFeature
   {
-    std::string name      = {};
-    std::string structure = {};
-    int         xmlLine   = {};
+    std::vector<std::string> name      = {};
+    std::string              structure = {};
+    int                      xmlLine   = {};
   };
 
   struct RemoveData

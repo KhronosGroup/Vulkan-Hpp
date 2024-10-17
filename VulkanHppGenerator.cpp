@@ -14792,12 +14792,13 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
   checkAttributes( line, attributes, { { "name", {} }, { "struct", {} } }, {} );
   checkElements( line, getChildElements( element ), {} );
 
-  std::string name, structure;
+  std::vector<std::string> name;
+  std::string structure;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
     {
-      name = attribute.second;
+      name = tokenize( attribute.second, "," );
     }
     else if ( attribute.first == "struct" )
     {
@@ -14826,13 +14827,16 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
     structIt = m_structs.find( aliasIt->second.name );
     assert( structIt != m_structs.end() );
   }
-  auto memberIt =
-    std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&name]( MemberData const & md ) { return md.name == name; } );
-  checkForError(
-    memberIt != structIt->second.members.end(), line, "required feature name <" + name + "> not part of the required feature struct <" + structure + ">" );
-  checkForError( ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
-                 line,
-                 "required feature name <" + name + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
+  for (auto const& n : name)
+  {
+    auto memberIt =
+      std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&n]( MemberData const & md ) { return md.name == n; } );
+    checkForError(
+      memberIt != structIt->second.members.end(), line, "required feature name <" + n + "> not part of the required feature struct <" + structure + ">" );
+    checkForError( ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),
+                   line,
+                   "required feature name <" + n + "> is not a VkBool32 member of the required feature struct <" + structure + ">" );
+  }
 
   return { name, structure, line };
 }

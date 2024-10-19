@@ -560,6 +560,8 @@ namespace VULKAN_HPP_NAMESPACE
       result += "FailOnPipelineCompileRequired | ";
     if ( value & PipelineCreateFlagBits::eEarlyReturnOnFailure )
       result += "EarlyReturnOnFailure | ";
+    if ( value & PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR )
+      result += "RenderingFragmentShadingRateAttachmentKHR | ";
 
     return "{ " + result.substr( 0, result.size() - 3 ) + " }";
   }
@@ -2000,6 +2002,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceFragmentShadingRatePropertiesKHR: return "PhysicalDeviceFragmentShadingRatePropertiesKHR";
       case StructureType::ePhysicalDeviceFragmentShadingRateFeaturesKHR: return "PhysicalDeviceFragmentShadingRateFeaturesKHR";
       case StructureType::ePhysicalDeviceFragmentShadingRateKHR: return "PhysicalDeviceFragmentShadingRateKHR";
+      case StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR: return "RenderingFragmentShadingRateAttachmentInfoKHR";
       case StructureType::ePhysicalDeviceShaderImageAtomicInt64FeaturesEXT: return "PhysicalDeviceShaderImageAtomicInt64FeaturesEXT";
       case StructureType::ePhysicalDeviceMemoryBudgetPropertiesEXT: return "PhysicalDeviceMemoryBudgetPropertiesEXT";
       case StructureType::eValidationFeaturesEXT: return "ValidationFeaturesEXT";
@@ -2015,8 +2018,6 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceCustomBorderColorPropertiesEXT: return "PhysicalDeviceCustomBorderColorPropertiesEXT";
       case StructureType::ePhysicalDeviceCustomBorderColorFeaturesEXT: return "PhysicalDeviceCustomBorderColorFeaturesEXT";
       case StructureType::eRefreshObjectListKHR: return "RefreshObjectListKHR";
-      case StructureType::eQueueFamilyCheckpointProperties2NV: return "QueueFamilyCheckpointProperties2NV";
-      case StructureType::eCheckpointData2NV: return "CheckpointData2NV";
       case StructureType::ePhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT: return "PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT";
       case StructureType::ePhysicalDevice4444FormatsFeaturesEXT: return "PhysicalDevice4444FormatsFeaturesEXT";
       case StructureType::ePhysicalDeviceVertexInputDynamicStateFeaturesEXT: return "PhysicalDeviceVertexInputDynamicStateFeaturesEXT";
@@ -2047,6 +2048,7 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::ePhysicalDeviceExternalSciSync2FeaturesNV: return "PhysicalDeviceExternalSciSync2FeaturesNV";
       case StructureType::eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV: return "DeviceSemaphoreSciSyncPoolReservationCreateInfoNV";
 #endif /*VK_USE_PLATFORM_SCI*/
+      case StructureType::eLayerSettingsCreateInfoEXT: return "LayerSettingsCreateInfoEXT";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorPropertiesKHR: return "PhysicalDeviceVertexAttributeDivisorPropertiesKHR";
       case StructureType::ePipelineVertexInputDivisorStateCreateInfoKHR: return "PipelineVertexInputDivisorStateCreateInfoKHR";
       case StructureType::ePhysicalDeviceVertexAttributeDivisorFeaturesKHR: return "PhysicalDeviceVertexAttributeDivisorFeaturesKHR";
@@ -3037,6 +3039,7 @@ namespace VULKAN_HPP_NAMESPACE
       case PipelineCreateFlagBits::eDispatchBase: return "DispatchBase";
       case PipelineCreateFlagBits::eFailOnPipelineCompileRequired: return "FailOnPipelineCompileRequired";
       case PipelineCreateFlagBits::eEarlyReturnOnFailure: return "EarlyReturnOnFailure";
+      case PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR: return "RenderingFragmentShadingRateAttachmentKHR";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }
@@ -4394,6 +4397,24 @@ namespace VULKAN_HPP_NAMESPACE
     }
   }
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+
+  VULKAN_HPP_INLINE std::string to_string( LayerSettingTypeEXT value )
+  {
+    switch ( value )
+    {
+      case LayerSettingTypeEXT::eBool32: return "Bool32";
+      case LayerSettingTypeEXT::eInt32: return "Int32";
+      case LayerSettingTypeEXT::eInt64: return "Int64";
+      case LayerSettingTypeEXT::eUint32: return "Uint32";
+      case LayerSettingTypeEXT::eUint64: return "Uint64";
+      case LayerSettingTypeEXT::eFloat32: return "Float32";
+      case LayerSettingTypeEXT::eFloat64: return "Float64";
+      case LayerSettingTypeEXT::eString: return "String";
+      default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
+    }
+  }
 
   //=== VK_KHR_line_rasterization ===
 

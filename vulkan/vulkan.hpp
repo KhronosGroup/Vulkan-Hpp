@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 298, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 299, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -4160,6 +4160,12 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkCmdWriteBufferMarkerAMD( commandBuffer, pipelineStage, dstBuffer, dstOffset, marker );
     }
 
+    void vkCmdWriteBufferMarker2AMD(
+      VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkCmdWriteBufferMarker2AMD( commandBuffer, stage, dstBuffer, dstOffset, marker );
+    }
+
     //=== VK_EXT_calibrated_timestamps ===
 
     VkResult vkGetPhysicalDeviceCalibrateableTimeDomainsEXT( VkPhysicalDevice  physicalDevice,
@@ -4230,6 +4236,11 @@ namespace VULKAN_HPP_NAMESPACE
     void vkGetQueueCheckpointDataNV( VkQueue queue, uint32_t * pCheckpointDataCount, VkCheckpointDataNV * pCheckpointData ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkGetQueueCheckpointDataNV( queue, pCheckpointDataCount, pCheckpointData );
+    }
+
+    void vkGetQueueCheckpointData2NV( VkQueue queue, uint32_t * pCheckpointDataCount, VkCheckpointData2NV * pCheckpointData ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ::vkGetQueueCheckpointData2NV( queue, pCheckpointDataCount, pCheckpointData );
     }
 
     //=== VK_KHR_timeline_semaphore ===
@@ -4846,17 +4857,6 @@ namespace VULKAN_HPP_NAMESPACE
     VkResult vkQueueSubmit2KHR( VkQueue queue, uint32_t submitCount, const VkSubmitInfo2 * pSubmits, VkFence fence ) const VULKAN_HPP_NOEXCEPT
     {
       return ::vkQueueSubmit2KHR( queue, submitCount, pSubmits, fence );
-    }
-
-    void vkCmdWriteBufferMarker2AMD(
-      VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ::vkCmdWriteBufferMarker2AMD( commandBuffer, stage, dstBuffer, dstOffset, marker );
-    }
-
-    void vkGetQueueCheckpointData2NV( VkQueue queue, uint32_t * pCheckpointDataCount, VkCheckpointData2NV * pCheckpointData ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ::vkGetQueueCheckpointData2NV( queue, pCheckpointDataCount, pCheckpointData );
     }
 
     //=== VK_EXT_descriptor_buffer ===
@@ -10715,70 +10715,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
-  //=== VK_KHR_dynamic_rendering ===
-  template <>
-  struct StructExtends<RenderingFragmentShadingRateAttachmentInfoKHR, RenderingInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<RenderingFragmentDensityMapAttachmentInfoEXT, RenderingInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<AttachmentSampleCountInfoAMD, CommandBufferInheritanceInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<AttachmentSampleCountInfoAMD, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<MultiviewPerViewAttributesInfoNVX, CommandBufferInheritanceInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<MultiviewPerViewAttributesInfoNVX, GraphicsPipelineCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  template <>
-  struct StructExtends<MultiviewPerViewAttributesInfoNVX, RenderingInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
   //=== VK_NV_corner_sampled_image ===
   template <>
   struct StructExtends<PhysicalDeviceCornerSampledImageFeaturesNV, PhysicalDeviceFeatures2>
@@ -11122,6 +11058,33 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<MultiviewPerViewAttributesInfoNVX, RenderingInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_NV_viewport_swizzle ===
   template <>
   struct StructExtends<PipelineViewportSwizzleStateCreateInfoNV, PipelineViewportStateCreateInfo>
@@ -11435,6 +11398,25 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_AMD_mixed_attachment_samples ===
+  template <>
+  struct StructExtends<AttachmentSampleCountInfoAMD, CommandBufferInheritanceInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<AttachmentSampleCountInfoAMD, GraphicsPipelineCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 
   //=== VK_EXT_sample_locations ===
   template <>
@@ -12153,6 +12135,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_INTEL_shader_integer_functions2 ===
   template <>
   struct StructExtends<PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL, PhysicalDeviceFeatures2>
@@ -12257,6 +12248,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<RenderingFragmentDensityMapAttachmentInfoEXT, RenderingInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_KHR_fragment_shading_rate ===
   template <>
   struct StructExtends<FragmentShadingRateAttachmentInfoKHR, SubpassDescription2>
@@ -12296,6 +12296,15 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceFragmentShadingRatePropertiesKHR, PhysicalDeviceProperties2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<RenderingFragmentShadingRateAttachmentInfoKHR, RenderingInfo>
   {
     enum
     {
@@ -13601,16 +13610,6 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #  endif /*VK_USE_PLATFORM_METAL_EXT*/
-
-  //=== VK_KHR_synchronization2 ===
-  template <>
-  struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
-  {
-    enum
-    {
-      value = true
-    };
-  };
 
   //=== VK_EXT_descriptor_buffer ===
   template <>
@@ -17834,7 +17833,8 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetMemoryHostPointerPropertiesEXT vkGetMemoryHostPointerPropertiesEXT = 0;
 
     //=== VK_AMD_buffer_marker ===
-    PFN_vkCmdWriteBufferMarkerAMD vkCmdWriteBufferMarkerAMD = 0;
+    PFN_vkCmdWriteBufferMarkerAMD  vkCmdWriteBufferMarkerAMD  = 0;
+    PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD = 0;
 
     //=== VK_EXT_calibrated_timestamps ===
     PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsEXT vkGetPhysicalDeviceCalibrateableTimeDomainsEXT = 0;
@@ -17850,8 +17850,9 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkCmdSetExclusiveScissorNV       vkCmdSetExclusiveScissorNV       = 0;
 
     //=== VK_NV_device_diagnostic_checkpoints ===
-    PFN_vkCmdSetCheckpointNV       vkCmdSetCheckpointNV       = 0;
-    PFN_vkGetQueueCheckpointDataNV vkGetQueueCheckpointDataNV = 0;
+    PFN_vkCmdSetCheckpointNV        vkCmdSetCheckpointNV        = 0;
+    PFN_vkGetQueueCheckpointDataNV  vkGetQueueCheckpointDataNV  = 0;
+    PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV = 0;
 
     //=== VK_KHR_timeline_semaphore ===
     PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR = 0;
@@ -18027,14 +18028,12 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
 
     //=== VK_KHR_synchronization2 ===
-    PFN_vkCmdSetEvent2KHR           vkCmdSetEvent2KHR           = 0;
-    PFN_vkCmdResetEvent2KHR         vkCmdResetEvent2KHR         = 0;
-    PFN_vkCmdWaitEvents2KHR         vkCmdWaitEvents2KHR         = 0;
-    PFN_vkCmdPipelineBarrier2KHR    vkCmdPipelineBarrier2KHR    = 0;
-    PFN_vkCmdWriteTimestamp2KHR     vkCmdWriteTimestamp2KHR     = 0;
-    PFN_vkQueueSubmit2KHR           vkQueueSubmit2KHR           = 0;
-    PFN_vkCmdWriteBufferMarker2AMD  vkCmdWriteBufferMarker2AMD  = 0;
-    PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV = 0;
+    PFN_vkCmdSetEvent2KHR        vkCmdSetEvent2KHR        = 0;
+    PFN_vkCmdResetEvent2KHR      vkCmdResetEvent2KHR      = 0;
+    PFN_vkCmdWaitEvents2KHR      vkCmdWaitEvents2KHR      = 0;
+    PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR = 0;
+    PFN_vkCmdWriteTimestamp2KHR  vkCmdWriteTimestamp2KHR  = 0;
+    PFN_vkQueueSubmit2KHR        vkQueueSubmit2KHR        = 0;
 
     //=== VK_EXT_descriptor_buffer ===
     PFN_vkGetDescriptorSetLayoutSizeEXT                          vkGetDescriptorSetLayoutSizeEXT                          = 0;
@@ -19152,7 +19151,8 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT( vkGetInstanceProcAddr( instance, "vkGetMemoryHostPointerPropertiesEXT" ) );
 
       //=== VK_AMD_buffer_marker ===
-      vkCmdWriteBufferMarkerAMD = PFN_vkCmdWriteBufferMarkerAMD( vkGetInstanceProcAddr( instance, "vkCmdWriteBufferMarkerAMD" ) );
+      vkCmdWriteBufferMarkerAMD  = PFN_vkCmdWriteBufferMarkerAMD( vkGetInstanceProcAddr( instance, "vkCmdWriteBufferMarkerAMD" ) );
+      vkCmdWriteBufferMarker2AMD = PFN_vkCmdWriteBufferMarker2AMD( vkGetInstanceProcAddr( instance, "vkCmdWriteBufferMarker2AMD" ) );
 
       //=== VK_EXT_calibrated_timestamps ===
       vkGetPhysicalDeviceCalibrateableTimeDomainsEXT =
@@ -19173,8 +19173,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdSetExclusiveScissorNV       = PFN_vkCmdSetExclusiveScissorNV( vkGetInstanceProcAddr( instance, "vkCmdSetExclusiveScissorNV" ) );
 
       //=== VK_NV_device_diagnostic_checkpoints ===
-      vkCmdSetCheckpointNV       = PFN_vkCmdSetCheckpointNV( vkGetInstanceProcAddr( instance, "vkCmdSetCheckpointNV" ) );
-      vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointDataNV" ) );
+      vkCmdSetCheckpointNV        = PFN_vkCmdSetCheckpointNV( vkGetInstanceProcAddr( instance, "vkCmdSetCheckpointNV" ) );
+      vkGetQueueCheckpointDataNV  = PFN_vkGetQueueCheckpointDataNV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointDataNV" ) );
+      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_KHR_timeline_semaphore ===
       vkGetSemaphoreCounterValueKHR = PFN_vkGetSemaphoreCounterValueKHR( vkGetInstanceProcAddr( instance, "vkGetSemaphoreCounterValueKHR" ) );
@@ -19424,8 +19425,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueSubmit2KHR = PFN_vkQueueSubmit2KHR( vkGetInstanceProcAddr( instance, "vkQueueSubmit2KHR" ) );
       if ( !vkQueueSubmit2 )
         vkQueueSubmit2 = vkQueueSubmit2KHR;
-      vkCmdWriteBufferMarker2AMD  = PFN_vkCmdWriteBufferMarker2AMD( vkGetInstanceProcAddr( instance, "vkCmdWriteBufferMarker2AMD" ) );
-      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_EXT_descriptor_buffer ===
       vkGetDescriptorSetLayoutSizeEXT = PFN_vkGetDescriptorSetLayoutSizeEXT( vkGetInstanceProcAddr( instance, "vkGetDescriptorSetLayoutSizeEXT" ) );
@@ -20298,7 +20297,8 @@ namespace VULKAN_HPP_NAMESPACE
       vkGetMemoryHostPointerPropertiesEXT = PFN_vkGetMemoryHostPointerPropertiesEXT( vkGetDeviceProcAddr( device, "vkGetMemoryHostPointerPropertiesEXT" ) );
 
       //=== VK_AMD_buffer_marker ===
-      vkCmdWriteBufferMarkerAMD = PFN_vkCmdWriteBufferMarkerAMD( vkGetDeviceProcAddr( device, "vkCmdWriteBufferMarkerAMD" ) );
+      vkCmdWriteBufferMarkerAMD  = PFN_vkCmdWriteBufferMarkerAMD( vkGetDeviceProcAddr( device, "vkCmdWriteBufferMarkerAMD" ) );
+      vkCmdWriteBufferMarker2AMD = PFN_vkCmdWriteBufferMarker2AMD( vkGetDeviceProcAddr( device, "vkCmdWriteBufferMarker2AMD" ) );
 
       //=== VK_EXT_calibrated_timestamps ===
       vkGetCalibratedTimestampsEXT = PFN_vkGetCalibratedTimestampsEXT( vkGetDeviceProcAddr( device, "vkGetCalibratedTimestampsEXT" ) );
@@ -20315,8 +20315,9 @@ namespace VULKAN_HPP_NAMESPACE
       vkCmdSetExclusiveScissorNV       = PFN_vkCmdSetExclusiveScissorNV( vkGetDeviceProcAddr( device, "vkCmdSetExclusiveScissorNV" ) );
 
       //=== VK_NV_device_diagnostic_checkpoints ===
-      vkCmdSetCheckpointNV       = PFN_vkCmdSetCheckpointNV( vkGetDeviceProcAddr( device, "vkCmdSetCheckpointNV" ) );
-      vkGetQueueCheckpointDataNV = PFN_vkGetQueueCheckpointDataNV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointDataNV" ) );
+      vkCmdSetCheckpointNV        = PFN_vkCmdSetCheckpointNV( vkGetDeviceProcAddr( device, "vkCmdSetCheckpointNV" ) );
+      vkGetQueueCheckpointDataNV  = PFN_vkGetQueueCheckpointDataNV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointDataNV" ) );
+      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_KHR_timeline_semaphore ===
       vkGetSemaphoreCounterValueKHR = PFN_vkGetSemaphoreCounterValueKHR( vkGetDeviceProcAddr( device, "vkGetSemaphoreCounterValueKHR" ) );
@@ -20526,8 +20527,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueSubmit2KHR = PFN_vkQueueSubmit2KHR( vkGetDeviceProcAddr( device, "vkQueueSubmit2KHR" ) );
       if ( !vkQueueSubmit2 )
         vkQueueSubmit2 = vkQueueSubmit2KHR;
-      vkCmdWriteBufferMarker2AMD  = PFN_vkCmdWriteBufferMarker2AMD( vkGetDeviceProcAddr( device, "vkCmdWriteBufferMarker2AMD" ) );
-      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_EXT_descriptor_buffer ===
       vkGetDescriptorSetLayoutSizeEXT = PFN_vkGetDescriptorSetLayoutSizeEXT( vkGetDeviceProcAddr( device, "vkGetDescriptorSetLayoutSizeEXT" ) );

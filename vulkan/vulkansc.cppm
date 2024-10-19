@@ -442,6 +442,9 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SciSyncPrimitiveTypeNV;
 #endif /*VK_USE_PLATFORM_SCI*/
 
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT;
+
   //=== VK_KHR_line_rasterization ===
   using VULKAN_HPP_NAMESPACE::LineRasterizationModeEXT;
   using VULKAN_HPP_NAMESPACE::LineRasterizationModeKHR;
@@ -820,6 +823,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::NVExternalSciSync2ExtensionName;
   using VULKAN_HPP_NAMESPACE::NVExternalSciSync2SpecVersion;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::EXTLayerSettingsExtensionName;
+  using VULKAN_HPP_NAMESPACE::EXTLayerSettingsSpecVersion;
 
   //=== VK_KHR_vertex_attribute_divisor ===
   using VULKAN_HPP_NAMESPACE::KHRVertexAttributeDivisorExtensionName;
@@ -1483,6 +1490,7 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRatePropertiesKHR;
   using VULKAN_HPP_NAMESPACE::PipelineFragmentShadingRateStateCreateInfoKHR;
+  using VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR;
 
   //=== VK_EXT_shader_image_atomic_int64 ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT;
@@ -1523,10 +1531,6 @@ export namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_object_refresh ===
   using VULKAN_HPP_NAMESPACE::RefreshObjectKHR;
   using VULKAN_HPP_NAMESPACE::RefreshObjectListKHR;
-
-  //=== VK_KHR_synchronization2 ===
-  using VULKAN_HPP_NAMESPACE::CheckpointData2NV;
-  using VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV;
 
   //=== VK_EXT_ycbcr_2plane_444_formats ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT;
@@ -1578,6 +1582,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::SemaphoreSciSyncCreateInfoNV;
   using VULKAN_HPP_NAMESPACE::SemaphoreSciSyncPoolCreateInfoNV;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+  using VULKAN_HPP_NAMESPACE::LayerSettingEXT;
+  using VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT;
 
   //=== VK_KHR_vertex_attribute_divisor ===
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceVertexAttributeDivisorFeaturesEXT;

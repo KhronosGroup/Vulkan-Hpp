@@ -5050,88 +5050,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   using CalibratedTimestampInfoEXT = CalibratedTimestampInfoKHR;
 
-  struct CheckpointData2NV
-  {
-    using NativeType = VkCheckpointData2NV;
-
-    static const bool                                  allowDuplicate = false;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eCheckpointData2NV;
-
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR
-      CheckpointData2NV( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage_ = {}, void * pCheckpointMarker_ = {}, void * pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
-      : pNext{ pNext_ }
-      , stage{ stage_ }
-      , pCheckpointMarker{ pCheckpointMarker_ }
-    {
-    }
-
-    VULKAN_HPP_CONSTEXPR CheckpointData2NV( CheckpointData2NV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    CheckpointData2NV( VkCheckpointData2NV const & rhs ) VULKAN_HPP_NOEXCEPT : CheckpointData2NV( *reinterpret_cast<CheckpointData2NV const *>( &rhs ) ) {}
-
-    CheckpointData2NV & operator=( CheckpointData2NV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
-
-    CheckpointData2NV & operator=( VkCheckpointData2NV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::CheckpointData2NV const *>( &rhs );
-      return *this;
-    }
-
-    operator VkCheckpointData2NV const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<const VkCheckpointData2NV *>( this );
-    }
-
-    operator VkCheckpointData2NV &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkCheckpointData2NV *>( this );
-    }
-
-#if defined( VULKAN_HPP_USE_REFLECT )
-#  if 14 <= VULKAN_HPP_CPP_VERSION
-    auto
-#  else
-    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::PipelineStageFlags2 const &, void * const &>
-#  endif
-      reflect() const VULKAN_HPP_NOEXCEPT
-    {
-      return std::tie( sType, pNext, stage, pCheckpointMarker );
-    }
-#endif
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CheckpointData2NV const & ) const = default;
-#else
-    bool operator==( CheckpointData2NV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( stage == rhs.stage ) && ( pCheckpointMarker == rhs.pCheckpointMarker );
-#  endif
-    }
-
-    bool operator!=( CheckpointData2NV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-
-  public:
-    VULKAN_HPP_NAMESPACE::StructureType       sType             = StructureType::eCheckpointData2NV;
-    void *                                    pNext             = {};
-    VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage             = {};
-    void *                                    pCheckpointMarker = {};
-  };
-
-  template <>
-  struct CppType<StructureType, StructureType::eCheckpointData2NV>
-  {
-    using Type = CheckpointData2NV;
-  };
-
   union ClearColorValue
   {
     using NativeType = VkClearColorValue;
@@ -26617,6 +26535,394 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::ArrayWrapper1D<char, VK_MAX_DESCRIPTION_SIZE>    description           = {};
   };
 
+  struct LayerSettingEXT
+  {
+    using NativeType = VkLayerSettingEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR LayerSettingEXT( const char *                              pLayerName_   = {},
+                                          const char *                              pSettingName_ = {},
+                                          VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_         = VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT::eBool32,
+                                          uint32_t                                  valueCount_   = {},
+                                          const void *                              pValues_      = {} ) VULKAN_HPP_NOEXCEPT
+      : pLayerName{ pLayerName_ }
+      , pSettingName{ pSettingName_ }
+      , type{ type_ }
+      , valueCount{ valueCount_ }
+      , pValues{ pValues_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR LayerSettingEXT( LayerSettingEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    LayerSettingEXT( VkLayerSettingEXT const & rhs ) VULKAN_HPP_NOEXCEPT : LayerSettingEXT( *reinterpret_cast<LayerSettingEXT const *>( &rhs ) ) {}
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    // NOTE: you need to provide the type because vk::Bool32 and uint32_t are indistinguishable!
+    LayerSettingEXT( char const *                                       pLayerName_,
+                     char const *                                       pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT          type_,
+                     vk::ArrayProxyNoTemporaries<const int32_t> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<int32_t>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                       pLayerName_,
+                     char const *                                       pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT          type_,
+                     vk::ArrayProxyNoTemporaries<const int64_t> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<int64_t>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                        pLayerName_,
+                     char const *                                        pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT           type_,
+                     vk::ArrayProxyNoTemporaries<const uint32_t> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<uint32_t>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                        pLayerName_,
+                     char const *                                        pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT           type_,
+                     vk::ArrayProxyNoTemporaries<const uint64_t> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<uint64_t>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                     pLayerName_,
+                     char const *                                     pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT        type_,
+                     vk::ArrayProxyNoTemporaries<const float> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<float>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                      pLayerName_,
+                     char const *                                      pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT         type_,
+                     vk::ArrayProxyNoTemporaries<const double> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<double>( type ) );
+    }
+
+    LayerSettingEXT( char const *                                      pLayerName_,
+                     char const *                                      pSettingName_,
+                     VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT         type_,
+                     vk::ArrayProxyNoTemporaries<const char *> const & values_ )
+      : pLayerName( pLayerName_ )
+      , pSettingName( pSettingName_ )
+      , type( type_ )
+      , valueCount( static_cast<uint32_t>( values_.size() ) )
+      , pValues( values_.data() )
+    {
+      VULKAN_HPP_ASSERT( VULKAN_HPP_NAMESPACE::isSameType<char *>( type ) );
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    LayerSettingEXT & operator=( LayerSettingEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    LayerSettingEXT & operator=( VkLayerSettingEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::LayerSettingEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingEXT & setPLayerName( const char * pLayerName_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pLayerName = pLayerName_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingEXT & setPSettingName( const char * pSettingName_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pSettingName = pSettingName_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingEXT & setType( VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type_ ) VULKAN_HPP_NOEXCEPT
+    {
+      type = type_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingEXT & setValueCount( uint32_t valueCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = valueCount_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const int32_t> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const int64_t> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint32_t> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const uint64_t> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const float> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const double> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+
+    LayerSettingEXT & setValues( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const char *> const & values_ ) VULKAN_HPP_NOEXCEPT
+    {
+      valueCount = static_cast<uint32_t>( values_.size() );
+      pValues    = values_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkLayerSettingEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkLayerSettingEXT *>( this );
+    }
+
+    operator VkLayerSettingEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkLayerSettingEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+#  if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#  else
+    std::tuple<const char * const &, const char * const &, VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT const &, uint32_t const &, const void * const &>
+#  endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( pLayerName, pSettingName, type, valueCount, pValues );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    std::strong_ordering operator<=>( LayerSettingEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      if ( pLayerName != rhs.pLayerName )
+        if ( auto cmp = strcmp( pLayerName, rhs.pLayerName ); cmp != 0 )
+          return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( pSettingName != rhs.pSettingName )
+        if ( auto cmp = strcmp( pSettingName, rhs.pSettingName ); cmp != 0 )
+          return ( cmp < 0 ) ? std::strong_ordering::less : std::strong_ordering::greater;
+      if ( auto cmp = type <=> rhs.type; cmp != 0 )
+        return cmp;
+      if ( auto cmp = valueCount <=> rhs.valueCount; cmp != 0 )
+        return cmp;
+      if ( auto cmp = pValues <=> rhs.pValues; cmp != 0 )
+        return cmp;
+
+      return std::strong_ordering::equivalent;
+    }
+#endif
+
+    bool operator==( LayerSettingEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return ( ( pLayerName == rhs.pLayerName ) || ( strcmp( pLayerName, rhs.pLayerName ) == 0 ) ) &&
+             ( ( pSettingName == rhs.pSettingName ) || ( strcmp( pSettingName, rhs.pSettingName ) == 0 ) ) && ( type == rhs.type ) &&
+             ( valueCount == rhs.valueCount ) && ( pValues == rhs.pValues );
+    }
+
+    bool operator!=( LayerSettingEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+
+  public:
+    const char *                              pLayerName   = {};
+    const char *                              pSettingName = {};
+    VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT type         = VULKAN_HPP_NAMESPACE::LayerSettingTypeEXT::eBool32;
+    uint32_t                                  valueCount   = {};
+    const void *                              pValues      = {};
+  };
+
+  struct LayerSettingsCreateInfoEXT
+  {
+    using NativeType = VkLayerSettingsCreateInfoEXT;
+
+    static const bool                                  allowDuplicate = true;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eLayerSettingsCreateInfoEXT;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR LayerSettingsCreateInfoEXT( uint32_t                                      settingCount_ = {},
+                                                     const VULKAN_HPP_NAMESPACE::LayerSettingEXT * pSettings_    = {},
+                                                     const void *                                  pNext_        = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , settingCount{ settingCount_ }
+      , pSettings{ pSettings_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR LayerSettingsCreateInfoEXT( LayerSettingsCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    LayerSettingsCreateInfoEXT( VkLayerSettingsCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+      : LayerSettingsCreateInfoEXT( *reinterpret_cast<LayerSettingsCreateInfoEXT const *>( &rhs ) )
+    {
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    LayerSettingsCreateInfoEXT( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::LayerSettingEXT> const & settings_,
+                                const void *                                                                                       pNext_ = nullptr )
+      : pNext( pNext_ ), settingCount( static_cast<uint32_t>( settings_.size() ) ), pSettings( settings_.data() )
+    {
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+
+    LayerSettingsCreateInfoEXT & operator=( LayerSettingsCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    LayerSettingsCreateInfoEXT & operator=( VkLayerSettingsCreateInfoEXT const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingsCreateInfoEXT & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingsCreateInfoEXT & setSettingCount( uint32_t settingCount_ ) VULKAN_HPP_NOEXCEPT
+    {
+      settingCount = settingCount_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 LayerSettingsCreateInfoEXT & setPSettings( const VULKAN_HPP_NAMESPACE::LayerSettingEXT * pSettings_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pSettings = pSettings_;
+      return *this;
+    }
+
+#  if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
+    LayerSettingsCreateInfoEXT &
+      setSettings( VULKAN_HPP_NAMESPACE::ArrayProxyNoTemporaries<const VULKAN_HPP_NAMESPACE::LayerSettingEXT> const & settings_ ) VULKAN_HPP_NOEXCEPT
+    {
+      settingCount = static_cast<uint32_t>( settings_.size() );
+      pSettings    = settings_.data();
+      return *this;
+    }
+#  endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
+#endif   /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkLayerSettingsCreateInfoEXT const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkLayerSettingsCreateInfoEXT *>( this );
+    }
+
+    operator VkLayerSettingsCreateInfoEXT &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkLayerSettingsCreateInfoEXT *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+#  if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#  else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, const void * const &, uint32_t const &, const VULKAN_HPP_NAMESPACE::LayerSettingEXT * const &>
+#  endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, settingCount, pSettings );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( LayerSettingsCreateInfoEXT const & ) const = default;
+#else
+    bool operator==( LayerSettingsCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( settingCount == rhs.settingCount ) && ( pSettings == rhs.pSettings );
+#  endif
+    }
+
+    bool operator!=( LayerSettingsCreateInfoEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType           sType        = StructureType::eLayerSettingsCreateInfoEXT;
+    const void *                                  pNext        = {};
+    uint32_t                                      settingCount = {};
+    const VULKAN_HPP_NAMESPACE::LayerSettingEXT * pSettings    = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eLayerSettingsCreateInfoEXT>
+  {
+    using Type = LayerSettingsCreateInfoEXT;
+  };
+
   struct MappedMemoryRange
   {
     using NativeType = VkMappedMemoryRange;
@@ -47396,89 +47702,6 @@ namespace VULKAN_HPP_NAMESPACE
     using Type = QueryPoolPerformanceCreateInfoKHR;
   };
 
-  struct QueueFamilyCheckpointProperties2NV
-  {
-    using NativeType = VkQueueFamilyCheckpointProperties2NV;
-
-    static const bool                                  allowDuplicate = false;
-    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eQueueFamilyCheckpointProperties2NV;
-
-#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
-    VULKAN_HPP_CONSTEXPR QueueFamilyCheckpointProperties2NV( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 checkpointExecutionStageMask_ = {},
-                                                             void *                                    pNext_ = nullptr ) VULKAN_HPP_NOEXCEPT
-      : pNext{ pNext_ }
-      , checkpointExecutionStageMask{ checkpointExecutionStageMask_ }
-    {
-    }
-
-    VULKAN_HPP_CONSTEXPR QueueFamilyCheckpointProperties2NV( QueueFamilyCheckpointProperties2NV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-
-    QueueFamilyCheckpointProperties2NV( VkQueueFamilyCheckpointProperties2NV const & rhs ) VULKAN_HPP_NOEXCEPT
-      : QueueFamilyCheckpointProperties2NV( *reinterpret_cast<QueueFamilyCheckpointProperties2NV const *>( &rhs ) )
-    {
-    }
-
-    QueueFamilyCheckpointProperties2NV & operator=( QueueFamilyCheckpointProperties2NV const & rhs ) VULKAN_HPP_NOEXCEPT = default;
-#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
-
-    QueueFamilyCheckpointProperties2NV & operator=( VkQueueFamilyCheckpointProperties2NV const & rhs ) VULKAN_HPP_NOEXCEPT
-    {
-      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV const *>( &rhs );
-      return *this;
-    }
-
-    operator VkQueueFamilyCheckpointProperties2NV const &() const VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<const VkQueueFamilyCheckpointProperties2NV *>( this );
-    }
-
-    operator VkQueueFamilyCheckpointProperties2NV &() VULKAN_HPP_NOEXCEPT
-    {
-      return *reinterpret_cast<VkQueueFamilyCheckpointProperties2NV *>( this );
-    }
-
-#if defined( VULKAN_HPP_USE_REFLECT )
-#  if 14 <= VULKAN_HPP_CPP_VERSION
-    auto
-#  else
-    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &, void * const &, VULKAN_HPP_NAMESPACE::PipelineStageFlags2 const &>
-#  endif
-      reflect() const VULKAN_HPP_NOEXCEPT
-    {
-      return std::tie( sType, pNext, checkpointExecutionStageMask );
-    }
-#endif
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( QueueFamilyCheckpointProperties2NV const & ) const = default;
-#else
-    bool operator==( QueueFamilyCheckpointProperties2NV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-#  if defined( VULKAN_HPP_USE_REFLECT )
-      return this->reflect() == rhs.reflect();
-#  else
-      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( checkpointExecutionStageMask == rhs.checkpointExecutionStageMask );
-#  endif
-    }
-
-    bool operator!=( QueueFamilyCheckpointProperties2NV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return !operator==( rhs );
-    }
-#endif
-
-  public:
-    VULKAN_HPP_NAMESPACE::StructureType       sType                        = StructureType::eQueueFamilyCheckpointProperties2NV;
-    void *                                    pNext                        = {};
-    VULKAN_HPP_NAMESPACE::PipelineStageFlags2 checkpointExecutionStageMask = {};
-  };
-
-  template <>
-  struct CppType<StructureType, StructureType::eQueueFamilyCheckpointProperties2NV>
-  {
-    using Type = QueueFamilyCheckpointProperties2NV;
-  };
-
   struct QueueFamilyGlobalPriorityPropertiesKHR
   {
     using NativeType = VkQueueFamilyGlobalPriorityPropertiesKHR;
@@ -50335,6 +50558,129 @@ namespace VULKAN_HPP_NAMESPACE
   };
 
   using RenderingAttachmentInfoKHR = RenderingAttachmentInfo;
+
+  struct RenderingFragmentShadingRateAttachmentInfoKHR
+  {
+    using NativeType = VkRenderingFragmentShadingRateAttachmentInfoKHR;
+
+    static const bool                                  allowDuplicate = false;
+    static VULKAN_HPP_CONST_OR_CONSTEXPR StructureType structureType  = StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR;
+
+#if !defined( VULKAN_HPP_NO_STRUCT_CONSTRUCTORS )
+    VULKAN_HPP_CONSTEXPR
+      RenderingFragmentShadingRateAttachmentInfoKHR( VULKAN_HPP_NAMESPACE::ImageView   imageView_   = {},
+                                                     VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined,
+                                                     VULKAN_HPP_NAMESPACE::Extent2D    shadingRateAttachmentTexelSize_ = {},
+                                                     const void *                      pNext_                          = nullptr ) VULKAN_HPP_NOEXCEPT
+      : pNext{ pNext_ }
+      , imageView{ imageView_ }
+      , imageLayout{ imageLayout_ }
+      , shadingRateAttachmentTexelSize{ shadingRateAttachmentTexelSize_ }
+    {
+    }
+
+    VULKAN_HPP_CONSTEXPR
+      RenderingFragmentShadingRateAttachmentInfoKHR( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+
+    RenderingFragmentShadingRateAttachmentInfoKHR( VkRenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+      : RenderingFragmentShadingRateAttachmentInfoKHR( *reinterpret_cast<RenderingFragmentShadingRateAttachmentInfoKHR const *>( &rhs ) )
+    {
+    }
+
+    RenderingFragmentShadingRateAttachmentInfoKHR & operator=( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT = default;
+#endif /*VULKAN_HPP_NO_STRUCT_CONSTRUCTORS*/
+
+    RenderingFragmentShadingRateAttachmentInfoKHR & operator=( VkRenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) VULKAN_HPP_NOEXCEPT
+    {
+      *this = *reinterpret_cast<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR const *>( &rhs );
+      return *this;
+    }
+
+#if !defined( VULKAN_HPP_NO_STRUCT_SETTERS )
+    VULKAN_HPP_CONSTEXPR_14 RenderingFragmentShadingRateAttachmentInfoKHR & setPNext( const void * pNext_ ) VULKAN_HPP_NOEXCEPT
+    {
+      pNext = pNext_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 RenderingFragmentShadingRateAttachmentInfoKHR & setImageView( VULKAN_HPP_NAMESPACE::ImageView imageView_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageView = imageView_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 RenderingFragmentShadingRateAttachmentInfoKHR & setImageLayout( VULKAN_HPP_NAMESPACE::ImageLayout imageLayout_ ) VULKAN_HPP_NOEXCEPT
+    {
+      imageLayout = imageLayout_;
+      return *this;
+    }
+
+    VULKAN_HPP_CONSTEXPR_14 RenderingFragmentShadingRateAttachmentInfoKHR &
+      setShadingRateAttachmentTexelSize( VULKAN_HPP_NAMESPACE::Extent2D const & shadingRateAttachmentTexelSize_ ) VULKAN_HPP_NOEXCEPT
+    {
+      shadingRateAttachmentTexelSize = shadingRateAttachmentTexelSize_;
+      return *this;
+    }
+#endif /*VULKAN_HPP_NO_STRUCT_SETTERS*/
+
+    operator VkRenderingFragmentShadingRateAttachmentInfoKHR const &() const VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<const VkRenderingFragmentShadingRateAttachmentInfoKHR *>( this );
+    }
+
+    operator VkRenderingFragmentShadingRateAttachmentInfoKHR &() VULKAN_HPP_NOEXCEPT
+    {
+      return *reinterpret_cast<VkRenderingFragmentShadingRateAttachmentInfoKHR *>( this );
+    }
+
+#if defined( VULKAN_HPP_USE_REFLECT )
+#  if 14 <= VULKAN_HPP_CPP_VERSION
+    auto
+#  else
+    std::tuple<VULKAN_HPP_NAMESPACE::StructureType const &,
+               const void * const &,
+               VULKAN_HPP_NAMESPACE::ImageView const &,
+               VULKAN_HPP_NAMESPACE::ImageLayout const &,
+               VULKAN_HPP_NAMESPACE::Extent2D const &>
+#  endif
+      reflect() const VULKAN_HPP_NOEXCEPT
+    {
+      return std::tie( sType, pNext, imageView, imageLayout, shadingRateAttachmentTexelSize );
+    }
+#endif
+
+#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    auto operator<=>( RenderingFragmentShadingRateAttachmentInfoKHR const & ) const = default;
+#else
+    bool operator==( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+#  if defined( VULKAN_HPP_USE_REFLECT )
+      return this->reflect() == rhs.reflect();
+#  else
+      return ( sType == rhs.sType ) && ( pNext == rhs.pNext ) && ( imageView == rhs.imageView ) && ( imageLayout == rhs.imageLayout ) &&
+             ( shadingRateAttachmentTexelSize == rhs.shadingRateAttachmentTexelSize );
+#  endif
+    }
+
+    bool operator!=( RenderingFragmentShadingRateAttachmentInfoKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
+    {
+      return !operator==( rhs );
+    }
+#endif
+
+  public:
+    VULKAN_HPP_NAMESPACE::StructureType sType                          = StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR;
+    const void *                        pNext                          = {};
+    VULKAN_HPP_NAMESPACE::ImageView     imageView                      = {};
+    VULKAN_HPP_NAMESPACE::ImageLayout   imageLayout                    = VULKAN_HPP_NAMESPACE::ImageLayout::eUndefined;
+    VULKAN_HPP_NAMESPACE::Extent2D      shadingRateAttachmentTexelSize = {};
+  };
+
+  template <>
+  struct CppType<StructureType, StructureType::eRenderingFragmentShadingRateAttachmentInfoKHR>
+  {
+    using Type = RenderingFragmentShadingRateAttachmentInfoKHR;
+  };
 
   struct RenderingInfo
   {

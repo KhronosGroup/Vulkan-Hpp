@@ -145,7 +145,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                         "VK_EXT_debug_utils",
                                                         "VK_EXT_validation_features",
                                                         "VK_EXT_headless_surface",
-                                                        "VK_EXT_application_parameters" };
+                                                        "VK_EXT_application_parameters",
+                                                        "VK_EXT_layer_settings" };
     return instanceExtensions;
   }
 
@@ -714,7 +715,8 @@ namespace VULKAN_HPP_NAMESPACE
     return ( extension == "VK_KHR_surface" ) || ( extension == "VK_KHR_display" ) || ( extension == "VK_EXT_direct_mode_display" ) ||
            ( extension == "VK_EXT_display_surface_counter" ) || ( extension == "VK_EXT_swapchain_colorspace" ) ||
            ( extension == "VK_KHR_get_surface_capabilities2" ) || ( extension == "VK_KHR_get_display_properties2" ) || ( extension == "VK_EXT_debug_utils" ) ||
-           ( extension == "VK_EXT_validation_features" ) || ( extension == "VK_EXT_headless_surface" ) || ( extension == "VK_EXT_application_parameters" );
+           ( extension == "VK_EXT_validation_features" ) || ( extension == "VK_EXT_headless_surface" ) || ( extension == "VK_EXT_application_parameters" ) ||
+           ( extension == "VK_EXT_layer_settings" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isObsoletedExtension( std::string const & extension )

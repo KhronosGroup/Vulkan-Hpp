@@ -401,7 +401,7 @@ catch(std::exception const &e)
 ```
 
 > [!IMPORTANT]
-> Vulkan-Hpp does not support RAII style handles, hence you need to cleanup your resources in the error handler!
+> The vulkan handles in the `vk`-namespace do not support RAII, hence you need to cleanup your resources in the error handler! Instead, you could use the handle wrapper classes in the `vk::raii`-namespace.
 
 ### C++17: [[nodiscard]]
 
@@ -507,6 +507,16 @@ protected:
 ```
 
 The API will be extended to provide creation functions in the future.
+
+## RAII-classes
+
+In addition to `vk::UniqueHandles` and `vk::SharedHandles`, there's a set of wrapper classes for all the handle types that follow the RAII-paradigm (resource acquisition is initialization), provided in the `vk::raii` namespace.
+
+While a `vk::UniqueHandle` mimics a handle wrapped by a `std::unique_ptr`, and a `vk::SharedHandle` mimics a handle wrapped by a `std::shared_ptr`, including parent information, a `vk::raii::Handle` is just a class that acquires the underlying vk-handle in its constructor and releases it in its destructor. Thus, you're free to use them as values or wrap them with some smart pointer.
+
+Other than the `vk::Handles`, all those handle wrapper classes need to hold additional data, and thus are not binary identical with the vulkan C-handles.
+
+As the `vk::UniqueHandles` and the `vk::SharedHandles` use the same dispatcher as the `vk::Handles`, they can be easily mixed-and-matched. The `vk::raii::Handles` use some slightly different dispatchers and thus are not compatible with the other handles! That is, for the `vk-Handles`, the `vk::UniqueHandles`, and the `vk::SharedHandles`, you need to instantiate a global dispatcher as described in https://github.com/KhronosGroup/Vulkan-Hpp#extensions--per-device-function-pointers. For the `vk::raii-Handles`, this is not needed, as they maintain their own dispatchers. The big advantage here is when you have multiple devices: the functions called via the `vk::raii-Handles` always call the device specific functions.
 
 ### Custom allocators
 

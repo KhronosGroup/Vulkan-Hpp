@@ -594,6 +594,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceFragmentShadingRatePropertiesKHR          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR,
     ePhysicalDeviceFragmentShadingRateFeaturesKHR            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR,
     ePhysicalDeviceFragmentShadingRateKHR                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_KHR,
+    eRenderingFragmentShadingRateAttachmentInfoKHR           = VK_STRUCTURE_TYPE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_INFO_KHR,
     ePhysicalDeviceShaderImageAtomicInt64FeaturesEXT         = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_IMAGE_ATOMIC_INT64_FEATURES_EXT,
     ePhysicalDeviceMemoryBudgetPropertiesEXT                 = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT,
     eValidationFeaturesEXT                                   = VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT,
@@ -609,8 +610,6 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceCustomBorderColorPropertiesEXT            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_PROPERTIES_EXT,
     ePhysicalDeviceCustomBorderColorFeaturesEXT              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CUSTOM_BORDER_COLOR_FEATURES_EXT,
     eRefreshObjectListKHR                                    = VK_STRUCTURE_TYPE_REFRESH_OBJECT_LIST_KHR,
-    eQueueFamilyCheckpointProperties2NV                      = VK_STRUCTURE_TYPE_QUEUE_FAMILY_CHECKPOINT_PROPERTIES_2_NV,
-    eCheckpointData2NV                                       = VK_STRUCTURE_TYPE_CHECKPOINT_DATA_2_NV,
     ePhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_YCBCR_2_PLANE_444_FORMATS_FEATURES_EXT,
     ePhysicalDevice4444FormatsFeaturesEXT                    = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_4444_FORMATS_FEATURES_EXT,
     ePhysicalDeviceVertexInputDynamicStateFeaturesEXT        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_INPUT_DYNAMIC_STATE_FEATURES_EXT,
@@ -642,6 +641,7 @@ namespace VULKAN_HPP_NAMESPACE
     ePhysicalDeviceExternalSciSync2FeaturesNV          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SCI_SYNC_2_FEATURES_NV,
     eDeviceSemaphoreSciSyncPoolReservationCreateInfoNV = VK_STRUCTURE_TYPE_DEVICE_SEMAPHORE_SCI_SYNC_POOL_RESERVATION_CREATE_INFO_NV,
 #endif /*VK_USE_PLATFORM_SCI*/
+    eLayerSettingsCreateInfoEXT                        = VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT,
     ePhysicalDeviceVertexAttributeDivisorPropertiesKHR = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_KHR,
     ePipelineVertexInputDivisorStateCreateInfoKHR      = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_DIVISOR_STATE_CREATE_INFO_KHR,
     ePhysicalDeviceVertexAttributeDivisorFeaturesKHR   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_FEATURES_KHR,
@@ -1787,11 +1787,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   enum class PipelineCreateFlagBits : VkPipelineCreateFlags
   {
-    eDisableOptimization           = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
-    eViewIndexFromDeviceIndex      = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
-    eDispatchBase                  = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
-    eFailOnPipelineCompileRequired = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT,
-    eEarlyReturnOnFailure          = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT
+    eDisableOptimization                                                = VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT,
+    eViewIndexFromDeviceIndex                                           = VK_PIPELINE_CREATE_VIEW_INDEX_FROM_DEVICE_INDEX_BIT,
+    eDispatchBase                                                       = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
+    eFailOnPipelineCompileRequired                                      = VK_PIPELINE_CREATE_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT,
+    eEarlyReturnOnFailure                                               = VK_PIPELINE_CREATE_EARLY_RETURN_ON_FAILURE_BIT,
+    eRenderingFragmentShadingRateAttachmentKHR                          = VK_PIPELINE_CREATE_RENDERING_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR,
+    eVkPipelineRasterizationStateCreateFragmentShadingRateAttachmentKHR = VK_PIPELINE_RASTERIZATION_STATE_CREATE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR
   };
 
   using PipelineCreateFlags = Flags<PipelineCreateFlagBits>;
@@ -1802,7 +1804,8 @@ namespace VULKAN_HPP_NAMESPACE
     static VULKAN_HPP_CONST_OR_CONSTEXPR bool                isBitmask = true;
     static VULKAN_HPP_CONST_OR_CONSTEXPR PipelineCreateFlags allFlags =
       PipelineCreateFlagBits::eDisableOptimization | PipelineCreateFlagBits::eViewIndexFromDeviceIndex | PipelineCreateFlagBits::eDispatchBase |
-      PipelineCreateFlagBits::eFailOnPipelineCompileRequired | PipelineCreateFlagBits::eEarlyReturnOnFailure;
+      PipelineCreateFlagBits::eFailOnPipelineCompileRequired | PipelineCreateFlagBits::eEarlyReturnOnFailure |
+      PipelineCreateFlagBits::eRenderingFragmentShadingRateAttachmentKHR;
   };
 
   enum class PipelineShaderStageCreateFlagBits : VkPipelineShaderStageCreateFlags
@@ -3612,6 +3615,89 @@ namespace VULKAN_HPP_NAMESPACE
     eSemaphore = VK_SCI_SYNC_PRIMITIVE_TYPE_SEMAPHORE_NV
   };
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+
+  enum class LayerSettingTypeEXT
+  {
+    eBool32  = VK_LAYER_SETTING_TYPE_BOOL32_EXT,
+    eInt32   = VK_LAYER_SETTING_TYPE_INT32_EXT,
+    eInt64   = VK_LAYER_SETTING_TYPE_INT64_EXT,
+    eUint32  = VK_LAYER_SETTING_TYPE_UINT32_EXT,
+    eUint64  = VK_LAYER_SETTING_TYPE_UINT64_EXT,
+    eFloat32 = VK_LAYER_SETTING_TYPE_FLOAT32_EXT,
+    eFloat64 = VK_LAYER_SETTING_TYPE_FLOAT64_EXT,
+    eString  = VK_LAYER_SETTING_TYPE_STRING_EXT
+  };
+
+  //=================================
+  //=== Layer Setting Type Traits ===
+  //=================================
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eBool32>
+  {
+    using Type = vk::Bool32;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt32>
+  {
+    using Type = int32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eInt64>
+  {
+    using Type = int64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint32>
+  {
+    using Type = uint32_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eUint64>
+  {
+    using Type = uint64_t;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat32>
+  {
+    using Type = float;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eFloat64>
+  {
+    using Type = double;
+  };
+
+  template <>
+  struct CppType<LayerSettingTypeEXT, LayerSettingTypeEXT::eString>
+  {
+    using Type = char *;
+  };
+
+  template <typename T>
+  bool isSameType( LayerSettingTypeEXT layerSettingType )
+  {
+    switch ( layerSettingType )
+    {
+      case LayerSettingTypeEXT::eBool32: return std::is_same<T, VULKAN_HPP_NAMESPACE::Bool32>::value;
+      case LayerSettingTypeEXT::eInt32: return std::is_same<T, int32_t>::value;
+      case LayerSettingTypeEXT::eInt64: return std::is_same<T, int64_t>::value;
+      case LayerSettingTypeEXT::eUint32: return std::is_same<T, uint32_t>::value;
+      case LayerSettingTypeEXT::eUint64: return std::is_same<T, uint64_t>::value;
+      case LayerSettingTypeEXT::eFloat32: return std::is_same<T, float>::value;
+      case LayerSettingTypeEXT::eFloat64: return std::is_same<T, double>::value;
+      case LayerSettingTypeEXT::eString: return std::is_same<T, char *>::value;
+      default: return false;
+    }
+  }
 
   //=== VK_KHR_line_rasterization ===
 

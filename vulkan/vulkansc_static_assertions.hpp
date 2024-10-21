@@ -2498,6 +2498,14 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::Physical
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>::value,
                           "PhysicalDeviceFragmentShadingRateKHR is not nothrow_move_constructible!" );
 
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR ) ==
+                            sizeof( VkRenderingFragmentShadingRateAttachmentInfoKHR ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR>::value,
+                          "RenderingFragmentShadingRateAttachmentInfoKHR is not nothrow_move_constructible!" );
+
 //=== VK_EXT_shader_image_atomic_int64 ===
 
 VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceShaderImageAtomicInt64FeaturesEXT ) ==
@@ -2632,20 +2640,6 @@ VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::RefreshObjectKHR ) == si
 VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::RefreshObjectKHR>::value, "struct wrapper is not a standard layout!" );
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::RefreshObjectKHR>::value,
                           "RefreshObjectKHR is not nothrow_move_constructible!" );
-
-//=== VK_KHR_synchronization2 ===
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV ) == sizeof( VkQueueFamilyCheckpointProperties2NV ),
-                          "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV>::value,
-                          "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV>::value,
-                          "QueueFamilyCheckpointProperties2NV is not nothrow_move_constructible!" );
-
-VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CheckpointData2NV ) == sizeof( VkCheckpointData2NV ), "struct and wrapper have different size!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, "struct wrapper is not a standard layout!" );
-VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value,
-                          "CheckpointData2NV is not nothrow_move_constructible!" );
 
 //=== VK_EXT_ycbcr_2plane_444_formats ===
 
@@ -2848,6 +2842,19 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DeviceSe
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DeviceSemaphoreSciSyncPoolReservationCreateInfoNV>::value,
                           "DeviceSemaphoreSciSyncPoolReservationCreateInfoNV is not nothrow_move_constructible!" );
 #endif /*VK_USE_PLATFORM_SCI*/
+
+//=== VK_EXT_layer_settings ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT ) == sizeof( VkLayerSettingsCreateInfoEXT ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT>::value,
+                          "LayerSettingsCreateInfoEXT is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::LayerSettingEXT ) == sizeof( VkLayerSettingEXT ), "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::LayerSettingEXT>::value, "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::LayerSettingEXT>::value,
+                          "LayerSettingEXT is not nothrow_move_constructible!" );
 
 //=== VK_KHR_vertex_attribute_divisor ===
 

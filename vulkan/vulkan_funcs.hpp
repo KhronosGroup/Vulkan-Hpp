@@ -18344,6 +18344,21 @@ namespace VULKAN_HPP_NAMESPACE
                                  marker );
   }
 
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void CommandBuffer::writeBufferMarker2AMD( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage,
+                                                               VULKAN_HPP_NAMESPACE::Buffer              dstBuffer,
+                                                               VULKAN_HPP_NAMESPACE::DeviceSize          dstOffset,
+                                                               uint32_t                                  marker,
+                                                               Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkCmdWriteBufferMarker2AMD( static_cast<VkCommandBuffer>( m_commandBuffer ),
+                                  static_cast<VkPipelineStageFlags2>( stage ),
+                                  static_cast<VkBuffer>( dstBuffer ),
+                                  static_cast<VkDeviceSize>( dstOffset ),
+                                  marker );
+  }
+
   //=== VK_EXT_calibrated_timestamps ===
 
   template <typename Dispatch>
@@ -18678,6 +18693,65 @@ namespace VULKAN_HPP_NAMESPACE
     d.vkGetQueueCheckpointDataNV( m_queue, &checkpointDataCount, nullptr );
     checkpointData.resize( checkpointDataCount );
     d.vkGetQueueCheckpointDataNV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointDataNV *>( checkpointData.data() ) );
+
+    VULKAN_HPP_ASSERT( checkpointDataCount <= checkpointData.size() );
+    if ( checkpointDataCount < checkpointData.size() )
+    {
+      checkpointData.resize( checkpointDataCount );
+    }
+    return checkpointData;
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+  template <typename Dispatch>
+  VULKAN_HPP_INLINE void Queue::getCheckpointData2NV( uint32_t *                                pCheckpointDataCount,
+                                                      VULKAN_HPP_NAMESPACE::CheckpointData2NV * pCheckpointData,
+                                                      Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    d.vkGetQueueCheckpointData2NV( static_cast<VkQueue>( m_queue ), pCheckpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( pCheckpointData ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename CheckpointData2NVAllocator, typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
+                                         Queue::getCheckpointData2NV( Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetQueueCheckpointData2NV && "Function <vkGetQueueCheckpointData2NV> requires <VK_NV_device_diagnostic_checkpoints>" );
+#  endif
+
+    std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator> checkpointData;
+    uint32_t                                                                         checkpointDataCount;
+    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, nullptr );
+    checkpointData.resize( checkpointDataCount );
+    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( checkpointData.data() ) );
+
+    VULKAN_HPP_ASSERT( checkpointDataCount <= checkpointData.size() );
+    if ( checkpointDataCount < checkpointData.size() )
+    {
+      checkpointData.resize( checkpointDataCount );
+    }
+    return checkpointData;
+  }
+
+  template <typename CheckpointData2NVAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
+                                         Queue::getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetQueueCheckpointData2NV && "Function <vkGetQueueCheckpointData2NV> requires <VK_NV_device_diagnostic_checkpoints>" );
+#  endif
+
+    std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator> checkpointData( checkpointData2NVAllocator );
+    uint32_t                                                                         checkpointDataCount;
+    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, nullptr );
+    checkpointData.resize( checkpointDataCount );
+    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( checkpointData.data() ) );
 
     VULKAN_HPP_ASSERT( checkpointDataCount <= checkpointData.size() );
     if ( checkpointDataCount < checkpointData.size() )
@@ -22228,80 +22302,6 @@ namespace VULKAN_HPP_NAMESPACE
     VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::Queue::submit2KHR" );
 
     return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result );
-  }
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-  template <typename Dispatch>
-  VULKAN_HPP_INLINE void CommandBuffer::writeBufferMarker2AMD( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage,
-                                                               VULKAN_HPP_NAMESPACE::Buffer              dstBuffer,
-                                                               VULKAN_HPP_NAMESPACE::DeviceSize          dstOffset,
-                                                               uint32_t                                  marker,
-                                                               Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkCmdWriteBufferMarker2AMD( static_cast<VkCommandBuffer>( m_commandBuffer ),
-                                  static_cast<VkPipelineStageFlags2>( stage ),
-                                  static_cast<VkBuffer>( dstBuffer ),
-                                  static_cast<VkDeviceSize>( dstOffset ),
-                                  marker );
-  }
-
-  template <typename Dispatch>
-  VULKAN_HPP_INLINE void Queue::getCheckpointData2NV( uint32_t *                                pCheckpointDataCount,
-                                                      VULKAN_HPP_NAMESPACE::CheckpointData2NV * pCheckpointData,
-                                                      Dispatch const &                          d ) const VULKAN_HPP_NOEXCEPT
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-    d.vkGetQueueCheckpointData2NV( static_cast<VkQueue>( m_queue ), pCheckpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( pCheckpointData ) );
-  }
-
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename CheckpointData2NVAllocator, typename Dispatch>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-                                         Queue::getCheckpointData2NV( Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetQueueCheckpointData2NV && "Function <vkGetQueueCheckpointData2NV> requires <VK_KHR_synchronization2>" );
-#  endif
-
-    std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator> checkpointData;
-    uint32_t                                                                         checkpointDataCount;
-    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, nullptr );
-    checkpointData.resize( checkpointDataCount );
-    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( checkpointData.data() ) );
-
-    VULKAN_HPP_ASSERT( checkpointDataCount <= checkpointData.size() );
-    if ( checkpointDataCount < checkpointData.size() )
-    {
-      checkpointData.resize( checkpointDataCount );
-    }
-    return checkpointData;
-  }
-
-  template <typename CheckpointData2NVAllocator,
-            typename Dispatch,
-            typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type>
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-                                         Queue::getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d ) const
-  {
-    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
-#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
-    VULKAN_HPP_ASSERT( d.vkGetQueueCheckpointData2NV && "Function <vkGetQueueCheckpointData2NV> requires <VK_KHR_synchronization2>" );
-#  endif
-
-    std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator> checkpointData( checkpointData2NVAllocator );
-    uint32_t                                                                         checkpointDataCount;
-    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, nullptr );
-    checkpointData.resize( checkpointDataCount );
-    d.vkGetQueueCheckpointData2NV( m_queue, &checkpointDataCount, reinterpret_cast<VkCheckpointData2NV *>( checkpointData.data() ) );
-
-    VULKAN_HPP_ASSERT( checkpointDataCount <= checkpointData.size() );
-    if ( checkpointDataCount < checkpointData.size() )
-    {
-      checkpointData.resize( checkpointDataCount );
-    }
-    return checkpointData;
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 

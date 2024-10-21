@@ -625,6 +625,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFragmentShadingRateFeaturesKHR;
   struct PhysicalDeviceFragmentShadingRatePropertiesKHR;
   struct PhysicalDeviceFragmentShadingRateKHR;
+  struct RenderingFragmentShadingRateAttachmentInfoKHR;
 
   //=== VK_EXT_shader_image_atomic_int64 ===
   struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT;
@@ -665,10 +666,6 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_KHR_object_refresh ===
   struct RefreshObjectListKHR;
   struct RefreshObjectKHR;
-
-  //=== VK_KHR_synchronization2 ===
-  struct QueueFamilyCheckpointProperties2NV;
-  struct CheckpointData2NV;
 
   //=== VK_EXT_ycbcr_2plane_444_formats ===
   struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT;
@@ -720,6 +717,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct SemaphoreSciSyncCreateInfoNV;
   struct DeviceSemaphoreSciSyncPoolReservationCreateInfoNV;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+  struct LayerSettingsCreateInfoEXT;
+  struct LayerSettingEXT;
 
   //=== VK_KHR_vertex_attribute_divisor ===
   struct PhysicalDeviceVertexAttributeDivisorPropertiesKHR;
@@ -3476,13 +3477,6 @@ namespace VULKAN_HPP_NAMESPACE
                              uint32_t                                  query,
                              Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void writeBufferMarker2AMD( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage,
-                                VULKAN_HPP_NAMESPACE::Buffer              dstBuffer,
-                                VULKAN_HPP_NAMESPACE::DeviceSize          dstOffset,
-                                uint32_t                                  marker,
-                                Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-
     //=== VK_KHR_copy_commands2 ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -5229,23 +5223,6 @@ namespace VULKAN_HPP_NAMESPACE
       submit2KHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SubmitInfo2> const & submits,
                   VULKAN_HPP_NAMESPACE::Fence fence                                                 VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                   Dispatch const & d                                                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void getCheckpointData2NV( uint32_t *                                pCheckpointDataCount,
-                               VULKAN_HPP_NAMESPACE::CheckpointData2NV * pCheckpointData,
-                               Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
-              typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-                         getCheckpointData2NV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <
-      typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
-      typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-      typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-      getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkQueue() const VULKAN_HPP_NOEXCEPT

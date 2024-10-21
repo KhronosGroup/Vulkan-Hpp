@@ -992,20 +992,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::CheckpointData2NV>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::CheckpointData2NV const & checkpointData2NV ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, checkpointData2NV.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, checkpointData2NV.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, checkpointData2NV.stage );
-      VULKAN_HPP_HASH_COMBINE( seed, checkpointData2NV.pCheckpointMarker );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::ClearDepthStencilValue>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::ClearDepthStencilValue const & clearDepthStencilValue ) const VULKAN_HPP_NOEXCEPT
@@ -3653,6 +3639,41 @@ namespace std
       {
         VULKAN_HPP_HASH_COMBINE( seed, layerProperties.description[i] );
       }
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::LayerSettingEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::LayerSettingEXT const & layerSettingEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      for ( const char * p = layerSettingEXT.pLayerName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
+      for ( const char * p = layerSettingEXT.pSettingName; *p != '\0'; ++p )
+      {
+        VULKAN_HPP_HASH_COMBINE( seed, *p );
+      }
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingEXT.type );
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingEXT.valueCount );
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingEXT.pValues );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::LayerSettingsCreateInfoEXT const & layerSettingsCreateInfoEXT ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingsCreateInfoEXT.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingsCreateInfoEXT.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingsCreateInfoEXT.settingCount );
+      VULKAN_HPP_HASH_COMBINE( seed, layerSettingsCreateInfoEXT.pSettings );
       return seed;
     }
   };
@@ -6617,19 +6638,6 @@ namespace std
   };
 
   template <>
-  struct hash<VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV>
-  {
-    std::size_t operator()( VULKAN_HPP_NAMESPACE::QueueFamilyCheckpointProperties2NV const & queueFamilyCheckpointProperties2NV ) const VULKAN_HPP_NOEXCEPT
-    {
-      std::size_t seed = 0;
-      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointProperties2NV.sType );
-      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointProperties2NV.pNext );
-      VULKAN_HPP_HASH_COMBINE( seed, queueFamilyCheckpointProperties2NV.checkpointExecutionStageMask );
-      return seed;
-    }
-  };
-
-  template <>
   struct hash<VULKAN_HPP_NAMESPACE::QueueFamilyGlobalPriorityPropertiesKHR>
   {
     std::size_t
@@ -6910,6 +6918,22 @@ namespace std
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSampleLocationsBeginInfoEXT.pAttachmentInitialSampleLocations );
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSampleLocationsBeginInfoEXT.postSubpassSampleLocationsCount );
       VULKAN_HPP_HASH_COMBINE( seed, renderPassSampleLocationsBeginInfoEXT.pPostSubpassSampleLocations );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::RenderingFragmentShadingRateAttachmentInfoKHR const & renderingFragmentShadingRateAttachmentInfoKHR ) const
+      VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, renderingFragmentShadingRateAttachmentInfoKHR.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, renderingFragmentShadingRateAttachmentInfoKHR.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, renderingFragmentShadingRateAttachmentInfoKHR.imageView );
+      VULKAN_HPP_HASH_COMBINE( seed, renderingFragmentShadingRateAttachmentInfoKHR.imageLayout );
+      VULKAN_HPP_HASH_COMBINE( seed, renderingFragmentShadingRateAttachmentInfoKHR.shadingRateAttachmentTexelSize );
       return seed;
     }
   };

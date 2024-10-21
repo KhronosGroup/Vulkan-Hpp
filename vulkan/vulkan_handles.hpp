@@ -630,13 +630,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct ShaderResourceUsageAMD;
   struct ShaderStatisticsInfoAMD;
 
-  //=== VK_KHR_dynamic_rendering ===
-  struct RenderingFragmentShadingRateAttachmentInfoKHR;
-  struct RenderingFragmentDensityMapAttachmentInfoEXT;
-  struct AttachmentSampleCountInfoAMD;
-  using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
-  struct MultiviewPerViewAttributesInfoNVX;
-
 #if defined( VK_USE_PLATFORM_GGP )
   //=== VK_GGP_stream_descriptor_surface ===
   struct StreamDescriptorSurfaceCreateInfoGGP;
@@ -744,6 +737,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   //=== VK_NVX_multiview_per_view_attributes ===
   struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX;
+  struct MultiviewPerViewAttributesInfoNVX;
 
   //=== VK_NV_viewport_swizzle ===
   struct ViewportSwizzleNV;
@@ -843,6 +837,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineShaderStageNodeCreateInfoAMDX;
   union DeviceOrHostAddressConstAMDX;
 #endif /*VK_ENABLE_BETA_EXTENSIONS*/
+
+  //=== VK_AMD_mixed_attachment_samples ===
+  struct AttachmentSampleCountInfoAMD;
+  using AttachmentSampleCountInfoNV = AttachmentSampleCountInfoAMD;
 
   //=== VK_EXT_sample_locations ===
   struct SampleLocationEXT;
@@ -1015,6 +1013,8 @@ namespace VULKAN_HPP_NAMESPACE
   //=== VK_NV_device_diagnostic_checkpoints ===
   struct QueueFamilyCheckpointPropertiesNV;
   struct CheckpointDataNV;
+  struct QueueFamilyCheckpointProperties2NV;
+  struct CheckpointData2NV;
 
   //=== VK_INTEL_shader_integer_functions2 ===
   struct PhysicalDeviceShaderIntegerFunctions2FeaturesINTEL;
@@ -1051,6 +1051,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFragmentDensityMapFeaturesEXT;
   struct PhysicalDeviceFragmentDensityMapPropertiesEXT;
   struct RenderPassFragmentDensityMapCreateInfoEXT;
+  struct RenderingFragmentDensityMapAttachmentInfoEXT;
 
   //=== VK_KHR_fragment_shading_rate ===
   struct FragmentShadingRateAttachmentInfoKHR;
@@ -1058,6 +1059,7 @@ namespace VULKAN_HPP_NAMESPACE
   struct PhysicalDeviceFragmentShadingRateFeaturesKHR;
   struct PhysicalDeviceFragmentShadingRatePropertiesKHR;
   struct PhysicalDeviceFragmentShadingRateKHR;
+  struct RenderingFragmentShadingRateAttachmentInfoKHR;
 
   //=== VK_AMD_shader_core_properties2 ===
   struct PhysicalDeviceShaderCoreProperties2AMD;
@@ -1285,10 +1287,6 @@ namespace VULKAN_HPP_NAMESPACE
   struct ExportMetalSharedEventInfoEXT;
   struct ImportMetalSharedEventInfoEXT;
 #endif /*VK_USE_PLATFORM_METAL_EXT*/
-
-  //=== VK_KHR_synchronization2 ===
-  struct QueueFamilyCheckpointProperties2NV;
-  struct CheckpointData2NV;
 
   //=== VK_EXT_descriptor_buffer ===
   struct PhysicalDeviceDescriptorBufferPropertiesEXT;
@@ -6371,6 +6369,13 @@ namespace VULKAN_HPP_NAMESPACE
                                uint32_t                                    marker,
                                Dispatch const & d                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void writeBufferMarker2AMD( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage,
+                                VULKAN_HPP_NAMESPACE::Buffer              dstBuffer,
+                                VULKAN_HPP_NAMESPACE::DeviceSize          dstOffset,
+                                uint32_t                                  marker,
+                                Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+
     //=== VK_NV_mesh_shader ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -6686,13 +6691,6 @@ namespace VULKAN_HPP_NAMESPACE
                              VULKAN_HPP_NAMESPACE::QueryPool           queryPool,
                              uint32_t                                  query,
                              Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void writeBufferMarker2AMD( VULKAN_HPP_NAMESPACE::PipelineStageFlags2 stage,
-                                VULKAN_HPP_NAMESPACE::Buffer              dstBuffer,
-                                VULKAN_HPP_NAMESPACE::DeviceSize          dstOffset,
-                                uint32_t                                  marker,
-                                Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 
     //=== VK_EXT_descriptor_buffer ===
 
@@ -10332,6 +10330,23 @@ namespace VULKAN_HPP_NAMESPACE
       getCheckpointDataNV( CheckpointDataNVAllocator & checkpointDataNVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    void getCheckpointData2NV( uint32_t *                                pCheckpointDataCount,
+                               VULKAN_HPP_NAMESPACE::CheckpointData2NV * pCheckpointData,
+                               Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
+              typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
+                         getCheckpointData2NV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <
+      typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
+      typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type = 0>
+    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
+      getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
     //=== VK_INTEL_performance_query ===
 
 #ifdef VULKAN_HPP_DISABLE_ENHANCED_MODE
@@ -10358,23 +10373,6 @@ namespace VULKAN_HPP_NAMESPACE
       submit2KHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SubmitInfo2> const & submits,
                   VULKAN_HPP_NAMESPACE::Fence fence                                                 VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                   Dispatch const & d                                                                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
-
-    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    void getCheckpointData2NV( uint32_t *                                pCheckpointDataCount,
-                               VULKAN_HPP_NAMESPACE::CheckpointData2NV * pCheckpointData,
-                               Dispatch const & d                        VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
-#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
-              typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-                         getCheckpointData2NV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
-    template <
-      typename CheckpointData2NVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CheckpointData2NV>,
-      typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-      typename std::enable_if<std::is_same<typename CheckpointData2NVAllocator::value_type, VULKAN_HPP_NAMESPACE::CheckpointData2NV>::value, int>::type = 0>
-    VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CheckpointData2NV, CheckpointData2NVAllocator>
-      getCheckpointData2NV( CheckpointData2NVAllocator & checkpointData2NVAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     //=== VK_NV_low_latency2 ===

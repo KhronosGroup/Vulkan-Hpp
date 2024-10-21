@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 15, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 16, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -2927,17 +2927,6 @@ namespace VULKAN_HPP_NAMESPACE
       return ::vkQueueSubmit2KHR( queue, submitCount, pSubmits, fence );
     }
 
-    void vkCmdWriteBufferMarker2AMD(
-      VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkBuffer dstBuffer, VkDeviceSize dstOffset, uint32_t marker ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ::vkCmdWriteBufferMarker2AMD( commandBuffer, stage, dstBuffer, dstOffset, marker );
-    }
-
-    void vkGetQueueCheckpointData2NV( VkQueue queue, uint32_t * pCheckpointDataCount, VkCheckpointData2NV * pCheckpointData ) const VULKAN_HPP_NOEXCEPT
-    {
-      return ::vkGetQueueCheckpointData2NV( queue, pCheckpointDataCount, pCheckpointData );
-    }
-
     //=== VK_KHR_copy_commands2 ===
 
     void vkCmdCopyBuffer2KHR( VkCommandBuffer commandBuffer, const VkCopyBufferInfo2 * pCopyBufferInfo ) const VULKAN_HPP_NOEXCEPT
@@ -4323,6 +4312,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto NVExternalSciSync2ExtensionName = VK_NV_EXTERNAL_SCI_SYNC_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVExternalSciSync2SpecVersion   = VK_NV_EXTERNAL_SCI_SYNC_2_SPEC_VERSION;
 #endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLayerSettingsExtensionName = VK_EXT_LAYER_SETTINGS_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto EXTLayerSettingsSpecVersion   = VK_EXT_LAYER_SETTINGS_SPEC_VERSION;
 
   //=== VK_KHR_vertex_attribute_divisor ===
   VULKAN_HPP_CONSTEXPR_INLINE auto KHRVertexAttributeDivisorExtensionName = VK_KHR_VERTEX_ATTRIBUTE_DIVISOR_EXTENSION_NAME;
@@ -6432,6 +6425,15 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  template <>
+  struct StructExtends<RenderingFragmentShadingRateAttachmentInfoKHR, RenderingInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_EXT_shader_image_atomic_int64 ===
   template <>
   struct StructExtends<PhysicalDeviceShaderImageAtomicInt64FeaturesEXT, PhysicalDeviceFeatures2>
@@ -6642,16 +6644,6 @@ namespace VULKAN_HPP_NAMESPACE
 
   template <>
   struct StructExtends<PhysicalDeviceCustomBorderColorFeaturesEXT, DeviceCreateInfo>
-  {
-    enum
-    {
-      value = true
-    };
-  };
-
-  //=== VK_KHR_synchronization2 ===
-  template <>
-  struct StructExtends<QueueFamilyCheckpointProperties2NV, QueueFamilyProperties2>
   {
     enum
     {
@@ -6898,6 +6890,16 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 #  endif /*VK_USE_PLATFORM_SCI*/
+
+  //=== VK_EXT_layer_settings ===
+  template <>
+  struct StructExtends<LayerSettingsCreateInfoEXT, InstanceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
 
   //=== VK_KHR_vertex_attribute_divisor ===
   template <>
@@ -7505,14 +7507,12 @@ namespace VULKAN_HPP_NAMESPACE
     PFN_vkGetPhysicalDeviceRefreshableObjectTypesKHR vkGetPhysicalDeviceRefreshableObjectTypesKHR = 0;
 
     //=== VK_KHR_synchronization2 ===
-    PFN_vkCmdSetEvent2KHR           vkCmdSetEvent2KHR           = 0;
-    PFN_vkCmdResetEvent2KHR         vkCmdResetEvent2KHR         = 0;
-    PFN_vkCmdWaitEvents2KHR         vkCmdWaitEvents2KHR         = 0;
-    PFN_vkCmdPipelineBarrier2KHR    vkCmdPipelineBarrier2KHR    = 0;
-    PFN_vkCmdWriteTimestamp2KHR     vkCmdWriteTimestamp2KHR     = 0;
-    PFN_vkQueueSubmit2KHR           vkQueueSubmit2KHR           = 0;
-    PFN_vkCmdWriteBufferMarker2AMD  vkCmdWriteBufferMarker2AMD  = 0;
-    PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV = 0;
+    PFN_vkCmdSetEvent2KHR        vkCmdSetEvent2KHR        = 0;
+    PFN_vkCmdResetEvent2KHR      vkCmdResetEvent2KHR      = 0;
+    PFN_vkCmdWaitEvents2KHR      vkCmdWaitEvents2KHR      = 0;
+    PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR = 0;
+    PFN_vkCmdWriteTimestamp2KHR  vkCmdWriteTimestamp2KHR  = 0;
+    PFN_vkQueueSubmit2KHR        vkQueueSubmit2KHR        = 0;
 
     //=== VK_KHR_copy_commands2 ===
     PFN_vkCmdCopyBuffer2KHR        vkCmdCopyBuffer2KHR        = 0;
@@ -8080,8 +8080,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueSubmit2KHR = PFN_vkQueueSubmit2KHR( vkGetInstanceProcAddr( instance, "vkQueueSubmit2KHR" ) );
       if ( !vkQueueSubmit2 )
         vkQueueSubmit2 = vkQueueSubmit2KHR;
-      vkCmdWriteBufferMarker2AMD  = PFN_vkCmdWriteBufferMarker2AMD( vkGetInstanceProcAddr( instance, "vkCmdWriteBufferMarker2AMD" ) );
-      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetInstanceProcAddr( instance, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_KHR_copy_commands2 ===
       vkCmdCopyBuffer2KHR = PFN_vkCmdCopyBuffer2KHR( vkGetInstanceProcAddr( instance, "vkCmdCopyBuffer2KHR" ) );
@@ -8492,8 +8490,6 @@ namespace VULKAN_HPP_NAMESPACE
       vkQueueSubmit2KHR = PFN_vkQueueSubmit2KHR( vkGetDeviceProcAddr( device, "vkQueueSubmit2KHR" ) );
       if ( !vkQueueSubmit2 )
         vkQueueSubmit2 = vkQueueSubmit2KHR;
-      vkCmdWriteBufferMarker2AMD  = PFN_vkCmdWriteBufferMarker2AMD( vkGetDeviceProcAddr( device, "vkCmdWriteBufferMarker2AMD" ) );
-      vkGetQueueCheckpointData2NV = PFN_vkGetQueueCheckpointData2NV( vkGetDeviceProcAddr( device, "vkGetQueueCheckpointData2NV" ) );
 
       //=== VK_KHR_copy_commands2 ===
       vkCmdCopyBuffer2KHR = PFN_vkCmdCopyBuffer2KHR( vkGetDeviceProcAddr( device, "vkCmdCopyBuffer2KHR" ) );

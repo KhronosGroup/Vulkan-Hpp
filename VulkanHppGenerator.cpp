@@ -9274,8 +9274,6 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
 
   if ( definition )
   {
-    std::string callSequence =
-      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, {}, {}, flavourFlags, true, true );
     std::string              className      = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "Context";
     std::vector<std::string> dataTypes      = determineDataTypes( commandData.params, vectorParams, returnParams, {} );
     std::string              dataType       = combineDataTypes( vectorParams, returnParams, enumerating, dataTypes, flavourFlags, true );
@@ -9290,17 +9288,27 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
     {
       vulkanType = commandData.params[returnParams.back()].type.type;
     }
-    std::string returnStatements =
-      generateRAIIFactoryReturnStatements( commandData.params, commandData.successCodes, vulkanType, enumerating, returnType, returnVariable, singular );
+
+    // some special handling for vkCreateDescriptorPool: not to have this flag set!
+    std::string specialAssertion;
+    if ( name == "vkCreateDescriptorPool" )
+    {
+      specialAssertion =
+        "VULKAN_HPP_ASSERT( createInfo.flags & vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet && \"createInfo.flags need to have vk::DescriptorPoolCreateFlagBits::eFreeDesriptors set in order to allow destruction of VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSet which requires to return individual allocations to the pool\" );";
+    }
     std::string dataDeclarations =
       generateDataDeclarations( commandData, returnParams, vectorParams, {}, flavourFlags, true, dataTypes, dataType, returnType, returnVariable );
-    std::string vkType      = commandData.params[returnParams.back()].type.type;
+    std::string callSequence =
+      generateCallSequence( name, commandData, returnParams, vectorParams, initialSkipCount, singularParams, {}, {}, flavourFlags, true, true );
     std::string resultCheck = generateResultCheckExpected( commandData.successCodes, className, commandName );
+    std::string returnStatements =
+      generateRAIIFactoryReturnStatements( commandData.params, commandData.successCodes, vulkanType, enumerating, returnType, returnVariable, singular );
 
     std::string const definitionTemplate =
       R"(
   VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
+    ${specialAssertion}
     ${dataDeclarations}
     ${callSequence}
     ${resultCheck}
@@ -9317,7 +9325,8 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
                              { "noexcept", noexceptString },
                              { "resultCheck", resultCheck },
                              { "returnStatements", returnStatements },
-                             { "returnType", returnType } } );
+                             { "returnType", returnType },
+                             { "specialAssertion", specialAssertion } } );
   }
   else
   {
@@ -14793,7 +14802,7 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
   checkElements( line, getChildElements( element ), {} );
 
   std::vector<std::string> name;
-  std::string structure;
+  std::string              structure;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
@@ -14827,10 +14836,9 @@ VulkanHppGenerator::RequireFeature VulkanHppGenerator::readRequireFeature( tinyx
     structIt = m_structs.find( aliasIt->second.name );
     assert( structIt != m_structs.end() );
   }
-  for (auto const& n : name)
+  for ( auto const & n : name )
   {
-    auto memberIt =
-      std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&n]( MemberData const & md ) { return md.name == n; } );
+    auto memberIt = std::find_if( structIt->second.members.begin(), structIt->second.members.end(), [&n]( MemberData const & md ) { return md.name == n; } );
     checkForError(
       memberIt != structIt->second.members.end(), line, "required feature name <" + n + "> not part of the required feature struct <" + structure + ">" );
     checkForError( ( memberIt->type.isValue() && ( memberIt->type.type == "VkBool32" ) ),

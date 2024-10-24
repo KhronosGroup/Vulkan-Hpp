@@ -12327,7 +12327,7 @@ std::string VulkanHppGenerator::generateTypenameCheck( std::vector<size_t> const
                                                        CommandFlavourFlags                       flavourFlags ) const
 {
   std::string typenameCheck, enableIf;
-  if ( !( flavourFlags & CommandFlavourFlagBits::singular ) && ( flavourFlags & CommandFlavourFlagBits::withAllocator ) )
+  if ( !( flavourFlags & CommandFlavourFlagBits::singular ) )
   {
     for ( size_t i = 0; i < returnParams.size(); ++i )
     {

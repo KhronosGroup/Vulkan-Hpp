@@ -5710,7 +5710,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                      VULKAN_HPP_NAMESPACE::QueryResultFlags flags,
                                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DataType, typename DataTypeAllocator = std::allocator<DataType>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename DataType,
+              typename DataTypeAllocator                                                                                = std::allocator<DataType>,
+              typename Dispatch                                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DataTypeAllocator::value_type, DataType>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD ResultValue<std::vector<DataType, DataTypeAllocator>>
                          getQueryPoolResults( VULKAN_HPP_NAMESPACE::QueryPool              queryPool,
                                               uint32_t                                     firstQuery,
@@ -5959,7 +5962,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                          VULKAN_HPP_NAMESPACE::Pipeline *                         pPipelines,
                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename PipelineAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename PipelineAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Pipeline>,
+              typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                          createGraphicsPipelines( VULKAN_HPP_NAMESPACE::PipelineCache                                                              pipelineCache,
                                                   VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -5981,8 +5986,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                  Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    template <typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator         = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
+              typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value,
+                                      int>::type = 0>
     VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createGraphicsPipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                                              pipelineCache,
                                                         VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::GraphicsPipelineCreateInfo> const & createInfos,
@@ -6015,7 +6022,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                         VULKAN_HPP_NAMESPACE::Pipeline *                        pPipelines,
                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename PipelineAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Pipeline>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename PipelineAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Pipeline>,
+              typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, VULKAN_HPP_NAMESPACE::Pipeline>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD ResultValue<std::vector<VULKAN_HPP_NAMESPACE::Pipeline, PipelineAllocator>>
                          createComputePipelines( VULKAN_HPP_NAMESPACE::PipelineCache                                                             pipelineCache,
                                                  VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -6037,8 +6046,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                                 Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename PipelineAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>>
+    template <typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename PipelineAllocator         = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>,
+              typename std::enable_if<std::is_same<typename PipelineAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>>::value,
+                                      int>::type = 0>
     VULKAN_HPP_NODISCARD ResultValue<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::Pipeline, Dispatch>, PipelineAllocator>>
                          createComputePipelinesUnique( VULKAN_HPP_NAMESPACE::PipelineCache                                                             pipelineCache,
                                                        VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::ComputePipelineCreateInfo> const & createInfos,
@@ -6248,7 +6259,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                         VULKAN_HPP_NAMESPACE::DescriptorSet *                   pDescriptorSets,
                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DescriptorSetAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DescriptorSet>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename DescriptorSetAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DescriptorSet>,
+              typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DescriptorSetAllocator::value_type, VULKAN_HPP_NAMESPACE::DescriptorSet>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DescriptorSet, DescriptorSetAllocator>>::type
       allocateDescriptorSets( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6260,8 +6273,11 @@ namespace VULKAN_HPP_NAMESPACE
                               DescriptorSetAllocator &                                descriptorSetAllocator,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename DescriptorSetAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>>
+    template <
+      typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename DescriptorSetAllocator    = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>,
+      typename std::enable_if<std::is_same<typename DescriptorSetAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>>::value,
+                              int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::DescriptorSet, Dispatch>, DescriptorSetAllocator>>::type
       allocateDescriptorSetsUnique( const VULKAN_HPP_NAMESPACE::DescriptorSetAllocateInfo & allocateInfo,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6446,7 +6462,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                         VULKAN_HPP_NAMESPACE::CommandBuffer *                   pCommandBuffers,
                                                         Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename CommandBufferAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CommandBuffer>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename CommandBufferAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CommandBuffer>,
+              typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename CommandBufferAllocator::value_type, VULKAN_HPP_NAMESPACE::CommandBuffer>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::CommandBuffer, CommandBufferAllocator>>::type
       allocateCommandBuffers( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6458,8 +6476,11 @@ namespace VULKAN_HPP_NAMESPACE
                               CommandBufferAllocator &                                commandBufferAllocator,
                               Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename CommandBufferAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>>
+    template <
+      typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename CommandBufferAllocator    = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>,
+      typename std::enable_if<std::is_same<typename CommandBufferAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>>::value,
+                              int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::CommandBuffer, Dispatch>, CommandBufferAllocator>>::type
       allocateCommandBuffersUnique( const VULKAN_HPP_NAMESPACE::CommandBufferAllocateInfo & allocateInfo,
                                     Dispatch const & d                                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6831,7 +6852,10 @@ namespace VULKAN_HPP_NAMESPACE
                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename SparseImageMemoryRequirements2Allocator = std::allocator<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>,
-              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename SparseImageMemoryRequirements2Allocator::value_type, VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2>::value,
+                int>::type = 0>
     VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::SparseImageMemoryRequirements2, SparseImageMemoryRequirements2Allocator>
                          getImageSparseMemoryRequirements( const VULKAN_HPP_NAMESPACE::DeviceImageMemoryRequirements & info,
                                                            Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6868,7 +6892,9 @@ namespace VULKAN_HPP_NAMESPACE
                                               VULKAN_HPP_NAMESPACE::FaultData *        pFaults,
                                               Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename FaultDataAllocator = std::allocator<VULKAN_HPP_NAMESPACE::FaultData>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename FaultDataAllocator = std::allocator<VULKAN_HPP_NAMESPACE::FaultData>,
+              typename Dispatch           = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename FaultDataAllocator::value_type, VULKAN_HPP_NAMESPACE::FaultData>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::pair<VULKAN_HPP_NAMESPACE::Bool32, std::vector<VULKAN_HPP_NAMESPACE::FaultData, FaultDataAllocator>>>::type
       getFaultData( VULKAN_HPP_NAMESPACE::FaultQueryBehavior faultQueryBehavior, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -6910,7 +6936,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                        VULKAN_HPP_NAMESPACE::Image *      pSwapchainImages,
                                                        Dispatch const & d                 VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename ImageAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Image>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename ImageAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Image>,
+              typename Dispatch       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename ImageAllocator::value_type, VULKAN_HPP_NAMESPACE::Image>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::Image, ImageAllocator>>::type
       getSwapchainImagesKHR( VULKAN_HPP_NAMESPACE::SwapchainKHR swapchain, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename ImageAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Image>,
@@ -6974,7 +7002,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                            VULKAN_HPP_NAMESPACE::SwapchainKHR *                 pSwapchains,
                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename SwapchainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SwapchainKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename SwapchainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SwapchainKHR>,
+              typename Dispatch              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename SwapchainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SwapchainKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SwapchainKHR, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
                                  Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -6993,8 +7023,11 @@ namespace VULKAN_HPP_NAMESPACE
                                 Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                 Dispatch const & d                                                  VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #  ifndef VULKAN_HPP_NO_SMART_HANDLE
-    template <typename Dispatch              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
-              typename SwapchainKHRAllocator = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>>
+    template <
+      typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename SwapchainKHRAllocator     = std::allocator<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>,
+      typename std::enable_if<std::is_same<typename SwapchainKHRAllocator::value_type, UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>>::value,
+                              int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<UniqueHandle<VULKAN_HPP_NAMESPACE::SwapchainKHR, Dispatch>, SwapchainKHRAllocator>>::type
       createSharedSwapchainsKHRUnique( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::SwapchainCreateInfoKHR> const & createInfos,
                                        Optional<const VULKAN_HPP_NAMESPACE::AllocationCallbacks> allocator VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
@@ -7373,7 +7406,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                             uint64_t *                                               pMaxDeviation,
                                                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Uint64_tAllocator = std::allocator<uint64_t>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename Uint64_tAllocator                                                                                = std::allocator<uint64_t>,
+              typename Dispatch                                                                                         = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename Uint64_tAllocator::value_type, uint64_t>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::pair<std::vector<uint64_t, Uint64_tAllocator>, uint64_t>>::type
       getCalibratedTimestampsKHR( VULKAN_HPP_NAMESPACE::ArrayProxy<const VULKAN_HPP_NAMESPACE::CalibratedTimestampInfoKHR> const & timestampInfos,
                                   Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -7663,7 +7698,9 @@ namespace VULKAN_HPP_NAMESPACE
                                    Dispatch const & d                            VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename QueueFamilyPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::QueueFamilyProperties>,
-              typename Dispatch                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename QueueFamilyPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties>::value,
+                                      int>::type      = 0>
     VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties, QueueFamilyPropertiesAllocator>
                          getQueueFamilyProperties( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename QueueFamilyPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::QueueFamilyProperties>,
@@ -7710,8 +7747,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     VULKAN_HPP_NAMESPACE::ExtensionProperties * pProperties,
                                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename ExtensionPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ExtensionProperties>,
-              typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename ExtensionPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ExtensionProperties>,
+      typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties, ExtensionPropertiesAllocator>>::type
       enumerateDeviceExtensionProperties( Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                           Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -7730,7 +7769,9 @@ namespace VULKAN_HPP_NAMESPACE
                                            VULKAN_HPP_NAMESPACE::LayerProperties * pProperties,
                                            Dispatch const & d                      VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>,
+              typename Dispatch                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::LayerProperties, LayerPropertiesAllocator>
                          enumerateDeviceLayerProperties( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>,
@@ -7800,7 +7841,9 @@ namespace VULKAN_HPP_NAMESPACE
                                     Dispatch const & d                             VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename QueueFamilyProperties2Allocator = std::allocator<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>,
-              typename Dispatch                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename QueueFamilyProperties2Allocator::value_type, VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>::value,
+                                      int>::type       = 0>
     VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2, QueueFamilyProperties2Allocator>
                          getQueueFamilyProperties2( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename QueueFamilyProperties2Allocator = std::allocator<VULKAN_HPP_NAMESPACE::QueueFamilyProperties2>,
@@ -7812,7 +7855,8 @@ namespace VULKAN_HPP_NAMESPACE
                                                     Dispatch const & d                VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename StructureChain,
               typename StructureChainAllocator = std::allocator<StructureChain>,
-              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD std::vector<StructureChain, StructureChainAllocator>
                          getQueueFamilyProperties2( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename StructureChain,
@@ -7876,7 +7920,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                    Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename PhysicalDeviceToolPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>,
-              typename Dispatch                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                              = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename PhysicalDeviceToolPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>::value,
+                int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties, PhysicalDeviceToolPropertiesAllocator>>::type
       getToolProperties( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename PhysicalDeviceToolPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDeviceToolProperties>,
@@ -7918,8 +7965,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                       VULKAN_HPP_NAMESPACE::SurfaceFormatKHR * pSurfaceFormats,
                                                       Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename SurfaceFormatKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>,
-              typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename SurfaceFormatKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>,
+      typename Dispatch                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename SurfaceFormatKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormatKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormatKHR, SurfaceFormatKHRAllocator>>::type
       getSurfaceFormatsKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                             Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -7939,7 +7988,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                            VULKAN_HPP_NAMESPACE::PresentModeKHR * pPresentModes,
                                                            Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename PresentModeKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PresentModeKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename PresentModeKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PresentModeKHR>,
+              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PresentModeKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PresentModeKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PresentModeKHR, PresentModeKHRAllocator>>::type
       getSurfacePresentModesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface VULKAN_HPP_DEFAULT_ARGUMENT_ASSIGNMENT,
                                  Dispatch const & d                       VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -7960,7 +8011,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                          VULKAN_HPP_NAMESPACE::Rect2D *   pRects,
                                                          Dispatch const & d               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename Rect2DAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Rect2D>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename Rect2DAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Rect2D>,
+              typename Dispatch        = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename Rect2DAllocator::value_type, VULKAN_HPP_NAMESPACE::Rect2D>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::Rect2D, Rect2DAllocator>>::type
       getPresentRectanglesKHR( VULKAN_HPP_NAMESPACE::SurfaceKHR surface, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename Rect2DAllocator = std::allocator<VULKAN_HPP_NAMESPACE::Rect2D>,
@@ -7978,7 +8031,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename DisplayPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>,
-              typename Dispatch                      = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                      = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DisplayPropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>::value,
+                                      int>::type     = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR, DisplayPropertiesKHRAllocator>>::type
       getDisplayPropertiesKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename DisplayPropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPropertiesKHR>,
@@ -7995,8 +8050,11 @@ namespace VULKAN_HPP_NAMESPACE
                                                               VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR * pProperties,
                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DisplayPlanePropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>,
-              typename Dispatch                           = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename DisplayPlanePropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>,
+      typename Dispatch                           = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename DisplayPlanePropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR>::value,
+                              int>::type          = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPlanePropertiesKHR, DisplayPlanePropertiesKHRAllocator>>::type
       getDisplayPlanePropertiesKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <
@@ -8015,7 +8073,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                                      VULKAN_HPP_NAMESPACE::DisplayKHR * pDisplays,
                                                                      Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DisplayKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename DisplayKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayKHR>,
+              typename Dispatch            = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DisplayKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayKHR, DisplayKHRAllocator>>::type
       getDisplayPlaneSupportedDisplaysKHR( uint32_t planeIndex, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename DisplayKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayKHR>,
@@ -8031,8 +8091,11 @@ namespace VULKAN_HPP_NAMESPACE
                                                              VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR * pProperties,
                                                              Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DisplayModePropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>,
-              typename Dispatch                          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename DisplayModePropertiesKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>,
+      typename Dispatch                          = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename DisplayModePropertiesKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR>::value,
+                              int>::type         = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayModePropertiesKHR, DisplayModePropertiesKHRAllocator>>::type
       getDisplayModePropertiesKHR( VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <
@@ -8114,7 +8177,11 @@ namespace VULKAN_HPP_NAMESPACE
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename PerformanceCounterKHRAllocator            = std::allocator<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>,
               typename PerformanceCounterDescriptionKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>,
-              typename Dispatch                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                                  = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename PerformanceCounterKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterKHR>::value &&
+                  std::is_same<typename PerformanceCounterDescriptionKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR>::value,
+                int>::type = 0>
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::pair<std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterKHR, PerformanceCounterKHRAllocator>,
                                          std::vector<VULKAN_HPP_NAMESPACE::PerformanceCounterDescriptionKHR, PerformanceCounterDescriptionKHRAllocator>>>::type
@@ -8169,8 +8236,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                        VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR *                   pSurfaceFormats,
                                                        Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename SurfaceFormat2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>,
-              typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename SurfaceFormat2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>,
+      typename Dispatch                   = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename SurfaceFormat2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::SurfaceFormat2KHR, SurfaceFormat2KHRAllocator>>::type
       getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                              Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -8184,7 +8253,8 @@ namespace VULKAN_HPP_NAMESPACE
                              Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename StructureChain,
               typename StructureChainAllocator = std::allocator<StructureChain>,
-              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename StructureChainAllocator::value_type, StructureChain>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<StructureChain, StructureChainAllocator>>::type
       getSurfaceFormats2KHR( const VULKAN_HPP_NAMESPACE::PhysicalDeviceSurfaceInfo2KHR & surfaceInfo,
                              Dispatch const & d                                          VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -8206,7 +8276,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename DisplayProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>,
-              typename Dispatch                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                       = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename DisplayProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>::value,
+                                      int>::type      = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR, DisplayProperties2KHRAllocator>>::type
       getDisplayProperties2KHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename DisplayProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayProperties2KHR>,
@@ -8223,8 +8295,11 @@ namespace VULKAN_HPP_NAMESPACE
                                                                VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR * pProperties,
                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DisplayPlaneProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>,
-              typename Dispatch                            = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename DisplayPlaneProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>,
+      typename Dispatch                            = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename DisplayPlaneProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR>::value,
+                              int>::type           = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayPlaneProperties2KHR, DisplayPlaneProperties2KHRAllocator>>::type
       getDisplayPlaneProperties2KHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <
@@ -8243,8 +8318,11 @@ namespace VULKAN_HPP_NAMESPACE
                                                               VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR * pProperties,
                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename DisplayModeProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>,
-              typename Dispatch                           = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <
+      typename DisplayModeProperties2KHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>,
+      typename Dispatch                           = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename DisplayModeProperties2KHRAllocator::value_type, VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR>::value,
+                              int>::type          = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::DisplayModeProperties2KHR, DisplayModeProperties2KHRAllocator>>::type
       getDisplayModeProperties2KHR( VULKAN_HPP_NAMESPACE::DisplayKHR display, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <
@@ -8290,7 +8368,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                             Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename PhysicalDeviceFragmentShadingRateKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>,
-              typename Dispatch                                      = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                                      = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PhysicalDeviceFragmentShadingRateKHRAllocator::value_type,
+                                                   VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR>::value,
+                                      int>::type                     = 0>
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceFragmentShadingRateKHR, PhysicalDeviceFragmentShadingRateKHRAllocator>>::type
       getFragmentShadingRatesKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -8312,7 +8393,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                               VULKAN_HPP_NAMESPACE::ObjectType * pRefreshableObjectTypes,
                                                               Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename ObjectTypeAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ObjectType>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename ObjectTypeAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ObjectType>,
+              typename Dispatch            = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename ObjectTypeAllocator::value_type, VULKAN_HPP_NAMESPACE::ObjectType>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ObjectType, ObjectTypeAllocator>>::type
       getRefreshableObjectTypesKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename ObjectTypeAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ObjectType>,
@@ -8400,7 +8483,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 VULKAN_HPP_NAMESPACE::TimeDomainKHR * pTimeDomains,
                                                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>,
+              typename Dispatch               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
       getCalibrateableTimeDomainsKHR( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename TimeDomainKHRAllocator = std::allocator<VULKAN_HPP_NAMESPACE::TimeDomainKHR>,
@@ -8534,7 +8619,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                           VULKAN_HPP_NAMESPACE::PhysicalDevice * pPhysicalDevices,
                                                           Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-    template <typename PhysicalDeviceAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDevice>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    template <typename PhysicalDeviceAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDevice>,
+              typename Dispatch                = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<std::is_same<typename PhysicalDeviceAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDevice>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDevice, PhysicalDeviceAllocator>>::type
       enumeratePhysicalDevices( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
     template <typename PhysicalDeviceAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDevice>,
@@ -8559,7 +8646,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                                Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
     template <typename PhysicalDeviceGroupPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>,
-              typename Dispatch                               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+              typename Dispatch                               = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+              typename std::enable_if<
+                std::is_same<typename PhysicalDeviceGroupPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties>::value,
+                int>::type = 0>
     VULKAN_HPP_NODISCARD
       typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::PhysicalDeviceGroupProperties, PhysicalDeviceGroupPropertiesAllocator>>::type
       enumeratePhysicalDeviceGroups( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
@@ -8772,8 +8862,10 @@ namespace VULKAN_HPP_NAMESPACE
                                                                     VULKAN_HPP_NAMESPACE::ExtensionProperties * pProperties,
                                                                     Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename ExtensionPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ExtensionProperties>,
-            typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+  template <
+    typename ExtensionPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::ExtensionProperties>,
+    typename Dispatch                     = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+    typename std::enable_if<std::is_same<typename ExtensionPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::ExtensionProperties>::value, int>::type = 0>
   VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::ExtensionProperties, ExtensionPropertiesAllocator>>::type
     enumerateInstanceExtensionProperties( Optional<const std::string> layerName VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                                           Dispatch const & d                    VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
@@ -8792,7 +8884,9 @@ namespace VULKAN_HPP_NAMESPACE
                                                                 VULKAN_HPP_NAMESPACE::LayerProperties * pProperties,
                                                                 Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT;
 #ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
-  template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>, typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+  template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>,
+            typename Dispatch                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+            typename std::enable_if<std::is_same<typename LayerPropertiesAllocator::value_type, VULKAN_HPP_NAMESPACE::LayerProperties>::value, int>::type = 0>
   VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::LayerProperties, LayerPropertiesAllocator>>::type
     enumerateInstanceLayerProperties( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT );
   template <typename LayerPropertiesAllocator = std::allocator<VULKAN_HPP_NAMESPACE::LayerProperties>,

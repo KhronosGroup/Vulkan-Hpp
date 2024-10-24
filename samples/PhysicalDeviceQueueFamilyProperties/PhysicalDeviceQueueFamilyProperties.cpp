@@ -47,9 +47,8 @@ int main( int /*argc*/, char ** /*argv*/ )
 
       std::cout << "PhysicalDevice " << i << "\n";
 
-      // need to explicitly specify all the template arguments for getQueueFamilyProperties2 to make the compiler happy
       using Chain                 = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
-      auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain, std::allocator<Chain>, vk::DispatchLoaderDynamic>();
+      auto queueFamilyProperties2 = physicalDevices[i].getQueueFamilyProperties2<Chain>();
       for ( size_t j = 0; j < queueFamilyProperties2.size(); j++ )
       {
         std::cout << std::string( "\t" ) << "QueueFamily " << j << "\n";

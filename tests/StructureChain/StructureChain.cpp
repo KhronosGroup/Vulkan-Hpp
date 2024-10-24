@@ -155,8 +155,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     unused( t1 );
 
     using StructureChain = vk::StructureChain<vk::QueueFamilyProperties2, vk::QueueFamilyCheckpointPropertiesNV>;
-    using AllocatorType  = std::vector<StructureChain>::allocator_type;
-    auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain, AllocatorType>( VULKAN_HPP_DEFAULT_DISPATCHER );
+    auto qfd             = physicalDevice.getQueueFamilyProperties2<StructureChain>( VULKAN_HPP_DEFAULT_DISPATCHER );
     unused( qfd );
 
     // some tests with structures with allowDuplicate == true

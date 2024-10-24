@@ -358,11 +358,11 @@ int main( int /*argc*/, char ** /*argv*/ )
     vk::UniquePipeline graphicsPipeline = device->createGraphicsPipelineUnique( *pipelineCache, graphicsPipelineCreateInfo ).value;
 
     vk::UniquePipeline graphicsPipeline2 =
-      std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic, MyAllocator<vk::UniquePipeline>>( *pipelineCache, graphicsPipelineCreateInfo )
+      std::move( device->createGraphicsPipelinesUnique<vk::detail::DispatchLoaderDynamic, MyAllocator<vk::UniquePipeline>>( *pipelineCache, graphicsPipelineCreateInfo )
                    .value[0] );
 
     vk::UniquePipeline graphicsPipeline3 =
-      std::move( device->createGraphicsPipelinesUnique<vk::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
+      std::move( device->createGraphicsPipelinesUnique<vk::detail::DispatchLoaderDynamic>( *pipelineCache, graphicsPipelineCreateInfo ).value[0] );
 
     vk::DescriptorPoolSize   poolSize( vk::DescriptorType::eUniformBuffer, 1 );
     vk::UniqueDescriptorPool descriptorPool = device->createDescriptorPoolUnique( { vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet, 1, poolSize } );

@@ -458,27 +458,30 @@ ${defines}
 
 namespace VULKAN_HPP_NAMESPACE
 {
-${ArrayWrapper1D}
-${ArrayWrapper2D}
+  ${ArrayWrapper1D}
+  ${ArrayWrapper2D}
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-${ArrayProxy}
-${ArrayProxyNoTemporaries}
-${StridedArrayProxy}
-${Optional}
-${StructureChain}
-${UniqueHandle}
+  ${ArrayProxy}
+  ${ArrayProxyNoTemporaries}
+  ${StridedArrayProxy}
+  ${Optional}
+  ${StructureChain}
+  ${UniqueHandle}
 #endif  // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
-${DispatchLoaderBase}
-${DispatchLoaderStatic}
-${Exchange}
+  namespace detail
+  {
+    ${DispatchLoaderBase}
+    ${DispatchLoaderStatic}
+  }
+  ${Exchange}
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-${ObjectDestroy}
-${ObjectFree}
-${ObjectRelease}
-${PoolFree}
+  ${ObjectDestroy}
+  ${ObjectFree}
+  ${ObjectRelease}
+  ${PoolFree}
 #endif // !VULKAN_HPP_NO_SMART_HANDLE
-${baseTypes}
+  ${baseTypes}
 
   template <typename Type, Type value = Type{}>
   struct CppType
@@ -522,11 +525,14 @@ ${constexprDefines}
 namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_DISABLE_ENHANCED_MODE )
-${structExtendsStructs}
+  ${structExtendsStructs}
 #endif // VULKAN_HPP_DISABLE_ENHANCED_MODE
 
-${DynamicLoader}
-${DispatchLoaderDynamic}
+  namespace detail
+  {
+    ${DynamicLoader}
+    ${DispatchLoaderDynamic}
+  }
 }   // namespace VULKAN_HPP_NAMESPACE
 #endif
 )";
@@ -611,20 +617,26 @@ namespace VULKAN_HPP_NAMESPACE
 {
   namespace VULKAN_HPP_RAII_NAMESPACE
   {
-    template <class T>
-    class CreateReturnType
+    namespace detail
     {
-      public:
+      template <class T>
+      class CreateReturnType
+      {
+        public:
 #if defined( VULKAN_HPP_RAII_NO_EXCEPTIONS )
-        using Type = VULKAN_HPP_EXPECTED<T, VULKAN_HPP_NAMESPACE::Result>;
+          using Type = VULKAN_HPP_EXPECTED<T, VULKAN_HPP_NAMESPACE::Result>;
 #else
-        using Type = T;
+          using Type = T;
 #endif
-    };
+      };
 
-${RAIIDispatchers}
-${RAIIHandles}
-${RAIICommandDefinitions}
+      using PFN_dummy = void ( * )();
+
+      ${RAIIDispatchers}
+    }
+
+    ${RAIIHandles}
+    ${RAIICommandDefinitions}
 
     //====================
     //=== RAII Helpers ===
@@ -5905,7 +5917,6 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto const hardCodedTypes = std::array{ "ArrayWrapper1D", "ArrayWrapper2D", "FlagTraits", "Flags", "DispatchLoaderBase", "DispatchLoaderDynamic" };
   auto const hardCodedEnhancedModeTypes = std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
   auto const hardCodedSmartHandleTypes  = std::array{ "ObjectDestroy",    "ObjectFree",          "ObjectRelease",  "PoolFree",     "ObjectDestroyShared",
                                                      "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared", "SharedHandle", "UniqueHandle" };
@@ -5914,15 +5925,19 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===
   //=====================================
-)" };
-
-  for ( auto const & className : hardCodedTypes )
+  using VULKAN_HPP_NAMESPACE::ArrayWrapper1D;
+  using VULKAN_HPP_NAMESPACE::ArrayWrapper2D;
+  using VULKAN_HPP_NAMESPACE::Flags;
+  using VULKAN_HPP_NAMESPACE::FlagTraits;
+  namespace detail
   {
-    usings += replaceWithMap( usingTemplate, { { "className", className } } );
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase;
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderDynamic;
+#if !defined( VK_NO_PROTOTYPES )
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderStatic;
+#endif /*VK_NO_PROTOTYPES*/
   }
-
-  auto const & [noPrototypesEnter, noPrototypesLeave] = generateProtection( "VK_NO_PROTOTYPES", false );
-  usings += "\n" + noPrototypesEnter + replaceWithMap( usingTemplate, { { "className", "DispatchLoaderStatic" } } ) + noPrototypesLeave + "\n";
+)" };
 
   // insert the Flags bitwise operators
   auto const flagsBitWiseOperatorsUsings = std::array{ "operator&", "operator|", "operator^", "operator~" };
@@ -6050,7 +6065,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += "\n" + enterDisableEnhanced + replaceWithMap( usingTemplate, { { "className", "StructExtends" } } ) + leaveDisableEnhanced + "\n";
 
   auto const dynamicLoaderUsing = std::string{ R"(#if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-  using VULKAN_HPP_NAMESPACE::DynamicLoader;
+  namespace detail
+  {
+    using VULKAN_HPP_NAMESPACE::detail::DynamicLoader;
+  }
 #endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
 )" };
   usings += dynamicLoaderUsing;
@@ -6070,9 +6088,12 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
     //======================
 
     using VULKAN_HPP_RAII_NAMESPACE::Context;
-    using VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher;
-    using VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher;
-    using VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher;
+    namespace detail
+    {
+      using VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher;
+      using VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher;
+      using VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher;
+    }
 
     //====================
     //=== RAII HANDLEs ===
@@ -6718,7 +6739,7 @@ ${commandMembers}
 
     template <typename DynamicLoader
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = VULKAN_HPP_NAMESPACE::DynamicLoader
+      = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
 #endif
     >
     void init()
@@ -6782,7 +6803,7 @@ ${deviceCommandAssignments}
 
     template <typename DynamicLoader
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      = VULKAN_HPP_NAMESPACE::DynamicLoader
+      = VULKAN_HPP_NAMESPACE::detail::DynamicLoader
 #endif
     >
     void init(VULKAN_HPP_NAMESPACE::Instance const & instance, VULKAN_HPP_NAMESPACE::Device const & device) VULKAN_HPP_NOEXCEPT
@@ -6822,9 +6843,9 @@ std::string VulkanHppGenerator::generateDispatchLoaderStatic() const
 ${commands}
   };
 
-  inline ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic & getDispatchLoaderStatic()
+  inline DispatchLoaderStatic & getDispatchLoaderStatic()
   {
-    static ::VULKAN_HPP_NAMESPACE::DispatchLoaderStatic dls;
+    static DispatchLoaderStatic dls;
     return dls;
   }
 #endif
@@ -8701,7 +8722,7 @@ std::string VulkanHppGenerator::generateRAIIDispatchers() const
   }
 
   std::string contextDispatcherTemplate = R"(
-    class ContextDispatcher : public DispatchLoaderBase
+    class ContextDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
     {
     public:
       ContextDispatcher( PFN_vkGetInstanceProcAddr getProcAddr )
@@ -8717,7 +8738,7 @@ ${contextMembers}
   std::string str = replaceWithMap( contextDispatcherTemplate, { { "contextInitializers", contextInitializers }, { "contextMembers", contextMembers } } );
 
   std::string instanceDispatcherTemplate = R"(
-    class InstanceDispatcher : public DispatchLoaderBase
+    class InstanceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
     {
     public:
       InstanceDispatcher( PFN_vkGetInstanceProcAddr getProcAddr, VkInstance instance )
@@ -8737,7 +8758,7 @@ ${instanceMembers}
   str += replaceWithMap( instanceDispatcherTemplate, { { "instanceAssignments", instanceAssignments }, { "instanceMembers", instanceMembers } } );
 
   std::string deviceDispatcherTemplate = R"(
-    class DeviceDispatcher : public DispatchLoaderBase
+    class DeviceDispatcher : public ::VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase
     {
     public:
       DeviceDispatcher( PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device ) : vkGetDeviceProcAddr( getProcAddr )
@@ -8836,8 +8857,8 @@ std::string VulkanHppGenerator::generateRAIIHandle( std::pair<std::string, Handl
     std::string debugReportObjectType = contains( enumIt->second.values, valueName ) ? generateEnumValueName( enumIt->first, valueName, false ) : "eUnknown";
 
     std::string dispatcherType = ( ( handle.first == "VkDevice" ) || ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" ) )
-                                 ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher"
-                                 : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher";
+                                 ? "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher"
+                                 : "VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher";
 
     std::string getParent;
     if ( ( handle.first != "VkInstance" ) && ( handle.first != "VkDevice" ) && ( handle.second.destructorIt != m_commands.end() ) )
@@ -9306,7 +9327,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
 
     std::string const definitionTemplate =
       R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${className}::${commandName}( ${argumentList} ) const ${noexcept}
   {
     ${specialAssertion}
     ${dataDeclarations}
@@ -9332,7 +9353,7 @@ std::string VulkanHppGenerator::generateRAIIHandleCommandFactory( std::string co
   {
     std::string const declarationTemplate =
       R"(
-  VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CreateReturnType<${returnType}>::Type ${commandName}( ${argumentList} ) const ${noexcept};
+  VULKAN_HPP_NODISCARD VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::CreateReturnType<${returnType}>::Type ${commandName}( ${argumentList} ) const ${noexcept};
 )";
 
     return replaceWithMap( declarationTemplate,
@@ -9965,7 +9986,7 @@ std::string VulkanHppGenerator::generateRAIIHandleConstructorTakeOwnership( std:
   std::string dispatcherInit;
   if ( ( handle.first == "VkDevice" ) || ( handle.first == "VkInstance" ) )
   {
-    dispatcherInit = "\n        m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::" + handleType + "Dispatcher( " + parentName +
+    dispatcherInit = "\n        m_dispatcher.reset( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::" + handleType + "Dispatcher( " + parentName +
                      ".getDispatcher()->vkGet" + handleType + "ProcAddr, static_cast<" + handle.first + ">( m_" + startLowerCase( handleType ) + " ) ) );";
   }
 
@@ -10012,11 +10033,11 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
     public:
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
       Context()
-        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher(
+        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher(
             m_dynamicLoader.getProcAddress<PFN_vkGetInstanceProcAddr>( "vkGetInstanceProcAddr" ) ) )
 #else
       Context( PFN_vkGetInstanceProcAddr getInstanceProcAddr )
-        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher( getInstanceProcAddr ) )
+        : m_dispatcher( new VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher( getInstanceProcAddr ) )
 #endif
       {}
 
@@ -10044,7 +10065,7 @@ std::string VulkanHppGenerator::generateRAIIHandleContext( std::pair<std::string
         return *this;
       }
 
-      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher const * getDispatcher() const
+      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher const * getDispatcher() const
       {
         VULKAN_HPP_ASSERT( m_dispatcher->getVkHeaderVersion() == VK_HEADER_VERSION );
         return &*m_dispatcher;
@@ -10062,9 +10083,9 @@ ${memberFunctionDeclarations}
 
     private:
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-      VULKAN_HPP_NAMESPACE::DynamicLoader                                                 m_dynamicLoader;
+      VULKAN_HPP_NAMESPACE::detail::DynamicLoader m_dynamicLoader;
 #endif
-      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher> m_dispatcher;
+      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher> m_dispatcher;
     };
 
 )";
@@ -10231,19 +10252,19 @@ std::tuple<std::string, std::string, std::string, std::string, std::string, std:
 
   if ( handle.first == "VkInstance" )
   {
-    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher> m_dispatcher;";
+    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher> m_dispatcher;";
   }
   else if ( handle.first == "VkDevice" )
   {
-    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher> m_dispatcher;";
+    memberVariables += "\n      std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher> m_dispatcher;";
   }
   else if ( handle.second.constructorIts.front()->second.params.front().type.type == "VkDevice" )
   {
-    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher const * m_dispatcher = nullptr;";
+    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;";
   }
   else
   {
-    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher const * m_dispatcher = nullptr;";
+    memberVariables += "\n      VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher = nullptr;";
   }
   clearMembers += "\n        m_dispatcher = nullptr;";
   swapMembers += "\n      std::swap( m_dispatcher, rhs.m_dispatcher );";

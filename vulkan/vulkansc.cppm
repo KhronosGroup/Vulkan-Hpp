@@ -32,14 +32,17 @@ export namespace VULKAN_HPP_NAMESPACE
   //=====================================
   using VULKAN_HPP_NAMESPACE::ArrayWrapper1D;
   using VULKAN_HPP_NAMESPACE::ArrayWrapper2D;
-  using VULKAN_HPP_NAMESPACE::DispatchLoaderBase;
-  using VULKAN_HPP_NAMESPACE::DispatchLoaderDynamic;
   using VULKAN_HPP_NAMESPACE::Flags;
   using VULKAN_HPP_NAMESPACE::FlagTraits;
 
+  namespace detail
+  {
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderBase;
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderDynamic;
 #if !defined( VK_NO_PROTOTYPES )
-  using VULKAN_HPP_NAMESPACE::DispatchLoaderStatic;
+    using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
+  }    // namespace detail
 
   using VULKAN_HPP_NAMESPACE::operator&;
   using VULKAN_HPP_NAMESPACE::operator|;
@@ -1797,7 +1800,10 @@ export namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL
-  using VULKAN_HPP_NAMESPACE::DynamicLoader;
+  namespace detail
+  {
+    using VULKAN_HPP_NAMESPACE::detail::DynamicLoader;
+  }    // namespace detail
 #endif /*VULKAN_HPP_ENABLE_DYNAMIC_LOADER_TOOL*/
 
   //=====================
@@ -1847,9 +1853,13 @@ export namespace VULKAN_HPP_NAMESPACE
     //======================
 
     using VULKAN_HPP_RAII_NAMESPACE::Context;
-    using VULKAN_HPP_RAII_NAMESPACE::ContextDispatcher;
-    using VULKAN_HPP_RAII_NAMESPACE::DeviceDispatcher;
-    using VULKAN_HPP_RAII_NAMESPACE::InstanceDispatcher;
+
+    namespace detail
+    {
+      using VULKAN_HPP_RAII_NAMESPACE::detail::ContextDispatcher;
+      using VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher;
+      using VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher;
+    }  // namespace detail
 
     //====================
     //=== RAII HANDLEs ===

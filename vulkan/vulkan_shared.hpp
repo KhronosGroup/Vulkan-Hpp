@@ -356,9 +356,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   private:
-    DestroyFunctionPointerType<DispatchLoaderBase> m_destroy             = nullptr;
-    const DispatchLoaderBase *                     m_dispatch            = nullptr;
-    Optional<const AllocationCallbacks>            m_allocationCallbacks = nullptr;
+    DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy             = nullptr;
+    const detail::DispatchLoaderBase *                     m_dispatch            = nullptr;
+    Optional<const AllocationCallbacks>                    m_allocationCallbacks = nullptr;
   };
 
   template <typename HandleType>
@@ -387,9 +387,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   private:
-    DestroyFunctionPointerType<DispatchLoaderBase> m_destroy             = nullptr;
-    const DispatchLoaderBase *                     m_dispatch            = nullptr;
-    Optional<const AllocationCallbacks>            m_allocationCallbacks = nullptr;
+    DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy             = nullptr;
+    const detail::DispatchLoaderBase *                     m_dispatch            = nullptr;
+    Optional<const AllocationCallbacks>                    m_allocationCallbacks = nullptr;
   };
 
   template <typename HandleType>
@@ -416,8 +416,8 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   private:
-    DestroyFunctionPointerType<DispatchLoaderBase> m_destroy  = nullptr;
-    const DispatchLoaderBase *                     m_dispatch = nullptr;
+    DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy  = nullptr;
+    const detail::DispatchLoaderBase *                     m_dispatch = nullptr;
   };
 
   template <typename HandleType, typename PoolType>
@@ -452,9 +452,9 @@ namespace VULKAN_HPP_NAMESPACE
     }
 
   private:
-    DestroyFunctionPointerType<DispatchLoaderBase> m_destroy  = nullptr;
-    const DispatchLoaderBase *                     m_dispatch = nullptr;
-    SharedHandle<PoolType>                         m_pool{};
+    DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy  = nullptr;
+    const detail::DispatchLoaderBase *                     m_dispatch = nullptr;
+    SharedHandle<PoolType>                                 m_pool{};
   };
 
 #  if defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __INTEL_COMPILER )

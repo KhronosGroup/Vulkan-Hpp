@@ -1909,6 +1909,11 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineViewportDepthClampControlCreateInfoEXT;
   struct DepthClampRangeEXT;
 
+  //=== VK_NV_cooperative_matrix2 ===
+  struct CooperativeMatrixFlexibleDimensionsPropertiesNV;
+  struct PhysicalDeviceCooperativeMatrix2FeaturesNV;
+  struct PhysicalDeviceCooperativeMatrix2PropertiesNV;
+
   //===================================
   //=== HANDLE forward declarations ===
   //===================================
@@ -17555,6 +17560,36 @@ namespace VULKAN_HPP_NAMESPACE
               typename std::enable_if<std::is_same<typename TimeDomainKHRAllocator::value_type, VULKAN_HPP_NAMESPACE::TimeDomainKHR>::value, int>::type = 0>
     VULKAN_HPP_NODISCARD typename ResultValueType<std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR, TimeDomainKHRAllocator>>::type
       getCalibrateableTimeDomainsKHR( TimeDomainKHRAllocator & timeDomainKHRAllocator, Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
+    //=== VK_NV_cooperative_matrix2 ===
+
+    template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
+    VULKAN_HPP_NODISCARD Result
+      getCooperativeMatrixFlexibleDimensionsPropertiesNV( uint32_t *                                                              pPropertyCount,
+                                                          VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV * pProperties,
+                                                          Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const VULKAN_HPP_NOEXCEPT;
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+    template <
+      typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>,
+      typename Dispatch                                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator::value_type,
+                                           VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                              int>::type                                = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<
+      std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
+      getCooperativeMatrixFlexibleDimensionsPropertiesNV( Dispatch const & d VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
+    template <
+      typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator = std::allocator<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>,
+      typename Dispatch                                                 = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE,
+      typename std::enable_if<std::is_same<typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator::value_type,
+                                           VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                              int>::type                                = 0>
+    VULKAN_HPP_NODISCARD typename ResultValueType<
+      std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
+      getCooperativeMatrixFlexibleDimensionsPropertiesNV(
+        CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
+        Dispatch const & d                                         VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) const;
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
     operator VkPhysicalDevice() const VULKAN_HPP_NOEXCEPT

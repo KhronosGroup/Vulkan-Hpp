@@ -4653,6 +4653,9 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageAlignmentControlCreateInfoMESA: return "ImageAlignmentControlCreateInfoMESA";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT: return "PhysicalDeviceDepthClampControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClampControlCreateInfoEXT: return "PipelineViewportDepthClampControlCreateInfoEXT";
+      case StructureType::ePhysicalDeviceCooperativeMatrix2FeaturesNV: return "PhysicalDeviceCooperativeMatrix2FeaturesNV";
+      case StructureType::eCooperativeMatrixFlexibleDimensionsPropertiesNV: return "CooperativeMatrixFlexibleDimensionsPropertiesNV";
+      case StructureType::ePhysicalDeviceCooperativeMatrix2PropertiesNV: return "PhysicalDeviceCooperativeMatrix2PropertiesNV";
       default: return "invalid ( " + VULKAN_HPP_NAMESPACE::toHexString( static_cast<uint32_t>( value ) ) + " )";
     }
   }

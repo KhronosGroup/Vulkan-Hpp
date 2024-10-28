@@ -7984,4 +7984,29 @@ VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::DepthCla
 VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::DepthClampRangeEXT>::value,
                           "DepthClampRangeEXT is not nothrow_move_constructible!" );
 
+//=== VK_NV_cooperative_matrix2 ===
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV ) ==
+                            sizeof( VkCooperativeMatrixFlexibleDimensionsPropertiesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                          "CooperativeMatrixFlexibleDimensionsPropertiesNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV ) == sizeof( VkPhysicalDeviceCooperativeMatrix2FeaturesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV>::value,
+                          "PhysicalDeviceCooperativeMatrix2FeaturesNV is not nothrow_move_constructible!" );
+
+VULKAN_HPP_STATIC_ASSERT( sizeof( VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV ) ==
+                            sizeof( VkPhysicalDeviceCooperativeMatrix2PropertiesNV ),
+                          "struct and wrapper have different size!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_standard_layout<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV>::value,
+                          "struct wrapper is not a standard layout!" );
+VULKAN_HPP_STATIC_ASSERT( std::is_nothrow_move_constructible<VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV>::value,
+                          "PhysicalDeviceCooperativeMatrix2PropertiesNV is not nothrow_move_constructible!" );
+
 #endif

@@ -27937,5 +27937,100 @@ namespace VULKAN_HPP_NAMESPACE
   }
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
+  //=== VK_NV_cooperative_matrix2 ===
+
+  template <typename Dispatch>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE Result
+    PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV( uint32_t *                                                              pPropertyCount,
+                                                                        VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV * pProperties,
+                                                                        Dispatch const & d ) const VULKAN_HPP_NOEXCEPT
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+    return static_cast<Result>( d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+      static_cast<VkPhysicalDevice>( m_physicalDevice ),
+      pPropertyCount,
+      reinterpret_cast<VkCooperativeMatrixFlexibleDimensionsPropertiesNV *>( pProperties ) ) );
+  }
+
+#ifndef VULKAN_HPP_DISABLE_ENHANCED_MODE
+  template <typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator::value_type,
+                                                 VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                                    int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<
+    std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
+    PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV( Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV &&
+                       "Function <vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV> requires <VK_NV_cooperative_matrix2>" );
+#  endif
+
+    std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator> properties;
+    uint32_t                                                                                                                                     propertyCount;
+    VULKAN_HPP_NAMESPACE::Result                                                                                                                 result;
+    do
+    {
+      result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV( m_physicalDevice, &propertyCount, nullptr ) );
+      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && propertyCount )
+      {
+        properties.resize( propertyCount );
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+          m_physicalDevice, &propertyCount, reinterpret_cast<VkCooperativeMatrixFlexibleDimensionsPropertiesNV *>( properties.data() ) ) );
+      }
+    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV" );
+    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+    if ( propertyCount < properties.size() )
+    {
+      properties.resize( propertyCount );
+    }
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( properties ) );
+  }
+
+  template <typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator,
+            typename Dispatch,
+            typename std::enable_if<std::is_same<typename CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator::value_type,
+                                                 VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>::value,
+                                    int>::type>
+  VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE typename ResultValueType<
+    std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator>>::type
+    PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV(
+      CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator & cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator, Dispatch const & d ) const
+  {
+    VULKAN_HPP_ASSERT( d.getVkHeaderVersion() == VK_HEADER_VERSION );
+#  if ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 1 )
+    VULKAN_HPP_ASSERT( d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV &&
+                       "Function <vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV> requires <VK_NV_cooperative_matrix2>" );
+#  endif
+
+    std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV, CooperativeMatrixFlexibleDimensionsPropertiesNVAllocator> properties(
+      cooperativeMatrixFlexibleDimensionsPropertiesNVAllocator );
+    uint32_t                     propertyCount;
+    VULKAN_HPP_NAMESPACE::Result result;
+    do
+    {
+      result = static_cast<VULKAN_HPP_NAMESPACE::Result>(
+        d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV( m_physicalDevice, &propertyCount, nullptr ) );
+      if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && propertyCount )
+      {
+        properties.resize( propertyCount );
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( d.vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+          m_physicalDevice, &propertyCount, reinterpret_cast<VkCooperativeMatrixFlexibleDimensionsPropertiesNV *>( properties.data() ) ) );
+      }
+    } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+    VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV" );
+    VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+    if ( propertyCount < properties.size() )
+    {
+      properties.resize( propertyCount );
+    }
+    return VULKAN_HPP_NAMESPACE::detail::createResultValueType( result, std::move( properties ) );
+  }
+#endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
+
 }  // namespace VULKAN_HPP_NAMESPACE
 #endif

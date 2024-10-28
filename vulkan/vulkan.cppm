@@ -2605,6 +2605,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
 
+  //=== VK_NV_cooperative_matrix2 ===
+  using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2ExtensionName;
+  using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2SpecVersion;
+
   //========================
   //=== CONSTEXPR VALUEs ===
   //========================
@@ -4528,6 +4532,11 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DepthClampRangeEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PipelineViewportDepthClampControlCreateInfoEXT;
+
+  //=== VK_NV_cooperative_matrix2 ===
+  using VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2FeaturesNV;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceCooperativeMatrix2PropertiesNV;
 
   //===============
   //=== HANDLEs ===

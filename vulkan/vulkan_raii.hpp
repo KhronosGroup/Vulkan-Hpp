@@ -376,6 +376,10 @@ namespace VULKAN_HPP_NAMESPACE
         vkGetPhysicalDeviceCalibrateableTimeDomainsKHR =
           PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR( vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCalibrateableTimeDomainsKHR" ) );
 
+        //=== VK_NV_cooperative_matrix2 ===
+        vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+          vkGetInstanceProcAddr( instance, "vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV" ) );
+
         vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr( vkGetInstanceProcAddr( instance, "vkGetDeviceProcAddr" ) );
       }
 
@@ -652,6 +656,9 @@ namespace VULKAN_HPP_NAMESPACE
 
       //=== VK_KHR_calibrated_timestamps ===
       PFN_vkGetPhysicalDeviceCalibrateableTimeDomainsKHR vkGetPhysicalDeviceCalibrateableTimeDomainsKHR = 0;
+
+      //=== VK_NV_cooperative_matrix2 ===
+      PFN_vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV = 0;
 
       PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
     };
@@ -3538,6 +3545,11 @@ namespace VULKAN_HPP_NAMESPACE
       //=== VK_KHR_calibrated_timestamps ===
 
       VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::TimeDomainKHR> getCalibrateableTimeDomainsKHR() const;
+
+      //=== VK_NV_cooperative_matrix2 ===
+
+      VULKAN_HPP_NODISCARD std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>
+                           getCooperativeMatrixFlexibleDimensionsPropertiesNV() const;
 
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                        m_physicalDevice = {};
@@ -23688,6 +23700,39 @@ namespace VULKAN_HPP_NAMESPACE
                                                               static_cast<VkIndirectExecutionSetEXT>( m_indirectExecutionSet ),
                                                               executionSetWrites.size(),
                                                               reinterpret_cast<const VkWriteIndirectExecutionSetShaderEXT *>( executionSetWrites.data() ) );
+    }
+
+    //=== VK_NV_cooperative_matrix2 ===
+
+    VULKAN_HPP_NODISCARD VULKAN_HPP_INLINE std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV>
+                                           PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV() const
+    {
+      VULKAN_HPP_ASSERT( getDispatcher()->vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV &&
+                         "Function <vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV> requires <VK_NV_cooperative_matrix2>" );
+
+      std::vector<VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV> properties;
+      uint32_t                                                                           propertyCount;
+      VULKAN_HPP_NAMESPACE::Result                                                       result;
+      do
+      {
+        result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+          static_cast<VkPhysicalDevice>( m_physicalDevice ), &propertyCount, nullptr ) );
+        if ( ( result == VULKAN_HPP_NAMESPACE::Result::eSuccess ) && propertyCount )
+        {
+          properties.resize( propertyCount );
+          result = static_cast<VULKAN_HPP_NAMESPACE::Result>( getDispatcher()->vkGetPhysicalDeviceCooperativeMatrixFlexibleDimensionsPropertiesNV(
+            static_cast<VkPhysicalDevice>( m_physicalDevice ),
+            &propertyCount,
+            reinterpret_cast<VkCooperativeMatrixFlexibleDimensionsPropertiesNV *>( properties.data() ) ) );
+        }
+      } while ( result == VULKAN_HPP_NAMESPACE::Result::eIncomplete );
+      VULKAN_HPP_NAMESPACE::detail::resultCheck( result, VULKAN_HPP_NAMESPACE_STRING "::PhysicalDevice::getCooperativeMatrixFlexibleDimensionsPropertiesNV" );
+      VULKAN_HPP_ASSERT( propertyCount <= properties.size() );
+      if ( propertyCount < properties.size() )
+      {
+        properties.resize( propertyCount );
+      }
+      return properties;
     }
 
     //====================

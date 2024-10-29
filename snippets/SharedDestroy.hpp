@@ -46,9 +46,9 @@ public:
   }
 
 private:
-  DestroyFunctionPointerType<DispatchLoaderBase> m_destroy             = nullptr;
-  const DispatchLoaderBase *                     m_dispatch            = nullptr;
-  Optional<const AllocationCallbacks>            m_allocationCallbacks = nullptr;
+  DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy             = nullptr;
+  const detail::DispatchLoaderBase *                     m_dispatch            = nullptr;
+  Optional<const AllocationCallbacks>                    m_allocationCallbacks = nullptr;
 };
 
 template <typename HandleType>
@@ -77,9 +77,9 @@ public:
   }
 
 private:
-  DestroyFunctionPointerType<DispatchLoaderBase> m_destroy             = nullptr;
-  const DispatchLoaderBase *                     m_dispatch            = nullptr;
-  Optional<const AllocationCallbacks>            m_allocationCallbacks = nullptr;
+  DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy             = nullptr;
+  const detail::DispatchLoaderBase *                     m_dispatch            = nullptr;
+  Optional<const AllocationCallbacks>                    m_allocationCallbacks = nullptr;
 };
 
 template <typename HandleType>
@@ -106,8 +106,8 @@ public:
   }
 
 private:
-  DestroyFunctionPointerType<DispatchLoaderBase> m_destroy  = nullptr;
-  const DispatchLoaderBase *                     m_dispatch = nullptr;
+  DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy  = nullptr;
+  const detail::DispatchLoaderBase *                     m_dispatch = nullptr;
 };
 
 template <typename HandleType, typename PoolType>
@@ -142,9 +142,9 @@ public:
   }
 
 private:
-  DestroyFunctionPointerType<DispatchLoaderBase> m_destroy  = nullptr;
-  const DispatchLoaderBase *                     m_dispatch = nullptr;
-  SharedHandle<PoolType>                         m_pool{};
+  DestroyFunctionPointerType<detail::DispatchLoaderBase> m_destroy  = nullptr;
+  const detail::DispatchLoaderBase *                     m_dispatch = nullptr;
+  SharedHandle<PoolType>                                 m_pool{};
 };
 
 #if defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __INTEL_COMPILER )

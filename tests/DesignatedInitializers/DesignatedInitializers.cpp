@@ -49,9 +49,6 @@ MyVulkanTest::MyVulkanTest()
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
-  // to prevent a warning on unreferenced function vk::getDispatchLoaderStatic, use just one arbitrary vk-function
-  (void)vk::enumerateInstanceVersion();
-
   char const * appName       = "DesignatedInitializers";
   uint32_t     appVersion    = 1;
   char const * engineName    = "Vulkan.hpp";

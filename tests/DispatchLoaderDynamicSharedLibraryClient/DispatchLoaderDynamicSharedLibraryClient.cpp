@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// VulkanHpp Samples : DispatchLoaderDynamic
+// VulkanHpp Samples : DispatchLoaderDynamicSharedLibraryClient
 //                     Compile test on DispatchLoaderDynamic functions
 
 #include <iostream>

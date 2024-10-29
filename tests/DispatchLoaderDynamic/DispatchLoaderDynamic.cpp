@@ -33,7 +33,7 @@ int main( int /*argc*/, char ** /*argv*/ )
     VULKAN_HPP_DEFAULT_DISPATCHER.init();
 
     // the same initialization, now with explicitly providing a DynamicLoader
-    vk::DynamicLoader dl;
+    vk::detail::DynamicLoader dl;
     VULKAN_HPP_DEFAULT_DISPATCHER.init( dl );
 
     // the same initialization, now with explicitly providing the initial function pointer

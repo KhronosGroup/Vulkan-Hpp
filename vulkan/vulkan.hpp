@@ -6056,208 +6056,211 @@ namespace VULKAN_HPP_NAMESPACE
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
   struct AllocationCallbacks;
 
-  template <typename OwnerType, typename Dispatch>
-  class ObjectDestroy
+  namespace detail
   {
-  public:
-    ObjectDestroy() = default;
-
-    ObjectDestroy( OwnerType                                               owner,
-                   Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                   Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-      : m_owner( owner )
-      , m_allocationCallbacks( allocationCallbacks )
-      , m_dispatch( &dispatch )
+    template <typename OwnerType, typename Dispatch>
+    class ObjectDestroy
     {
-    }
+    public:
+      ObjectDestroy() = default;
 
-    OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( OwnerType                                                   owner,
+                     Optional<const vk::AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                     Dispatch const & dispatch                                   VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_allocationCallbacks( allocationCallbacks )
+        , m_dispatch( &dispatch )
+      {
+      }
+
+      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_owner;
+      }
+
+      Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_allocationCallbacks;
+      }
+
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
+
+    protected:
+      template <typename T>
+      void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      {
+        VULKAN_HPP_ASSERT( m_owner && m_dispatch );
+        m_owner.destroy( t, m_allocationCallbacks, *m_dispatch );
+      }
+
+    private:
+      OwnerType                               m_owner               = {};
+      Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                        m_dispatch            = nullptr;
+    };
+
+    class NoParent;
+
+    template <typename Dispatch>
+    class ObjectDestroy<NoParent, Dispatch>
     {
-      return m_owner;
-    }
+    public:
+      ObjectDestroy() = default;
 
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      ObjectDestroy( Optional<const vk::AllocationCallbacks> allocationCallbacks,
+                     Dispatch const & dispatch               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_allocationCallbacks( allocationCallbacks )
+        , m_dispatch( &dispatch )
+      {
+      }
+
+      Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_allocationCallbacks;
+      }
+
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
+
+    protected:
+      template <typename T>
+      void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      {
+        VULKAN_HPP_ASSERT( m_dispatch );
+        t.destroy( m_allocationCallbacks, *m_dispatch );
+      }
+
+    private:
+      Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                        m_dispatch            = nullptr;
+    };
+
+    template <typename OwnerType, typename Dispatch>
+    class ObjectFree
     {
-      return m_allocationCallbacks;
-    }
+    public:
+      ObjectFree() = default;
 
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      ObjectFree( OwnerType                                               owner,
+                  Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
+                  Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_allocationCallbacks( allocationCallbacks )
+        , m_dispatch( &dispatch )
+      {
+      }
+
+      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_owner;
+      }
+
+      Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_allocationCallbacks;
+      }
+
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
+
+    protected:
+      template <typename T>
+      void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      {
+        VULKAN_HPP_ASSERT( m_owner && m_dispatch );
+        ( m_owner.free )( t, m_allocationCallbacks, *m_dispatch );
+      }
+
+    private:
+      OwnerType                           m_owner               = {};
+      Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
+      Dispatch const *                    m_dispatch            = nullptr;
+    };
+
+    template <typename OwnerType, typename Dispatch>
+    class ObjectRelease
     {
-      return *m_dispatch;
-    }
+    public:
+      ObjectRelease() = default;
 
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      ObjectRelease( OwnerType owner, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_dispatch( &dispatch )
+      {
+      }
+
+      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_owner;
+      }
+
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
+
+    protected:
+      template <typename T>
+      void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      {
+        VULKAN_HPP_ASSERT( m_owner && m_dispatch );
+        m_owner.release( t, *m_dispatch );
+      }
+
+    private:
+      OwnerType        m_owner    = {};
+      Dispatch const * m_dispatch = nullptr;
+    };
+
+    template <typename OwnerType, typename PoolType, typename Dispatch>
+    class PoolFree
     {
-      VULKAN_HPP_ASSERT( m_owner && m_dispatch );
-      m_owner.destroy( t, m_allocationCallbacks, *m_dispatch );
-    }
+    public:
+      PoolFree() = default;
 
-  private:
-    OwnerType                           m_owner               = {};
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
-  };
+      PoolFree( OwnerType owner, PoolType pool, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
+        : m_owner( owner )
+        , m_pool( pool )
+        , m_dispatch( &dispatch )
+      {
+      }
 
-  class NoParent;
+      OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_owner;
+      }
 
-  template <typename Dispatch>
-  class ObjectDestroy<NoParent, Dispatch>
-  {
-  public:
-    ObjectDestroy() = default;
+      PoolType getPool() const VULKAN_HPP_NOEXCEPT
+      {
+        return m_pool;
+      }
 
-    ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
-                   Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-      : m_allocationCallbacks( allocationCallbacks )
-      , m_dispatch( &dispatch )
-    {
-    }
+      Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
+      {
+        return *m_dispatch;
+      }
 
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_allocationCallbacks;
-    }
+    protected:
+      template <typename T>
+      void destroy( T t ) VULKAN_HPP_NOEXCEPT
+      {
+        ( m_owner.free )( m_pool, t, *m_dispatch );
+      }
 
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
-    {
-      return *m_dispatch;
-    }
+    private:
+      OwnerType        m_owner    = OwnerType();
+      PoolType         m_pool     = PoolType();
+      Dispatch const * m_dispatch = nullptr;
+    };
 
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( m_dispatch );
-      t.destroy( m_allocationCallbacks, *m_dispatch );
-    }
-
-  private:
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
-  };
-
-  template <typename OwnerType, typename Dispatch>
-  class ObjectFree
-  {
-  public:
-    ObjectFree() = default;
-
-    ObjectFree( OwnerType                                               owner,
-                Optional<const AllocationCallbacks> allocationCallbacks VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
-                Dispatch const & dispatch                               VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-      : m_owner( owner )
-      , m_allocationCallbacks( allocationCallbacks )
-      , m_dispatch( &dispatch )
-    {
-    }
-
-    OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_owner;
-    }
-
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_allocationCallbacks;
-    }
-
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
-    {
-      return *m_dispatch;
-    }
-
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( m_owner && m_dispatch );
-      ( m_owner.free )( t, m_allocationCallbacks, *m_dispatch );
-    }
-
-  private:
-    OwnerType                           m_owner               = {};
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
-  };
-
-  template <typename OwnerType, typename Dispatch>
-  class ObjectRelease
-  {
-  public:
-    ObjectRelease() = default;
-
-    ObjectRelease( OwnerType owner, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-      : m_owner( owner )
-      , m_dispatch( &dispatch )
-    {
-    }
-
-    OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_owner;
-    }
-
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
-    {
-      return *m_dispatch;
-    }
-
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
-    {
-      VULKAN_HPP_ASSERT( m_owner && m_dispatch );
-      m_owner.release( t, *m_dispatch );
-    }
-
-  private:
-    OwnerType        m_owner    = {};
-    Dispatch const * m_dispatch = nullptr;
-  };
-
-  template <typename OwnerType, typename PoolType, typename Dispatch>
-  class PoolFree
-  {
-  public:
-    PoolFree() = default;
-
-    PoolFree( OwnerType owner, PoolType pool, Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
-      : m_owner( owner )
-      , m_pool( pool )
-      , m_dispatch( &dispatch )
-    {
-    }
-
-    OwnerType getOwner() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_owner;
-    }
-
-    PoolType getPool() const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pool;
-    }
-
-    Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT
-    {
-      return *m_dispatch;
-    }
-
-  protected:
-    template <typename T>
-    void destroy( T t ) VULKAN_HPP_NOEXCEPT
-    {
-      ( m_owner.free )( m_pool, t, *m_dispatch );
-    }
-
-  private:
-    OwnerType        m_owner    = OwnerType();
-    PoolType         m_pool     = PoolType();
-    Dispatch const * m_dispatch = nullptr;
-  };
-
+  }     // namespace detail
 #endif  // !VULKAN_HPP_NO_SMART_HANDLE
 
   //==================

@@ -1,5 +1,3 @@
-  struct AllocationCallbacks;
-
   template <typename OwnerType, typename Dispatch>
   class ObjectDestroy
   {
@@ -7,7 +5,7 @@
     ObjectDestroy() = default;
 
     ObjectDestroy( OwnerType owner,
-                   Optional<const AllocationCallbacks> allocationCallbacks
+                   Optional<const vk::AllocationCallbacks> allocationCallbacks
                                              VULKAN_HPP_DEFAULT_ARGUMENT_NULLPTR_ASSIGNMENT,
                    Dispatch const & dispatch VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_owner( owner )
@@ -16,7 +14,7 @@
     {}
 
     OwnerType getOwner() const VULKAN_HPP_NOEXCEPT { return m_owner; }
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
+    Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
     Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
 
   protected:
@@ -28,9 +26,9 @@
     }
 
   private:
-    OwnerType                           m_owner               = {};
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
+    OwnerType                               m_owner               = {};
+    Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Dispatch const *                        m_dispatch            = nullptr;
   };
 
   class NoParent;
@@ -41,13 +39,13 @@
   public:
     ObjectDestroy() = default;
 
-    ObjectDestroy( Optional<const AllocationCallbacks> allocationCallbacks,
+    ObjectDestroy( Optional<const vk::AllocationCallbacks> allocationCallbacks,
                    Dispatch const & dispatch           VULKAN_HPP_DEFAULT_DISPATCHER_ASSIGNMENT ) VULKAN_HPP_NOEXCEPT
       : m_allocationCallbacks( allocationCallbacks )
       , m_dispatch( &dispatch )
     {}
 
-    Optional<const AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
+    Optional<const vk::AllocationCallbacks> getAllocator() const VULKAN_HPP_NOEXCEPT { return m_allocationCallbacks; }
     Dispatch const & getDispatch() const VULKAN_HPP_NOEXCEPT { return *m_dispatch; }
 
   protected:
@@ -59,6 +57,6 @@
     }
 
   private:
-    Optional<const AllocationCallbacks> m_allocationCallbacks = nullptr;
-    Dispatch const *                    m_dispatch            = nullptr;
+    Optional<const vk::AllocationCallbacks> m_allocationCallbacks = nullptr;
+    Dispatch const *                        m_dispatch            = nullptr;
   };

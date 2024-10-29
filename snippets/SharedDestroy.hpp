@@ -1,7 +1,4 @@
 
-template <typename HandleType>
-class SharedHandleTraits;
-
 // Silence the function cast warnings.
 #if defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __INTEL_COMPILER )
 #  pragma GCC diagnostic push

@@ -475,12 +475,19 @@ namespace VULKAN_HPP_NAMESPACE
     ${DispatchLoaderStatic}
   }
   ${Exchange}
+
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  ${ObjectDestroy}
-  ${ObjectFree}
-  ${ObjectRelease}
-  ${PoolFree}
+  struct AllocationCallbacks;
+
+  namespace detail
+  {
+    ${ObjectDestroy}
+    ${ObjectFree}
+    ${ObjectRelease}
+    ${PoolFree}
+  }
 #endif // !VULKAN_HPP_NO_SMART_HANDLE
+
   ${baseTypes}
 
   template <typename Type, Type value = Type{}>
@@ -698,11 +705,14 @@ void VulkanHppGenerator::generateSharedHppFile() const
 namespace VULKAN_HPP_NAMESPACE
 {
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-${sharedHandle}
-${sharedDestroy}
-${sharedHandles}
-${sharedHandleSpecializations}
-${sharedHandlesNoDestroy}
+  ${sharedHandle}
+  namespace detail
+  {
+    ${sharedDestroy}
+  }
+  ${sharedHandles}
+  ${sharedHandleSpecializations}
+  ${sharedHandlesNoDestroy}
 #endif // !VULKAN_HPP_NO_SMART_HANDLE
 } // namespace VULKAN_HPP_NAMESPACE
 #endif // VULKAN_SHARED_HPP
@@ -5917,10 +5927,10 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
 )" };
 
-  auto const hardCodedEnhancedModeTypes = std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
-  auto const hardCodedSmartHandleTypes  = std::array{ "ObjectDestroy",    "ObjectFree",          "ObjectRelease",  "PoolFree",     "ObjectDestroyShared",
-                                                     "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared", "SharedHandle", "UniqueHandle" };
-  auto const hardCodedFunctions         = std::array{ "exchange" };
+  auto const hardCodedEnhancedModeTypes      = std::array{ "ArrayProxy", "ArrayProxyNoTemporaries", "StridedArrayProxy", "Optional", "StructureChain" };
+  auto const hardCodedSmartHandleHelperTypes = std::array{ "ObjectDestroy",       "ObjectFree",       "ObjectRelease",       "PoolFree",
+                                                           "ObjectDestroyShared", "ObjectFreeShared", "ObjectReleaseShared", "PoolFreeShared" };
+  auto const hardCodedFunctions              = std::array{ "exchange" };
 
   auto usings = std::string{ R"(  //=====================================
   //=== HARDCODED TYPEs AND FUNCTIONs ===
@@ -5959,14 +5969,20 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   const auto [enterEnhancedMode, leaveEnhancedMode] = generateProtection( "VULKAN_HPP_DISABLE_ENHANCED_MODE", false );
   usings += "\n" + enterEnhancedMode + enhancedModeUsings + leaveEnhancedMode + "\n";
 
-  auto noSmartHandleUsings = std::string{};
-  for ( auto const & className : hardCodedSmartHandleTypes )
+  std::string smartHandleUsings = "  namespace detail\n  {\n";
+  for ( auto const & helperType : hardCodedSmartHandleHelperTypes )
   {
-    noSmartHandleUsings += replaceWithMap( usingTemplate, { { "className", std::string{ className } } } );
+    smartHandleUsings += "    using VULKAN_HPP_NAMESPACE::detail::"s + helperType + ";\n";
   }
+  smartHandleUsings += R"(    }
+
+  using VULKAN_HPP_NAMESPACE::SharedHandle;
+  using VULKAN_HPP_NAMESPACE::UniqueHandle;
+)";
+
   // likewise for the smart-handle usings
   const auto [enterNoSmartHandle, leaveNoSmartHandle] = generateProtection( "VULKAN_HPP_NO_SMART_HANDLE", false );
-  usings += "\n" + enterNoSmartHandle + noSmartHandleUsings + leaveNoSmartHandle + "\n";
+  usings += "\n" + enterNoSmartHandle + smartHandleUsings + leaveNoSmartHandle + "\n";
 
   for ( auto const & functionName : hardCodedFunctions )
   {
@@ -6556,7 +6572,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
     vectorParamIt = vectorParams.find( returnParams[0] );
     if ( vectorParamIt != vectorParams.end() && vectorParamIt->second.byStructure )
     {
-      deleterDefinition = "ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )";
+      deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )";
       auto structIt     = m_structs.find( commandData.params[returnParams[0]].type.type );
       assert( structIt != m_structs.end() );
       vectorName = startLowerCase( stripPrefix( structIt->second.members.back().name, "p" ) );
@@ -6567,7 +6583,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
       std::vector<std::string> lenParts = tokenize( commandData.params[returnParams[0]].lenExpression, "->" );
       switch ( lenParts.size() )
       {
-        case 1: deleterDefinition = "ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )"; break;
+        case 1: deleterDefinition = "detail::ObjectDestroy<" + className + ", Dispatch> deleter( *this, allocator, d )"; break;
         case 2:
           {
             auto vpiIt = vectorParams.find( returnParams[0] );
@@ -6577,7 +6593,7 @@ std::string VulkanHppGenerator::generateDataPreparation( CommandData const &    
             assert( !poolType.empty() );
             poolType          = stripPrefix( poolType, "Vk" );
             poolName          = startLowerCase( stripPrefix( lenParts[0], "p" ) ) + "." + poolName;
-            deleterDefinition = "PoolFree<" + className + ", " + poolType + ", Dispatch> deleter( *this, " + poolName + ", d )";
+            deleterDefinition = "detail::PoolFree<" + className + ", " + poolType + ", Dispatch> deleter( *this, " + poolName + ", d )";
           }
           break;
         default: assert( false ); break;
@@ -8566,7 +8582,7 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
     if ( ( commandName == "vkAcquirePerformanceConfigurationINTEL" ) || ( commandName == "vkGetRandROutputDisplayEXT" ) ||
          ( commandName == "vkGetWinrtDisplayNV" ) || ( commandName == "vkGetDrmDisplayEXT" ) )
     {
-      objectDeleter = "ObjectRelease";
+      objectDeleter = "detail::ObjectRelease";
     }
     else
     {
@@ -8575,18 +8591,18 @@ std::string VulkanHppGenerator::generateObjectDeleter( std::string const & comma
   }
   else if ( commandName.find( "Allocate" ) != std::string::npos )
   {
-    objectDeleter = "ObjectFree";
+    objectDeleter = "detail::ObjectFree";
     allocator     = "allocator, ";
   }
   else
   {
     assert( ( commandName.find( "Create" ) != std::string::npos ) || ( commandName.find( "Register" ) != std::string::npos ) );
-    objectDeleter = "ObjectDestroy";
+    objectDeleter = "detail::ObjectDestroy";
     allocator     = "allocator, ";
   }
   std::string className  = initialSkipCount ? stripPrefix( commandData.params[initialSkipCount - 1].type.type, "Vk" ) : "";
-  std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "NoParent" : className;
-  return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "NoParent" ) ? "" : "*this, " ) + allocator + "d )";
+  std::string parentName = ( className.empty() || ( commandData.params[returnParam].type.type == "VkDevice" ) ) ? "detail::NoParent" : className;
+  return objectDeleter + "<" + parentName + ", Dispatch>( " + ( ( parentName == "detail::NoParent" ) ? "" : "*this, " ) + allocator + "d )";
 }
 
 std::string VulkanHppGenerator::generateObjectTypeToDebugReportObjectType() const
@@ -12542,18 +12558,19 @@ std::string VulkanHppGenerator::generateUniqueHandle( std::pair<std::string, Han
   class UniqueHandleTraits<${type}, Dispatch>
   {
   public:
-    using deleter = ${deleterType}${deleterAction}<${deleterParent}${deleterPool}, Dispatch>;
+    using deleter = detail::${deleterType}${deleterAction}<${deleterParent}${deleterPool}, Dispatch>;
   };
   using Unique${type} = UniqueHandle<${type}, VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>;
 ${aliasHandle})";
 
-    return replaceWithMap( uniqueHandleTemplate,
-                           { { "aliasHandle", aliasHandle },
-                             { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
-                             { "deleterParent", handleData.second.destructorType.empty() ? "NoParent" : stripPrefix( handleData.second.destructorType, "Vk" ) },
-                             { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
-                             { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
-                             { "type", type } } );
+    return replaceWithMap(
+      uniqueHandleTemplate,
+      { { "aliasHandle", aliasHandle },
+        { "deleterAction", ( handleData.second.deleteCommand.substr( 2, 4 ) == "Free" ) ? "Free" : "Destroy" },
+        { "deleterParent", handleData.second.destructorType.empty() ? "detail::NoParent" : stripPrefix( handleData.second.destructorType, "Vk" ) },
+        { "deleterPool", handleData.second.deletePool.empty() ? "" : ", " + stripPrefix( handleData.second.deletePool, "Vk" ) },
+        { "deleterType", handleData.second.deletePool.empty() ? "Object" : "Pool" },
+        { "type", type } } );
   }
   return "";
 }
@@ -12619,7 +12636,7 @@ std::string VulkanHppGenerator::generateSharedHandle( std::pair<std::string, Han
   {
   public:
     using DestructorType = ${destructor};
-    using deleter = ${deleterType}${deleterAction}Shared<${type}${deleterPool}>;
+    using deleter = detail::${deleterType}${deleterAction}Shared<${type}${deleterPool}>;
   };
   using Shared${type} = SharedHandle<${type}>;
 ${aliasHandle})";

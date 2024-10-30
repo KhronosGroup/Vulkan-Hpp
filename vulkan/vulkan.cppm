@@ -59,14 +59,18 @@ export namespace VULKAN_HPP_NAMESPACE
 #endif /*VULKAN_HPP_DISABLE_ENHANCED_MODE*/
 
 #if !defined( VULKAN_HPP_NO_SMART_HANDLE )
-  using VULKAN_HPP_NAMESPACE::ObjectDestroy;
-  using VULKAN_HPP_NAMESPACE::ObjectDestroyShared;
-  using VULKAN_HPP_NAMESPACE::ObjectFree;
-  using VULKAN_HPP_NAMESPACE::ObjectFreeShared;
-  using VULKAN_HPP_NAMESPACE::ObjectRelease;
-  using VULKAN_HPP_NAMESPACE::ObjectReleaseShared;
-  using VULKAN_HPP_NAMESPACE::PoolFree;
-  using VULKAN_HPP_NAMESPACE::PoolFreeShared;
+  namespace detail
+  {
+    using VULKAN_HPP_NAMESPACE::detail::ObjectDestroy;
+    using VULKAN_HPP_NAMESPACE::detail::ObjectDestroyShared;
+    using VULKAN_HPP_NAMESPACE::detail::ObjectFree;
+    using VULKAN_HPP_NAMESPACE::detail::ObjectFreeShared;
+    using VULKAN_HPP_NAMESPACE::detail::ObjectRelease;
+    using VULKAN_HPP_NAMESPACE::detail::ObjectReleaseShared;
+    using VULKAN_HPP_NAMESPACE::detail::PoolFree;
+    using VULKAN_HPP_NAMESPACE::detail::PoolFreeShared;
+  }  // namespace detail
+
   using VULKAN_HPP_NAMESPACE::SharedHandle;
   using VULKAN_HPP_NAMESPACE::UniqueHandle;
 #endif /*VULKAN_HPP_NO_SMART_HANDLE*/

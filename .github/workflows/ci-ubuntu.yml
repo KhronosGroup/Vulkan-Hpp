@@ -13,8 +13,6 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
-        compiler: [g++-10]
         include:
             - os: ubuntu-20.04
               compiler: clang++-10
@@ -22,6 +20,9 @@ jobs:
               compiler: clang++-11
             - os: ubuntu-20.04
               compiler: clang++-12
+            - os: ubuntu-20.04
+              compiler: g++-10
+              
             - os: ubuntu-22.04
               compiler: clang++-13
             - os: ubuntu-22.04
@@ -29,9 +30,24 @@ jobs:
             - os: ubuntu-22.04
               compiler: clang++-15
             - os: ubuntu-22.04
+              compiler: g++-10
+            - os: ubuntu-22.04
               compiler: g++-11
             - os: ubuntu-22.04
               compiler: g++-12
+              
+            - os: ubuntu-24.04
+              compiler: clang++-16
+            - os: ubuntu-24.04
+              compiler: clang++-17
+            - os: ubuntu-24.04
+              compiler: clang++-18
+            - os: ubuntu-24.04
+              compiler: g++-12
+            - os: ubuntu-24.04
+              compiler: g++-13
+            - os: ubuntu-24.04
+              compiler: g++-14
     
     runs-on: ${{matrix.os}}
 
@@ -55,7 +71,7 @@ jobs:
           for build_type in Debug Release
           do
             echo "================================================================================="
-            echo "Building C++" $cpp_standard " in " $build_type " mode on " ${{matrix.os}} " with " ${{matrix.compiler}}
+            echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
             echo "================================================================================="
             cmake -B build/$cpp_standard/$build_type -GNinja \
               -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
@@ -74,14 +90,15 @@ jobs:
 
     - name: Loop over build_types (Debug, Release) with cpp_standard 23 for compilers supporting that
       run: |
-        if [[ ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != g++-10 ]]
+        # clang++17 gives in some strange errors in std::tuple!
+        if [[ ${{matrix.compiler}} != clang++-10 && ${{matrix.compiler}} != clang++-11 && ${{matrix.compiler}} != clang++-17 && ${{matrix.compiler}} != g++-10 ]]
         then
           cpp_standard=23
-          echo "================================================================================="
-          echo "Building C++" $cpp_standard " in " $build_type " mode on " ${{matrix.os}} " with " ${{matrix.compiler}}
-          echo "================================================================================="
           for build_type in Debug Release
           do
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with "${{matrix.compiler}}
+            echo "================================================================================="
             cmake -B build/$cpp_standard/$build_type -GNinja \
               -DVULKAN_HPP_SAMPLES_BUILD=ON                  \
               -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON     \

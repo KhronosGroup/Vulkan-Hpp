@@ -846,6 +846,10 @@ Currently, there are just a couple of such defines:
 - `VULKAN_HPP_NO_TO_STRING`, which removes the various `vk::to_string` functions on enums and bitmasks.
 - `VULKAN_HPP_USE_REFLECT`, this one needs to be defined to use the reflection function on structures. It's very slow to compile, though!
 
+### Strict aliasing issue
+
+As Vulkan-Hpp often needs to switch between C++ vk-types and corresponding bit-identical C-types, using `reinterpret_cast`, it is highly recommended to use the compile option `-fno-strict-aliasing` to prevent potentially breaking compile optimizations.
+
 ## Configuration Options
 
 There are a couple of defines you can use to control the feature set and behaviour of `vulkan.hpp`:

@@ -8,6 +8,13 @@
 #ifndef VULKAN_HPP
 #define VULKAN_HPP
 
+// <sys/sysmacros.h> is included through some other headers, and
+// this results in major(x) being resolved to gnu_dev_major(x)
+// which is an expression in a constructor initializer list.
+#include <sys/sysmacros.h>
+#undef major
+#undef minor
+
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 #if defined( VULKAN_HPP_ENABLE_STD_MODULE ) && defined( VULKAN_HPP_STD_MODULE )
@@ -64,16 +71,6 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #endif
 
 static_assert( VK_HEADER_VERSION == 300, "Wrong VK_HEADER_VERSION!" );
-
-// <tuple> includes <sys/sysmacros.h> through some other header
-// this results in major(x) being resolved to gnu_dev_major(x)
-// which is an expression in a constructor initializer list.
-#if defined( major )
-#  undef major
-#endif
-#if defined( minor )
-#  undef minor
-#endif
 
 // Windows defines MemoryBarrier which is deprecated and collides
 // with the VULKAN_HPP_NAMESPACE::MemoryBarrier struct.

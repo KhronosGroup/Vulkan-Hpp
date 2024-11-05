@@ -1909,6 +1909,10 @@ namespace VULKAN_HPP_NAMESPACE
   struct PipelineViewportDepthClampControlCreateInfoEXT;
   struct DepthClampRangeEXT;
 
+  //=== VK_HUAWEI_hdr_vivid ===
+  struct PhysicalDeviceHdrVividFeaturesHUAWEI;
+  struct HdrVividDynamicMetadataHUAWEI;
+
   //=== VK_NV_cooperative_matrix2 ===
   struct CooperativeMatrixFlexibleDimensionsPropertiesNV;
   struct PhysicalDeviceCooperativeMatrix2FeaturesNV;

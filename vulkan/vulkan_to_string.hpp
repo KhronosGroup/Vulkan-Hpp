@@ -4653,6 +4653,8 @@ namespace VULKAN_HPP_NAMESPACE
       case StructureType::eImageAlignmentControlCreateInfoMESA: return "ImageAlignmentControlCreateInfoMESA";
       case StructureType::ePhysicalDeviceDepthClampControlFeaturesEXT: return "PhysicalDeviceDepthClampControlFeaturesEXT";
       case StructureType::ePipelineViewportDepthClampControlCreateInfoEXT: return "PipelineViewportDepthClampControlCreateInfoEXT";
+      case StructureType::ePhysicalDeviceHdrVividFeaturesHUAWEI: return "PhysicalDeviceHdrVividFeaturesHUAWEI";
+      case StructureType::eHdrVividDynamicMetadataHUAWEI: return "HdrVividDynamicMetadataHUAWEI";
       case StructureType::ePhysicalDeviceCooperativeMatrix2FeaturesNV: return "PhysicalDeviceCooperativeMatrix2FeaturesNV";
       case StructureType::eCooperativeMatrixFlexibleDimensionsPropertiesNV: return "CooperativeMatrixFlexibleDimensionsPropertiesNV";
       case StructureType::ePhysicalDeviceCooperativeMatrix2PropertiesNV: return "PhysicalDeviceCooperativeMatrix2PropertiesNV";

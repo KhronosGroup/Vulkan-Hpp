@@ -1468,6 +1468,8 @@ namespace VULKAN_HPP_NAMESPACE
     eImageAlignmentControlCreateInfoMESA                       = VK_STRUCTURE_TYPE_IMAGE_ALIGNMENT_CONTROL_CREATE_INFO_MESA,
     ePhysicalDeviceDepthClampControlFeaturesEXT                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLAMP_CONTROL_FEATURES_EXT,
     ePipelineViewportDepthClampControlCreateInfoEXT            = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_DEPTH_CLAMP_CONTROL_CREATE_INFO_EXT,
+    ePhysicalDeviceHdrVividFeaturesHUAWEI                      = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_HDR_VIVID_FEATURES_HUAWEI,
+    eHdrVividDynamicMetadataHUAWEI                             = VK_STRUCTURE_TYPE_HDR_VIVID_DYNAMIC_METADATA_HUAWEI,
     ePhysicalDeviceCooperativeMatrix2FeaturesNV                = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_FEATURES_NV,
     eCooperativeMatrixFlexibleDimensionsPropertiesNV           = VK_STRUCTURE_TYPE_COOPERATIVE_MATRIX_FLEXIBLE_DIMENSIONS_PROPERTIES_NV,
     ePhysicalDeviceCooperativeMatrix2PropertiesNV              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_COOPERATIVE_MATRIX_2_PROPERTIES_NV

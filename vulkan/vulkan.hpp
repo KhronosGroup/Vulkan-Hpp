@@ -63,7 +63,7 @@ extern "C" __declspec( dllimport ) FARPROC __stdcall GetProcAddress( HINSTANCE h
 #  include <span>
 #endif
 
-static_assert( VK_HEADER_VERSION == 300, "Wrong VK_HEADER_VERSION!" );
+static_assert( VK_HEADER_VERSION == 301, "Wrong VK_HEADER_VERSION!" );
 
 // <tuple> includes <sys/sysmacros.h> through some other header
 // this results in major(x) being resolved to gnu_dev_major(x)
@@ -8710,6 +8710,10 @@ namespace VULKAN_HPP_NAMESPACE
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDepthClampControlExtensionName = VK_EXT_DEPTH_CLAMP_CONTROL_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto EXTDepthClampControlSpecVersion   = VK_EXT_DEPTH_CLAMP_CONTROL_SPEC_VERSION;
 
+  //=== VK_HUAWEI_hdr_vivid ===
+  VULKAN_HPP_CONSTEXPR_INLINE auto HUAWEIHdrVividExtensionName = VK_HUAWEI_HDR_VIVID_EXTENSION_NAME;
+  VULKAN_HPP_CONSTEXPR_INLINE auto HUAWEIHdrVividSpecVersion   = VK_HUAWEI_HDR_VIVID_SPEC_VERSION;
+
   //=== VK_NV_cooperative_matrix2 ===
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrix2ExtensionName = VK_NV_COOPERATIVE_MATRIX_2_EXTENSION_NAME;
   VULKAN_HPP_CONSTEXPR_INLINE auto NVCooperativeMatrix2SpecVersion   = VK_NV_COOPERATIVE_MATRIX_2_SPEC_VERSION;
@@ -17099,6 +17103,34 @@ namespace VULKAN_HPP_NAMESPACE
     };
   };
 
+  //=== VK_HUAWEI_hdr_vivid ===
+  template <>
+  struct StructExtends<PhysicalDeviceHdrVividFeaturesHUAWEI, PhysicalDeviceFeatures2>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<PhysicalDeviceHdrVividFeaturesHUAWEI, DeviceCreateInfo>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
+  template <>
+  struct StructExtends<HdrVividDynamicMetadataHUAWEI, HdrMetadataEXT>
+  {
+    enum
+    {
+      value = true
+    };
+  };
+
   //=== VK_NV_cooperative_matrix2 ===
   template <>
   struct StructExtends<PhysicalDeviceCooperativeMatrix2FeaturesNV, PhysicalDeviceFeatures2>
@@ -17166,7 +17198,7 @@ namespace VULKAN_HPP_NAMESPACE
             m_library = dlopen( "libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL );
           }
 #  elif defined( _WIN32 )
-            m_library = ::LoadLibraryA( "vulkan-1.dll" );
+          m_library = ::LoadLibraryA( "vulkan-1.dll" );
 #  else
 #    error unsupported platform
 #  endif

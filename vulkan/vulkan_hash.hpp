@@ -5794,6 +5794,20 @@ namespace std
   };
 
   template <>
+  struct hash<VULKAN_HPP_NAMESPACE::HdrVividDynamicMetadataHUAWEI>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::HdrVividDynamicMetadataHUAWEI const & hdrVividDynamicMetadataHUAWEI ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, hdrVividDynamicMetadataHUAWEI.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrVividDynamicMetadataHUAWEI.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrVividDynamicMetadataHUAWEI.dynamicMetadataSize );
+      VULKAN_HPP_HASH_COMBINE( seed, hdrVividDynamicMetadataHUAWEI.pDynamicMetadata );
+      return seed;
+    }
+  };
+
+  template <>
   struct hash<VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateInfoEXT>
   {
     std::size_t operator()( VULKAN_HPP_NAMESPACE::HeadlessSurfaceCreateInfoEXT const & headlessSurfaceCreateInfoEXT ) const VULKAN_HPP_NOEXCEPT
@@ -9507,6 +9521,19 @@ namespace std
         VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceGroupProperties.physicalDevices[i] );
       }
       VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceGroupProperties.subsetAllocation );
+      return seed;
+    }
+  };
+
+  template <>
+  struct hash<VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI>
+  {
+    std::size_t operator()( VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI const & physicalDeviceHdrVividFeaturesHUAWEI ) const VULKAN_HPP_NOEXCEPT
+    {
+      std::size_t seed = 0;
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrVividFeaturesHUAWEI.sType );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrVividFeaturesHUAWEI.pNext );
+      VULKAN_HPP_HASH_COMBINE( seed, physicalDeviceHdrVividFeaturesHUAWEI.hdrVivid );
       return seed;
     }
   };

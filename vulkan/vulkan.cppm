@@ -2612,6 +2612,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlExtensionName;
   using VULKAN_HPP_NAMESPACE::EXTDepthClampControlSpecVersion;
 
+  //=== VK_HUAWEI_hdr_vivid ===
+  using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividExtensionName;
+  using VULKAN_HPP_NAMESPACE::HUAWEIHdrVividSpecVersion;
+
   //=== VK_NV_cooperative_matrix2 ===
   using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2ExtensionName;
   using VULKAN_HPP_NAMESPACE::NVCooperativeMatrix2SpecVersion;
@@ -4539,6 +4543,10 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::DepthClampRangeEXT;
   using VULKAN_HPP_NAMESPACE::PhysicalDeviceDepthClampControlFeaturesEXT;
   using VULKAN_HPP_NAMESPACE::PipelineViewportDepthClampControlCreateInfoEXT;
+
+  //=== VK_HUAWEI_hdr_vivid ===
+  using VULKAN_HPP_NAMESPACE::HdrVividDynamicMetadataHUAWEI;
+  using VULKAN_HPP_NAMESPACE::PhysicalDeviceHdrVividFeaturesHUAWEI;
 
   //=== VK_NV_cooperative_matrix2 ===
   using VULKAN_HPP_NAMESPACE::CooperativeMatrixFlexibleDimensionsPropertiesNV;

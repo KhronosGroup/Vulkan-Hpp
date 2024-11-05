@@ -454,6 +454,7 @@ namespace VULKAN_HPP_NAMESPACE
       "VK_EXT_device_generated_commands",
       "VK_MESA_image_alignment_control",
       "VK_EXT_depth_clamp_control",
+      "VK_HUAWEI_hdr_vivid",
       "VK_NV_cooperative_matrix2"
     };
     return deviceExtensions;
@@ -2362,6 +2363,16 @@ namespace VULKAN_HPP_NAMESPACE
               "VK_KHR_get_physical_device_properties2",
             } } },
           { "VK_VERSION_1_1", { {} } } } },
+      { "VK_HUAWEI_hdr_vivid",
+        { { "VK_VERSION_1_0",
+            { {
+              "VK_KHR_get_physical_device_properties2",
+            } } },
+          { "VK_VERSION_1_1",
+            { {
+              "VK_KHR_swapchain",
+              "VK_EXT_hdr_metadata",
+            } } } } },
       { "VK_NV_cooperative_matrix2",
         { { "VK_VERSION_1_0",
             { {
@@ -3145,7 +3156,7 @@ namespace VULKAN_HPP_NAMESPACE
            ( extension == "VK_KHR_maintenance7" ) || ( extension == "VK_NV_shader_atomic_float16_vector" ) ||
            ( extension == "VK_EXT_shader_replicated_composites" ) || ( extension == "VK_NV_ray_tracing_validation" ) ||
            ( extension == "VK_EXT_device_generated_commands" ) || ( extension == "VK_MESA_image_alignment_control" ) ||
-           ( extension == "VK_EXT_depth_clamp_control" ) || ( extension == "VK_NV_cooperative_matrix2" );
+           ( extension == "VK_EXT_depth_clamp_control" ) || ( extension == "VK_HUAWEI_hdr_vivid" ) || ( extension == "VK_NV_cooperative_matrix2" );
   }
 
   VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 bool isInstanceExtension( std::string const & extension )

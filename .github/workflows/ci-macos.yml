@@ -11,9 +11,8 @@ jobs:
     
     strategy:
       matrix:
-        os: [macos-13]
-        # g++-13 fails on and macos-13 with some error in stdio.h !
-        compiler: [clang++, g++-12, g++-14]
+        os: [macos-14]
+        compiler: [clang++]
 
     steps:
     - uses: actions/checkout@v4

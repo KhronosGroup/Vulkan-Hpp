@@ -24,7 +24,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  std::set<std::string> const &                                        getDeviceExtensions();
+  VULKAN_HPP_CONSTEXPR_20 std::set<std::string> const &                getDeviceExtensions();
   std::set<std::string> const &                                        getInstanceExtensions();
   std::map<std::string, std::string> const &                           getDeprecatedExtensions();
   std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );
@@ -44,7 +44,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection function implementations ===
   //=====================================================
 
-  VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20std::map<std::string, std::string> const & getDeprecatedExtensions()
   {
     static std::map<std::string, std::string> deprecatedExtensions = {
       { "VK_EXT_validation_features", "VK_EXT_layer_settings" },
@@ -55,9 +55,9 @@ namespace VULKAN_HPP_NAMESPACE
     return deprecatedExtensions;
   }
 
-  VULKAN_HPP_INLINE std::set<std::string> const & getDeviceExtensions()
+  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::set<std::string> const & getDeviceExtensions()
   {
-    static std::set<std::string> deviceExtensions = {
+    static const std::set<std::string> deviceExtensions = {
       "VK_KHR_swapchain",
       "VK_KHR_display_swapchain",
       "VK_EXT_depth_range_unrestricted",

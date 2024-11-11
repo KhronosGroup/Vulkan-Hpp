@@ -66,7 +66,7 @@ int main( int /*argc*/, char ** /*argv*/ )
   assert( !available3 );
 
   auto [available4, deps4] = vk::getExtensionDepends( "VK_VERSION_1_3", VK_EXT_SHADER_TILE_IMAGE_EXTENSION_NAME );
-  assert( available4 && deps4.empty() );
+  assert( available4 && ( deps4.size() == 1 ) && deps4[0].empty() );
 
   std::map<std::string, std::string> const & deprecatedExtensions = vk::getDeprecatedExtensions();
   auto                                       deprecatedIt         = deprecatedExtensions.find( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );

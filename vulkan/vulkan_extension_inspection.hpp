@@ -46,7 +46,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
   {
-    static std::map<std::string, std::string> deprecatedExtensions = {
+    static const std::map<std::string, std::string> deprecatedExtensions = {
       { "VK_EXT_debug_report", "VK_EXT_debug_utils" },
       { "VK_NV_glsl_shader", "" },
       { "VK_NV_dedicated_allocation", "VK_KHR_dedicated_allocation" },
@@ -76,7 +76,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::set<std::string> const & getDeviceExtensions()
   {
-    static std::set<std::string> deviceExtensions = {
+    static const std::set<std::string> deviceExtensions = {
       "VK_KHR_swapchain",
       "VK_KHR_display_swapchain",
       "VK_NV_glsl_shader",
@@ -462,7 +462,7 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::set<std::string> const & getInstanceExtensions()
   {
-    static std::set<std::string> instanceExtensions = {
+    static const std::set<std::string> instanceExtensions = {
       "VK_KHR_surface",
       "VK_KHR_display",
 #if defined( VK_USE_PLATFORM_XLIB_KHR )
@@ -536,8 +536,8 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )
   {
-    static std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
-    static std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = {
+    static const std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
+    static const std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = {
       { "VK_KHR_swapchain",
         { { "VK_VERSION_1_0",
             { {
@@ -2414,13 +2414,13 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
   {
-    static std::map<std::string, std::string> obsoletedExtensions = { { "VK_AMD_negative_viewport_height", "VK_KHR_maintenance1" } };
+    static const std::map<std::string, std::string> obsoletedExtensions = { { "VK_AMD_negative_viewport_height", "VK_KHR_maintenance1" } };
     return obsoletedExtensions;
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getPromotedExtensions()
   {
-    static std::map<std::string, std::string> promotedExtensions = {
+    static const std::map<std::string, std::string> promotedExtensions = {
       { "VK_KHR_sampler_mirror_clamp_to_edge", "VK_VERSION_1_2" },
       { "VK_EXT_debug_marker", "VK_EXT_debug_utils" },
       { "VK_AMD_draw_indirect_count", "VK_KHR_draw_indirect_count" },

@@ -1,6 +1,22 @@
+// Copyright(c) 2024, NVIDIA CORPORATION. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// VulkanHpp Test : Cpp20Module
+//                  Compile test on using c++20 modules
+
 import vulkan_hpp;
 
-#include <iostream>
 #include <vulkan/vulkan_hpp_macros.hpp>
 
 static std::string AppName    = "Cpp20Modules";
@@ -12,6 +28,8 @@ VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
+  std::cout << "test Cpp20Module" << std::endl;
+
   /* VULKAN_HPP_KEY_START */
   try
   {

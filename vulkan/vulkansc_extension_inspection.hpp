@@ -24,7 +24,7 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection functions ===
   //======================================
 
-  VULKAN_HPP_CONSTEXPR_20 std::set<std::string> const &                getDeviceExtensions();
+  std::set<std::string> const &                                        getDeviceExtensions();
   std::set<std::string> const &                                        getInstanceExtensions();
   std::map<std::string, std::string> const &                           getDeprecatedExtensions();
   std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension );
@@ -44,9 +44,9 @@ namespace VULKAN_HPP_NAMESPACE
   //=== Extension inspection function implementations ===
   //=====================================================
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20std::map<std::string, std::string> const & getDeprecatedExtensions()
+  VULKAN_HPP_INLINE std::map<std::string, std::string> const & getDeprecatedExtensions()
   {
-    static std::map<std::string, std::string> deprecatedExtensions = {
+    static const std::map<std::string, std::string> deprecatedExtensions = {
       { "VK_EXT_validation_features", "VK_EXT_layer_settings" },
 #if defined( VK_USE_PLATFORM_SCI )
       { "VK_NV_external_sci_sync", "VK_NV_external_sci_sync2" }
@@ -55,7 +55,7 @@ namespace VULKAN_HPP_NAMESPACE
     return deprecatedExtensions;
   }
 
-  VULKAN_HPP_INLINE VULKAN_HPP_CONSTEXPR_20 std::set<std::string> const & getDeviceExtensions()
+  VULKAN_HPP_INLINE std::set<std::string> const & getDeviceExtensions()
   {
     static const std::set<std::string> deviceExtensions = {
       "VK_KHR_swapchain",
@@ -135,25 +135,25 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::set<std::string> const & getInstanceExtensions()
   {
-    static std::set<std::string> instanceExtensions = { "VK_KHR_surface",
-                                                        "VK_KHR_display",
-                                                        "VK_EXT_direct_mode_display",
-                                                        "VK_EXT_display_surface_counter",
-                                                        "VK_EXT_swapchain_colorspace",
-                                                        "VK_KHR_get_surface_capabilities2",
-                                                        "VK_KHR_get_display_properties2",
-                                                        "VK_EXT_debug_utils",
-                                                        "VK_EXT_validation_features",
-                                                        "VK_EXT_headless_surface",
-                                                        "VK_EXT_application_parameters",
-                                                        "VK_EXT_layer_settings" };
+    static const std::set<std::string> instanceExtensions = { "VK_KHR_surface",
+                                                              "VK_KHR_display",
+                                                              "VK_EXT_direct_mode_display",
+                                                              "VK_EXT_display_surface_counter",
+                                                              "VK_EXT_swapchain_colorspace",
+                                                              "VK_KHR_get_surface_capabilities2",
+                                                              "VK_KHR_get_display_properties2",
+                                                              "VK_EXT_debug_utils",
+                                                              "VK_EXT_validation_features",
+                                                              "VK_EXT_headless_surface",
+                                                              "VK_EXT_application_parameters",
+                                                              "VK_EXT_layer_settings" };
     return instanceExtensions;
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::vector<std::vector<std::string>>> const & getExtensionDepends( std::string const & extension )
   {
-    static std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
-    static std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = {
+    static const std::map<std::string, std::vector<std::vector<std::string>>>                        noDependencies;
+    static const std::map<std::string, std::map<std::string, std::vector<std::vector<std::string>>>> dependencies = {
       { "VK_KHR_swapchain",
         { { "VK_VERSION_1_0",
             { {
@@ -552,26 +552,26 @@ namespace VULKAN_HPP_NAMESPACE
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getObsoletedExtensions()
   {
-    static std::map<std::string, std::string> obsoletedExtensions = {};
+    static const std::map<std::string, std::string> obsoletedExtensions = {};
     return obsoletedExtensions;
   }
 
   VULKAN_HPP_INLINE std::map<std::string, std::string> const & getPromotedExtensions()
   {
-    static std::map<std::string, std::string> promotedExtensions = { { "VK_EXT_texture_compression_astc_hdr", "VK_VERSION_1_3" },
-                                                                     { "VK_KHR_shader_terminate_invocation", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_subgroup_size_control", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_line_rasterization", "VK_KHR_line_rasterization" },
-                                                                     { "VK_EXT_index_type_uint8", "VK_KHR_index_type_uint8" },
-                                                                     { "VK_EXT_extended_dynamic_state", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_shader_demote_to_helper_invocation", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_texel_buffer_alignment", "VK_VERSION_1_3" },
-                                                                     { "VK_KHR_synchronization2", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_ycbcr_2plane_444_formats", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_image_robustness", "VK_VERSION_1_3" },
-                                                                     { "VK_KHR_copy_commands2", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_4444_formats", "VK_VERSION_1_3" },
-                                                                     { "VK_EXT_extended_dynamic_state2", "VK_VERSION_1_3" } };
+    static const std::map<std::string, std::string> promotedExtensions = { { "VK_EXT_texture_compression_astc_hdr", "VK_VERSION_1_3" },
+                                                                           { "VK_KHR_shader_terminate_invocation", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_subgroup_size_control", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_line_rasterization", "VK_KHR_line_rasterization" },
+                                                                           { "VK_EXT_index_type_uint8", "VK_KHR_index_type_uint8" },
+                                                                           { "VK_EXT_extended_dynamic_state", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_shader_demote_to_helper_invocation", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_texel_buffer_alignment", "VK_VERSION_1_3" },
+                                                                           { "VK_KHR_synchronization2", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_ycbcr_2plane_444_formats", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_image_robustness", "VK_VERSION_1_3" },
+                                                                           { "VK_KHR_copy_commands2", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_4444_formats", "VK_VERSION_1_3" },
+                                                                           { "VK_EXT_extended_dynamic_state2", "VK_VERSION_1_3" } };
     return promotedExtensions;
   }
 

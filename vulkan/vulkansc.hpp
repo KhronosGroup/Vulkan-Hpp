@@ -980,7 +980,7 @@ namespace VULKAN_HPP_NAMESPACE
 #endif
     };
 
-#if !defined( VK_NO_PROTOTYPES )
+#if !defined( VK_NO_PROTOTYPES ) || ( defined( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC ) && ( VULKAN_HPP_DISPATCH_LOADER_DYNAMIC == 0 ) )
     class DispatchLoaderStatic : public DispatchLoaderBase
     {
     public:

@@ -446,10 +446,10 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+  checkAttributes( line, attributes, { { "name", {} } }, { { "comment", {} }, { "value", {} }, { "alias", {} }, { "deprecated", {} } } );
   checkElements( line, getChildElements( element ), {} );
 
-  std::string name, value;
+  std::string name, value, alias;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "name" )
@@ -460,16 +460,24 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
     {
       value = attribute.second;
     }
+    else if ( attribute.first == "alias" )
+    {
+      alias = attribute.second;
+    }
   }
 
   std::string prefix = toUpperCase( enumIt->first ) + "_";
   checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
-  checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
-
   checkForError( std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
                  line,
                  "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
-  enumIt->second.values.push_back( { name, value, line } );
+
+  if (alias.empty()) {
+    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
+    enumIt->second.values.push_back( { name, value, line } );
+  } else {
+    enumIt->second.values.push_back( { name, alias, line } );
+  }
 }
 
 void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )

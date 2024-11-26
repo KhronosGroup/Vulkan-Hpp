@@ -184,6 +184,14 @@ std::string VideoHppGenerator::generateEnum( std::pair<std::string, EnumData> co
     std::string valueName = "e" + toCamelCase( stripPrefix( value.name, prefix ), true );
     assert( valueToNameMap.insert( { valueName, value.name } ).second );
     enumValues += "    " + valueName + " = " + value.name + ",\n";
+
+    for ( auto const & alias : value.aliases )
+    {
+      std::string aliasName = "e" + toCamelCase( stripPrefix( alias.first, prefix ), true );
+      assert( valueToNameMap.insert( { aliasName, alias.first } ).second );
+      enumValues += "    " + aliasName + " VULKAN_HPP_DEPRECATED_17( \"" + aliasName + " is deprecated, " + valueName +
+                    " should be used instead.\" ) = " + alias.first + ",\n";
+    }
   }
 
   if ( !enumValues.empty() )
@@ -446,30 +454,63 @@ void VideoHppGenerator::readEnumsEnum( tinyxml2::XMLElement const * element, std
 {
   int                                line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
-  checkElements( line, getChildElements( element ), {} );
-
-  std::string name, value;
-  for ( auto const & attribute : attributes )
+  if ( attributes.contains( "alias" ) )
   {
-    if ( attribute.first == "name" )
+    checkAttributes( line, attributes, { { "alias", {} }, { "deprecated", { "aliased" } }, { "name", {} } }, {} );
+    checkElements( line, getChildElements( element ), {} );
+
+    std::string alias, name;
+    for ( auto const & attribute : attributes )
     {
-      name = attribute.second;
+      if ( attribute.first == "alias" )
+      {
+        alias = attribute.second;
+      }
+      else if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
     }
-    else if ( attribute.first == "value" )
-    {
-      value = attribute.second;
-    }
+    assert( !name.empty() );
+
+    auto valueIt =
+      std::find_if( enumIt->second.values.begin(), enumIt->second.values.end(), [&alias]( EnumValueData const & evd ) { return evd.name == alias; } );
+    checkForError( valueIt != enumIt->second.values.end(), line, "enum value <" + name + "> uses unknown alias <" + alias + ">" );
+    checkForError( std::find_if( valueIt->aliases.begin(), valueIt->aliases.end(), [&name]( auto const & alias ) { return alias.first == name; } ) ==
+                     valueIt->aliases.end(),
+                   line,
+                   "enum alias <" + name + "> already listed for enum value <" + alias + ">" );
+
+    valueIt->aliases.push_back( { name, line } );
   }
+  else
+  {
+    checkAttributes( line, attributes, { { "name", {} }, { "value", {} } }, { { "comment", {} } } );
+    checkElements( line, getChildElements( element ), {} );
 
-  std::string prefix = toUpperCase( enumIt->first ) + "_";
-  checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
-  checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
+    std::string name, value;
+    for ( auto const & attribute : attributes )
+    {
+      if ( attribute.first == "name" )
+      {
+        name = attribute.second;
+      }
+      else if ( attribute.first == "value" )
+      {
+        value = attribute.second;
+      }
+    }
 
-  checkForError( std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
-                 line,
-                 "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
-  enumIt->second.values.push_back( { name, value, line } );
+    std::string prefix = toUpperCase( enumIt->first ) + "_";
+    checkForError( name.starts_with( prefix ), line, "encountered enum value <" + name + "> that does not begin with expected prefix <" + prefix + ">" );
+    checkForError( isNumber( value ) || isHexNumber( value ), line, "enum value uses unknown constant <" + value + ">" );
+
+    checkForError(
+      std::none_of( enumIt->second.values.begin(), enumIt->second.values.end(), [&name]( EnumValueData const & evd ) { return evd.name == name; } ),
+      line,
+      "enum value <" + name + "> already part of enum <" + enumIt->first + ">" );
+    enumIt->second.values.push_back( { {}, name, value, line } );
+  }
 }
 
 void VideoHppGenerator::readExtension( tinyxml2::XMLElement const * element )

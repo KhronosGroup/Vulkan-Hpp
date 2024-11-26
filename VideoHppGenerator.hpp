@@ -42,9 +42,10 @@ private:
 
   struct EnumValueData
   {
-    std::string name    = {};
-    std::string value   = {};
-    int         xmlLine = {};
+    std::vector<std::pair<std::string, int>> aliases = {};
+    std::string                              name    = {};
+    std::string                              value   = {};
+    int                                      xmlLine = {};
   };
 
   struct EnumData

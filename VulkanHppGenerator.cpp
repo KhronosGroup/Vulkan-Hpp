@@ -725,7 +725,7 @@ module;
 
 #include <vulkan/vulkan_hpp_macros.hpp>
 
-#if defined( __cpp_lib_modules )
+#if defined( __cpp_lib_modules ) && !defined( VULKAN_HPP_ENABLE_STD_MODULE )
 #define VULKAN_HPP_ENABLE_STD_MODULE
 #endif
 
@@ -749,10 +749,16 @@ export namespace VULKAN_HPP_NAMESPACE
   } // namespace VULKAN_HPP_RAII_NAMESPACE
 #endif
 } // namespace VULKAN_HPP_NAMESPACE
+
+export namespace std
+{
+  ${hashSpecializations}
+}
 )";
 
   auto const str = replaceWithMap( vulkanCppmTemplate,
                                    { { "api", m_api },
+                                     { "hashSpecializations", generateCppModuleHashSpecializations() },
                                      { "licenseHeader", m_vulkanLicenseHeader },
                                      { "raiiUsings", generateCppModuleRaiiUsings() },
                                      { "usings", generateCppModuleUsings() } } );
@@ -6024,6 +6030,101 @@ std::string VulkanHppGenerator::generateCppModuleRaiiUsings() const
   }
 
   return usings;
+}
+
+std::string VulkanHppGenerator::generateCppModuleHandleHashSpecializations() const
+{
+  const std::string hashesTemplate = R"(
+  //========================================
+  //=== HASH specializations for handles ===
+  //========================================
+
+${specializations}
+)";
+
+  auto const generateSpecializations = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  {
+    auto specializations = std::string{};
+    for ( auto const & require : requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto const & handleIt = m_handles.find( type.name ); handleIt != m_handles.end() )
+        {
+          specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( handleIt->first, "Vk" ) + ">;\n";
+        }
+      }
+    }
+    return addTitleAndProtection( title, specializations );
+  };
+
+  std::string specializations;
+  for ( auto const & feature : m_features )
+  {
+    specializations += generateSpecializations( feature.requireData, feature.name );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    specializations += generateSpecializations( extension.requireData, extension.name );
+  }
+  return replaceWithMap( hashesTemplate, { { "specializations", specializations } } );
+}
+
+std::string VulkanHppGenerator::generateCppModuleHashSpecializations() const
+{
+  std::string const hasSpecializationsTemplate = R"(
+  //=======================================
+  //=== HASH specialization for Flags types ===
+  //=======================================
+
+  template <typename BitType>
+  struct hash<VULKAN_HPP_NAMESPACE::Flags<BitType>>;
+
+  ${handleHashSpecializations}
+  ${structHashSpecializations}
+)";
+
+  return replaceWithMap( hasSpecializationsTemplate,
+                         { { "handleHashSpecializations", generateCppModuleHandleHashSpecializations() },
+                           { "structHashSpecializations", generateCppModuleStructHashSpecializations() } } );
+}
+
+std::string VulkanHppGenerator::generateCppModuleStructHashSpecializations() const
+{
+  const std::string hashesTemplate = R"(
+  //========================================
+  //=== HASH specializations for structs ===
+  //========================================
+
+${specializations}
+)";
+
+  auto const generateSpecializations = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  {
+    auto specializations = std::string{};
+    for ( auto const & require : requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto const & structIt = m_structs.find( type.name ); structIt != m_structs.end() )
+        {
+          specializations += "  template <> struct hash<VULKAN_HPP_NAMESPACE::" + stripPrefix( structIt->first, "Vk" ) + ">;\n";
+        }
+      }
+    }
+    return addTitleAndProtection( title, specializations );
+  };
+
+  std::string specializations;
+  for ( auto const & feature : m_features )
+  {
+    specializations += generateSpecializations( feature.requireData, feature.name );
+  }
+  for ( auto const & extension : m_extensions )
+  {
+    specializations += generateSpecializations( extension.requireData, extension.name );
+  }
+  return replaceWithMap( hashesTemplate, { { "specializations", specializations } } );
 }
 
 std::string VulkanHppGenerator::generateDataDeclarations( CommandData const &                       commandData,

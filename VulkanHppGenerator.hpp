@@ -753,6 +753,9 @@ private:
   std::string generateCppModuleUsings() const;
   std::string generateCppModuleRaiiUsings() const;
   std::string generateCppModuleSharedHandleUsings() const;
+  std::string generateCppModuleHandleHashSpecializations() const;
+  std::string generateCppModuleHashSpecializations() const;
+  std::string generateCppModuleStructHashSpecializations() const;
   std::string generateDataDeclarations( CommandData const &                       commandData,
                                         std::vector<size_t> const &               returnParams,
                                         std::map<size_t, VectorParamData> const & vectorParams,

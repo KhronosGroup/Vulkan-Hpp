@@ -2770,6 +2770,12 @@ namespace VULKAN_HPP_NAMESPACE
     //=== RAII HANDLES ===
     //====================
 
+    template <typename Type>
+    struct isVulkanRAIIHandleType
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+    };
+
     class Context
     {
     public:
@@ -3142,6 +3148,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Instance                                                               m_instance  = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                            m_allocator = {};
       std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher> m_dispatcher;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Instance>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class PhysicalDevice
@@ -3583,6 +3595,12 @@ namespace VULKAN_HPP_NAMESPACE
     private:
       VULKAN_HPP_NAMESPACE::PhysicalDevice                                                m_physicalDevice = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher     = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class PhysicalDevices : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PhysicalDevice>
@@ -4746,6 +4764,12 @@ namespace VULKAN_HPP_NAMESPACE
       std::unique_ptr<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher> m_dispatcher;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Device>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class AccelerationStructureKHR
     {
     public:
@@ -4864,6 +4888,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::AccelerationStructureKHR                                    m_accelerationStructure = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator             = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher            = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class AccelerationStructureNV
@@ -4994,6 +5024,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher            = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::AccelerationStructureNV>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class Buffer
     {
     public:
@@ -5117,6 +5153,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Buffer                                                      m_buffer     = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Buffer>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
 #  if defined( VK_USE_PLATFORM_FUCHSIA )
@@ -5247,6 +5289,13 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::BufferCollectionFUCHSIA>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
 #  endif /*VK_USE_PLATFORM_FUCHSIA*/
 
     class BufferView
@@ -5366,6 +5415,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::BufferView                                                  m_bufferView = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::BufferView>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class CommandPool
@@ -5497,6 +5552,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::CommandPool                                                 m_commandPool = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator   = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher  = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CommandPool>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class CommandBuffer
@@ -6561,6 +6622,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher    = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CommandBuffer>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class CommandBuffers : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CommandBuffer>
     {
     public:
@@ -6706,6 +6773,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CuFunctionNVX>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class CuModuleNVX
     {
     public:
@@ -6823,6 +6896,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::CuModuleNVX                                                 m_module     = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CuModuleNVX>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -6944,6 +7023,13 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CudaFunctionNV>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
 #  if defined( VK_ENABLE_BETA_EXTENSIONS )
@@ -7069,6 +7155,13 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::CudaModuleNV>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
 #  endif /*VK_ENABLE_BETA_EXTENSIONS*/
 
     class DebugReportCallbackEXT
@@ -7191,6 +7284,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DebugReportCallbackEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class DebugUtilsMessengerEXT
     {
     public:
@@ -7309,6 +7408,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DebugUtilsMessengerEXT                                        m_messenger  = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                   m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DebugUtilsMessengerEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class DeferredOperationKHR
@@ -7438,6 +7543,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeferredOperationKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class DescriptorPool
     {
     public:
@@ -7562,6 +7673,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher     = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorPool>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class DescriptorSet
     {
     public:
@@ -7681,6 +7798,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DescriptorPool                                              m_descriptorPool = {};
       VULKAN_HPP_NAMESPACE::DescriptorSet                                               m_descriptorSet  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher     = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSet>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class DescriptorSets : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSet>
@@ -7835,6 +7958,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher          = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorSetLayout>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class DescriptorUpdateTemplate
     {
     public:
@@ -7953,6 +8082,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DescriptorUpdateTemplate                                    m_descriptorUpdateTemplate = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator                = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher               = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DescriptorUpdateTemplate>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class DeviceMemory
@@ -8092,6 +8227,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::DeviceMemory                                                m_memory     = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DeviceMemory>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class DisplayKHR
@@ -8236,6 +8377,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher     = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class DisplayKHRs : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayKHR>
     {
     public:
@@ -8369,6 +8516,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher     = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::DisplayModeKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class Event
     {
     public:
@@ -8494,6 +8647,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Event                                                       m_event      = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Event>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class Fence
@@ -8638,6 +8797,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Fence>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class Framebuffer
     {
     public:
@@ -8759,6 +8924,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Framebuffer                                                 m_framebuffer = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator   = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher  = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Framebuffer>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class Image
@@ -8913,6 +9084,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Image>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class ImageView
     {
     public:
@@ -9036,6 +9213,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ImageView>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class IndirectCommandsLayoutEXT
     {
     public:
@@ -9156,6 +9339,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class IndirectCommandsLayoutNV
     {
     public:
@@ -9274,6 +9463,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::IndirectCommandsLayoutNV                                    m_indirectCommandsLayout = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator              = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::IndirectCommandsLayoutNV>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class IndirectExecutionSetEXT
@@ -9404,6 +9599,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher           = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::IndirectExecutionSetEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class MicromapEXT
     {
     public:
@@ -9521,6 +9722,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::MicromapEXT                                                 m_micromap   = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::MicromapEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class OpticalFlowSessionNV
@@ -9649,6 +9856,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::OpticalFlowSessionNV>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class PerformanceConfigurationINTEL
     {
     public:
@@ -9754,6 +9967,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Device                                                      m_device        = {};
       VULKAN_HPP_NAMESPACE::PerformanceConfigurationINTEL                               m_configuration = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher    = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PerformanceConfigurationINTEL>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class PipelineCache
@@ -9880,6 +10099,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PipelineCache                                               m_pipelineCache = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator     = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher    = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineCache>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class Pipeline
@@ -10099,6 +10324,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Pipeline>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class Pipelines : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Pipeline>
     {
     public:
@@ -10294,6 +10525,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineBinaryKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class PipelineBinaryKHRs : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineBinaryKHR>
     {
     public:
@@ -10441,6 +10678,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher     = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PipelineLayout>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class PrivateDataSlot
     {
     public:
@@ -10559,6 +10802,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::PrivateDataSlot                                             m_privateDataSlot = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator       = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher      = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::PrivateDataSlot>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class QueryPool
@@ -10703,6 +10952,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::QueryPool                                                   m_queryPool  = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::QueryPool>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class Queue
@@ -10853,6 +11108,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Queue>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class RenderPass
     {
     public:
@@ -10989,6 +11250,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::RenderPass>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class Sampler
     {
     public:
@@ -11106,6 +11373,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Sampler                                                     m_sampler    = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Sampler>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class SamplerYcbcrConversion
@@ -11226,6 +11499,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::SamplerYcbcrConversion                                      m_ycbcrConversion = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator       = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher      = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SamplerYcbcrConversion>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class Semaphore
@@ -11353,6 +11632,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::Semaphore                                                   m_semaphore  = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator  = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::Semaphore>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class ShaderEXT
@@ -11489,6 +11774,12 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator              = {};
       VULKAN_HPP_NAMESPACE::Result                                                      m_constructorSuccessCode = VULKAN_HPP_NAMESPACE::Result::eErrorUnknown;
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class ShaderEXTs : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderEXT>
@@ -11639,6 +11930,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::ShaderModule                                                m_shaderModule = {};
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator    = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher   = nullptr;
+    };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ShaderModule>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
     };
 
     class SurfaceKHR
@@ -11912,6 +12209,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::InstanceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SurfaceKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class SwapchainKHR
     {
     public:
@@ -12080,6 +12383,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class SwapchainKHRs : public std::vector<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::SwapchainKHR>
     {
     public:
@@ -12233,6 +12542,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher      = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::ValidationCacheEXT>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class VideoSessionKHR
     {
     public:
@@ -12359,6 +12674,12 @@ namespace VULKAN_HPP_NAMESPACE
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher   = nullptr;
     };
 
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::VideoSessionKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
     class VideoSessionParametersKHR
     {
     public:
@@ -12482,6 +12803,63 @@ namespace VULKAN_HPP_NAMESPACE
       const VULKAN_HPP_NAMESPACE::AllocationCallbacks *                                 m_allocator              = {};
       VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::detail::DeviceDispatcher const * m_dispatcher             = nullptr;
     };
+
+    template <>
+    struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::VideoSessionParametersKHR>
+    {
+      static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+    };
+
+    // operators to compare vk::raii-handles
+#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+    {
+      return *a <=> *b;
+    }
+#  else
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+    {
+      return *a == *b;
+    }
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator!=( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+    {
+      return *a != *b;
+    }
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator<( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+    {
+      return *a < *b;
+    }
+#  endif
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      return !*v;
+    }
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator==( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
+    {
+      return !*v;
+    }
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator!=( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+    {
+      return *v;
+    }
+
+    template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value, bool>::type = 0>
+    bool operator!=( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
+    {
+      return *v;
+    }
 
     //===========================
     //=== COMMAND Definitions ===

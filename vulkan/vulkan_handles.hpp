@@ -2567,25 +2567,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( SurfaceKHR const & ) const = default;
-#else
-    bool operator==( SurfaceKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_surfaceKHR == rhs.m_surfaceKHR;
-    }
-
-    bool operator!=( SurfaceKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_surfaceKHR != rhs.m_surfaceKHR;
-    }
-
-    bool operator<( SurfaceKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_surfaceKHR < rhs.m_surfaceKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSurfaceKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_surfaceKHR;
@@ -2682,25 +2663,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_debugReportCallbackEXT = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DebugReportCallbackEXT const & ) const = default;
-#else
-    bool operator==( DebugReportCallbackEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugReportCallbackEXT == rhs.m_debugReportCallbackEXT;
-    }
-
-    bool operator!=( DebugReportCallbackEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugReportCallbackEXT != rhs.m_debugReportCallbackEXT;
-    }
-
-    bool operator<( DebugReportCallbackEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugReportCallbackEXT < rhs.m_debugReportCallbackEXT;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDebugReportCallbackEXT() const VULKAN_HPP_NOEXCEPT
     {
@@ -2799,25 +2761,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DebugUtilsMessengerEXT const & ) const = default;
-#else
-    bool operator==( DebugUtilsMessengerEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugUtilsMessengerEXT == rhs.m_debugUtilsMessengerEXT;
-    }
-
-    bool operator!=( DebugUtilsMessengerEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugUtilsMessengerEXT != rhs.m_debugUtilsMessengerEXT;
-    }
-
-    bool operator<( DebugUtilsMessengerEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_debugUtilsMessengerEXT < rhs.m_debugUtilsMessengerEXT;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDebugUtilsMessengerEXT() const VULKAN_HPP_NOEXCEPT
     {
       return m_debugUtilsMessengerEXT;
@@ -2902,25 +2845,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_displayKHR = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DisplayKHR const & ) const = default;
-#else
-    bool operator==( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR == rhs.m_displayKHR;
-    }
-
-    bool operator!=( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR != rhs.m_displayKHR;
-    }
-
-    bool operator<( DisplayKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayKHR < rhs.m_displayKHR;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -3013,25 +2937,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( SwapchainKHR const & ) const = default;
-#else
-    bool operator==( SwapchainKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_swapchainKHR == rhs.m_swapchainKHR;
-    }
-
-    bool operator!=( SwapchainKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_swapchainKHR != rhs.m_swapchainKHR;
-    }
-
-    bool operator<( SwapchainKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_swapchainKHR < rhs.m_swapchainKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSwapchainKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_swapchainKHR;
@@ -3123,25 +3028,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Semaphore const & ) const = default;
-#else
-    bool operator==( Semaphore const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_semaphore == rhs.m_semaphore;
-    }
-
-    bool operator!=( Semaphore const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_semaphore != rhs.m_semaphore;
-    }
-
-    bool operator<( Semaphore const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_semaphore < rhs.m_semaphore;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSemaphore() const VULKAN_HPP_NOEXCEPT
     {
       return m_semaphore;
@@ -3232,25 +3118,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_fence = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Fence const & ) const = default;
-#else
-    bool operator==( Fence const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_fence == rhs.m_fence;
-    }
-
-    bool operator!=( Fence const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_fence != rhs.m_fence;
-    }
-
-    bool operator<( Fence const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_fence < rhs.m_fence;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkFence() const VULKAN_HPP_NOEXCEPT
     {
@@ -3349,25 +3216,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PerformanceConfigurationINTEL const & ) const = default;
-#else
-    bool operator==( PerformanceConfigurationINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_performanceConfigurationINTEL == rhs.m_performanceConfigurationINTEL;
-    }
-
-    bool operator!=( PerformanceConfigurationINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_performanceConfigurationINTEL != rhs.m_performanceConfigurationINTEL;
-    }
-
-    bool operator<( PerformanceConfigurationINTEL const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_performanceConfigurationINTEL < rhs.m_performanceConfigurationINTEL;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPerformanceConfigurationINTEL() const VULKAN_HPP_NOEXCEPT
     {
       return m_performanceConfigurationINTEL;
@@ -3452,25 +3300,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_queryPool = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( QueryPool const & ) const = default;
-#else
-    bool operator==( QueryPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queryPool == rhs.m_queryPool;
-    }
-
-    bool operator!=( QueryPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queryPool != rhs.m_queryPool;
-    }
-
-    bool operator<( QueryPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queryPool < rhs.m_queryPool;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkQueryPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -3563,25 +3392,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Buffer const & ) const = default;
-#else
-    bool operator==( Buffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_buffer == rhs.m_buffer;
-    }
-
-    bool operator!=( Buffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_buffer != rhs.m_buffer;
-    }
-
-    bool operator<( Buffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_buffer < rhs.m_buffer;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBuffer() const VULKAN_HPP_NOEXCEPT
     {
       return m_buffer;
@@ -3672,25 +3482,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_pipelineLayout = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PipelineLayout const & ) const = default;
-#else
-    bool operator==( PipelineLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineLayout == rhs.m_pipelineLayout;
-    }
-
-    bool operator!=( PipelineLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineLayout != rhs.m_pipelineLayout;
-    }
-
-    bool operator<( PipelineLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineLayout < rhs.m_pipelineLayout;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipelineLayout() const VULKAN_HPP_NOEXCEPT
     {
@@ -3783,25 +3574,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DescriptorSet const & ) const = default;
-#else
-    bool operator==( DescriptorSet const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSet == rhs.m_descriptorSet;
-    }
-
-    bool operator!=( DescriptorSet const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSet != rhs.m_descriptorSet;
-    }
-
-    bool operator<( DescriptorSet const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSet < rhs.m_descriptorSet;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorSet() const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorSet;
@@ -3892,25 +3664,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_imageView = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ImageView const & ) const = default;
-#else
-    bool operator==( ImageView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_imageView == rhs.m_imageView;
-    }
-
-    bool operator!=( ImageView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_imageView != rhs.m_imageView;
-    }
-
-    bool operator<( ImageView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_imageView < rhs.m_imageView;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImageView() const VULKAN_HPP_NOEXCEPT
     {
@@ -4003,25 +3756,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Pipeline const & ) const = default;
-#else
-    bool operator==( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline == rhs.m_pipeline;
-    }
-
-    bool operator!=( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline != rhs.m_pipeline;
-    }
-
-    bool operator<( Pipeline const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipeline < rhs.m_pipeline;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipeline() const VULKAN_HPP_NOEXCEPT
     {
       return m_pipeline;
@@ -4113,25 +3847,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ShaderEXT const & ) const = default;
-#else
-    bool operator==( ShaderEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderEXT == rhs.m_shaderEXT;
-    }
-
-    bool operator!=( ShaderEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderEXT != rhs.m_shaderEXT;
-    }
-
-    bool operator<( ShaderEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderEXT < rhs.m_shaderEXT;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkShaderEXT() const VULKAN_HPP_NOEXCEPT
     {
       return m_shaderEXT;
@@ -4216,25 +3931,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_image = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Image const & ) const = default;
-#else
-    bool operator==( Image const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image == rhs.m_image;
-    }
-
-    bool operator!=( Image const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image != rhs.m_image;
-    }
-
-    bool operator<( Image const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_image < rhs.m_image;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkImage() const VULKAN_HPP_NOEXCEPT
     {
@@ -4333,25 +4029,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( AccelerationStructureNV const & ) const = default;
-#else
-    bool operator==( AccelerationStructureNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureNV == rhs.m_accelerationStructureNV;
-    }
-
-    bool operator!=( AccelerationStructureNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureNV != rhs.m_accelerationStructureNV;
-    }
-
-    bool operator<( AccelerationStructureNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureNV < rhs.m_accelerationStructureNV;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkAccelerationStructureNV() const VULKAN_HPP_NOEXCEPT
     {
       return m_accelerationStructureNV;
@@ -4449,25 +4126,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( OpticalFlowSessionNV const & ) const = default;
-#else
-    bool operator==( OpticalFlowSessionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_opticalFlowSessionNV == rhs.m_opticalFlowSessionNV;
-    }
-
-    bool operator!=( OpticalFlowSessionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_opticalFlowSessionNV != rhs.m_opticalFlowSessionNV;
-    }
-
-    bool operator<( OpticalFlowSessionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_opticalFlowSessionNV < rhs.m_opticalFlowSessionNV;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkOpticalFlowSessionNV() const VULKAN_HPP_NOEXCEPT
     {
       return m_opticalFlowSessionNV;
@@ -4558,25 +4216,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_descriptorUpdateTemplate = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DescriptorUpdateTemplate const & ) const = default;
-#else
-    bool operator==( DescriptorUpdateTemplate const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorUpdateTemplate == rhs.m_descriptorUpdateTemplate;
-    }
-
-    bool operator!=( DescriptorUpdateTemplate const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorUpdateTemplate != rhs.m_descriptorUpdateTemplate;
-    }
-
-    bool operator<( DescriptorUpdateTemplate const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorUpdateTemplate < rhs.m_descriptorUpdateTemplate;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorUpdateTemplate() const VULKAN_HPP_NOEXCEPT
     {
@@ -4670,25 +4309,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_event = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Event const & ) const = default;
-#else
-    bool operator==( Event const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_event == rhs.m_event;
-    }
-
-    bool operator!=( Event const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_event != rhs.m_event;
-    }
-
-    bool operator<( Event const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_event < rhs.m_event;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkEvent() const VULKAN_HPP_NOEXCEPT
     {
@@ -4787,25 +4407,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( AccelerationStructureKHR const & ) const = default;
-#else
-    bool operator==( AccelerationStructureKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureKHR == rhs.m_accelerationStructureKHR;
-    }
-
-    bool operator!=( AccelerationStructureKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureKHR != rhs.m_accelerationStructureKHR;
-    }
-
-    bool operator<( AccelerationStructureKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_accelerationStructureKHR < rhs.m_accelerationStructureKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkAccelerationStructureKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_accelerationStructureKHR;
@@ -4897,25 +4498,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( MicromapEXT const & ) const = default;
-#else
-    bool operator==( MicromapEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_micromapEXT == rhs.m_micromapEXT;
-    }
-
-    bool operator!=( MicromapEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_micromapEXT != rhs.m_micromapEXT;
-    }
-
-    bool operator<( MicromapEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_micromapEXT < rhs.m_micromapEXT;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkMicromapEXT() const VULKAN_HPP_NOEXCEPT
     {
       return m_micromapEXT;
@@ -4998,25 +4580,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_commandBuffer = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CommandBuffer const & ) const = default;
-#else
-    bool operator==( CommandBuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandBuffer == rhs.m_commandBuffer;
-    }
-
-    bool operator!=( CommandBuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandBuffer != rhs.m_commandBuffer;
-    }
-
-    bool operator<( CommandBuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandBuffer < rhs.m_commandBuffer;
-    }
-#endif
 
     //=== VK_VERSION_1_0 ===
 
@@ -7454,25 +7017,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DeviceMemory const & ) const = default;
-#else
-    bool operator==( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deviceMemory == rhs.m_deviceMemory;
-    }
-
-    bool operator!=( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deviceMemory != rhs.m_deviceMemory;
-    }
-
-    bool operator<( DeviceMemory const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deviceMemory < rhs.m_deviceMemory;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDeviceMemory() const VULKAN_HPP_NOEXCEPT
     {
       return m_deviceMemory;
@@ -7564,25 +7108,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( VideoSessionKHR const & ) const = default;
-#else
-    bool operator==( VideoSessionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionKHR == rhs.m_videoSessionKHR;
-    }
-
-    bool operator!=( VideoSessionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionKHR != rhs.m_videoSessionKHR;
-    }
-
-    bool operator<( VideoSessionKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionKHR < rhs.m_videoSessionKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkVideoSessionKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_videoSessionKHR;
@@ -7673,25 +7198,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_deferredOperationKHR = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DeferredOperationKHR const & ) const = default;
-#else
-    bool operator==( DeferredOperationKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deferredOperationKHR == rhs.m_deferredOperationKHR;
-    }
-
-    bool operator!=( DeferredOperationKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deferredOperationKHR != rhs.m_deferredOperationKHR;
-    }
-
-    bool operator<( DeferredOperationKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_deferredOperationKHR < rhs.m_deferredOperationKHR;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDeferredOperationKHR() const VULKAN_HPP_NOEXCEPT
     {
@@ -7785,25 +7291,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( BufferCollectionFUCHSIA const & ) const = default;
-#  else
-    bool operator==( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferCollectionFUCHSIA == rhs.m_bufferCollectionFUCHSIA;
-    }
-
-    bool operator!=( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferCollectionFUCHSIA != rhs.m_bufferCollectionFUCHSIA;
-    }
-
-    bool operator<( BufferCollectionFUCHSIA const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferCollectionFUCHSIA < rhs.m_bufferCollectionFUCHSIA;
-    }
-#  endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBufferCollectionFUCHSIA() const VULKAN_HPP_NOEXCEPT
     {
       return m_bufferCollectionFUCHSIA;
@@ -7896,25 +7383,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( BufferView const & ) const = default;
-#else
-    bool operator==( BufferView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferView == rhs.m_bufferView;
-    }
-
-    bool operator!=( BufferView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferView != rhs.m_bufferView;
-    }
-
-    bool operator<( BufferView const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_bufferView < rhs.m_bufferView;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkBufferView() const VULKAN_HPP_NOEXCEPT
     {
       return m_bufferView;
@@ -8005,25 +7473,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_commandPool = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CommandPool const & ) const = default;
-#else
-    bool operator==( CommandPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandPool == rhs.m_commandPool;
-    }
-
-    bool operator!=( CommandPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandPool != rhs.m_commandPool;
-    }
-
-    bool operator<( CommandPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_commandPool < rhs.m_commandPool;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCommandPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -8116,25 +7565,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PipelineCache const & ) const = default;
-#else
-    bool operator==( PipelineCache const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineCache == rhs.m_pipelineCache;
-    }
-
-    bool operator!=( PipelineCache const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineCache != rhs.m_pipelineCache;
-    }
-
-    bool operator<( PipelineCache const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineCache < rhs.m_pipelineCache;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipelineCache() const VULKAN_HPP_NOEXCEPT
     {
       return m_pipelineCache;
@@ -8225,25 +7655,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_cuFunctionNVX = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CuFunctionNVX const & ) const = default;
-#else
-    bool operator==( CuFunctionNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuFunctionNVX == rhs.m_cuFunctionNVX;
-    }
-
-    bool operator!=( CuFunctionNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuFunctionNVX != rhs.m_cuFunctionNVX;
-    }
-
-    bool operator<( CuFunctionNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuFunctionNVX < rhs.m_cuFunctionNVX;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCuFunctionNVX() const VULKAN_HPP_NOEXCEPT
     {
@@ -8336,25 +7747,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CuModuleNVX const & ) const = default;
-#else
-    bool operator==( CuModuleNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuModuleNVX == rhs.m_cuModuleNVX;
-    }
-
-    bool operator!=( CuModuleNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuModuleNVX != rhs.m_cuModuleNVX;
-    }
-
-    bool operator<( CuModuleNVX const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cuModuleNVX < rhs.m_cuModuleNVX;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCuModuleNVX() const VULKAN_HPP_NOEXCEPT
     {
       return m_cuModuleNVX;
@@ -8446,25 +7838,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_cudaFunctionNV = {};
       return *this;
     }
-
-#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CudaFunctionNV const & ) const = default;
-#  else
-    bool operator==( CudaFunctionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaFunctionNV == rhs.m_cudaFunctionNV;
-    }
-
-    bool operator!=( CudaFunctionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaFunctionNV != rhs.m_cudaFunctionNV;
-    }
-
-    bool operator<( CudaFunctionNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaFunctionNV < rhs.m_cudaFunctionNV;
-    }
-#  endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCudaFunctionNV() const VULKAN_HPP_NOEXCEPT
     {
@@ -8559,25 +7932,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#  if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( CudaModuleNV const & ) const = default;
-#  else
-    bool operator==( CudaModuleNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaModuleNV == rhs.m_cudaModuleNV;
-    }
-
-    bool operator!=( CudaModuleNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaModuleNV != rhs.m_cudaModuleNV;
-    }
-
-    bool operator<( CudaModuleNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_cudaModuleNV < rhs.m_cudaModuleNV;
-    }
-#  endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkCudaModuleNV() const VULKAN_HPP_NOEXCEPT
     {
       return m_cudaModuleNV;
@@ -8669,25 +8023,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_descriptorPool = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DescriptorPool const & ) const = default;
-#else
-    bool operator==( DescriptorPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorPool == rhs.m_descriptorPool;
-    }
-
-    bool operator!=( DescriptorPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorPool != rhs.m_descriptorPool;
-    }
-
-    bool operator<( DescriptorPool const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorPool < rhs.m_descriptorPool;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorPool() const VULKAN_HPP_NOEXCEPT
     {
@@ -8786,25 +8121,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DescriptorSetLayout const & ) const = default;
-#else
-    bool operator==( DescriptorSetLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSetLayout == rhs.m_descriptorSetLayout;
-    }
-
-    bool operator!=( DescriptorSetLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSetLayout != rhs.m_descriptorSetLayout;
-    }
-
-    bool operator<( DescriptorSetLayout const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_descriptorSetLayout < rhs.m_descriptorSetLayout;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDescriptorSetLayout() const VULKAN_HPP_NOEXCEPT
     {
       return m_descriptorSetLayout;
@@ -8895,25 +8211,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_framebuffer = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Framebuffer const & ) const = default;
-#else
-    bool operator==( Framebuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_framebuffer == rhs.m_framebuffer;
-    }
-
-    bool operator!=( Framebuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_framebuffer != rhs.m_framebuffer;
-    }
-
-    bool operator<( Framebuffer const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_framebuffer < rhs.m_framebuffer;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkFramebuffer() const VULKAN_HPP_NOEXCEPT
     {
@@ -9012,25 +8309,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( IndirectCommandsLayoutEXT const & ) const = default;
-#else
-    bool operator==( IndirectCommandsLayoutEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutEXT == rhs.m_indirectCommandsLayoutEXT;
-    }
-
-    bool operator!=( IndirectCommandsLayoutEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutEXT != rhs.m_indirectCommandsLayoutEXT;
-    }
-
-    bool operator<( IndirectCommandsLayoutEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutEXT < rhs.m_indirectCommandsLayoutEXT;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkIndirectCommandsLayoutEXT() const VULKAN_HPP_NOEXCEPT
     {
       return m_indirectCommandsLayoutEXT;
@@ -9121,25 +8399,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_indirectCommandsLayoutNV = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( IndirectCommandsLayoutNV const & ) const = default;
-#else
-    bool operator==( IndirectCommandsLayoutNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutNV == rhs.m_indirectCommandsLayoutNV;
-    }
-
-    bool operator!=( IndirectCommandsLayoutNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutNV != rhs.m_indirectCommandsLayoutNV;
-    }
-
-    bool operator<( IndirectCommandsLayoutNV const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectCommandsLayoutNV < rhs.m_indirectCommandsLayoutNV;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkIndirectCommandsLayoutNV() const VULKAN_HPP_NOEXCEPT
     {
@@ -9232,25 +8491,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( IndirectExecutionSetEXT const & ) const = default;
-#else
-    bool operator==( IndirectExecutionSetEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectExecutionSetEXT == rhs.m_indirectExecutionSetEXT;
-    }
-
-    bool operator!=( IndirectExecutionSetEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectExecutionSetEXT != rhs.m_indirectExecutionSetEXT;
-    }
-
-    bool operator<( IndirectExecutionSetEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_indirectExecutionSetEXT < rhs.m_indirectExecutionSetEXT;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkIndirectExecutionSetEXT() const VULKAN_HPP_NOEXCEPT
     {
       return m_indirectExecutionSetEXT;
@@ -9335,25 +8575,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_privateDataSlot = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PrivateDataSlot const & ) const = default;
-#else
-    bool operator==( PrivateDataSlot const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_privateDataSlot == rhs.m_privateDataSlot;
-    }
-
-    bool operator!=( PrivateDataSlot const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_privateDataSlot != rhs.m_privateDataSlot;
-    }
-
-    bool operator<( PrivateDataSlot const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_privateDataSlot < rhs.m_privateDataSlot;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPrivateDataSlot() const VULKAN_HPP_NOEXCEPT
     {
@@ -9441,25 +8662,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_renderPass = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( RenderPass const & ) const = default;
-#else
-    bool operator==( RenderPass const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_renderPass == rhs.m_renderPass;
-    }
-
-    bool operator!=( RenderPass const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_renderPass != rhs.m_renderPass;
-    }
-
-    bool operator<( RenderPass const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_renderPass < rhs.m_renderPass;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkRenderPass() const VULKAN_HPP_NOEXCEPT
     {
@@ -9551,25 +8753,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_sampler = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Sampler const & ) const = default;
-#else
-    bool operator==( Sampler const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_sampler == rhs.m_sampler;
-    }
-
-    bool operator!=( Sampler const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_sampler != rhs.m_sampler;
-    }
-
-    bool operator<( Sampler const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_sampler < rhs.m_sampler;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSampler() const VULKAN_HPP_NOEXCEPT
     {
@@ -9668,25 +8851,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( SamplerYcbcrConversion const & ) const = default;
-#else
-    bool operator==( SamplerYcbcrConversion const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_samplerYcbcrConversion == rhs.m_samplerYcbcrConversion;
-    }
-
-    bool operator!=( SamplerYcbcrConversion const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_samplerYcbcrConversion != rhs.m_samplerYcbcrConversion;
-    }
-
-    bool operator<( SamplerYcbcrConversion const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_samplerYcbcrConversion < rhs.m_samplerYcbcrConversion;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkSamplerYcbcrConversion() const VULKAN_HPP_NOEXCEPT
     {
       return m_samplerYcbcrConversion;
@@ -9779,25 +8943,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_shaderModule = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ShaderModule const & ) const = default;
-#else
-    bool operator==( ShaderModule const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderModule == rhs.m_shaderModule;
-    }
-
-    bool operator!=( ShaderModule const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderModule != rhs.m_shaderModule;
-    }
-
-    bool operator<( ShaderModule const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_shaderModule < rhs.m_shaderModule;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkShaderModule() const VULKAN_HPP_NOEXCEPT
     {
@@ -9893,25 +9038,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_validationCacheEXT = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( ValidationCacheEXT const & ) const = default;
-#else
-    bool operator==( ValidationCacheEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_validationCacheEXT == rhs.m_validationCacheEXT;
-    }
-
-    bool operator!=( ValidationCacheEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_validationCacheEXT != rhs.m_validationCacheEXT;
-    }
-
-    bool operator<( ValidationCacheEXT const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_validationCacheEXT < rhs.m_validationCacheEXT;
-    }
-#endif
 
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkValidationCacheEXT() const VULKAN_HPP_NOEXCEPT
     {
@@ -10010,25 +9136,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( VideoSessionParametersKHR const & ) const = default;
-#else
-    bool operator==( VideoSessionParametersKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionParametersKHR == rhs.m_videoSessionParametersKHR;
-    }
-
-    bool operator!=( VideoSessionParametersKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionParametersKHR != rhs.m_videoSessionParametersKHR;
-    }
-
-    bool operator<( VideoSessionParametersKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_videoSessionParametersKHR < rhs.m_videoSessionParametersKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkVideoSessionParametersKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_videoSessionParametersKHR;
@@ -10114,25 +9221,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PipelineBinaryKHR const & ) const = default;
-#else
-    bool operator==( PipelineBinaryKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineBinaryKHR == rhs.m_pipelineBinaryKHR;
-    }
-
-    bool operator!=( PipelineBinaryKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineBinaryKHR != rhs.m_pipelineBinaryKHR;
-    }
-
-    bool operator<( PipelineBinaryKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_pipelineBinaryKHR < rhs.m_pipelineBinaryKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkPipelineBinaryKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_pipelineBinaryKHR;
@@ -10215,25 +9303,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_queue = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Queue const & ) const = default;
-#else
-    bool operator==( Queue const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queue == rhs.m_queue;
-    }
-
-    bool operator!=( Queue const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queue != rhs.m_queue;
-    }
-
-    bool operator<( Queue const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_queue < rhs.m_queue;
-    }
-#endif
 
     //=== VK_VERSION_1_0 ===
 
@@ -10487,25 +9556,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_device = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Device const & ) const = default;
-#else
-    bool operator==( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_device == rhs.m_device;
-    }
-
-    bool operator!=( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_device != rhs.m_device;
-    }
-
-    bool operator<( Device const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_device < rhs.m_device;
-    }
-#endif
 
     //=== VK_VERSION_1_0 ===
 
@@ -16020,25 +15070,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( DisplayModeKHR const & ) const = default;
-#else
-    bool operator==( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayModeKHR == rhs.m_displayModeKHR;
-    }
-
-    bool operator!=( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayModeKHR != rhs.m_displayModeKHR;
-    }
-
-    bool operator<( DisplayModeKHR const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_displayModeKHR < rhs.m_displayModeKHR;
-    }
-#endif
-
     VULKAN_HPP_TYPESAFE_EXPLICIT operator VkDisplayModeKHR() const VULKAN_HPP_NOEXCEPT
     {
       return m_displayModeKHR;
@@ -16127,25 +15158,6 @@ namespace VULKAN_HPP_NAMESPACE
       m_physicalDevice = {};
       return *this;
     }
-
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( PhysicalDevice const & ) const = default;
-#else
-    bool operator==( PhysicalDevice const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_physicalDevice == rhs.m_physicalDevice;
-    }
-
-    bool operator!=( PhysicalDevice const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_physicalDevice != rhs.m_physicalDevice;
-    }
-
-    bool operator<( PhysicalDevice const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_physicalDevice < rhs.m_physicalDevice;
-    }
-#endif
 
     //=== VK_VERSION_1_0 ===
 
@@ -17685,25 +16697,6 @@ namespace VULKAN_HPP_NAMESPACE
       return *this;
     }
 
-#if defined( VULKAN_HPP_HAS_SPACESHIP_OPERATOR )
-    auto operator<=>( Instance const & ) const = default;
-#else
-    bool operator==( Instance const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_instance == rhs.m_instance;
-    }
-
-    bool operator!=( Instance const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_instance != rhs.m_instance;
-    }
-
-    bool operator<( Instance const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_instance < rhs.m_instance;
-    }
-#endif
-
     //=== VK_VERSION_1_0 ===
 
     template <typename Dispatch = VULKAN_HPP_DEFAULT_DISPATCHER_TYPE>
@@ -18411,29 +17404,4 @@ namespace VULKAN_HPP_NAMESPACE
 #endif /* VULKAN_HPP_DISABLE_ENHANCED_MODE */
 
 }  // namespace VULKAN_HPP_NAMESPACE
-
-// operators to compare vk::-handles with nullptr
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( const T & v, std::nullptr_t )
-{
-  return !v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( std::nullptr_t, const T & v )
-{
-  return !v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( const T & v, std::nullptr_t )
-{
-  return v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( std::nullptr_t, const T & v )
-{
-  return v;
-}
 #endif

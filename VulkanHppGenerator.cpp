@@ -13859,17 +13859,16 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
 {
   const int                          line       = element->GetLineNum();
   std::map<std::string, std::string> attributes = getAttributes( element );
-  checkAttributes( line, attributes, {}, { { "api", { "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
+  checkAttributes( line, attributes, {}, { { "api", { "vulkan", "vulkansc" } }, { "comment", {} }, { "depends", {} } } );
   std::vector<tinyxml2::XMLElement const *> children = getChildElements( element );
   checkElements( line, children, {}, { "command", "comment", "enum", "feature", "type" } );
 
   RequireData requireData{ .xmlLine = line };
-  std::string api;
   for ( auto const & attribute : attributes )
   {
     if ( attribute.first == "api" )
     {
-      api = attribute.second;
+      requireData.api = attribute.second;
     }
     else if ( attribute.first == "depends" )
     {
@@ -13877,13 +13876,14 @@ void VulkanHppGenerator::readExtensionRequire( tinyxml2::XMLElement const * elem
       requireData.depends = attribute.second;
       checkForWarning( std::none_of( extensionData.requireData.begin(),
                                      extensionData.requireData.end(),
-                                     [&requireData]( RequireData const & rd ) { return rd.depends == requireData.depends; } ),
+                                     [&requireData]( RequireData const & rd )
+                                     { return ( rd.api == requireData.api ) && ( rd.depends == requireData.depends ); } ),
                        line,
-                       "required dependency <" + requireData.depends + "> already listed for extension <" + extensionData.name + ">" );
+                       "required dependency <" + requireData.depends + "> already listed for extension <" + extensionData.name + "> with the same api" );
     }
   }
 
-  const bool requireSupported = api.empty() || ( api == m_api );
+  const bool requireSupported = requireData.api.empty() || ( requireData.api == m_api );
   for ( auto child : children )
   {
     std::string value = child->Value();
@@ -13944,6 +13944,7 @@ void VulkanHppGenerator::readExtension( tinyxml2::XMLElement const * element )
                      { "contact", {} },
                      { "depends", {} },
                      { "deprecatedby", {} },
+                     { "nofeatures", { "true" } },
                      { "obsoletedby", {} },
                      { "platform", {} },
                      { "promotedto", {} },
@@ -15075,6 +15076,7 @@ void VulkanHppGenerator::readStructMember( tinyxml2::XMLElement const * element,
                      { "api", { "vulkan", "vulkansc" } },
                      { "deprecated", { "ignored" } },
                      { "externsync", { "true" } },
+                     { "featurelink", {} },
                      { "len", {} },
                      { "limittype", { "bitmask", "bits", "exact", "max", "min", "mul", "noauto", "not", "pot", "range", "struct" } },
                      { "noautovalidity", { "true" } },

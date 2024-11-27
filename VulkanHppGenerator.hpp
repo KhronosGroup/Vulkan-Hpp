@@ -258,6 +258,7 @@ private:
 
   struct RequireData
   {
+    std::string                        api           = {};
     std::string                        depends       = {};
     std::vector<NameLine>              commands      = {};
     std::map<std::string, std::string> enumConstants = {};

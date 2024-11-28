@@ -19,7 +19,7 @@
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 0
 
 #include <iostream>
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_raii.hpp>
 
 int main( int /*argc*/, char ** /*argv*/ )
 {
@@ -34,7 +34,83 @@ int main( int /*argc*/, char ** /*argv*/ )
     assert( instance != nullptr );
     assert( nullptr != instance );
 
+    vk::Instance instance2;
+    assert( instance != instance2 );
+    assert( !( instance == instance2 ) );
+
+    instance2 = vk::createInstance( {} );
+    assert( instance != instance2 );
+
+    if ( instance == instance2 )
+    {
+      std::cout << "hoho";
+    }
+    if (instance != instance2)
+    {
+      std::cout << "haha";
+    }
+    if (instance < instance2)
+    {
+      std::cout << "hihi";
+    }
+
+    VkInstance vki = 0;
+    if (vki == instance)
+    {
+      std::cout << "hoho";
+    }
+
+    vk::PhysicalDevice physicalDevice;
+    if (physicalDevice == instance )
+    {
+      std::cout << "hoho";
+    }
+
     instance.destroy();
+    instance2.destroy();
+
+    // test operator==() with vk::raii-handle and nullptr
+    vk::raii::Context context;
+
+    vk::raii::Instance i0 = context.createInstance( {} );
+    vk::raii::Instance i1 = context.createInstance( {} );
+
+    if ( i0 == i1 )
+    {
+      std::cout << "hahah";
+    }
+    if ( i0 != i1 )
+    {
+      std::cout << "hoho";
+    }
+    if ( i0 < i1 )
+    {
+      std::cout << "hihi";
+    }
+
+    if (i0 == nullptr)
+    {
+      std::cout << "kiki";
+    }
+    if (nullptr == i0)
+    {
+      std::cout << "kaka";
+    }
+    if (i0 != nullptr)
+    {
+      std::cout << "keke";
+    }
+    if (nullptr != i0)
+    {
+      std::cout << "kuku";
+    }
+
+    vk::raii::PhysicalDevices physicalDevices( i0 );
+    assert( physicalDevices.size() == 2 );
+    if ( physicalDevices[0] == physicalDevices[1] )
+    {
+      std::cout << "fufu";
+    }
   }
   catch ( vk::SystemError const & err )
   {

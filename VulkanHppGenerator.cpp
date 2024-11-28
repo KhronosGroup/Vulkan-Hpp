@@ -233,31 +233,6 @@ ${handleForwardDeclarations}
 ${uniqueHandles}
 ${handles}
 }   // namespace VULKAN_HPP_NAMESPACE
-
-// operators to compare vk::-handles with nullptr
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( const T & v, std::nullptr_t )
-{
-  return !v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator==( std::nullptr_t, const T & v )
-{
-  return !v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( const T & v, std::nullptr_t )
-{
-  return v;
-}
-
-template <typename T>
-typename std::enable_if<VULKAN_HPP_NAMESPACE::isVulkanHandleType<T>::value, bool>::type operator!=( std::nullptr_t, const T & v )
-{
-  return v;
-}
 #endif
 )";
 
@@ -8035,24 +8010,6 @@ ${typesafeConversionConditionalEnd}
       return *this;
     }
 
-#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
-    auto operator<=>( ${className} const & ) const = default;
-#else
-    bool operator==( ${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} == rhs.m_${memberName};
-    }
-
-    bool operator!=(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} != rhs.m_${memberName};
-    }
-
-    bool operator<(${className} const & rhs ) const VULKAN_HPP_NOEXCEPT
-    {
-      return m_${memberName} < rhs.m_${memberName};
-    }
-#endif
 ${commands}
     ${typesafeExplicitKeyword}operator Vk${className}() const VULKAN_HPP_NOEXCEPT
     {
@@ -8959,6 +8916,13 @@ ${memberFunctionsDeclarations}
   private:
     ${memberVariables}
   };
+
+  template <>
+  struct isVulkanRAIIHandleType<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::${handleType}>
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = true;
+  };
+
 ${leave})";
 
     str += replaceWithMap( handleTemplate,
@@ -10306,7 +10270,64 @@ ${forwardDeclarations}
   //=== RAII HANDLES ===
   //====================
 
+  template <typename Type>
+  struct isVulkanRAIIHandleType
+  {
+    static VULKAN_HPP_CONST_OR_CONSTEXPR bool value = false;
+  };
+
 ${raiiHandles}
+
+  // operators to compare vk::raii-handles
+#if defined(VULKAN_HPP_HAS_SPACESHIP_OPERATOR)
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  auto operator<=>( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+  {
+    return *a <=> *b;
+  }
+#else
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator==( T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+  {
+    return *a == *b;
+  }
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator!=(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+  {
+    return *a != *b;
+  }
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator<(T const & a, T const & b ) VULKAN_HPP_NOEXCEPT
+  {
+    return *a < *b;
+  }
+#endif
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator==( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+  {
+    return !*v;
+  }
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator==( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
+  {
+    return !*v;
+  }
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator!=( const T & v, std::nullptr_t ) VULKAN_HPP_NOEXCEPT
+  {
+    return *v;
+  }
+
+  template <typename T, typename std::enable_if<VULKAN_HPP_NAMESPACE::VULKAN_HPP_RAII_NAMESPACE::isVulkanRAIIHandleType<T>::value,bool>::type = 0>
+  bool operator!=( std::nullptr_t, const T & v ) VULKAN_HPP_NOEXCEPT
+  {
+    return *v;
+  }
 )";
 
   std::string forwardDeclarations;

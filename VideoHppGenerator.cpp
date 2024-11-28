@@ -42,8 +42,15 @@ void VideoHppGenerator::generateHppFile() const
 #ifndef VULKAN_VIDEO_HPP
 #define VULKAN_VIDEO_HPP
 
+// clang-format off
+#include <vulkan/vulkan.hpp>
+// clang-format on
+
 #include <vk_video/vulkan_video_codec_av1std.h>
 #include <vk_video/vulkan_video_codec_av1std_decode.h>
+#if ( 301 < VK_HEADER_VERSION )
+# include <vk_video/vulkan_video_codec_av1std_encode.h>
+#endif
 #include <vk_video/vulkan_video_codecs_common.h>
 #include <vk_video/vulkan_video_codec_h264std.h>
 #include <vk_video/vulkan_video_codec_h264std_decode.h>
@@ -51,7 +58,6 @@ void VideoHppGenerator::generateHppFile() const
 #include <vk_video/vulkan_video_codec_h265std.h>
 #include <vk_video/vulkan_video_codec_h265std_decode.h>
 #include <vk_video/vulkan_video_codec_h265std_encode.h>
-#include <vulkan/vulkan.hpp>
 
 #if !defined( VULKAN_HPP_VIDEO_NAMESPACE )
 #  define VULKAN_HPP_VIDEO_NAMESPACE video

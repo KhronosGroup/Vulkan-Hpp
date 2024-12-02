@@ -1048,7 +1048,7 @@ void VulkanHppGenerator::checkCommandCorrectness() const
     resultCodes.insert( rc.name );
     for ( auto ac : rc.aliases )
     {
-      resultCodes.insert( ac.first );
+      resultCodes.insert( ac.name );
     }
   }
   // some special handling needed for vulkansc!!
@@ -1450,9 +1450,9 @@ void VulkanHppGenerator::checkStructCorrectness() const
     }
     else
     {
-      checkForError( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
-                     enumValue.xmlLine,
-                     "VkStructureType enum value <" + enumValue.name + "> never used" );
+      checkForWarning( !enumValue.supported || ( sTypeValues.erase( enumValue.name ) == 1 ),
+                       enumValue.xmlLine,
+                       "VkStructureType enum value <" + enumValue.name + "> never used" );
     }
   }
   assert( sTypeValues.empty() );
@@ -1665,8 +1665,12 @@ std::string VulkanHppGenerator::combineDataTypes( std::map<size_t, VectorParamDa
 
 bool VulkanHppGenerator::contains( std::vector<EnumValueData> const & enumValues, std::string const & name ) const
 {
-  return std::any_of(
-    enumValues.begin(), enumValues.end(), [&name]( EnumValueData const & ev ) { return ( ev.name == name ) || ev.aliases.contains( name ); } );
+  return std::any_of( enumValues.begin(),
+                      enumValues.end(),
+                      [&name]( EnumValueData const & ev ) {
+                        return ( ev.name == name ) ||
+                               std::any_of( ev.aliases.begin(), ev.aliases.end(), [&name]( auto const & eav ) { return eav.name == name; } );
+                      } );
 }
 
 bool VulkanHppGenerator::containsArray( std::string const & type ) const
@@ -2185,15 +2189,12 @@ void VulkanHppGenerator::distributeEnumValueAliases()
         valueIt = findByName( e.second.values, aliasIt->alias );
       }
       checkForError( valueIt != e.second.values.end(), a.xmlLine, "enum value alias <" + a.name + "> aliases non-existent enum value <" + a.alias + ">" );
-      if ( a.supported && valueIt->supported )
-      {
-        // only supported enum values need to be kept!
-        checkForError(
-          a.protect == valueIt->protect, a.xmlLine, "enum value alias <" + a.name + "> aliases enum value <" + a.alias + "> with different properties" );
-        checkForError( valueIt->aliases.insert( { a.name, a.xmlLine } ).second,
-                       a.xmlLine,
-                       "enum value alias <" + a.name + "> already contained as alias for enum value <" + a.alias + ">" );
-      }
+      checkForError(
+        a.protect == valueIt->protect, a.xmlLine, "enum value alias <" + a.name + "> aliases enum value <" + a.alias + "> with different properties" );
+      checkForError( std::none_of( valueIt->aliases.begin(), valueIt->aliases.end(), [&a]( auto const & eav ) { return a.name == eav.name; } ),
+                     a.xmlLine,
+                     "enum value alias <" + a.name + "> already contained as alias for enum value <" + a.alias + ">" );
+      valueIt->aliases.push_back( a );
     }
     e.second.valueAliases.clear();
   }
@@ -6988,33 +6989,40 @@ std::string VulkanHppGenerator::generateEnum( std::pair<std::string, EnumData> c
 
       for ( auto const & valueAlias : value.aliases )
       {
-        std::string enumName = enumData.first;
-        for ( auto aliasIt = enumData.second.aliases.begin(); ( aliasIt != enumData.second.aliases.end() ) && ( enumName == enumData.first ); ++aliasIt )
+        // only generate supported aliases
+        if ( valueAlias.supported )
         {
-          auto        enumAliasIt = enumData.second.aliases.begin();
-          std::string enumTag     = findTag( enumData.first );
-          std::string aliasTag    = findTag( enumAliasIt->first );
-          std::string valueTag    = findTag( valueAlias.first );
-          if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( enumAliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
+          std::string enumName = enumData.first;
+          for ( auto aliasIt = enumData.second.aliases.begin(); ( aliasIt != enumData.second.aliases.end() ) && ( enumName == enumData.first ); ++aliasIt )
           {
-            enumName = enumAliasIt->first;
+            auto        enumAliasIt = enumData.second.aliases.begin();
+            std::string enumTag     = findTag( enumData.first );
+            std::string aliasTag    = findTag( enumAliasIt->first );
+            std::string valueTag    = findTag( valueAlias.name );
+            if ( ( stripPostfix( enumData.first, enumTag ) == stripPostfix( enumAliasIt->first, aliasTag ) ) && ( aliasTag == valueTag ) )
+            {
+              enumName = enumAliasIt->first;
+            }
           }
-        }
 
-        std::string aliasName  = generateEnumValueName( enumName, valueAlias.first, enumData.second.isBitmask );
-        auto [mapIt, inserted] = valueToNameMap.insert( { aliasName, valueAlias.first } );
-        if ( inserted )
-        {
-          enumValues += "    " + aliasName + " = " + valueAlias.first + ",\n";
-        }
-        else
-        {
-          // some aliases are so close to the original, that no new entry can be generated!
-          assert( mapIt->second != valueAlias.first );
-          checkForError( ( mapIt->second == value.name ) || value.aliases.contains( mapIt->second ),
-                         valueAlias.second,
-                         "generated enum alias value name <" + aliasName + ">, generated from <" + valueAlias.first +
-                           "> is already generated from different enum value <" + mapIt->second + ">" );
+          std::string                                        aliasName = generateEnumValueName( enumName, valueAlias.name, enumData.second.isBitmask );
+          std::map<std::string, std::string>::const_iterator mapIt;
+          bool                                               inserted;
+          std::tie( mapIt, inserted ) = valueToNameMap.insert( { aliasName, valueAlias.name } );
+          if ( inserted )
+          {
+            enumValues += "    " + aliasName + " = " + valueAlias.name + ",\n";
+          }
+          else
+          {
+            // some aliases are so close to the original, that no new entry can be generated!
+            assert( mapIt->second != valueAlias.name );
+            checkForError( ( mapIt->second == value.name ) ||
+                             std::any_of( value.aliases.begin(), value.aliases.end(), [mapIt]( auto const & eav ) { return eav.name == mapIt->second; } ),
+                           valueAlias.xmlLine,
+                           "generated enum alias value name <" + aliasName + ">, generated from <" + valueAlias.name +
+                             "> is already generated from different enum value <" + mapIt->second + ">" );
+          }
         }
       }
 
@@ -16615,9 +16623,15 @@ void VulkanHppGenerator::EnumData::addEnumValue(
   }
   else if ( supported )  // only for supported enum values, we need to check for consistency!
   {
-    checkForError( ( bitpos == valueIt->bitpos ) && ( protect == valueIt->protect ) && ( supported == valueIt->supported ) && ( value == valueIt->value ),
+    checkForError( ( bitpos == valueIt->bitpos ) && ( protect == valueIt->protect ) && ( value == valueIt->value ),
                    line,
                    "enum value <" + name + "> already listed with different properties" );
+    // if a previous version was not supported, make it supported now
+    if ( !valueIt->supported )
+    {
+      valueIt->supported = true;
+      valueIt->xmlLine   = line;
+    }
   }
 }
 
@@ -16674,7 +16688,12 @@ namespace
   template <typename T>
   typename std::vector<T>::const_iterator findByNameOrAlias( std::vector<T> const & values, std::string const & name )
   {
-    return std::find_if( values.begin(), values.end(), [&name]( T const & value ) { return ( value.name == name ) || value.aliases.contains( name ); } );
+    return std::find_if( values.begin(),
+                         values.end(),
+                         [&name]( T const & value ) {
+                           return ( value.name == name ) ||
+                                  std::any_of( value.aliases.begin(), value.aliases.end(), [&name]( auto const & eav ) { return eav.name == name; } );
+                         } );
   }
 
   template <typename T>

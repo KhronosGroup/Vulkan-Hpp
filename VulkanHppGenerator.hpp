@@ -145,14 +145,14 @@ private:
 
   struct EnumValueData
   {
-    std::map<std::string, int> aliases    = {};
-    std::string                bitpos     = {};
-    bool                       deprecated = {};
-    std::string                name       = {};
-    std::string                protect    = {};
-    bool                       supported  = {};
-    std::string                value      = {};
-    int                        xmlLine    = {};
+    std::vector<EnumValueAlias> aliases    = {};
+    std::string                 bitpos     = {};
+    bool                        deprecated = {};
+    std::string                 name       = {};
+    std::string                 protect    = {};
+    bool                        supported  = {};
+    std::string                 value      = {};
+    int                         xmlLine    = {};
   };
 
   struct EnumData

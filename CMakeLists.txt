@@ -394,8 +394,7 @@ if( VULKAN_HPP_RUN_GENERATOR )
 	string( REPLACE "\\" "\\\\" vulkan_hpp ${vulkan_hpp} )
 
 	add_custom_command(
-		COMMAND VulkanHppGenerator -api vulkan
-		COMMAND VulkanHppGenerator -api vulkansc
+		COMMAND VulkanHppGenerator
 		OUTPUT "${vulkan_hpp}"
 		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 		COMMENT "run VulkanHppGenerator"

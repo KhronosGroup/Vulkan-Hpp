@@ -5801,6 +5801,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderDynamic;
 #if !defined( VK_NO_PROTOTYPES )
     using VULKAN_HPP_NAMESPACE::detail::DispatchLoaderStatic;
+    using VULKAN_HPP_NAMESPACE::detail::getDispatchLoaderStatic;
 #endif /*VK_NO_PROTOTYPES*/
   }
 )" };

@@ -34,6 +34,9 @@ jobs:
         do
           for build_type in Debug Release
           do
+            echo "================================================================================="
+            echo "Building C++"$cpp_standard" in "$build_type" mode on "${{matrix.os}}" with architecture "${{matrix.architecture}}
+            echo "================================================================================="
             cmake -B build/$cpp_standard/$build_type        \
               -DVULKAN_HPP_SAMPLES_BUILD=ON                 \
               -DVULKAN_HPP_SAMPLES_BUILD_ONLY_DYNAMIC=ON    \

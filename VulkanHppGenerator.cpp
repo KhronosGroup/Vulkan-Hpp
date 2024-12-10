@@ -692,7 +692,7 @@ void VulkanHppGenerator::generateToStringHppFile() const
 #ifndef VULKAN_TO_STRING_HPP
 #  define VULKAN_TO_STRING_HPP
 
-#include <vulkan/${api}_enums.hpp>
+#include <vulkan/${api}.hpp>
 
 // ignore warnings on using deprecated enum values in this header
 #if defined( __clang__ ) || defined( __GNUC__ )

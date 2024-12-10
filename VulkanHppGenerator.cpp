@@ -761,6 +761,7 @@ module;
 #include <vulkan/${api}_hash.hpp>
 #include <vulkan/${api}_raii.hpp>
 #include <vulkan/${api}_shared.hpp>
+#include <vulkan/${api}_to_string.hpp>
 
 export module ${api}_hpp;
 

@@ -22,6 +22,7 @@ module;
 #include <vulkan/vulkan_hash.hpp>
 #include <vulkan/vulkan_raii.hpp>
 #include <vulkan/vulkan_shared.hpp>
+#include <vulkan/vulkan_to_string.hpp>
 
 export module vulkan_hpp;
 

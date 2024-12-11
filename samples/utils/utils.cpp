@@ -348,10 +348,10 @@ namespace vk
       return device.createRenderPass( vk::RenderPassCreateInfo( vk::RenderPassCreateFlags(), attachmentDescriptions, subpassDescription ) );
     }
 
-    VKAPI_ATTR VkBool32 VKAPI_CALL debugUtilsMessengerCallback( VkDebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
-                                                                VkDebugUtilsMessageTypeFlagsEXT              messageTypes,
-                                                                VkDebugUtilsMessengerCallbackDataEXT const * pCallbackData,
-                                                                void * /*pUserData*/ )
+    VKAPI_ATTR vk::Bool32 VKAPI_CALL debugUtilsMessengerCallback( vk::DebugUtilsMessageSeverityFlagBitsEXT       messageSeverity,
+                                                                  vk::DebugUtilsMessageTypeFlagsEXT              messageTypes,
+                                                                  const vk::DebugUtilsMessengerCallbackDataEXT * pCallbackData,
+                                                                  void * /*pUserData*/ )
     {
 #if !defined( NDEBUG )
       switch ( static_cast<uint32_t>( pCallbackData->messageIdNumber ) )
@@ -369,8 +369,7 @@ namespace vk
       }
 #endif
 
-      std::cerr << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
-                << vk::to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
+      std::cerr << vk::to_string( messageSeverity ) << ": " << vk::to_string( messageTypes ) << ":\n";
       std::cerr << std::string( "\t" ) << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
       std::cerr << std::string( "\t" ) << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
       std::cerr << std::string( "\t" ) << "message         = <" << pCallbackData->pMessage << ">\n";
@@ -396,8 +395,7 @@ namespace vk
         for ( uint32_t i = 0; i < pCallbackData->objectCount; i++ )
         {
           std::cerr << std::string( "\t\t" ) << "Object " << i << "\n";
-          std::cerr << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) )
-                    << "\n";
+          std::cerr << std::string( "\t\t\t" ) << "objectType   = " << vk::to_string( pCallbackData->pObjects[i].objectType ) << "\n";
           std::cerr << std::string( "\t\t\t" ) << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
           if ( pCallbackData->pObjects[i].pObjectName )
           {
@@ -422,7 +420,7 @@ namespace vk
     std::pair<uint32_t, uint32_t> findGraphicsAndPresentQueueFamilyIndex( vk::PhysicalDevice physicalDevice, vk::SurfaceKHR const & surface )
     {
       std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-      assert( queueFamilyProperties.size() < (std::numeric_limits<uint32_t>::max)() );
+      assert( queueFamilyProperties.size() < ( std::numeric_limits<uint32_t>::max )() );
 
       uint32_t graphicsQueueFamilyIndex = findGraphicsQueueFamilyIndex( queueFamilyProperties );
       if ( physicalDevice.getSurfaceSupportKHR( graphicsQueueFamilyIndex, surface ) )
@@ -802,7 +800,7 @@ namespace vk
 
       vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR( surface );
       vk::Extent2D               swapchainExtent;
-      if ( surfaceCapabilities.currentExtent.width == (std::numeric_limits<uint32_t>::max)() )
+      if ( surfaceCapabilities.currentExtent.width == ( std::numeric_limits<uint32_t>::max )() )
       {
         // If the surface size is undefined, the size is set to the size of the images requested.
         swapchainExtent.width  = clamp( extent.width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width );

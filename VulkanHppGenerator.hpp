@@ -337,7 +337,7 @@ private:
   struct FuncPointerArgumentData
   {
     std::string name    = {};
-    std::string type    = {};
+    TypeInfo    type    = {};
     int         xmlLine = {};
   };
 
@@ -345,6 +345,7 @@ private:
   {
     std::vector<FuncPointerArgumentData> arguments = {};
     std::string                          require   = {};
+    TypeInfo                             returnType = {};
     int                                  xmlLine   = {};
   };
 
@@ -811,6 +812,8 @@ private:
                                            CommandFlavourFlags                       flavourFlags,
                                            bool                                      raii,
                                            std::string const &                       returnType ) const;
+  std::string generateDeprecatedConstructors( std::string const & name ) const;
+  std::string generateDeprecatedStructSetters( std::string const & name ) const;
   std::string generateDispatchLoaderDynamic() const;  // uses vkGet*ProcAddress to get function pointers
   std::string generateDispatchLoaderStatic() const;   // uses exported symbols from loader
   std::string generateDestroyCommand( std::string const & name, CommandData const & commandData ) const;
@@ -840,6 +843,7 @@ private:
   std::string generateExtensionsList( std::string const & type ) const;
   std::string generateExtensionTypeTest( std::string const & type ) const;
   std::string generateFormatTraits() const;
+  std::string generateFuncPointer( std::pair<std::string, FuncPointerData> const & funcPointer, std::set<std::string> & listedStructs ) const;
   std::string generateFunctionPointerCheck( std::string const & function, std::set<std::string> const & requiredBy, bool raii ) const;
   std::string generateHandle( std::pair<std::string, HandleData> const & handle, std::set<std::string> & listedHandles ) const;
   std::string generateHandleCommandDeclarations( std::set<std::string> const & commands ) const;

@@ -2688,6 +2688,30 @@ export namespace VULKAN_HPP_NAMESPACE
   using VULKAN_HPP_NAMESPACE::ApiVersion14;
   using VULKAN_HPP_NAMESPACE::HeaderVersionComplete;
 
+  //====================
+  //=== FUNCPOINTERs ===
+  //====================
+
+  //=== VK_VERSION_1_0 ===
+  using VULKAN_HPP_NAMESPACE::PFN_AllocationFunction;
+  using VULKAN_HPP_NAMESPACE::PFN_FreeFunction;
+  using VULKAN_HPP_NAMESPACE::PFN_InternalAllocationNotification;
+  using VULKAN_HPP_NAMESPACE::PFN_InternalFreeNotification;
+  using VULKAN_HPP_NAMESPACE::PFN_ReallocationFunction;
+  using VULKAN_HPP_NAMESPACE::PFN_VoidFunction;
+
+  //=== VK_EXT_debug_report ===
+  using VULKAN_HPP_NAMESPACE::PFN_DebugReportCallbackEXT;
+
+  //=== VK_EXT_debug_utils ===
+  using VULKAN_HPP_NAMESPACE::PFN_DebugUtilsMessengerCallbackEXT;
+
+  //=== VK_EXT_device_memory_report ===
+  using VULKAN_HPP_NAMESPACE::PFN_DeviceMemoryReportCallbackEXT;
+
+  //=== VK_LUNARG_direct_driver_loading ===
+  using VULKAN_HPP_NAMESPACE::PFN_GetInstanceProcAddrLUNARG;
+
   //===============
   //=== STRUCTs ===
   //===============

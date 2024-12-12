@@ -745,6 +745,7 @@ private:
   std::string generateConstexprString( std::string const & structName ) const;
   std::string generateConstexprDefines() const;
   std::string generateConstexprUsings() const;
+  std::string generateCppModuleFuncpointerUsings() const;
   std::string generateCppModuleHandleUsings() const;
   std::string generateCppModuleStructUsings() const;
   std::string generateCppModuleUniqueHandleUsings() const;

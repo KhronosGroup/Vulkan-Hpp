@@ -5493,6 +5493,43 @@ std::string VulkanHppGenerator::generateConstexprUsings() const
   return constexprUsings;
 }
 
+std::string VulkanHppGenerator::generateCppModuleFuncpointerUsings() const
+{
+  std::string funcpointerUsings = R"(
+  //====================
+  //=== FUNCPOINTERs ===
+  //====================
+)";
+
+  auto const  generateUsingsAndProtection = [this]( std::vector<RequireData> const & requireData, std::string const & title )
+  {
+    auto usings = std::string{};
+    for ( auto const & require : requireData )
+    {
+      for ( auto const & type : require.types )
+      {
+        if ( auto const & funcpointerIt = m_funcPointers.find( type.name ); funcpointerIt != m_funcPointers.end() )
+        {
+          usings += "  using VULKAN_HPP_NAMESPACE::PFN_" + stripPrefix( funcpointerIt->first, "PFN_vk" ) + ";\n";
+        }
+      }
+    }
+    return addTitleAndProtection( title, usings );
+  };
+
+  for ( auto const & feature : m_features )
+  {
+    funcpointerUsings += generateUsingsAndProtection( feature.requireData, feature.name );
+  }
+
+  for ( auto const & extension : m_extensions )
+  {
+    funcpointerUsings += generateUsingsAndProtection( extension.requireData, extension.name );
+  }
+
+  return funcpointerUsings;
+}
+
 std::string VulkanHppGenerator::generateCppModuleHandleUsings() const
 {
   auto const usingTemplate = std::string{ R"(  using VULKAN_HPP_NAMESPACE::${className};
@@ -5980,6 +6017,7 @@ std::string VulkanHppGenerator::generateCppModuleUsings() const
   usings += "\n" + generateConstexprUsings() + "\n";
 
   // structs, handles, UniqueHandles, etc
+  usings += generateCppModuleFuncpointerUsings();
   usings += generateCppModuleStructUsings();
   usings += generateCppModuleHandleUsings();
   usings += generateCppModuleUniqueHandleUsings();
